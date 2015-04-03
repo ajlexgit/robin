@@ -14,3 +14,8 @@ media
 #Python
 __pycache__
 *.pyc
+
+#SASS
+/src/static/scss/*.css
+/src/static/scss/*/*.css
+/src/*/*/*/*/scss/*.css
