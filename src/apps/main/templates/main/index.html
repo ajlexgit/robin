@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+{% load solo_tags %}
+
+
+{% block content %}
+    {% get_solo 'main.MainPageConfig' as config %}
+    
+    <h1 class="title-h1">{{ config.title }}</h1>
+{% endblock content %}

@@ -1,0 +1,25 @@
+@import 'mixins';
+
+#footer {
+  @include clearfix;
+
+  .title-h2 {
+    padding-bottom: 8px;
+  }
+  .column {
+    float: left;
+    width: 305px;
+    margin-right: 30px;
+  }
+  .column-last {
+    width: 210px;
+    margin-right: 0;
+  }
+}
+
+#copyright {
+  margin: 0;
+  font-size: 9px;
+  text-align: center;
+  padding: 10px 0 30px 0;
+}

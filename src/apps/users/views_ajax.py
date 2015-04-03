@@ -1,0 +1,224 @@
+from django.forms import model_to_dict
+from django.http import HttpResponse, Http404, JsonResponse
+from django.core.exceptions import ValidationError
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.views.generic import TemplateView
+from libs.string_view import RenderToStringMixin
+from libs.upload_chunked_file import upload_chunked_file, NotCompleteError
+from .forms import LoginForm, RegisterForm, PasswordResetForm
+
+
+def user_to_dict(user):
+    """ Вывод информации о юзере в формате, пригодном для JSON """
+    user_dict = model_to_dict(user, fields=(
+        'id', 'email', 'username', 'first_name', 'last_name', 'is_staff', 'is_superuser'
+    ))
+    user_dict.update(avatar={
+        name: getattr(user.avatar, name).url
+        for name in user.avatar.variations
+        if hasattr(user.avatar, name)
+    })
+    return user_dict
+
+
+class LoginView(RenderToStringMixin, TemplateView):
+    """ AJAX login """
+    template_name = 'users/ajax_login.html'
+
+    def get(self, request):
+        """ Содержимое окна авторизации """
+        return self.render_to_response({
+            'form': LoginForm(),
+        })
+
+    def post(self, request):
+        """ AJAX авторизация """
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return JsonResponse({
+                'user': user_to_dict(user),
+                'auth_block': self.render_to_string(template='users/auth_block.html'),
+            })
+        else:
+            return JsonResponse({
+                'errors': self.render_to_string({
+                    'form': form,
+                }),
+            })
+
+
+class LogoutView(RenderToStringMixin, TemplateView):
+    """ AJAX logout """
+    def post(self, request):
+        auth_logout(request)
+        return JsonResponse({
+            'auth_block': self.render_to_string(template='users/auth_block.html'),
+        })
+
+
+class RegisterView(RenderToStringMixin, TemplateView):
+    """ AJAX register """
+    template_name = 'users/ajax_register.html'
+
+    def get(self, request):
+        """ Содержимое окна регистрации """
+        return self.render_to_response({
+            'form': RegisterForm(),
+        })
+
+    def post(self, request):
+        """ AJAX регистрация """
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user = authenticate(
+                username=user.username,
+                password=form.cleaned_data.get('password1')
+            )
+            auth_login(request, user)
+            return JsonResponse({
+                'user': user_to_dict(user),
+                'auth_block': self.render_to_string(template='users/auth_block.html'),
+            })
+        else:
+            return JsonResponse({
+                'errors': self.render_to_string({
+                    'form': form,
+                }),
+            })
+
+
+class PasswordResetView(RenderToStringMixin, TemplateView):
+    """ AJAX reset password """
+    template_name = 'users/ajax_reset.html'
+
+    def get(self, request):
+        """ Содержимое окна сброса пароля """
+        return self.render_to_response({
+            'form': PasswordResetForm(),
+        })
+
+    def post(self, request):
+        """ AJAX сброс пароля """
+        email = request.POST.get('email', '')
+        request.session['reset_email'] = email
+
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            opts = {
+                'use_https': request.is_secure(),
+                'token_generator': default_token_generator,
+                'email_template_name': 'users/reset_email.html',
+                'subject_template_name': 'users/reset_subject.txt',
+                'request': request,
+                'html_email_template_name': 'users/reset_email.html',
+            }
+            form.save(**opts)
+            return JsonResponse({
+                'done': self.render_to_string({
+                    'email': email,
+                }, template='users/ajax_reset_done.html'),
+            })
+        else:
+            return JsonResponse({
+                'errors': self.render_to_string({
+                    'form': form,
+                }),
+            })
+
+
+class AvatarUploadView(RenderToStringMixin, TemplateView):
+    """ Загрузка аватара """
+    template_name = 'users/profile_avatar.html'
+
+    def post(self, request):
+        """ Загрузка автарки """
+        if not request.user.is_authenticated():
+            raise Http404
+
+        try:
+            uploaded_file = upload_chunked_file(request, 'image')
+        except (LookupError, FileNotFoundError):
+            raise Http404
+        except NotCompleteError:
+            return HttpResponse()
+
+        request.user.avatar.save(uploaded_file.name, uploaded_file, save=False)
+        uploaded_file.close()
+
+        try:
+            request.user.avatar.field.clean(request.user.avatar, request.user)
+        except ValidationError as e:
+            request.user.avatar.delete(save=False)
+            return JsonResponse({
+                'message': ', '.join(e.messages),
+            }, status=400)
+
+        request.user.avatar_crop = ''
+        request.user.clean()
+        request.user.save()
+
+        return JsonResponse({
+            'micro_url': request.user.micro_avatar,
+            'normal_url': request.user.normal_avatar,
+            'profile_avatar': self.render_to_string({
+                'profile_user': request.user,
+            })
+        })
+
+
+class AvatarCropView(RenderToStringMixin, TemplateView):
+    """ Обрезка аватара """
+    template_name = 'users/profile_avatar.html'
+
+    def post(self, request):
+        if not request.user.is_authenticated():
+            raise Http404
+
+        coords = request.POST.get('coords', '').split(':')
+        try:
+            coords = tuple(map(int, coords))
+        except (TypeError, ValueError):
+            raise Http404
+
+        if len(coords) < 4:
+            raise Http404
+        else:
+            coords = coords[:4]
+
+        if not request.user.avatar:
+            raise Http404
+
+        request.user.avatar.recut(crop=coords)
+        request.user.avatar_crop = ':'.join(map(str, coords))
+        request.user.save()
+
+        return JsonResponse({
+            'micro_url': request.user.micro_avatar,
+            'normal_url': request.user.normal_avatar,
+            'profile_avatar': self.render_to_string({
+                'profile_user': request.user,
+            })
+        })
+
+
+class AvatarRemoveView(RenderToStringMixin, TemplateView):
+    """ Удаление аватара """
+    template_name = 'users/profile_avatar.html'
+
+    def post(self, request):
+        if not request.user.is_authenticated():
+            raise Http404
+
+        request.user.avatar.delete()
+
+        return JsonResponse({
+            'micro_url': request.user.micro_avatar,
+            'normal_url': request.user.normal_avatar,
+            'profile_avatar': self.render_to_string({
+                'profile_user': request.user,
+            })
+        })

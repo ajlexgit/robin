@@ -1,0 +1,10 @@
+@import 'mixins';
+
+.captcha {
+  margin: 6px 0;
+  @include clearfix;
+
+  .g-recaptcha {
+    float: left;
+  }
+}

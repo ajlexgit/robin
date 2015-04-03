@@ -1,0 +1,35 @@
+@import 'mixins';
+
+#search {
+  margin-bottom: 10px;
+
+  form {
+    @include clearfix;
+  }
+}
+
+#search-text {
+  float: left;
+  width: 150px;
+}
+
+#search-submit {
+  float: right;
+  width: 50px;
+}
+
+#sidebar {
+  float: right;
+  width: 210px;
+
+  li {
+    .header {
+      font-size: 14px;
+      padding: 8px 10px;
+      background: #dadada;
+    }
+    ul {
+      margin: 0 10px 10px;
+    }
+  }
+}

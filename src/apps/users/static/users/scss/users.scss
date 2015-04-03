@@ -1,0 +1,74 @@
+@import "mixins";
+
+/* Блок авторизации */
+#auth-block {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 140px;
+  height: 50px;
+  text-align: right;
+  @include valign_middle;
+
+  .avatar {
+    float: left;
+    margin-right: 10px;
+  }
+  .username {
+    text-align: left;
+    line-height: 1.2;
+    max-height: 2.4em;
+    @include long_text($shadow_height: 1.2em, $shadow_color: white);
+  }
+
+  .logout-form {
+    position: absolute;
+    bottom: 0;
+    left: 60px;
+
+    .logout {
+      padding: 0;
+      border: 0;
+      cursor: pointer;
+      background: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  .login {
+    @include valign_middle;
+  }
+}
+
+#login-form, #ajax-login-form {
+  label {
+    min-width: 80px;
+  }
+
+  .reset-password {
+    margin-left: 12px;
+  }
+  .register {
+    margin-left: 10px;
+  }
+}
+
+#register-form, #ajax-register-form {
+  label {
+    min-width: 130px;
+  }
+}
+
+#reset-password-form, #ajax-reset-password-form {
+  label {
+    min-width: 60px;
+  }
+}
+
+#reset-confirm-form {
+  label {
+    min-width: 140px;
+  }
+}

@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% load compressed %}
+{% load breadcrumbs %}
+{% load i18n %}
+
+
+{% block static_head %}
+    {{ block.super }}
+    {% compressed_css 'posts-index' %}
+{% endblock static_head %}
+
+{% block content %}
+    {% breadcrumbs %}
+    <h1 class="title-h1">{% trans 'Posts' %}</h1>
+    
+    {% for post in paginator.page %}
+        <div class="post">
+            <a href="{{ post.get_absolute_url }}">
+                <img src="{{ post.preview.normal.url }}" width="{{ post.preview.variations.normal.size.0 }}" height="{{ post.preview.variations.normal.size.1 }}" alt="{{ post.title }}">
+            </a>
+            
+            <div class="entry">
+                <h2 class="title-h2">
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                </h2>
+            
+                {{ post.note|safe }}
+            </div>
+        </div>
+    {% endfor %}
+    
+    {{ paginator }}
+{% endblock content %}

@@ -1,0 +1,4 @@
+-r common.txt
+python3-memcached==1.51
+django-redis-sessions==0.4.0
+newrelic==2.40.0.34

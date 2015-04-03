@@ -1,0 +1,30 @@
+/* Превью */
+.stdimage .item-preview {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 5px;
+    box-shadow: 1px 1px 3px #808080;
+}
+.stdimage .item-preview img {
+    display: block;
+    position: relative;
+    max-width: none;
+}
+.stdimage .item-preview.preloader:before {
+    content: '';
+    background: url(../img/loading.gif) no-repeat center center rgba(255,255,255,0.7);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+/* Чекбокс удаления файла */
+.stdimage .delete {
+    vertical-align: text-bottom;
+    margin: 0 0 0 5px;
+}
+
+.stdimage .crop-btn-wrapper {
+    margin: 4px 0;
+}

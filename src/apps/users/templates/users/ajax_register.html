@@ -1,0 +1,35 @@
+{% load i18n %}
+
+<p class="title">{% trans 'Registration' %}</p>
+
+{{ form.media }}
+<form method="post" action="{% url 'users:register' %}" id="ajax-register-form" autocomplete="off">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    
+    {{ form.non_field_errors.as_ul }}
+    <fieldset class="{{ form.username.errors.classes }}">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.username.errors }}
+    </fieldset>
+    <fieldset class="{{ form.email.errors.classes }}">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {{ form.email.errors }}
+    </fieldset>
+    <fieldset class="{{ form.password1.errors.classes }}">
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+    </fieldset>
+    <fieldset class="{{ form.password2.errors.classes }}">
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+    </fieldset>
+    
+    <fieldset>
+        <button type="submit" class="btn">{% trans 'Register' %}</button>
+    </fieldset>
+</form>

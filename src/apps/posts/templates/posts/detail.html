@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% load compressed %}
+{% load async_block %}
+{% load breadcrumbs %}
+{% load yandex_maps %}
+{% load gallery %}
+{% load comments %}
+{% load i18n %}
+
+
+{% block static_head %}
+    {{ block.super }}
+    {% compressed_css 'posts-detail' %}
+{% endblock static_head %}
+
+{% block static_js %}
+    <script src="//www.google.com/recaptcha/api.js?onload=recaptchaLoadCallback&render=explicit" async defer></script>
+    <script src="//api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU&onload=yaMapsCallback" async defer></script>
+    {{ block.super }}
+    {% compressed_js 'posts-detail' %}
+{% endblock static_js %}
+
+{% block content %}
+    {% breadcrumbs %}
+    <h1 class="title-h1">
+        {{ post.title }}
+        {% async_block 'posts:async' id=post.id %}
+    </h1>
+
+    {{ post.text|safe }}
+    
+    {% if post.gallery %}
+        <p class="title-h2"><a href="#gallery" name="gallery">{% trans 'Gallery' %}</a></p>
+        {% gallery post.gallery %}
+    {% endif %}
+    
+    {% interactive_map address='Тольятти, Мира 6' zoom=14 height=300 %}
+    
+    {{ social_buttons }}
+    
+    <p class="title-h2"><a href="#comments" name="comments">{% trans 'Comments' %}</a></p>
+    {% comments post %}
+{% endblock content %}

@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<div id="auth-block">
+    {% if user.is_authenticated %}
+        <a href="{% url 'users:profile' user.username %}">
+            <img class="avatar" alt=""
+                 src="{{ user.small_avatar }}" 
+                 width="{{ user.avatar.variations.small.size.0 }}"
+                 height="{{ user.avatar.variations.small.size.1 }}">
+        </a>
+        <div class="username">{{ user.username }}</div>
+        <form action="{% url 'users:logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button class="logout">{% trans 'Logout' %}</button>
+        </form>
+    {% else %}
+        <a href="{% url 'users:login' %}?next={{ request.path }}" class="login btn">{% trans 'Sign in' %}</a>
+    {% endif %}
+</div>

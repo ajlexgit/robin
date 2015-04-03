@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load variation_field %}
+
+<div class="stdimage">
+    <div class="item-preview {% if not value %}hide{% endif %}"
+         style="width:{{ admin_variation.size.0 }}px; height:{{ admin_variation.size.1 }}px">
+        {% with variation_field=value|variation_field:admin_variation.name %}
+            <img src="{{ variation_field.url_nocache }}">
+        {% endwith %}
+    </div>
+
+    {{ input }}
+    {% if crop_area %}
+        <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">
+            <button class="btn"
+                    data-crop_field="{{ crop_field|default:'' }}"
+                    data-aspects="{{ aspects }}"
+                    data-source="{{ value.url_nocache }}"
+                    data-min_dimensions="{{ min_dimensions|join:'x' }}"
+                    data-max_dimensions="{{ max_dimensions|join:'x' }}">
+                {% trans 'Crop image' %}
+            </button>
+            <input type="hidden" name="{{ name }}-croparea" value="">
+        </div>
+    {% endif %}
+
+    {% if value %}
+        <div>
+            <span>{% trans 'Delete' %}:</span>
+            <input type="checkbox" name="{{ name }}-delete" class="delete"/>
+        </div>
+    {% endif %}
+</div>

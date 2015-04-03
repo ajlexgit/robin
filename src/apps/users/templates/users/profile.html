@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% load i18n %}
+{% load compressed %}
+
+{% block static_head %}
+    {{ block.super }}
+    {% compressed_css 'users-profile' %}
+{% endblock static_head %}
+
+{% block static_js %}
+    {{ block.super }}
+    {% compressed_js 'users-profile' %}
+{% endblock static_js %}
+
+
+{% block content %}
+    <h1 class="title-h1">{% with username=profile_user.username %}{% blocktrans %}Profile of «{{ username }}»{% endblocktrans %}{% endwith %}</h1>
+
+    <div id="profile">
+        {% include 'users/profile_avatar.html' %}
+        <div class="profile-info">
+            {% with fullname=profile_user.get_full_name %}
+                {% if fullname %}
+                    <p><b>{% trans 'Name' %}</b>: {{ fullname }}</p>
+                {% endif %}
+            {% endwith %}
+            {% with email=profile_user.email %}
+                {% if email %}
+                    <p><b>E-mail</b>: {{ email }}</p>
+                {% endif %}
+            {% endwith %}
+            <p><b>{% trans 'Last login' %}</b>: {{ profile_user.last_login|shortdate }}</p>
+            {% if profile_user == request.user %}
+                <a href="{% url 'users:reset_password' %}" class="btn">{% trans 'Change password' %}</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

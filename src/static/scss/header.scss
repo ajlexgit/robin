@@ -1,0 +1,28 @@
+@import 'mixins';
+
+#header {
+  position: relative;
+  height: 90px;
+  margin-bottom: 30px;
+  padding-top: 40px;
+  padding-right: 140px;
+  padding-left: 145px;
+}
+
+/* Логотип */
+#logo {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  @include valign_middle;
+
+  a {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 45px;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}

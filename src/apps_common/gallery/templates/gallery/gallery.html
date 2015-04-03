@@ -1,0 +1,15 @@
+<div class="gallery">
+    {% for item in gallery.all_items %}
+        {% if item.is_image %}
+            <div class="gallery-item gallery-item-image" data-big={{ item.image.normal.url }}>
+                <img src="{{ item.image.small.url }}" alt="">
+            </div>
+        {% elif item.is_video_link %}
+            <div class="gallery-item gallery-item-video-link" data-provider="{{ item.video_provider }}" data-key="{{ item.video_key }}">
+                <div class="inner">
+                    <img src="{{ item.video_preview }}" alt="">
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

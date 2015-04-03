@@ -1,0 +1,213 @@
+.gallery h4 {
+    margin: 0;
+}
+.gallery button {
+    margin-top: 5px;
+    margin-right: 10px;
+}
+.gallery button:last-child {
+    margin-right: 0;
+}
+
+
+.gallery-items {
+    width: 100%;
+    font-size: 0;
+    line-height: 0;
+    margin-top: 4px;
+}
+.dragover .gallery-items {
+    min-height: 130px;
+    position: relative;
+}
+.dragover .gallery-items:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    outline-offset: -2px;
+    outline: 4px dashed #606060;
+    background: rgba(160,160,160,0.4);
+}
+
+/* Элемент галереи */
+.gallery-item {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    line-height: 0;
+    font-size: 0;
+    margin: 4px;
+    vertical-align: top;
+    border-radius: 4px;
+    box-sizing: border-box;
+    box-shadow: 1px 1px 3px 0px #808080;
+}
+.gallery-item .item-show {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/* Элемент видео */
+.gallery-item-video-link {
+    box-shadow: 0px 0px 3px 1px blue;
+}
+.gallery-item-video-link .item-show:after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 40px;
+    height: 28px;
+    margin: -14px 0 0 -20px;
+    border-radius: 7px;
+    background: url(../img/video.png?x=1) no-repeat center center #000;
+    transition: opacity, 0.2s;
+}
+.gallery-item-video-link:hover .item-show:after {
+    opacity: 0;
+}
+.gallery-item-video-link .inner {
+    display: inline-block;
+    position: relative;
+    height: 100%;
+    left: 50%;
+}
+.gallery-item-video-link img {
+    position: relative;
+    max-width: none;
+    height: 100%;
+    left: -50%;
+}
+
+
+/* Выделение картинки */
+.gallery-item-checked {
+    box-shadow: 0px 0px 1px 3px green;
+}
+.gallery-item-checked:before {
+    content: '';
+    background: url(../img/checked.png);
+    position: absolute;
+    top: 0;
+    left: -2px;
+    width: 32px;
+    height: 32px;
+    z-index: 2;
+}
+
+
+/* Кнопки управления */
+.gallery-item .item-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 0 6px 8px;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.7);
+}
+.gallery-item:hover .item-controls {
+    transform: translateY(0px);
+}
+.gallery-item:not(:hover) .item-controls {
+    transform: translateY(100%);
+}
+.gallery-item .item-controls .check-box {
+    margin: 1px 8px 0 0;
+    vertical-align: bottom;
+}
+.gallery-item .item-controls a {
+    cursor: pointer;
+    margin-right: 8px;
+}
+.gallery-item .item-delete {
+    float: right;
+}
+.gallery-item .item-rotate-left {
+    transform: scale(-1,1) rotate(45deg);
+}
+.gallery-item .item-rotate-right {
+    transform: rotate(45deg);
+}
+
+
+/* Загружаемые и ошибочные элементы */
+.gallery-item-locked .item-controls {
+    display: none;
+}
+
+.gallery-item-loading .item-controls > *,
+.gallery-item-error .item-controls > * {
+    visibility: hidden;
+}
+.gallery-item-loading .item-controls .item-delete,
+.gallery-item-error .item-controls .item-delete {
+    visibility: visible;
+}
+
+
+/* Прелоадер в процессе загрузки */
+.gallery-item .item-preloader {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background: url(../img/loading.gif) no-repeat 50% 50%;
+}
+
+
+/* Прогрессбар */
+.gallery-item .progress {
+    display: none;
+}
+.gallery-item-loading .progress {
+    display: block;
+    height: 6px;
+    margin: 0;
+    position: absolute;
+    bottom: 10px;
+    width: 90%;
+    left: 5%;
+    z-index: 5;
+    border: 2px solid black;
+}
+.gallery-item-loading .progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: #337ab7;
+}
+
+
+/* Ошибка */
+.gallery-item-error {
+    box-shadow: 0px 0px 1px 3px red;
+}
+.gallery-item-error .item-preloader span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.1;
+    padding: 10px;
+    z-index: 10;
+}
+.gallery-item-error .item-preloader:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    background: rgba(255,255,255,0.7);
+}

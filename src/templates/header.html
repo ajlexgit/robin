@@ -1,0 +1,13 @@
+{% load menu %}
+
+<div id="header" class="container">
+    <div id="logo">
+        <a href="/">Project</a>
+    </div>
+    
+    {% include 'users/auth_block.html' %}
+    
+    <div id="main-menu">
+        {% main_menu %}
+    </div>
+</div>

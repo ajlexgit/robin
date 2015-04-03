@@ -1,0 +1,13 @@
+<ul class="breadcrumbs">
+    {% for crumb in breadcrumbs %}
+        <li class="breadcrumb-item" itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+            {% if crumb.url and not forloop.last %}
+                <a href="{{ crumb.url }}" class="breadcrumb-link" itemprop="url">
+                    <span itemprop="title">{{ crumb.title }}</span>
+                </a>
+            {% else %}
+                <span class="breadcrumb-link" itemprop="title">{{ crumb.title }}</span>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

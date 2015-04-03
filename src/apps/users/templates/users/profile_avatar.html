@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<div id="profile-avatar">
+    <img src="{{ profile_user.normal_avatar }}" 
+         width="{{ profile_user.avatar.variations.normal.size.0 }}" 
+         height="{{ profile_user.avatar.variations.normal.size.1 }}">
+    
+    {% if profile_user == request.user %}
+        <a href="#" class="delete-avatar" title="{% trans 'Delete avatar' %}">{% trans 'Delete avatar' %}</a>
+        <div class="actions">
+            <a href="#" id="upload-avatar">{% trans 'Upload avatar' %}</a>
+            {% if profile_user.avatar %}
+                <a href="#" id="crop-avatar" data-source="{{ profile_user.avatar.url_nocache }}"
+                   data-crop="{{ profile_user.avatar_crop }}" 
+                   data-aspect="{{ profile_user.avatar.variations.normal.size|tuplediv|to_json }}"
+                   data-min_dimensions="{{ profile_user.avatar.variations.normal.size|join:"x" }}">{% trans 'Change thumbnail' %}</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,56 @@
+{% load i18n %}
+{% load away %}
+{% load comments %}
+
+{% call comment.can_reply request.user as can_reply %}
+{% call comment.can_vote request.user as can_vote %}
+{% call comment.can_edit request.user as can_edit %}
+{% call comment.can_delete request.user as can_delete %}
+{% call comment.can_restore request.user as can_restore %}
+
+
+<div class="comment comment-level-{{ comment.final_level }} {% if comment.deleted %}comment-deleted{% endif %}" 
+     data-id="{{ comment.id }}" data-level="{{ comment.level }}">
+    <div class="info">
+        <div class="rating {% if not can_vote %}disabled{% endif %}">
+            <span>{{ comment.rating|format_rating }}</span>
+            {% with vote=comment|get_vote:request.user %}
+                <a href="#" class="rating-like {% if vote == 1 %}voted{% endif %}"></a>
+                <a href="#" class="rating-dislike {% if vote == -1 %}voted{% endif %}"></a>
+            {% endwith %}
+        </div>
+        
+        <a href="{% url 'users:profile' comment.user.username %}">
+            <img class="avatar" alt=""
+                 src="{{ comment.user.micro_avatar }}" 
+                 width="{{ comment.user.avatar.variations.micro.size.0 }}"
+                 height="{{ comment.user.avatar.variations.micro.size.1 }}">
+        </a>
+        <a href="{% url 'users:profile' comment.user.username %}">
+            {{ comment.user.username }}
+        </a>
+        <a href="#comment-{{ comment.id }}" name="comment-{{ comment.id }}" class="hashlink">#</a>
+        <div class="date">{{ comment.created|date:"j E Y, H:i:s" }}</div>
+    </div>
+    
+    <div class="text">
+        {% away comment.text|striptags|linebreaksbr|urlize %}
+    </div>
+    
+    {% if request.user.is_authenticated %}
+        <div class="actions">
+            {% if can_reply %} 
+                <a href="#" class="reply">{% trans 'Reply' %}</a>
+            {% endif %}
+            {% if can_edit %} 
+                <a href="#" class="edit">{% trans 'Edit' %}</a>
+            {% endif %}
+            {% if can_restore %} 
+                <a href="#" class="restore">{% trans 'Restore' %}</a>
+            {% endif %}
+            {% if can_delete %} 
+                <a href="#" class="delete">{% trans 'Delete' %}</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

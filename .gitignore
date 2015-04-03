@@ -1,0 +1,16 @@
+# OS or Editor folders
+Thumbs.db
+.idea
+*.orig
+
+#Vagrant
+.vagrant
+Vagrantfile
+
+#Development configuration
+dev.py
+media
+
+#Python
+__pycache__
+*.pyc

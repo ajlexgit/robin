@@ -1,0 +1,31 @@
+{% load paginator %}
+
+<div class="navigation">
+    {% if not page.has_previous %}
+        <span class="item link {% if not page.has_previous %}active{% endif %}">←</span>
+    {% else %}
+        <a href="{% href paginator page.previous_page_number %}"
+           class="item link {% if not page.has_previous %}active{% endif %}"
+           data-page="{{ page.previous_page_number }}">←</a>
+    {% endif %}
+    
+    {% for page_num in paginator.zipped_page_range %}
+        {% if page_num == None %}
+            <span class="item">...</span>
+        {% elif page.number == page_num %}
+            <span class="item link active">{{ page_num }}</span>
+        {% else %}
+            <a href="{% href paginator page_num %}" 
+               class="item link {% if page.number == page_num %}active{% endif %}"
+               data-page="{{ page_num }}">{{ page_num }}</a>
+        {% endif %}
+    {% endfor %}
+    
+    {% if not page.has_next %}
+        <span class="item link {% if not page.has_next %}active{% endif %}">→</span>
+    {% else %}
+        <a href="{% href paginator page.next_page_number %}"
+           class="item link {% if not page.has_next %}active{% endif %}"
+           data-page="{{ page.next_page_number }}">→</a>
+    {% endif %}
+</div>

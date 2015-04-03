@@ -1,0 +1,71 @@
+{% load i18n %}
+{% load comments %}
+{% load admin_static %}
+
+<script>
+    var admin_comments_delete = "{% url 'admin_comments:delete' %}";
+    var admin_comments_restore = "{% url 'admin_comments:restore' %}";
+</script>
+
+{% if original.pk %}
+    <h2>{% trans 'Comments' %}</h2>
+    
+    <table class="table table-striped table-bordered table-hover table-condensed">
+    <col width="4%"/>
+    <col width="20%"/>
+    <col />
+    <col width="8%"/>
+    <col width="10%"/>
+    <thead>
+        <tr>
+            <th class="view-column column-view">
+                <div class="text"><span>#</span></div>
+            </th>
+            <th class="title-column column-title">
+                <div class="text">
+                    <span>{% trans 'Author' %}</span>
+                </div>
+            </th>
+            <th class="view-column column-view">
+                <div class="text">
+                    <span>{% trans 'Text' %}</span>
+                </div>
+            </th>
+            <th class="title-column column-title">
+                <div class="text">
+                    <span>{% trans 'Delete' %}</span>
+                </div>
+            </th>
+            <th class="title-column column-title">
+                <div class="text">
+                    <span>{% trans 'Restore' %}</span>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for comment in comments %}
+            <tr class="row{% if forloop.counter|divisibleby:2 %}2{% else %}1{% endif %}">
+                <th>
+                    <a href="{{ entity.get_absolute_url }}#comment-{{ comment.id }}" target="_blank" class="icon-eye-open"></a>
+                </th>
+                <td class="field-user">
+                    <a href="{% url 'admin:users_customuser_change' comment.user.id %}" target="_blank" style="display: inline-block;">
+                        <img src="{{ comment.user.micro_avatar }}" width="20" height="20" style="margin-right: 5px;">{{ comment.user }}
+                    </a>
+                </td>
+                <td style="padding-left: {{ comment.get_level|mul:comment_level_indent|add:10 }}px">
+                    <a href="{% url 'admin:comments_comment_change' comment.id %}">{{ comment.short_text }}</a>
+                </td>
+                <td class="field-delete">
+                    <button class="btn btn-danger btn-small comment-delete {% if comment.deleted %}disabled{% endif %}" {% if comment.deleted %}disabled="disabled"{% endif %} data-id="{{ comment.id }}">{% trans 'Delete' %}</button>
+                </td>
+                <td class="field-restore">
+                    <button class="btn btn-success btn-small comment-restore {% if not comment.deleted %}disabled{% endif %}" {% if not comment.deleted %}disabled="disabled"{% endif %} data-id="{{ comment.id }}">{% trans 'Restore' %}</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    
+{% endif %}

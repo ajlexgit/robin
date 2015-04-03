@@ -1,0 +1,98 @@
+@import 'mixins';
+
+#popup-overlay {
+  @include opacity(0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url(overlay.png) repeat 0 0 black;
+  z-index: 100;
+}
+
+#popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 101;
+}
+
+#popup-window-wrapper {
+  height: 100%;
+  @include valign_middle;
+}
+
+#popup-window {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  margin: 60px auto;
+  max-width: 80%;
+  min-width: 200px;
+  border: 10px solid #DDDDDD;
+  background-color: #DDDDDD;
+  @include border_radius(12px);
+}
+
+#popup-content {
+  overflow: hidden;
+  min-height: 40px;
+  padding: 14px 16px;
+  text-align: initial;
+  background-color: #C0C0C0;
+  @include border_radius(6px);
+
+  .title {
+    margin: 0 0 12px;
+    padding: 0;
+    font-size: 1.4em;
+    line-height: 1;
+  }
+}
+
+#popup-close-button {
+  position: absolute;
+  right: -32px;
+  top: -32px;
+  z-index: 100;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+  background: url(close-button.png) left bottom no-repeat;
+  @include border_radius(23px);
+
+  &:hover {
+    background-position: left top;
+  }
+}
+
+.preloader {
+  #popup-content:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  #popup-content:after {
+    content: '';
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 54px;
+    height: 54px;
+    margin: -27px 0 0 -27px;
+    background: url(preloader.gif) no-repeat fixed center center #202020;
+    z-index: 1001;
+    @include border_radius(12px);
+  }
+}

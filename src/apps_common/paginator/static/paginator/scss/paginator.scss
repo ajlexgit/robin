@@ -1,0 +1,29 @@
+@import 'mixins';
+
+.navigation {
+  text-align: center;
+
+  .item {
+    float: left;
+    color: #F2AE30;
+    padding: 0 10px;
+    min-width: 14px;
+    margin: 0 5px 0 0;
+    line-height: 24px;
+    text-align: center;
+  }
+
+  .link {
+    @include linear-gradient(to bottom, #555 0%, #333 25%, #111 100%);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 1px 1px rgba(0, 0, 0, 0.1) inset;
+  }
+
+  :hover, .active {
+    color: white;
+    text-decoration: none;
+    @include linear-gradient(to bottom, #222 0%, #111 30%, #000 100%);
+  }
+  .active {
+    cursor: default;
+  }
+}

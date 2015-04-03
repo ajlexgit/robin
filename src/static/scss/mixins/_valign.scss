@@ -1,0 +1,9 @@
+// Вертикальное центрирование
+@mixin valign_middle() {
+  &:after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,19 @@
+@import 'mixins';
+
+// Хлебные крошки
+#wrapper .breadcrumbs {
+  padding: 0;
+  margin: 0 0 16px;
+
+  .breadcrumb-item {
+    display: inline;
+
+    &:before {
+      content: '/';
+      margin: 0 5px;
+    }
+    &:first-child:before {
+      display: none;
+    }
+  }
+}
