@@ -13,5 +13,5 @@ pysyge==0.2.0
 pytils==0.3
 psycopg2==2.6
 redis==2.10.3
-requests==2.5.3
+requests==2.6.0
 sqlparse==0.1.14

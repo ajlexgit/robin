@@ -1,8 +1,8 @@
 #!/bin/sh
 echo "Creating database..."
-su postgres -c "dropdb --if-exists project; dropuser --if-exists project"
-su postgres -c "createuser project; createdb -O project project"
-su postgres -c "psql --quiet -c \"ALTER USER project WITH password 'password'\""
+su postgres -c "dropdb --if-exists $1; dropuser --if-exists $2"
+su postgres -c "createuser $2; createdb -O $2 $1"
+su postgres -c "psql --quiet -c \"ALTER USER $2 WITH password '$3'\""
 echo "OK\n"
 
 echo "Fix pip..."
