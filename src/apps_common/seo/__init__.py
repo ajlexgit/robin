@@ -8,13 +8,13 @@
                 'seo.middleware.SeoMiddleware',
                 ...
             )
-            
+
             TEMPLATE_CONTEXT_PROCESSORS = (
                 ...
                 'seo.context_processors.seo',
                 ...
             )
-    
+
     Пример:
         template.html:
             ...
@@ -23,3 +23,4 @@
             <meta name="description" content="{{ seo.description }}" />
             ...
 """
+default_app_config = 'seo.apps.Config'
