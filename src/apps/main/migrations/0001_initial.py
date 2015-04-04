@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MainPageConfig',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
-                ('title', models.CharField(verbose_name='title', max_length=255)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('title', models.CharField(max_length=255, verbose_name='title')),
             ],
             options={
                 'verbose_name': 'Settings',
