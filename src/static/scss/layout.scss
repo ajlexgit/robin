@@ -3,12 +3,12 @@
 @include global-reset;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
+  @include default_font();
 }
 
 input, button, select, textarea {
   padding: 5px 6px;
+  @include default_font();
 }
 
 input[type="text"], input[type="password"], input[type="email"], select, textarea {
@@ -29,7 +29,7 @@ p {
 
 // Заголовки
 .title-h1 {
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   padding: 0;
   font-size: 2.2em;
 }
@@ -59,6 +59,7 @@ p {
   line-height: 24px;
   border: 2px outset buttonface;
   -webkit-appearance: button;
+  @include unselectable();
 
   &.disabled {
     color: #808080;

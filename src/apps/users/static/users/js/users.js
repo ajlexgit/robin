@@ -8,7 +8,7 @@
             ui: $.noop,
             outClick: $.noop
         });
-        
+
         $.ajax({
             url: window.js_storage.ajax_register,
             type: 'GET',
@@ -24,7 +24,7 @@
         });
         return false;
     });
-    
+
     /*
         AJAX register
     */
@@ -53,7 +53,7 @@
                 }
             },
             error: function() {
-                alert(gettext('Connect error'));
+                alert(gettext('Connection error'));
             },
             complete: function() {
                 $.popup().update({
@@ -63,8 +63,8 @@
         });
         return false;
     });
-    
-    
+
+
     /*
         Открытие окна авторизации
     */
@@ -89,8 +89,8 @@
         });
         return false;
     });
-    
-    
+
+
     /*
         AJAX login
     */
@@ -118,7 +118,7 @@
                 }
             },
             error: function() {
-                alert(gettext('Connect error'));
+                alert(gettext('Connection error'));
             },
             complete: function() {
                 $.popup().update({
@@ -128,8 +128,8 @@
         });
         return false;
     });
-    
-    
+
+
     /*
         AJAX logout
     */
@@ -144,13 +144,13 @@
                 $(document).trigger('logout.auth', response);
             },
             error: function() {
-                alert(gettext('Connect error'));
+                alert(gettext('Connection error'));
             }
         });
         return false;
     });
-    
-    
+
+
     /*
         Открытие окна сброса пароля
     */
@@ -175,8 +175,8 @@
         });
         return false;
     });
-    
-    
+
+
     /*
         AJAX reset password
     */
@@ -207,7 +207,7 @@
                 }
             },
             error: function() {
-                alert(gettext('Connect error'));
+                alert(gettext('Connection error'));
             },
             complete: function() {
                 $.popup().update({
@@ -217,19 +217,19 @@
         });
         return false;
     });
-    
-    
+
+
     /*
         События
     */
     $(document).on('register.auth', function(e, response) {
         $('#auth-block').replaceWith(response.auth_block);
     }).on('reset.auth', function(e) {
-        
+
     }).on('login.auth', function(e, response) {
         $('#auth-block').replaceWith(response.auth_block);
     }).on('logout.auth', function(e, response) {
         $('#auth-block').replaceWith(response.auth_block);
     });
-    
+
 })(jQuery);

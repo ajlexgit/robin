@@ -162,9 +162,10 @@ class AvatarUploadView(RenderToStringMixin, TemplateView):
         request.user.save()
 
         return JsonResponse({
-            'micro_url': request.user.micro_avatar,
-            'normal_url': request.user.normal_avatar,
-            'profile_avatar': self.render_to_string({
+            'micro_avatar': request.user.micro_avatar,
+            'small_avatar': request.user.small_avatar,
+            'normal_avatar': request.user.normal_avatar,
+            'profile_avatar_html': self.render_to_string({
                 'profile_user': request.user,
             })
         })
@@ -197,9 +198,10 @@ class AvatarCropView(RenderToStringMixin, TemplateView):
         request.user.save()
 
         return JsonResponse({
-            'micro_url': request.user.micro_avatar,
-            'normal_url': request.user.normal_avatar,
-            'profile_avatar': self.render_to_string({
+            'micro_avatar': request.user.micro_avatar,
+            'small_avatar': request.user.small_avatar,
+            'normal_avatar': request.user.normal_avatar,
+            'profile_avatar_html': self.render_to_string({
                 'profile_user': request.user,
             })
         })
@@ -216,9 +218,10 @@ class AvatarRemoveView(RenderToStringMixin, TemplateView):
         request.user.avatar.delete()
 
         return JsonResponse({
-            'micro_url': request.user.micro_avatar,
-            'normal_url': request.user.normal_avatar,
-            'profile_avatar': self.render_to_string({
+            'micro_avatar': request.user.micro_avatar,
+            'small_avatar': request.user.small_avatar,
+            'normal_avatar': request.user.normal_avatar,
+            'profile_avatar_html': self.render_to_string({
                 'profile_user': request.user,
             })
         })

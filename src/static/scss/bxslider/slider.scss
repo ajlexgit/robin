@@ -53,6 +53,7 @@
   display: inline-block;
   *zoom: 1;
   *display: inline;
+  @include unselectable();
 }
 
 .bx-wrapper .bx-pager.bx-default-pager a {
@@ -100,6 +101,7 @@
   outline: 0;
   text-indent: -9999px;
   z-index: 9999;
+  @include unselectable;
 }
 
 .bx-wrapper .bx-controls-direction a.disabled {

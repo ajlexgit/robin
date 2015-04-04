@@ -1,26 +1,26 @@
 (function($) {
-    
+
     var uploader;
-    
+
     // Обновление аватарок на странице
     var change_avatar = function(response) {
         // Загрузка превью в блоке авторизации
         $.imageDeferred(
-            response.micro_url
+            response.small_avatar
         ).done(function(img) {
-            $('#auth-block .avatar').attr('src', img.src);
+            $('#auth-block').find('.avatar').attr('src', img.src);
         });
-        
+
         // Обновление кнопок
         $.imageDeferred(
-            response.normal_url
+            response.normal_avatar
         ).done(function() {
             uploader.destroy();
-            $('#profile-avatar').replaceWith(response.profile_avatar);
+            $('#profile-avatar').replaceWith(response.profile_avatar_html);
             initUploader();
         });
     };
-    
+
     // Загрузчик аватарки
     var initUploader = function() {
         uploader = new plupload.Uploader({
@@ -52,13 +52,13 @@
                     // Старт загрузки сразу после добавления
                     up.start();
                 },
-                
+
                 // Файл загружен
                 FileUploaded: function(up, file, data) {
                     var response = JSON.parse(data.response);
                     change_avatar(response);
                 },
-                
+
                 // Ошибка загрузки
                 Error: function(up, err) {
                     uploader.removeFile(err.file);
@@ -68,17 +68,17 @@
                             alert(response.message);
                             return
                         } catch(e) {}
-                    };
-                    
+                    }
+
                     alert(err.message);
                 }
             }
         });
-        
+
         uploader.init();
     };
-    
-    
+
+
     // Обрезка аватара
     $(document).cropdialog('click.cropdialog', '#crop-avatar', {
         image_url: function($element) {
@@ -110,8 +110,8 @@
             $element.data('crop', coords_str);
         }
     });
-    
-    
+
+
     // Удаление аватара
     $(document).on('click', '.delete-avatar', function() {
         if (!confirm(gettext('Are you sure that you want to delete this avatar?'))) {
@@ -125,10 +125,10 @@
         });
         return false;
     });
-    
-    
+
+
     $(document).ready(function() {
         initUploader();
     });
-    
+
 })(jQuery);
