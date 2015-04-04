@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'gallery',
     'menu',
     'paginator',
+    'seo',
     'social',
     'yandex_maps',
 
@@ -78,7 +79,6 @@ SUIT_CONFIG = {
         'sites',
         'admin',
         'redirects',
-        'main',
         {
             'app': 'auth',
             'icon': 'icon-lock',
@@ -88,8 +88,16 @@ SUIT_CONFIG = {
             )
         },
         {
+            'app': 'seo',
+            'icon': 'icon-tasks',
+        },
+        {
+            'app': 'main',
+            'icon': 'icon-file',
+        },
+        {
             'app': 'posts',
-            'icon': 'icon-th-list',
+            'icon': 'icon-file',
             'models': (
                 'post',
                 'postsection',

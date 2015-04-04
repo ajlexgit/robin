@@ -33,7 +33,7 @@ class PostAdminForm(forms.ModelForm):
         widgets = {
             'date': SplitDateTimeWidget,
         }
-    
+
 
 @admin.register(Post)
 class PostAdmin(CommentsModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
@@ -77,8 +77,8 @@ class PostAdmin(CommentsModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         return {
             'author': request.user,
         }
-    
-    
+
+
 @admin.register(PostSection)
 class PostSectionAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display = ('title', 'alias',)
