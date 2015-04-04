@@ -3,8 +3,6 @@ import os
 import sys
 
 # Написание тестов
-# unselectable добавить
-# Seo admin
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам
