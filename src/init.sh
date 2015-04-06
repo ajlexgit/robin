@@ -3,6 +3,7 @@ echo "Creating database..."
 su postgres -c "dropdb --if-exists $1; dropuser --if-exists $2"
 su postgres -c "createuser $2; createdb -O $2 $1"
 su postgres -c "psql --quiet -c \"ALTER USER $2 WITH password '$3'\""
+su postgres -c "psql --quiet -c \"ALTER USER $2 CREATEDB\""
 echo "OK\n"
 
 echo "Fix pip..."
