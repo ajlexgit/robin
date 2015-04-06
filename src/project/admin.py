@@ -14,6 +14,7 @@ class ModelAdminMixin:
     ADDITION_CSS = {
         'all': (
             'admin/css/jquery-ui.min.css',
+            'admin/css/admin_fixes.css',
         )
     }
 
