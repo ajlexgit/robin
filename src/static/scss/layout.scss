@@ -3,12 +3,12 @@
 @include global-reset;
 
 body {
-  @include default_font();
+  @include default_font;
 }
 
 input, button, select, textarea {
   padding: 5px 6px;
-  @include default_font();
+  @include default_font;
 }
 
 input[type="text"], input[type="password"], input[type="email"], select, textarea {
@@ -59,7 +59,7 @@ p {
   line-height: 24px;
   border: 2px outset buttonface;
   -webkit-appearance: button;
-  @include unselectable();
+  @include unselectable;
 
   &.disabled {
     color: #808080;

@@ -53,7 +53,7 @@
   display: inline-block;
   *zoom: 1;
   *display: inline;
-  @include unselectable();
+  @include unselectable;
 }
 
 .bx-wrapper .bx-pager.bx-default-pager a {

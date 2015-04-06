@@ -51,6 +51,7 @@
         height: 22px;
         margin-left: 5px;
         vertical-align: middle;
+        @include unselectable;
 
         &.rating-like {
           background: url(../img/like.png);
