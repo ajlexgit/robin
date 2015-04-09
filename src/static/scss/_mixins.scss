@@ -10,37 +10,10 @@
 @import 'mixins/valign';
 @import 'mixins/unselectable';
 
-// Размеры окна
-@mixin media($name) {
-  @function media-value($value) {
-    $conversion-map: (
-      // < 888px
-            mobile : "screen and (max-width: 55.5em)",
-      // 888px - 984px
-            tablet : "screen and (min-width: 55.5em) and (max-width: 61.5em)",
-      // 984px - 1200px
-            desktop_16: "screen and (min-width: 61.5em) and (max-width: 75em)",
-      // 1200px - 1392px
-            desktop_16_19: "screen and (min-width: 75em) and (max-width: 87em)",
-      // > 1392px
-            desktop_over_19: "screen and (min-width: 87em)",
-      // > 1680px
-            desktop_over_22: "screen and (min-width: 105em)",
-      // > 1872px
-            desktop_over_25: "screen and (min-width: 117em)"
-    );
-
-    @if map-has-key($conversion-map, $value) {
-      @return map-get($conversion-map, $value);
-    } @else {
-      @error "Not found media `#{$value}`";
-    }
-  }
-
-  @media #{media-value($name)} {
-    @content;
-  }
-}
+$mobile_wide: 639px;
+$tablet: 767px;
+$tablet_wide: 1023px;
+$desktop: 1199px;
 
 // Стили текста по умолчанию
 @mixin default_font() {
