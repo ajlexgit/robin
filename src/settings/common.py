@@ -78,7 +78,6 @@ SUIT_CONFIG = {
     'MENU': (
         'sites',
         'admin',
-        'redirects',
         {
             'app': 'auth',
             'icon': 'icon-lock',

@@ -19,3 +19,7 @@ echo "alias pm=\"python3 manage.py\"" >> ~/.bashrc
 echo "Install IPython..."
 pip3 --quiet install ipython
 echo "OK\n"
+
+echo "Install gettext..."
+apt-get install -qq gettext
+echo "OK\n"

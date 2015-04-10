@@ -3,6 +3,9 @@ import os
 import sys
 
 # Написание тестов
+# Перевод меню
+# Google maps
+# картинка stdimage в админке при динамической высоте
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам
