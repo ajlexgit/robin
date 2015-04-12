@@ -1,7 +1,7 @@
 <div class="gallery">
     {% for item in gallery.all_items %}
         {% if item.is_image %}
-            <div class="gallery-item gallery-item-image" data-big={{ item.image.normal.url }}>
+            <div class="gallery-item gallery-item-image" data-big="{{ item.image.normal.url }}">
                 <img src="{{ item.image.small.url }}" alt="">
             </div>
         {% elif item.is_video_link %}

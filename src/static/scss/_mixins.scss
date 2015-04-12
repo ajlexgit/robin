@@ -10,10 +10,62 @@
 @import 'mixins/valign';
 @import 'mixins/unselectable';
 
-$mobile_wide: 639px;
-$tablet: 767px;
-$tablet_wide: 1023px;
-$desktop: 1199px;
+// Точки для media-queries
+$desktop: 1200px;
+$tablet_wide: 1024px;
+$tablet: 768px;
+$mobile_wide: 640px;
+
+// Размеры окна
+@mixin media($args...) {
+  @function media-value($value) {
+    $conversion-map: (
+            wide: "screen and (min-width: #{$desktop})",
+            desktop: "screen and (min-width: #{$tablet_wide}) and (max-width: #{$desktop - 1px})",
+            tablet: "screen and (min-width: #{$tablet}) and (max-width: #{$tablet_wide - 1px})",
+            mobile: "screen and (max-width: #{$tablet - 1px})",
+            mobile_mini: "screen and (max-width: #{$mobile_wide - 1px})"
+    );
+
+    @if map-has-key($conversion-map, $value) {
+      @return map-get($conversion-map, $value);
+    } @else {
+      @error "Not found media `#{$value}`";
+    }
+  }
+
+  @each $name in $args {
+    @media #{media-value($name)} {
+      @content;
+    }
+  }
+}
+
+
+// Боковые границы сетки
+$grid_padding_wide: 90px;
+$grid_padding: 50px;
+$grid_padding_mobile: 16px;
+
+@mixin grid-paddings {
+  padding-left: $grid_padding_wide;
+  padding-right: $grid_padding_wide;
+  @include box_sizing(border-box);
+  @include media(tablet, desktop) {
+    padding-left: $grid_padding;
+    padding-right: $grid_padding;
+  }
+  @include media(mobile) {
+    padding-left: $grid_padding_mobile;
+    padding-right: $grid_padding_mobile;
+  }
+}
+
+// Боковые границы каждого столбца
+$grid_col_padding: 14px;
+
+// Максимальная ширина
+$grid_max_width: 1400px;
 
 // Стили текста по умолчанию
 @mixin default_font() {

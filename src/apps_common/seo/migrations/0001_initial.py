@@ -13,10 +13,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoConfig',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=64, verbose_name='Site title')),
-                ('keywords', models.CharField(max_length=255, verbose_name='Site keywords')),
-                ('description', models.CharField(max_length=255, verbose_name='Site description')),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('title', models.CharField(verbose_name='Site title', max_length=64)),
+                ('keywords', models.CharField(verbose_name='Site keywords', max_length=255, blank=True)),
+                ('description', models.CharField(verbose_name='Site description', max_length=255, blank=True)),
             ],
             options={
                 'verbose_name': 'Site config',

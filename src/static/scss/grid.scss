@@ -1,0 +1,107 @@
+@import 'mixins';
+
+.grid {
+  @include clearfix;
+  @include grid-paddings;
+  @media screen and (min-width: $grid_max_width) {
+    width: $grid_max_width;
+    margin: 0 auto;
+  }
+}
+
+.col {
+  position: relative;
+  min-height: 1px;
+  padding: 0 $grid_col_padding;
+  @include box_sizing(border-box);
+}
+
+
+// Wide-desktop (1200+)
+@include media(wide) {
+  @each $index in 1, 2, 3, 4, 5, 6, 7 {
+    .grid-col-wide-#{$index} {
+      @extend .col;
+      float: left;
+      width: 12.5% * $index;
+    }
+  }
+
+  .grid-col-wide-2:nth-child(4n+1) {
+    clear: left;
+  }
+  .grid-col-wide-4:nth-child(2n+1) {
+    clear: left;
+  }
+
+  .grid-col-wide-8 {
+    @extend .col;
+    width: 100%;
+  }
+}
+
+// Desktop (1024-1199)
+@include media(desktop) {
+  @each $index in 1, 2, 3, 4, 5, 6, 7 {
+    .grid-col-#{$index} {
+      @extend .col;
+      float: left;
+      width: 12.5% * $index;
+    }
+  }
+
+  .grid-col-2:nth-child(4n+1) {
+    clear: left;
+  }
+  .grid-col-4:nth-child(2n+1) {
+    clear: left;
+  }
+
+  .grid-col-8 {
+    @extend .col;
+    width: 100%;
+  }
+}
+
+// Tablet (768-1023)
+@include media(tablet) {
+  @each $index in 1, 2, 3, 4, 5, 6, 7 {
+    .grid-col-tablet-#{$index} {
+      @extend .col;
+      float: left;
+      width: 12.5% * $index;
+    }
+  }
+
+  .grid-col-tablet-2:nth-child(4n+1) {
+    clear: left;
+  }
+  .grid-col-tablet-4:nth-child(2n+1) {
+    clear: left;
+  }
+
+  .grid-col-tablet-8 {
+    @extend .col;
+    width: 100%;
+  }
+}
+
+// Mobile (-767)
+@include media(mobile) {
+  @each $index in 1, 2, 3 {
+    .grid-col-mobile-#{$index} {
+      @extend .col;
+      float: left;
+      width: 25% * $index;
+    }
+  }
+
+  .grid-col-mobile-2:nth-child(2n+1) {
+    clear: left;
+  }
+
+  .grid-col-mobile-4 {
+    @extend .col;
+    width: 100%;
+  }
+}
