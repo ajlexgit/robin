@@ -4,6 +4,8 @@ import sys
 
 # Написание тестов
 # Верстка по сетке
+# Перевод меню
+# Google maps
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам
