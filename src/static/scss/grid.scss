@@ -1,10 +1,10 @@
 @import 'mixins';
 
 .grid {
+  max-width: $grid_max_width;
   @include clearfix;
   @include grid-paddings;
   @media screen and (min-width: $grid_max_width) {
-    width: $grid_max_width;
     margin: 0 auto;
   }
 }
