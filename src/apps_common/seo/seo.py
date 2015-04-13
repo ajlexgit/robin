@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.utils.safestring import mark_safe
-from . import options
 from .models import SeoConfig
+
+TITLE_JOIN_WITH = getattr(settings, 'SEO_TITLE_JOIN_WITH', '')
 
 
 class Seo:
@@ -13,8 +15,8 @@ class Seo:
 
     @property
     def title(self):
-        if options.TITLE_JOIN:
-            return mark_safe(options.TITLE_SEPARATOR.join(reversed(self._title)))
+        if TITLE_JOIN_WITH:
+            return mark_safe(TITLE_JOIN_WITH.join(reversed(self._title)))
         else:
             return mark_safe(self._title[-1])
 

@@ -9,14 +9,13 @@
     width: 100%;
     margin: 0 0 10px;
 
-    th {
+    th, td {
       padding: 5px 10px;
-      background: #a0a0a0;
       border: 1px solid black;
     }
-    td {
-      padding: 3px 8px;
-      border: 1px solid black;
+
+    th {
+      background: #B0B0B0;
     }
   }
 

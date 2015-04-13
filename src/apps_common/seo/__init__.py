@@ -15,7 +15,16 @@
                 ...
             )
 
+    Настройки:
+        settings.py:
+            SEO_TITLE_JOIN_WITH = ''
+
     Пример:
+        views.py:
+            ...
+            request.seo.set(title='Clients')
+            ...
+
         template.html:
             ...
             <title>{{ seo.title }}</title>

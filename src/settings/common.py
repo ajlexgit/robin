@@ -199,6 +199,9 @@ COMMENT_USER_VOTES_CACHE_BACKEND = 'default'
 # Autocomplete
 AUTOCOMPLETE_CACHE_BACKEND = 'default'
 
+# SEO
+SEO_TITLE_JOIN_WITH = ' | '
+
 # Recaptcha
 RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
@@ -211,6 +214,7 @@ YANDEX_MAPS_API_KEY = 'AES6VU8BAAAAhUgqJAIAFUXpiA6FBbStP2IMXobI37-poNIAAAAAAAAAA
 PIPELINE_CSS = {
     'head_core': {
         'source_filenames': (
+            'scss/grid.scss',
             'scss/layout.scss',
             'scss/content.scss',
             'scss/header.scss',

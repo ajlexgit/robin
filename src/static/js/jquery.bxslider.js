@@ -92,7 +92,7 @@
 
 		if(this.length === 0){
 			return this;
-		} 
+		}
 
 		// support multiple elements
 		if(this.length > 1){
@@ -133,7 +133,7 @@
 			// store the original children
 			slider.children = el.children(slider.settings.slideSelector);
 			// check if actual number of slides is less than minSlides / maxSlides
-			if(slider.children.length < slider.settings.minSlides){ slider.settings.minSlides = slider.children.length; } 
+			if(slider.children.length < slider.settings.minSlides){ slider.settings.minSlides = slider.children.length; }
 			if(slider.children.length < slider.settings.maxSlides){ slider.settings.maxSlides = slider.children.length; }
 			// if random start, set the startSlide setting to random number
 			if(slider.settings.randomStart){ slider.settings.startSlide = Math.floor(Math.random() * slider.children.length); }
@@ -325,7 +325,7 @@
 			// if touchEnabled is true, setup the touch events
 			if(slider.settings.touchEnabled && !slider.settings.ticker){ initTouch(); }
 			// if keyboardEnabled is true, setup the keyboard events
-			if (slider.settings.keyboardEnabled && !slider.settings.ticker) { 
+			if (slider.settings.keyboardEnabled && !slider.settings.ticker) {
 				$(document).keydown(keyPress);
 			}
 		};
@@ -551,17 +551,12 @@
 					setTimeout(function() {
 						// set the property value
 						el.css(slider.animProp, propValue);
-						// if value 0, just update
-						if(value === 0) {
-							updateAfterSlideTransition();
-						} else {
-							// bind a callback method - executes when CSS transition completes
-							el.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
-								// unbind the callback
-								el.unbind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
-								updateAfterSlideTransition();
-							});
-						}
+                        // bind a callback method - executes when CSS transition completes
+                        el.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
+                            // unbind the callback
+                            el.unbind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
+                            updateAfterSlideTransition();
+                        });
 					}, 0);
 				}else if(type === 'reset'){
 					el.css(slider.animProp, propValue);
@@ -903,7 +898,7 @@
 				}).blur(function() {
 					el.stopAuto();
 				});
-				
+
 
 			}
 			// if autoHover is requested
@@ -1063,7 +1058,7 @@
 				end: {x: 0, y: 0}
 			};
 			slider.viewport.bind('touchstart MSPointerDown pointerdown', onTouchStart);
-			
+
 			//for browsers that have implemented pointer events and fire a click after
 			//every pointerup regardless of whether pointerup is on same screen location as pointerdown or not
 			slider.viewport.on('click', '.bxslider a', function(e) {
@@ -1188,7 +1183,7 @@
 						el.goToNextSlide();
 					} else {
 						el.goToPrevSlide();
-					} 
+					}
 					el.stopAuto();
 				}
 			// not fade mode
@@ -1211,7 +1206,7 @@
 							el.goToNextSlide();
 						} else {
 							el.goToPrevSlide();
-						} 
+						}
 						el.stopAuto();
 					}else{
 						// el.animate(property, 200);
@@ -1290,11 +1285,11 @@
 			var performTransition = true;
 
 			performTransition = slider.settings.onSlideBefore(slider.children.eq(slider.active.index), slider.oldIndex, slider.active.index);
-			
+
 			if ( typeof(performTransition) !== "undefined" && !performTransition ) {
 				slider.active.index = slider.oldIndex; // restore old index
 				slider.working = false; // is not in motion
-				return;	
+				return;
 			}
 			if(direction === 'next'){
 				// Prevent canceling in future functions or lack there-of from negating previous commands to cancel
@@ -1312,7 +1307,7 @@
 			if ( typeof(performTransition) !== "undefined" && !performTransition ) {
 				slider.active.index = slider.oldIndex; // restore old index
 				slider.working = false; // is not in motion
-				return;	
+				return;
 			}
 
 			// check if last slide
@@ -1373,7 +1368,7 @@
 					position = slider.children.eq(requestEl).position();
 				}
 
-				
+
 				/* If the position doesn't exist
 				 * (e.g. if you destroy the slider on a next click),
 				 * it doesn't throw an error.
@@ -1417,8 +1412,8 @@
 			if(slider.interval){ return; }
 			// create an interval
 			slider.interval = setInterval(function(){
-				if(slider.settings.autoDirection === 'next'){ 
-					el.goToNextSlide(); 
+				if(slider.settings.autoDirection === 'next'){
+					el.goToNextSlide();
 				}else{
 					el.goToPrevSlide();
 				}
@@ -1480,7 +1475,7 @@
 			// adjust the height
 			slider.viewport.css('height', getViewportHeight());
 			// update the slide position
-			if(!slider.settings.ticker) { setSlidePosition(); }                 
+			if(!slider.settings.ticker) { setSlidePosition(); }
 			// if active.last was true before the screen resize, we want
 			// to keep it last no matter what screen size we end on
 			if (slider.active.last) { slider.active.index = getPagerQty() - 1; }
