@@ -72,8 +72,8 @@ $grid_max_width: 1400px;
 // Стили текста по умолчанию
 @mixin default_font() {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
   line-height: 1.4;
+  @include font-size(12px);
 }
 
 // Текст, уходящий в тень.

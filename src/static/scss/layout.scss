@@ -31,22 +31,22 @@ p {
 .title-h1 {
   margin: 0 0 10px;
   padding: 0;
-  font-size: 2.2em;
   line-height: 1;
+  @include font-size(26px);
 }
 
 .title-h2 {
   margin: 14px 0 6px;
   padding: 0;
-  font-size: 1.8em;
   line-height: 1;
+  @include font-size(22px);
 }
 
 .title-h3 {
   margin: 12px 0 4px;
   padding: 0;
-  font-size: 1.4em;
   line-height: 1;
+  @include font-size(16px);
 }
 
 // Скрытый элемент

@@ -6,7 +6,7 @@
 .bx-wrapper {
   position: relative;
   margin: 0 auto 10px;
-  font-size: 0;
+  @include font-size(0);
   *zoom: 1;
 }
 

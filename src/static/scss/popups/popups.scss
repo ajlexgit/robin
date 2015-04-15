@@ -51,8 +51,8 @@
   .title {
     margin: 0 0 12px;
     padding: 0;
-    font-size: 1.4em;
     line-height: 1;
+    @include font-size(16px);
   }
 }
 

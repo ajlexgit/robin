@@ -24,9 +24,9 @@
 
   li {
     .header {
-      font-size: 14px;
       padding: 8px 10px;
       background: #dadada;
+      @include font-size(14px);
     }
     ul {
       margin: 0 10px 10px;
