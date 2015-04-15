@@ -202,6 +202,10 @@ AUTOCOMPLETE_CACHE_BACKEND = 'default'
 # SEO
 SEO_TITLE_JOIN_WITH = ' | '
 
+# Aliases
+ALIAS_REGEXP = '^[-a-zA-Z0-9_&]+$'
+ALIAS_IN_URL = '[-\w\.&]+'
+
 # Recaptcha
 RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
@@ -427,7 +431,7 @@ CKEDITOR_CONFIG_MINI = {
     'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css', ),
     'plugins': 'basicstyles,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
-               'format,htmlwriter,justify,link,'
+               'htmlwriter,link,list,'
                'removeformat,resize,showborders,sourcearea,'
                'tab,toolbar,wsc,wysiwygarea',
     'removeButtons': 'Anchor,Strike,Superscript,Subscript,JustifyBlock',
@@ -446,11 +450,7 @@ CKEDITOR_CONFIG_MINI = {
         },
         {
             'name': 'paragraph',
-            'items': ['JustifyLeft', 'JustifyCenter', 'JustifyRight']
-        },
-        {
-            'name': 'styles',
-            'items': ['Format']
+            'items': ['NumberedList', 'BulletedList']
         },
     ]
 }
