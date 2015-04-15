@@ -41,7 +41,7 @@
   q, blockquote {
     quotes: none;
     &:before, &:after {
-      content: "";
+      content: none;
     }
   }
   a {
