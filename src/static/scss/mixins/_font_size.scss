@@ -6,5 +6,8 @@
 
 @mixin font-size($size) {
   font-size: $size;
-  font-size: calculateRem($size);
+
+  @if $size != 0 {
+    font-size: calculateRem($size);
+  }
 }
