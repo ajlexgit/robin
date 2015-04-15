@@ -22,6 +22,8 @@ class AutoSlugField(models.SlugField):
         """ Получение значения, по которому нужно строить алиас """
         if callable(self.populate_from):
             return self.populate_from(instance)
+        elif isinstance(self.populate_from, (list, tuple)):
+            return '-'.join(getattr(instance, fieldname) for fieldname in self.populate_from)
         else:
             return getattr(instance, self.populate_from)
 
