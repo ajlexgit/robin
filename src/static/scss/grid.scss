@@ -26,10 +26,10 @@
     }
   }
 
-  .grid-col-wide-2:nth-child(4n+1) {
+  .grid-col-wide-2:nth-of-type(4n+1) {
     clear: left;
   }
-  .grid-col-wide-4:nth-child(2n+1) {
+  .grid-col-wide-4:nth-of-type(2n+1) {
     clear: left;
   }
 
@@ -49,10 +49,10 @@
     }
   }
 
-  .grid-col-2:nth-child(4n+1) {
+  .grid-col-2:nth-of-type(4n+1) {
     clear: left;
   }
-  .grid-col-4:nth-child(2n+1) {
+  .grid-col-4:nth-of-type(2n+1) {
     clear: left;
   }
 
@@ -72,10 +72,10 @@
     }
   }
 
-  .grid-col-tablet-2:nth-child(4n+1) {
+  .grid-col-tablet-2:nth-of-type(4n+1) {
     clear: left;
   }
-  .grid-col-tablet-4:nth-child(2n+1) {
+  .grid-col-tablet-4:nth-of-type(2n+1) {
     clear: left;
   }
 
@@ -95,7 +95,7 @@
     }
   }
 
-  .grid-col-mobile-2:nth-child(2n+1) {
+  .grid-col-mobile-2:nth-of-type(2n+1) {
     clear: left;
   }
 
