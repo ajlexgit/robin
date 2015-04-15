@@ -10,8 +10,8 @@ from django.db.models.fields.files import ImageField, ImageFieldFile
 from .utils import (put_on_bg, variation_crop, variation_resize, variation_watermark,
                     variation_overlay, variation_mask)
 
-DEFAULT_SOURCE_QUALITY = 90
-DEFAUL_VARIATION_QUALITY = 85
+DEFAULT_SOURCE_QUALITY = 95
+DEFAUL_VARIATION_QUALITY = 90
 
 
 class VariationField(ImageFile):
