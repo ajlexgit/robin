@@ -6,6 +6,7 @@ import sys
 # Верстка по сетке
 # Перевод меню
 # Google maps
+# help for settings.ALIAS_IN_URL
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам
