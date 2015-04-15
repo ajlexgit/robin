@@ -2,19 +2,19 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import django.db.models.deletion
-import datetime
-from django.conf import settings
-import libs.stdimage.fields
-import files.models
 import libs.ckeditor.fields
-import libs.media_storage
-import gallery.fields
-import posts.models
-import libs.autoslug
-import gallery.models
+import datetime
 import files.fields
+import files.models
+import gallery.models
+from django.conf import settings
+import libs.autoslug
+import django.db.models.deletion
+import libs.media_storage
+import libs.stdimage.fields
 import libs.checks
+import posts.models
+import gallery.fields
 
 
 class Migration(migrations.Migration):
@@ -28,86 +28,86 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Post',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(verbose_name='title', max_length=100)),
                 ('alias', libs.autoslug.AutoSlugField(unique=True, populate_from='title', verbose_name='alias')),
-                ('preview', libs.stdimage.fields.StdImageField(variations={'small': {'size': (140, 100)}, 'normal': {'size': (280, 200)}, 'big': {'action': 3, 'size': (800, 600), 'watermark': {'padding': (20, 20), 'file': 'img/watermark.png', 'opacity': 0.6}}}, min_dimensions=(280, 200), storage=libs.media_storage.MediaStorage('posts/preview'), aspects='normal', upload_to=posts.models.post_preview_filename, blank=True, verbose_name='preview')),
+                ('preview', libs.stdimage.fields.StdImageField(aspects='normal', blank=True, verbose_name='preview', variations={'small': {'size': (140, 100)}, 'big': {'watermark': {'padding': (20, 20), 'opacity': 0.6, 'file': 'img/watermark.png'}, 'size': (800, 600), 'action': 3}, 'normal': {'size': (280, 200)}}, storage=libs.media_storage.MediaStorage('posts/preview'), upload_to=posts.models.post_preview_filename, min_dimensions=(280, 200))),
                 ('note', libs.ckeditor.fields.CKEditorField(verbose_name='note')),
                 ('text', libs.ckeditor.fields.CKEditorUploadField(verbose_name='text')),
-                ('date', models.DateTimeField(verbose_name='date', default=datetime.datetime.now)),
-                ('status', models.IntegerField(verbose_name='status', default=1, choices=[(1, 'Draft'), (2, 'Public')])),
-                ('author', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True, verbose_name='author')),
+                ('date', models.DateTimeField(default=datetime.datetime.now, verbose_name='date')),
+                ('status', models.IntegerField(choices=[(1, 'Draft'), (2, 'Public')], default=1, verbose_name='status')),
+                ('author', models.ForeignKey(blank=True, null=True, verbose_name='author', to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'ordering': ('-date',),
                 'verbose_name_plural': 'posts',
                 'verbose_name': 'post',
+                'ordering': ('-date',),
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='PostFile',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('file', files.fields.RemovableFileField(max_length=150, storage=libs.media_storage.MediaStorage(), upload_to=files.models.generate_filepath, verbose_name='file')),
-                ('displayed_name', models.CharField(help_text='If you leave it empty the file name will be used', max_length=150, blank=True, verbose_name='display name')),
-                ('order', models.PositiveIntegerField(verbose_name='order', blank=True, default=0)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('file', files.fields.RemovableFileField(storage=libs.media_storage.MediaStorage(), upload_to=files.models.generate_filepath, verbose_name='file', max_length=150)),
+                ('displayed_name', models.CharField(blank=True, help_text='If you leave it empty the file name will be used', verbose_name='display name', max_length=150)),
+                ('order', models.PositiveIntegerField(blank=True, verbose_name='order', default=0)),
                 ('post', models.ForeignKey(related_name='files', to='posts.Post', verbose_name='post')),
             ],
             options={
-                'ordering': ('order',),
-                'verbose_name': 'file',
                 'verbose_name_plural': 'files',
                 'abstract': False,
+                'verbose_name': 'file',
+                'ordering': ('order',),
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='PostGallery',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
             ],
             options={
-                'verbose_name': 'gallery',
                 'verbose_name_plural': 'galleries',
                 'abstract': False,
+                'verbose_name': 'gallery',
             },
             bases=(libs.checks.ModelChecksMixin, models.Model),
         ),
         migrations.CreateModel(
             name='PostGalleryImageItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, primary_key=True, parent_link=True, to='gallery.GalleryItemBase', serialize=False)),
-                ('image', gallery.fields.GalleryImageField(storage=libs.media_storage.MediaStorage(), upload_to=gallery.models.generate_filepath, null=True, blank=True, verbose_name='image')),
-                ('crop', models.CharField(max_length=32, verbose_name='image crop coordinates')),
+                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, to='gallery.GalleryItemBase', primary_key=True, serialize=False, parent_link=True)),
+                ('image', gallery.fields.GalleryImageField(storage=libs.media_storage.MediaStorage(), blank=True, verbose_name='image', null=True, upload_to=gallery.models.generate_filepath)),
+                ('crop', models.CharField(verbose_name='image crop coordinates', max_length=32)),
             ],
             options={
-                'verbose_name': 'image item',
                 'verbose_name_plural': 'image items',
                 'abstract': False,
+                'verbose_name': 'image item',
             },
             bases=('gallery.galleryitembase',),
         ),
         migrations.CreateModel(
             name='PostGalleryVideoLinkItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, primary_key=True, parent_link=True, to='gallery.GalleryItemBase', serialize=False)),
-                ('video_provider', models.PositiveSmallIntegerField(verbose_name='provider', default=0)),
-                ('video_key', models.CharField(max_length=32, blank=True, verbose_name='key')),
-                ('video_preview', models.CharField(max_length=128, blank=True, verbose_name='preview image')),
+                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, to='gallery.GalleryItemBase', primary_key=True, serialize=False, parent_link=True)),
+                ('video_provider', models.PositiveSmallIntegerField(default=0, verbose_name='provider')),
+                ('video_key', models.CharField(blank=True, verbose_name='key', max_length=32)),
+                ('video_preview', models.CharField(blank=True, verbose_name='preview image', max_length=128)),
             ],
             options={
-                'verbose_name': 'video item',
                 'verbose_name_plural': 'video items',
                 'abstract': False,
+                'verbose_name': 'video item',
             },
             bases=('gallery.galleryitembase',),
         ),
         migrations.CreateModel(
             name='PostSection',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=100, verbose_name='title')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(verbose_name='title', max_length=100)),
                 ('alias', libs.autoslug.AutoSlugField(unique=True, populate_from='title', verbose_name='alias')),
             ],
             options={
@@ -119,7 +119,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='gallery',
-            field=gallery.fields.GalleryField(null=True, related_name='post_gallery', on_delete=django.db.models.deletion.SET_NULL, to='posts.PostGallery', blank=True, verbose_name='gallery'),
+            field=gallery.fields.GalleryField(related_name='post_gallery', blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, verbose_name='gallery', to='posts.PostGallery'),
             preserve_default=True,
         ),
         migrations.AddField(

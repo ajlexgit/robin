@@ -14,10 +14,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Hits',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('object_id', models.PositiveIntegerField()),
-                ('type', models.CharField(max_length=64, verbose_name='type', default='undefined')),
-                ('hits', models.PositiveIntegerField(verbose_name='hits', default=0)),
+                ('type', models.CharField(default='undefined', verbose_name='type', max_length=64)),
+                ('hits', models.PositiveIntegerField(default=0, verbose_name='hits')),
                 ('date', models.DateField(verbose_name='date')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
