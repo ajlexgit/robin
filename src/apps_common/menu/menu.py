@@ -60,7 +60,7 @@ class MenuItem:
 
     def is_active(self, request):
         """ Является ли пункт активным """
-        return request.path == self.link
+        return request.path.startswith(self.link)
 
     @property
     def parent(self):
