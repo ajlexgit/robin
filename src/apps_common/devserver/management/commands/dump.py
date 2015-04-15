@@ -1,6 +1,7 @@
 from django.core import management
 from optparse import make_option
 
+# pm dumpdata --natural --exclude=contenttypes --exclude=auth.Permission --exclude=admin.logentry
 
 class Command(management.BaseCommand):
     
