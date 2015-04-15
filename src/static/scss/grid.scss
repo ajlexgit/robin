@@ -10,7 +10,6 @@
 }
 
 .col {
-  position: relative;
   min-height: 1px;
   padding: 0 $grid_col_padding;
   @include box_sizing(border-box);
