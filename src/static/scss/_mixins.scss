@@ -1,13 +1,14 @@
-@import 'mixins/reset';
 @import 'mixins/animations';
+@import 'mixins/border_radius';
+@import 'mixins/box_sizing';
 @import 'mixins/clearfix';
+@import 'mixins/reset';
 @import 'mixins/grayscale';
-@import 'mixins/opacity';
 @import 'mixins/linear_gradient';
+@import 'mixins/opacity';
+@import 'mixins/rem';
 @import 'mixins/transition';
 @import 'mixins/transform';
-@import 'mixins/box_sizing';
-@import 'mixins/border_radius';
 @import 'mixins/valign';
 @import 'mixins/unselectable';
 
