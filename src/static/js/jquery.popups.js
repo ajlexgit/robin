@@ -127,7 +127,7 @@
             div.style.borderWidth = '0';
             document.body.appendChild(div);
             var result = div.offsetWidth - div.clientWidth;
-            div.remove();
+            document.body.removeChild(div);
             return result;
         })();
     
