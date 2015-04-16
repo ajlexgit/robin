@@ -355,7 +355,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     BASE_DIR + "/static/",
 )
-STATICFILES_STORAGE = 'libs.debug_storage.DebugPipelineCachedStorage'
+STATICFILES_STORAGE = 'libs.debug_storage.DebugPipelineStorage'
 
 
 # Pipeline
