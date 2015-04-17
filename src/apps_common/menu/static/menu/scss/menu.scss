@@ -4,20 +4,27 @@
   height: 50px;
   text-align: center;
   @include valign_middle;
+  @include font-size(0);
 
   ul {
     display: inline-block;
     vertical-align: middle;
 
     li {
-      float: left;
+      display: inline-block;
+      margin: 0 5px;
 
       a {
-        display: block;
-        padding: 10px 15px 12px 15px;
+        display: inline-block;
+        padding: 5px 10px;
+        @include font-size(16px);
+
+        &:hover {
+          @include opacity(0.8);
+        }
       }
-      &.active > a {
-        text-decoration: underline;
+      &.active {
+        color: blue;
       }
     }
   }

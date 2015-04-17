@@ -7,3 +7,13 @@
     vertical-align: middle;
   }
 }
+
+@mixin valign_floater($block_height) {
+  &:before {
+    content: '';
+    float: left;
+    height: 50%;
+    width: 100%;
+    margin-bottom: -$block_height / 2;
+  }
+}
