@@ -29,3 +29,49 @@
     }
   }
 }
+
+// Кнопка меню для мобильной версии
+#mobile-menu {
+  display: none;
+  position: relative;
+  float: right;
+  width: 40px;
+  height: 35px;
+  cursor: pointer;
+  text-align: left;
+  z-index: 15;
+  @include unselectable;
+  @include media(mobile, tablet) {
+    display: inline-block;
+  }
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    background: #fff;
+  }
+  &:before {
+    top: 14px;
+    box-shadow: #fff 0 -14px 0 0;
+    @include transition(transform 0.3s, box-shadow 0.2s 0.1s);
+  }
+  &:after {
+    bottom: 0;
+    @include transition(transform 0.3s);
+  }
+
+  &.active {
+    &:before {
+      top: 7px;
+      box-shadow: transparent 0 0 0 0;
+      @include transform(rotate(45deg));
+      @include transition(transform 0.3s, box-shadow 0s 0s);
+    }
+    &:after {
+      top: 7px;
+      @include transform(rotate(-45deg));
+    }
+  }
+}
