@@ -10,7 +10,7 @@
   }
 }
 
-.col {
+.grid-col {
   min-height: 1px;
   padding: 0 $grid_col_padding;
   @include box_sizing(border-box);
@@ -21,14 +21,14 @@
 @include media(wide) {
   @each $index in 1, 2, 3, 4, 5, 6, 7 {
     .grid-col-wide-#{$index} {
-      @extend .col;
+      @extend .grid-col;
       float: left;
       width: 12.5% * $index;
     }
   }
 
   .grid-col-wide-8 {
-    @extend .col;
+    @extend .grid-col;
     width: 100%;
   }
 }
@@ -37,14 +37,14 @@
 @include media(desktop) {
   @each $index in 1, 2, 3, 4, 5, 6, 7 {
     .grid-col-#{$index} {
-      @extend .col;
+      @extend .grid-col;
       float: left;
       width: 12.5% * $index;
     }
   }
 
   .grid-col-8 {
-    @extend .col;
+    @extend .grid-col;
     width: 100%;
   }
 }
@@ -53,14 +53,14 @@
 @include media(tablet) {
   @each $index in 1, 2, 3, 4, 5, 6, 7 {
     .grid-col-tablet-#{$index} {
-      @extend .col;
+      @extend .grid-col;
       float: left;
       width: 12.5% * $index;
     }
   }
 
   .grid-col-tablet-8 {
-    @extend .col;
+    @extend .grid-col;
     width: 100%;
   }
 }
@@ -69,14 +69,14 @@
 @include media(mobile) {
   @each $index in 1, 2, 3 {
     .grid-col-mobile-#{$index} {
-      @extend .col;
+      @extend .grid-col;
       float: left;
       width: 25% * $index;
     }
   }
 
   .grid-col-mobile-4 {
-    @extend .col;
+    @extend .grid-col;
     width: 100%;
   }
 }
