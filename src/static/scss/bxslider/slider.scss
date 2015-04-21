@@ -43,12 +43,14 @@
 
 /* PAGER */
 
-.bx-wrapper .bx-pager {
-  padding-top: 10px;
+.bx-pager {
+  padding: 20px 0;
   text-align: center;
+  @include font-size(0);
+  @include box_sizing(border-box);
 }
 
-.bx-wrapper .bx-pager .bx-pager-item,
+.bx-pager .bx-pager-item,
 .bx-wrapper .bx-controls-auto .bx-controls-auto-item {
   display: inline-block;
   *zoom: 1;
@@ -56,7 +58,7 @@
   @include unselectable;
 }
 
-.bx-wrapper .bx-pager.bx-default-pager a {
+.bx-pager.bx-default-pager a {
   display: block;
   width: 10px;
   height: 10px;
@@ -67,8 +69,8 @@
   @include border_radius(50%);
 }
 
-.bx-wrapper .bx-pager.bx-default-pager a:hover,
-.bx-wrapper .bx-pager.bx-default-pager a.active {
+.bx-pager.bx-default-pager a:hover,
+.bx-pager.bx-default-pager a.active {
   background: #000;
 }
 
