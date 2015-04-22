@@ -35,20 +35,6 @@ p {
   @include font-size(26px);
 }
 
-.title-h2 {
-  margin: 14px 0 6px;
-  padding: 0;
-  line-height: 1;
-  @include font-size(22px);
-}
-
-.title-h3 {
-  margin: 12px 0 4px;
-  padding: 0;
-  line-height: 1;
-  @include font-size(16px);
-}
-
 // Скрытый элемент
 .hidden {
   display: none;
@@ -102,19 +88,4 @@ fieldset.errors {
 #wrapper {
   position: relative;
   overflow: hidden;
-}
-
-.container {
-  width: 960px;
-  margin: 0 auto;
-  padding: 0 36px;
-  @include box_sizing(border-box);
-}
-
-// Содержимое + сайдбар
-#page {
-  @include clearfix;
-  padding-top: 36px;
-  padding-bottom: 24px;
-  background: #eaeaea;
 }
