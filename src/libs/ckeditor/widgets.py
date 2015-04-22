@@ -11,7 +11,7 @@ class CKEditorUploadWidget(CKEditorWidget):
     model = None
     upload_pagephoto_url = None
     upload_simplephoto_url = None
-    
+
     """ Виджет редактора, добавляющий данные для определения модели при загрузке файлов """
     class Media:
         js = CKEditorWidget.Media.js + (
@@ -39,7 +39,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         })
         upload_pagephoto_url_parts[4] = parse.urlencode(query)
         self.editor_options['PAGEPHOTOS_UPLOAD_URL'] = parse.urlunparse(upload_pagephoto_url_parts)
-        
+
         # Формируем урл загрузки файлов
         upload_simplephoto_url_parts = list(parse.urlparse(self.upload_simplephoto_url))
         query = dict(parse.parse_qsl(upload_simplephoto_url_parts[4]))
@@ -50,10 +50,10 @@ class CKEditorUploadWidget(CKEditorWidget):
         })
         upload_simplephoto_url_parts[4] = parse.urlencode(query)
         self.editor_options['SIMPLEPHOTOS_UPLOAD_URL'] = parse.urlunparse(upload_simplephoto_url_parts)
-        
+
         # Шаблон урла окна редактирования изображения
         self.editor_options['PAGEPHOTOS_EDIT_URL'] = resolve_url('admin:ckeditor_pagephoto_change', 1)
-        
+
         # Размер фото на странице
         self.editor_options['PAGEPHOTOS_PHOTO_SIZE'] = options.PAGE_PHOTOS_SIZE
         self.editor_options['SIMPLEPHOTOS_PHOTO_SIZE'] = options.SIMPLE_PHOTOS_MAX_SIZE
@@ -68,11 +68,11 @@ class CKEditorUploadWidget(CKEditorWidget):
 
         # CSS приходится грузить JS-ом из-за переопределения стилей
         self.editor_options['PLUPLOADER_CSS'] = (
-            static('admin/css/jquery-ui.min.css'),
+            static('admin/css/jquery-ui/jquery-ui.min.css'),
             static('admin/js/plupload/jquery.ui.plupload/css/jquery.ui.plupload.css'),
             static('ckeditor/css/ckupload_fix.css'),
         )
-        
+
         page_photos = []
         simple_photos = []
         if isinstance(value, tuple):

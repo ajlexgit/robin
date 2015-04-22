@@ -20,7 +20,7 @@ class PagePhotoAdmin(admin.ModelAdmin):
         )
         css = {
             'all': (
-                'admin/css/jquery-ui.min.css',
+                'admin/css/jquery-ui/jquery-ui.min.css',
                 'admin/css/jcrop/jquery.Jcrop.css',
             )
         }
