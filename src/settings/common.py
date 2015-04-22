@@ -271,7 +271,6 @@ PIPELINE_JS = {
             'js/jquery.scrollTo.js',
             'js/jquery.popups.js',
             'js/jquery.delayed.js',
-            'js/scroll_nohover.js',
             'js/ajax_csrf.js',
             'js/canvas_utils.js',
             'js/inlines.js',
