@@ -1,6 +1,7 @@
 from settings.common import *
 
 DOMAIN = 'directlinedev.com'
+VZ_DIRECTORY = 'directlinedev.com'
 
 # Имя хоста (имя виртуальной машины - master, staging и т.д.), должно быть настроено на виртуалке
 # Метка %HOSTNAME% при развёртывании заменяется на настоящее имя виртуалки
@@ -20,8 +21,8 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 
 # настройки статики
-STATIC_ROOT = '/home/webapp/%s/static/' % DOMAIN
-MEDIA_ROOT = '/home/webapp/%s/media/' % DOMAIN
+STATIC_ROOT = '/home/webapp/%s/static/' % VZ_DIRECTORY
+MEDIA_ROOT = '/home/webapp/%s/media/' % VZ_DIRECTORY
 
 DATABASES = {
     'default': {
