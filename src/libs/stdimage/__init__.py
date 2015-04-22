@@ -7,12 +7,12 @@ from .fields import StdImageField, ACTION_CROP, ACTION_CROP_ANYWAY, ACTION_STRET
         STDIMAGE_MIN_DIMENSIONS_DEFAULT = (0, 0)
         STDIMAGE_MAX_DIMENSIONS_DEFAULT = (6000, 6000)
         STDIMAGE_MAX_SOURCE_DIMENSIONS_DEFAULT = (2048, 2048)
-    
+
     Пример:
         PREVIEW_PATH = 'preview'
         PREVIEW_NORMAL = (800, 600)
         PREVIEW_SQUARE = (280, 280)
-        
+
         preview = StdImageField('превью',
             upload_to=PREVIEW_PATH,
             blank=True,
@@ -29,8 +29,8 @@ from .fields import StdImageField, ACTION_CROP, ACTION_CROP_ANYWAY, ACTION_STRET
                 ),
                 square=dict(
                     size=PREVIEW_SQUARE,
-                    mask='posts/img/square_mask.png',
-                    overlay='posts/img/square_overlay.png',
+                    mask='module/img/square_mask.png',
+                    overlay='module/img/square_overlay.png',
                 ),
             ),
         )

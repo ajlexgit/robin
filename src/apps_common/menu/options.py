@@ -1,7 +1,7 @@
 MAIN_MENU = [
     dict(
         title='Новости',
-        url='posts:index',
+        url='#',
     ),
     dict(
         title='Статьи',

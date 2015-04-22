@@ -14,7 +14,7 @@
         if (current_comment) {
             var $comment = $('.comment[data-id="'+current_comment[1]+'"]');
             $comment.addClass('comment-highlighted').switchClass('comment-highlighted', '', 2000);
-        };
+        }
     }).on('click.comments.reply', '.comment .reply', function() {
         // Форма ответа на коммент
         var $comment = $(this).closest('.comment'),
@@ -43,7 +43,7 @@
             $comment = $button.closest('.comment'),
             object = $comment.closest('.comments-wrapper').data('object');
         if ($button.hasClass('disabled')) return false;
-        
+
         $button.addClass('disabled');
         object.remove($comment).fail(function(reason) {
             alert(reason);
@@ -58,7 +58,7 @@
             $comment = $button.closest('.comment'),
             object = $comment.closest('.comments-wrapper').data('object');
         if ($button.hasClass('disabled')) return false;
-        
+
         $button.addClass('disabled');
         object.restore($comment).fail(function(reason) {
             alert(reason);
