@@ -13,18 +13,17 @@ from .social import social_buttons
 
     Требуется подключить:
         social/js/social.js
-        social/css/social.scss
 
     Настройки:
         SOCIAL_BUTTONS_DEFAULT = ('vkontakte', 'facebook', 'twitter', 'gplus')
         # Полный список - https://tech.yandex.ru/share/doc/dg/concepts/share-button-ov-docpage/#supported-networks
-        
+
         SOCIAL_BUTTON_TYPE_DEFAULT = 'button'
         # Полный список - https://tech.yandex.ru/share/doc/dg/concepts/share-button-ov-docpage/#params.elementStyle.type
-        
+
         SOCIAL_BUTTON_THEME_DEFAULT = 'counter'
         # Полный список - https://tech.yandex.ru/share/doc/dg/concepts/share-button-ov-docpage/#params.l10n_1
-       
+
     Пример использования:
         views.py:
             from social import social_buttons
@@ -39,21 +38,21 @@ from .social import social_buttons
                 }
                 if post.preview:
                     social_settings['image'] = request.build_absolute_uri(post.preview.url)
-                
+
                 # Opengraph
                 request.opengraph.update(social_settings)
-            
+
                 context = {
                     ...
                     'social_buttons': social_buttons(social_settings),
                     ...
                 }
-            
+
         template.html:
             ...
             {{ social_buttons }}
             ...
-        
+
     Обновление блока через AJAX:
         $('.social-buttons').socialButtons('update', {
             url: 'http://example.com/page/1/',

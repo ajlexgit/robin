@@ -211,13 +211,10 @@ PIPELINE_CSS = {
         'source_filenames': (
             'scss/grid.scss',
             'scss/layout.scss',
-            'scss/content.scss',
             'scss/header.scss',
-            'scss/sidebar.scss',
             'scss/footer.scss',
             'scss/inlines.scss',
             'scss/popups/popups.scss',
-            'scss/social.scss',
             'breadcrumbs/scss/breadcrumbs.scss',
             'comments/scss/comments.scss',
             'menu/scss/menu.scss',
