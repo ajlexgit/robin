@@ -103,13 +103,13 @@
     padding: 20px 0;
   }
 
-  .bx-pager-item {
-    display: inline-block;
-    margin: 0 2px;
-    @include unselectable;
-  }
-
   &.bx-default-pager {
+    .bx-pager-item {
+      display: inline-block;
+      margin: 0 2px;
+      @include unselectable;
+    }
+    
     a {
       position: relative;
       display: block;
@@ -128,7 +128,7 @@
         top: 50%;
         margin-top: -6px;
         margin-left: -6px;
-        background: $blue;
+        background: #1F2328;
         @include border_radius(50%);
       }
 
@@ -139,6 +139,14 @@
 
       &:active, &.active {
         @include opacity(1);
+      }
+      
+      &.active {
+        cursor: default;
+        
+        &:hover {
+          @include transform(scale(1));
+        }
       }
     }
   }
