@@ -125,7 +125,11 @@ class VariationImageFieldFile(ImageFieldFile):
 
     @property
     def url_nocache(self):
-        return self.storage.url(self.name) + '?_=%d' % self.storage.modified_time(self.name).timestamp()
+        try:
+            mt = self.storage.modified_time(self.name).timestamp()
+        except FileNotFoundError:
+            mt = 0
+        return self.storage.url(self.name) + '?_=%d' % mt
 
     @property
     def cropsize(self):
