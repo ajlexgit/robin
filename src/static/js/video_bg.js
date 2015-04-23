@@ -56,7 +56,7 @@
 
     $.fn.videoBackground = function(options) {
         var settings = $.extend({
-            top: 0,
+            top: 0.5,
             left: 0.5
         }, options);
 
