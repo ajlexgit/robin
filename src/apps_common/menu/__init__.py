@@ -19,7 +19,7 @@ from .menu import Menu
             title='Публикация 2',
 
             # Ссылка, геренируемая по шаблону
-            url='posts:detail',
+            url='module:detail',
             url_args=(),
             url_kwargs={
                 'post_id': 2,

@@ -7,6 +7,7 @@ import sys
 # Перевод меню
 # Google maps
 # help for settings.ALIAS_IN_URL
+# Gallery: zoom effect, keyboard
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам

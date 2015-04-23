@@ -92,6 +92,3 @@ msgstr "Вы не можете встроить это видео"
 #: suit-ckeditor/ckeditor/plugins/pagevideos/dialogs/dlg_upload.js:82
 msgid "Video not found. Trying other mirror"
 msgstr "Невозможно получить медиа-контент. Попробуйте другой URL"
-
-#~ msgid "File uploading failed"
-#~ msgstr "Ошибка загрузки файла"

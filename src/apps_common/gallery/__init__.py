@@ -8,19 +8,19 @@ from .fields import GalleryField
         GALLERY_MAX_DIMENSIONS_DEFAULT = (6000, 6000)
         GALLERY_MAX_SOURCE_DIMENSIONS_DEFAULT = (2048, 2048)
         GALLERY_ADMIN_CLIENT_RESIZE_DEFAULT = False
-    
+
     Команды:
         pm check_galleries
         Проверка всех галерей на наличие привязки к сущности, пустоту и битые картинки
-    
+
     Пример:
         from gallery import GalleryBase, GalleryImageItem
-        
+
         class PostGalleryImageItem(GalleryImageItem):
-            STORAGE_LOCATION = 'posts/gallery'
+            STORAGE_LOCATION = 'module/gallery'
             MIN_DIMENSIONS = (400, 300)
             ADMIN_CLIENT_RESIZE = True
-            
+
             SHOW_VARIATION = 'normal'
             ADMIN_VARIATION = 'micro'
             ASPECTS = 'small'
@@ -32,19 +32,19 @@ from .fields import GalleryField
                     size=(120, 100),
                 ),
             )
-        
+
         class PostGallery(GalleryBase):
             IMAGE_MODEL = PostGalleryImageItem
-    
+
     Перенарезка всех картинок галереи:
         1) for item in gallery.image_items:
-               item.image.recut(crop=item.crop) 
-        
+               item.image.recut(crop=item.crop)
+
         2) for error_code, msg in gallery.recut_generator():
                print(msg)
                if error_code:
                    break
-    
+
     Копирование элементов в другую галерею:
         source_gallery.copy_items_to(dest_gallery)
         source_gallery.copy_items_to(dest_gallery, items=(23, 45, 34), crop_images=True)

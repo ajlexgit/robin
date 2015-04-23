@@ -32,7 +32,6 @@ INSTALLED_APPS = (
 
     # Apps
     'main',
-    'posts',
     'users',
 
     # Apps common
@@ -93,14 +92,6 @@ SUIT_CONFIG = {
         {
             'app': 'main',
             'icon': 'icon-file',
-        },
-        {
-            'app': 'posts',
-            'icon': 'icon-file',
-            'models': (
-                'post',
-                'postsection',
-            )
         },
     ),
 }
@@ -220,13 +211,10 @@ PIPELINE_CSS = {
         'source_filenames': (
             'scss/grid.scss',
             'scss/layout.scss',
-            'scss/content.scss',
             'scss/header.scss',
-            'scss/sidebar.scss',
             'scss/footer.scss',
             'scss/inlines.scss',
             'scss/popups/popups.scss',
-            'scss/social.scss',
             'breadcrumbs/scss/breadcrumbs.scss',
             'comments/scss/comments.scss',
             'menu/scss/menu.scss',
@@ -234,20 +222,6 @@ PIPELINE_CSS = {
             'users/scss/users.scss',
         ),
         'output_filename': 'css/head_core.css',
-    },
-    'posts-index': {
-        'source_filenames': (
-            'posts/scss/index.scss',
-        ),
-        'output_filename': 'css/posts-index.css',
-    },
-    'posts-detail': {
-        'source_filenames': (
-            'scss/bxslider/slider.scss',
-            'scss/yandex_maps.scss',
-            'gallery/scss/gallery.scss',
-        ),
-        'output_filename': 'css/posts-detail.css',
     },
     'users-profile': {
         'source_filenames': (
@@ -280,21 +254,6 @@ PIPELINE_JS = {
             'users/js/users.js',
         ),
         'output_filename': 'js/core.js',
-    },
-    'posts-detail': {
-        'source_filenames': (
-            'js/jquery.youtube.js',
-            'js/jquery.vimeo.js',
-            'js/jquery.bxslider.js',
-            'js/autosize.js',
-            'posts/js/detail.js',
-            'gallery/js/gallery_popup.js',
-            'gallery/js/gallery.js',
-            'comments/js/comments_class.js',
-            'comments/js/comments.js',
-            'yandex_maps/js/yandex_maps.js',
-        ),
-        'output_filename': 'js/posts-detail.js',
     },
     'users-profile': {
         'source_filenames': (
