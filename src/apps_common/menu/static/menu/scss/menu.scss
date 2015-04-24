@@ -64,13 +64,13 @@
 
   &.active {
     &:before {
-      top: 7px;
+      top: 14px;
       box-shadow: transparent 0 0 0 0;
       @include transform(rotate(45deg));
       @include transition(transform 0.3s, box-shadow 0s 0s);
     }
     &:after {
-      top: 7px;
+      top: 14px;
       @include transform(rotate(-45deg));
     }
   }

@@ -66,6 +66,7 @@
   cursor: pointer;
   background: url(close-button.png) left bottom no-repeat;
   @include border_radius(23px);
+  @include unselectable;
 
   &:hover {
     background-position: left top;

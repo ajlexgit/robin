@@ -15,9 +15,11 @@
         var $video = $block.find('video');
         var win_height = $(window).outerHeight();
 
-        $block.height('');
-        var block_height = $block.outerHeight();
-        $block.outerHeight(Math.max(block_height, win_height));
+        if (settings.fullHeightBlock) {
+            $block.height('');
+            var block_height = $block.outerHeight();
+            $block.outerHeight(Math.max(block_height, win_height));
+        }
 
         $video.css({
             height: '',
@@ -56,6 +58,7 @@
 
     $.fn.videoBackground = function(options) {
         var settings = $.extend({
+            fullHeightBlock: true,
             top: 0.5,
             left: 0.5
         }, options);
