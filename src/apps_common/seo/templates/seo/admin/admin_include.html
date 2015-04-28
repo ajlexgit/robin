@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% if object_id %}
+    {{ adminForm.media }}
+
+    {% for fieldset in adminForm %}
+        {% include 'admin/includes/fieldset.html' %}
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">{% trans 'You should create instance first' %}</div>
+{% endif %}

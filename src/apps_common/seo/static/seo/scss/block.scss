@@ -1,0 +1,23 @@
+@import "mixins";
+
+#seo-text {
+  padding-top: 56px;
+  color: #000000;
+  background: #C0C0C0;
+
+  .text {
+    max-height: 85px;
+    overflow: hidden;
+    line-height: 17px;
+    margin-bottom: 5px;
+    @include font-size(11px);
+    @include opacity(0.5);
+    @include media(mobile, tablet, desktop) {
+      margin-bottom: 0;
+    }
+  }
+
+  .readmore {
+    @include font-size(11px);
+  }
+}

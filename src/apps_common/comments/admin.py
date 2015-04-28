@@ -26,28 +26,26 @@ class CommentsModelAdminMixin:
             ('comments/admin/admin_include.html', self.suit_comments_position, self.suit_comments_tab),
         )
     
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        entity = None
-        comments = ()
+    def change_view(self, request, object_id, *args, **kwargs):
         if object_id:
             try:
                 entity = self.model.objects.get(pk=object_id)
             except self.model.DoesNotExist:
                 pass
-            content_type = ContentType.objects.get_for_model(self.model)
-            comments = Comment.objects.filter(
-                content_type = content_type.pk,
-                object_id = object_id,
-            ).select_related('user__pk', 'user__username', 'user__avatar')
-        
-        
-        extra_context = extra_context or {}
-        extra_context.update({
-            'comments': comments,
-            'comment_level_indent': 20,
-            'entity': entity,
-        })
-        return super().change_view(request, object_id, form_url, extra_context)
+            else:
+                content_type = ContentType.objects.get_for_model(self.model)
+                comments = Comment.objects.filter(
+                    content_type = content_type.pk,
+                    object_id = object_id,
+                ).select_related('user__pk', 'user__username', 'user__avatar')
+
+                extra_context = kwargs.setdefault('extra_context', {})
+                extra_context.update({
+                    'comments': comments,
+                    'comment_level_indent': 20,
+                    'entity': entity,
+                })
+        return super().change_view(request, object_id, *args, **kwargs)
     
     
 class CommentAdminForm(forms.ModelForm):

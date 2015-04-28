@@ -30,7 +30,11 @@ from .models import Comment, CommentVote
         from comments.admin import CommentsModelAdminMixin
         
         class PostAdmin(CommentsModelAdminMixin, admin.ModelAdmin):
+            suit_form_tabs = (
+                ...
+                ('comments', _('Comments')),
+            )
             suit_comments_position = 'bottom'
-            suit_comments_tab = 'main'
+            suit_comments_tab = 'comments'
             ...
 """

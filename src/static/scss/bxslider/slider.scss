@@ -28,9 +28,13 @@
     top: 0;
     z-index: 1;
     @include clearfix;
+    @include box_sizing(border-box);
   }
 
   .bx-controls-direction {
+    position: relative;
+    height: 100%;
+    
     a {
       position: absolute;
       width: 50px;

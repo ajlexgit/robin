@@ -22,7 +22,7 @@
                             .removeClass('disabled')
                             .prop('disabled', false);
             }
-        })
+        });
         return false;
     });
     
@@ -49,7 +49,7 @@
                             .removeClass('disabled')
                             .prop('disabled', false);
             }
-        })
+        });
         return false;
     })
     

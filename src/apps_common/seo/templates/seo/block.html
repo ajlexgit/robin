@@ -1,0 +1,9 @@
+{% if seo.text %}
+    <div id="seo-text">
+        <div class="grid">
+            <div class="grid-col-8">
+                <p class="text">{{ seo.text|striptags|linebreaksbr }}</p>
+            </div>
+        </div>
+    </div>
+{% endif %}
