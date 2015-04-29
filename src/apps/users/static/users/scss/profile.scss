@@ -45,7 +45,7 @@
     width: 17px;
     height: 17px;
     background: url(../img/delete_avatar.gif) no-repeat center center rgba(0, 0, 0, 0.8);
-    @include font-size(0);
+    @include no_fontsize;
   }
   &:hover .delete-avatar {
     top: 0;

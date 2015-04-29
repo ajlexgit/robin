@@ -3,8 +3,8 @@
 .video-bg {
   position: relative;
   overflow: hidden;
-  @include font-size(0);
-  @include box_sizing(border-box);
+  @include border-box;
+  @include no_fontsize;
 
   .video-bg-wrapper {
     position: absolute;

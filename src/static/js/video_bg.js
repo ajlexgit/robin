@@ -1,13 +1,23 @@
 (function($) {
 
     /*
-         <div id="video" class="video-bg">
-             <div class="video-bg-wrapper">
-                <video preload="auto" src="{% static 'main/img/bay4.mp4' %}" autoplay="" loop=""></video>
-             </div>
-             ...
-         </div>
-     */
+      У
+
+      HTML:
+        <div id="video" class="video-bg">
+          <div class="video-bg-wrapper">
+            <video preload="auto" src="{% static '../img/bay4.mp4' %}" autoplay="" loop=""></video>
+          </div>
+          ...
+        </div>
+
+      JS:
+        $('#video').videoBackground({
+          fullHeightBlock: true,
+          top: 0.5,
+          left: 0.5
+        })
+    */
 
     var blocks = [];
 

@@ -3,8 +3,6 @@ import os
 import sys
 
 # jquery.scrollbar
-# -webkit-transform transition
-# юзать no_fontsize/default_fontsize; border-box
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
 # Решить проблему получения url исходника StdImage, когда файла нет
 # Seo js. Readmore.js
@@ -15,7 +13,6 @@ import sys
 # Google maps
 # help for settings.ALIAS_IN_URL
 # Gallery: zoom effect, keyboard
-# help for video-bg
 # Suit tabs admin everywhere
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
