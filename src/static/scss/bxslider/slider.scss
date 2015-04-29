@@ -34,7 +34,7 @@
   .bx-controls-direction {
     position: relative;
     height: 100%;
-    
+
     a {
       position: absolute;
       width: 50px;
@@ -74,7 +74,7 @@
       &:hover {
         @include opacity(0.8);
       }
-      
+
       &:active {
         top: 1px;
       }
@@ -113,7 +113,7 @@
       margin: 0 2px;
       @include unselectable;
     }
-    
+
     a {
       position: relative;
       display: block;
@@ -121,6 +121,7 @@
       height: 20px;
       text-indent: -9999px;
       @include opacity(0.4);
+      @include transition(-webkit-transform 0.3s);
       @include transition(transform 0.3s);
 
       &:before {
@@ -144,10 +145,10 @@
       &:active, &.active {
         @include opacity(1);
       }
-      
+
       &.active {
         cursor: default;
-        
+
         &:hover {
           @include transform(scale(1));
         }
