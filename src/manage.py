@@ -6,7 +6,7 @@ import sys
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
 # Решить проблему получения url исходника StdImage, когда файла нет
 # Seo js. Readmore.js
-# Вывод ошибок формы в порядке полей
+# Проверить form.error_list
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
 # Верстка по сетке

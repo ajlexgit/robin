@@ -1,4 +1,3 @@
-import functools
 from django.forms.utils import ErrorList
 from django.utils.html import format_html
 from django.core.exceptions import ValidationError
@@ -8,13 +7,13 @@ class PlainErrorList(ErrorList):
     def __str__(self):
         if not self:
             return ''
-        
+
         return format_html(
             '<span class="error">{}</span>'.format(
                 ', '.join(str(e) for e in self)
             )
         )
-    
+
     @property
     def classes(self):
         """ CSS-классы с кодами ошибок """
@@ -32,7 +31,7 @@ class PlainErrorFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_class = PlainErrorList
-    
+
     def add_field_error(self, fieldname, code, params=None):
         """
             Возбуждает ошибку валидации в поле fieldname с кодом code
@@ -40,24 +39,20 @@ class PlainErrorFormMixin:
         field = self.fields[fieldname]
         if code in field.error_messages:
             self.add_error(fieldname, ValidationError(
-                field.error_messages[code], 
+                field.error_messages[code],
                 code=code,
                 params=params
             ))
         elif code in self.error_messages:
             self.add_error(fieldname, ValidationError(
-                self.error_messages[code], 
+                self.error_messages[code],
                 code=code,
                 params=params
             ))
         else:
             raise ValueError('Unknown code %r' % code)
-    
+
     @property
     def error_list(self):
         """ Список всех ошибок """
-        return functools.reduce(
-            lambda x, y: x + list(y), 
-            self.errors.values(), 
-            []
-        )
+        return tuple((key, self.errors.get(key)) for key in self.fields if key in self.errors)
