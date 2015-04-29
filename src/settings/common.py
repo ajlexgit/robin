@@ -253,6 +253,7 @@ PIPELINE_JS = {
             'js/inlines.js',
             'js/jquery.scrollbar.js',
             'async_block/js/async_block.js',
+            'menu/js/menu.js',
             'resolution/js/resolution.js',
             'social/js/social.js',
             'seo/js/block.js',
