@@ -70,12 +70,20 @@ $grid_col_padding: 14px;
 // Максимальная ширина
 $grid_max_width: 1400px;
 
-// Стили текста по умолчанию
-@mixin default_font() {
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.4;
+// Стили текста
+$text_color: #2C3035;
+
+@mixin no_fontsize() {
+  font-size: 0;
+}
+
+@mixin default_fontsize() {
   @include font-size(16px);
-  @media screen and (max-width: $mobile_wide) {
+  @include media(mobile_mini) {
     @include font-size(14px);
   }
+}
+
+@mixin default_font() {
+  font-family: Arial, Helvetica, sans-serif;
 }

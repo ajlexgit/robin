@@ -2,10 +2,13 @@
 import os
 import sys
 
+# юзать no_fontsize/default_fontsize; border-box
+# Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
+# Решить проблему получения url исходника StdImage, когда файла нет
 # Seo js. Readmore.js
 # Вывод ошибок формы в порядке полей
 # Виджет выбора иконки из спрайта
-# Проверить CommentsAdminModelMixin при добавлении
+# Проверить CommentsAdminModelMixin при добавлении сущности
 # Верстка по сетке
 # Google maps
 # help for settings.ALIAS_IN_URL

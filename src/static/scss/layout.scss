@@ -3,7 +3,10 @@
 @include global-reset;
 
 body {
+  color: $text_color;
+  line-height: 1.4375;
   @include default_font;
+  @include default_fontsize;
 }
 
 input, button, select, textarea {
