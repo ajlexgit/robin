@@ -1,0 +1,66 @@
+@import "mixins";
+
+.scroll-textarea {
+  > .scroll-element,
+  > .scroll-element div {
+    border: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 10;
+  }
+
+  > .scroll-element {
+    .scroll-element_outer,
+    .scroll-element_track,
+    .scroll-bar {
+      @include border_radius(8px);
+    }
+
+    .scroll-element_outer {
+      overflow: hidden;
+    }
+
+    .scroll-element_track,
+    .scroll-bar {
+      @include opacity(0.4);
+    }
+
+    .scroll-element_track {
+      background-color: #e0e0e0;
+    }
+
+    .scroll-bar {
+      background-color: #c2c2c2;
+    }
+
+    &.scroll-draggable,
+    &:hover {
+      .scroll-bar {
+        background-color: #919191;
+      }
+    }
+  }
+
+  > .scroll-element div {
+    display: block;
+    height: 100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  > .scroll-element.scroll-x {
+    bottom: 2px;
+    height: 8px;
+    left: 0;
+    width: 100%;
+  }
+
+  > .scroll-element.scroll-y {
+    height: 100%;
+    right: 2px;
+    top: 0;
+    width: 8px;
+  }
+}
