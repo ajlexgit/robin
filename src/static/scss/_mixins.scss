@@ -50,25 +50,43 @@ $grid_padding_wide: 90px;
 $grid_padding: 50px;
 $grid_padding_mobile: 16px;
 
-@mixin grid-paddings {
-  padding-left: $grid_padding_wide;
-  padding-right: $grid_padding_wide;
-  @include box_sizing(border-box);
-  @include media(tablet, desktop) {
-    padding-left: $grid_padding;
-    padding-right: $grid_padding;
-  }
-  @include media(mobile) {
-    padding-left: $grid_padding_mobile;
-    padding-right: $grid_padding_mobile;
-  }
-}
-
 // Боковые границы каждого столбца
 $grid_col_padding: 14px;
 
 // Максимальная ширина
 $grid_max_width: 1400px;
+
+@mixin grid-paddings($args...) {
+  @each $key in $args {
+    #{$key}: $grid_padding_wide;
+  }
+  @include media(tablet, desktop) {
+    @each $key in $args {
+      #{$key}: $grid_padding;
+    }
+  }
+  @include media(mobile) {
+    @each $key in $args {
+      #{$key}: $grid_padding_mobile;
+    }
+  }
+}
+
+@mixin grid-full-paddings($args...) {
+  @each $key in $args {
+    #{$key}: $grid_padding_wide + $grid_col_padding;
+  }
+  @include media(tablet, desktop) {
+    @each $key in $args {
+      #{$key}: $grid_padding + $grid_col_padding;
+    }
+  }
+  @include media(mobile) {
+    @each $key in $args {
+      #{$key}: $grid_padding_mobile + $grid_col_padding;
+    }
+  }
+}
 
 // Стили текста
 $text_color: #2C3035;
