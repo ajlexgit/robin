@@ -42,7 +42,7 @@
     max-width: 80%;
     max-height: 80%;
     line-height: 0;
-    @include font-size(0);
+    @include no_fontsize;
 
     .gallery-button {
       position: absolute;
