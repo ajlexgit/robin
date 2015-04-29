@@ -2,6 +2,7 @@
 import os
 import sys
 
+# jquery.scrollbar
 # -webkit-transform transition
 # юзать no_fontsize/default_fontsize; border-box
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
