@@ -1,4 +1,5 @@
 @import 'mixins/animations';
+@import 'mixins/background';
 @import 'mixins/border_radius';
 @import 'mixins/box_sizing';
 @import 'mixins/clearfix';
@@ -90,10 +91,6 @@ $grid_max_width: 1400px;
 
 // Стили текста
 $text_color: #2C3035;
-
-@mixin no_fontsize() {
-  font-size: 0;
-}
 
 @mixin default_fontsize() {
   @include font-size(16px);

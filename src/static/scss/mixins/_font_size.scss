@@ -11,3 +11,7 @@
     font-size: calculateRem($size);
   }
 }
+
+@mixin no_fontsize() {
+  font-size: 0;
+}
