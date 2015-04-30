@@ -57,10 +57,16 @@
     Пример:
         views.py:
             ...
-            # Привязка данных, введённых для конкретной сущности
+            # Привязка данных, введённых для конкретной сущности:
             request.seo.set_instance(entity)
 
-            # Добавление части заголовка и перезапись ключевых слов
+            # Изменение данных перед привязкой:
+            request.seo.set_instance(entity, auto_apply=False)
+            if request.seo.instance:
+                request.seo.instance.title = 'New title'
+                request.seo.apply_instance()
+
+            # Добавление части заголовка и перезапись ключевых слов:
             request.seo.set(
                 title = 'Clients',
                 keywords = 'Sport, Box',
