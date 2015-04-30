@@ -58,7 +58,7 @@ class Seo:
         if description:
             self._description = str(description)
 
-    def set_instance(self, instance):
+    def set_instance(self, instance, apply=True):
         """ Установка сео-данных из объекта SeoData, привязанного к экземпляру """
         content_type = ContentType.objects.get_for_model(type(instance))
         try:
@@ -69,8 +69,9 @@ class Seo:
         except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
             return
         else:
-            self.set(
-                title = self._instance.title,
-                keywords = self._instance.keywords,
-                description = self._instance.description,
-            )
+            if apply:
+                self.set(
+                    title = self._instance.title,
+                    keywords = self._instance.keywords,
+                    description = self._instance.description,
+                )
