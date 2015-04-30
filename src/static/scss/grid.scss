@@ -5,7 +5,8 @@
   width: 100%;
   max-width: $grid_max_width;
   @include clearfix;
-  @include grid-paddings;
+  @include border-box;
+  @include grid-paddings(padding-left, padding-right);
   @media screen and (min-width: $grid_max_width) {
     margin: 0 auto;
   }

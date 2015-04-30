@@ -2,19 +2,20 @@
 
 #header {
   position: absolute;
+  padding: 45px 0;
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 20;
-  padding-top: 45px;
+  z-index: 100;
+  background: rgba(green, 0.8);
 }
 
-/* Логотип */
 #logo {
   display: inline-block;
-  width: 115px;
-  height: 40px;
+  width: 117px;
+  height: 60px;
   vertical-align: middle;
+  background: url(../img/logo.png) no-repeat center;
 
   &:hover {
     @include opacity(0.8);

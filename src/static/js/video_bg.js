@@ -1,90 +1,127 @@
 (function($) {
 
     /*
-         <div id="video" class="video-bg">
-             <div class="video-bg-wrapper">
-                <video preload="auto" src="{% static 'main/img/stars.mp4' %}"
-                       autoplay="" loop="" poster="{% static 'main/img/stars.jpg' %}"></video>
-             </div>
-             ...
-         </div>
-     */
+        Плагин для показа видео на фоне блока.
+        Блок ДОЛЖЕН имень position, отличный от static.
 
-    var blocks = [];
+        Параметры:
+            left_offset - Процентное смещение видео по горизонтали,
+                          когда видео шире, чем блок. От 0 до 1.
+                          По умолчанию - 0.5, что означает центр видео.
 
-    var refresh_video = function($block, settings) {
-        var $video = $block.find('video');
-        var win_height = $(window).outerHeight();
+            top_offset -  Процентное смещение видео по вертикали,
+                          когда видео выше, чем блок. От 0 до 1.
+                          По умолчанию - 0.5, что означает центр видео.
 
-        if (settings.fullHeightBlock) {
-            $block.height('auto');
-            var block_height = $block.outerHeight();
-            $block.outerHeight(Math.max(block_height, win_height));
-        }
+            onShow -      Коллбэк при показе видео.
 
-        $video.css({
-            height: '',
-            width: '',
-            marginLeft: '',
-            marginTop: ''
-        });
-        var video_height = $video.outerHeight();
-        block_height = $block.outerHeight();
-        if (video_height < block_height) {
+        Пример:
+            <div id="block" data-video="/static/main/img/video.mp4"></div>
+
+            // Всегда будет виден нижний левый угол видео
+            $('#block').videoBackground({
+                left_offset: 0,
+                top_offset: 1,
+                onShow: function() {
+                    console.log('video showen!');
+                }
+            })
+    */
+
+    // Позиционирование видео
+    var video_position = function ($video, settings) {
+        var $wrapper = $video.closest('.video-bg-wrapper');
+
+        var wrapper_width = $wrapper.width();
+        var wrapper_height = $wrapper.height();
+        var wrapper_aspect = wrapper_width / wrapper_height;
+        var video_width = $video.prop('videoWidth');
+        var video_height = $video.prop('videoHeight');
+        var video_aspect = video_width / video_height;
+
+        if (video_aspect > wrapper_aspect) {
+            // Видео шире
+            var final_video_width = Math.round((wrapper_height * video_width) / video_height);
             $video.css({
-                height: block_height,
-                width: 'auto'
+                height: '100%',
+                width: 'auto',
+                left: (wrapper_width - final_video_width) * settings.left_offset,
+                top: 0
             });
-
-            var video_width = $video.outerWidth();
-            var block_width = $block.outerWidth();
-            $video.css('marginLeft', Math.round((block_width - video_width) * settings.left));
-        } else if (settings.top) {
-            $video.css('marginTop', Math.round((block_height - video_height) * settings.top));
+        } else {
+            // Видео выше
+            var final_video_height = Math.round((wrapper_width * video_height) / video_width);
+            $video.css({
+                height: 'auto',
+                width: '100%',
+                left: 0,
+                top: (wrapper_height - final_video_height) * settings.top_offset
+            });
         }
     };
 
 
-    var refresh_all_videos = function() {
-        for (var i = 0, l = blocks.length; i < l; i++) {
-            var $block = blocks[i];
-            var settings = $block.data('video-bg-settings');
-
-            if (settings) {
-                refresh_video($block, settings);
-            }
-        }
-    };
+    // Позиционирование видео при изменении размера окна
+    $(window).on('resize.videoBackground', $.rared(function() {
+        $('.video-bg-wrapper > video').each(function() {
+            var $video = $(this);
+            var settings = $video.data('videoBgSettings');
+            video_position($video, settings);
+        })
+    }, 50));
 
 
-    $.fn.videoBackground = function(options) {
+    $.fn.videoBackground = function (options) {
         var settings = $.extend({
-            fullHeightBlock: true,
-            top: 0.5,
-            left: 0.5
+            left_offset: 0.5,
+            top_offset: 0.5,
+            onShow: $.noop
         }, options);
 
-        return $(this).each(function() {
+        return $(this).each(function () {
             var $block = $(this);
-            var $wrapper = $block.find('.video-bg-wrapper');
-            var $video = $wrapper.find('video');
 
-            $video.off('loadedmetadata.video-bg').on('loadedmetadata.video-bg', function() {
-                $(this).css('visibility', '');
-                refresh_video($block, settings);
+            var src = $block.data('video');
+            if (!src) {
+                return;
+            };
+
+            var $wrapper = $('<div>').addClass('video-bg-wrapper').css({
+                position: 'absolute',
+                overflow: 'hidden',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 1
             });
 
-            refresh_video($block, settings);
+            var $video = $('<video>').attr({
+                src: src,
+                autoplay: '',
+                loop: '',
+                preload: 'auto',
+            }).css({
+                position: 'relative',
+                visibility: 'hidden',
+                zIndex: 1
+            }).data({
+                videoBgSettings: settings
+            }).on('canplay', function() {
+                // Показваем тэг, когда готовы к воспроизведению
+                var $video = $(this).css({
+                    visibility: ''
+                });
 
-            blocks.push($block.data('video-bg-settings', settings));
+                video_position($video, settings);
+
+                // Callback
+                settings.onShow.call(this);
+            });
+
+            $block.prepend($wrapper);
+            $wrapper.prepend($video);
         });
     };
-
-
-    $(window).on('resize.video-bg', $.rared(refresh_all_videos, 150));
-
-    $(document).ready(function () {
-        refresh_all_videos();
-    });
 
 })(jQuery);

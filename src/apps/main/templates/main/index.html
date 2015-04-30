@@ -1,10 +1,44 @@
 {% extends 'layout.html' %}
 
+{% load staticfiles %}
+{% load compressed %}
 {% load solo_tags %}
+
+{% block static_head %}
+    {{ block.super }}
+    {% compressed_css 'main_page' %}
+{% endblock static_head %}
+
+{% block static_js %}
+    {{ block.super }}
+    {% compressed_js 'main_page' %}
+{% endblock static_js %}
 
 
 {% block content %}
     {% get_solo 'main.MainPageConfig' as config %}
-    
-    <h1 class="title-h1">{{ config.title }}</h1>
+
+    <div id="video" data-video="{% static 'main/img/river.mp4' %}"
+            style="background-image: url({% static 'main/img/river.jpg' %})">
+
+        <div class="content">
+            <div class="grid">
+                <div class="grid-col-wide-8 grid-col-8 grid-col-tablet-8 grid-col-mobile-4"
+                     style="height: 200px; background: gray">
+                </div>
+
+                <div class="grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
+                     style="height: 50px; background: blue">
+                </div>
+                <div class="grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
+                     style="height: 50px; background: yellow">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="data">
+
+    </div>
+
 {% endblock content %}

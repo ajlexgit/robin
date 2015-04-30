@@ -18,73 +18,22 @@ input[type="text"], input[type="password"], input[type="email"], select, textare
   width: 170px;
 }
 
-select {
-  padding: 3px 2px;
-}
-
-fieldset {
-  margin: 0 0 6px 0;
-}
-
 p {
   margin: 0 0 10px;
 }
 
 // Заголовки
 .title-h1 {
-  margin: 0 0 10px;
-  padding: 0;
   line-height: 1;
   @include font-size(26px);
+  @include media(mobile) {
+    @include font-size(20px);
+  }
 }
 
 // Скрытый элемент
 .hidden {
   display: none;
-}
-
-// Кнопка
-.btn {
-  display: inline-block;
-  cursor: pointer;
-  padding: 0 12px;
-  line-height: 24px;
-  border: 2px outset buttonface;
-  -webkit-appearance: button;
-  @include unselectable;
-
-  &.disabled {
-    color: #808080;
-
-    &:hover {
-      cursor: default;
-    }
-  }
-  &:hover {
-    text-decoration: none;
-  }
-}
-
-// Ошибки форм
-.errorlist {
-  margin-bottom: 10px;
-  line-height: 1.6;
-
-  li {
-    color: red;
-  }
-}
-
-.error {
-  color: #FF4000;
-  margin-left: 12px;
-  vertical-align: middle;
-}
-
-fieldset.errors {
-  input[type="text"], input[type="password"], input[type="email"], select, textarea {
-    border: 1px solid #FF4000;
-  }
 }
 
 // Основной контейнер

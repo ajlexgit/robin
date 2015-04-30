@@ -1,0 +1,26 @@
+@import "mixins";
+
+
+#video {
+  position: relative;
+  padding-top: 150px;
+  height: 500px;
+  min-height: 500px;
+  background: no-repeat center red;
+  background-size: cover;
+  @include no_fontsize;
+  @include valign_middle;
+
+  .content {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    z-index: 2;
+    vertical-align: middle;
+  }
+}
+
+#data {
+  height: 500px;
+  background: blue;
+}

@@ -1,12 +1,10 @@
 /*
-
   ...
   background-image: url(img.png);
   @include pixelRatio(2) {
     background-image: url(img2x.png);
   }
   ...
-
 */
 @mixin pixelRatio($ratio) {
   @media (-webkit-min-device-pixel-ratio: $ratio), /* Webkit */
