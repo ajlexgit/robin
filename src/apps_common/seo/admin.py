@@ -27,6 +27,10 @@ class SeoConfigForm(forms.ModelForm):
             }),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prefix = 'seo'
+        
 
 @admin.register(SeoConfig)
 class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
