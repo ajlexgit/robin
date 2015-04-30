@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from suit.widgets import AutosizedTextarea
-from .models import SeoConfig, SeoText
+from .models import SeoConfig, SeoData
 
 
 class SeoConfigForm(forms.ModelForm):
@@ -33,10 +33,21 @@ class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     form = SeoConfigForm
 
 
-class SeoTextForm(forms.ModelForm):
+class SeoDataForm(forms.ModelForm):
     class Meta:
-        model = SeoText
+        model = SeoData
         widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'input-xxlarge',
+            }),
+            'keywords': AutosizedTextarea(attrs={
+                'class': 'input-xxlarge',
+                'rows': 3,
+            }),
+            'description': AutosizedTextarea(attrs={
+                'class': 'input-xxlarge',
+                'rows': 3,
+            }),
             'text': AutosizedTextarea(attrs={
                 'class': 'input-xxlarge',
                 'rows': 3,
@@ -44,12 +55,12 @@ class SeoTextForm(forms.ModelForm):
         }
 
 
-class SeoTextAdmin(admin.ModelAdmin):
-    model = SeoText
-    form = SeoTextForm
+class SeoDataAdmin(admin.ModelAdmin):
+    model = SeoData
+    form = SeoDataForm
     fieldsets = (
         (_('SEO'), {
-            'fields': ('text', ),
+            'fields': ('title', 'keywords', 'description', 'text', ),
         }),
     )
 
@@ -74,8 +85,8 @@ class SeoModelAdminMixin():
         else:
             entity = self.get_object(request, unquote(object_id))
 
-        model = SeoText
-        model_admin = SeoTextAdmin(model, admin.site)
+        model = SeoData
+        model_admin = SeoDataAdmin(model, admin.site)
         content_type = ContentType.objects.get_for_model(self.model)
 
         try:
