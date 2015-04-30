@@ -2,6 +2,7 @@
 import os
 import sys
 
+# Custom fields: юзать descriptor_class?
 # jquery.scrollbar
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
 # Решить проблему получения url исходника StdImage, когда файла нет

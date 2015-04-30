@@ -24,11 +24,12 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sites',
 
-    'mptt',
+    'admin_honeypot',
+    'phonenumber_field',
     'pipeline',
+    'mptt',
     'solo',
     'suit_ckeditor',
-    'admin_honeypot',
 
     # Apps
     'main',
