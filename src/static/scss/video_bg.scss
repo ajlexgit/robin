@@ -1,8 +1,14 @@
 @import 'mixins';
 
 .video-bg {
+  height: 800px;
+  min-height: 500px;
   position: relative;
   overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #000000;
+  background-size: cover;
   @include border-box;
   @include no_fontsize;
 

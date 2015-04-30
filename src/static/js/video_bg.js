@@ -1,23 +1,14 @@
 (function($) {
 
     /*
-      У
-
-      HTML:
-        <div id="video" class="video-bg">
-          <div class="video-bg-wrapper">
-            <video preload="auto" src="{% static '../img/bay4.mp4' %}" autoplay="" loop=""></video>
-          </div>
-          ...
-        </div>
-
-      JS:
-        $('#video').videoBackground({
-          fullHeightBlock: true,
-          top: 0.5,
-          left: 0.5
-        })
-    */
+         <div id="video" class="video-bg">
+             <div class="video-bg-wrapper">
+                <video preload="auto" src="{% static 'main/img/stars.mp4' %}"
+                       autoplay="" loop="" poster="{% static 'main/img/stars.jpg' %}"></video>
+             </div>
+             ...
+         </div>
+     */
 
     var blocks = [];
 
@@ -26,7 +17,7 @@
         var win_height = $(window).outerHeight();
 
         if (settings.fullHeightBlock) {
-            $block.height('');
+            $block.height('auto');
             var block_height = $block.outerHeight();
             $block.outerHeight(Math.max(block_height, win_height));
         }
