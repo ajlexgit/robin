@@ -4,6 +4,9 @@
         Плагин для показа видео на фоне блока.
         Блок ДОЛЖЕН имень position, отличный от static.
 
+        Тэги для отображения видео добавляются автоматически, если они не найдены.
+        Есть возможность вставить тэги на страницу изначально.
+
         Параметры:
             left_offset - Процентное смещение видео по горизонтали,
                           когда видео шире, чем блок. От 0 до 1.
@@ -25,7 +28,12 @@
                 onShow: function() {
                     console.log('video showen!');
                 }
-            })
+            });
+
+        Пример тэгов на странице:
+            <div class="video-bg-wrapper">
+                <video src="{% static 'main/img/river.mp4' %}" autoplay="" loop="" preload="auto"></video>
+            </div>
     */
 
     // Позиционирование видео
@@ -86,26 +94,26 @@
                 return;
             };
 
-            var $wrapper = $('<div>').addClass('video-bg-wrapper').css({
-                position: 'absolute',
-                overflow: 'hidden',
-                left: 0,
-                top: 0,
-                width: '100%',
-                height: '100%',
-                zIndex: 1
-            });
+            var $wrapper = $block.find('.video-bg-wrapper');
+            if (!$wrapper.length) {
+                $wrapper = $('<div>').addClass('video-bg-wrapper');
+                $block.prepend($wrapper);
+            };
 
-            var $video = $('<video>').attr({
-                src: src,
-                autoplay: '',
-                loop: '',
-                preload: 'auto',
-            }).css({
-                position: 'relative',
-                visibility: 'hidden',
-                zIndex: 1
-            }).data({
+            var $video = $wrapper.find('video');
+            if (!$video.length) {
+                $video = $('<video>').css({
+                    visibility: 'hidden'
+                }).attr({
+                    src: src,
+                    autoplay: '',
+                    loop: '',
+                    preload: 'auto',
+                });
+                $wrapper.prepend($video);
+            };
+
+            $video.data({
                 videoBgSettings: settings
             }).on('canplay', function() {
                 // Показваем тэг, когда готовы к воспроизведению
@@ -118,9 +126,6 @@
                 // Callback
                 settings.onShow.call(this);
             });
-
-            $block.prepend($wrapper);
-            $wrapper.prepend($video);
         });
     };
 

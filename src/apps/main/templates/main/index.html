@@ -18,8 +18,10 @@
 {% block content %}
     {% get_solo 'main.MainPageConfig' as config %}
 
-    <div id="video" data-video="{% static 'main/img/river.mp4' %}"
-            style="background-image: url({% static 'main/img/river.jpg' %})">
+    <div id="video" style="background-image: url({% static 'main/img/river.jpg' %})">
+        <div class="video-bg-wrapper">
+            <video src="{% static 'main/img/river.mp4' %}" autoplay="" loop="" preload="auto"></video>
+        </div>
 
         <div class="content grid">
             <div class="grid-col-wide-8 grid-col-8 grid-col-tablet-8 grid-col-mobile-4"
