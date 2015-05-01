@@ -1,24 +1,17 @@
 // Вертикальное центрирование
+
+// Требует position, отличный от static
 @mixin valign_transform() {
   top: 50%;
   transform: translateY(-50%);
 }
 
-@mixin valign_middle() {
+// Применяется к родителю
+@mixin valign_after() {
   &:after {
     content: '';
     display: inline-block;
     height: 100%;
     vertical-align: middle;
-  }
-}
-
-@mixin valign_floater($block_height) {
-  &:before {
-    content: '';
-    float: left;
-    height: 50%;
-    width: 100%;
-    margin-bottom: -$block_height / 2;
   }
 }

@@ -8,12 +8,6 @@
     font-weight: bold;
     color: #FFFFFF;
     @include no_fontsize;
-    @include valign_middle;
-
-    ul {
-      display: inline-block;
-      vertical-align: middle;
-    }
 
     li {
       display: inline-block;
@@ -107,16 +101,22 @@
     color: #FFFFFF;
     background: #0000FF;
     @include border-box;
-    @include valign_middle;
     @include transition(right 0.4s);
 
     ul {
-      display: inline-block;
-      vertical-align: middle;
+      position: relative;
+      @include valign_transform;
     }
 
     li {
       margin: 14px 0;
+
+      &:nth-of-type(1) {
+        margin-top: 0;
+      }
+      &:nth-last-of-type(1) {
+        margin-bottom: 0;
+      }
 
       a {
         font-weight: bold;
