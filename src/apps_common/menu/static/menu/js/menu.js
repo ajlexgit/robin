@@ -1,5 +1,12 @@
 (function($) {
 
+    /*
+
+        Требует:
+            rared.js, win_height.js
+
+    */
+
     var refresh_menu = function() {
         var $menu = $('#main-menu');
         if (!$menu.hasClass('active')) {
@@ -7,8 +14,8 @@
         }
 
         if (window.innerWidth < 1024) {
-            var win_height = $(window).innerHeight();
-            $menu.outerHeight(win_height);
+            // На мобиле и iPad высота меню - весь экран
+            $menu.setWinHeight();
         } else {
             $('#mobile-menu').removeClass('active');
             $menu.removeClass('active');
@@ -18,16 +25,16 @@
     $(document).ready(function() {
         // Клик на кнопку мобильного меню
         $('#mobile-menu').on('click', function() {
-           var self = $(this);
-           var menu = $('#main-menu');
-           if (self.hasClass('active')) {
-               self.removeClass('active');
-               menu.removeClass('active');
-           } else {
-               self.addClass('active');
-               menu.addClass('active');
-               refresh_menu();
-           }
+            var $button = $(this);
+            var $menu = $('#main-menu');
+            if ($button.hasClass('active')) {
+                $button.removeClass('active');
+                $menu.removeClass('active');
+            } else {
+                $button.addClass('active');
+                $menu.addClass('active');
+                refresh_menu();
+            }
         });
     });
 

@@ -1,8 +1,12 @@
 (function($) {
+
     /*
-        Обертка над функцией, которая выполняется не чаще, 
+
+        Обертка над функцией, которая выполняется не чаще,
         чем раз в time миллисекунд.
+
     */
+
     $.rared = function(callback, time) {
         var timer, that, args;
         return function() {
@@ -15,5 +19,5 @@
             }, time);
         }
     };
-    
+
 })(jQuery);

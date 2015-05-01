@@ -2,6 +2,10 @@
 
 @include global-reset;
 
+html, body {
+  height: 100%;
+}
+
 body {
   color: $text_color;
   line-height: 1.4375;
@@ -40,4 +44,11 @@ p {
 #wrapper {
   position: relative;
   overflow: hidden;
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+#content {
+  display: table-row;
 }

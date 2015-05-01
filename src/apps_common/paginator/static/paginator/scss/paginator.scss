@@ -20,9 +20,9 @@
 
   :hover, .active {
     color: white;
-    text-decoration: none;
     @include linear-gradient(to bottom, #222 0%, #111 30%, #000 100%);
   }
+
   .active {
     cursor: default;
   }

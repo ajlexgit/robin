@@ -1,6 +1,11 @@
 @import 'mixins';
 
 #footer {
+  display: table-row;
+  height: 1px;
+  color: white;
+  background: black;
+
   .copyright {
     margin: 0;
     text-align: center;

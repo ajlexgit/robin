@@ -255,7 +255,8 @@ PIPELINE_JS = {
             'js/ajax_csrf.js',
             'js/canvas_utils.js',
             # 'js/inlines.js',
-            'js/jquery.delayed.js',
+            'js/rared.js',
+            'js/win_height.js',
             # 'js/jquery.appear.js',
             'js/jquery.scrollTo.js',
             'js/jquery.popups.js',
@@ -272,7 +273,6 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/win_height.js',
             'js/video_bg.js',
             'main/js/index.js',
         ),

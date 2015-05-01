@@ -3,12 +3,10 @@ import os
 import sys
 
 # Custom fields: юзать descriptor_class?
-# jquery.scrollbar
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
 # Решить проблему получения url исходника StdImage, когда файла нет
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
-# Верстка по сетке
 # Google maps
 # help for settings.ALIAS_IN_URL
 # Gallery: zoom effect, keyboard

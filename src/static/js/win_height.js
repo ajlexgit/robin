@@ -6,10 +6,11 @@
         при условии, что позволяет высота содержимого.
 
         Требует:
-            jquery.delayed.js
+            rared.js
 
         Пример:
-            $('.block').winHeight();
+            $('.block').setWinHeight();     - разовая установка высоты
+            $('.block').winHeight();        - обновляемая высота
 
     */
 
@@ -27,30 +28,26 @@
         }
     };
 
-
-    // Установка высоты одного блока
-    var setBlockHeight = function($block, height) {
-        $block.height('auto');
-        var block_height = $block.outerHeight();
-        $block.outerHeight(Math.max(block_height, height));
-    };
-
-
     // Обновление высот блоков при ресайзе
     $(window).on('resize.winHeight', $.rared(function() {
-        var win_height = winHeight();
-        $('.win-height-block').each(function() {
-            setBlockHeight($(this), win_height);
-        });
+        $('.win-height-block').setWinHeight();
     }, 50));
 
-
-    $.fn.winHeight = function() {
-        var win_height = winHeight();
+    // Установка высоты одного блока
+    $.fn.setWinHeight = function() {
         return this.each(function() {
-            var $block = $(this).addClass('win-height-block');
-            setBlockHeight($block, win_height);
-        });
+            var $block = $(this).height('auto');
+            var block_height = $block.outerHeight();
+            $block.outerHeight(Math.max(block_height, winHeight()));
+        })
+    }
+
+    $.fn.winHeight = function(action) {
+        if (action == 'destroy') {
+            return this.removeClass('win-height-block').height('');
+        }
+
+        return this.addClass('win-height-block').setWinHeight();
     };
 
 })(jQuery);

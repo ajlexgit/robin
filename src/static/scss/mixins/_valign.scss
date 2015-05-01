@@ -1,4 +1,9 @@
 // Вертикальное центрирование
+@mixin valign_transform() {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 @mixin valign_middle() {
   &:after {
     content: '';

@@ -2,7 +2,7 @@
 
     /*
         Определение разрешения экрана и сохранение этой информации в куки.
-        Требуется: jquery.cookie.js, jquery.delayed.js
+        Требуется: jquery.cookie.js, rared.js
     */
 
     // Рассчет разрешения по размеру экрана
@@ -12,8 +12,7 @@
             if (window.innerWidth >= sizes[0] && (!sizes[1] || window.innerWidth <= sizes[1])) {
                 return code;
             }
-        };
-        return;
+        }
     };
 
     // Установка разрешения в куку и js_storage

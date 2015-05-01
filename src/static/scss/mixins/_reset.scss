@@ -56,12 +56,13 @@
     }
   }
   a {
+    color: inherit;
     text-decoration: none;
     img {
       border: none;
     }
     &:hover {
-      text-decoration: underline;
+      text-decoration: none;
     }
   }
   input, button, select, textarea {
