@@ -25,16 +25,18 @@
 
 #popup-window-wrapper {
   height: 100%;
+  @include valign_after;
 }
 
 #popup-window {
+  display: inline-block;
   position: relative;
+  vertical-align: middle;
   margin: 60px auto;
   max-width: 80%;
   min-width: 200px;
   border: 10px solid #DDDDDD;
   background-color: #DDDDDD;
-  @include valign_transform;
   @include border_radius(12px);
 }
 
