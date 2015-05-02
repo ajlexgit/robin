@@ -253,7 +253,7 @@ PIPELINE_JS = {
             'js/jquery.scrollTo.js',
             'js/jquery.popups.js',
             # 'js/jquery.scrollbar.js',
-            # 'js/jquery.readmore.min.js',
+            'js/jquery.readmore.min.js',
             'menu/js/menu.js',
             'seo/js/block.js',
             # 'users/js/users.js',

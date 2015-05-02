@@ -8,6 +8,9 @@
   width: 100%;
   z-index: 100;
   background: rgba(green, 0.8);
+  @include media(mobile) {
+    padding: 25px 0;
+  }
 
   .table {
     display: table;

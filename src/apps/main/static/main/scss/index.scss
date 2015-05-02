@@ -34,11 +34,22 @@
   background: no-repeat center red;
   background-size: cover;
   @include no_fontsize;
+  @include media(mobile) {
+    padding-top: 110px;
+  }
 
   .content {
     position: relative;
     width: 100%;
     z-index: 2;
+    @include valign_transform;
+  }
+
+  .title {
+    position: relative;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
     @include valign_transform;
   }
 }

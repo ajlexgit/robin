@@ -2,7 +2,6 @@
 
 {% load staticfiles %}
 {% load compressed %}
-{% load solo_tags %}
 
 {% block static_head %}
     {{ block.super }}
@@ -16,16 +15,16 @@
 
 
 {% block content %}
-    {% get_solo 'main.MainPageConfig' as config %}
-
     <div id="video" style="background-image: url({% static 'main/img/river.jpg' %})">
         <div class="video-bg-wrapper">
-            <video src="{% static 'main/img/river.mp4' %}" autoplay="" loop="" preload="auto"></video>
+            <video src="{% static 'main/img/river.mp4' %}" autoplay="" loop=""
+                   preload="auto" muted=""></video>
         </div>
 
         <div class="content grid">
             <div class="gray grid-col-wide-8 grid-col-8 grid-col-tablet-8 grid-col-mobile-4"
                  style="height: 200px">
+                <h1 class="title title-h1">{{ config.header_title }}</h1>
             </div>
 
             <div class="blue grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
@@ -45,5 +44,4 @@
             <div class="orange grid-col-wide-2 grid-col-2 grid-col-tablet-4 grid-col-mobile-4"></div>
         </div>
     </div>
-
 {% endblock content %}

@@ -1,7 +1,7 @@
 (function($) {
 
     $(document).ready(function() {
-        $('#seo-text .text').readmore({
+        $('.seo-text').find('.text').readmore({
             collapsedHeight: 85,
             heightMargin: 17,
             moreLink: '<a class="readmore" href="#">Read more</a>',

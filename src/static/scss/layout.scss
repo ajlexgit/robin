@@ -29,9 +29,9 @@ p {
 // Заголовки
 .title-h1 {
   line-height: 1;
-  @include font-size(26px);
+  @include font-size(40px);
   @include media(mobile) {
-    @include font-size(20px);
+    @include font-size(28px);
   }
 }
 
