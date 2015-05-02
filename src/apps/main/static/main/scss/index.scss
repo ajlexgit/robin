@@ -65,7 +65,7 @@
 
       @each $index in 1, 2, 3, 4 {
         &:nth-of-type(#{$index}) {
-          @include transition(opacity 0.5s #{$index * 0.2}s);
+          @include transition(opacity 0.5s #{($index-1) * 0.2}s);
         }
       }
     }
