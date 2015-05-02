@@ -75,9 +75,8 @@
             var $video = $(this);
             var settings = $video.data('videoBgSettings');
             video_position($video, settings);
-        })
+        });
     }, 50));
-
 
     $.fn.videoBackground = function (options) {
         var settings = $.extend({
@@ -89,11 +88,6 @@
         return $(this).each(function () {
             var $block = $(this);
 
-            var src = $block.data('video');
-            if (!src) {
-                return;
-            };
-
             var $wrapper = $block.find('.video-bg-wrapper');
             if (!$wrapper.length) {
                 $wrapper = $('<div>').addClass('video-bg-wrapper');
@@ -102,6 +96,11 @@
 
             var $video = $wrapper.find('video');
             if (!$video.length) {
+                var src = $block.data('video');
+                if (!src) {
+                    return;
+                };
+
                 $video = $('<video>').css({
                     visibility: 'hidden'
                 }).attr({
@@ -126,6 +125,9 @@
                 // Callback
                 settings.onShow.call(this);
             });
+
+            // Позиционируем при старте
+            video_position($video, settings);
         });
     };
 
