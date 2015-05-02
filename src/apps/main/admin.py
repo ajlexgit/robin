@@ -11,7 +11,7 @@ class MainPageConfigForm(forms.ModelForm):
     class Meta:
         model = MainPageConfig
         widgets = {
-            'title': forms.TextInput(attrs={
+            'header_title': forms.TextInput(attrs={
                 'class': 'input-xxlarge',
             }),
         }

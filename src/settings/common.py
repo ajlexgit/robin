@@ -52,7 +52,6 @@ INSTALLED_APPS = (
     'libs.color_field',
     'libs.description',
     'libs.hits',
-    'libs.geocity',
     'libs.js_storage',
     'libs.opengraph',
     'libs.recaptcha',
@@ -118,9 +117,9 @@ ROOT_URLCONF = 'project.urls'
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'America/New_York'
 TIME_FORMAT = 'H:i'
 DATE_FORMAT = 'j E Y'
 USE_I18N = True
