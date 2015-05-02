@@ -45,11 +45,8 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
-    'social',
-    'yandex_maps',
 
     # Libs
-    'libs.async_block',
     'libs.autocomplete',
     'libs.ckeditor',
     'libs.color_field',
@@ -59,7 +56,6 @@ INSTALLED_APPS = (
     'libs.js_storage',
     'libs.opengraph',
     'libs.recaptcha',
-    'libs.resolution',
     'libs.stdimage',
     'libs.templatetags',
     'libs.variation_field',
@@ -87,12 +83,12 @@ SUIT_CONFIG = {
             )
         },
         {
-            'app': 'seo',
-            'icon': 'icon-tasks',
-        },
-        {
             'app': 'main',
             'icon': 'icon-file',
+        },
+        {
+            'app': 'seo',
+            'icon': 'icon-tasks',
         },
     ),
 }
@@ -112,7 +108,6 @@ MIDDLEWARE_CLASSES = (
     'seo.middleware.SeoMiddleware',
 
     'libs.js_storage.middleware.JSStorageMiddleware',
-    'libs.resolution.middleware.ResolutionMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
 )
 
@@ -203,9 +198,6 @@ RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
 
-# Ключ Яндекс карт
-YANDEX_MAPS_API_KEY = 'AES6VU8BAAAAhUgqJAIAFUXpiA6FBbStP2IMXobI37-poNIAAAAAAAAAAABFcoRJbRZ1Wym2ZqKgqBHebe4FPQ=='
-
 # Pipeline
 PIPELINE_CSS = {
     'head_core': {
@@ -223,7 +215,7 @@ PIPELINE_CSS = {
             # 'comments/scss/comments.scss',
             'menu/scss/menu.scss',
             # 'paginator/scss/paginator.scss',
-            # 'seo/scss/block.scss',
+            'seo/scss/block.scss',
             # 'users/scss/users.scss',
         ),
         'output_filename': 'css/head_core.css',
@@ -258,16 +250,13 @@ PIPELINE_JS = {
             # 'js/inlines.js',
             'js/rared.js',
             'js/win_height.js',
-            # 'js/jquery.appear.js',
+            'js/jquery.appear.js',
             'js/jquery.scrollTo.js',
             'js/jquery.popups.js',
             # 'js/jquery.scrollbar.js',
             # 'js/jquery.readmore.min.js',
-            # 'async_block/js/async_block.js',
             'menu/js/menu.js',
-            # 'resolution/js/resolution.js',
-            # 'social/js/social.js',
-            # 'seo/js/block.js',
+            'seo/js/block.js',
             # 'users/js/users.js',
         ),
         'output_filename': 'js/core.js',

@@ -7,7 +7,7 @@ STATIC_MAPS_URL = 'http://static-maps.yandex.ru/1.x/?'
 HOSTED_MAPS_URL = 'http://maps.yandex.ru/?'
 GEOCODE_URL = 'http://geocode-maps.yandex.ru/1.x/?'
 
-YANDEX_KEY = getattr(settings, 'YANDEX_MAPS_API_KEY', '')
+YANDEX_KEY = getattr(settings, 'YANDEX_MAPS_API_KEY', 'AES6VU8BAAAAhUgqJAIAFUXpiA6FBbStP2IMXobI37-poNIAAAAAAAAAAABFcoRJbRZ1Wym2ZqKgqBHebe4FPQ==')
 
 
 def _format_point(longitude, latitude):

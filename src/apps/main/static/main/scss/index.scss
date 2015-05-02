@@ -1,6 +1,31 @@
 @import "mixins";
 
 
+.red {
+  background: red;
+}
+
+.orange {
+  background: orange;
+}
+
+.yellow {
+  background: yellow;
+}
+
+.green {
+  background: green;
+}
+
+.blue {
+  background: blue;
+}
+
+.gray {
+  background: gray;
+}
+
+
 #video {
   position: relative;
   padding-top: 150px;
@@ -19,6 +44,23 @@
 }
 
 #data {
-  height: 500px;
+  padding: 20px 0;
   background: blue;
+
+  .appear-block {
+    > div {
+      height: 150px;
+      @include opacity(0);
+
+      @each $index in 1, 2, 3, 4 {
+        &:nth-of-type(#{$index}) {
+          @include transition(opacity 0.5s #{$index * 0.2}s);
+        }
+      }
+    }
+
+    &.visible > div {
+      @include opacity(1);
+    }
+  }
 }
