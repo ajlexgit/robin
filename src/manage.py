@@ -2,6 +2,7 @@
 import os
 import sys
 
+# типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
 # Решить проблему получения url исходника StdImage, когда файла нет

@@ -92,14 +92,14 @@
             if (!$wrapper.length) {
                 $wrapper = $('<div>').addClass('video-bg-wrapper');
                 $block.prepend($wrapper);
-            };
+            }
 
             var $video = $wrapper.find('video');
             if (!$video.length) {
                 var src = $block.data('video');
                 if (!src) {
                     return;
-                };
+                }
 
                 $video = $('<video>').css({
                     visibility: 'hidden'
@@ -110,7 +110,7 @@
                     preload: 'auto',
                 });
                 $wrapper.prepend($video);
-            };
+            }
 
             $video.data({
                 videoBgSettings: settings

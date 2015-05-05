@@ -40,7 +40,7 @@
             var block_height = $block.outerHeight();
             $block.outerHeight(Math.max(block_height, winHeight()));
         })
-    }
+    };
 
     $.fn.winHeight = function(action) {
         if (action == 'destroy') {

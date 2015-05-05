@@ -4,7 +4,7 @@
 {% load opengraph %}
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" class="no-js">
 <head>
     <title>{% block title %}{{ seo.title }}{% endblock %}</title>
     <meta name="keywords" content="{{ seo.keywords }}" />
@@ -13,6 +13,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{% static 'img/favicon.png' %}" rel="icon" type="image/x-icon" />
     <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
+    <script type="text/javascript">
+        var docElement = document.documentElement;
+        docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
+    </script>
     <script type="text/javascript" src="{% url 'jsi18n' %}"></script>
 
     {% opengraph %}
