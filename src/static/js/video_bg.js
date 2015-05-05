@@ -114,7 +114,7 @@
 
             $video.data({
                 videoBgSettings: settings
-            }).on('canplay', function() {
+            }).on('loadeddata', function() {
                 // Показваем тэг, когда готовы к воспроизведению
                 var $video = $(this).css({
                     visibility: ''
