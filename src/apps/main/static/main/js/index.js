@@ -5,10 +5,18 @@
     });
 
     $(document).ready(function() {
-        $('#video').winHeight().videoBackground();
+        $('#video').winHeight().videoBackground({
+            onShow: function() {
+                $('body').addClass('video-loaded');
+            }
+        });
 
         $('.appear-block').appear();
         $.force_appear();
     });
 
+    $(window).on('load', function() {
+        $('body').addClass('video-loaded');
+    });
+    
 })(jQuery);

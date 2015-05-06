@@ -50,7 +50,7 @@
   height: 27px;
   cursor: pointer;
   text-align: left;
-  z-index: 15;
+  z-index: 95;
   @include unselectable;
   @include media(mobile, tablet) {
     display: inline-block;
@@ -97,7 +97,7 @@
     top: 0;
     width: 80%;
     padding: 0 70px;
-    z-index: 12;
+    z-index: 100;
     color: #FFFFFF;
     background: #0000FF;
     @include border-box;

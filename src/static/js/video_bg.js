@@ -38,14 +38,17 @@
 
     // Позиционирование видео
     var video_position = function ($video, settings) {
+        var video_width = $video.prop('videoWidth');
+        var video_height = $video.prop('videoHeight');
+        if (!video_width || !video_height) {
+            return
+        }
+        var video_aspect = video_width / video_height;
+        
         var $wrapper = $video.closest('.video-bg-wrapper');
-
         var wrapper_width = $wrapper.width();
         var wrapper_height = $wrapper.height();
         var wrapper_aspect = wrapper_width / wrapper_height;
-        var video_width = $video.prop('videoWidth');
-        var video_height = $video.prop('videoHeight');
-        var video_aspect = video_width / video_height;
 
         if (video_aspect > wrapper_aspect) {
             // Видео шире
@@ -101,13 +104,11 @@
                     return;
                 }
 
-                $video = $('<video>').css({
-                    visibility: 'hidden'
-                }).attr({
+                $video = $('<video>').attr({
                     src: src,
                     autoplay: '',
                     loop: '',
-                    preload: 'auto',
+                    preload: 'auto'
                 });
                 $wrapper.prepend($video);
             }
@@ -115,12 +116,7 @@
             $video.data({
                 videoBgSettings: settings
             }).on('loadeddata', function() {
-                // Показваем тэг, когда готовы к воспроизведению
-                var $video = $(this).css({
-                    visibility: ''
-                });
-
-                video_position($video, settings);
+                video_position($(this), settings);
 
                 // Callback
                 settings.onShow.call(this);
