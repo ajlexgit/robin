@@ -14,10 +14,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoConfig',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=128, verbose_name='site title')),
-                ('keywords', models.CharField(blank=True, max_length=255, verbose_name='site keywords')),
-                ('description', models.CharField(blank=True, max_length=160, verbose_name='site description')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('title', models.CharField(verbose_name='site title', max_length=128)),
+                ('keywords', models.CharField(blank=True, verbose_name='site keywords', max_length=255)),
+                ('description', models.CharField(blank=True, verbose_name='site description', max_length=160)),
             ],
             options={
                 'verbose_name': 'Site config',
@@ -27,11 +27,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoData',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
-                ('title', models.CharField(blank=True, max_length=128, verbose_name='title')),
-                ('keywords', models.CharField(blank=True, max_length=255, verbose_name='keywords')),
-                ('description', models.CharField(blank=True, max_length=160, verbose_name='description')),
+                ('title', models.CharField(blank=True, verbose_name='title', max_length=128)),
+                ('keywords', models.CharField(blank=True, verbose_name='keywords', max_length=255)),
+                ('description', models.CharField(blank=True, verbose_name='description', max_length=160)),
                 ('text', models.TextField(blank=True, verbose_name='text')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],

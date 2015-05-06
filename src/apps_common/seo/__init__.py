@@ -36,6 +36,18 @@
                 suit_seo_tab = 'seo'
             ...
 
+    Счетчики:
+        {% load seo %}
+        <head>
+            ...
+            {% seo_counters 'head' %}
+        </head>
+        <body>
+            {% seo_counters 'body_top' %}
+            ...
+            {% seo_counters 'body_bottom' %}
+        </body>
+
     Настройки:
         settings.py:
             # Если не пуст - в качестве заголовка страницы будут все части дэка title,

@@ -1,4 +1,6 @@
 from django.template import loader, Library
+from django.utils.safestring import mark_safe
+from ..models import Counter
 
 register = Library()
 
@@ -12,3 +14,13 @@ def seo_block(context, template='seo/block.html'):
     return loader.render_to_string(template, {
         'instance': request.seo.instance,
     })
+
+
+@register.simple_tag
+def seo_counters(position):
+    counters = Counter.objects.filter(position=position)
+    if not counters:
+        return ''
+
+    content = '\n'.join(c.content for c in counters)
+    return mark_safe(content)

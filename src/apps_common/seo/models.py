@@ -28,3 +28,22 @@ class SeoData(models.Model):
         verbose_name = _('SEO data')
         verbose_name_plural = _('SEO data')
         unique_together = ('content_type', 'object_id')
+
+
+class Counter(models.Model):
+    POSITION = (
+        ('head', 'Head'),
+        ('body_top', 'Body Top'),
+        ('body_bottom', 'Body Bottom'),
+    )
+
+    title = models.CharField(_('title'), max_length=128)
+    position = models.CharField(_('position'), max_length=12, choices=POSITION)
+    content = models.TextField(_('content'))
+
+    class Meta:
+        verbose_name = _('counter')
+        verbose_name_plural = _('counters')
+
+    def __str__(self):
+        return self.title

@@ -25,8 +25,12 @@
     {% compressed_css 'head_core' %}
     {% block static_head %}
     {% endblock static_head %}
+    
+    {% seo_counters 'head' %}
 </head>
 <body>
+    {% seo_counters 'body_top' %}
+
     <div id="wrapper">
         {% block header %}
             {% include 'header.html' %}
@@ -45,5 +49,7 @@
         {% js_storage_out %}
         {% compressed_js 'core' %}
     {% endblock static_js %}
+    
+    {% seo_counters 'body_bottom' %}
 </body>
 </html>
