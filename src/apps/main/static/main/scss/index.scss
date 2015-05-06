@@ -85,7 +85,9 @@
   .appear-block {
     > div {
       height: 150px;
-      @include opacity(0);
+      @at-root .js & {
+        @include opacity(0);
+      }
 
       @each $index in 1, 2, 3, 4 {
         &:nth-of-type(#{$index}) {
