@@ -88,6 +88,10 @@ SUIT_CONFIG = {
         {
             'app': 'seo',
             'icon': 'icon-tasks',
+            'models': (
+                'counter',
+                'seoconfig',
+            ),
         },
     ),
 }
