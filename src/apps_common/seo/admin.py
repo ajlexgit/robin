@@ -27,10 +27,6 @@ class SeoConfigForm(forms.ModelForm):
             }),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prefix = 'seo'
-        
 
 @admin.register(SeoConfig)
 class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
@@ -104,7 +100,7 @@ class SeoModelAdminMixin():
         add = obj is None
         ModelForm = model_admin.get_form(request, obj)
         if request.method == 'POST':
-            form = ModelForm(request.POST, request.FILES, instance=obj)
+            form = ModelForm(request.POST, request.FILES, instance=obj, prefix='seo')
             if form.has_changed():
                 if form.is_valid():
                     new_object = model_admin.save_form(request, form, change=not add)
@@ -117,9 +113,9 @@ class SeoModelAdminMixin():
                     'object_id': object_id,
                 }
                 initial.update(model_admin.get_changeform_initial_data(request))
-                form = ModelForm(initial=initial)
+                form = ModelForm(initial=initial, prefix='seo')
             else:
-                form = ModelForm(instance=obj)
+                form = ModelForm(instance=obj, prefix='seo')
 
         adminForm = helpers.AdminForm(
             form,

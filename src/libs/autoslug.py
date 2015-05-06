@@ -12,6 +12,11 @@ class AutoSlugField(models.SlugField):
                 separator     - разделитель префикс алиаса от суффикса.
                                 (my_alias-1, my_alias-2, ...)
                 default_slug  - префикс по умолчанию, если populate_from пуст.
+            
+            Пример:
+                alias = AutoSlugField(_('alias'), populate_from=('title', ), max_length=128, blank=True,
+                                      help_text=_('Leave it blank to auto generate it'),
+                                      unique=True, validators=[RegexValidator(settings.ALIAS_REGEXP)])
         """
         self.populate_from = populate_from
         self.separator = kwargs.pop('separator', '-')
