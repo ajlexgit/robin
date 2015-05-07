@@ -29,7 +29,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'directlinedev',
         'USER': 'webapp',
-        'PASSWORD': 'kWDQs2tL4SUzgbkU',
+        'PASSWORD': '%DBPASSWORD%',
         'HOST': 'localhost',
         'CONN_MAX_AGE': 60,
     }
