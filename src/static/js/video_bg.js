@@ -2,7 +2,6 @@
 
     /*
         Плагин для показа видео на фоне блока.
-        Блок ДОЛЖЕН имень position, отличный от static.
 
         Тэги для отображения видео добавляются автоматически, если они не найдены.
         Есть возможность вставить тэги на страницу изначально.
@@ -89,7 +88,7 @@
         }, options);
 
         return $(this).each(function () {
-            var $block = $(this);
+            var $block = $(this).addClass('vigeo-bg');
 
             var $wrapper = $block.find('.video-bg-wrapper');
             if (!$wrapper.length) {
