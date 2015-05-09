@@ -2,7 +2,6 @@
 import os
 import sys
 
-# Parallax example
 # типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
@@ -10,13 +9,12 @@ import sys
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
 # Google maps
-# help for settings.ALIAS_IN_URL
 # Gallery: zoom effect, keyboard
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам
 # пагинация AJAX с предзагрузкой
-# счетчики и AJAX hit
+# AJAX hit
 
 # Написание тестов
 
