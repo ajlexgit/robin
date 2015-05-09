@@ -2,9 +2,13 @@
 
     /*
         Плагин для показа видео на фоне блока.
+        Блок должен иметь position, отличный от static и overflow: hidden.
 
         Тэги для отображения видео добавляются автоматически, если они не найдены.
         Есть возможность вставить тэги на страницу изначально.
+
+        Требует:
+            rared.js
 
         Параметры:
             left_offset - Процентное смещение видео по горизонтали,
@@ -18,9 +22,15 @@
             onShow -      Коллбэк при показе видео.
 
         Пример:
-            <div id="block" data-video="/static/main/img/video.mp4"></div>
+            <div id="block" data-video-bg="/static/main/img/video.mp4"></div>
 
-            // Всегда будет виден нижний левый угол видео
+        Пример блока с изначальной разметкой:
+            <div id="block" class="video-bg-container">
+                <video class="video-bg" src="{% static 'main/img/river.mp4' %}" autoplay="" loop="" preload="auto"></video>
+                ...
+            </div>
+
+        JS:
             $('#block').videoBackground({
                 left_offset: 0,
                 top_offset: 1,
@@ -28,11 +38,6 @@
                     console.log('video showen!');
                 }
             });
-
-        Пример тэгов на странице:
-            <div class="video-bg-wrapper">
-                <video src="{% static 'main/img/river.mp4' %}" autoplay="" loop="" preload="auto"></video>
-            </div>
     */
 
     // Позиционирование видео
@@ -43,29 +48,29 @@
             return
         }
         var video_aspect = video_width / video_height;
-        
-        var $wrapper = $video.closest('.video-bg-wrapper');
-        var wrapper_width = $wrapper.width();
-        var wrapper_height = $wrapper.height();
-        var wrapper_aspect = wrapper_width / wrapper_height;
 
-        if (video_aspect > wrapper_aspect) {
+        var $container = $video.closest('.video-bg-container');
+        var container_width = $container.outerWidth();
+        var container_height = $container.outerHeight();
+        var container_aspect = container_width / container_height;
+
+        if (video_aspect > container_aspect) {
             // Видео шире
-            var final_video_width = Math.round((wrapper_height * video_width) / video_height);
+            var final_video_width = Math.round((container_height * video_width) / video_height);
             $video.css({
                 height: '100%',
                 width: 'auto',
-                left: (wrapper_width - final_video_width) * settings.left_offset,
+                left: (container_width - final_video_width) * settings.left_offset,
                 top: 0
             });
         } else {
             // Видео выше
-            var final_video_height = Math.round((wrapper_width * video_height) / video_width);
+            var final_video_height = Math.round((container_width * video_height) / video_width);
             $video.css({
                 height: 'auto',
                 width: '100%',
                 left: 0,
-                top: (wrapper_height - final_video_height) * settings.top_offset
+                top: (container_height - final_video_height) * settings.top_offset
             });
         }
     };
@@ -73,7 +78,7 @@
 
     // Позиционирование видео при изменении размера окна
     $(window).on('resize.videoBackground', $.rared(function() {
-        $('.video-bg-wrapper > video').each(function() {
+        $('.video-bg-container > .video-bg:first').each(function() {
             var $video = $(this);
             var settings = $video.data('videoBgSettings');
             video_position($video, settings);
@@ -88,17 +93,11 @@
         }, options);
 
         return $(this).each(function () {
-            var $block = $(this).addClass('vigeo-bg');
+            var $block = $(this).addClass('video-bg-container');
 
-            var $wrapper = $block.find('.video-bg-wrapper');
-            if (!$wrapper.length) {
-                $wrapper = $('<div>').addClass('video-bg-wrapper');
-                $block.prepend($wrapper);
-            }
-
-            var $video = $wrapper.find('video');
+            var $video = $block.children('.video-bg:first');
             if (!$video.length) {
-                var src = $block.data('video');
+                var src = $block.data('video-bg');
                 if (!src) {
                     return;
                 }
@@ -109,7 +108,7 @@
                     loop: '',
                     preload: 'auto'
                 });
-                $wrapper.prepend($video);
+                $block.prepend($video);
             }
 
             $video.data({

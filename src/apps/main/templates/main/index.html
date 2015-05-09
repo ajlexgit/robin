@@ -15,11 +15,10 @@
 
 
 {% block content %}
-    <div id="video" style="background-image: url({% static 'main/img/river.jpg' %})">
-        <div class="video-bg-wrapper">
-            <video src="{% static 'main/img/river.mp4' %}" autoplay="" loop=""
-                   preload="auto" muted=""></video>
-        </div>
+    <div id="video" class="video-bg-container" style="background-image: url({% static 'main/img/river.jpg' %})">
+        <video class="video-bg" autoplay="" loop="" preload="auto" muted="">
+            <source src="{% static 'main/img/river.mp4' %}" type="video/mp4">
+        </video>
 
         <div class="content grid">
             <div class="gray grid-col-wide-8 grid-col-8 grid-col-tablet-8 grid-col-mobile-4"
@@ -36,7 +35,7 @@
         </div>
     </div>
 
-    <div id="data">
+    <div id="parallax_sample" class="parallax">
         <div class="appear-block grid">
             <div class="yellow grid-col-wide-2 grid-col-2 grid-col-tablet-4 grid-col-mobile-4"></div>
             <div class="red grid-col-wide-2 grid-col-2 grid-col-tablet-4 grid-col-mobile-4"></div>
@@ -44,4 +43,5 @@
             <div class="orange grid-col-wide-2 grid-col-2 grid-col-tablet-4 grid-col-mobile-4"></div>
         </div>
     </div>
+
 {% endblock content %}

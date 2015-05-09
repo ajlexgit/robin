@@ -1,28 +1,18 @@
 @import "mixins";
 
-.vigeo-bg {
-    position: relative;
-    
-    .video-bg-wrapper {
-      position: absolute;
-      overflow: hidden;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      @include no_fontsize;
-
-      video {
-        position: relative;
-        display: block;
-        margin: 0 auto;
-        left: 0;
-        top: 0;
-        height: 100%;
-        z-index: 1;
-        @include no_fontsize;
-      }
-    }
+.video-bg-container {
+  position: relative;
+  overflow: hidden;
 }
 
+.video-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+
+  &::-webkit-media-controls {
+    display: none;
+  }
+}

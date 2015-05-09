@@ -27,8 +27,11 @@
 
 
 #video {
+  position: relative;
+  overflow: hidden;
   padding-top: 150px;
   min-height: 500px;
+  height: 600px;
   background: no-repeat center red;
   background-size: cover;
   @include border-box;
@@ -37,16 +40,14 @@
     padding-top: 110px;
   }
 
-  video {
-    @at-root .js & {
-      visibility: hidden;
-    }
-    
-    @at-root .js .video-loaded & {
-      visibility: visible;
-    }
+  @at-root .js & .video-bg {
+    visibility: hidden;
   }
-  
+
+  @at-root .js &.video-loaded .video-bg {
+    visibility: visible;
+  }
+
   .content {
     position: relative;
     width: 100%;
@@ -63,11 +64,18 @@
   }
 }
 
-#data {
-  padding: 20px 0;
-  background: blue;
+#parallax_sample {
+  height: 600px;
+  background: url(../img/background.jpeg) no-repeat center top fixed;
+  background-size: cover;
 
   .appear-block {
+    position: relative;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: blue;
+    @include valign_transform;
+
     > div {
       height: 150px;
       @at-root .js & {

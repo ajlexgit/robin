@@ -209,7 +209,6 @@ PIPELINE_CSS = {
             'scss/layout.scss',
             'scss/header.scss',
             'scss/footer.scss',
-            'scss/video_bg.scss',
             # 'scss/inlines.scss',
             'scss/popups/popups.scss',
             # 'scss/jquery.scrollbar.scss',
@@ -225,6 +224,7 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
+            'scss/video_bg.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -266,6 +266,7 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
+            'js/parallax.js',
             'js/video_bg.js',
             'main/js/index.js',
         ),
