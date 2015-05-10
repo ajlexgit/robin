@@ -19,19 +19,19 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
     if not latitude or not longitude:
         return ''
 
-    width = width or getattr(settings, 'YANDEX_MAPS_W', 300)
-    height = height or getattr(settings, 'YANDEX_MAPS_H', 200)
-
+    width = width or getattr(settings, 'YANDEX_MAPS_STATIC_WIDTH', 300)
+    height = height or getattr(settings, 'YANDEX_MAPS_STATIC_HEIGHT', 200)
     point = _format_point(longitude, latitude)
-    params = [
-        'll=%s' % point,
-        'size=%d,%d' % (width, height,),
-        'z=%d' % int(zoom),
-        'l=map',
-        'pt=%s' % point,
-        'key=%s' % YANDEX_KEY
-    ]
-    return STATIC_MAPS_URL + '&'.join(params)
+
+    return STATIC_MAPS_URL + parse.urlencode(dict(
+        ll=point,
+        size='%d,%d' % (width, height,),
+        z=zoom,
+        l='map',
+        pt=point,
+        lang=settings.LANGUAGE_CODE,
+        key=YANDEX_KEY,
+    ))
 
 
 def get_external_map_url(longitude, latitude, zoom=14):
@@ -40,14 +40,13 @@ def get_external_map_url(longitude, latitude, zoom=14):
         return ''
 
     point = _format_point(longitude, latitude)
-    params = dict(
+
+    return HOSTED_MAPS_URL + parse.urlencode(dict(
         ll=point,
         pt=point,
         l='map',
-    )
-    if zoom is not None:
-        params['z'] = zoom
-    return HOSTED_MAPS_URL + parse.urlencode(params)
+        z=zoom,
+    ))
 
 
 def get_interactive_map_tag(longitude, latitude,

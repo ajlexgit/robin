@@ -46,7 +46,7 @@
                     $('.save-box button').prop('disabled', false);
 
                     if (status != 'abort') {
-                        alert(gettext('Failed geocode address'));
+                        alert(gettext('Address location failed'));
                     }
                 }
             })
