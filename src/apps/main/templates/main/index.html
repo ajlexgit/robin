@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 {% load compressed %}
+{% load google_maps %}
 
 {% block static_head %}
     {{ block.super }}
@@ -43,5 +44,9 @@
             <div class="orange grid-col-wide-2 grid-col-2 grid-col-tablet-4 grid-col-mobile-4"></div>
         </div>
     </div>
+
+    <img src="{{ address|static_map_url:"14,600,300" }}">
+
+    <a href='{{ address|external_map_url:14 }}' target='_blank'>посмотреть карту</a>
 
 {% endblock content %}

@@ -37,11 +37,12 @@ INSTALLED_APPS = (
 
     # Apps common
     'admin_log',
-    'breadcrumbs',
     'away',
+    'breadcrumbs',
     'comments',
     'files',
     'gallery',
+    'google_maps',
     'menu',
     'paginator',
     'seo',

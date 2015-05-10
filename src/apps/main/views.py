@@ -12,5 +12,6 @@ class IndexView(TemplateView):
         request.seo.set_instance(config)
 
         return self.render_to_response({
-            'config': config
+            'config': config,
+            'address': 'Тольятти, Майский проезд 64',
         })
