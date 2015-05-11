@@ -37,16 +37,16 @@
         });
     };
 
-
-    window.init_maps = function() {
+    window.init_yandex_maps = function() {
         // Инициализация всех карт на странице
         $('.yandex-map').each(window.init_yandex_map);
     };
 
-
-    // Callback загрузки скрипта карт
-    window.yaMapsCallback = function() {
-        $(document).ready(window.init_maps);
-    };
+    $(document).ready(function () {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = '//api-maps.yandex.ru/2.0-stable/?load=package.standard&onload=init_yandex_maps&lang=ru-RU';
+        document.body.appendChild(script);
+    });
 
 })(jQuery);

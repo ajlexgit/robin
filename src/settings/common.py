@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
+    'yandex_maps',
 
     # Libs
     'libs.autocomplete',
@@ -269,6 +270,8 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/parallax.js',
             'js/video_bg.js',
+            'google_maps/js/google_maps.js',
+            'yandex_maps/js/yandex_maps.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

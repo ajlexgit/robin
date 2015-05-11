@@ -65,7 +65,7 @@ class YmapCoordsField(models.Field, metaclass=models.SubfieldBase):
         super().validate(value, model_instance)
 
     def formfield(self, **kwargs):
-        kwargs['widget'] = YmapCoordFieldWidget(attrs={
+        kwargs['widget'] = YmapCoordsFieldWidget(attrs={
             'data-width': getattr(settings, 'ADMIN_YANDEX_MAP_WIDTH', ''),
             'data-height': getattr(settings, 'ADMIN_YANDEX_MAP_HEIGHT', ''),
         })

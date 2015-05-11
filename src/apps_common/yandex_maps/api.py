@@ -70,7 +70,7 @@ def get_interactive_map_tag(longitude, latitude,
     attrs = {
         'data-lng': longitude,
         'data-lat': latitude,
-        'data-zoom': zoom or 14,
+        'data-zoom': zoom,
         'data-header': header,
         'data-content': content,
     }

@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% load compressed %}
 {% load google_maps %}
+{% load yandex_maps %}
 
 {% block static_head %}
     {{ block.super }}
@@ -45,8 +46,19 @@
         </div>
     </div>
 
-    <img src="{{ address|static_map_url:"14,600,300" }}">
+    <img src="{{ address|google_map_static:"14,600,300" }}">
 
-    <a href='{{ address|external_map_url:14 }}' target='_blank'>посмотреть карту</a>
+    <a href='{{ address|google_map_external:14 }}' target='_blank'>посмотреть карту</a>
+
+    <br>
+
+    <img src="{{ address|yandex_map_static:"14,600,300" }}">
+
+    <a href='{{ address|yandex_map_external:14 }}' target='_blank'>посмотреть карту</a>
+
+    <br>
+
+    {% yandex_map_interactive address=address zoom=14 height=400 header='Hello' %}
+    {% google_map_interactive address=address zoom=14 height=400 header='Hello' %}
 
 {% endblock content %}

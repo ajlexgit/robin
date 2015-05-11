@@ -4,8 +4,7 @@ from .fields import YmapCoords, YmapCoordsField
 from .widgets import YmapCoordsFieldWidget
 
 """
-    Необходимо подключить скрипты:
-        <script src="//api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU&onload=yaMapsCallback" async defer></script>
+    Необходимо подключить:
         yandex_maps/js/yandex_maps.js
 
     Настройки (settings.py):
@@ -51,11 +50,11 @@ from .widgets import YmapCoordsFieldWidget
             {% load yandex_maps %}
 
             <!-- Статичная карта с зумом 15 размера 300x200 -->
-            <img src='{{ address|static_map_url:"15,300,200" }}'>
+            <img src='{{ address|yandex_map_static:"15,300,200" }}'>
 
             <!-- Ссылка на карту в сервисе Яндекса -->
-            <a href='{{ address|external_map_url:15 }}' target='_blank'>посмотреть карту</a>
+            <a href='{{ address|yandex_map_external:15 }}' target='_blank'>посмотреть карту</a>
 
             <!-- Интерактивная карта -->
-            {% interactive_map address='Тольятти, Мира 6' zoom=14 height=300 %}
+            {% yandex_map_interactive address='Тольятти, Мира 6' zoom=14 height=300 %}
 """

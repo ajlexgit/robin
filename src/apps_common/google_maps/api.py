@@ -7,8 +7,6 @@ STATIC_MAPS_URL = 'http://maps.googleapis.com/maps/api/staticmap?'
 HOSTED_MAPS_URL = 'http://maps.google.com/maps?'
 GEOCODE_URL = 'http://maps.googleapis.com/maps/api/geocode/xml?'
 
-GOOGLE_KEY = getattr(settings, 'GOOGLE_MAPS_API_KEY', 'AIzaSyDm_5jbr_m2UWA4xpMq1Jv8kAqCS8yGVwM')
-
 
 def _format_point(latitude, longitude):
     return '%0.7f,%0.7f' % (float(latitude), float(longitude),)
@@ -27,7 +25,6 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
         center=point,
         size='%dx%d' % (width, height,),
         zoom=zoom,
-        scale=2,
         maptype='roadmap',
         language=settings.LANGUAGE_CODE,
         markers='color:red|label:G|%s' % point,
@@ -71,7 +68,7 @@ def get_interactive_map_tag(longitude, latitude,
     attrs = {
         'data-lng': longitude,
         'data-lat': latitude,
-        'data-zoom': zoom or 14,
+        'data-zoom': zoom,
         'data-header': header,
         'data-content': content,
     }
@@ -85,7 +82,7 @@ def get_interactive_map_tag(longitude, latitude,
         styles += 'display: none;'
     attrs['style'] = styles
 
-    return '<div class="yandex-map" %s></div>' % flatatt(attrs)
+    return '<div class="google-map" %s></div>' % flatatt(attrs)
 
 
 def geocode(address, timeout=5.0):

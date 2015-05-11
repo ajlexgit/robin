@@ -4,12 +4,10 @@ from .fields import GoogleCoords, GoogleCoordsField
 from .widgets import GoogleCoordsFieldWidget
 
 """
-    Необходимо подключить скрипты:
-        <script src="//api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU&onload=yaMapsCallback" async defer></script>
-        yandex_maps/js/yandex_maps.js
+    Необходимо подключить:
+        google_maps/js/google_maps.js
 
     Настройки (settings.py):
-        GOOGLE_MAPS_API_KEY - ключ (https://code.google.com/apis/console)
         GOOGLE_MAP_PERMISSIONS - функция определения прав на получение координат
                                  по адресу через AJAX (по умолчанию - сотрудники)
         ADMIN_GOOGLE_MAP_WIDTH - ширина карты в админке (по умолчанию 100%)
@@ -51,11 +49,11 @@ from .widgets import GoogleCoordsFieldWidget
             {% load google_maps %}
 
             <!-- Статичная карта с зумом 15 размера 300x200 -->
-            <img src='{{ address|static_map_url:"15,300,200" }}'>
+            <img src='{{ address|google_map_static:"15,300,200" }}'>
 
             <!-- Ссылка на карту в сервисе Google -->
-            <a href='{{ address|external_map_url:15 }}' target='_blank'>посмотреть карту</a>
+            <a href='{{ address|google_map_external:15 }}' target='_blank'>посмотреть карту</a>
 
             <!-- Интерактивная карта -->
-            {% interactive_map address='Тольятти, Мира 6' zoom=14 height=300 %}
+            {% google_map_interactive address='Тольятти, Мира 6' zoom=14 height=300 %}
 """

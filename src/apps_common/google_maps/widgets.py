@@ -7,13 +7,13 @@ class GoogleCoordsFieldWidget(TextInput):
 
     class Media:
         js = (
-            'http://api-maps.yandex.ru/2.0/?load=package.full&lang=%s' % settings.LANGUAGE_CODE,
-            'yandex_maps/admin/js/init.js',
+            'http://maps.googleapis.com/maps/api/js?v=3.exp&language=%s' % settings.LANGUAGE_CODE,
+            'google_maps/admin/js/init.js',
         )
 
     def __init__(self, attrs=None):
         defaults = {
-            'class': 'ymap_field',
+            'class': 'gmap_field',
         }
         if attrs:
             defaults.update(attrs)
