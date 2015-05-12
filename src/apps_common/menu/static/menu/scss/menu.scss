@@ -77,15 +77,15 @@
 
   &.active {
     &:before {
-      top: 14px;
+      top: 50%;
       box-shadow: transparent 0 0 0 0;
-      @include transform(rotate(225deg));
+      @include transform(translateY(-50%) rotate(225deg));
       @include transition(-webkit-transform 0.75s, box-shadow 0s 0s);
       @include transition(transform 0.75s, box-shadow 0s 0s);
     }
     &:after {
-      top: 14px;
-      @include transform(rotate(315deg));
+      top: 50%;
+      @include transform(translateY(-50%) rotate(315deg));
     }
   }
 }

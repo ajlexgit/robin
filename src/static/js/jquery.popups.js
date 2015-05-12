@@ -16,6 +16,9 @@
         // Показать тень между сайтом и окном
         overlay: true
 
+        // Поместить UI вне модального окна
+        outer_ui: false,
+
         // Содержимое окна
         content: ''
 
@@ -282,23 +285,28 @@
                 this.$windowWrapper.removeClass().css('cssText', '');
                 this.$window.removeClass().css('cssText', '');
                 this.$content.removeClass().css('cssText', '');
-            };
+            }
 
             // Установка класса
             if (typeof settings.classes != 'undefined') {
                 this.$container.removeClass().addClass(settings.classes);
-            };
+            }
 
             // Интерфейс
             if (typeof settings.ui != 'undefined') {
-                this.$content.siblings().remove();
                 if ($.isFunction(settings.ui)) {
                     value = settings.ui.call(this, this.internal.ui);
                 } else {
                     value = settings.ui;
                 }
-                this.$window.prepend(value);
-            };
+                if (settings.outer_ui) {
+                    this.$window.siblings().remove();
+                    this.$windowWrapper.prepend(value);
+                } else {
+                    this.$content.siblings().remove();
+                    this.$window.prepend(value);
+                }
+            }
 
             // Содержимое
             if (typeof settings.content != 'undefined') {
@@ -309,28 +317,28 @@
                 }
                 this.$content.empty();
                 this.$content.append(value);
-            };
+            }
 
             // Оверлэй
             if (typeof settings.overlay != 'undefined') {
                 this.__overlay = settings.overlay;
                 this._overlay();
-            };
+            }
 
             // Показ окна
             if (typeof settings.show != 'undefined') {
                 this.__show = settings.show;
-            };
+            }
 
             // Скрытие окна
             if (typeof settings.hide != 'undefined') {
                 this.__hide = settings.hide;
-            };
+            }
 
             // Клик вне окна
             if (typeof settings.outClick != 'undefined') {
                 this.__outClick = settings.outClick;
-            };
+            }
 
             this.trigger('config');
             return this;
@@ -338,7 +346,7 @@
 
         // Навешивание событий
         var format_events = function(events) {
-            var events = events.trim().split(/\s+/);
+            events = events.trim().split(/\s+/);
             return events.join('.popup ') + '.popup';
         };
         this.on = function(events) {
@@ -383,6 +391,7 @@
         classes: '',
         overlay: true,
         content: '',
+        outer_ui: false,
         clean: true,
         ui: function(internal) {
             return internal.call(this);
