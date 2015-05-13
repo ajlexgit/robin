@@ -8,6 +8,8 @@
  * Released under the MIT license - http://opensource.org/licenses/MIT
  ***/
 
+// Pix: fixed href in pager
+ 
 ;(function($){
 
 	var defaults = {
@@ -613,7 +615,7 @@
 				}
 				// var linkContent = slider.settings.buildPager && $.isFunction(slider.settings.buildPager) ? slider.settings.buildPager(i) : i + 1;
 				// add the markup to the string
-				pagerHtml += '<div class="bx-pager-item"><a href="" data-slide-index="' + i + '" class="bx-pager-link">' + linkContent + '</a></div>';
+				pagerHtml += '<div class="bx-pager-item"><a data-slide-index="' + i + '" class="bx-pager-link">' + linkContent + '</a></div>';
 			}
 			// populate the pager element with pager links
 			slider.pagerEl.html(pagerHtml);
@@ -775,7 +777,7 @@
 		 *  - DOM event object
 		 */
 		var clickPagerBind = function(e){
-			e.preventDefault();
+			//e.preventDefault();
 			if (slider.controls.el.hasClass('disabled')) {
 				return;
 			}

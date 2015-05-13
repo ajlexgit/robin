@@ -119,6 +119,7 @@
       display: block;
       width: 20px;
       height: 20px;
+      cursor: pointer;
       text-indent: -9999px;
       @include opacity(0.4);
       @include transition(-webkit-transform 0.3s);
