@@ -152,7 +152,7 @@ class SeoModelAdminMixin():
             model_admin.get_readonly_fields(request, obj),
             model_admin=model_admin)
 
-        extra_context = kwargs.setdefault('extra_context', {})
+        extra_context = kwargs.get('extra_context') or {}
         extra_context.update({
             'entity': entity,
             'adminForm': adminForm,
