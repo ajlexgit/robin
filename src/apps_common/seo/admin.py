@@ -152,8 +152,8 @@ class SeoModelAdminMixin():
             model_admin.get_readonly_fields(request, obj),
             model_admin=model_admin)
 
-        extra_context = kwargs.get('extra_context') or {}
-        extra_context.update({
+        extra_context = kwargs.pop('extra_context', None) or {}
+        kwargs['extra_context'] = dict(extra_context, **{
             'entity': entity,
             'adminForm': adminForm,
         })
