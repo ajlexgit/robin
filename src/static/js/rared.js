@@ -1,21 +1,20 @@
 (function($) {
 
     /*
-
         Обертка над функцией, которая выполняется не чаще,
         чем раз в time миллисекунд.
-
     */
 
     $.rared = function(callback, time) {
-        var timer, that, args;
+        var blocked;
         return function() {
-            that = this;
-            args = arguments;
-            if (timer) return false;
-            timer = setTimeout(function() {
-                callback.apply(that, args);
-                timer = null;
+            if (blocked) return;
+
+            callback.apply(this, arguments);
+
+            blocked = true;
+            setTimeout(function () {
+                blocked = false
             }, time);
         }
     };

@@ -9,25 +9,25 @@
     var parallax = function () {
         var $window = $(window);
         var win_scroll = $window.scrollTop();
-        $('.parallax').each(function () {
+
+        $('.parallax').each(function() {
             var $self = $(this);
 
             var start_point = $self.offset().top;
             var offset = win_scroll - start_point;
 
-            var coords = 'center ' + (-offset * 0.2) + 'px';
-            $self.css({backgroundPosition: coords});
+            $self.css({
+                backgroundPosition: 'center ' + (-offset * 0.2) + 'px'
+            });
         });
     };
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         parallax();
     });
 
-    $(window).on('load', function () {
+    $(window).on('load', function() {
         parallax();
-    }).on('scroll', function () {
-        parallax();
-    });
+    }).on('scroll', $.rared(parallax, 10));
 
 })(jQuery);
