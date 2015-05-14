@@ -5,7 +5,7 @@
         Родительский элемент должен иметь position, отличный от static.
 
         Требует:
-            jquery.mousewheel.js, rared.js
+            rared.js
     */
 
     var userAgent = window.navigator.userAgent.toLowerCase(),
@@ -95,9 +95,9 @@
         }
     };
 
-    $(document).on('scroll mousewheel', $.rared(function() {
+    $(document).on('scroll', $.rared(function() {
         $('.pix-sticky').each(check);
-    }, 30));
+    }, 50));
 
     // Команды для управления ползающими блоками
     $.pixSticky = function(command) {
