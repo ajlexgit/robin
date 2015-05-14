@@ -97,7 +97,7 @@
 
     $(document).on('scroll mousewheel', $.rared(function() {
         $('.pix-sticky').each(check);
-    }, 50));
+    }, 30));
 
     // Команды для управления ползающими блоками
     $.pixSticky = function(command) {

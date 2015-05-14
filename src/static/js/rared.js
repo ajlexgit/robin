@@ -6,15 +6,19 @@
     */
 
     $.rared = function(callback, time) {
-        var blocked;
+        var blocked, that, args;
         return function() {
+            that = this;
+            args = arguments;
+
             if (blocked) return;
 
-            callback.apply(this, arguments);
+            callback.apply(that, args);
 
             blocked = true;
-            setTimeout(function () {
-                blocked = false
+            setTimeout(function() {
+                blocked = false;
+                callback.apply(that, args);
             }, time);
         }
     };
