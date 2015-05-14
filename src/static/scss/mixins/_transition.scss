@@ -7,6 +7,22 @@
   transition: $args;
 }
 
+@mixin transition-property($args...) {
+  -webkit-transition-property: $args;
+  -moz-transition-property: $args;
+  -ms-transition-property: $args;
+  -o-transition-property: $args;
+  transition-property: $args;
+}
+
+@mixin transition-duration($args...) {
+  -webkit-transition-duration: $args;
+  -moz-transition-duration: $args;
+  -ms-transition-duration: $args;
+  -o-transition-duration: $args;
+  transition-duration: $args;
+}
+
 @mixin transition-timing-function($args...) {
   -webkit-transition-timing-function: $args;
   -moz-transition-timing-function: $args;

@@ -6,6 +6,13 @@
 
         Требует:
             rared.js
+
+        Параметры:
+            windowTopOffset         - расстояние от верха окна до ползающего блока
+            containerBottomOffset   - расстояние от низа родительского блока
+                                      до ползающего блока
+            condition               - функция. Если вернёт false, то блок займет
+                                      положение по умолчанию
     */
 
     var userAgent = window.navigator.userAgent.toLowerCase(),
@@ -34,17 +41,26 @@
         // Проверка состояния прокрутки и установка стилей ползающему блоку
         var $element = $(this),
             $container = $element.parent(),
-            windowTopOffset = $element.data('windowTopOffset'),
-            containerBottomOffset = $element.data('containerBottomOffset'),
+            settings = $element.data('settings');
 
-            // верхняя граница смещения страницы
-            winTopY = $container.offset().top - windowTopOffset,
+        // Отмена по условию
+        if (settings.condition.call() === false) {
+            $element.css({
+                position: 'relative',
+                top: 0,
+                bottom: 'auto'
+            });
+            return
+        }
 
-            // Нижняя граница смещения страницы
-            winBottomY = winTopY + $container.outerHeight() - $element.height() - containerBottomOffset,
+        // верхняя граница смещения страницы
+        var winTopY = $container.offset().top - settings.windowTopOffset;
 
-            // Текущее смещение страницы
-            winCurrent = winOffset();
+        // Нижняя граница смещения страницы
+        var winBottomY = winTopY + $container.outerHeight() - $element.height() - settings.containerBottomOffset;
+
+        // Текущее смещение страницы
+        var winCurrent = winOffset();
 
         winBottomY = Math.max(winTopY, winBottomY);
 
@@ -70,7 +86,7 @@
             $element.css({
                 position: 'absolute',
                 top: 'auto',
-                bottom: containerBottomOffset
+                bottom: settings.containerBottomOffset
             });
         } else {
             // Элемент ползает
@@ -88,7 +104,7 @@
             } else {
                 $element.css({
                     position: 'fixed',
-                    top: windowTopOffset,
+                    top: settings.windowTopOffset,
                     bottom: 'auto'
                 });
             }
@@ -109,13 +125,11 @@
     $.fn.pixSticky = function(options) {
         var settings = $.extend(true, {
             windowTopOffset: 0,
-            containerBottomOffset: 0
+            containerBottomOffset: 0,
+            condition: $.noop()
         }, options);
 
-        return this.addClass('pix-sticky').data({
-            windowTopOffset: settings.windowTopOffset,
-            containerBottomOffset: settings.containerBottomOffset
-        }).each(check);
+        return this.addClass('pix-sticky').data('settings', settings).each(check);
     }
 
 })(jQuery);
