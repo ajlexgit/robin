@@ -1,7 +1,18 @@
 (function($) {
-    
+
     $(document).ready(function() {
-        $('.gallery-standart').gallery();
+        $('.gallery-standart').each(function() {
+            var $self = $(this);
+            if (!$self.closest('.empty-form').length) {
+                $self.gallery();
+            }
+        });
+
+        if (window.Suit) {
+            Suit.after_inline.register('gallery', function (inline_prefix, row) {
+                $(row).find('.gallery-standart').gallery();
+            });
+        }
     }).on('click.gallery', '.create-gallery', function() {
         var self = $(this),
             gallery = self.closest('.gallery').gallery('object');
@@ -13,11 +24,11 @@
     }).on('click.gallery', '.delete-gallery', function() {
         var self = $(this),
             gallery = self.closest('.gallery').gallery('object');
-        
+
         if (!confirm(gettext('Are you sure you want to delete this gallery?'))) {
             return false
         }
-        
+
         self.prop('disabled', true);
         gallery.delete().always(function() {
             self.prop('disabled', false);
@@ -36,14 +47,14 @@
         /* Удаление картинки */
         var self = $(this),
             gallery = self.closest('.gallery').gallery('object');
-        
+
         gallery.deleteItem(self.closest('.gallery-item'));
         return false;
     }).on('click.gallery', '.item-rotate-left', function() {
         /* Поворот картинки против часовой стрелки */
         var self = $(this),
             gallery = self.closest('.gallery').gallery('object');
-        
+
         gallery.rotateItem(self.closest('.gallery-item'), 'left').done(function() {
             self.closest('.gallery-item').find('.item-crop').removeData('crop');
         });
@@ -52,11 +63,11 @@
         /* Поворот картинки по часовой стрелке */
         var self = $(this),
             gallery = self.closest('.gallery').gallery('object');
-        
+
         gallery.rotateItem(self.closest('.gallery-item'), 'right').done(function() {
             self.closest('.gallery-item').find('.item-crop').removeData('crop');
         });
         return false;
     });
-    
+
 })(jQuery);

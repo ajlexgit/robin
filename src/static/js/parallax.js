@@ -6,28 +6,39 @@
 
     */
 
+    var parallax_elements = [];
+    var $window = $(window);
+
+    window.fetch_parallax_blocks = function() {
+        parallax_elements = [];
+        $('.parallax').each(function() {
+            parallax_elements.push($(this));
+        });
+    };
+
     var parallax = function () {
-        var $window = $(window);
         var win_scroll = $window.scrollTop();
 
-        $('.parallax').each(function() {
-            var $self = $(this);
-
+        for (var i=0, l=parallax_elements.length; i<l; i++) {
+            var $self = parallax_elements[i];
             var start_point = $self.offset().top;
             var offset = win_scroll - start_point;
 
             $self.css({
-                backgroundPosition: 'center ' + (-offset * 0.2) + 'px'
+                backgroundPosition: 'center ' + Math.round(-offset * 0.2) + 'px'
             });
-        });
+        }
     };
 
     $(document).ready(function() {
+        fetch_parallax_blocks();
         parallax();
     });
 
     $(window).on('load', function() {
         parallax();
-    }).on('scroll', $.rared(parallax, 10));
+    }).on('scroll', $.rared(function() {
+        window.requestAnimationFrame(parallax);
+    }, 50));
 
 })(jQuery);
