@@ -3,7 +3,7 @@
 // Требует position, отличный от static
 @mixin valign_transform() {
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate3d(0, -50%, 0);
 }
 
 // Применяется к родителю

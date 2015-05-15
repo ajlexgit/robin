@@ -76,10 +76,10 @@
     background: #fff;
   }
   &:before {
-    @include transform(translateY(-50%) rotate(45deg));
+    @include transform(translate3d(0, -50%, 0) rotate(45deg));
   }
   &:after {
-    @include transform(translateY(-50%) rotate(-45deg));
+    @include transform(translate3d(0, -50%, 0) rotate(-45deg));
   }
 
   &:hover {

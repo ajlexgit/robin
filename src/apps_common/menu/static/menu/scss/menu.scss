@@ -50,7 +50,7 @@
   height: 27px;
   cursor: pointer;
   text-align: left;
-  z-index: 95;
+  z-index: 105;
   @include unselectable;
   @include media(mobile, tablet) {
     display: inline-block;
@@ -79,13 +79,13 @@
     &:before {
       top: 50%;
       box-shadow: transparent 0 0 0 0;
-      @include transform(translateY(-50%) rotate(225deg));
+      @include transform(translate3d(0, -50%, 0) rotate(225deg));
       @include transition(-webkit-transform 0.75s, box-shadow 0s 0s);
       @include transition(transform 0.75s, box-shadow 0s 0s);
     }
     &:after {
       top: 50%;
-      @include transform(translateY(-50%) rotate(315deg));
+      @include transform(translate3d(0, -50%, 0) rotate(315deg));
     }
   }
 }
