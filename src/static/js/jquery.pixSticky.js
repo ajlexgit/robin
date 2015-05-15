@@ -115,6 +115,13 @@
         $('.pix-sticky').each(check);
     }, 50));
 
+    $(window).on('resize', $.rared(function() {
+        $('.pix-sticky').each(function() {
+            resetWidth($(this));
+            check.call(this);
+        });
+    }, 50));
+
     // Команды для управления ползающими блоками
     $.pixSticky = function(command) {
         if (command == 'refresh') {
