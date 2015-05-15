@@ -52,7 +52,11 @@
     $(window).on('load', function() {
         parallax();
     }).on('scroll', $.rared(function() {
-        window.requestAnimationFrame(parallax);
+        if (window.requestAnimationFrame) {
+            window.requestAnimationFrame(parallax);
+        } else {
+            parallax();
+        }
     }, 50));
 
 })(jQuery);

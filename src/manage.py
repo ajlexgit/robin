@@ -12,7 +12,7 @@ import sys
 # Решить проблему получения url исходника StdImage, когда файла нет
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
-# Gallery: zoom effect, keyboard
+# Gallery: zoom effect, keyboard, max photos count
 
 # Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
 # Капча в комментах, если похоже на спам
