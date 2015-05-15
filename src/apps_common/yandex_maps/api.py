@@ -49,19 +49,12 @@ def get_external_map_url(longitude, latitude, zoom=14):
     ))
 
 
-def get_interactive_map_tag(longitude, latitude,
-                            zoom=14,
-                            width=None, height=None,
-                            header='', content='',
-                            hidden=False):
+def get_interactive_map_tag(longitude, latitude, zoom=14, width=None, height=None):
     """ Возвращает тэг, который будет превращен JS-скриптом в интерактивную Яндекс-карту
     Параметры:
         zoom - начальное значение уровня детализации
         width - ширина карты
         height - высота карты
-        header - заголовок балуна
-        content - содержимое балуна
-        hidden - должна ли карта быть по умолчанию скрыта
     """
 
     if not latitude or not longitude:
@@ -71,17 +64,15 @@ def get_interactive_map_tag(longitude, latitude,
         'data-lng': longitude,
         'data-lat': latitude,
         'data-zoom': zoom,
-        'data-header': header,
-        'data-content': content,
     }
 
     styles = ''
     if width:
         styles += 'width: %spx;' % width
+    else:
+        styles += 'width: 100%;'
     if height:
         styles += 'height: %spx;' % height
-    if hidden:
-        styles += 'display: none;'
     attrs['style'] = styles
 
     return '<div class="yandex-map" %s></div>' % flatatt(attrs)

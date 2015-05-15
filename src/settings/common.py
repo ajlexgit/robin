@@ -227,6 +227,7 @@ PIPELINE_CSS = {
     'main_page': {
         'source_filenames': (
             'scss/video_bg.scss',
+            'yandex_maps/scss/yandex_maps.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',

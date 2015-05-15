@@ -7,6 +7,7 @@ html, body {
 }
 
 body {
+  overflow-x: hidden;
   color: $text_color;
   line-height: 1.4375;
   @include default_font;

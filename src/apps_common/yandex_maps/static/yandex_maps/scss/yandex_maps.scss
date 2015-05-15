@@ -1,0 +1,7 @@
+@import "mixins";
+
+.yandex-map {
+  > ymaps {
+    width: 100% !important;
+  }
+}
