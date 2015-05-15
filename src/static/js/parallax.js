@@ -17,14 +17,28 @@
     };
 
     var parallax = function () {
-        var win_scroll = $window.scrollTop();
+        var $self, i, l;
 
-        for (var i=0, l=parallax_elements.length; i<l; i++) {
-            var $self = parallax_elements[i];
+        // Отключаем на мобилах
+        if (window.innerWidth < 768) {
+            for (i=0, l=parallax_elements.length; i<l; i++) {
+                $self = parallax_elements[i];
+                $self.css({
+                    backgroundPosition: '',
+                    backgroundAttachment: 'scroll'
+                });
+            }
+            return
+        }
+
+        var win_scroll = $window.scrollTop();
+        for (i=0, l=parallax_elements.length; i<l; i++) {
+            $self = parallax_elements[i];
             var start_point = $self.offset().top;
             var offset = win_scroll - start_point;
 
             $self.css({
+                backgroundAttachment: 'fixed',
                 backgroundPosition: 'center ' + Math.round(-offset * 0.2) + 'px'
             });
         }
