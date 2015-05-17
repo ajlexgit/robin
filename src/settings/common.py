@@ -269,6 +269,7 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
+            'js/jquery.mousewheel.js',
             'js/parallax.js',
             'js/video_bg.js',
             'main/js/index.js',

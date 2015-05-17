@@ -13,19 +13,17 @@ class CommentsModelAdminMixin:
     """
     suit_comments_position = 'top'
     suit_comments_tab = None
-    
-    class Media:
-        js = (
-            'comments/admin/js/comments.js',
-        )
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         default_includes = getattr(self, 'suit_form_includes', ())
         self.suit_form_includes = default_includes + (
             ('comments/admin/admin_include.html', self.suit_comments_position, self.suit_comments_tab),
         )
-    
+        self.ADDITION_JS += (
+            'comments/admin/js/comments.js',
+        )
+
     def change_view(self, request, object_id, *args, **kwargs):
         if object_id:
             try:
@@ -46,8 +44,8 @@ class CommentsModelAdminMixin:
                     'entity': entity,
                 })
         return super().change_view(request, object_id, *args, **kwargs)
-    
-    
+
+
 class CommentAdminForm(forms.ModelForm):
     class Meta:
         models = Comment
@@ -65,18 +63,17 @@ class CommentAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display = ('short_text', 'user', 'deleted', 'created')
     list_display_links = ('short_text', )
     readonly_fields = ('user', 'rating', 'created', 'deleted', 'deleted_by')
-    
+
     class Media:
         js = (
             'comments/admin/js/comments.js',
         )
-    
+
     def has_add_permission(self, request):
         return False
-    
+
     def has_delete_permission(self, request, obj=None):
         return False
-    
+
     def get_actions(self, request):
         return ()
-        

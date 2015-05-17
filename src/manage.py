@@ -4,12 +4,10 @@ import sys
 
 # popups: проверить кнопку закрытия
 # Google maps: field
-# Maps: передать язык скриптам, параметры карты (UI, zoom), получение карты в JS, событие инициализации карты
 
 # типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
 # Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
-# Решить проблему получения url исходника StdImage, когда файла нет
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
 # Gallery: zoom effect, keyboard, max photos count
