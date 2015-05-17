@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
     url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
     url(r'^yandex_maps/', include('yandex_maps.urls', namespace='yandex_maps')),
+    url(r'^google_maps/', include('google_maps.urls', namespace='google_maps')),
 )
 
 

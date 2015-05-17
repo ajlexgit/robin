@@ -7,13 +7,13 @@ class YmapCoordsFieldWidget(TextInput):
 
     class Media:
         js = (
-            'http://api-maps.yandex.ru/2.0/?load=package.full&lang=%s' % settings.LANGUAGE_CODE,
             'yandex_maps/admin/js/init.js',
+            '//api-maps.yandex.ru/2.0-stable/?load=package.standard&onload=init_yandex_maps&lang=%s' % settings.LANGUAGE_CODE,
         )
 
     def __init__(self, attrs=None):
         defaults = {
-            'class': 'ymap_field',
+            'class': 'yandex-map',
         }
         if attrs:
             defaults.update(attrs)

@@ -37,7 +37,7 @@ from .widgets import YmapCoordsFieldWidget
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var map_object = $('#id_coords').data('map');
+                var map_object = $('#id_coords').next('div').data('map');
                 map_object.addressCoords($(this).val());
             });
 
