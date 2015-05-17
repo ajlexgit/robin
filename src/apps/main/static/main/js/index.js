@@ -1,14 +1,5 @@
 (function($) {
 
-    // Appear - блоки
-    $(document).on('appear', '.appear-block', function () {
-        $(this).addClass('visible');
-    }).ready(function () {
-        $('.appear-block').appear();
-        $.force_appear();
-    });
-
-
     // Видео на фоне
     $(document).ready(function() {
         $('#video').winHeight().videoBackground({
@@ -22,6 +13,18 @@
         $('#video').addClass('video-loaded');
     });
 
+    // Parallax
+    $(document).ready(function () {
+        $('#parallax_sample').parallax();
+    });
+
+    // Appear - блоки
+    $(document).on('appear', '.appear-block', function () {
+        $(this).addClass('visible');
+    }).ready(function () {
+        $('.appear-block').appear();
+        $.force_appear();
+    });
 
     // Центрирование карты гугла
     $(document).on('google-maps-ready', function() {

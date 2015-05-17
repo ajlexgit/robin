@@ -65,15 +65,15 @@
 }
 
 #parallax_sample {
+  position: relative;
   height: 600px;
-  background: url(../img/background.jpeg) no-repeat center top fixed;
-  background-size: cover;
 
   .appear-block {
     position: relative;
     padding-top: 20px;
     padding-bottom: 20px;
     background: blue;
+    z-index: 3;
     @include valign_transform;
 
     > div {

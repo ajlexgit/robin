@@ -1,62 +1,113 @@
 (function() {
 
     /*
+        Параллакс-эффект для блока.
+        Блок должен иметь position, отличный от static.
 
-        Параллакс-эффект для блока с background-image
+        <div id="block">
+            <div class="parallax" style="background-image: url(../img/bg.jpg)">
 
+            ...
+        </div>
+
+
+        $(document).ready(function () {
+            $('#block').parallax({
+                enlarge: 400,
+                intensity: 0.5
+            });
+        });
     */
 
-    var parallax_elements = [];
+    var parallaxImages = [];
     var $window = $(window);
 
-    window.fetch_parallax_blocks = function() {
-        parallax_elements = [];
-        $('.parallax').each(function() {
-            parallax_elements.push($(this));
+    var scrollHandler = function() {
+        // Отключаем на мобилах
+        if (window.innerWidth < 768) {
+            $.each(parallaxImages, function (index, parallaxImage) {
+                parallaxImage.background.css({
+                    top: 0
+                });
+            });
+            return
+        };
+
+        var win_scroll = $window.scrollTop();
+        var win_height = document.documentElement.clientHeight;
+
+        $.each(parallaxImages, function(index, parallaxImage) {
+            var block_top = parallaxImage.block.offset().top;
+            var block_height = parallaxImage.block_height;
+            var bg_height = parallaxImage.bg_height;
+
+            var start_point = block_top - win_height;
+            var end_point = block_top + block_height;
+
+            if ((win_scroll >= start_point) && (win_scroll <= end_point)) {
+                var scroll_length = end_point - start_point;
+                var position = (win_scroll - start_point) / scroll_length;
+
+                var offset = position * parallaxImage.var_offset - parallaxImage.const_offset;
+
+                parallaxImage.background.css({
+                    top: Math.round(offset)
+                });
+            }
         });
     };
 
-    var parallax = function () {
-        var $self, i, l;
+    var recalcParallax = function(parallaxImage) {
+        var block_height = parallaxImage.block.height();
+        var bg_height = block_height + parallaxImage.enlarge;
 
-        // Отключаем на мобилах
-        if (window.innerWidth < 768) {
-            for (i=0, l=parallax_elements.length; i<l; i++) {
-                $self = parallax_elements[i];
-                $self.css({
-                    backgroundPosition: '',
-                    backgroundAttachment: 'scroll'
-                });
-            }
-            return
-        }
+        var min_delta = (block_height - parallaxImage.enlarge) / 2;
+        var max_delta = (block_height + parallaxImage.enlarge);
+        var delta = min_delta + (max_delta - min_delta) * parallaxImage.intensity;
 
-        var win_scroll = $window.scrollTop();
-        for (i=0, l=parallax_elements.length; i<l; i++) {
-            $self = parallax_elements[i];
-            var start_point = $self.offset().top;
-            var offset = win_scroll - start_point;
+        parallaxImage.const_offset = bg_height - delta;
+        parallaxImage.var_offset = bg_height + block_height - 2 * delta;
 
-            $self.css({
-                backgroundAttachment: 'fixed',
-                backgroundPosition: 'center ' + Math.round(-offset * 0.2) + 'px'
-            });
-        }
+        parallaxImage.bg_height = bg_height;
+        parallaxImage.block_height = block_height;
+
+        parallaxImage.background.height(bg_height);
     };
 
-    $(document).ready(function() {
-        fetch_parallax_blocks();
-        parallax();
-    });
-
-    $(window).on('load', function() {
-        parallax();
-    }).on('scroll', $.rared(function() {
+    $window.on('scroll', function() {
         if (window.requestAnimationFrame) {
-            window.requestAnimationFrame(parallax);
+            window.requestAnimationFrame(scrollHandler);
         } else {
-            parallax();
+            scrollHandler();
         }
+    }).on('resize', $.rared(function() {
+        $.each(parallaxImages, function(index, parallaxImage) {
+            recalcParallax(parallaxImage);
+        });
     }, 50));
+
+    $.fn.parallax = function(options) {
+        var settings = $.extend({
+            enlarge: 400,
+            intensity: 0.5
+        }, options);
+
+        return this.each(function() {
+            var $block = $(this);
+            var $background = $block.find('.parallax:first');
+            if (!$background.length) return;
+
+            $block.css('overflow', 'hidden');
+
+            var parallaxImage = {
+                block: $block,
+                background: $background,
+                enlarge: settings.enlarge,
+                intensity: settings.intensity
+            }
+            recalcParallax(parallaxImage);
+            parallaxImages.push(parallaxImage);
+        });
+    };
 
 })(jQuery);
