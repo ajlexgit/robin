@@ -4,7 +4,7 @@
 
     // Получение координат из строки "lng, lat"
     var text2coords = function(text) {
-        var coords = text.split(',').reverse();
+        var coords = text.split(',');
         if (coords.length == 2)
             return coords.map(parseFloat);
         else
@@ -15,7 +15,7 @@
     var coords2text = function(coords) {
         return coords.map(function (coord) {
             return coord.toFixed(6)
-        }).reverse().join(', ')
+        }).join(', ')
     };
 
     var YandexMap = function($field, $map) {

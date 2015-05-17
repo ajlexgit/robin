@@ -8,7 +8,7 @@ HOSTED_MAPS_URL = 'http://maps.google.com/maps?'
 GEOCODE_URL = 'http://maps.googleapis.com/maps/api/geocode/xml?'
 
 
-def _format_point(latitude, longitude):
+def _format_point(longitude, latitude):
     return '%0.7f,%0.7f' % (float(latitude), float(longitude),)
 
 
@@ -19,7 +19,7 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
 
     width = width or getattr(settings, 'GOOGLE_MAPS_STATIC_WIDTH', 300)
     height = height or getattr(settings, 'GOOGLE_MAPS_STATIC_HEIGHT', 200)
-    point = _format_point(latitude, longitude)
+    point = _format_point(longitude, latitude)
 
     return STATIC_MAPS_URL + parse.urlencode(dict(
         center=point,
@@ -36,7 +36,7 @@ def get_external_map_url(longitude, latitude, zoom=14):
     if not latitude or not longitude:
         return ''
 
-    point = _format_point(latitude, longitude)
+    point = _format_point(longitude, latitude)
 
     return HOSTED_MAPS_URL + parse.urlencode(dict(
         q='loc:%s' % point,

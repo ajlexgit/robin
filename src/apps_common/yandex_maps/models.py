@@ -4,7 +4,7 @@ from .api import geocode
 from .fields import YmapCoords
 
 # Координаты, возвращаемые в случае, если настоящие координаты не определены
-DEFAULT = (49.418785, 53.510171)
+DEFAULT = (53.510171, 49.418785)
 
 
 class MapAndAddress(models.Model):
