@@ -3,7 +3,7 @@ import os
 import sys
 
 # popups: проверить кнопку закрытия
-# Google maps: field
+# Maps: inline check
 
 # типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
