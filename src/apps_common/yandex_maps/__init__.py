@@ -1,7 +1,7 @@
 from .api import geocode
 from .models import geocode_cached
-from .fields import YmapCoords, YmapCoordsField
-from .widgets import YmapCoordsFieldWidget
+from .fields import YmapCoords, YandexCoordsField
+from .widgets import YandexCoordsFieldWidget
 
 """
     Необходимо подключить:
@@ -28,17 +28,17 @@ from .widgets import YmapCoordsFieldWidget
             lng, lat = geocode_cached('Тольятти, Мира 35', timeout=0.5)
 
         models.py:
-            from yandex_maps import YmapCoordsField
+            from yandex_maps import YandexCoordsField
             ...
 
             address = models.CharField(_('адрес'), max_length=255, blank=True)
-            coords = YmapCoordsField(_('координаты'), null=True, blank=True)
+            coords = YandexCoordsField(_('координаты'), null=True, blank=True)
 
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var map_object = $('#id_coords').next('div').data('map');
-                map_object.addressCoords($(this).val());
+                var ymap_object = $('#id_coords').next('div').data('map');
+                ymap_object.addressCoords($(this).val());
             });
 
         template.html:

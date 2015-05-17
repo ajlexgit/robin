@@ -16,7 +16,6 @@
         that.map = new ymaps.Map(ymap_id, {
             center: that.center,
             zoom: parseInt(map_data.zoom) || 14,
-            type: 'yandex#publicMap',
             behaviors: ['default', 'scrollZoom']
         });
 
@@ -35,7 +34,7 @@
     $(document).ready(function () {
         var script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = '//api-maps.yandex.ru/2.0-stable/?load=package.standard&onload=init_yandex_maps&lang=ru-RU';
+        script.src = '//api-maps.yandex.ru/2.0-stable/?load=package.standard&onload=init_yandex_maps&lang=ru';
         document.body.appendChild(script);
     }).on('yandex-maps-ready', function() {
         // Инициализация всех карт на странице

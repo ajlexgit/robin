@@ -39,7 +39,7 @@
     $(document).ready(function() {
         var script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps';
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&language=ru';
         document.body.appendChild(script);
     }).on('google-maps-ready', function() {
         // Инициализация всех карт на странице

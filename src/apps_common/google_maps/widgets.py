@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.forms.widgets import TextInput
 
 
@@ -8,7 +7,6 @@ class GoogleCoordsFieldWidget(TextInput):
     class Media:
         js = (
             'google_maps/admin/js/init.js',
-            '//maps.googleapis.com/maps/api/js?v=3.exp&language=%s' % settings.LANGUAGE_CODE,
         )
 
     def __init__(self, attrs=None):

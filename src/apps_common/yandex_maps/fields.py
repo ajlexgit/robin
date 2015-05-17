@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from .widgets import YmapCoordsFieldWidget
+from .widgets import YandexCoordsFieldWidget
 
 
 class YmapCoords():
@@ -31,7 +31,7 @@ class YmapCoords():
             return ''
 
 
-class YmapCoordsField(models.Field, metaclass=models.SubfieldBase):
+class YandexCoordsField(models.Field, metaclass=models.SubfieldBase):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('max_length', 32)
         super().__init__(*args, **kwargs)
@@ -65,7 +65,7 @@ class YmapCoordsField(models.Field, metaclass=models.SubfieldBase):
         super().validate(value, model_instance)
 
     def formfield(self, **kwargs):
-        kwargs['widget'] = YmapCoordsFieldWidget(attrs={
+        kwargs['widget'] = YandexCoordsFieldWidget(attrs={
             'data-width': getattr(settings, 'ADMIN_YANDEX_MAP_WIDTH', ''),
             'data-height': getattr(settings, 'ADMIN_YANDEX_MAP_HEIGHT', ''),
         })

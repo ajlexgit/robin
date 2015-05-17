@@ -36,8 +36,8 @@ from .widgets import GoogleCoordsFieldWidget
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var map_object = $('#id_coords').next('div').data('map');
-                map_object.addressCoords($(this).val());
+                var gmap_object = $('#id_coords').next('div').data('map');
+                gmap_object.addressCoords($(this).val());
             });
 
         template.html:
