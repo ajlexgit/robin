@@ -93,4 +93,4 @@ def geocode(address, timeout=5.0):
     except IndexError:
         return None
 
-    return reversed(pos_data.split())
+    return tuple(pos_data.split())

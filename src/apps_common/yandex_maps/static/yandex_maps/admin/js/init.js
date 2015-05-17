@@ -6,16 +6,16 @@
     var text2coords = function(text) {
         var coords = text.split(',');
         if (coords.length == 2)
-            return coords.map(parseFloat);
+            return coords.map(parseFloat).reverse();
         else
             return [53.510171, 49.418785];
     };
 
     // Получение текста координат
     var coords2text = function(coords) {
-        return coords.map(function (coord) {
+        return coords.map(function(coord) {
             return coord.toFixed(6)
-        }).join(', ')
+        }).reverse().join(', ')
     };
 
     var YandexMap = function($field, $map) {
@@ -63,7 +63,7 @@
 
         that.map = new ymaps.Map(ymap_id, {
             center: that.center,
-            zoom: 14,
+            zoom: 15,
             behaviors: ['default', 'scrollZoom']
         });
 
@@ -72,10 +72,7 @@
         that.map.controls.add('typeSelector');
 
         // Создание маркера
-        that.marker = new ymaps.Placemark(that.center, {
-            balloonContentHeader: 'My point',
-            balloonContentBody: 'Be happy :)'
-        }, {
+        that.marker = new ymaps.Placemark(that.center, {}, {
             draggable: true
         });
 

@@ -1,101 +1,88 @@
 (function ($) {
 
     // Получение координат из строки "lng, lat"
-    var text2coords = function (text) {
+    var text2coords = function(text) {
         var coords = text.split(',');
         if (coords.length == 2)
             coords = coords.map(parseFloat);
         else
-            coords = [53.510171, 49.418785];
+            coords = [49.418785, 53.510171];
 
-        return new google.maps.LatLng(coords[0], coords[1]);
+        return new google.maps.LatLng(coords[1], coords[0]);
     };
 
     // Получение текста координат
-    var coords2text = function (coords) {
-        return coords.map(function (coord) {
+    var coords2text = function(coords) {
+        coords = [coords.lng(), coords.lat()];
+        return coords.map(function(coord) {
             return coord.toFixed(6)
         }).join(', ')
     };
 
-    // TODO
-    var GoogleMap = function ($field, $map) {
+    var GoogleMap = function($field, $map) {
         var that = this;
 
-        console.log($field, $map);
+        // Получение координат по адресу
+        that.addressCoords = function(address) {
+            if (that.query) {
+                that.query.abort();
+            }
+
+            that.query = $.ajax({
+                url: '/google_maps/get_coords/',
+                type: 'POST',
+                data: {
+                    address: address
+                },
+                beforeSend: function() {
+                    // Блокировка кнопок при запросе
+                    this.old_val = $field.val();
+                    $field.prop('readonly', true).val(gettext('Please, wait...'));
+                    $('.save-box button').prop('disabled', true);
+                },
+                success: function(response) {
+                    $field.val(response || '').change();
+                },
+                error: function(xhr, status, error) {
+                    $field.val(this.old_val);
+                    if (status != 'abort') {
+                        alert(gettext('Address location failed'));
+                    }
+                },
+                complete: function() {
+                    $field.prop('readonly', false);
+                    $('.save-box button').prop('disabled', false);
+                }
+            });
+        };
+
         that.center = text2coords($field.val());
 
         that.map = new google.maps.Map($map.get(0), {
-            zoom: 14,
+            zoom: 15,
             center: that.center
         });
 
+        // Создание маркера
         that.marker = new google.maps.Marker({
             map: that.map,
+            draggable: true,
             position: that.center
         });
 
-        //// Получение координат по адресу
-        //that.addressCoords = function (address) {
-        //    if (that.query) {
-        //        that.query.abort();
-        //    }
-        //
-        //    that.query = $.ajax({
-        //        url: '/google_maps/get_coords/',
-        //        type: 'POST',
-        //        data: {
-        //            address: address
-        //        },
-        //        beforeSend: function () {
-        //            // Блокировка кнопок при запросе
-        //            this.old_val = $field.val();
-        //            $field.prop('readonly', true).val(gettext('Please, wait...'));
-        //            $('.save-box button').prop('disabled', true);
-        //        },
-        //        success: function (response) {
-        //            $field.val(response || '').change();
-        //        },
-        //        error: function (xhr, status, error) {
-        //            $field.val(this.old_val);
-        //            if (status != 'abort') {
-        //                alert(gettext('Address location failed'));
-        //            }
-        //        },
-        //        complete: function () {
-        //            $field.prop('readonly', false);
-        //            $('.save-box button').prop('disabled', false);
-        //        }
-        //    });
-        //};
-        //
-        //that.map.controls.add('zoomControl');
-        //that.map.controls.add('mapTools');
-        //that.map.controls.add('typeSelector');
-        //
-        //// Создание маркера
-        //that.marker = new ymaps.Placemark(that.center, {
-        //    balloonContentHeader: 'My point',
-        //    balloonContentBody: 'Be happy :)'
-        //}, {
-        //    draggable: true
-        //});
-        //
-        //// Отображение координат в поле при перетаскивании маркера
-        //that.marker.events.add('dragend', function () {
-        //    var coords = that.marker.geometry.getCoordinates();
-        //    $field.val(coords2text(coords));
-        //});
-        //
-        //// Отображение координат в поле при двойном клике на карте
-        //that.map.events.add('dblclick', function (e) {
-        //    var coords = e.get('coords');
-        //    that.marker.geometry.setCoordinates(coords);
-        //    $field.val(coords2text(coords));
-        //    e.preventDefault();
-        //});
-        //
-        //that.map.geoObjects.add(that.marker);
+        // Отображение координат в поле при перетаскивании маркера
+        google.maps.event.addListener(that.marker, 'dragend', function() {
+            var coords = that.marker.getPosition();
+            $field.val(coords2text(coords));
+        });
+
+        // Отображение координат в поле при двойном клике на карте
+        google.maps.event.addListener(that.map, 'dblclick', function(e) {
+            var coords = e.latLng;
+            that.marker.setPosition(coords);
+            $field.val(coords2text(coords));
+            e.preventDefault();
+        });
     };
 
     var init_map_field = function() {
@@ -150,10 +137,9 @@
         var $map = $field.next('div');
         var map_object = $map.data('map');
 
-        // TODO
         var coords = text2coords($field.val());
         map_object.map.panTo(coords);
-        map_object.marker.geometry.setCoordinates(coords);
+        map_object.marker.setPosition(coords);
     });
 
 })(jQuery);

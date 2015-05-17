@@ -4,7 +4,7 @@ from .api import geocode
 from .fields import GoogleCoords
 
 # Координаты, возвращаемые в случае, если настоящие координаты не определены
-DEFAULT = (53.510171, 49.418785)
+DEFAULT = (49.418785, 53.510171)
 
 
 class MapAndAddress(models.Model):
