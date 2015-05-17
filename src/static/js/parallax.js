@@ -74,13 +74,13 @@
         parallaxImage.background.height(bg_height);
     };
 
-    $window.on('scroll', function() {
+    $window.on('scroll', $.rared(function() {
         if (window.requestAnimationFrame) {
             window.requestAnimationFrame(scrollHandler);
         } else {
             scrollHandler();
         }
-    }).on('resize', $.rared(function() {
+    }, 30)).on('resize', $.rared(function() {
         $.each(parallaxImages, function(index, parallaxImage) {
             recalcParallax(parallaxImage);
         });

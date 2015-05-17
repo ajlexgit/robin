@@ -26,14 +26,4 @@
         $.force_appear();
     });
 
-    // Центрирование карты гугла
-    $(document).on('google-maps-ready', function() {
-        google.maps.event.addDomListener(window, 'resize', $.rared(function() {
-            $('.google-map').each(function () {
-                var gmap = $(this).data('map');
-                gmap.map.setCenter(gmap.center);
-            });
-        }, 300));
-    });
-
 })(jQuery);

@@ -1,5 +1,17 @@
 (function ($) {
 
+    /*
+        Центрирование карты гугла при ресайзе:
+            $(document).on('google-maps-ready', function() {
+                google.maps.event.addDomListener(window, 'resize', $.rared(function() {
+                    $('.google-map').each(function () {
+                        var gmap = $(this).data('map');
+                        gmap.map.setCenter(gmap.center);
+                    });
+                }, 300));
+            });
+    */
+
     var GoogleMap = function($map) {
         var that = this;
         var map_data = $map.data();
