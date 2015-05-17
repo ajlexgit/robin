@@ -30,20 +30,15 @@ from .widgets import GoogleCoordsFieldWidget
             from google_maps import GoogleCoordsField
             ...
 
-            address = models.CharField('адрес', max_length=255, blank=True)
-            coords = GoogleCoordsField('координаты',
-                null=True,
-                blank=True
-            )
+            address = models.CharField(_('адрес'), max_length=255, blank=True)
+            coords = GoogleCoordsField(_('координаты'), null=True, blank=True)
 
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var coords = $('#id_coords'),
-                    map = coords.data('map');
-
-                map.addressCoords( coords, $(this).val() );
-            })
+                var map_object = $('#id_coords').data('map');
+                map_object.addressCoords($(this).val());
+            });
 
         template.html:
             {% load google_maps %}

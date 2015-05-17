@@ -28,12 +28,7 @@
     var scrollHandler = function() {
         // Отключаем на мобилах
         if (window.innerWidth < 768) {
-            $.each(parallaxImages, function (index, parallaxImage) {
-                parallaxImage.background.css({
-                    top: 0
-                });
-            });
-            return
+            return;
         };
 
         var win_scroll = $window.scrollTop();
