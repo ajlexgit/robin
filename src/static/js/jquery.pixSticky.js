@@ -5,7 +5,7 @@
         Родительский элемент должен иметь position, отличный от static.
 
         Требует:
-            rared.js
+            rared.js, jquery.mousewheel.js
 
         Параметры:
             windowTopOffset         - расстояние от верха окна до ползающего блока
@@ -113,7 +113,9 @@
 
     $(document).on('scroll', $.rared(function() {
         $('.pix-sticky').each(check);
-    }, 50));
+    }, 50)).on('mousewheel', function() {
+        $('.pix-sticky').each(check);
+    });
 
     $(window).on('resize', $.rared(function() {
         $('.pix-sticky').each(function() {

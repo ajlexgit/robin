@@ -4,6 +4,9 @@
         Параллакс-эффект для блока.
         Блок должен иметь position, отличный от static.
 
+        Требует:
+            rared.js, jquery.mousewheel.js
+
         <div id="block">
             <div class="parallax" style="background-image: url(../img/bg.jpg)">
 
