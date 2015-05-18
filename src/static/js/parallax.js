@@ -22,20 +22,12 @@
         });
     */
 
+    var enabled = false;
+    var MIN_WIDTH = 768;
     var parallaxImages = [];
     var $window = $(window);
 
     var scrollHandler = function() {
-        // Отключаем на мобилах
-        if (window.innerWidth < 768) {
-            $.each(parallaxImages, function (index, parallaxImage) {
-                parallaxImage.background.css({
-                    top: 0
-                });
-            });
-            return
-        }
-
         var win_scroll = $window.scrollTop();
         var win_height = document.documentElement.clientHeight;
 
@@ -76,23 +68,45 @@
         parallaxImage.background.height(bg_height);
     };
 
-    $(document).on('scroll.parallax', $.rared(function() {
+    var _scrollHandler = $.rared(function () {
         if (window.requestAnimationFrame) {
             window.requestAnimationFrame(scrollHandler);
         } else {
             scrollHandler();
         }
-    }, 25)).on('mousewheel.parallax', function() {
-        scrollHandler();
-    });
+    }, 25);
+
+
+    // Подключение событий
+    enabled = window.innerWidth >= MIN_WIDTH;
+    if (enabled) {
+        $(document).on('scroll.parallax', _scrollHandler).on('mousewheel.parallax', scrollHandler);
+        $window.on('load.parallax', scrollHandler);
+    }
 
     $window.on('resize.parallax', $.rared(function() {
         $.each(parallaxImages, function(index, parallaxImage) {
             recalcParallax(parallaxImage);
         });
-    }, 50)).on('load', function() {
-        scrollHandler();
-    });
+
+        // Отключаем на мобилах
+        if (enabled && (window.innerWidth < MIN_WIDTH)) {
+            enabled = false;
+            $(document).off('.parallax');
+            $window.off('load.parallax');
+
+            $.each(parallaxImages, function (index, parallaxImage) {
+                parallaxImage.background.css({
+                    top: 0
+                });
+            });
+        } else if (!enabled && (window.innerWidth >= MIN_WIDTH)) {
+            enabled = true;
+            $(document).on('scroll.parallax', _scrollHandler).on('mousewheel.parallax', scrollHandler);
+            $window.on('load.parallax', scrollHandler);
+            scrollHandler();
+        }
+    }, 50));
 
     $.fn.parallax = function(options) {
         var settings = $.extend({
