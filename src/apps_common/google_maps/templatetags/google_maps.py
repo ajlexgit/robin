@@ -52,7 +52,7 @@ def google_map_external(address, zoom=14):
 
 
 @register.simple_tag
-def google_map_interactive(address=None, *args,  **kwargs):
+def google_map_interactive(address=None, **kwargs):
     """
     Тег, который выводит <div> с интерактивной картой.
     На странице должны быть подключены JS Яндекс Карт и скрипт инициализации
@@ -70,8 +70,8 @@ def google_map_interactive(address=None, *args,  **kwargs):
         {% google_map_interactive address=company.coords height=400 %}
         {% google_map_interactive address='Тольятти, Мира 6' zoom=14 %}
     """
-    if not address:
-        return ''
-
-    lng, lat = geocode_cached(address)
-    return get_interactive_map_tag(lng, lat, *args,  **kwargs)
+    if address:
+        lng, lat = geocode_cached(address)
+        return get_interactive_map_tag(lng, lat, **kwargs)
+    else:
+        return get_interactive_map_tag(**kwargs)

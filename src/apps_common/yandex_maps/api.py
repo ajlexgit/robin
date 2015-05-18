@@ -9,6 +9,8 @@ GEOCODE_URL = 'http://geocode-maps.yandex.ru/1.x/?'
 
 YANDEX_KEY = getattr(settings, 'YANDEX_MAPS_API_KEY', 'AES6VU8BAAAAhUgqJAIAFUXpiA6FBbStP2IMXobI37-poNIAAAAAAAAAAABFcoRJbRZ1Wym2ZqKgqBHebe4FPQ==')
 
+# Координаты, возвращаемые в случае, если настоящие координаты не определены
+DEFAULT = (49.418785, 53.510171)
 
 def _format_point(longitude, latitude):
     return '%0.7f,%0.7f' % (float(longitude), float(latitude),)
@@ -17,7 +19,7 @@ def _format_point(longitude, latitude):
 def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
     """ Возвращает URL статичной карты Яндекса """
     if not latitude or not longitude:
-        return ''
+        longitude, latitude = DEFAULT
 
     width = width or getattr(settings, 'YANDEX_MAPS_STATIC_WIDTH', 300)
     height = height or getattr(settings, 'YANDEX_MAPS_STATIC_HEIGHT', 200)
@@ -37,7 +39,7 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
 def get_external_map_url(longitude, latitude, zoom=14):
     """ Возвращает URL карты на сервисе Яндекс.Карты """
     if not latitude or not longitude:
-        return ''
+        longitude, latitude = DEFAULT
 
     point = _format_point(longitude, latitude)
 
@@ -49,7 +51,7 @@ def get_external_map_url(longitude, latitude, zoom=14):
     ))
 
 
-def get_interactive_map_tag(longitude, latitude, zoom=14, width=None, height=None):
+def get_interactive_map_tag(longitude=None, latitude=None, zoom=14, width=None, height=None):
     """ Возвращает тэг, который будет превращен JS-скриптом в интерактивную Яндекс-карту
     Параметры:
         zoom - начальное значение уровня детализации
@@ -58,7 +60,7 @@ def get_interactive_map_tag(longitude, latitude, zoom=14, width=None, height=Non
     """
 
     if not latitude or not longitude:
-        return ''
+        longitude, latitude = DEFAULT
 
     attrs = {
         'data-lng': longitude,

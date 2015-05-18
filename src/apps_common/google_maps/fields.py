@@ -24,6 +24,9 @@ class GoogleCoords():
     def __bool__(self):
         return not self.lng is None and not self.lat is None
 
+    def __iter__(self):
+        return iter((self.lng, self.lat))
+        
     def __str__(self):
         if self:
             return '{0}, {1}'.format(self.lng, self.lat)

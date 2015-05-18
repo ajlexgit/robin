@@ -7,6 +7,8 @@ STATIC_MAPS_URL = 'http://maps.googleapis.com/maps/api/staticmap?'
 HOSTED_MAPS_URL = 'http://maps.google.com/maps?'
 GEOCODE_URL = 'http://maps.googleapis.com/maps/api/geocode/xml?'
 
+# Координаты, возвращаемые в случае, если настоящие координаты не определены
+DEFAULT = (49.418785, 53.510171)
 
 def _format_point(longitude, latitude):
     return '%0.7f,%0.7f' % (float(latitude), float(longitude),)
@@ -15,7 +17,7 @@ def _format_point(longitude, latitude):
 def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
     """ Возвращает URL статичной карты Google """
     if not latitude or not longitude:
-        return ''
+        longitude, latitude = DEFAULT
 
     width = width or getattr(settings, 'GOOGLE_MAPS_STATIC_WIDTH', 300)
     height = height or getattr(settings, 'GOOGLE_MAPS_STATIC_HEIGHT', 200)
@@ -34,7 +36,7 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
 def get_external_map_url(longitude, latitude, zoom=14):
     """ Возвращает URL карты на сервисе Google """
     if not latitude or not longitude:
-        return ''
+        longitude, latitude = DEFAULT
 
     point = _format_point(longitude, latitude)
 
@@ -46,7 +48,7 @@ def get_external_map_url(longitude, latitude, zoom=14):
     ))
 
 
-def get_interactive_map_tag(longitude, latitude, zoom=14, width=None, height=None):
+def get_interactive_map_tag(longitude=None, latitude=None, zoom=14, width=None, height=None):
     """
     Возвращает тэг, который будет превращен JS-скриптом в интерактивную Google-карту
     Параметры:
@@ -56,7 +58,7 @@ def get_interactive_map_tag(longitude, latitude, zoom=14, width=None, height=Non
     """
 
     if not latitude or not longitude:
-        return ''
+        longitude, latitude = DEFAULT
 
     attrs = {
         'data-lng': longitude,

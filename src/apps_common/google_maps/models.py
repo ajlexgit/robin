@@ -1,10 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from .api import geocode
+from .api import geocode, DEFAULT
 from .fields import GoogleCoords
-
-# Координаты, возвращаемые в случае, если настоящие координаты не определены
-DEFAULT = (49.418785, 53.510171)
 
 
 class MapAndAddress(models.Model):
