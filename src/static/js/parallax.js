@@ -28,8 +28,13 @@
     var scrollHandler = function() {
         // Отключаем на мобилах
         if (window.innerWidth < 768) {
-            return;
-        };
+            $.each(parallaxImages, function (index, parallaxImage) {
+                parallaxImage.background.css({
+                    top: 0
+                });
+            });
+            return
+        }
 
         var win_scroll = $window.scrollTop();
         var win_height = document.documentElement.clientHeight;
@@ -37,7 +42,6 @@
         $.each(parallaxImages, function(index, parallaxImage) {
             var block_top = parallaxImage.block.offset().top;
             var block_height = parallaxImage.block_height;
-            var bg_height = parallaxImage.bg_height;
 
             var start_point = block_top - win_height;
             var end_point = block_top + block_height;
@@ -56,7 +60,7 @@
     };
 
     var recalcParallax = function(parallaxImage) {
-        var block_height = parallaxImage.block.height();
+        var block_height = parallaxImage.block.outerHeight();
         var bg_height = block_height + parallaxImage.enlarge;
 
         var min_delta = (block_height - parallaxImage.enlarge) / 2;
@@ -86,7 +90,9 @@
         $.each(parallaxImages, function(index, parallaxImage) {
             recalcParallax(parallaxImage);
         });
-    }, 50));
+    }, 50)).on('load', function() {
+        scrollHandler();
+    });
 
     $.fn.parallax = function(options) {
         var settings = $.extend({
@@ -106,7 +112,7 @@
                 background: $background,
                 enlarge: settings.enlarge,
                 intensity: settings.intensity
-            }
+            };
             recalcParallax(parallaxImage);
             parallaxImages.push(parallaxImage);
         });
