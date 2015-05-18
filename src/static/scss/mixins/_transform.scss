@@ -7,6 +7,21 @@
   transform: $args;
 }
 
+@mixin perspective($args...) {
+  -webkit-perspective: $args;
+  perspective: $args;
+}
+
+@mixin backface-visibility($args...) {
+  -webkit-backface-visibility: $args;
+  backface-visibility: $args;
+}
+
+@mixin transform-style($args...) {
+  -webkit-transform-style: $args;
+  transform-style: $args;
+}
+
 @mixin transform-origin($args...) {
   -webkit-transform-origin: $args;
   -moz-transform-origin: $args;
