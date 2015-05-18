@@ -1,5 +1,7 @@
 (function($) {
 
+    var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
+
     var Slider3d = function($root, settings) {
         var that = this;
         var $wrapper = $root.find('.slider3d-wrapper:first');
@@ -50,14 +52,12 @@
             $next.addClass('right');
 
             $wrapper.css({
-                transition: 'transform ' + settings.speed + 'ms linear'
-            }).addClass('rotate-right');
-
-            that.timer = setTimeout(function() {
+                transitionDuration: settings.speed + 'ms'
+            }).addClass('rotate-right').one(transitionend, function() {
                 $front.removeClass('front');
                 $front = $next.removeClass('right').addClass('front');
                 $wrapper.removeAttr('style').removeClass('rotate-right');
-            }, settings.speed);
+            });
         };
 
         // Скролл влево
@@ -70,14 +70,12 @@
             $prev.addClass('left');
 
             $wrapper.css({
-                transition: 'transform ' + settings.speed + 'ms linear'
-            }).addClass('rotate-left');
-
-            that.timer = setTimeout(function () {
+                transitionDuration: settings.speed + 'ms'
+            }).addClass('rotate-left').one(transitionend, function () {
                 $front.removeClass('front');
                 $front = $prev.removeClass('left').addClass('front');
                 $wrapper.removeAttr('style').removeClass('rotate-left');
-            }, settings.speed);
+            });
         };
 
         // Инициализация

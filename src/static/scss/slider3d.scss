@@ -8,6 +8,8 @@
     position: relative;
     @include transform-style(preserve-3d);
     @include transform(translate3d(0, 0, -0.5em));
+    @include transition-property(-webkit-transform, transform);
+    @include transition-timing-function(linear);
 
     &.rotate-right {
       @include transform(translate3d(0, 0, -0.5em) rotateY(-90deg));
