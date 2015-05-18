@@ -44,6 +44,8 @@
     };
 
     var processSticky = function(sticky) {
+        if (!enabled) return;
+
         // Проверка состояния прокрутки и установка стилей ползающему блоку
         var $block = sticky.$block;
         var $container = $block.parent();
