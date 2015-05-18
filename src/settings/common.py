@@ -228,6 +228,7 @@ PIPELINE_CSS = {
         'source_filenames': (
             'scss/parallax.scss',
             'scss/video_bg.scss',
+            'scss/slider3d.scss',
             'yandex_maps/scss/yandex_maps.scss',
             'main/scss/index.scss',
         ),
@@ -274,6 +275,7 @@ PIPELINE_JS = {
             'js/animation_frame.js',
             'js/parallax.js',
             'js/video_bg.js',
+            'js/slider3d.js',
             'google_maps/js/google_maps.js',
             'yandex_maps/js/yandex_maps.js',
             'main/js/index.js',

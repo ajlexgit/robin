@@ -26,4 +26,11 @@
         $.force_appear();
     });
 
+    // Slider
+    $(document).ready(function() {
+        $('#slider_example').find('.slider3d').slider3d({
+
+        });
+    });
+
 })(jQuery);

@@ -1,0 +1,47 @@
+@import "mixins";
+
+.slider3d {
+  line-height: 0;
+  text-align: center;
+
+  .slider3d-wrapper {
+    position: relative;
+    @include transform-style(preserve-3d);
+    @include transform(translate3d(0, 0, -0.5em));
+
+    &.rotate-right {
+      @include transform(translate3d(0, 0, -0.5em) rotateY(-90deg));
+    }
+
+    &.rotate-left {
+      @include transform(translate3d(0, 0, -0.5em) rotateY(90deg));
+    }
+  }
+
+  .slide {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 5;
+    visibility: hidden;
+    @include transform-origin(0 0);
+
+    &.front {
+      position: relative;
+      left: 0;
+      z-index: 10;
+      visibility: visible;
+      @include transform(translate3d(0, 0, 0.5em));
+    }
+
+    &.left {
+      visibility: visible;
+      @include transform(translate3d(-50%, -50%, -0.5em) rotateY(-90deg));
+    }
+
+    &.right {
+      visibility: visible;
+      @include transform(translate3d(50%, -50%, 0.5em) rotateY(90deg));
+    }
+  }
+}
