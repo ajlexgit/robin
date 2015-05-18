@@ -9,31 +9,45 @@
             rared.js
 
         Пример:
-            $('.block').setWinHeight();     - разовая установка высоты
-            $('.block').winHeight();        - обновляемая высота
+            $.winHeight('.block');      - разовая установка высоты
+            $('.block').winHeight();    - обновляемая высота
 
     */
 
-    // Обновление высот блоков при ресайзе
-    $(window).on('resize.winHeight', $.rared(function() {
-        $('.win-height-block').setWinHeight();
-    }, 50));
+    var winBlocks = [];
+    var $window = $(window);
 
-    // Установка высоты одного блока
-    $.fn.setWinHeight = function() {
-        return this.each(function() {
+    $.winHeight = function($blocks) {
+        var win_height = document.documentElement.clientHeight;
+
+        if (!$blocks.jquery) {
+            $blocks = $($blocks);
+        }
+
+        return $blocks.each(function () {
             var $block = $(this).height('auto');
             var block_height = $block.outerHeight();
-            $block.outerHeight(Math.max(block_height, document.documentElement.clientHeight));
+            $block.outerHeight(Math.max(block_height, win_height));
         })
     };
 
-    $.fn.winHeight = function(action) {
-        if (action == 'destroy') {
-            return this.removeClass('win-height-block').height('');
-        }
+    // Обновление высот блоков при ресайзе
+    $window.on('resize.winHeight', $.rared(function() {
+        $.each(winBlocks, function(index, winBlock) {
+            $.winHeight(winBlock.$block);
+        });
+    }, 50));
 
-        return this.addClass('win-height-block').setWinHeight();
+    $.fn.winHeight = function() {
+        return this.each(function () {
+            var $block = $(this).addClass('win-height-block');
+
+            var winBlock = {
+                block: $block
+            };
+            $.winHeight($block);
+            winBlocks.push(winBlock);
+        });
     };
 
 })(jQuery);

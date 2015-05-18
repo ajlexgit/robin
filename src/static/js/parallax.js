@@ -26,6 +26,10 @@
     var parallaxImages = [];
     var $window = $(window);
 
+    $.parallax = {
+        min_width: 768
+    };
+
     var scrollHandler = function() {
         var win_scroll = $window.scrollTop();
         var win_height = document.documentElement.clientHeight;
@@ -99,10 +103,6 @@
             scrollHandler();
         }
     }, 50));
-
-    $.parallax = {
-        min_width: 768
-    };
 
     $.fn.parallax = function(options) {
         var settings = $.extend({

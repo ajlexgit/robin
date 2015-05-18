@@ -15,7 +15,7 @@
 
         if (window.innerWidth < 1024) {
             // На мобиле и iPad высота меню - весь экран
-            $menu.setWinHeight();
+            $.winHeight($menu);
         } else {
             $('#mobile-menu').removeClass('active');
             $menu.removeClass('active');

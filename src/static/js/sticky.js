@@ -20,6 +20,10 @@
     var stickies = [];
     var $window = $(window);
 
+    $.sticky = {
+        min_width: 768
+    };
+
     var winOffset = function() {
         // Значение вертикальной прокрутки страницы
         return window.pageYOffset || document.documentElement.scrollTop;
@@ -143,10 +147,6 @@
             $window.on('load.sticky', scrollHandler);
         }
     }, 50));
-
-    $.sticky = {
-        min_width: 768
-    };
 
     $.fn.sticky = function(options) {
         var settings = $.extend({
