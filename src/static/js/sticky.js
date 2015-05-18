@@ -132,7 +132,7 @@
         });
     }, 50));
 
-    $.fn.pixSticky = function(options) {
+    $.fn.sticky = function(options) {
         var settings = $.extend({
             windowTopOffset: 0,
             containerBottomOffset: 0,
