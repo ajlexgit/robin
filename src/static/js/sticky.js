@@ -17,7 +17,6 @@
         ios = /iphone|ipod|ipad/.test(userAgent);
 
     var enabled = false;
-    var MIN_WIDTH = 768;
     var stickies = [];
     var $window = $(window);
 
@@ -114,7 +113,7 @@
         $.rared($.animation_frame(scrollHandler), 50);
 
     // Подключение событий
-    enabled = window.innerWidth >= MIN_WIDTH;
+    enabled = window.innerWidth >= $.sticky.min_width;
     if (enabled) {
         $(document).on('scroll.sticky', _scrollHandler).on('mousewheel.sticky', scrollHandler);
         $window.on('load.sticky', scrollHandler);
@@ -127,7 +126,7 @@
         });
 
         // Отключаем на мобилах
-        if (enabled && (window.innerWidth < MIN_WIDTH)) {
+        if (enabled && (window.innerWidth < $.sticky.min_width)) {
             enabled = false;
             $(document).off('.sticky');
             $window.off('load.sticky');
@@ -138,12 +137,16 @@
                     width: ''
                 });
             });
-        } else if (!enabled && (window.innerWidth >= MIN_WIDTH)) {
+        } else if (!enabled && (window.innerWidth >= $.sticky.min_width)) {
             enabled = true;
             $(document).on('scroll.sticky', _scrollHandler).on('mousewheel.sticky', scrollHandler);
             $window.on('load.sticky', scrollHandler);
         }
     }, 50));
+
+    $.sticky = {
+        min_width: 768
+    };
 
     $.fn.sticky = function(options) {
         var settings = $.extend({

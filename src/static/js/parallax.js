@@ -23,7 +23,6 @@
     */
 
     var enabled = false;
-    var MIN_WIDTH = 768;
     var parallaxImages = [];
     var $window = $(window);
 
@@ -69,9 +68,9 @@
     };
 
     var _scrollHandler = $.rared($.animation_frame(scrollHandler), 25);
-    
+
     // Подключение событий
-    enabled = window.innerWidth >= MIN_WIDTH;
+    enabled = window.innerWidth >= $.parallax.min_width;
     if (enabled) {
         $(document).on('scroll.parallax', _scrollHandler).on('mousewheel.parallax', scrollHandler);
         $window.on('load.parallax', scrollHandler);
@@ -83,7 +82,7 @@
         });
 
         // Отключаем на мобилах
-        if (enabled && (window.innerWidth < MIN_WIDTH)) {
+        if (enabled && (window.innerWidth < $.parallax.min_width)) {
             enabled = false;
             $(document).off('.parallax');
             $window.off('load.parallax');
@@ -93,13 +92,17 @@
                     top: 0
                 });
             });
-        } else if (!enabled && (window.innerWidth >= MIN_WIDTH)) {
+        } else if (!enabled && (window.innerWidth >= $.parallax.min_width)) {
             enabled = true;
             $(document).on('scroll.parallax', _scrollHandler).on('mousewheel.parallax', scrollHandler);
             $window.on('load.parallax', scrollHandler);
             scrollHandler();
         }
     }, 50));
+
+    $.parallax = {
+        min_width: 768
+    };
 
     $.fn.parallax = function(options) {
         var settings = $.extend({
