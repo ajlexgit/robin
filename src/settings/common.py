@@ -271,6 +271,7 @@ PIPELINE_JS = {
     'main_page': {
         'source_filenames': (
             'js/jquery.mousewheel.js',
+            'js/animation_frame.js',
             'js/parallax.js',
             'js/video_bg.js',
             'google_maps/js/google_maps.js',

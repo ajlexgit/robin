@@ -5,7 +5,7 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            rared.js, jquery.mousewheel.js
+            rared.js, jquery.mousewheel.js, animation_frame.js
 
         <div id="block">
             <div class="parallax" style="background-image: url(../img/bg.jpg)">
@@ -68,15 +68,8 @@
         parallaxImage.background.height(bg_height);
     };
 
-    var _scrollHandler = $.rared(function () {
-        if (window.requestAnimationFrame) {
-            window.requestAnimationFrame(scrollHandler);
-        } else {
-            scrollHandler();
-        }
-    }, 25);
-
-
+    var _scrollHandler = $.rared($.animation_frame(scrollHandler), 25);
+    
     // Подключение событий
     enabled = window.innerWidth >= MIN_WIDTH;
     if (enabled) {

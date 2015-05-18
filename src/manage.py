@@ -2,6 +2,7 @@
 import os
 import sys
 
+# animation_frame.js
 # popups: проверить кнопку закрытия
 # Maps: inline check
 
