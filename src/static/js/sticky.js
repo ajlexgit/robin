@@ -11,14 +11,15 @@
             windowTopOffset         - расстояние от верха окна до ползающего блока
             containerBottomOffset   - расстояние от низа родительского блока
                                       до ползающего блока
-            condition               - функция. Если вернёт false, то блок займет
-                                      положение по умолчанию
     */
 
     var userAgent = window.navigator.userAgent.toLowerCase(),
         ios = /iphone|ipod|ipad/.test(userAgent);
 
+    var enabled = false;
+    var MIN_WIDTH = 768;
     var stickies = [];
+    var $window = $(window);
 
     var winOffset = function() {
         // Значение вертикальной прокрутки страницы
@@ -43,16 +44,6 @@
         // Проверка состояния прокрутки и установка стилей ползающему блоку
         var $block = sticky.$block;
         var $container = $block.parent();
-
-        // Отмена по условию
-        if (sticky.condition.call() === false) {
-            $block.css({
-                position: 'relative',
-                top: 0,
-                bottom: 'auto'
-            });
-            return
-        }
 
         // верхняя граница смещения страницы
         var winTopY = $container.offset().top - sticky.windowTopOffset;
@@ -123,26 +114,46 @@
         $.rared($.animation_frame(scrollHandler), 50);
 
     // Подключение событий
-    $(document).on('scroll', _scrollHandler).on('mousewheel', scrollHandler);
+    enabled = window.innerWidth >= MIN_WIDTH;
+    if (enabled) {
+        $(document).on('scroll.sticky', _scrollHandler).on('mousewheel.sticky', scrollHandler);
+        $window.on('load.sticky', scrollHandler);
+    }
 
-    $(window).on('resize', $.rared(function() {
+    $window.on('resize.sticky', $.rared(function() {
         $.each(stickies, function(index, sticky) {
             resetWidth(sticky.$block);
             processSticky(sticky);
         });
+
+        // Отключаем на мобилах
+        if (enabled && (window.innerWidth < MIN_WIDTH)) {
+            enabled = false;
+            $(document).off('.sticky');
+            $window.off('load.sticky');
+
+            $.each(stickies, function (index, sticky) {
+                sticky.$block.css({
+                    position: 'static',
+                    width: ''
+                });
+            });
+        } else if (!enabled && (window.innerWidth >= MIN_WIDTH)) {
+            enabled = true;
+            $(document).on('scroll.sticky', _scrollHandler).on('mousewheel.sticky', scrollHandler);
+            $window.on('load.sticky', scrollHandler);
+        }
     }, 50));
 
     $.fn.sticky = function(options) {
         var settings = $.extend({
             windowTopOffset: 0,
-            containerBottomOffset: 0,
-            condition: $.noop()
+            containerBottomOffset: 0
         }, options);
 
         return this.each(function() {
             var sticky = {
                 $block: $(this).addClass('pix-sticky'),
-                condition: settings.condition,
                 windowTopOffset: settings.windowTopOffset,
                 containerBottomOffset: settings.containerBottomOffset
             };
