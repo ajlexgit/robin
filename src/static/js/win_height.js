@@ -43,7 +43,7 @@
             var $block = $(this).addClass('win-height-block');
 
             var winBlock = {
-                block: $block
+                $block: $block
             };
             $.winHeight($block);
             winBlocks.push(winBlock);
