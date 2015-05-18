@@ -2,9 +2,7 @@
 import os
 import sys
 
-# animation_frame.js
 # popups: проверить кнопку закрытия
-# Maps: inline check
 
 # типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
