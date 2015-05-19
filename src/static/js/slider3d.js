@@ -80,6 +80,25 @@
 
         // Инициализация
         that.update_depth();
+        
+        if (settings.controls) {
+            var controls_parent;
+            if (typeof settings.controlsParent == 'string') {
+                controls_parent = $(settings.controlsParent);
+            } else if (settings.controlsParent) {
+                controls_parent = settings.controlsParent;
+            } else {
+                controls_parent = $root;
+            }
+            
+            var $left = $('<div>').addClass('arrow arrow-left').on('click', function() {
+                that.slide_left();
+            });
+            var $right = $('<div>').addClass('arrow arrow-right').on('click', function() {
+                that.slide_right();
+            });
+            controls_parent.first().append($left, $right);
+        }
     };
 
     $(window).on('resize', $.rared(function() {
@@ -93,7 +112,9 @@
 
     $.fn.slider3d = function(options) {
         var settings = $.extend({
-            speed: 1000
+            speed: 1000,
+            controls: true,
+            controlsParent: null
         }, options);
 
         return this.each(function() {

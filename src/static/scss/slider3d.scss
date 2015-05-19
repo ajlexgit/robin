@@ -1,6 +1,7 @@
 @import "mixins";
 
 .slider3d {
+  position: realtive;
   line-height: 0;
   text-align: center;
 
@@ -44,6 +45,35 @@
     &.right {
       visibility: visible;
       @include transform(translate3d(50%, -50%, 0.5em) rotateY(90deg));
+    }
+  }
+  
+  // Controls
+  .arrow {
+    position: absolute;
+    top: 0;
+    width: 6%;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
+    @include unselectable;
+    
+    &.arrow-left {
+      left: 0;
+    }
+    &.arrow-right {
+      right: 0;
+    }
+    
+    &:before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 40px;
+      height: 40px;
+      background-repeat: no-repeat;
+      @include transform(translate(-50%, -50%));
     }
   }
 }
