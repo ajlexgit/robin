@@ -15,20 +15,20 @@
 @import 'mixins/unselectable';
 
 // Точки для media-queries
-$desktop: 1200px;
+$desktop_wide: 1200px;
 $tablet_wide: 1024px;
-$tablet: 768px;
-$mobile_wide: 640px;
+$mobile_wide: 768px;
+$mobile: 640px;
 
 // Размеры окна
 @mixin media($args...) {
   @function media-value($value) {
     $conversion-map: (
-            wide: "screen and (min-width: #{$desktop})",
-            desktop: "screen and (min-width: #{$tablet_wide}) and (max-width: #{$desktop - 1px})",
-            tablet: "screen and (min-width: #{$tablet}) and (max-width: #{$tablet_wide - 1px})",
-            mobile: "screen and (max-width: #{$tablet - 1px})",
-            mobile_mini: "screen and (max-width: #{$mobile_wide - 1px})"
+            wide: "screen and (min-width: #{$desktop_wide})",
+            desktop: "screen and (min-width: #{$tablet_wide}) and (max-width: #{$desktop_wide - 1px})",
+            tablet: "screen and (min-width: #{$mobile_wide}) and (max-width: #{$tablet_wide - 1px})",
+            mobile: "screen and (max-width: #{$mobile_wide - 1px})",
+            mobile_mini: "screen and (max-width: #{$mobile - 1px})"
     );
 
     @if map-has-key($conversion-map, $value) {

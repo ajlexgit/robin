@@ -7,7 +7,7 @@
   @include clearfix;
   @include border-box;
   @include grid-paddings(padding-left, padding-right);
-  @media screen and (min-width: $grid_max_width) {
+  @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
   }
 }
