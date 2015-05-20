@@ -1,16 +1,16 @@
 {% extends 'layout.html' %}
 
 {% load i18n %}
-{% load compressed %}
+{% load pipeline %}
 
 {% block static_head %}
     {{ block.super }}
-    {% compressed_css 'users-profile' %}
+    {% stylesheet 'users-profile' %}
 {% endblock static_head %}
 
 {% block static_js %}
     {{ block.super }}
-    {% compressed_js 'users-profile' %}
+    {% javascript 'users-profile' %}
 {% endblock static_js %}
 
 

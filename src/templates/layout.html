@@ -1,6 +1,6 @@
 {% load staticfiles %}
 {% load js_storage %}
-{% load compressed %}
+{% load pipeline %}
 {% load opengraph %}
 {% load seo %}
 
@@ -22,11 +22,11 @@
 
     {% opengraph %}
 
-    {% compressed_js 'head_core' %}
-    {% compressed_css 'head_core' %}
+    {% javascript 'head_core' %}
+    {% stylesheet 'head_core' %}
     {% block static_head %}
     {% endblock static_head %}
-    
+
     {% seo_counters 'head' %}
 </head>
 <body>
@@ -48,9 +48,9 @@
 
     {% block static_js %}
         {% js_storage_out %}
-        {% compressed_js 'core' %}
+        {% javascript 'core' %}
     {% endblock static_js %}
-    
+
     {% seo_counters 'body_bottom' %}
 </body>
 </html>

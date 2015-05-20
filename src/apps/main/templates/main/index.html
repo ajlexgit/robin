@@ -1,18 +1,18 @@
 {% extends 'layout.html' %}
 
 {% load staticfiles %}
-{% load compressed %}
+{% load pipeline %}
 {% load google_maps %}
 {% load yandex_maps %}
 
 {% block static_head %}
     {{ block.super }}
-    {% compressed_css 'main_page' %}
+    {% stylesheet 'main_page' %}
 {% endblock static_head %}
 
 {% block static_js %}
     {{ block.super }}
-    {% compressed_js 'main_page' %}
+    {% javascript 'main_page' %}
 {% endblock static_js %}
 
 

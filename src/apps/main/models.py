@@ -7,9 +7,9 @@ from solo.models import SingletonModel
 
 class MainPageConfig(SingletonModel):
     header_title = models.CharField('title', max_length=255)
-    address = models.CharField(_('адрес'), max_length=255, blank=True)
-    coords = YandexCoordsField(_('координаты'), null=True, blank=True)
-    coords2 = GoogleCoordsField(_('координаты'), null=True, blank=True)
+    address = models.CharField(_('address'), max_length=255, blank=True)
+    coords = YandexCoordsField(_('coordinates'), null=True, blank=True)
+    coords2 = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Settings")
