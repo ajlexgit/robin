@@ -1,12 +1,12 @@
 (function($) {
-    
+
     $(document).on('click', '.comment-delete', function() {
         var button = $(this);
         $.ajax({
             url: window.admin_comments_delete,
             type: 'POST',
             data: {
-                'id': button.data('id'),
+                'id': button.data('id')
             },
             success: function(response) {
                 if (response.error) {
@@ -25,15 +25,15 @@
         });
         return false;
     });
-    
-    
+
+
     $(document).on('click', '.comment-restore', function() {
         var button = $(this);
         $.ajax({
             url: window.admin_comments_restore,
             type: 'POST',
             data: {
-                'id': button.data('id'),
+                'id': button.data('id')
             },
             success: function(response) {
                 if (response.error) {
@@ -52,5 +52,5 @@
         });
         return false;
     })
-    
+
 })(jQuery);

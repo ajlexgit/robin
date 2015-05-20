@@ -9,7 +9,7 @@
  ***/
 
 // Pix: fixed href in pager
- 
+
 ;(function($){
 
 	var defaults = {
@@ -1124,7 +1124,7 @@
 			if (slider.viewport.get(0).releasePointerCapture) {
 				slider.viewport.get(0).releasePointerCapture(slider.pointerId);
  			}
-		}
+		};
 
 		/**
 		 * Event handler for "touchmove"
@@ -1466,7 +1466,7 @@
 		 */
 		el.isWorking = function() {
 			return slider.working;
-		}
+		};
 
 		/**
 		 * Update all dynamic slider elements

@@ -72,8 +72,7 @@
                 resize = canvasSize(Math.max(resize[0], 100), Math.max(resize[1], 100));
             } else {
                 resize = {};
-            };
-
+            }
             // Максимальный вес
             var max_size = $container.data('max_size') || '';
             max_size = Number(max_size) || 0;
@@ -201,10 +200,10 @@
                                     $preview.prepend($image);
                                     $.placeImage($preview, $image);
                                 });
-                            }).always(function(reason) {
+                            }).always(function() {
                                 $controls.show();
                             });
-                        }).fail(function(reason) {
+                        }).fail(function() {
                             $controls.show();
                         });
 
@@ -220,8 +219,7 @@
                                 $container.trigger('item-error.gallery', [$gallery_item, response]);
                                 return
                             } catch(e) {}
-                        };
-
+                        }
                         $preview.append(
                             $('<span>').html(formatError(err.file, err.message, true))
                         );
@@ -233,18 +231,18 @@
             });
 
             // Настройки Drag & Drop
-            that.uploader.bind('Init', function(up, params) {
+            that.uploader.bind('Init', function() {
                 if (!that.uploader.features.dragdrop) {
                     return
                 }
 
                 var drag_counter = 0;
-                $container.on('dragenter.gallery.drag', function(event) {
+                $container.on('dragenter.gallery.drag', function() {
                     drag_counter++;
                     if (drag_counter == 1) {
                         $container.addClass('dragover');
                     }
-                }).on('dragleave.gallery.drag', function(event) {
+                }).on('dragleave.gallery.drag', function() {
                     drag_counter--;
                     if (drag_counter === 0) {
                         $container.removeClass('dragover');

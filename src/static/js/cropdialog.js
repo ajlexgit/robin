@@ -61,7 +61,7 @@
         };
 
         // Опции окна
-        this.dialogOptions = function($element, image_url) {
+        this.dialogOptions = function() {
             var dialog_options = get_value('dialog_opts') || {};
             return $.extend({}, dialog_options, {
                 classes: dialog_options.classes + ' preloader',
@@ -88,7 +88,7 @@
             }).done(function(img) {
                 that.load($element, img);
                 img = null;
-            }).fail(function(reason) {
+            }).fail(function() {
                 that.close();
             });
         };
@@ -125,7 +125,7 @@
             var min_size = get_value('min_size', $element) || '';
             if (!$.isArray(min_size)) {
                 min_size = String(min_size).split('x');
-            };
+            }
             min_size = min_size.map(function(item) {
                 return parseInt(item);
             }).filter($.isNumeric).slice(0, 2);
@@ -134,7 +134,7 @@
             var max_size = get_value('max_size', $element) || '';
             if (!$.isArray(max_size)) {
                 max_size = String(max_size).split('x');
-            };
+            }
             max_size = max_size.map(function(item) {
                 return parseInt(item);
             }).filter($.isNumeric).slice(0, 2);
@@ -143,7 +143,7 @@
             var aspects = get_value('aspect', $element) || '';
             if (!$.isArray(aspects)) {
                 aspects = String(aspects).split('|');
-            };
+            }
             aspects = aspects.map(function(item) {
                 return parseFloat(item);
             }).filter($.isNumeric);
@@ -152,7 +152,7 @@
             var crop_position = get_value('crop_position', $element) || '';
             if (!$.isArray(crop_position)) {
                 crop_position = String(crop_position).split(':');
-            };
+            }
             crop_position = crop_position.map(function(item) {
                 return parseInt(item);
             }).filter($.isNumeric).slice(0, 4);
@@ -176,20 +176,18 @@
                     ];
                     this.setOptions({minSize: minSize});
                     this.setSelect([0,0].concat(minSize));
-                };
+                }
                 if (max_size.length == 2) {
                     var maxSize = [
                         Math.floor(max_size[0] / jcrop_relation_x),
                         Math.floor(max_size[1] / jcrop_relation_y)
                     ];
                     this.setOptions({maxSize: maxSize})
-                };
-
+                }
                 // Аспекты
                 if (aspects.length) {
                     this.setOptions({aspectRatio: aspects[0]});
-                };
-
+                }
                 // Положение кропа
                 if (crop_position.length == 4) {
                     crop_position[0] /= jcrop_relation_x;
@@ -220,25 +218,24 @@
 
             if (get_value('onCrop', $element, real_coords) === false) {
                 return
-            };
+            }
             this.close();
         };
 
         // Закрыть окно
         this.close = function() {
             dialog.hide();
-        }
+        };
 
         // Деинициализация окна
         this.destroy = function($element) {
             if (get_value('onClose', $element) === false) {
                 return false
-            };
-
+            }
             if (jcrop_api) {
                 jcrop_api.destroy();
                 jcrop_api = null;
-            };
+            }
             dialog = null;
         };
 
@@ -246,7 +243,7 @@
         this.cancel = function($element) {
             if (get_value('onCancel', $element) === false) {
                 return
-            };
+            }
             this.close();
         };
 
@@ -256,8 +253,7 @@
             if (!image_url) {
                 console.error('cropdialog: ' + gettext('empty image url'));
                 return false;
-            };
-
+            }
             dialog = this.create($element, image_url);
 
             return false;

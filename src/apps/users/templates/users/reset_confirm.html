@@ -7,7 +7,7 @@
     {{ form.media }}
     <form method="post" action="" id="reset-confirm-form" autocomplete="off">
         {% csrf_token %}
-        
+
         {{ form.non_field_errors.as_ul }}
         <fieldset class="{{ form.new_password1.errors.classes }}">
             {{ form.new_password1.label_tag }}
@@ -19,14 +19,14 @@
             {{ form.new_password2 }}
             {{ form.new_password2.errors }}
         </fieldset>
-        
+
         <fieldset>
             <button type="submit" class="btn">{% trans 'Save' %}</button>
         </fieldset>
     </form>
-    
+
     <script>
-        $('#reset-confirm-form input:visible:first').focus();
+        $('#reset-confirm-form').find('input:visible:first').focus();
     </script>
-    
+
 {% endblock content %}

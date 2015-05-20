@@ -153,7 +153,7 @@
         var target_size = canvasSize(canvas.width, canvas.height, max_width, max_height);
         var step_func = function(dim) {
             return Math.round(dim * 0.5);
-        }
+        };
 
         // Последовательное уменьшение canvas
         var run;
@@ -205,7 +205,7 @@
         var img_w = $image.prop('naturalWidth');
         var img_h = $image.prop('naturalHeight');
         var img_ratio = img_w / img_h;
-        var coords_ratio, out_w, out_h, out_l, out_t;
+        var coords_ratio;
 
         if (!coords) {
             coords = [0, 0, img_w, img_h];

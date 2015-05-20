@@ -28,7 +28,7 @@ from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 
 
-class BaseMixin():
+class BaseMixin:
     # Время хранения данных в сессии
     max_store_time = 10 * 60
 
@@ -154,7 +154,7 @@ class SessionStoredFormSetMixin(BaseMixin):
         for index, form in enumerate(self.forms):
             if index >= self.min_num and not form.has_changed():
                 continue
-            
+
             forms_data.append(self._storing_form_data(form))
             forms_errors.append(self._storing_form_errors(form))
 
@@ -200,7 +200,7 @@ class SessionStoredFormSetMixin(BaseMixin):
     def is_max_forms(self):
         """ Проверка достижения максимального кол-ва форм """
         return self.total_form_count() >= self.max_num
-    
+
     @cached_property
     def is_min_forms(self):
         """ Проверка достижения минимального кол-ва форм """

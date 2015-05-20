@@ -41,13 +41,9 @@
             CKEDITOR.dialog.add("pagephotos", this.path + "dialogs/dlg_upload.js");
 
             editor.on('contentDom', function () {
-                var editable = editor.editable();
-
                 // Установка callbacka закрытия окна изменения изображения
                 editor.window.$.dismissPhotoChangePopup = function (win, newTag) {
                     // Обновление тега изображения
-                    var container = editor.getSelection().getStartElement().getParent();
-
                     editor.insertHtml(newTag.trim());
                     win.close()
                 };

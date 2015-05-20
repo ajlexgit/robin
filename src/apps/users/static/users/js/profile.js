@@ -48,7 +48,7 @@
             },
             init: {
                 // Добавление файла в очередь
-                FilesAdded: function(up, files) {
+                FilesAdded: function(up) {
                     // Старт загрузки сразу после добавления
                     up.start();
                 },
@@ -94,7 +94,7 @@
             return $element.data('crop');
         },
         dialog_opts: {
-            classes: 'popup-crop-avatar',
+            classes: 'popup-crop-avatar'
         },
         onCrop: function($element, coords) {
             var coords_str = coords.join(':');

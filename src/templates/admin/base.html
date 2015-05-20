@@ -3,7 +3,7 @@
 <!-- added favicon -->
 
 {% load admin_static %}{% load suit_tags %}{% load url from future %}<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<html lang="{{ LANGUAGE_CODE|default:"en" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{% block title %}{{ title }} | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</title>
@@ -19,14 +19,14 @@
   {% if 'SHOW_REQUIRED_ASTERISK'|suit_conf %}
   <style type="text/css">.required:after { content: '*'; margin: 0 0 0 5px; position: absolute; color: #ccc;}</style>
   {% endif %}
-  
+
   {% block extrahead %}
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}"/>
   {% endblock %}
-  
+
   {% url 'jsi18n' as jsi18nurl %}
   <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
-  
+
   {% block blockbots %}
     <meta name="robots" content="NONE,NOARCHIVE"/>
   {% endblock %}

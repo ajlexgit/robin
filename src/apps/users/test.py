@@ -44,11 +44,6 @@ class Test1(SimpleTestCase):
             pass
 
     def test_login(self):
-        john = CustomUser.objects.create_user(
-            username = 'john',
-            email = 'pix667@ya.ru',
-            password = 'wayne',
-        )
         response = self.client.post(resolve_url('users:login'), {
             'username': 'john',
             'password': 'wayne',

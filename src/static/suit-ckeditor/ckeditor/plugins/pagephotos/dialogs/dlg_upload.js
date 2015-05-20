@@ -67,19 +67,18 @@
 
                     pagephotos.val(value);
                 }
-            }, 
+            },
             error: function(event, object) {
                 var err = object.error;
                 object.up.removeFile(err.file);
-                
+
                 if (err.response) {
                     try {
                         var response = JSON.parse(err.response);
                         alert(response.message);
                         return
                     } catch(e) {}
-                };
-                
+                }
                 alert(err.message);
             }
         })

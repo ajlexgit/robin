@@ -1,6 +1,16 @@
 // Based on [Eric Meyer's reset 2.0](http://meyerweb.com/eric/tools/css/reset/index.html)
 // Global reset rules.
 // For more specific resets, use the reset mixins provided below
+// Unrecognized elements are displayed inline.
+// This reset provides a basic reset for block html5 elements
+// so they are rendered correctly in browsers that don't recognize them
+// and reset in browsers that have default styles for them.
+@mixin reset-html5 {
+  #{elements-of-type(html5-block)} {
+    display: block;
+  }
+}
+
 @mixin global-reset {
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -94,14 +104,4 @@
     vertical-align: middle;
   }
   @include reset-html5;
-}
-
-// Unrecognized elements are displayed inline.
-// This reset provides a basic reset for block html5 elements
-// so they are rendered correctly in browsers that don't recognize them
-// and reset in browsers that have default styles for them.
-@mixin reset-html5 {
-  #{elements-of-type(html5-block)} {
-    display: block;
-  }
 }

@@ -6,12 +6,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps_common'))
 
-
 SECRET_KEY = 'lr2b8&^p8dv#&b=4%op-0^2*vomo816l-*8*^5#o9@q!=zv@f$'
 
 DEBUG = False
 TEMPLATE_DEBUG = False
-
 
 INSTALLED_APPS = (
     'suit',
@@ -62,7 +60,7 @@ INSTALLED_APPS = (
     'libs.variation_field',
 )
 
-#Suit
+# Suit
 SUIT_CONFIG = {
     # header
     'ADMIN_NAME': 'Project',
@@ -98,7 +96,6 @@ SUIT_CONFIG = {
     ),
 }
 
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'pipeline.middleware.MinifyHTMLMiddleware',
@@ -115,7 +112,6 @@ MIDDLEWARE_CLASSES = (
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
 )
-
 
 ALLOWED_HOSTS = ()
 
@@ -355,7 +351,7 @@ PIPELINE_MIMETYPES = (
 PIPELINE_CSS_COMPRESSOR = ''
 PIPELINE_JS_COMPRESSOR = ''
 PIPELINE_COMPILERS = (
-  'libs.sassc.SASSCCompiler',
+    'libs.sassc.SASSCCompiler',
 )
 SASS_INCLUDE_DIR = BASE_DIR + '/static/scss/'
 PIPELINE_SASS_BINARY = '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR
@@ -368,7 +364,7 @@ CKEDITOR_CONFIG_DEFAULT = {
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
     'autoGrow_maxHeight': '540',
-    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css', ),
+    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
     'plugins': 'basicstyles,blockquote,clipboard,undo,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
                'format,htmlwriter,justify,link,list,liststyle,'
@@ -399,7 +395,8 @@ CKEDITOR_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+            'items': ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
+                      'JustifyBlock']
         },
         {
             'name': 'styles',
@@ -413,7 +410,7 @@ CKEDITOR_CONFIG_MINI = {
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix',
     'autoGrow_maxHeight': '500',
-    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css', ),
+    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
     'plugins': 'basicstyles,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
                'htmlwriter,link,list,'
@@ -450,9 +447,9 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'django.utils.log.NullHandler',
         },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
         },
     },
     'loggers': {

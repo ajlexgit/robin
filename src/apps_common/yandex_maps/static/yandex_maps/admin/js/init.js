@@ -42,7 +42,7 @@
                 success: function(response) {
                     $field.val(response || '').change();
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr, status) {
                     $field.val(this.old_val);
                     if (status != 'abort') {
                         alert(gettext('Address location failed'));

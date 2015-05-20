@@ -45,7 +45,7 @@
     vertical-align: top;
     border-radius: 4px;
     box-sizing: border-box;
-    box-shadow: 1px 1px 3px 0px #808080;
+    box-shadow: 1px 1px 3px 0 #808080;
 }
 .gallery-item .item-show {
     display: inline-block;
@@ -57,7 +57,7 @@
 
 /* Элемент видео */
 .gallery-item-video-link {
-    box-shadow: 0px 0px 3px 1px blue;
+    box-shadow: 0 0 3px 1px blue;
 }
 .gallery-item-video-link .item-show:after {
     content: '';
@@ -90,7 +90,7 @@
 
 /* Выделение картинки */
 .gallery-item-checked {
-    box-shadow: 0px 0px 1px 3px green;
+    box-shadow: 0 0 1px 3px green;
 }
 .gallery-item-checked:before {
     content: '';
@@ -189,7 +189,7 @@
 
 /* Ошибка */
 .gallery-item-error {
-    box-shadow: 0px 0px 1px 3px red;
+    box-shadow: 0 0 1px 3px red;
 }
 .gallery-item-error .item-preloader span {
     position: absolute;

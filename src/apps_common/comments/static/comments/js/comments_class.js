@@ -8,7 +8,7 @@
             reply_template_class: 'comments-reply-template',
             edit_template_class: 'comments-edit-template'
         }, options);
-        
+
         var that = this;
         var content_type = $wrapper.data('content_type');
         var object_id = $wrapper.data('object_id');
@@ -93,8 +93,7 @@
                 success: function(response) {
                     if (response.error) {
                         return df.reject(response.error);
-                    };
-
+                    }
                     that.removeEmptyForms();
                     $comment.find('form').remove();
                     var $edit_form = $($edit_form_template);
@@ -126,8 +125,7 @@
                 success: function(response) {
                     if (response.error) {
                         return df.reject(response.error);
-                    };
-
+                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
@@ -156,8 +154,7 @@
                 success: function(response) {
                     if (response.error) {
                         return df.reject(response.error);
-                    };
-
+                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
@@ -187,8 +184,7 @@
                 success: function(response) {
                     if (response.error) {
                         return df.reject(response.error);
-                    };
-
+                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
@@ -212,8 +208,7 @@
                 success: function(response) {
                     if (response.error) {
                         return df.reject(response.error);
-                    };
-
+                    }
                     var $comment = $(response.html),
                         $parent_comment = $form.closest('.' + settings.comment_class);
                     if ($parent_comment.length) {
@@ -253,8 +248,7 @@
                 success: function(response) {
                     if (response.error) {
                         return df.reject(response.error);
-                    };
-
+                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);

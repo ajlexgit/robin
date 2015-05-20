@@ -12,8 +12,7 @@ from . import options
 
 
 class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
-    @staticmethod
-    def aliases(qs, kwargs):
+    def aliases(self, qs, kwargs):
         # entity
         entity = kwargs.pop('entity', None)
         if entity is not None:
@@ -40,7 +39,7 @@ class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
 class CommentTreeManager(TreeManager):
     _queryset_class = CommentQuerySet
-    
+
     def get_for(self, entity, visible=True):
         """ Получение комментариев к сущности """
         return self.filter(

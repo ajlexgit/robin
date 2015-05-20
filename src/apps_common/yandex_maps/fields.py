@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from .widgets import YandexCoordsFieldWidget
 
 
-class YmapCoords():
+class YmapCoords:
     """ Класс для координат """
     lng = None
     lat = None
@@ -26,7 +26,7 @@ class YmapCoords():
 
     def __iter__(self):
         return iter((self.lng, self.lat))
-        
+
     def __str__(self):
         if self:
             return '{0}, {1}'.format(self.lng, self.lat)

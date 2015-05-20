@@ -1,4 +1,4 @@
-class ProtectedModelFormMixin():
+class ProtectedModelFormMixin:
     """
         Миксина формы, которая запещает менять значения указанных
         полей при добавлении или редактировании. Если в форме указано
@@ -12,13 +12,13 @@ class ProtectedModelFormMixin():
         super().__init__(*args, **kwargs)
 
         self.data = self.data.dict() if self.data else {}
-        
+
         for fieldname in self.fields:
             if self.prefix is not None:
                 prefixed_fieldname = '-'.join((self.prefix, fieldname))
             else:
                 prefixed_fieldname = fieldname
-            
+
             if self.instance.pk:
                 # редактирование
                 if fieldname in self.protect_change_fields:

@@ -1,7 +1,7 @@
 from django.shortcuts import resolve_url
 
 
-class Breadcrumbs():
+class Breadcrumbs:
     def __init__(self):
         self.crumbs = []
 

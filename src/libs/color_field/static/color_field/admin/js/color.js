@@ -23,11 +23,10 @@
         if (value) {
             if (value[0] != '#') {
                 value = '#' + value;
-            };
+            }
             value = value.toUpperCase();
             self.siblings('.colorfield-input').val(value);
-        };
-
+        }
         self.val(value);
     });
 

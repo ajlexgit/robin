@@ -202,7 +202,7 @@
         $(document).on('click.gallery', '.' + RIGHT_ARROW, this.slide_right);
 
         // Прокрутка элементов при клике на главной картинке
-        $(document).on('click.gallery', '.' + MAIN_IMAGE, $.rared(function(event) {
+        $(document).on('click.gallery', '.' + MAIN_IMAGE, $.rared(function() {
             that.slide_right();
         }, 100));
 

@@ -7,21 +7,21 @@
     {{ form.media }}
     <form method="post" action="" id="reset-password-form" autocomplete="off">
         {% csrf_token %}
-        
+
         {{ form.non_field_errors.as_ul }}
         <fieldset class="{{ form.email.errors.classes }}">
             {{ form.email.label_tag }}
             {{ form.email }}
             {{ form.email.errors }}
         </fieldset>
-        
+
         <fieldset>
             <button type="submit" class="btn">{% trans 'Continue' %}</button>
         </fieldset>
     </form>
-    
+
     <script>
-        $('#reset-password-form input:visible:first').focus();
+        $('#reset-password-form').find('input:visible:first').focus();
     </script>
-    
+
 {% endblock content %}

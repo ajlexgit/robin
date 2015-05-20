@@ -93,7 +93,7 @@ class SeoDataAdmin(admin.ModelAdmin):
     )
 
 
-class SeoModelAdminMixin():
+class SeoModelAdminMixin:
     """
         Модель админки, добавляющая к форме блок сео-текстов
     """

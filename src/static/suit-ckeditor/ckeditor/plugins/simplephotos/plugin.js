@@ -1,8 +1,8 @@
 (function() {
-    
+
     var InitUploader = function(editor, path) {
         var fake = editor.document.createElement('button');
-        
+
         var uploader = new plupload.Uploader({
             runtimes : 'html5,flash,silverlight,html4',
             url : editor.config.SIMPLEPHOTOS_UPLOAD_URL,
@@ -18,7 +18,7 @@
             filters : {
                 max_file_size : editor.config.SIMPLEPHOTOS_MAX_FILE_SIZE,
                 mime_types: [
-                    {title : "Image files", extensions : "jpg,jpeg,gif,png,bmp,tif,tiff"},
+                    {title : "Image files", extensions : "jpg,jpeg,gif,png,bmp,tif,tiff"}
                 ]
             },
             unique_names : true,
@@ -26,18 +26,17 @@
             silverlight_xap_url : editor.config.MOXIE_XAP,
             init: {
                 FilesAdded: function(up, files) {
-                    var container = editor.getSelection().getStartElement();
                     plupload.each(files, function(file) {
                         var preloader = editor.document.createElement('img');
                         preloader.setAttribute('id', file.id);
                         preloader.setAttribute('src', path + 'preloader.gif');
                         editor.insertElement(preloader);
                     });
-                    
+
                     // Старт загрузки сразу после добавления
                     up.start();
                 },
-                
+
                 FileUploaded: function(up, file, data) {
                     // Файл загружен
                     var response = JSON.parse(data.response);
@@ -45,7 +44,7 @@
                     if (preloader) {
                         preloader.setAttribute('src', response.url);
                     }
-                    
+
                     var text_field = $('#id_' + response.field);
                     if (text_field.length) {
                         var simplephotos = text_field.siblings('input[name="' + response.field + '-simple-photos"]');
@@ -65,21 +64,20 @@
                         simplephotos.val(value);
                     }
                 },
-                
+
                 Error: function(up, err) {
                     var preloader = editor.document.getById(err.file.id);
                     if (preloader) {
                         preloader.remove()
                     }
-                    
+
                     if (err.response) {
                         try {
                             var response = JSON.parse(err.response);
                             alert(response.message);
                             return
                         } catch(e) {}
-                    };
-                    
+                    }
                     alert(err.message);
                 }
             }
@@ -101,7 +99,7 @@
 
             var path = this.path;
             editor.on('contentDom', function () {
-                var uploader = InitUploader(editor, path);
+                InitUploader(editor, path);
             });
         }
     })

@@ -12,7 +12,5 @@
     background: url('img/loading.gif') no-repeat 50% 50%;
 }
 #crop-dialog .jcrop-holder {
-    background-repeat: repeat;
-    background-image: url('img/transparent-background.png');
-    background-color: black;
+    background: black url('img/transparent-background.png') repeat;
 }

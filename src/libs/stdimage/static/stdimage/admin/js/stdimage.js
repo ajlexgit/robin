@@ -1,15 +1,15 @@
 (function($) {
 
-    $(document).on('change', '.stdimage .uploader', function(event) {
+    $(document).on('change', '.stdimage .uploader', function() {
         var $input = $(this),
             $block = $input.closest('.stdimage'),
             $preview = $block.find('.item-preview').addClass('preloader'),
             $crop_btn_wrapper = $block.find('.crop-btn-wrapper');
-        
-        $.fileReaderDeferred($input.prop('files').item(0)).done(function(src) { 
+
+        $.fileReaderDeferred($input.prop('files').item(0)).done(function(src) {
             $.imageDeferred(src).done(function(img) {
                 src = null;
-                
+
                 var $image = $('<img/>').attr('src', img.src);
                 $crop_btn_wrapper.removeClass('hide').find('button').removeData('crop');
                 $preview.find('img').remove();
@@ -35,7 +35,7 @@
         });
     });
 
-    
+
     $(document).cropdialog('click.cropdialog', '.stdimage .crop-btn-wrapper button', {
         image_url: function($element) {
             var $block = $element.closest('.stdimage'),
@@ -59,15 +59,14 @@
             var crop_position = $element.data('crop');
             if (crop_position) {
                 return crop_position;
-            };
-            
+            }
             // Имя поля, в котором хранится значение кропа
             var crop_field_name = $element.data('crop_field') || '';
             if (crop_field_name) {
                 return;
             }
-            
-            // Форматируем имя в случае формсетов 
+
+            // Форматируем имя в случае формсетов
             var input = $element.closest('.stdimage').find('input[type="file"]');
             var name = input.attr('name');
             if (name.indexOf('-') >= 0) {
@@ -90,18 +89,18 @@
                     $.placeImage($preview, $image, coords);
                 });
             }
-            
+
             // Записываем координаты в форму
             var coords_text = coords.join(':');
             $element.next('input').val(coords_text);
             $element.data('crop', coords_text);
-            
+
             // Имя поля, в котором хранится значение кропа
             var crop_field_name = $element.data('crop_field') || '';
             if (crop_field_name) {
                 return;
             }
-            
+
             var input = $element.closest('.stdimage').find('input[type="file"]');
             var name = input.attr('name');
             if (name.indexOf('-') >= 0) {
