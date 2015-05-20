@@ -116,7 +116,7 @@
 
     var _scrollHandler = ios ?
         $.animation_frame(scrollHandler) :
-        $.rared($.animation_frame(scrollHandler), 50);
+        $.rared(scrollHandler, 50);
 
     // Подключение событий
     enabled = window.innerWidth >= $.sticky.min_width;

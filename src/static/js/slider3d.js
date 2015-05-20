@@ -134,7 +134,7 @@
 
         // Поворот
         that.rotate = function(diff_x) {
-            wrapper_data.angle = Math.round(diff_x / wrapper_data.scroll2deg);
+            wrapper_data.angle = wrapper_data.initial_angle + Math.round(diff_x / wrapper_data.scroll2deg);
 
             $.animation_frame(function() {
                 $wrapper.css({
@@ -148,6 +148,7 @@
             var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
             var touch = touchPoints[0];
 
+            wrapper_data.initial_angle = wrapper_data.angle || 0;
             wrapper_data.direction = null;
             wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
 
