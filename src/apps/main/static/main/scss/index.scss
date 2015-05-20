@@ -102,33 +102,4 @@
   img {
     width: 60%;
   }
-  
-  .arrow {
-    &:before {
-      background-image: url(../img/arrows.png);
-      background-size: 80px 80px;
-      @include transition-property(-webkit-transform, transform);
-      @include transition-duration(0.3s);
-      @include transition-timing-function(linear);
-    }
-    &:hover:before {
-      @include transform(translate(-50%, -50%) scale(1.1));
-    }
-  }
-  .arrow-left {
-    &:before {
-      background-position: left 0;
-    }
-    &:hover:before {
-      background-position: left -40px;
-    }
-  }
-  .arrow-right {
-    &:before {
-      background-position: right 0;
-    }
-    &:hover:before {
-      background-position: right -40px;
-    }
-  }
 }

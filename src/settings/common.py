@@ -226,9 +226,9 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
+            'scss/slider3d/slider3d.scss',
             'scss/parallax.scss',
             'scss/video_bg.scss',
-            'scss/slider3d.scss',
             'yandex_maps/scss/yandex_maps.scss',
             'main/scss/index.scss',
         ),

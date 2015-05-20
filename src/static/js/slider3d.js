@@ -5,8 +5,8 @@
     var Slider3d = function($root, settings) {
         var that = this;
         var $wrapper = $root.find('.slider3d-wrapper:first');
-        var base_wrapper_transform = $wrapper.css('transform');
         var $front = $root.find('.front:first');
+        var wrapper_data = $wrapper.data();
 
         // Обновление глубины
         that.update_depth = function() {
@@ -42,20 +42,21 @@
             return $prev;
         };
 
-        var prepare_right_scroll = function() {
+        // Подготовка к скроллу вправо
+        that.before_right_scroll = function() {
             var $next = that.get_next();
             if (!$next || !$next.length) {
                 return;
-            };
+            }
             return $next.addClass('right');
         };
-        
+
         // Скролл вправо
         that.slide_right = function() {
-            var $next = prepare_right_scroll();
+            var $next = that.before_right_scroll();
             if (!$next) return;
 
-            $wrapper.css({
+            $wrapper.removeAttr('style').css({
                 transitionDuration: settings.speed + 'ms'
             }).addClass('rotate-right').one(transitionend, function() {
                 $front.removeClass('front');
@@ -64,20 +65,21 @@
             });
         };
 
-        var prepare_left_scroll = function() {
+        // Подготовка к скроллу влево
+        that.before_left_scroll = function() {
             var $prev = that.get_prev();
             if (!$prev || !$prev.length) {
                 return;
-            };
+            }
             return $prev.addClass('left');
         };
-        
+
         // Скролл влево
         that.slide_left = function () {
-            var $prev = prepare_left_scroll();
+            var $prev = that.before_left_scroll();
             if (!$prev) return;
 
-            $wrapper.css({
+            $wrapper.removeAttr('style').css({
                 transitionDuration: settings.speed + 'ms'
             }).addClass('rotate-left').one(transitionend, function () {
                 $front.removeClass('front');
@@ -88,7 +90,7 @@
 
         // Инициализация
         that.update_depth();
-        
+
         // Стрелки управления
         if (settings.controls) {
             var controls_parent;
@@ -99,7 +101,7 @@
             } else {
                 controls_parent = $root;
             }
-            
+
             var $left = $('<div>').addClass('arrow arrow-left').on('click', function() {
                 that.slide_left();
             });
@@ -107,23 +109,55 @@
                 that.slide_right();
             });
             controls_parent.first().append($left, $right);
+        }
+
+
+        // ===============
+        // ==== Touch ====
+        // ===============
+
+        // Подготовка к повороту вправо
+        that.before_touchmove_right = function () {
+            if (wrapper_data.direction != 'right') {
+                wrapper_data.direction = 'right';
+                return that.before_right_scroll();
+            }
         };
-        
-        // Touch
+
+        // Подготовка к повороту влево
+        that.before_touchmove_left = function () {
+            if (wrapper_data.direction != 'left') {
+                wrapper_data.direction = 'left';
+                return that.before_left_scroll();
+            }
+        };
+
+        // Поворот
+        that.rotate = function(diff_x) {
+            wrapper_data.angle = Math.round(diff_x / wrapper_data.scroll2deg);
+
+            $.animation_frame(function() {
+                $wrapper.css({
+                    transform: 'translate3d(0, 0, -0.5em) rotateY(' + wrapper_data.angle + 'deg)'
+                });
+            }, $wrapper.get(0))();
+        };
+
         $root.on('touchstart MSPointerDown pointerdown', function(event) {
             var orig = event.originalEvent;
             var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
             var touch = touchPoints[0];
 
-            that.direction = null;
-            that.scroll2deg = Math.round($wrapper.outerWidth() / 180);
+            wrapper_data.direction = null;
+            wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
+
             that.touch_x = touch.pageX;
             that.touch_y = touch.pageY;
         }).on('touchmove MSPointerMove pointermove', function(event) {
             var orig = event.originalEvent;
             var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
             var touch = touchPoints[0];
-            
+
             var xMovement = Math.abs(touch.pageX - that.touch_x);
             var yMovement = Math.abs(touch.pageY - that.touch_y);
 
@@ -131,43 +165,27 @@
             if (yMovement < (xMovement * 3)) {
                 event.preventDefault();
             }
-            
+
             // Горизонтальный скролл
             if (xMovement > settings.prevent_scroll) {
                 var diff_x = touch.pageX - that.touch_x;
-                var angle = 0;
-                
                 if (diff_x < 0) {
                     // скролл вправо
-                    if (that.direction != 'right') {
-                        that.direction = 'right';
-                        var $next = prepare_right_scroll();
-                        if (!$next) return;
-                    };
-                    
-                    angle = Math.round((diff_x + settings.prevent_scroll) / that.scroll2deg);
+                    diff_x += settings.prevent_scroll;
+                    that.before_touchmove_right();
                 } else {
                     // скролл влево
-                    if (that.direction != 'left') {
-                        that.direction = 'left';
-                        var $prev = prepare_left_scroll();
-                        if (!$prev) return;
-                    };
-                    
-                    angle = Math.round((diff_x - settings.prevent_scroll) / that.scroll2deg);
+                    diff_x -= settings.prevent_scroll;
+                    that.before_touchmove_left();
                 }
-                
-                $.animation_frame(function() {
-                    $wrapper.css({
-                        transform: 'translate3d(0, 0, -0.5em) rotateY(' + angle + 'deg)'
-                    });
-                }, $wrapper.get(0))();
+
+                that.rotate(diff_x);
             }
         })/*.on('touchend MSPointerUp pointerup', function(event) {
             var orig = event.originalEvent;
             var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
             var touch = touchPoints[0];
-            
+
             console.log('dx', touch.pageX - that.touch_x);
             console.log('dy', touch.pageY - that.touch_y);
         })*/;

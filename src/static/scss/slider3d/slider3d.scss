@@ -47,7 +47,7 @@
       @include transform(translate3d(50%, -50%, 0.5em) rotateY(90deg));
     }
   }
-  
+
   // Controls
   .arrow {
     position: absolute;
@@ -58,14 +58,7 @@
     z-index: 10;
     cursor: pointer;
     @include unselectable;
-    
-    &.arrow-left {
-      left: 0;
-    }
-    &.arrow-right {
-      right: 0;
-    }
-    
+
     &:before {
       content: '';
       position: absolute;
@@ -73,8 +66,45 @@
       top: 50%;
       width: 40px;
       height: 40px;
-      background-repeat: no-repeat;
+      background: url(arrows.png) no-repeat;
+      background-size: 200%;
       @include transform(translate(-50%, -50%));
+      @include transition-property(-webkit-transform, transform);
+      @include transition-duration(0.3s);
+      @include transition-timing-function(linear);
+    }
+
+    &.arrow-left {
+      left: 0;
+
+      &:before {
+        background-position: left 0;
+      }
+
+      &:hover {
+        &:before {
+          background-position: left -40px;
+        }
+      }
+    }
+    &.arrow-right {
+      right: 0;
+
+      &:before {
+        background-position: right 0;
+      }
+
+      &:hover {
+        &:before {
+          background-position: right -40px;
+        }
+      }
+    }
+
+    &:hover {
+      &:before {
+        @include transform(translate(-50%, -50%) scale(1.2));
+      }
     }
   }
 }
