@@ -45,6 +45,26 @@ $mobile_wide: 640px;
   }
 }
 
+@mixin media_interval($from, $to) {
+  $line: "";
+
+  @if $from > 0 {
+    $line: "(min-width: #{$from})";
+  }
+
+  @if $to > 0 {
+    @if $from > 0 {
+      $line: "#{$line} and (max-width: #{$to - 1px})";
+    } @else {
+      $line: "(max-width: #{$to - 1px})";
+    }
+  }
+
+  @media screen and #{$line} {
+    @content;
+  }
+}
+
 
 // Боковые границы сетки
 $grid_padding_wide: 90px;
