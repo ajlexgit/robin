@@ -8,7 +8,7 @@ DEFAULT_BUTTON_TYPE = getattr(settings, 'SOCIAL_BUTTON_TYPE_DEFAULT', 'default')
 DEFAULT_BUTTON_THEME = getattr(settings, 'SOCIAL_BUTTON_THEME_DEFAULT', 'counter')
 
 
-def social_buttons(options, buttons=DEFAULT_BUTTONS, type=DEFAULT_BUTTON_TYPE,
+def social_buttons(options, buttons=DEFAULT_BUTTONS, button_type=DEFAULT_BUTTON_TYPE,
                    theme=DEFAULT_BUTTON_THEME):
     if not options.get('url'):
         raise ValueError('url is required')
@@ -23,6 +23,6 @@ def social_buttons(options, buttons=DEFAULT_BUTTONS, type=DEFAULT_BUTTON_TYPE,
     return loader.render_to_string('social/social.html', dict(options, **{
         'id': rand_id,
         'buttons': ','.join(buttons),
-        'type': type,
+        'type': button_type,
         'theme': theme,
     }))

@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Hits',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
                 ('object_id', models.PositiveIntegerField()),
-                ('type', models.CharField(default='undefined', max_length=64, verbose_name='type')),
+                ('type', models.CharField(max_length=64, default='undefined', verbose_name='type')),
                 ('hits', models.PositiveIntegerField(default=0, verbose_name='hits')),
                 ('date', models.DateField(verbose_name='date')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),

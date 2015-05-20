@@ -12,12 +12,26 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Counter',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('title', models.CharField(max_length=128, verbose_name='title')),
+                ('position', models.CharField(choices=[('head', 'Head'), ('body_top', 'Body Top'), ('body_bottom', 'Body Bottom')], max_length=12, verbose_name='position')),
+                ('content', models.TextField(verbose_name='content')),
+            ],
+            options={
+                'verbose_name': 'counter',
+                'verbose_name_plural': 'counters',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='SeoConfig',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('title', models.CharField(verbose_name='site title', max_length=128)),
-                ('keywords', models.CharField(blank=True, verbose_name='site keywords', max_length=255)),
-                ('description', models.CharField(blank=True, verbose_name='site description', max_length=160)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('title', models.CharField(max_length=128, verbose_name='site title')),
+                ('keywords', models.CharField(max_length=255, verbose_name='site keywords', blank=True)),
+                ('description', models.CharField(max_length=160, verbose_name='site description', blank=True)),
             ],
             options={
                 'verbose_name': 'Site config',
@@ -27,12 +41,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoData',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
                 ('object_id', models.PositiveIntegerField()),
-                ('title', models.CharField(blank=True, verbose_name='title', max_length=128)),
-                ('keywords', models.CharField(blank=True, verbose_name='keywords', max_length=255)),
-                ('description', models.CharField(blank=True, verbose_name='description', max_length=160)),
-                ('text', models.TextField(blank=True, verbose_name='text')),
+                ('title', models.CharField(max_length=128, verbose_name='title', blank=True)),
+                ('keywords', models.CharField(max_length=255, verbose_name='keywords', blank=True)),
+                ('description', models.CharField(max_length=160, verbose_name='description', blank=True)),
+                ('text', models.TextField(verbose_name='text', blank=True)),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
             options={
