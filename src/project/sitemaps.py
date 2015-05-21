@@ -1,18 +1,12 @@
-from django.contrib.sitemaps import Sitemap
+from django.contrib.sitemaps import GenericSitemap
 from main.models import MainPageConfig
 
-
-class MainPageSitemap(Sitemap):
-    changefreq = "weekly"
-    priority = 0.5
-
-    def items(self):
-        return MainPageConfig.objects.all()
-
-    def lastmod(self, obj):
-        return obj.updated
+mainpage_dict = {
+    'queryset': MainPageConfig.objects.all(),
+    'date_field': 'updated',
+}
 
 
 site_sitemaps = {
-    'main': MainPageSitemap,
+    'main': GenericSitemap(mainpage_dict, changefreq='weekly', priority=0.5),
 }
