@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from yandex_maps import YandexCoordsField
 from google_maps import GoogleCoordsField
@@ -11,5 +12,10 @@ class MainPageConfig(SingletonModel):
     coords = YandexCoordsField(_('coordinates'), null=True, blank=True)
     coords2 = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
+    updated = models.DateTimeField(_('changed'), auto_now=True)
+    
     class Meta:
         verbose_name = _("Settings")
+
+    def get_absolute_url(self):
+        return resolve_url('index')
