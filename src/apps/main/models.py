@@ -12,7 +12,7 @@ class MainPageConfig(SingletonModel):
     coords = YandexCoordsField(_('coordinates'), null=True, blank=True)
     coords2 = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
-    updated = models.DateTimeField(_('changed'), auto_now=True)
+    updated = models.DateTimeField(_('change date'), auto_now=True)
     
     class Meta:
         verbose_name = _("Settings")
