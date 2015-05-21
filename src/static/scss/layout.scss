@@ -53,3 +53,28 @@ p {
 #content {
   display: table-row;
 }
+
+// Полноэкранный блок
+.section {
+  position: relative;
+  display: table;
+  width: 100%;
+  color: #FFFFFF;
+  text-align: center;
+  background: no-repeat center #000000;
+  background-size: cover;
+
+  .inner {
+    position: relative;
+    display: table-cell;
+    height: 100vh;
+    padding-top: 150px;
+    z-index: 5;
+    vertical-align: middle;
+    @include border-box;
+    @include no_fontsize;
+    @include media(mobile) {
+      padding-top: 110px;
+    }
+  }
+}

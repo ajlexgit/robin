@@ -10,6 +10,13 @@
   @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
   }
+  
+  .grid-col-alone {
+    float: none;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .grid-col {
@@ -17,7 +24,6 @@
   padding: 0 $grid_col_padding;
   @include border-box;
 }
-
 
 // Wide-desktop (1200+)
 @include media(wide) {

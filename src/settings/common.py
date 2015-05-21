@@ -255,7 +255,6 @@ PIPELINE_JS = {
             'js/canvas_utils.js',
             # 'js/inlines.js',
             'js/rared.js',
-            'js/win_height.js',
             'js/jquery.appear.js',
             'js/jquery.scrollTo.js',
             'js/jquery.popups.js',

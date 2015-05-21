@@ -27,32 +27,13 @@
 
 
 #video {
-  position: relative;
-  overflow: hidden;
-  padding-top: 150px;
-  min-height: 500px;
-  height: 600px;
-  background: no-repeat center red;
-  background-size: cover;
-  @include border-box;
-  @include no_fontsize;
-  @include media(mobile) {
-    padding-top: 110px;
-  }
+  background-color: red;
 
   @at-root .js & .video-bg {
     visibility: hidden;
   }
-
   @at-root .js &.video-loaded .video-bg {
     visibility: visible;
-  }
-
-  .content {
-    position: relative;
-    width: 100%;
-    z-index: 5;
-    @include valign_transform;
   }
 
   .title {

@@ -17,22 +17,24 @@
 
 
 {% block content %}
-    <div id="video" class="video-bg-container" style="background-image: url({% static 'main/img/river.jpg' %})">
+    <div id="video" class="section video-bg-container" style="background-image: url({% static 'main/img/river.jpg' %})">
         <video class="video-bg" autoplay="" loop="" preload="auto" muted="">
             <source src="{% static 'main/img/river.mp4' %}" type="video/mp4">
         </video>
 
-        <div class="content grid">
-            <div class="gray grid-col-wide-8 grid-col-8 grid-col-tablet-8 grid-col-mobile-4"
-                 style="height: 200px">
-                <h1 class="title title-h1">{{ config.header_title }}</h1>
-            </div>
+        <div class="inner">
+            <div class="grid">
+                <div class="gray grid-col-wide-6 grid-col-6 grid-col-tablet-8 grid-col-mobile-4 grid-col-alone"
+                     style="height: 200px">
+                    <h1 class="title title-h1">{{ config.header_title }}</h1>
+                </div>
 
-            <div class="blue grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
-                 style="height: 50px">
-            </div>
-            <div class="yellow grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
-                 style="height: 50px">
+                <div class="blue grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
+                     style="height: 50px">
+                </div>
+                <div class="yellow grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
+                     style="height: 50px">
+                </div>
             </div>
         </div>
     </div>
