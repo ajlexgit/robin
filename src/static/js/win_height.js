@@ -40,7 +40,7 @@
 
     $.fn.winHeight = function() {
         return this.each(function () {
-            var $block = $(this).addClass('win-height-block');
+            var $block = $(this);
 
             var winBlock = {
                 $block: $block
