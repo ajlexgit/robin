@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from main.views import IndexView
+from .sitemaps import site_sitemaps
 
 
 urlpatterns = patterns('',
@@ -22,6 +23,9 @@ urlpatterns = patterns('',
     url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
     url(r'^yandex_maps/', include('yandex_maps.urls', namespace='yandex_maps')),
     url(r'^google_maps/', include('google_maps.urls', namespace='google_maps')),
+
+    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'),
 )
 
 
