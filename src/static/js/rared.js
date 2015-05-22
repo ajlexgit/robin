@@ -6,19 +6,22 @@
     */
 
     $.rared = function(callback, time) {
-        var blocked, that, args;
+        var sleeping, sleeping_call, that, args;
         return function() {
-            that = this;
-            args = arguments;
+            if (sleeping) {
+                sleeping_call = true;
+                that = this;
+                args = arguments;
+                return;
+            }
 
-            if (blocked) return;
-
-            callback.apply(that, args);
-
-            blocked = true;
-            setTimeout(function() {
-                blocked = false;
-                callback.apply(that, args);
+            callback.apply(this, arguments);
+            sleeping = setTimeout(function() {
+                if (sleeping_call) {
+                    callback.apply(that, args);
+                    sleeping_call = false;
+                }
+                sleeping = null;
             }, time);
         }
     };

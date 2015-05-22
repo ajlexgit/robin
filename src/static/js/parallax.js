@@ -5,7 +5,7 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            rared.js, jquery.mousewheel.js, animation_frame.js
+            rared.js, animation_frame.js
 
         <div id="block">
             <div class="parallax" style="background-image: url(../img/bg.jpg)">
@@ -49,9 +49,12 @@
 
                 var offset = position * parallaxImage.var_offset - parallaxImage.const_offset;
 
-                parallaxImage.background.css({
-                    top: Math.round(offset)
-                });
+                $.animation_frame(function() {
+                    parallaxImage.background.css({
+                        transform: 'translate3d(0, ' + Math.round(offset) + 'px, 0)'
+                        //top: Math.round(offset)
+                    });
+                }, parallaxImage.background.get(0))();
             }
         });
     };
@@ -73,12 +76,12 @@
         parallaxImage.background.height(bg_height);
     };
 
-    var _scrollHandler = $.rared($.animation_frame(scrollHandler), 25);
+    var _scrollHandler = $.rared(scrollHandler, 25);
 
     // Подключение событий
     enabled = window.innerWidth >= $.parallax.min_width;
     if (enabled) {
-        $(document).on('scroll.parallax', _scrollHandler).on('mousewheel.parallax', scrollHandler);
+        $(window).on('scroll.parallax', _scrollHandler);
         $window.on('load.parallax', scrollHandler);
     }
 
@@ -96,14 +99,14 @@
 
                 $.each(parallaxImages, function (index, parallaxImage) {
                     parallaxImage.background.css({
-                        top: '',
+                        transform: '',
                         height: ''
                     });
                 });
             }
         } else if (window.innerWidth >= $.parallax.min_width) {
             enabled = true;
-            $(document).on('scroll.parallax', _scrollHandler).on('mousewheel.parallax', scrollHandler);
+            $(document).on('scroll.parallax', _scrollHandler);
             $window.on('load.parallax', scrollHandler);
             scrollHandler();
         }

@@ -5,7 +5,7 @@
         Родительский элемент должен иметь position, отличный от static.
 
         Требует:
-            rared.js, jquery.mousewheel.js, animation_frame.js
+            rared.js, animation_frame.js
 
         Параметры:
             windowTopOffset         - расстояние от верха окна до ползающего блока
@@ -109,19 +109,19 @@
     };
 
     var scrollHandler = function() {
-        $.each(stickies, function(index, sticky) {
-            processSticky(sticky);
-        });
+        for (var i= 0, l=stickies.length; i<l; i++) {
+            processSticky(stickies[i]);
+        }
     };
 
     var _scrollHandler = ios ?
         $.animation_frame(scrollHandler) :
-        $.rared(scrollHandler, 50);
+        $.rared(scrollHandler, 30);
 
     // Подключение событий
     enabled = window.innerWidth >= $.sticky.min_width;
     if (enabled) {
-        $(document).on('scroll.sticky', _scrollHandler).on('mousewheel.sticky', scrollHandler);
+        $(document).on('scroll.sticky', _scrollHandler);
         $window.on('load.sticky', scrollHandler);
     }
 
@@ -145,7 +145,7 @@
             });
         } else if (!enabled && (window.innerWidth >= $.sticky.min_width)) {
             enabled = true;
-            $(document).on('scroll.sticky', _scrollHandler).on('mousewheel.sticky', scrollHandler);
+            $(document).on('scroll.sticky', _scrollHandler);
             $window.on('load.sticky', scrollHandler);
         }
     }, 50));
