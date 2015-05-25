@@ -243,7 +243,7 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'head_core': {
         'source_filenames': (
-            'js/jquery-1.11.1.min.js',
+            'js/jquery-2.1.4.min.js',
             'js/jquery-ui.min.js',
             'js/jquery.cookie.js',
         ),
