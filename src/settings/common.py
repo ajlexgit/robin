@@ -271,7 +271,6 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/animation_frame.js',
             'js/parallax.js',
-            'js/video_bg.js',
             'js/slider3d.js',
             'google_maps/js/google_maps.js',
             'yandex_maps/js/yandex_maps.js',

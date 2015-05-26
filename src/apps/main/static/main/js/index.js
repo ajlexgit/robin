@@ -3,10 +3,9 @@
     // Видео на фоне
     $(document).ready(function() {
         var $video = $('#video').winHeight();
-        $video.videoBackground({
-            onShow: function() {
-                $(this).closest('.video-bg-container').addClass('video-loaded');
-            }
+        
+        $video.find('.video-bg').on('loadeddata', function() {
+            $video.addClass('video-loaded');
         });
     });
 
