@@ -1,101 +1,64 @@
-/*
- * jQuery appear plugin
- *
- * Copyright (c) 2012 Andrey Sidorov
- * licensed under MIT license.
- *
- * https://github.com/morr/jquery.appear/
- *
- * Version: 0.3.4
- */
-(function($) {
-  var selectors = [];
+(function ($) {
 
-  var check_binded = false;
-  var check_lock = false;
-  var defaults = {
-    interval: 250,
-    force_process: false
-  };
-  var $window = $(window);
+    /*
+        Событие видимости элемента.
 
-  var $prior_appeared;
+        Требует:
+            jquery.rared.js
 
-  function process() {
-    check_lock = false;
-    for (var index = 0, selectorsLength = selectors.length; index < selectorsLength; index++) {
-      var $appeared = $(selectors[index]).filter(function() {
-        return $(this).is(':appeared');
-      });
+        Пример:
+            $('#block').appear().on('appear', function() {
+                $(this).addClass('visible');
+            });
+    */
 
-      $appeared.trigger('appear', [$appeared]);
+    var appear_blocks = [];
 
-      if ($prior_appeared) {
-        var $disappeared = $prior_appeared.not($appeared);
-        $disappeared.trigger('disappear', [$disappeared]);
-      }
-      $prior_appeared = $appeared;
-    }
-  }
+    $.fn.appear = function(options) {
+        var settings = $.extend({
+            offset: 0.2
+        }, options);
 
-  // "appeared" custom filter
-  $.expr[':']['appeared'] = function(element) {
-    var $element = $(element);
-    if (!$element.is(':visible')) {
-      return false;
-    }
+        return this.each(function() {
+            appear_blocks.push({
+                element: this,
+                settings: settings
+            })
+        });
+    };
 
-    var window_left = $window.scrollLeft();
-    var window_top = $window.scrollTop();
-    var offset = $element.offset();
-    var left = offset.left;
-    var top = offset.top;
+    $.force_appear = function() {
+        var vpWidth = document.documentElement.clientWidth,
+            vpHeight = document.documentElement.clientHeight;
 
-    if (top + $element.height() >= window_top &&
-        top - ($element.data('appear-top-offset') || 0) <= window_top + $window.height() &&
-        left + $element.width() >= window_left &&
-        left - ($element.data('appear-left-offset') || 0) <= window_left + $window.width()) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+        for(var i=0, l=appear_blocks.length; i<l; i++) {
+            var appear_block = appear_blocks[i],
+                rect = appear_block.element.getBoundingClientRect(),
+                elem_width = rect.right - rect.left,
+                elem_height = rect.bottom - rect.top,
+                vDiff = Math.min(vpHeight, elem_height) * appear_block.settings.offset,
+                hDiff = Math.min(vpWidth, elem_width) * appear_block.settings.offset;
 
-  $.fn.extend({
-    // watching for element's appearance in browser viewport
-    appear: function(options) {
-      var opts = $.extend({}, defaults, options || {});
-      var selector = this.selector || this;
-      if (!check_binded) {
-        var on_check = function() {
-          if (check_lock) {
-            return;
-          }
-          check_lock = true;
+            var visible = (rect.bottom >= vDiff);
+            visible = visible && (rect.right >= hDiff);
+            visible = visible && ((vpHeight - rect.top) >= vDiff);
+            visible = visible && ((vpWidth - rect.left) >= hDiff);
 
-          setTimeout(process, opts.interval);
-        };
+            var $elem = $(appear_block.element);
+            var old_state = $elem.data('appear-visible');
+            if (old_state !== visible) {
+                if (visible) $elem.trigger('appear');
+                else $elem.trigger('disappear');
+                $elem.data('appear-visible', visible);
+            }
+        }
+    };
 
-        $(window).scroll(on_check).resize(on_check);
-        check_binded = true;
-      }
+    $(document).ready(function() {
+        setTimeout($.force_appear);
+    });
 
-      if (opts.force_process) {
-        setTimeout(process, opts.interval);
-      }
-      selectors.push(selector);
-      return $(selector);
-    }
-  });
+    $(window).on('scroll.appear resize.appear', $.rared($.force_appear, 50));
+    $(window).on('load.appear', $.force_appear);
 
-  $.extend({
-    // force elements's appearance check
-    force_appear: function() {
-      if (check_binded) {
-        process();
-        return true;
-      }
-      return false;
-    }
-  });
 })(jQuery);

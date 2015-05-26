@@ -19,11 +19,11 @@
     });
 
     // Appear - блоки
-    $(document).on('appear', '.appear-block', function () {
-        $(this).addClass('visible');
-    }).ready(function () {
-        $('.appear-block').appear();
-        $.force_appear();
+    $(document).ready(function () {
+        $appear_block = $('.appear-block');
+        $appear_block.appear().on('appear', function() {
+            $appear_block.addClass('visible');
+        });
     });
 
     // Slider
