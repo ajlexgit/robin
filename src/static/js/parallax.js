@@ -52,7 +52,6 @@
                 $.animation_frame(function() {
                     parallaxImage.background.css({
                         transform: 'translate3d(0, ' + Math.round(offset) + 'px, 0)'
-                        //top: Math.round(offset)
                     });
                 }, parallaxImage.background.get(0))();
             }
@@ -105,6 +104,10 @@
                 });
             }
         } else if (window.innerWidth >= $.parallax.min_width) {
+            $.each(parallaxImages, function (index, parallaxImage) {
+                recalcParallax(parallaxImage);
+            });
+
             enabled = true;
             $(document).on('scroll.parallax', _scrollHandler);
             $window.on('load.parallax', scrollHandler);
