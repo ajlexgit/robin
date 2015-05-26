@@ -1,7 +1,7 @@
 (function ($) {
 
     /*
-        Событие видимости элемента.
+        Добавляет события видимости элемента.
 
         Требует:
             jquery.rared.js
@@ -55,7 +55,7 @@
     };
 
     $(document).ready(function() {
-        setTimeout($.force_appear);
+        setTimeout($.force_appear, 0);
     });
 
     $(window).on('scroll.appear resize.appear', $.rared($.force_appear, 50));
