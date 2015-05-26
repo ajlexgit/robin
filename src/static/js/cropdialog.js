@@ -3,7 +3,8 @@
     /*
         Открытие диалогового окна с картинкой для кропа
 
-        Требует: canvas_utils.js
+        Требует:
+            jquery.canvas_utils.js, jquery.popups.js
 
         Настройки:
             // Функция или значение пути к картинке. Если вернет false - диалог не откроется.
@@ -240,7 +241,7 @@
             }
             dialog = null;
         };
-        
+
         // Отмена обрезки
         this.cancel = function($element) {
             if (get_value('onCancel', $element) === false) {
