@@ -251,7 +251,7 @@ PIPELINE_JS = {
     },
     'core': {
         'source_filenames': (
-            'js/ajax_csrf.js',
+            'js/jquery.ajax_csrf.js',
             'js/canvas_utils.js',
             # 'js/inlines.js',
             'js/jquery.rared.js',
