@@ -4,7 +4,7 @@
         Плагин 3D-слайдера.
         
         Требует:
-            jquery.rared.js, animation_frame.js
+            jquery.rared.js, jquery.animation_frame.js
     */
 
     var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
