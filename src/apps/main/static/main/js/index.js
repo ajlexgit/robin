@@ -20,9 +20,11 @@
 
     // Appear - блоки
     $(document).ready(function () {
-        $appear_block = $('.appear-block');
-        $appear_block.appear().on('appear', function() {
-            $appear_block.addClass('visible');
+        $('.appear-block').appear({
+            from_top: 1,
+            from_bottom: 1
+        }).on('appear', function() {
+            $(this).addClass('visible');
         });
     });
 
