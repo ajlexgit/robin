@@ -3,8 +3,7 @@
     /*
         Открытие диалогового окна с картинкой для кропа
 
-        Требует:
-            canvas_utils.js, jquery.popup.js
+        Требует: canvas_utils.js
 
         Настройки:
             // Функция или значение пути к картинке. Если вернет false - диалог не откроется.
@@ -184,10 +183,12 @@
                     ];
                     this.setOptions({maxSize: maxSize})
                 }
+
                 // Аспекты
                 if (aspects.length) {
                     this.setOptions({aspectRatio: aspects[0]});
                 }
+
                 // Положение кропа
                 if (crop_position.length == 4) {
                     crop_position[0] /= jcrop_relation_x;
@@ -232,13 +233,14 @@
             if (get_value('onClose', $element) === false) {
                 return false
             }
+
             if (jcrop_api) {
                 jcrop_api.destroy();
                 jcrop_api = null;
             }
             dialog = null;
         };
-
+        
         // Отмена обрезки
         this.cancel = function($element) {
             if (get_value('onCancel', $element) === false) {
@@ -254,6 +256,7 @@
                 console.error('cropdialog: ' + gettext('empty image url'));
                 return false;
             }
+
             dialog = this.create($element, image_url);
 
             return false;

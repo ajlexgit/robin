@@ -3,7 +3,7 @@
     /*
 
         Требует:
-            rared.js, win_height.js
+            jquery.rared.js, win_height.js
 
     */
 

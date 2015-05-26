@@ -254,7 +254,7 @@ PIPELINE_JS = {
             'js/ajax_csrf.js',
             'js/canvas_utils.js',
             # 'js/inlines.js',
-            'js/rared.js',
+            'js/jquery.rared.js',
             'js/win_height.js',
             'js/jquery.appear.js',
             'js/jquery.scrollTo.js',

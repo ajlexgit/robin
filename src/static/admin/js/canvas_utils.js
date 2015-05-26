@@ -205,7 +205,7 @@
         var img_w = $image.prop('naturalWidth');
         var img_h = $image.prop('naturalHeight');
         var img_ratio = img_w / img_h;
-        var coords_ratio;
+        var coords_ratio, float_h, float_w, crop_top, crop_left;
 
         if (!coords) {
             coords = [0, 0, img_w, img_h];
@@ -215,10 +215,10 @@
         }
 
         if (img_ratio >= container_ratio) {
-            var float_h = (container_h * img_h) / coords[3];
-            var float_w = float_h * img_ratio;
-            var crop_top = (coords[1] * float_h) / img_h;
-            var crop_left = (coords[0] * float_w) / img_w;
+            float_h = (container_h * img_h) / coords[3];
+            float_w = float_h * img_ratio;
+            crop_top = (coords[1] * float_h) / img_h;
+            crop_left = (coords[0] * float_w) / img_w;
             var crop_w = Math.round( container_h * coords_ratio );
             $image.css({
                 width: Math.round( float_w ),
@@ -227,10 +227,10 @@
                 top: -Math.round( crop_top )
             });
         } else {
-            var float_w = (container_w * img_w) / coords[2];
-            var float_h = float_w / img_ratio;
-            var crop_top = (coords[1] * float_h) / img_h;
-            var crop_left = (coords[0] * float_w) / img_w;
+            float_w = (container_w * img_w) / coords[2];
+            float_h = float_w / img_ratio;
+            crop_top = (coords[1] * float_h) / img_h;
+            crop_left = (coords[0] * float_w) / img_w;
             var crop_h = Math.round( container_w / coords_ratio );
             $image.css({
                 width: Math.round( float_w ),
@@ -240,5 +240,5 @@
             });
         }
     };
-
+    
 })(jQuery);

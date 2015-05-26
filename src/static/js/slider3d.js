@@ -1,5 +1,12 @@
 (function($) {
 
+    /*
+        Плагин 3D-слайдера.
+        
+        Требует:
+            jquery.rared.js, animation_frame.js
+    */
+
     var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
 
     var Slider3d = function($root, settings) {
