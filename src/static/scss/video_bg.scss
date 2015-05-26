@@ -9,8 +9,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: auto;
+  min-width: 100%;
+  min-height: 100%;
 
   &::-webkit-media-controls {
     display: none;
