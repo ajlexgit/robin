@@ -8,6 +8,6 @@ register = template.Library()
 def away(context, html):
     request = context.get('request')
     if not request:
-        return ''
+        return html
 
     return away_links(request, html)
