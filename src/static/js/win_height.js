@@ -18,8 +18,13 @@
     var $window = $(window);
 
     $.winHeight = function($blocks, multiplier) {
-        multiplier = multiplier || 1;
         var win_height = document.documentElement.clientHeight;
+
+        if ($.isFunction(multiplier)) {
+            multiplier = multiplier() || 1;
+        } else {
+            multiplier = multiplier || 1;
+        }
 
         if (!$blocks.jquery) {
             $blocks = $($blocks);
