@@ -6,4 +6,8 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def away(context, html):
-    return away_links(context['request'], html)
+    request = context.get('request')
+    if not request:
+        return ''
+
+    return away_links(request, html)

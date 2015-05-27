@@ -7,7 +7,10 @@ register = Library()
 
 @register.simple_tag(takes_context=True)
 def seo_block(context, template='seo/block.html'):
-    request = context['request']
+    request = context.get('request')
+    if not request:
+        return ''
+
     if not request.seo or not request.seo.instance:
         return ''
 
