@@ -86,13 +86,16 @@
         };
 
         that.updateSpeed = function() {
-            var newSpeed = (1000 * that._distance) / (Date.now() - that._lastTime);
-            that.speed = Math.round(
-                settings.deceleration * that.speed +
-                (1 - settings.deceleration) * newSpeed
-            );
-            that._distance = 0;
-            that._lastTime = Date.now();
+            var dTime = Date.now() - that._lastTime;
+            if (dTime) {
+                var newSpeed = (1000 * that._distance) / dTime;
+                that.speed = Math.round(
+                    settings.deceleration * that.speed +
+                    (1 - settings.deceleration) * newSpeed
+                );
+                that._distance = 0;
+                that._lastTime = Date.now();
+            }
         };
 
         // === MOUSE ===
@@ -154,7 +157,7 @@
                 that.speed = 0;
                 that._distance = 0;
                 that._lastTime = Date.now();
-                that._speedTimer = setInterval(that.updateSpeed, settings.speedInterval);
+                //that._speedTimer = setInterval(that.updateSpeed, settings.speedInterval);
             });
 
             $(document).on('touchmove.drager', function(event) {
@@ -166,6 +169,7 @@
 
                 that.event = touchPoints[0];
                 that.updateDistance();
+                that.updateSpeed();
                 settings.touch.onDrag.call(that);
             }).on('touchend.drager', function(event) {
                 if (!that.element) return;
