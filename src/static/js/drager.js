@@ -23,12 +23,16 @@
                 onStopDrag(dX, dY)            - конец перемещения
     */
 
+    var getTime = Date.now || function() {
+            return new Date().getTime();
+        };
+
     window.Drager = function($element, options) {
         var that = this;
         var settings = $.extend(true, {
             preventDefaultDrag: true,
             speedInterval: 100,
-            deceleration: 0.33,
+            deceleration: 0.0006,
 
             mouse: {
                 onStartDrag: $.noop,
@@ -44,15 +48,6 @@
 
         that.event = null;
         that.element = null;
-        that.startPoint = {};
-
-        that.speed = 0;
-        that.speedPoint = {};
-        that._lastPosX = -1;
-        that._lastPosY = -1;
-        that._distance = 0;
-        that._lastTime = 0;
-        that._speedTimer = null;
 
         that.getPoint = function() {
             return {
@@ -77,27 +72,6 @@
             return (clientDy || pageDy) >= 0 ? Math.max(clientDy, pageDy) : Math.min(clientDy, pageDy);
         };
 
-        that.updateDistance = function() {
-            that._distance += Math.sqrt(
-                Math.pow(that.getDx(that.speedPoint), 2) +
-                Math.pow(that.getDy(that.speedPoint), 2)
-            );
-            that.speedPoint = that.getPoint();
-        };
-
-        that.updateSpeed = function() {
-            var dTime = Date.now() - that._lastTime;
-            if (dTime) {
-                var newSpeed = (1000 * that._distance) / dTime;
-                that.speed = Math.round(
-                    settings.deceleration * that.speed +
-                    (1 - settings.deceleration) * newSpeed
-                );
-                that._distance = 0;
-                that._lastTime = Date.now();
-            }
-        };
-
         // === MOUSE ===
         if (settings.mouse) {
             // Блокируем дефолтовый Drag'n'Drop браузера
@@ -116,26 +90,38 @@
                     return;
                 }
 
-                that.speed = 0;
-                that._distance = 0;
-                that._lastTime = Date.now();
-                that._speedTimer = setInterval(that.updateSpeed, settings.speedInterval);
+                that.startTime = getTime();
             });
 
             $(document).on('mousemove.drager', function(event) {
                 if (!that.element) return;
 
                 that.event = event;
-                that.updateDistance();
+
+                var timestamp = getTime();
+                if (timestamp - that.startTime > 300) {
+                    that.startTime = timestamp;
+                    that.speedPoint = that.getPoint();
+                }
+
                 settings.mouse.onDrag.call(that);
             }).on('mouseup.drager', function(event) {
                 if (!that.element) return;
 
                 that.event = event;
+
+                var duration = getTime() - that.startTime;
+                var speedX = Math.abs(that.getDx(that.speedPoint)) / duration;
+                var speedY = Math.abs(that.getDy(that.speedPoint)) / duration;
+                var momentum = {
+                    pathX: (speedX * speedX) / (2 * settings.deceleration),
+                    pathY: (speedY * speedY) / (2 * settings.deceleration),
+                    time: Math.max(speedX, speedY) / settings.deceleration
+                };
+
+                settings.mouse.onStopDrag.call(that, momentum);
+
                 that.element = null;
-                clearInterval(that._speedTimer);
-                that.updateSpeed();
-                settings.mouse.onStopDrag.call(that);
             });
         }
 
@@ -154,10 +140,7 @@
                     return;
                 }
 
-                that.speed = 0;
-                that._distance = 0;
-                that._lastTime = Date.now();
-                //that._speedTimer = setInterval(that.updateSpeed, settings.speedInterval);
+                that.startTime = getTime();
             });
 
             $(document).on('touchmove.drager', function(event) {
@@ -168,8 +151,14 @@
                 if (touchPoints.length > 1) return;
 
                 that.event = touchPoints[0];
-                that.updateDistance();
-                that.updateSpeed();
+
+                var timestamp = getTime();
+                if (timestamp - that.startTime > 300) {
+                    console.log('set');
+                    that.startTime = timestamp;
+                    that.speedPoint = that.getPoint();
+                }
+
                 settings.touch.onDrag.call(that);
             }).on('touchend.drager', function(event) {
                 if (!that.element) return;
@@ -178,11 +167,20 @@
                 var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
                 if (touchPoints.length > 1) return;
 
-                that.element = null;
                 that.event = touchPoints[0];
-                clearInterval(that._speedTimer);
-                that.updateSpeed();
-                settings.touch.onStopDrag.call(that);
+
+                var duration = getTime() - that.startTime;
+                var speedX = Math.abs(that.getDx(that.speedPoint)) / duration;
+                var speedY = Math.abs(that.getDy(that.speedPoint)) / duration;
+                var momentum = {
+                    pathX: (speedX * speedX) / (2 * settings.deceleration),
+                    pathY: (speedY * speedY) / (2 * settings.deceleration),
+                    time: Math.max(speedX, speedY) / settings.deceleration
+                };
+
+                settings.touch.onStopDrag.call(that, momentum);
+
+                that.element = null;
             });
         }
     };

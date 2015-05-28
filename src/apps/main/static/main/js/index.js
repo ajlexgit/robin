@@ -31,27 +31,75 @@
     // Slider
     $(document).ready(function() {
 
-        var drager = new Drager($('#slider_example .front'), {
+        var drager = new Drager($('#slider_example .handler'), {
             mouse: {
                 onStartDrag: function() {
-                    console.log('mousedown');
+                    var that = this;
+                    $(that.element).stop();
+                    this.initialLeft = $(this.element).position().left;
                 },
                 onDrag: function() {
-                    console.log('mousemove', this.getDx(), this.getDy(), this.speed);
+                    var that = this;
+                    var newLeft = that.initialLeft + that.getDx();
+                    $.animation_frame(function () {
+                        $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
+                    }, that.element)();
                 },
-                onStopDrag: function() {
-                    console.log('mouseup', this.getDx(), this.getDy(), this.speed);
+                onStopDrag: function(momentum) {
+                    console.log('end', momentum);
+                    var that = this;
+                    var startLeft = that.initialLeft + that.getDx();
+
+                    console.log('=====');
+                    $(that.element).css({
+                        textIndent: startLeft
+                    }).animate({
+                        textIndent: startLeft + momentum.pathX
+                    }, {
+                        duration: 1000,
+                        easing: 'easeOutCubic',
+                        step: function(now) {
+                            console.log(now);
+                            $(this).css({
+                                transform: 'translateX(' + now + 'px)'
+                            })
+                        }
+                    });
                 }
             },
             touch: {
                 onStartDrag: function() {
-                    console.log('touchstart');
+                    var that = this;
+                    $(that.element).stop();
+                    this.initialLeft = $(this.element).position().left;
                 },
                 onDrag: function() {
-                    console.log('touchmove', this.getDx(), this.getDy(), this.speed);
+                    var that = this;
+                    var newLeft = that.initialLeft + that.getDx();
+                    $.animation_frame(function () {
+                        $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
+                    }, that.element)();
                 },
-                onStopDrag: function() {
-                    console.log('touchend', this.getDx(), this.getDy(), this.speed);
+                onStopDrag: function (momentum) {
+                    console.log('end', momentum);
+                    var that = this;
+                    var startLeft = that.initialLeft + that.getDx();
+
+                    console.log('=====');
+                    $(that.element).css({
+                        textIndent: startLeft
+                    }).animate({
+                        textIndent: startLeft + momentum.pathX
+                    }, {
+                        duration: 1000,
+                        easing: 'easeOutCubic',
+                        step: function (now) {
+                            console.log(now);
+                            $(this).css({
+                                transform: 'translateX(' + now + 'px)'
+                            })
+                        }
+                    });
                 }
             }
         });
