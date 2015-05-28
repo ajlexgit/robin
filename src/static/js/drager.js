@@ -4,36 +4,33 @@
         Генерирует события перетаскивания.
 
         Параметры:
-            mouse:
-                preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
-                speedInterval: 50                 - интервал обновления скорости мыши
-                deceleration: [0-1]               - показатель плавности изменения скорости:
-                                                    0 - резкое изменение
-                                                    1 - отсутсвие изменения
+            preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
+            speedInterval: 50                 - интервал обновления скорости мыши
+            deceleration: [0-1]               - показатель плавности изменения скорости:
+                                                0 - резкое изменение
+                                                1 - отсутсвие изменения
 
-                onStartDrag(event)                - начало перетаскивания. Если вернет false,
-                                                    перетасквание будет отменено.
-                onDrag(event, dX, dY, speed)      - процесс перемещения
-                onStopDrag(event, dX, dY, speed)  - конец перемещения
+            mouse:
+                onStartDrag()                 - начало перетаскивания. Если вернет false,
+                                                перетасквание будет отменено.
+                onDrag(dX, dY)                - процесс перемещения
+                onStopDrag(dX, dY)            - конец перемещения
 
             touch:
+                onStartDrag()                 - начало перетаскивания. Если вернет false,
+                                                перетасквание будет отменено.
+                onDrag(dX, dY)                - процесс перемещения
+                onStopDrag(dX, dY)            - конец перемещения
     */
-
-    var current = null;
-    var mousePosX, mousePosY;
-    var mouseLastPosX = -1;
-    var mouseLastPosY = -1;
-    var mouseDistance = 0;
-    var mouseSpeed = 0;
-    var mouseSpeedTimer;
 
     window.Drager = function($element, options) {
         var that = this;
         var settings = $.extend(true, {
+            preventDefaultDrag: true,
+            speedInterval: 100,
+            deceleration: 0.33,
+
             mouse: {
-                preventDefaultDrag: true,
-                speedInterval: 100,
-                deceleration: 0.66,
                 onStartDrag: $.noop,
                 onDrag: $.noop,
                 onStopDrag: $.noop
@@ -45,112 +42,143 @@
             }
         }, options);
 
-        // Обновление расстояния, пройденного мышью
-        var updateMouseDistance = function(event) {
-            if (mouseLastPosX > -1) {
-                mouseDistance += Math.sqrt(
-                    Math.pow(event.pageX - mouseLastPosX, 2) +
-                    Math.pow(event.pageY - mouseLastPosY, 2)
-                );
-            }
-            mouseLastPosX = event.pageX;
-            mouseLastPosY = event.pageY;
+        that.event = null;
+        that.element = null;
+        that.startPoint = {};
+
+        that.speed = 0;
+        that.speedPoint = {};
+        that._lastPosX = -1;
+        that._lastPosY = -1;
+        that._distance = 0;
+        that._lastTime = 0;
+        that._speedTimer = null;
+
+        that.getPoint = function() {
+            return {
+                pageX: that.event.pageX,
+                pageY: that.event.pageY,
+                clientX: that.event.clientX,
+                clientY: that.event.clientY
+            };
+        };
+
+        that.getDx = function(point) {
+            point = point || that.startPoint;
+            var clientDx = that.event.clientX - point.clientX;
+            var pageDx = that.event.pageX - point.pageX;
+            return (clientDx || pageDx) >=0 ? Math.max(clientDx, pageDx) : Math.min(clientDx, pageDx);
+        };
+
+        that.getDy = function(point) {
+            point = point || that.startPoint;
+            var clientDy = that.event.clientY - point.clientY;
+            var pageDy = that.event.pageY - point.pageY;
+            return (clientDy || pageDy) >= 0 ? Math.max(clientDy, pageDy) : Math.min(clientDy, pageDy);
+        };
+
+        that.updateDistance = function() {
+            that._distance += Math.sqrt(
+                Math.pow(that.getDx(that.speedPoint), 2) +
+                Math.pow(that.getDy(that.speedPoint), 2)
+            );
+            that.speedPoint = that.getPoint();
+        };
+
+        that.updateSpeed = function() {
+            var newSpeed = (1000 * that._distance) / (Date.now() - that._lastTime);
+            that.speed = Math.round(
+                settings.deceleration * that.speed +
+                (1 - settings.deceleration) * newSpeed
+            );
+            that._distance = 0;
+            that._lastTime = Date.now();
         };
 
         // === MOUSE ===
         if (settings.mouse) {
             // Блокируем дефолтовый Drag'n'Drop браузера
-            if (settings.mouse.preventDefaultDrag) {
+            if (settings.preventDefaultDrag) {
                 $element.on('dragstart.drager', function() {
                     return false;
                 });
             }
 
             $element.on('mousedown.drager', function(event) {
-                if (settings.mouse.onStartDrag.call(this, event) === false) {
+                that.event = event;
+                that.element = this;
+                that.startPoint = that.speedPoint = that.getPoint();
+
+                if (settings.mouse.onStartDrag.call(that) === false) {
                     return;
                 }
 
-                current = this;
-                mousePosX = event.pageX;
-                mousePosY = event.pageY;
-
-                mouseSpeed = 0;
-                mouseDistance = 0;
-                mouseSpeedTimer = setInterval(function() {
-                    var newSpeed = (1000 * mouseDistance) / settings.mouse.speedInterval;
-                    mouseSpeed = Math.round(
-                        settings.mouse.deceleration * mouseSpeed +
-                        (1 - settings.mouse.deceleration) * newSpeed
-                    );
-                    mouseDistance = 0;
-                }, settings.mouse.speedInterval);
+                that.speed = 0;
+                that._distance = 0;
+                that._lastTime = Date.now();
+                that._speedTimer = setInterval(that.updateSpeed, settings.speedInterval);
             });
 
             $(document).on('mousemove.drager', function(event) {
-                if (!current) return;
+                if (!that.element) return;
 
-                var dX = event.pageX - mousePosX;
-                var dY = event.pageY - mousePosY;
-
-                updateMouseDistance(event);
-
-                settings.mouse.onDrag.call(current, event, dX, dY, mouseSpeed);
+                that.event = event;
+                that.updateDistance();
+                settings.mouse.onDrag.call(that);
             }).on('mouseup.drager', function(event) {
-                current = null;
+                if (!that.element) return;
 
-                var dX = event.pageX - mousePosX;
-                var dY = event.pageY - mousePosY;
-
-                updateMouseDistance(event);
-                clearInterval(mouseSpeedTimer);
-
-                settings.mouse.onStopDrag.call(current, event, dX, dY, mouseSpeed);
+                that.event = event;
+                that.element = null;
+                clearInterval(that._speedTimer);
+                that.updateSpeed();
+                settings.mouse.onStopDrag.call(that);
             });
         }
 
         // === TOUCH ===
         if (settings.touch) {
-            $element.on('touchstart.drager', function (event) {
-                if (settings.mouse.onStartDrag.call(this, event) === false) {
+            $element.on('touchstart.drager', function(event) {
+                var orig = event.originalEvent;
+                var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
+                if (touchPoints.length > 1) return;
+
+                that.element = this;
+                that.event = touchPoints[0];
+                that.startPoint = that.speedPoint = that.getPoint();
+
+                if (settings.touch.onStartDrag.call(that) === false) {
                     return;
                 }
 
-                current = this;
-                mousePosX = event.pageX;
-                mousePosY = event.pageY;
-
-                mouseSpeed = 0;
-                mouseDistance = 0;
-                mouseSpeedTimer = setInterval(function () {
-                    var newSpeed = (1000 * mouseDistance) / settings.mouse.speedInterval;
-                    mouseSpeed = Math.round(
-                        settings.mouse.deceleration * mouseSpeed +
-                        (1 - settings.mouse.deceleration) * newSpeed
-                    );
-                    mouseDistance = 0;
-                }, settings.mouse.speedInterval);
+                that.speed = 0;
+                that._distance = 0;
+                that._lastTime = Date.now();
+                that._speedTimer = setInterval(that.updateSpeed, settings.speedInterval);
             });
 
-            $(document).on('mousemove.drager', function (event) {
-                if (!current) return;
+            $(document).on('touchmove.drager', function(event) {
+                if (!that.element) return;
 
-                var dX = event.pageX - mousePosX;
-                var dY = event.pageY - mousePosY;
+                var orig = event.originalEvent;
+                var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
+                if (touchPoints.length > 1) return;
 
-                updateMouseDistance(event);
+                that.event = touchPoints[0];
+                that.updateDistance();
+                settings.touch.onDrag.call(that);
+            }).on('touchend.drager', function(event) {
+                if (!that.element) return;
 
-                settings.mouse.onDrag.call(current, event, dX, dY, mouseSpeed);
-            }).on('mouseup.drager', function (event) {
-                current = null;
+                var orig = event.originalEvent;
+                var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
+                if (touchPoints.length > 1) return;
 
-                var dX = event.pageX - mousePosX;
-                var dY = event.pageY - mousePosY;
-
-                updateMouseDistance(event);
-                clearInterval(mouseSpeedTimer);
-
-                settings.mouse.onStopDrag.call(current, event, dX, dY, mouseSpeed);
+                that.element = null;
+                that.event = touchPoints[0];
+                clearInterval(that._speedTimer);
+                that.updateSpeed();
+                settings.touch.onStopDrag.call(that);
             });
         }
     };

@@ -14,12 +14,12 @@
     });
 
     // Parallax
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#parallax_sample').parallax();
     });
 
     // Appear - блоки
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('.appear-block').appear({
             from_top: 1,
             from_bottom: 1
@@ -33,14 +33,25 @@
 
         var drager = new Drager($('#slider_example .front'), {
             mouse: {
-                onStartDrag: function(e) {
+                onStartDrag: function() {
                     console.log('mousedown');
                 },
-                onDrag: function(e, dx, dy, speed) {
-                    console.log('mousemove', dx, dy, speed);
+                onDrag: function() {
+                    console.log('mousemove', this.getDx(), this.getDy(), this.speed);
                 },
-                onStopDrag: function(e, dx, dy, speed) {
-                    console.log('mouseup', dx, dy, speed);
+                onStopDrag: function() {
+                    console.log('mouseup', this.getDx(), this.getDy(), this.speed);
+                }
+            },
+            touch: {
+                onStartDrag: function() {
+                    console.log('touchstart');
+                },
+                onDrag: function() {
+                    console.log('touchmove', this.getDx(), this.getDy(), this.speed);
+                },
+                onStopDrag: function() {
+                    console.log('touchend', this.getDx(), this.getDy(), this.speed);
                 }
             }
         });
