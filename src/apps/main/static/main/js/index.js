@@ -3,7 +3,7 @@
     // Видео на фоне
     $(document).ready(function() {
         var $video = $('#video').winHeight();
-        
+
         $video.find('.video-bg').on('loadeddata', function() {
             $video.addClass('video-loaded');
         });
@@ -30,9 +30,22 @@
 
     // Slider
     $(document).ready(function() {
-        $('#slider_example').find('.slider3d').slider3d({
 
+        var drager = new Drager($('#slider_example .front'), {
+            mouse: {
+                onStartDrag: function(e) {
+                    console.log('mousedown');
+                },
+                onDrag: function(e, dx, dy, speed) {
+                    console.log('mousemove', dx, dy, speed);
+                },
+                onStopDrag: function(e, dx, dy, speed) {
+                    console.log('mouseup', dx, dy, speed);
+                }
+            }
         });
+
+        //$('#slider_example').find('.slider3d').slider3d();
     });
 
 })(jQuery);

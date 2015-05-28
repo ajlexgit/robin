@@ -2,7 +2,7 @@
 
     /*
         Плагин 3D-слайдера.
-        
+
         Требует:
             jquery.rared.js, jquery.animation_frame.js
     */
@@ -189,14 +189,7 @@
 
                 that.rotate(diff_x);
             }
-        })/*.on('touchend MSPointerUp pointerup', function(event) {
-            var orig = event.originalEvent;
-            var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
-            var touch = touchPoints[0];
-
-            console.log('dx', touch.pageX - that.touch_x);
-            console.log('dy', touch.pageY - that.touch_y);
-        })*/;
+        });
     };
 
     $(window).on('resize', $.rared(function() {

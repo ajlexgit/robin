@@ -11,6 +11,15 @@ SECRET_KEY = 'lr2b8&^p8dv#&b=4%op-0^2*vomo816l-*8*^5#o9@q!=zv@f$'
 DEBUG = False
 TEMPLATE_DEBUG = False
 
+LANGUAGE_CODE = 'en'
+
+TIME_ZONE = 'America/New_York'
+TIME_FORMAT = 'H:i'
+DATE_FORMAT = 'j E Y'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
 INSTALLED_APPS = (
     'suit',
     'django.contrib.admin',
@@ -98,6 +107,100 @@ SUIT_CONFIG = {
     ),
 }
 
+
+# Pipeline
+PIPELINE_CSS = {
+    'head_core': {
+        'source_filenames': (
+            'scss/grid.scss',
+            'scss/layout.scss',
+            'scss/header.scss',
+            'scss/footer.scss',
+            # 'scss/inlines.scss',
+            'scss/popups/popups.scss',
+            # 'scss/jquery.scrollbar.scss',
+            # 'scss/jquery.scrollbar-theme.scss',
+            # 'breadcrumbs/scss/breadcrumbs.scss',
+            # 'comments/scss/comments.scss',
+            'menu/scss/menu.scss',
+            # 'paginator/scss/paginator.scss',
+            'seo/scss/block.scss',
+            # 'users/scss/users.scss',
+        ),
+        'output_filename': 'css/head_core.css',
+    },
+    'main_page': {
+        'source_filenames': (
+            'scss/slider3d/slider3d.scss',
+            'scss/parallax.scss',
+            'scss/video_bg.scss',
+            'yandex_maps/scss/yandex_maps.scss',
+            'main/scss/index.scss',
+        ),
+        'output_filename': 'css/main_page.css',
+    },
+    'users-profile': {
+        'source_filenames': (
+            'css/jcrop/jquery.Jcrop.css',
+            'users/scss/profile.scss',
+        ),
+        'output_filename': 'css/users-profile.css',
+    },
+}
+PIPELINE_JS = {
+    'head_core': {
+        'source_filenames': (
+            'js/jquery-2.1.4.min.js',
+            'js/jquery-ui.min.js',
+            'js/jquery.cookie.js',
+        ),
+        'output_filename': 'js/head_core.js',
+    },
+    'core': {
+        'source_filenames': (
+            'js/jquery.ajax_csrf.js',
+            'js/jquery.canvas_utils.js',
+            'js/jquery.popups.js',
+            'js/jquery.rared.js',
+            'js/jquery.readmore.min.js',
+            'js/jquery.scrollTo.js',
+            # 'js/jquery.inlines.js',
+            # 'js/jquery.scrollbar.js',
+            'js/appear.js',
+            'js/drager.js',
+            'js/win_height.js',
+            'menu/js/menu.js',
+            'seo/js/block.js',
+            # 'users/js/users.js',
+        ),
+        'output_filename': 'js/core.js',
+    },
+    'main_page': {
+        'source_filenames': (
+            'js/jquery.animation_frame.js',
+            'js/parallax.js',
+            'js/slider3d.js',
+            'google_maps/js/google_maps.js',
+            'yandex_maps/js/yandex_maps.js',
+            'main/js/index.js',
+        ),
+        'output_filename': 'js/main_page.js',
+    },
+    'users-profile': {
+        'source_filenames': (
+            'js/plupload/moxie.min.js',
+            'js/plupload/plupload.min.js',
+            'js/plupload/i18n/%s.js' % LANGUAGE_CODE,
+            'js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
+            'js/jquery.Jcrop.js',
+            'js/cropdialog.js',
+            'users/js/profile.js',
+        ),
+        'output_filename': 'js/users-profile.js',
+    },
+}
+
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'pipeline.middleware.MinifyHTMLMiddleware',
@@ -120,15 +223,6 @@ ALLOWED_HOSTS = ()
 ROOT_URLCONF = 'project.urls'
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
-LANGUAGE_CODE = 'en'
-
-TIME_ZONE = 'America/New_York'
-TIME_FORMAT = 'H:i'
-DATE_FORMAT = 'j E Y'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
 
 
 # Sites and users
@@ -200,97 +294,6 @@ ALIAS_IN_URL = '[-\w\.&]+'
 RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
-
-# Pipeline
-PIPELINE_CSS = {
-    'head_core': {
-        'source_filenames': (
-            'scss/grid.scss',
-            'scss/layout.scss',
-            'scss/header.scss',
-            'scss/footer.scss',
-            # 'scss/inlines.scss',
-            'scss/popups/popups.scss',
-            # 'scss/jquery.scrollbar.scss',
-            # 'scss/jquery.scrollbar-theme.scss',
-            # 'breadcrumbs/scss/breadcrumbs.scss',
-            # 'comments/scss/comments.scss',
-            'menu/scss/menu.scss',
-            # 'paginator/scss/paginator.scss',
-            'seo/scss/block.scss',
-            # 'users/scss/users.scss',
-        ),
-        'output_filename': 'css/head_core.css',
-    },
-    'main_page': {
-        'source_filenames': (
-            'scss/slider3d/slider3d.scss',
-            'scss/parallax.scss',
-            'scss/video_bg.scss',
-            'yandex_maps/scss/yandex_maps.scss',
-            'main/scss/index.scss',
-        ),
-        'output_filename': 'css/main_page.css',
-    },
-    'users-profile': {
-        'source_filenames': (
-            'css/jcrop/jquery.Jcrop.css',
-            'users/scss/profile.scss',
-        ),
-        'output_filename': 'css/users-profile.css',
-    },
-}
-PIPELINE_JS = {
-    'head_core': {
-        'source_filenames': (
-            'js/jquery-2.1.4.min.js',
-            'js/jquery-ui.min.js',
-            'js/jquery.cookie.js',
-        ),
-        'output_filename': 'js/head_core.js',
-    },
-    'core': {
-        'source_filenames': (
-            'js/jquery.ajax_csrf.js',
-            'js/jquery.canvas_utils.js',
-            'js/jquery.rared.js',
-            'js/jquery.scrollTo.js',
-            'js/jquery.popups.js',
-            'js/jquery.readmore.min.js',
-            # 'js/jquery.inlines.js',
-            # 'js/jquery.scrollbar.js',
-            'js/win_height.js',
-            'js/appear.js',
-            'menu/js/menu.js',
-            'seo/js/block.js',
-            # 'users/js/users.js',
-        ),
-        'output_filename': 'js/core.js',
-    },
-    'main_page': {
-        'source_filenames': (
-            'js/jquery.animation_frame.js',
-            'js/parallax.js',
-            'js/slider3d.js',
-            'google_maps/js/google_maps.js',
-            'yandex_maps/js/yandex_maps.js',
-            'main/js/index.js',
-        ),
-        'output_filename': 'js/main_page.js',
-    },
-    'users-profile': {
-        'source_filenames': (
-            'js/plupload/moxie.min.js',
-            'js/plupload/plupload.min.js',
-            'js/plupload/i18n/%s.js' % LANGUAGE_CODE,
-            'js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
-            'js/jquery.Jcrop.js',
-            'js/cropdialog.js',
-            'users/js/profile.js',
-        ),
-        'output_filename': 'js/users-profile.js',
-    },
-}
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
