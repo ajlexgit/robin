@@ -46,11 +46,9 @@
                     }, that.element)();
                 },
                 onStopDrag: function(momentum) {
-                    console.log('end', momentum);
                     var that = this;
                     var startLeft = that.initialLeft + that.getDx();
 
-                    console.log('=====');
                     $(that.element).css({
                         textIndent: startLeft
                     }).animate({
@@ -59,7 +57,6 @@
                         duration: 1000,
                         easing: 'easeOutCubic',
                         step: function(now) {
-                            console.log(now);
                             $(this).css({
                                 transform: 'translateX(' + now + 'px)'
                             })
@@ -81,11 +78,9 @@
                     }, that.element)();
                 },
                 onStopDrag: function (momentum) {
-                    console.log('end', momentum);
                     var that = this;
                     var startLeft = that.initialLeft + that.getDx();
 
-                    console.log('=====');
                     $(that.element).css({
                         textIndent: startLeft
                     }).animate({
@@ -94,7 +89,6 @@
                         duration: 1000,
                         easing: 'easeOutCubic',
                         step: function (now) {
-                            console.log(now);
                             $(this).css({
                                 transform: 'translateX(' + now + 'px)'
                             })
