@@ -32,7 +32,7 @@
         var settings = $.extend(true, {
             preventDefaultDrag: true,
             speedInterval: 100,
-            deceleration: 0.0006,
+            deceleration: 0.002,
 
             mouse: {
                 onStartDrag: $.noop,
@@ -99,7 +99,7 @@
                 that.event = event;
 
                 var timestamp = getTime();
-                if (timestamp - that.startTime > 300) {
+                if (timestamp - that.startTime > 200) {
                     that.startTime = timestamp;
                     that.speedPoint = that.getPoint();
                 }
@@ -111,12 +111,14 @@
                 that.event = event;
 
                 var duration = getTime() - that.startTime;
-                var speedX = Math.abs(that.getDx(that.speedPoint)) / duration;
-                var speedY = Math.abs(that.getDy(that.speedPoint)) / duration;
+                var dX = that.getDx(that.speedPoint);
+                var dY = that.getDy(that.speedPoint);
+                var speedX = Math.abs(dX) / duration;
+                var speedY = Math.abs(dY) / duration;
                 var momentum = {
-                    pathX: (speedX * speedX) / (2 * settings.deceleration),
-                    pathY: (speedY * speedY) / (2 * settings.deceleration),
-                    time: Math.max(speedX, speedY) / settings.deceleration
+                    dX: (speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1),
+                    dY: (speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1),
+                    duration: Math.max(speedX, speedY) / settings.deceleration
                 };
 
                 settings.mouse.onStopDrag.call(that, momentum);
@@ -153,8 +155,7 @@
                 that.event = touchPoints[0];
 
                 var timestamp = getTime();
-                if (timestamp - that.startTime > 300) {
-                    console.log('set');
+                if (timestamp - that.startTime > 200) {
                     that.startTime = timestamp;
                     that.speedPoint = that.getPoint();
                 }
@@ -170,15 +171,17 @@
                 that.event = touchPoints[0];
 
                 var duration = getTime() - that.startTime;
-                var speedX = Math.abs(that.getDx(that.speedPoint)) / duration;
-                var speedY = Math.abs(that.getDy(that.speedPoint)) / duration;
+                var dX = that.getDx(that.speedPoint);
+                var dY = that.getDy(that.speedPoint);
+                var speedX = Math.abs(dX) / duration;
+                var speedY = Math.abs(dY) / duration;
                 var momentum = {
-                    pathX: (speedX * speedX) / (2 * settings.deceleration),
-                    pathY: (speedY * speedY) / (2 * settings.deceleration),
-                    time: Math.max(speedX, speedY) / settings.deceleration
+                    dX: (speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1),
+                    dY: (speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1),
+                    duration: Math.max(speedX, speedY) / settings.deceleration
                 };
 
-                settings.touch.onStopDrag.call(that, momentum);
+                settings.mouse.onStopDrag.call(that, momentum);
 
                 that.element = null;
             });

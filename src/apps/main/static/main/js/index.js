@@ -49,15 +49,18 @@
                     var that = this;
                     var startLeft = that.initialLeft + that.getDx();
 
-                    $(that.element).css({
+                    var $elem = $(that.element);
+                    var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
+
+                    $elem.css({
                         textIndent: startLeft
                     }).animate({
-                        textIndent: startLeft + momentum.pathX
+                        textIndent: Math.max(0, Math.min(availWidth, startLeft + momentum.dX))
                     }, {
-                        duration: 1000,
+                        duration: momentum.duration,
                         easing: 'easeOutCubic',
                         step: function(now) {
-                            $(this).css({
+                            $elem.css({
                                 transform: 'translateX(' + now + 'px)'
                             })
                         }
@@ -81,15 +84,18 @@
                     var that = this;
                     var startLeft = that.initialLeft + that.getDx();
 
-                    $(that.element).css({
+                    var $elem = $(that.element);
+                    var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
+
+                    $elem.css({
                         textIndent: startLeft
                     }).animate({
-                        textIndent: startLeft + momentum.pathX
+                        textIndent: Math.max(0, Math.min(availWidth, startLeft + momentum.dX))
                     }, {
-                        duration: 1000,
+                        duration: momentum.duration,
                         easing: 'easeOutCubic',
                         step: function (now) {
-                            $(this).css({
+                            $elem.css({
                                 transform: 'translateX(' + now + 'px)'
                             })
                         }
