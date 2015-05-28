@@ -32,75 +32,38 @@
     $(document).ready(function() {
 
         var drager = new Drager($('#slider_example .handler'), {
-            mouse: {
-                onStartDrag: function() {
-                    var that = this;
-                    $(that.element).stop();
-                    this.initialLeft = $(this.element).position().left;
-                },
-                onDrag: function() {
-                    var that = this;
-                    var newLeft = that.initialLeft + that.getDx();
-                    $.animation_frame(function () {
-                        $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
-                    }, that.element)();
-                },
-                onStopDrag: function(momentum) {
-                    var that = this;
-                    var startLeft = that.initialLeft + that.getDx();
-
-                    var $elem = $(that.element);
-                    var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
-
-                    $elem.css({
-                        textIndent: startLeft
-                    }).animate({
-                        textIndent: Math.max(0, Math.min(availWidth, startLeft + momentum.dX))
-                    }, {
-                        duration: momentum.duration,
-                        easing: 'easeOutCubic',
-                        step: function(now) {
-                            $elem.css({
-                                transform: 'translateX(' + now + 'px)'
-                            })
-                        }
-                    });
-                }
+            onStartDrag: function() {
+                var that = this;
+                $(that.element).stop();
+                this.initialLeft = $(this.element).position().left;
             },
-            touch: {
-                onStartDrag: function() {
-                    var that = this;
-                    $(that.element).stop();
-                    this.initialLeft = $(this.element).position().left;
-                },
-                onDrag: function() {
-                    var that = this;
-                    var newLeft = that.initialLeft + that.getDx();
-                    $.animation_frame(function () {
-                        $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
-                    }, that.element)();
-                },
-                onStopDrag: function (momentum) {
-                    var that = this;
-                    var startLeft = that.initialLeft + that.getDx();
+            onDrag: function() {
+                var that = this;
+                var newLeft = that.initialLeft + that.getDx();
+                $.animation_frame(function () {
+                    $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
+                }, that.element)();
+            },
+            onStopDrag: function(momentum) {
+                var that = this;
+                var startLeft = that.initialLeft + that.getDx();
 
-                    var $elem = $(that.element);
-                    var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
+                var $elem = $(that.element);
+                var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
 
-                    $elem.css({
-                        textIndent: startLeft
-                    }).animate({
-                        textIndent: Math.max(0, Math.min(availWidth, startLeft + momentum.dX))
-                    }, {
-                        duration: momentum.duration,
-                        easing: 'easeOutCubic',
-                        step: function (now) {
-                            $elem.css({
-                                transform: 'translateX(' + now + 'px)'
-                            })
-                        }
-                    });
-                }
+                $elem.css({
+                    textIndent: startLeft
+                }).animate({
+                    textIndent: Math.max(0, Math.min(availWidth, startLeft + momentum.dX))
+                }, {
+                    duration: momentum.duration,
+                    easing: 'easeOutCubic',
+                    step: function(now) {
+                        $elem.css({
+                            transform: 'translateX(' + now + 'px)'
+                        })
+                    }
+                });
             }
         });
 

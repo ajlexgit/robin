@@ -34,16 +34,13 @@
             speedInterval: 100,
             deceleration: 0.002,
 
-            mouse: {
-                onStartDrag: $.noop,
-                onDrag: $.noop,
-                onStopDrag: $.noop
-            },
-            touch: {
-                onStartDrag: $.noop,
-                onDrag: $.noop,
-                onStopDrag: $.noop
-            }
+            mouse: true,
+            touch: true,
+
+            onStartDrag: $.noop,
+            onDrag: $.noop,
+            onStopDrag: $.noop
+
         }, options);
 
         that.event = null;
@@ -86,7 +83,7 @@
                 that.element = this;
                 that.startPoint = that.speedPoint = that.getPoint();
 
-                if (settings.mouse.onStartDrag.call(that) === false) {
+                if (settings.onStartDrag.call(that) === false) {
                     return;
                 }
 
@@ -104,7 +101,7 @@
                     that.speedPoint = that.getPoint();
                 }
 
-                settings.mouse.onDrag.call(that);
+                settings.onDrag.call(that);
             }).on('mouseup.drager', function(event) {
                 if (!that.element) return;
 
@@ -121,7 +118,7 @@
                     duration: Math.max(speedX, speedY) / settings.deceleration
                 };
 
-                settings.mouse.onStopDrag.call(that, momentum);
+                settings.onStopDrag.call(that, momentum);
 
                 that.element = null;
             });
@@ -138,7 +135,7 @@
                 that.event = touchPoints[0];
                 that.startPoint = that.speedPoint = that.getPoint();
 
-                if (settings.touch.onStartDrag.call(that) === false) {
+                if (settings.onStartDrag.call(that) === false) {
                     return;
                 }
 
@@ -160,7 +157,7 @@
                     that.speedPoint = that.getPoint();
                 }
 
-                settings.touch.onDrag.call(that);
+                settings.onDrag.call(that);
             }).on('touchend.drager', function(event) {
                 if (!that.element) return;
 
@@ -181,7 +178,7 @@
                     duration: Math.max(speedX, speedY) / settings.deceleration
                 };
 
-                settings.mouse.onStopDrag.call(that, momentum);
+                settings.onStopDrag.call(that, momentum);
 
                 that.element = null;
             });
