@@ -5,7 +5,8 @@
 
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
-            momentum: 500                     - инерция
+            momentum: 500                     - величина инерции
+            maxMomentumSpeed:3                - максимальная скорость инерционного движения
 
             onStartDrag(event)                - нажатие на элемент
             onDrag(event)                     - процесс перемещения
@@ -32,14 +33,14 @@
             mouse: true,
             touch: true,
             momentum: 200,
-            maxMomentumDuration: 5000,
+            maxMomentumSpeed: 3,
 
             onStartDrag: $.noop,
             onDrag: $.noop,
             onStopDrag: $.noop
         }, options);
 
-        that._momentum = {};
+        that._momentumPoints = [];
         that.drag = false;
         that.startPoint = null;
 
@@ -80,6 +81,18 @@
             }
         };
 
+        that.addMomentumPoint = function(evt) {
+            var record =  {
+                point: evt.point,
+                timeStamp: evt.timeStamp
+            };
+
+            if (that._momentumPoints.length == 2) {
+                that._momentumPoints.shift();
+            }
+            that._momentumPoints.push(record);
+        };
+
         that.isMultiTouch = function(event) {
             var orig = event.originalEvent;
             var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
@@ -95,8 +108,10 @@
             var evt = that.getEvent(event, 'start');
             that.drag = true;
             that.startPoint = evt.point;
-            that._momentum.point = evt.point;
-            that._momentum.time = evt.timeStamp;
+
+            that._momentumPoints = [];
+            that.addMomentumPoint(evt);
+
             return settings.onStartDrag.call(that, evt);
         };
 
@@ -104,9 +119,10 @@
             if (!that.drag) return;
 
             var evt = that.getEvent(event, 'move');
-            if (evt.timeStamp - that._momentum.time > 200) {
-                that._momentum.point = evt.point;
-                that._momentum.time = evt.timeStamp;
+
+            var lastMomentum = that._momentumPoints[that._momentumPoints.length - 1];
+            if (evt.timeStamp - lastMomentum.timeStamp > 200) {
+                that.addMomentumPoint(evt);
             }
 
             return settings.onDrag.call(that, evt);
@@ -119,14 +135,29 @@
             var evt = that.getEvent(event, 'stop');
 
             if (settings.momentum) {
-                var dX = getDx(that._momentum.point, evt.point);
-                var dY = getDy(that._momentum.point, evt.point);
-                var duration = event.timeStamp - that._momentum.time;
+                // Используем более старую точку, если последняя точка была
+                // совсем недавно.
+                var lastMomentum = that._momentumPoints[that._momentumPoints.length - 1];
+                if (evt.timeStamp - lastMomentum.timeStamp < 100) {
+                    if (that._momentumPoints.length == 2) {
+                        lastMomentum = that._momentumPoints[0];
+                    }
+                }
+
+                var dX = getDx(lastMomentum.point, evt.point);
+                var dY = getDy(lastMomentum.point, evt.point);
+                var duration = event.timeStamp - lastMomentum.timeStamp;
                 var speedX = Math.abs(dX) / duration;
                 var speedY = Math.abs(dY) / duration;
 
+                // Ограничение скорости
+                if (settings.maxMomentumSpeed) {
+                    speedX = Math.min(speedX, settings.maxMomentumSpeed);
+                    speedY = Math.min(speedY, settings.maxMomentumSpeed);
+                }
+
+                // Вычисление длительности и длины движения по инерции
                 duration = Math.max(speedX, speedY) * settings.momentum;
-                duration = Math.min(duration, settings.maxMomentumDuration);
                 dX = speedX * duration * (dX >= 0 ? 1 : -1);
                 dY = speedY * duration * (dX >= 0 ? 1 : -1);
 
