@@ -167,7 +167,6 @@ PIPELINE_JS = {
             # 'js/jquery.inlines.js',
             # 'js/jquery.scrollbar.js',
             'js/appear.js',
-            'js/drager.js',
             'js/win_height.js',
             'menu/js/menu.js',
             'seo/js/block.js',
@@ -179,6 +178,7 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/jquery.animation_frame.js',
             'js/parallax.js',
+            'js/drager.js',
             'js/slider3d.js',
             'google_maps/js/google_maps.js',
             'yandex_maps/js/yandex_maps.js',
