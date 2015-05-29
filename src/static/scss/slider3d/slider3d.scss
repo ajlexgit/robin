@@ -26,24 +26,23 @@
     left: 50%;
     top: 50%;
     z-index: 5;
-    visibility: hidden;
+    -webkit-backface-visibility: hidden; /* Chrome, Safari, Opera */
+   	backface-visibility: hidden;
     @include transform-origin(0 0);
+    @include transform(translate3d(50%, -50%, -0.5em) rotateY(-180deg));
 
     &.front {
       position: relative;
       left: 0;
       z-index: 10;
-      visibility: visible;
       @include transform(translate3d(0, 0, 0.5em));
     }
 
     &.left {
-      visibility: visible;
       @include transform(translate3d(-50%, -50%, -0.5em) rotateY(-90deg));
     }
 
     &.right {
-      visibility: visible;
       @include transform(translate3d(50%, -50%, 0.5em) rotateY(90deg));
     }
   }

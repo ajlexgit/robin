@@ -61,7 +61,7 @@
         // === DRAGER ===
         // ==============
         that.drager = new Drager($root, {
-            momentumWeight: 1000,
+            momentumWeight: 500,
             onStartDrag: function() {
                 that.angle = that.angle % 360;
                 that.initial_angle = that.angle;
@@ -88,14 +88,17 @@
                     var $next = that.getNext();
                     var $prev = that.getPrev();
                     if (nextSlideIndex > 1) {
+                        that.initial_angle += 90;
+                        that.angle += 90;
+                        
                         $prev.removeClass('left');
                         $front.removeClass('front').addClass('left');
                         $front = $next.removeClass('right').addClass('front');
-                        that.initial_angle += 90;
-                        that.angle += 90;
                         $next = that.getNext();
+                        $next.addClass('right');
+                    } else {
+                        $next.addClass('right');
                     }
-                    $next.addClass('right');
                 } else if (nextSlideIndex < currentSlideIndex) {
                     // крутим влево
                     // TODO: no next, no prev
@@ -121,8 +124,8 @@
             onStopDrag: function(evt) {
                 // Ограничение скорости
                 evt.setMomentumSpeed(
-                    Math.min(evt.momentum.speedX, 2),
-                    Math.min(evt.momentum.speedY, 2)
+                    Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedX)),
+                    Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedY))
                 );
             }
         });
@@ -162,6 +165,7 @@
     $.fn.slider3d = function(options) {
         var settings = $.extend({
             speed: 1000,
+            maxMomentumSpeed: 1,
             controls: true,
             controlsParent: null
         }, options);

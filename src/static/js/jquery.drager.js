@@ -186,7 +186,7 @@
                 evt.dy = evt.momentum.startY + diffY * progress;
                 evt.timeStamp = $.now();
                 settings.onDrag.call(that, evt);
-            }, 13);
+            }, 20);
         };
 
         // ================
