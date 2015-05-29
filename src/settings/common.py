@@ -177,8 +177,8 @@ PIPELINE_JS = {
     'main_page': {
         'source_filenames': (
             'js/jquery.animation_frame.js',
+            'js/jquery.drager.js',
             'js/parallax.js',
-            'js/drager.js',
             'js/slider3d.js',
             'google_maps/js/google_maps.js',
             'yandex_maps/js/yandex_maps.js',

@@ -18,7 +18,7 @@
         return (clientDx || pageDx) >= 0 ? Math.max(clientDx, pageDx) : Math.min(clientDx, pageDx);
     };
 
-    var getDy = function (fromPoint, toPoint) {
+    var getDy = function(fromPoint, toPoint) {
         var clientDy = toPoint.clientY - fromPoint.clientY;
         var pageDy = toPoint.pageY - fromPoint.pageY;
         return (clientDy || pageDy) >= 0 ? Math.max(clientDy, pageDy) : Math.min(clientDy, pageDy);
@@ -38,8 +38,9 @@
             onStopDrag: $.noop
         }, options);
 
-        that.element = null;
+        that._element = null;
         that._momentum = {};
+        that.startPoint = null;
 
         that.getEvent = function(event, type) {
             var pointEvent;
@@ -57,14 +58,14 @@
             var evt = {
                 type: type,
                 origEvent: event,
+                target: that._element,
                 timeStamp: event.timeStamp,
                 point: {
                     pageX: pointEvent.pageX,
                     pageY: pointEvent.pageY,
                     clientX: pointEvent.clientX,
                     clientY: pointEvent.clientY
-                },
-                target: that.element || event.target
+                }
             };
 
             if (type == 'start') {
@@ -102,7 +103,42 @@
             return touchPoints.length > 1;
         };
 
-        // === MOUSE ===
+        // ================
+        // === Handlers ===
+        // ================
+        var startDragHandler = function(event) {
+            that._element = this;
+            var evt = that.getEvent(event, 'start');
+
+            that.startPoint = evt.point;
+            that._momentum.point = evt.point;
+            that._momentum.time = evt.timeStamp;
+            return settings.onStartDrag.call(that, evt);
+        };
+
+        var dragHandler = function(event) {
+            if (!that._element) return;
+
+            var evt = that.getEvent(event, 'move');
+            if (evt.timeStamp - that._momentum.time > 200) {
+                that._momentum.point = evt.point;
+                that._momentum.time = evt.timeStamp;
+            }
+
+            return settings.onDrag.call(that, evt);
+        };
+
+        var stopDragHandler = function(event) {
+            if (!that._element) return;
+
+            var evt = that.getEvent(event, 'stop');
+            that._element = null;
+            return settings.onStopDrag.call(that, evt);
+        };
+
+        // ====================
+        // === Mouse Events ===
+        // ====================
         if (settings.mouse) {
             // Блокируем дефолтовый Drag'n'Drop браузера
             if (settings.preventDefault) {
@@ -111,75 +147,25 @@
                 });
             }
 
-            $element.on('mousedown.drager', function(event) {
-                var evt = that.getEvent(event, 'start');
-
-                that.element = this;
-                that.startPoint = evt.point;
-
-                that._momentum.point = evt.point;
-                that._momentum.time = evt.timeStamp;
-
-                return settings.onStartDrag.call(that, evt);
-            });
-
-            $(document).on('mousemove.drager', function(event) {
-                if (!that.element) return;
-
-                var evt = that.getEvent(event, 'move');
-
-                if (evt.timeStamp - that._momentum.time > 200) {
-                    that._momentum.point = evt.point;
-                    that._momentum.time = evt.timeStamp;
-                }
-
-                return settings.onDrag.call(that, evt);
-            }).on('mouseup.drager', function(event) {
-                if (!that.element) return;
-
-                var evt = that.getEvent(event, 'stop');
-
-                that.element = null;
-                return settings.onStopDrag.call(that, evt);
-            });
+            $element.on('mousedown.drager', startDragHandler);
+            $(document).on('mousemove.drager', dragHandler);
+            $(document).on('mouseup.drager', stopDragHandler);
         }
 
-        // === TOUCH ===
+        // ====================
+        // === Touch Events ===
+        // ====================
         if (settings.touch) {
             $element.on('touchstart.drager', function(event) {
                 if (that.isMultiTouch(event)) return;
-
-                var evt = that.getEvent(event, 'start');
-
-                that.element = this;
-                that.startPoint = evt.point;
-
-                that._momentum.point = evt.point;
-                that._momentum.time = evt.timeStamp;
-
-                return settings.onStartDrag.call(that, evt);
+                return startDragHandler.call(this, event);
             });
-
             $(document).on('touchmove.drager', function(event) {
-                if (!that.element) return;
                 if (that.isMultiTouch(event)) return;
-
-                var evt = that.getEvent(event, 'move');
-
-                if (evt.timeStamp - that._momentum.time > 200) {
-                    that._momentum.point = evt.point;
-                    that._momentum.time = evt.timeStamp;
-                }
-
-                return settings.onDrag.call(that, evt);
+                return dragHandler.call(this, event);
             }).on('touchend.drager', function(event) {
-                if (!that.element) return;
                 if (that.isMultiTouch(event)) return;
-
-                var evt = that.getEvent(event, 'stop');
-
-                that.element = null;
-                return settings.onStopDrag.call(that, evt);
+                return stopDragHandler.call(this, event);
             });
         }
     };
