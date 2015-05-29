@@ -108,10 +108,8 @@
         // === DRAGER ===
         // ==============
         that.drager = new Drager($root, {
-            deceleration: 0.06,
-            speedDeceleration: 0.01,
+            momentum: 1000,
             onStartDrag: function() {
-                $wrapper.stop();
                 wrapper_data.initial_angle = (wrapper_data.angle || 0) % 360;
                 wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
             },
@@ -138,18 +136,6 @@
                     angle = Math.round(final_dx / wrapper_data.scroll2deg);
                     that.rotateTo(wrapper_data.initial_angle + angle);
                 }
-            },
-            onStopDrag: function(evt) {
-                var start_angle = wrapper_data.angle;
-                $wrapper.css({
-                    x: start_angle
-                }).animate({
-                    x: start_angle + evt.momentum.dx
-                }, {
-                    duration: evt.momentum.duration,
-                    easing: 'easeOutCubic',
-                    step: that.rotateTo
-                })
             }
         });
 

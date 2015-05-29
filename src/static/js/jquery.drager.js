@@ -5,7 +5,7 @@
 
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
-            deceleration: 0.002               - показатель замедления:
+            momentum: 500                     - инерция
 
             onStartDrag(event)                - нажатие на элемент
             onDrag(event)                     - процесс перемещения
@@ -28,11 +28,11 @@
         var that = this;
         var settings = $.extend(true, {
             preventDefault: true,
-            deceleration: 0.002,
-            speedDeceleration: 0.002,
 
             mouse: true,
             touch: true,
+            momentum: 200,
+            maxMomentumDuration: 5000,
 
             onStartDrag: $.noop,
             onDrag: $.noop,
@@ -73,29 +73,11 @@
                 evt.dx = 0;
                 evt.dy = 0;
                 return evt;
-            } else if (type == 'move') {
+            } else {
                 evt.dx = getDx(that.startPoint, evt.point);
                 evt.dy = getDy(that.startPoint, evt.point);
-                return evt;
-            } else if (type == 'stop') {
-                evt.dx = getDx(that.startPoint, evt.point);
-                evt.dy = getDy(that.startPoint, evt.point);
-                evt.momentum = that.getMomentum(event, evt.point);
                 return evt;
             }
-        };
-
-        that.getMomentum = function(event, toPoint) {
-            var duration = event.timeStamp - that._momentum.time;
-            var dX = getDx(that._momentum.point, toPoint);
-            var dY = getDy(that._momentum.point, toPoint);
-            var speedX = Math.abs(dX) / duration;
-            var speedY = Math.abs(dY) / duration;
-            return {
-                dx: Math.round((speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1)),
-                dy: Math.round((speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1)),
-                duration: Math.round(Math.pow(Math.max(speedX, speedY), 2) / settings.speedDeceleration)
-            };
         };
 
         that.isMultiTouch = function(event) {
@@ -108,6 +90,8 @@
         // === Handlers ===
         // ================
         var startDragHandler = function(event) {
+            $element.stop();
+
             var evt = that.getEvent(event, 'start');
             that.drag = true;
             that.startPoint = evt.point;
@@ -133,6 +117,40 @@
             that.drag = false;
 
             var evt = that.getEvent(event, 'stop');
+
+            if (settings.momentum) {
+                var dX = getDx(that._momentum.point, evt.point);
+                var dY = getDy(that._momentum.point, evt.point);
+                var duration = event.timeStamp - that._momentum.time;
+                var speedX = Math.abs(dX) / duration;
+                var speedY = Math.abs(dY) / duration;
+
+                duration = Math.max(speedX, speedY) * settings.momentum;
+                duration = Math.min(duration, settings.maxMomentumDuration);
+                dX = speedX * duration * (dX >= 0 ? 1 : -1);
+                dY = speedY * duration * (dX >= 0 ? 1 : -1);
+
+                $element.css({
+                    x: evt.dx,
+                    y: evt.dy
+                }).animate({
+                    x: evt.dx + dX,
+                    y: evt.dy + dY
+                }, {
+                    duration: duration,
+                    easing: 'easeOutCubic',
+                    step: function(now, fx) {
+                        if (fx.prop == 'x') {
+                            evt.dx = Math.round(now);
+                        } else {
+                            evt.dy = Math.round(now);
+                        }
+                        evt.timeStamp = Date.now();
+                        settings.onDrag.call(that, evt);
+                    }
+                })
+            }
+
             return settings.onStopDrag.call(that, evt);
         };
 
