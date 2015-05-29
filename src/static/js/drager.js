@@ -5,33 +5,22 @@
 
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
-            speedInterval: 50                 - интервал обновления скорости мыши
-            deceleration: [0-1]               - показатель плавности изменения скорости:
-                                                0 - резкое изменение
-                                                1 - отсутсвие изменения
+            deceleration: [0-1]               - показатель замедления:
 
-            mouse:
-                onStartDrag()                 - начало перетаскивания. Если вернет false,
-                                                перетасквание будет отменено.
-                onDrag(dX, dY)                - процесс перемещения
-                onStopDrag(dX, dY)            - конец перемещения
-
-            touch:
-                onStartDrag()                 - начало перетаскивания. Если вернет false,
-                                                перетасквание будет отменено.
-                onDrag(dX, dY)                - процесс перемещения
-                onStopDrag(dX, dY)            - конец перемещения
+            onStartDrag(event)                - нажатие на элемент
+            onDrag(event)                     - процесс перемещения
+            onStopDrag(event)                 - отпускание элемента
     */
 
     var getTime = Date.now || function() {
             return new Date().getTime();
         };
 
+
     window.Drager = function($element, options) {
         var that = this;
         var settings = $.extend(true, {
-            preventDefaultDrag: true,
-            speedInterval: 100,
+            preventDefault: true,
             deceleration: 0.002,
 
             mouse: true,
@@ -40,87 +29,112 @@
             onStartDrag: $.noop,
             onDrag: $.noop,
             onStopDrag: $.noop
-
         }, options);
 
-        that.event = null;
         that.element = null;
+        that._momentum = {};
 
-        that.getPoint = function() {
+        that.getEvent = function(event, type) {
+            var evt = {
+                type: type,
+                origEvent: event,
+                timeStamp: event.timeStamp,
+                point: that.getPoint(event)
+            };
+
+            if (type == 'start') {
+                evt.dx = 0;
+                evt.dy = 0;
+                return evt;
+            } else if (type == 'move') {
+                evt.dx = that.getDx(event);
+                evt.dy = that.getDy(event);
+                evt.startPoint = that.startPoint;
+                return evt;
+            } else if (type == 'stop') {
+                evt.dx = that.getDx(event);
+                evt.dy = that.getDy(event);
+                evt.momentum = that.getMomentum(event);
+                evt.startPoint = that.startPoint;
+                return evt;
+            }
+        };
+
+        that.getPoint = function(event) {
             return {
-                pageX: that.event.pageX,
-                pageY: that.event.pageY,
-                clientX: that.event.clientX,
-                clientY: that.event.clientY
+                pageX: event.pageX,
+                pageY: event.pageY,
+                clientX: event.clientX,
+                clientY: event.clientY
             };
         };
 
-        that.getDx = function(point) {
+        that.getDx = function(event, point) {
             point = point || that.startPoint;
-            var clientDx = that.event.clientX - point.clientX;
-            var pageDx = that.event.pageX - point.pageX;
+            var clientDx = event.clientX - point.clientX;
+            var pageDx = event.pageX - point.pageX;
             return (clientDx || pageDx) >=0 ? Math.max(clientDx, pageDx) : Math.min(clientDx, pageDx);
         };
 
-        that.getDy = function(point) {
+        that.getDy = function(event, point) {
             point = point || that.startPoint;
-            var clientDy = that.event.clientY - point.clientY;
-            var pageDy = that.event.pageY - point.pageY;
+            var clientDy = event.clientY - point.clientY;
+            var pageDy = event.pageY - point.pageY;
             return (clientDy || pageDy) >= 0 ? Math.max(clientDy, pageDy) : Math.min(clientDy, pageDy);
+        };
+
+        that.getMomentum = function(event) {
+            var duration = getTime() - that._momentum.time;
+            var dX = that.getDx(event, that._momentum.point);
+            var dY = that.getDy(event, that._momentum.point);
+            var speedX = Math.abs(dX) / duration;
+            var speedY = Math.abs(dY) / duration;
+            return {
+                dX: (speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1),
+                dY: (speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1),
+                duration: Math.max(speedX, speedY) / settings.deceleration
+            };
         };
 
         // === MOUSE ===
         if (settings.mouse) {
             // Блокируем дефолтовый Drag'n'Drop браузера
-            if (settings.preventDefaultDrag) {
+            if (settings.preventDefault) {
                 $element.on('dragstart.drager', function() {
                     return false;
                 });
             }
 
             $element.on('mousedown.drager', function(event) {
-                that.event = event;
+                var evt = that.getEvent(event, 'start');
+
                 that.element = this;
-                that.startPoint = that.speedPoint = that.getPoint();
+                that.startPoint = evt.point;
 
-                if (settings.onStartDrag.call(that) === false) {
-                    return;
-                }
+                that._momentum.point = evt.point;
+                that._momentum.time = evt.timeStamp;
 
-                that.startTime = getTime();
+                return settings.onStartDrag.call(that, evt);
             });
 
             $(document).on('mousemove.drager', function(event) {
                 if (!that.element) return;
 
-                that.event = event;
+                var evt = that.getEvent(event, 'move');
 
-                var timestamp = getTime();
-                if (timestamp - that.startTime > 200) {
-                    that.startTime = timestamp;
-                    that.speedPoint = that.getPoint();
+                if (evt.timeStamp - that._momentum.time > 200) {
+                    that._momentum.point = evt.point;
+                    that._momentum.time = evt.timeStamp;
                 }
 
-                settings.onDrag.call(that);
+                return settings.onDrag.call(that, evt);
             }).on('mouseup.drager', function(event) {
                 if (!that.element) return;
 
-                that.event = event;
-
-                var duration = getTime() - that.startTime;
-                var dX = that.getDx(that.speedPoint);
-                var dY = that.getDy(that.speedPoint);
-                var speedX = Math.abs(dX) / duration;
-                var speedY = Math.abs(dY) / duration;
-                var momentum = {
-                    dX: (speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1),
-                    dY: (speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1),
-                    duration: Math.max(speedX, speedY) / settings.deceleration
-                };
-
-                settings.onStopDrag.call(that, momentum);
-
+                var evt = that.getEvent(event, 'stop');
+                var result = settings.onStopDrag.call(that, evt);
                 that.element = null;
+                return result;
             });
         }
 
@@ -131,15 +145,15 @@
                 var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
                 if (touchPoints.length > 1) return;
 
+                var evt = that.getEvent(touchPoints[0], 'start');
+
                 that.element = this;
-                that.event = touchPoints[0];
-                that.startPoint = that.speedPoint = that.getPoint();
+                that.startPoint = evt.point;
 
-                if (settings.onStartDrag.call(that) === false) {
-                    return;
-                }
+                that._momentum.point = evt.point;
+                that._momentum.time = evt.timeStamp;
 
-                that.startTime = getTime();
+                return settings.onStartDrag.call(that, evt);
             });
 
             $(document).on('touchmove.drager', function(event) {
@@ -149,15 +163,14 @@
                 var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
                 if (touchPoints.length > 1) return;
 
-                that.event = touchPoints[0];
+                var evt = that.getEvent(touchPoints[0], 'move');
 
-                var timestamp = getTime();
-                if (timestamp - that.startTime > 200) {
-                    that.startTime = timestamp;
-                    that.speedPoint = that.getPoint();
+                if (evt.timeStamp - that._momentum.time > 200) {
+                    that._momentum.point = evt.point;
+                    that._momentum.time = evt.timeStamp;
                 }
 
-                settings.onDrag.call(that);
+                return settings.onDrag.call(that, evt);
             }).on('touchend.drager', function(event) {
                 if (!that.element) return;
 
@@ -165,22 +178,10 @@
                 var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
                 if (touchPoints.length > 1) return;
 
-                that.event = touchPoints[0];
-
-                var duration = getTime() - that.startTime;
-                var dX = that.getDx(that.speedPoint);
-                var dY = that.getDy(that.speedPoint);
-                var speedX = Math.abs(dX) / duration;
-                var speedY = Math.abs(dY) / duration;
-                var momentum = {
-                    dX: (speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1),
-                    dY: (speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1),
-                    duration: Math.max(speedX, speedY) / settings.deceleration
-                };
-
-                settings.onStopDrag.call(that, momentum);
-
+                var evt = that.getEvent(touchPoints[0], 'stop');
+                var result = settings.onStopDrag.call(that, evt);
                 that.element = null;
+                return result;
             });
         }
     };

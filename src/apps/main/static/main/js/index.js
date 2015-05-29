@@ -31,22 +31,22 @@
     // Slider
     $(document).ready(function() {
 
-        var drager = new Drager($('#slider_example .handler'), {
-            onStartDrag: function() {
+        var drager = new Drager($('#slider_example').find('.handler'), {
+            onStartDrag: function(evt) {
                 var that = this;
                 $(that.element).stop();
                 this.initialLeft = $(this.element).position().left;
             },
-            onDrag: function() {
+            onDrag: function(evt) {
                 var that = this;
-                var newLeft = that.initialLeft + that.getDx();
+                var newLeft = that.initialLeft + evt.dx;
                 $.animation_frame(function () {
                     $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
                 }, that.element)();
             },
-            onStopDrag: function(momentum) {
+            onStopDrag: function(evt) {
                 var that = this;
-                var startLeft = that.initialLeft + that.getDx();
+                var startLeft = that.initialLeft + evt.dx;
 
                 var $elem = $(that.element);
                 var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
@@ -54,9 +54,9 @@
                 $elem.css({
                     textIndent: startLeft
                 }).animate({
-                    textIndent: Math.max(0, Math.min(availWidth, startLeft + momentum.dX))
+                    textIndent: Math.max(0, Math.min(availWidth, startLeft + evt.momentum.dX))
                 }, {
-                    duration: momentum.duration,
+                    duration: evt.momentum.duration,
                     easing: 'easeOutCubic',
                     step: function(now) {
                         $elem.css({
