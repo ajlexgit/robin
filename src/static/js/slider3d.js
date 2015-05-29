@@ -108,7 +108,7 @@
         // === DRAGER ===
         // ==============
         that.drager = new Drager($root, {
-            momentum: 1000,
+            momentumWeight: 1000,
             onStartDrag: function() {
                 wrapper_data.initial_angle = (wrapper_data.angle || 0) % 360;
                 wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
@@ -123,19 +123,22 @@
                 }
 
                 // Горизонтальный скролл
-                if (absDx > settings.prevent_scroll) {
-                    var final_dx, angle;
-                    if (evt.dx > 0) {
-                        final_dx = evt.dx - settings.prevent_scroll;
-                        that.before_left_scroll();
-                    } else {
-                        final_dx = evt.dx + settings.prevent_scroll;
-                        that.before_right_scroll();
-                    }
-
-                    angle = Math.round(final_dx / wrapper_data.scroll2deg);
-                    that.rotateTo(wrapper_data.initial_angle + angle);
+                var angle;
+                if (evt.dx > 0) {
+                    that.before_left_scroll();
+                } else {
+                    that.before_right_scroll();
                 }
+
+                angle = Math.round(evt.dx / wrapper_data.scroll2deg);
+                that.rotateTo(wrapper_data.initial_angle + angle);
+            },
+            onStopDrag: function(evt) {
+                // Ограничение скорости
+                evt.setMomentumSpeed(
+                    Math.min(evt.momentum.speedX, 2),
+                    Math.min(evt.momentum.speedY, 2)
+                );
             }
         });
 

@@ -5,8 +5,7 @@
 
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
-            momentum: 500                     - величина инерции
-            maxMomentumSpeed:3                - максимальная скорость инерционного движения
+            momentumWeight: 500               - величина инерции
 
             onStartDrag(event)                - нажатие на элемент
             onDrag(event)                     - процесс перемещения
@@ -25,6 +24,58 @@
         return (clientDy || pageDy) >= 0 ? Math.max(clientDy, pageDy) : Math.min(clientDy, pageDy);
     };
 
+    var DragerEvent = function(properties) {
+        $.extend(true, this, properties);
+
+        this.initMomentum = function(evt, lastMomentumRecord) {
+            var dx = getDx(lastMomentumRecord.point, evt.point);
+            var dy = getDy(lastMomentumRecord.point, evt.point);
+            var duration = event.timeStamp - lastMomentumRecord.timeStamp;
+
+            this.setMomentumSpeed(dx / duration, dy / duration);
+        };
+
+        this.setMomentumSpeed = function(speedX, speedY) {
+            if (typeof speedX != 'undefined') {
+                this.momentum.speedX = speedX;
+            }
+            if (typeof speedY != 'undefined') {
+                this.momentum.speedY = speedY;
+            }
+
+            var speed = Math.max(Math.abs(this.momentum.speedX), Math.abs(this.momentum.speedY));
+            this.setMomentumDuration(speed * this.momentum.weight);
+        };
+
+        this.setMomentumWeight = function(weight) {
+            this.momentum.weight = weight;
+
+            var speed = Math.max(Math.abs(this.momentum.speedX), Math.abs(this.momentum.speedY));
+            this.setMomentumDuration(speed * this.momentum.weight);
+        };
+
+        this.setMomentumPoint = function(endX, endY) {
+            var dx = endX - this.momentum.startX;
+            var dy = endY - this.momentum.startY;
+            var tx = this.momentum.speedX ? Math.abs(dx / this.momentum.speedX) : 0;
+            var ty = this.momentum.speedY ? Math.abs(dy / this.momentum.speedY) : 0;
+
+            this.momentum.duration = Math.max(tx, ty) || 0;
+            this.momentum.endX = endX;
+            this.momentum.endY = endY;
+        };
+
+        this.setMomentumDuration = function(duration) {
+            this.momentum.duration = Math.abs(duration) || 0;
+            this.momentum.endX = this.momentum.startX + this.momentum.speedX * this.momentum.duration;
+            this.momentum.endY = this.momentum.startY + this.momentum.speedY * this.momentum.duration;
+        };
+
+        this.setMomentumEasing = function(easing) {
+            this.momentum.easing = easing;
+        };
+    };
+
     window.Drager = function($element, options) {
         var that = this;
         var settings = $.extend(true, {
@@ -32,8 +83,8 @@
 
             mouse: true,
             touch: true,
-            momentum: 200,
-            maxMomentumSpeed: 3,
+            momentumWeight: 500,
+            momentumEasing: 'easeOutCubic',
 
             onStartDrag: $.noop,
             onDrag: $.noop,
@@ -41,7 +92,7 @@
         }, options);
 
         that._momentumPoints = [];
-        that.drag = false;
+        that.dragging = false;
         that.startPoint = null;
 
         that.getEvent = function(event, type) {
@@ -57,7 +108,7 @@
                 }
             }
 
-            var evt = {
+            var evt = new DragerEvent({
                 type: type,
                 origEvent: event,
                 target: $element.get(0),
@@ -68,15 +119,33 @@
                     clientX: pointEvent.clientX,
                     clientY: pointEvent.clientY
                 }
-            };
+            });
 
             if (type == 'start') {
                 evt.dx = 0;
                 evt.dy = 0;
+                evt.startPoint = evt.point;
+                return evt;
+            } else if (type == 'stop') {
+                evt.dx = getDx(that.startPoint, evt.point);
+                evt.dy = getDy(that.startPoint, evt.point);
+                evt.startPoint = that.startPoint;
+
+                evt.momentum = {
+                    weight: settings.momentumWeight,
+                    easing: settings.momentumEasing,
+                    startX: evt.dx,
+                    startY: evt.dy,
+                    speedX: 0,
+                    speedY: 0,
+                    duration: 0
+                };
+
                 return evt;
             } else {
                 evt.dx = getDx(that.startPoint, evt.point);
                 evt.dy = getDy(that.startPoint, evt.point);
+                evt.startPoint = that.startPoint;
                 return evt;
             }
         };
@@ -106,7 +175,7 @@
             $element.stop();
 
             var evt = that.getEvent(event, 'start');
-            that.drag = true;
+            that.dragging = true;
             that.startPoint = evt.point;
 
             that._momentumPoints = [];
@@ -116,7 +185,7 @@
         };
 
         var dragHandler = function(event) {
-            if (!that.drag) return;
+            if (!that.dragging) return;
 
             var evt = that.getEvent(event, 'move');
 
@@ -129,12 +198,13 @@
         };
 
         var stopDragHandler = function(event) {
-            if (!that.drag) return;
-            that.drag = false;
+            if (!that.dragging) return;
+            that.dragging = false;
 
             var evt = that.getEvent(event, 'stop');
 
-            if (settings.momentum) {
+            // Вычисление параметров инерции
+            if (settings.momentumWeight) {
                 // Используем более старую точку, если последняя точка была
                 // совсем недавно.
                 var lastMomentum = that._momentumPoints[that._momentumPoints.length - 1];
@@ -144,45 +214,34 @@
                     }
                 }
 
-                var dX = getDx(lastMomentum.point, evt.point);
-                var dY = getDy(lastMomentum.point, evt.point);
-                var duration = event.timeStamp - lastMomentum.timeStamp;
-                var speedX = Math.abs(dX) / duration;
-                var speedY = Math.abs(dY) / duration;
+                evt.initMomentum(evt, lastMomentum);
+            }
 
-                // Ограничение скорости
-                if (settings.maxMomentumSpeed) {
-                    speedX = Math.min(speedX, settings.maxMomentumSpeed);
-                    speedY = Math.min(speedY, settings.maxMomentumSpeed);
-                }
-
-                // Вычисление длительности и длины движения по инерции
-                duration = Math.max(speedX, speedY) * settings.momentum;
-                dX = speedX * duration * (dX >= 0 ? 1 : -1);
-                dY = speedY * duration * (dX >= 0 ? 1 : -1);
-
+            var result = settings.onStopDrag.call(that, evt);
+            if (evt.momentum && (evt.momentum.duration >= 100)) {
                 $element.css({
-                    x: evt.dx,
-                    y: evt.dy
+                    x: evt.momentum.startX,
+                    y: evt.momentum.startY
                 }).animate({
-                    x: evt.dx + dX,
-                    y: evt.dy + dY
+                    x: evt.momentum.endX,
+                    y: evt.momentum.endY
                 }, {
-                    duration: duration,
-                    easing: 'easeOutCubic',
+                    duration: evt.momentum.duration,
+                    easing: evt.momentum.easing,
                     step: function(now, fx) {
                         if (fx.prop == 'x') {
                             evt.dx = Math.round(now);
                         } else {
                             evt.dy = Math.round(now);
                         }
-                        evt.timeStamp = Date.now();
+                    },
+                    progress: function() {
+                        evt.timeStamp = $.now();
                         settings.onDrag.call(that, evt);
                     }
                 })
             }
-
-            return settings.onStopDrag.call(that, evt);
+            return result;
         };
 
         // ====================
