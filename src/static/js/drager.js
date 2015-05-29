@@ -5,7 +5,7 @@
 
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
-            deceleration: [0-1]               - показатель замедления:
+            deceleration: 0.002               - показатель замедления:
 
             onStartDrag(event)                - нажатие на элемент
             onDrag(event)                     - процесс перемещения
@@ -39,7 +39,8 @@
                 type: type,
                 origEvent: event,
                 timeStamp: event.timeStamp,
-                point: that.getPoint(event)
+                point: that.getPoint(event),
+                target: that.element || event.target
             };
 
             if (type == 'start') {
@@ -132,9 +133,9 @@
                 if (!that.element) return;
 
                 var evt = that.getEvent(event, 'stop');
-                var result = settings.onStopDrag.call(that, evt);
+
                 that.element = null;
-                return result;
+                return settings.onStopDrag.call(that, evt);
             });
         }
 
@@ -179,9 +180,9 @@
                 if (touchPoints.length > 1) return;
 
                 var evt = that.getEvent(touchPoints[0], 'stop');
-                var result = settings.onStopDrag.call(that, evt);
+
                 that.element = null;
-                return result;
+                return settings.onStopDrag.call(that, evt);
             });
         }
     };

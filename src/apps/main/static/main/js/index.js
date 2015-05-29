@@ -33,25 +33,25 @@
 
         var drager = new Drager($('#slider_example').find('.handler'), {
             onStartDrag: function(evt) {
-                var that = this;
-                $(that.element).stop();
-                this.initialLeft = $(this.element).position().left;
+                var $target = $(evt.target);
+
+                $target.stop();
+                this.initialLeft = $target.position().left;
             },
             onDrag: function(evt) {
-                var that = this;
-                var newLeft = that.initialLeft + evt.dx;
-                $.animation_frame(function () {
-                    $(that.element).css('transform', 'translateX(' + newLeft + 'px)');
-                }, that.element)();
+                var $target = $(evt.target);
+                var newLeft = this.initialLeft + evt.dx;
+
+                $.animation_frame(function() {
+                    $target.css('transform', 'translateX(' + newLeft + 'px)');
+                }, evt.target)();
             },
             onStopDrag: function(evt) {
-                var that = this;
-                var startLeft = that.initialLeft + evt.dx;
+                var $target = $(evt.target);
+                var startLeft = this.initialLeft + evt.dx;
+                var availWidth = $target.parent().outerWidth() - $target.outerWidth();
 
-                var $elem = $(that.element);
-                var availWidth = $elem.parent().outerWidth() - $elem.outerWidth();
-
-                $elem.css({
+                $target.css({
                     textIndent: startLeft
                 }).animate({
                     textIndent: Math.max(0, Math.min(availWidth, startLeft + evt.momentum.dX))
@@ -59,7 +59,7 @@
                     duration: evt.momentum.duration,
                     easing: 'easeOutCubic',
                     step: function(now) {
-                        $elem.css({
+                        $target.css({
                             transform: 'translateX(' + now + 'px)'
                         })
                     }
