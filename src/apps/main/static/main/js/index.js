@@ -35,12 +35,16 @@
             onStartDrag: function(evt) {
                 var $target = $(evt.target);
 
+                console.log(evt);
+
                 $target.stop();
                 this.initialLeft = $target.position().left;
             },
             onDrag: function(evt) {
                 var $target = $(evt.target);
                 var newLeft = this.initialLeft + evt.dx;
+
+                console.log(evt);
 
                 $.animation_frame(function() {
                     $target.css('transform', 'translateX(' + newLeft + 'px)');
@@ -49,12 +53,14 @@
             onStopDrag: function(evt) {
                 var $target = $(evt.target);
                 var startLeft = this.initialLeft + evt.dx;
-                var availWidth = $target.parent().outerWidth() - $target.outerWidth();
+                var maxLeft = $target.parent().outerWidth() - $target.outerWidth();
+
+                console.log(evt);
 
                 $target.css({
                     textIndent: startLeft
                 }).animate({
-                    textIndent: Math.max(0, Math.min(availWidth, startLeft + evt.momentum.dX))
+                    textIndent: Math.max(0, Math.min(maxLeft, startLeft + evt.momentum.dX))
                 }, {
                     duration: evt.momentum.duration,
                     easing: 'easeOutCubic',
