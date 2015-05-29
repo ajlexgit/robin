@@ -178,8 +178,7 @@
         var settings = $.extend({
             speed: 1000,
             controls: true,
-            controlsParent: null,
-            prevent_scroll: 20
+            controlsParent: null
         }, options);
 
         return this.each(function() {
