@@ -4,12 +4,12 @@
         Плагин 3D-слайдера.
 
         Требует:
-            jquery.rared.js, jquery.animation_frame.js
+            jquery.drager.js, jquery.rared.js, jquery.animation_frame.js
     */
 
     var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
 
-    var Slider3d = function($root, settings) {
+    var Slider3D = function($root, settings) {
         var that = this;
         var $wrapper = $root.find('.slider3d-wrapper:first');
         var $front = $root.find('.front:first');
@@ -95,7 +95,64 @@
             });
         };
 
-        // Инициализация
+        that.rotateTo = function(angle) {
+            $.animation_frame(function() {
+                wrapper_data.angle = angle;
+                $wrapper.css({
+                    transform: 'translate3d(0, 0, -0.5em) rotateY(' + angle + 'deg)'
+                });
+            }, $wrapper.get(0))();
+        };
+
+        // ==============
+        // === DRAGER ===
+        // ==============
+        that.drager = new Drager($root, {
+            deceleration: 0.06,
+            onStartDrag: function(evt) {
+                wrapper_data.initial_angle = wrapper_data.angle || 0;
+                wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
+            },
+            onDrag: function(evt) {
+                var absDx = Math.abs(evt.dx);
+                var absDy = Math.abs(evt.dy);
+
+                // Блокировка вертикального скролла
+                if (absDy < (absDx * 3)) {
+                    evt.origEvent.preventDefault();
+                }
+
+                // Горизонтальный скролл
+                if (absDx > settings.prevent_scroll) {
+                    var final_dx, angle;
+                    if (evt.dx > 0) {
+                        final_dx = evt.dx - settings.prevent_scroll;
+                        that.before_left_scroll();
+                    } else {
+                        final_dx = evt.dx + settings.prevent_scroll;
+                        that.before_right_scroll();
+                    }
+
+                    angle = Math.round(final_dx / wrapper_data.scroll2deg);
+                    that.rotateTo(wrapper_data.initial_angle + angle);
+                }
+            },
+            onStopDrag: function(evt) {
+                $wrapper.stop();
+
+                var start_angle = wrapper_data.angle;
+                $wrapper.css({
+                    animationDuration: start_angle
+                }).animate({
+                    animationDuration: start_angle + evt.momentum.dx
+                }, {
+                    duration: evt.momentum.duration,
+                    easing: 'easeOutCubic',
+                    step: that.rotateTo
+                })
+            }
+        });
+
         that.update_depth();
 
         // Стрелки управления
@@ -117,79 +174,6 @@
             });
             controls_parent.first().append($left, $right);
         }
-
-
-        // ===============
-        // ==== Touch ====
-        // ===============
-
-        // Подготовка к повороту вправо
-        that.before_touchmove_right = function () {
-            if (wrapper_data.direction != 'right') {
-                wrapper_data.direction = 'right';
-                return that.before_right_scroll();
-            }
-        };
-
-        // Подготовка к повороту влево
-        that.before_touchmove_left = function () {
-            if (wrapper_data.direction != 'left') {
-                wrapper_data.direction = 'left';
-                return that.before_left_scroll();
-            }
-        };
-
-        // Поворот
-        that.rotate = function(diff_x) {
-            wrapper_data.angle = wrapper_data.initial_angle + Math.round(diff_x / wrapper_data.scroll2deg);
-
-            $.animation_frame(function() {
-                $wrapper.css({
-                    transform: 'translate3d(0, 0, -0.5em) rotateY(' + wrapper_data.angle + 'deg)'
-                });
-            }, $wrapper.get(0))();
-        };
-
-        $root.on('touchstart MSPointerDown pointerdown', function(event) {
-            var orig = event.originalEvent;
-            var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
-            var touch = touchPoints[0];
-
-            wrapper_data.initial_angle = wrapper_data.angle || 0;
-            wrapper_data.direction = null;
-            wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
-
-            that.touch_x = touch.pageX;
-            that.touch_y = touch.pageY;
-        }).on('touchmove MSPointerMove pointermove', function(event) {
-            var orig = event.originalEvent;
-            var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
-            var touch = touchPoints[0];
-
-            var xMovement = Math.abs(touch.pageX - that.touch_x);
-            var yMovement = Math.abs(touch.pageY - that.touch_y);
-
-            // Блокировка вертикального скролла
-            if (yMovement < (xMovement * 3)) {
-                event.preventDefault();
-            }
-
-            // Горизонтальный скролл
-            if (xMovement > settings.prevent_scroll) {
-                var diff_x = touch.pageX - that.touch_x;
-                if (diff_x < 0) {
-                    // скролл вправо
-                    diff_x += settings.prevent_scroll;
-                    that.before_touchmove_right();
-                } else {
-                    // скролл влево
-                    diff_x -= settings.prevent_scroll;
-                    that.before_touchmove_left();
-                }
-
-                that.rotate(diff_x);
-            }
-        });
     };
 
     $(window).on('resize', $.rared(function() {
@@ -211,7 +195,7 @@
 
         return this.each(function() {
             var $slider = $(this);
-            var object = new Slider3d($slider, settings);
+            var object = new Slider3D($slider, settings);
             $slider.data('slider', object);
         });
     };

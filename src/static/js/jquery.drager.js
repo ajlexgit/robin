@@ -38,8 +38,8 @@
             onStopDrag: $.noop
         }, options);
 
-        that._element = null;
         that._momentum = {};
+        that.drag = false;
         that.startPoint = null;
 
         that.getEvent = function(event, type) {
@@ -58,7 +58,7 @@
             var evt = {
                 type: type,
                 origEvent: event,
-                target: that._element,
+                target: $element.get(0),
                 timeStamp: event.timeStamp,
                 point: {
                     pageX: pointEvent.pageX,
@@ -91,8 +91,8 @@
             var speedX = Math.abs(dX) / duration;
             var speedY = Math.abs(dY) / duration;
             return {
-                dX: Math.round((speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1)),
-                dY: Math.round((speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1)),
+                dx: Math.round((speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1)),
+                dy: Math.round((speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1)),
                 duration: Math.round(Math.max(speedX, speedY) / settings.deceleration)
             };
         };
@@ -107,9 +107,8 @@
         // === Handlers ===
         // ================
         var startDragHandler = function(event) {
-            that._element = this;
             var evt = that.getEvent(event, 'start');
-
+            that.drag = true;
             that.startPoint = evt.point;
             that._momentum.point = evt.point;
             that._momentum.time = evt.timeStamp;
@@ -117,7 +116,7 @@
         };
 
         var dragHandler = function(event) {
-            if (!that._element) return;
+            if (!that.drag) return;
 
             var evt = that.getEvent(event, 'move');
             if (evt.timeStamp - that._momentum.time > 200) {
@@ -129,10 +128,10 @@
         };
 
         var stopDragHandler = function(event) {
-            if (!that._element) return;
+            if (!that.drag) return;
+            that.drag = false;
 
             var evt = that.getEvent(event, 'stop');
-            that._element = null;
             return settings.onStopDrag.call(that, evt);
         };
 
