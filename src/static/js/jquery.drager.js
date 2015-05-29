@@ -168,11 +168,35 @@
             return touchPoints.length > 1;
         };
 
+        that.animateMomentum = function(evt, options) {
+            that.animationStart = $.now();
+            var diffX = evt.momentum.endX - evt.momentum.startX;
+            var diffY = evt.momentum.endY - evt.momentum.startY;
+            that._momentumTimer = setInterval(function() {
+                var dt = $.now() - that.animationStart;
+                var progress = dt / options.duration;
+                progress = $.easing[options.easing](progress);
+
+                if (progress >= 1) {
+                    progress = 1;
+                    clearInterval(that._momentumTimer);
+                }
+
+                evt.dx = evt.momentum.startX + diffX * progress;
+                evt.dy = evt.momentum.startY + diffY * progress;
+                evt.timeStamp = $.now();
+                settings.onDrag.call(that, evt);
+            }, 13);
+        };
+
         // ================
         // === Handlers ===
         // ================
         var startDragHandler = function(event) {
-            $element.stop();
+            // Остановка анимации инерции
+            if (that._momentumTimer) {
+                clearInterval(that._momentumTimer);
+            }
 
             var evt = that.getEvent(event, 'start');
             that.dragging = true;
@@ -219,27 +243,10 @@
 
             var result = settings.onStopDrag.call(that, evt);
             if (evt.momentum && (evt.momentum.duration >= 100)) {
-                $element.css({
-                    x: evt.momentum.startX,
-                    y: evt.momentum.startY
-                }).animate({
-                    x: evt.momentum.endX,
-                    y: evt.momentum.endY
-                }, {
+                that.animateMomentum(evt, {
                     duration: evt.momentum.duration,
-                    easing: evt.momentum.easing,
-                    step: function(now, fx) {
-                        if (fx.prop == 'x') {
-                            evt.dx = Math.round(now);
-                        } else {
-                            evt.dy = Math.round(now);
-                        }
-                    },
-                    progress: function() {
-                        evt.timeStamp = $.now();
-                        settings.onDrag.call(that, evt);
-                    }
-                })
+                    easing: evt.momentum.easing
+                });
             }
             return result;
         };
