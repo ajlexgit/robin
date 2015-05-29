@@ -29,6 +29,7 @@
         var settings = $.extend(true, {
             preventDefault: true,
             deceleration: 0.002,
+            speedDeceleration: 0.002,
 
             mouse: true,
             touch: true,
@@ -93,7 +94,7 @@
             return {
                 dx: Math.round((speedX * speedX) / (2 * settings.deceleration) * (dX >= 0 ? 1 : -1)),
                 dy: Math.round((speedY * speedY) / (2 * settings.deceleration) * (dY >= 0 ? 1 : -1)),
-                duration: Math.round(Math.max(speedX, speedY) / settings.deceleration)
+                duration: Math.round(Math.pow(Math.max(speedX, speedY), 2) / settings.speedDeceleration)
             };
         };
 
