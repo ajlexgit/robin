@@ -15,6 +15,10 @@
         var $front = $root.find('.front:first');
         var wrapper_data = $wrapper.data();
 
+        that.angle = 0;
+        that.initial_angle = 0;
+        that.scroll2deg = 1;
+        
         // Обновление глубины
         that.update_depth = function() {
             $root.css({
@@ -24,7 +28,7 @@
         };
 
         // Получение следующего слайда
-        that.get_next = function() {
+        that.getNext = function() {
             var $next = $front.next();
             if (!$next.length) {
                 $next = $front.parent().children().first();
@@ -37,7 +41,7 @@
         };
 
         // Получение предыдущего слайда
-        that.get_prev = function() {
+        that.getPrev = function() {
             var $prev = $front.prev();
             if (!$prev.length) {
                 $prev = $front.parent().children().last();
@@ -49,69 +53,19 @@
             return $prev;
         };
 
-        // Подготовка к скроллу вправо
-        that.before_right_scroll = function() {
-            var $next = that.get_next();
-            if (!$next || !$next.length) {
-                return;
-            }
-            return $next.addClass('right');
+        var slideByAngle = function(angle) {
+            return angle < 0 ? Math.ceil(-angle / 90) : Math.floor(-angle / 90);
         };
-
-        // Скролл вправо
-        that.slide_right = function() {
-            var $next = that.before_right_scroll();
-            if (!$next) return;
-
-            $wrapper.removeAttr('style').css({
-                transitionDuration: settings.speed + 'ms'
-            }).addClass('rotate-right').one(transitionend, function() {
-                $front.removeClass('front');
-                $front = $next.removeClass('right').addClass('front');
-                $wrapper.removeAttr('style').removeClass('rotate-right');
-            });
-        };
-
-        // Подготовка к скроллу влево
-        that.before_left_scroll = function() {
-            var $prev = that.get_prev();
-            if (!$prev || !$prev.length) {
-                return;
-            }
-            return $prev.addClass('left');
-        };
-
-        // Скролл влево
-        that.slide_left = function () {
-            var $prev = that.before_left_scroll();
-            if (!$prev) return;
-
-            $wrapper.removeAttr('style').css({
-                transitionDuration: settings.speed + 'ms'
-            }).addClass('rotate-left').one(transitionend, function () {
-                $front.removeClass('front');
-                $front = $prev.removeClass('left').addClass('front');
-                $wrapper.removeAttr('style').removeClass('rotate-left');
-            });
-        };
-
-        that.rotateTo = function(angle) {
-            $.animation_frame(function() {
-                wrapper_data.angle = angle;
-                $wrapper.css({
-                    transform: 'translate3d(0, 0, -0.5em) rotateY(' + angle + 'deg)'
-                });
-            }, $wrapper.get(0))();
-        };
-
+        
         // ==============
         // === DRAGER ===
         // ==============
         that.drager = new Drager($root, {
             momentumWeight: 1000,
             onStartDrag: function() {
-                wrapper_data.initial_angle = (wrapper_data.angle || 0) % 360;
-                wrapper_data.scroll2deg = Math.round($wrapper.outerWidth() / 180);
+                that.angle = that.angle % 360;
+                that.initial_angle = that.angle;
+                that.scroll2deg = Math.round($wrapper.outerWidth() / 180);
             },
             onDrag: function(evt) {
                 var absDx = Math.abs(evt.dx);
@@ -122,16 +76,47 @@
                     evt.origEvent.preventDefault();
                 }
 
-                // Горизонтальный скролл
-                var angle;
-                if (evt.dx > 0) {
-                    that.before_left_scroll();
-                } else {
-                    that.before_right_scroll();
+                var currentSlideIndex = slideByAngle(that.angle);
+                var dAngle = Math.round(evt.dx / that.scroll2deg);
+                that.angle = that.initial_angle + dAngle;
+                var nextSlideIndex = slideByAngle(that.angle);
+                
+                // Показ соседнего слайда
+                if (nextSlideIndex > currentSlideIndex) {
+                    // крутим вправо
+                    // TODO: no next, no prev
+                    var $next = that.getNext();
+                    var $prev = that.getPrev();
+                    if (nextSlideIndex > 1) {
+                        $prev.removeClass('left');
+                        $front.removeClass('front').addClass('left');
+                        $front = $next.removeClass('right').addClass('front');
+                        that.initial_angle += 90;
+                        that.angle += 90;
+                        $next = that.getNext();
+                    }
+                    $next.addClass('right');
+                } else if (nextSlideIndex < currentSlideIndex) {
+                    // крутим влево
+                    // TODO: no next, no prev
+                    var $next = that.getNext();
+                    var $prev = that.getPrev();
+                    if (nextSlideIndex < -1) {
+                        $next.removeClass('right');
+                        $front.removeClass('front').addClass('right');
+                        $front = $prev.removeClass('left').addClass('front');
+                        that.initial_angle -= 90;
+                        that.angle -= 90;
+                        $prev = that.getPrev();
+                    }
+                    $prev.addClass('left');
                 }
-
-                angle = Math.round(evt.dx / wrapper_data.scroll2deg);
-                that.rotateTo(wrapper_data.initial_angle + angle);
+                
+                $.animation_frame(function() {
+                    $wrapper.css({
+                        transform: 'translate3d(0, 0, -0.5em) rotateY(' + that.angle + 'deg)'
+                    });
+                }, $wrapper.get(0))();
             },
             onStopDrag: function(evt) {
                 // Ограничение скорости
