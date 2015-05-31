@@ -64,12 +64,92 @@
             }
         };
         
+        var setAngle = function(angle) {
+            that.angle = angle;
+            $.animation_frame(function() {
+                $wrapper.css({
+                    transform: 'translate3d(0, 0, -0.5em) rotateY(' + that.angle + 'deg)'
+                });
+            }, $wrapper.get(0))();
+        };
+        
+        var startAnimation = function(from, to, options) {
+            var animationStart = $.now();
+            var diff = to - from;
+            that._animationTimer = setInterval(function() {
+                var progress = ($.now() - animationStart) / options.duration;
+                if (progress >= 1) {
+                    progress = 1;
+                    clearInterval(that._animationTimer);
+                    that._animationTimer = null;
+                }
+                
+                progress = $.easing[options.easing](progress);
+                
+                setAngle(from + diff * progress);
+            }, 20);
+        }
+        
+        var stopAnimation = function() {
+            if (that._animationTimer) {
+                clearInterval(that._animationTimer);
+                that._animationTimer = null;
+            }
+        };
+        
+        var processRightSlide = function(angle) {
+            var toSlide = angle > 0 ? Math.floor(-angle / 90) : Math.ceil(-angle / 90);
+            
+            if (toSlide == 1) {
+                items.right.addClass('right');
+            } else if (toSlide > 1) {
+                angle += (toSlide - 1) * 90;
+                that.initial_angle += (toSlide - 1) * 90;
+                
+                items.left.removeClass('left');
+                items.front.removeClass('front');
+                items.right.removeClass('right');
+                
+                items.left = items.front;
+                for(var i=2; i<toSlide; i++) {
+                    items.left = getNext(items.left);
+                }
+                items.front = getNext(items.left).addClass('front');
+                items.right = getNext(items.front).addClass('right');
+            };
+            return angle;
+        };
+        
+        var processLeftSlide = function(angle) {
+            var toSlide = angle > 0 ? Math.floor(-angle / 90) : Math.ceil(-angle / 90);
+            
+            if (toSlide == -1) {
+                items.left.addClass('left');
+            } else if (toSlide < -1) {
+                angle += (toSlide + 1) * 90;
+                that.initial_angle += (toSlide + 1) * 90;
+                
+                items.left.removeClass('left');
+                items.front.removeClass('front');
+                items.right.removeClass('right');
+                
+                items.right = items.front;
+                for(var i=-2; i>toSlide; i--) {
+                    items.right = getPrev(items.right);
+                }
+                items.front = getPrev(items.right).addClass('front');
+                items.left = getPrev(items.front).addClass('left');
+            };
+            return angle;
+        };
+        
         // ==============
         // === DRAGER ===
         // ==============
         that.drager = new Drager($root, {
-            momentumWeight: 500,
+            momentumWeight: 750,
             onStartDrag: function() {
+                stopAnimation();
                 that.angle = that.angle % 360;
                 that.initial_angle = that.angle;
                 that.scroll2deg = Math.round($wrapper.outerWidth() / 180);
@@ -83,57 +163,19 @@
                     evt.origEvent.preventDefault();
                 }
 
-                var oldAngle = that.angle;
                 var dAngle = Math.round(evt.dx / that.scroll2deg);
                 that.angle = that.initial_angle + dAngle;
-                var fromSlide = oldAngle > 0 ? Math.floor(-oldAngle / 90) : Math.ceil(-oldAngle / 90);
                 var toSlide = that.angle > 0 ? Math.floor(-that.angle / 90) : Math.ceil(-that.angle / 90);
                 
                 if (dAngle < 0) {
                     // крутим вправо
-                    if (toSlide == 1) {
-                        items.right.addClass('right');
-                    } else if (toSlide > 1) {
-                        that.angle += (toSlide - 1) * 90;
-                        that.initial_angle += (toSlide - 1) * 90;
-                        
-                        items.left.removeClass('left');
-                        items.front.removeClass('front');
-                        items.right.removeClass('right');
-                        
-                        items.left = items.front;
-                        for(var i=2; i<toSlide; i++) {
-                            items.left = getNext(items.left);
-                        }
-                        items.front = getNext(items.left).addClass('front');
-                        items.right = getNext(items.front).addClass('right');
-                    }
+                    that.angle = processRightSlide(that.angle);
                 } else {
                     // крутим влево
-                    if (toSlide == -1) {
-                        items.left.addClass('left');
-                    } else if (toSlide < -1) {
-                        that.angle += (toSlide + 1) * 90;
-                        that.initial_angle += (toSlide + 1) * 90;
-                        
-                        items.left.removeClass('left');
-                        items.front.removeClass('front');
-                        items.right.removeClass('right');
-                        
-                        items.right = items.front;
-                        for(var i=-2; i>toSlide; i--) {
-                            items.right = getPrev(items.right);
-                        }
-                        items.front = getPrev(items.right).addClass('front');
-                        items.left = getPrev(items.front).addClass('left');
-                    }
+                    that.angle = processLeftSlide(that.angle);
                 }
                 
-                $.animation_frame(function() {
-                    $wrapper.css({
-                        transform: 'translate3d(0, 0, -0.5em) rotateY(' + that.angle + 'deg)'
-                    });
-                }, $wrapper.get(0))();
+                setAngle(that.angle);
             },
             onStopDrag: function(evt) {
                 // Ограничение скорости
@@ -141,8 +183,6 @@
                     Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedX)),
                     Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedY))
                 );
-                
-                evt.setMomentumDuration(5000);
             }
         });
 
@@ -168,13 +208,41 @@
                 $controlsParent = $root;
             }
 
-            var $left = $('<div>').addClass('arrow arrow-left').on('click', function() {
+            var $right = $('<div>').addClass('arrow arrow-right').on('mousedown touchstart', function() {
+                if (that._animationTimer) return false;
+            }).on('click', function() {
+                if (that._animationTimer) return false;
                 that.drager.stopMomentumAnimation();
                 
+                var finalAngle = (Math.ceil(that.angle / 90) - 1) * 90;
+                var dAngle = finalAngle - that.angle;
+                finalAngle = processRightSlide(finalAngle);
+                that.angle = finalAngle - dAngle;
+                setAngle(that.angle);
+                
+                startAnimation(that.angle, finalAngle, {
+                    duration: settings.speed,
+                    easing: 'linear'
+                });
+                return false;
             });
-            var $right = $('<div>').addClass('arrow arrow-right').on('click', function() {
+            var $left = $('<div>').addClass('arrow arrow-left').on('mousedown touchstart', function() {
+                if (that._animationTimer) return false;
+            }).on('click', function() {
+                if (that._animationTimer) return false;
                 that.drager.stopMomentumAnimation();
                 
+                var finalAngle = (Math.floor(that.angle / 90) + 1) * 90;
+                var dAngle = finalAngle - that.angle;
+                finalAngle = processLeftSlide(finalAngle);
+                that.angle = finalAngle - dAngle;
+                setAngle(that.angle);
+                
+                startAnimation(that.angle, finalAngle, {
+                    duration: settings.speed,
+                    easing: 'linear'
+                });
+                return false;
             });
             $controlsParent.append($left, $right);
         }

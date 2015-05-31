@@ -169,19 +169,18 @@
         };
 
         that.animateMomentum = function(evt, options) {
-            that.animationStart = $.now();
+            var animationStart = $.now();
             var diffX = evt.momentum.endX - evt.momentum.startX;
             var diffY = evt.momentum.endY - evt.momentum.startY;
             that._momentumTimer = setInterval(function() {
-                var dt = $.now() - that.animationStart;
-                var progress = dt / options.duration;
-                progress = $.easing[options.easing](progress);
-
+                var progress = ($.now() - animationStart) / options.duration;
                 if (progress >= 1) {
                     progress = 1;
                     clearInterval(that._momentumTimer);
                 }
 
+                progress = $.easing[options.easing](progress);
+                
                 evt.dx = evt.momentum.startX + diffX * progress;
                 evt.dy = evt.momentum.startY + diffY * progress;
                 evt.timeStamp = $.now();
