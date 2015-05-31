@@ -189,15 +189,18 @@
             }, 20);
         };
 
+        that.stopMomentumAnimation = function() {
+            if (that._momentumTimer) {
+                clearInterval(that._momentumTimer);
+            }
+        };
+        
         // ================
         // === Handlers ===
         // ================
         var startDragHandler = function(event) {
-            // Остановка анимации инерции
-            if (that._momentumTimer) {
-                clearInterval(that._momentumTimer);
-            }
-
+            that.stopMomentumAnimation();
+            
             var evt = that.getEvent(event, 'start');
             that.dragging = true;
             that.startPoint = evt.point;

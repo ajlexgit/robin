@@ -11,10 +11,17 @@
 
     var Slider3D = function($root, settings) {
         var that = this;
+        var $empty = $();
         var $wrapper = $root.find('.slider3d-wrapper:first');
-        var $front = $root.find('.front:first');
-        var wrapper_data = $wrapper.data();
-
+        var enabled = false;
+        var items = {
+            first: $empty,
+            last: $empty,
+            left: $empty,
+            front: $empty,
+            right: $empty
+        }
+        
         that.angle = 0;
         that.initial_angle = 0;
         that.scroll2deg = 1;
@@ -23,38 +30,38 @@
         that.update_depth = function() {
             $root.css({
                 perspective: $wrapper.outerWidth(),
-                fontSize: $front.outerWidth()
+                fontSize: items.front.outerWidth()
             });
         };
-
+        
+        // Обновление параметров слайдера
+        that.refresh = function() {
+            var $slides = $root.find('.slide');
+            items.first = $slides.first();
+            items.last = $slides.last();
+            
+            if (items.first.length) {
+                that.update_depth();
+                enabled = items.first.get(0) != items.last.get(0);
+            }
+        };
+        
         // Получение следующего слайда
-        that.getNext = function() {
-            var $next = $front.next();
-            if (!$next.length) {
-                $next = $front.parent().children().first();
+        var getNext = function($item) {
+            if ($item.get(0) == items.last.get(0)) {
+                return items.first
+            } else {
+                return $item.next()
             }
-            if ($next.hasClass('front')) {
-                console.error('Need more slides!');
-                return
-            }
-            return $next;
         };
 
         // Получение предыдущего слайда
-        that.getPrev = function() {
-            var $prev = $front.prev();
-            if (!$prev.length) {
-                $prev = $front.parent().children().last();
+        var getPrev = function($item) {
+            if ($item.get(0) == items.first.get(0)) {
+                return items.last
+            } else {
+                return $item.prev()
             }
-            if ($prev.hasClass('front')) {
-                console.error('Need more slides!');
-                return
-            }
-            return $prev;
-        };
-
-        var slideByAngle = function(angle) {
-            return angle < 0 ? Math.ceil(-angle / 90) : Math.floor(-angle / 90);
         };
         
         // ==============
@@ -76,43 +83,50 @@
                     evt.origEvent.preventDefault();
                 }
 
-                var currentSlideIndex = slideByAngle(that.angle);
+                var oldAngle = that.angle;
                 var dAngle = Math.round(evt.dx / that.scroll2deg);
                 that.angle = that.initial_angle + dAngle;
-                var nextSlideIndex = slideByAngle(that.angle);
+                var fromSlide = oldAngle > 0 ? Math.floor(-oldAngle / 90) : Math.ceil(-oldAngle / 90);
+                var toSlide = that.angle > 0 ? Math.floor(-that.angle / 90) : Math.ceil(-that.angle / 90);
                 
-                // Показ соседнего слайда
-                if (nextSlideIndex > currentSlideIndex) {
+                if (dAngle < 0) {
                     // крутим вправо
-                    // TODO: no next, no prev
-                    var $next = that.getNext();
-                    var $prev = that.getPrev();
-                    if (nextSlideIndex > 1) {
-                        that.initial_angle += 90;
-                        that.angle += 90;
+                    if (toSlide == 1) {
+                        items.right.addClass('right');
+                    } else if (toSlide > 1) {
+                        that.angle += (toSlide - 1) * 90;
+                        that.initial_angle += (toSlide - 1) * 90;
                         
-                        $prev.removeClass('left');
-                        $front.removeClass('front').addClass('left');
-                        $front = $next.removeClass('right').addClass('front');
-                        $next = that.getNext();
-                        $next.addClass('right');
-                    } else {
-                        $next.addClass('right');
+                        items.left.removeClass('left');
+                        items.front.removeClass('front');
+                        items.right.removeClass('right');
+                        
+                        items.left = items.front;
+                        for(var i=2; i<toSlide; i++) {
+                            items.left = getNext(items.left);
+                        }
+                        items.front = getNext(items.left).addClass('front');
+                        items.right = getNext(items.front).addClass('right');
                     }
-                } else if (nextSlideIndex < currentSlideIndex) {
+                } else {
                     // крутим влево
-                    // TODO: no next, no prev
-                    var $next = that.getNext();
-                    var $prev = that.getPrev();
-                    if (nextSlideIndex < -1) {
-                        $next.removeClass('right');
-                        $front.removeClass('front').addClass('right');
-                        $front = $prev.removeClass('left').addClass('front');
-                        that.initial_angle -= 90;
-                        that.angle -= 90;
-                        $prev = that.getPrev();
+                    if (toSlide == -1) {
+                        items.left.addClass('left');
+                    } else if (toSlide < -1) {
+                        that.angle += (toSlide + 1) * 90;
+                        that.initial_angle += (toSlide + 1) * 90;
+                        
+                        items.left.removeClass('left');
+                        items.front.removeClass('front');
+                        items.right.removeClass('right');
+                        
+                        items.right = items.front;
+                        for(var i=-2; i>toSlide; i--) {
+                            items.right = getPrev(items.right);
+                        }
+                        items.front = getPrev(items.right).addClass('front');
+                        items.left = getPrev(items.front).addClass('left');
                     }
-                    $prev.addClass('left');
                 }
                 
                 $.animation_frame(function() {
@@ -127,29 +141,42 @@
                     Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedX)),
                     Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedY))
                 );
+                
+                evt.setMomentumDuration(5000);
             }
         });
 
-        that.update_depth();
-
+        // Определение элементов
+        items.front = $root.find('.front:first');
+        if (!items.front.length) {
+            items.front = items.first.addClass('front');
+        };
+        
+        that.refresh();
+        
+        items.left = getPrev(items.front);
+        items.right = getNext(items.front);
+        
         // Стрелки управления
         if (settings.controls) {
-            var controls_parent;
+            var $controlsParent;
             if (typeof settings.controlsParent == 'string') {
-                controls_parent = $(settings.controlsParent);
+                $controlsParent = $(settings.controlsParent).first();
             } else if (settings.controlsParent) {
-                controls_parent = settings.controlsParent;
+                $controlsParent = settings.controlsParent.firat();
             } else {
-                controls_parent = $root;
+                $controlsParent = $root;
             }
 
             var $left = $('<div>').addClass('arrow arrow-left').on('click', function() {
-                that.slide_left();
+                that.drager.stopMomentumAnimation();
+                
             });
             var $right = $('<div>').addClass('arrow arrow-right').on('click', function() {
-                that.slide_right();
+                that.drager.stopMomentumAnimation();
+                
             });
-            controls_parent.first().append($left, $right);
+            $controlsParent.append($left, $right);
         }
     };
 
@@ -165,7 +192,7 @@
     $.fn.slider3d = function(options) {
         var settings = $.extend({
             speed: 1000,
-            maxMomentumSpeed: 1,
+            maxMomentumSpeed: 2,
             controls: true,
             controlsParent: null
         }, options);
