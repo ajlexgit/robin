@@ -30,7 +30,7 @@
         this.initMomentum = function(evt, lastMomentumRecord) {
             var dx = getDx(lastMomentumRecord.point, evt.point);
             var dy = getDy(lastMomentumRecord.point, evt.point);
-            var duration = event.timeStamp - lastMomentumRecord.timeStamp;
+            var duration = evt.origEvent.timeStamp - lastMomentumRecord.timeStamp;
 
             this.setMomentumSpeed(dx / duration, dy / duration);
         };
@@ -180,7 +180,7 @@
                 }
 
                 progress = $.easing[options.easing](progress);
-                
+
                 evt.dx = evt.momentum.startX + diffX * progress;
                 evt.dy = evt.momentum.startY + diffY * progress;
                 evt.timeStamp = $.now();
@@ -193,13 +193,13 @@
                 clearInterval(that._momentumTimer);
             }
         };
-        
+
         // ================
         // === Handlers ===
         // ================
         var startDragHandler = function(event) {
             that.stopMomentumAnimation();
-            
+
             var evt = that.getEvent(event, 'start');
             that.dragging = true;
             that.startPoint = evt.point;
