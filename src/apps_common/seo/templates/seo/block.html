@@ -1,17 +1,19 @@
-{% load description %}
-
-{% if instance.text %}
-    <div class="seo-text grid">
-        <div class="grid-col-8">
-            <div class="text-wrapper">
+<div class="seo-text grid">
+    <div class="grid-col-8">
+        <div class="text-wrapper {% if animated %}animated{% endif %}">
+            {% if animated %}
                 <p class="text short-text">
-                    {{ instance.text|description:"500, 1024"|typograf }}
+                    {{ short_text|typograf }}
                 </p>
 
                 <p class="text full-text hidden-text">
-                    {{ instance.text|typograf }}
+                    {{ full_text|typograf }}
                 </p>
-            </div>
+            {% else %}
+                <p class="text full-text">
+                    {{ full_text|typograf }}
+                </p>
+            {% endif %}
         </div>
     </div>
-{% endif %}
+</div>

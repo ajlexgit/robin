@@ -1,10 +1,17 @@
 @import "mixins";
 
 .seo-text {
-  
+  margin-bottom: 56px;
+
   .text-wrapper {
     position: relative;
     overflow: hidden;
+
+    &.animated {
+      .text {
+        cursor: pointer;
+      }
+    }
   }
 
   .text {
@@ -14,7 +21,6 @@
     line-height: 17px;
     color: rgba(#FFFFFF, 0.5);
     text-align: justify;
-    cursor: pointer;
     @include font-size(11px);
   }
 
@@ -22,7 +28,7 @@
     &:after {
       content: '>';
       font-family: Verdana;
-      color: rgba(#FFFFFF, 0.8);
+      color: rgba(255, 255, 255, 0.8);
       vertical-align: top;
     }
   }
