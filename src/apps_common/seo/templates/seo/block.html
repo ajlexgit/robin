@@ -1,9 +1,17 @@
+{% load description %}
+
 {% if instance.text %}
     <div class="seo-text grid">
         <div class="grid-col-8">
-            <p class="text">
-                {{ instance.text|striptags|linebreaksbr }}
-            </p>
+            <div class="text-wrapper">
+                <p class="text short-text">
+                    {{ instance.text|description:"500, 1024"|typograf }}
+                </p>
+
+                <p class="text full-text hidden-text">
+                    {{ instance.text|typograf }}
+                </p>
+            </div>
         </div>
     </div>
 {% endif %}

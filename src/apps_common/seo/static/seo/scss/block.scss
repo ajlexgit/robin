@@ -1,15 +1,37 @@
 @import "mixins";
 
 .seo-text {
+  
+  .text-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
   .text {
-    max-height: 85px;
-    margin: 0 0 6px;
+    display: block;
+    margin: 0;
     overflow: hidden;
     line-height: 17px;
-    color: #FFFFFF;
+    color: rgba(#FFFFFF, 0.5);
     text-align: justify;
-    @include opacity(0.5);
+    cursor: pointer;
     @include font-size(11px);
+  }
+
+  .short-text {
+    &:after {
+      content: '>';
+      font-family: Verdana;
+      color: rgba(#FFFFFF, 0.8);
+      vertical-align: top;
+    }
+  }
+
+  .hidden-text {
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: -10000px;
   }
 
   .readmore {

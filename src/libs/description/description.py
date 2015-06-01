@@ -80,4 +80,6 @@ def description(text, minlen, maxlen):
                 words, other_words, words_len = _collect_lines(other_lines[0].split(' '), maxlen)
                 paragraphs.append(' '.join(words) + '...')
 
+    paragraphs = list(map(str.strip, paragraphs))
+    paragraphs = list(filter(bool, paragraphs))
     return '\n'.join(paragraphs)
