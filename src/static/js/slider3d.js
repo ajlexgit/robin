@@ -4,7 +4,7 @@
         Плагин 3D-слайдера.
 
         Требует:
-            jquery.drager.js, jquery.rared.js, jquery.animation.js
+            jquery.rared.js, jquery.animation.js, drager.js
     */
 
     var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -73,29 +73,9 @@
             }, $wrapper.get(0))();
         };
 
-        var startAnimation = function(from, to, options) {
-            var animationStart = $.now();
-            var diff = to - from;
-            that._animationTimer = setInterval(function() {
-                var progress = ($.now() - animationStart) / options.duration;
-                if (progress >= 1) {
-                    progress = 1;
-                    clearInterval(that._animationTimer);
-                    that._animationTimer = null;
-                }
-
-                progress = $.easing[options.easing](progress);
-
-                setAngle(from + diff * progress);
-
-                if ((that._animationTimer == null) && $.isFunction(options.complete)) {
-                    options.complete();
-                }
-            }, 20);
-        };
-
         var stopAnimation = function() {
             if (that._animationTimer) {
+                $wrapper.queue('rotate', []);
                 clearInterval(that._animationTimer);
                 that._animationTimer = null;
             }

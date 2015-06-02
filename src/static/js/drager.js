@@ -3,6 +3,9 @@
     /*
         Генерирует события перетаскивания.
 
+        Требует:
+            jquery.animation.js
+        
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
             momentumWeight: 500               - величина инерции
@@ -168,24 +171,21 @@
             return touchPoints.length > 1;
         };
 
-        that.animateMomentum = function(evt, options) {
-            var animationStart = $.now();
-            var diffX = evt.momentum.endX - evt.momentum.startX;
-            var diffY = evt.momentum.endY - evt.momentum.startY;
-            that._momentumTimer = setInterval(function() {
-                var progress = ($.now() - animationStart) / options.duration;
-                if (progress >= 1) {
-                    progress = 1;
-                    clearInterval(that._momentumTimer);
+        that.animateMomentum = function(evt) {
+            that._momentumTimer = $.animate({
+                duration: evt.momentum.duration,
+                easing: evt.momentum.easing,
+                init: function() {
+                    this.diffX = evt.momentum.endX - evt.momentum.startX;
+                    this.diffY = evt.momentum.endY - evt.momentum.startY;
+                },
+                step: function(eProgress) {
+                    evt.dx = evt.momentum.startX + this.diffX * eProgress;
+                    evt.dy = evt.momentum.startY + this.diffY * eProgress;
+                    evt.timeStamp = $.now();
+                    settings.onDrag.call(that, evt);
                 }
-
-                progress = $.easing[options.easing](progress);
-
-                evt.dx = evt.momentum.startX + diffX * progress;
-                evt.dy = evt.momentum.startY + diffY * progress;
-                evt.timeStamp = $.now();
-                settings.onDrag.call(that, evt);
-            }, 20);
+            });
         };
 
         that.stopMomentumAnimation = function() {
