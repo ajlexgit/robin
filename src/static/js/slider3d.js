@@ -87,6 +87,10 @@
                 progress = $.easing[options.easing](progress);
 
                 setAngle(from + diff * progress);
+
+                if ((that._animationTimer == null) && $.isFunction(options.complete)) {
+                    options.complete();
+                }
             }, 20);
         };
 
@@ -219,12 +223,28 @@
                 that.angle = finalAngle - dAngle;
                 setAngle(that.angle);
 
-                startAnimation(that.angle, finalAngle, {
-                    duration: settings.speed,
+                dAngle = Math.abs(dAngle);
+
+                var animation_options = {
+                    duration: Math.round((dAngle / 90) * settings.speed),
                     easing: 'linear'
-                });
+                };
+                if (dAngle < 30) {
+                    animation_options.complete = function() {
+                        finalAngle = processRightSlide(finalAngle - 90);
+                        that.angle = finalAngle + 90;
+                        setAngle(that.angle);
+                        startAnimation(that.angle, finalAngle, {
+                            duration: settings.speed,
+                            easing: 'linear'
+                        });
+                    }
+                }
+
+                startAnimation(that.angle, finalAngle, animation_options);
                 return false;
             });
+
             var $left = $('<div>').addClass('arrow arrow-left').on('mousedown touchstart', function() {
                 if (that._animationTimer) return false;
             }).on('click', function() {
@@ -237,10 +257,25 @@
                 that.angle = finalAngle - dAngle;
                 setAngle(that.angle);
 
-                startAnimation(that.angle, finalAngle, {
-                    duration: settings.speed,
+                dAngle = Math.abs(dAngle);
+
+                var animation_options = {
+                    duration: Math.round((dAngle / 90) * settings.speed),
                     easing: 'linear'
-                });
+                };
+                if (dAngle < 30) {
+                    animation_options.complete = function () {
+                        finalAngle = processLeftSlide(finalAngle + 90);
+                        that.angle = finalAngle - 90;
+                        setAngle(that.angle);
+                        startAnimation(that.angle, finalAngle, {
+                            duration: settings.speed,
+                            easing: 'linear'
+                        });
+                    }
+                }
+
+                startAnimation(that.angle, finalAngle, animation_options);
                 return false;
             });
             $controlsParent.append($left, $right);
