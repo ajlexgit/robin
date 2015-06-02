@@ -176,7 +176,7 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/jquery.animation_frame.js',
+            'js/jquery.animation.js',
             'js/jquery.drager.js',
             'js/parallax.js',
             'js/slider3d.js',

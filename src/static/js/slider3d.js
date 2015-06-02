@@ -4,7 +4,7 @@
         Плагин 3D-слайдера.
 
         Требует:
-            jquery.drager.js, jquery.rared.js, jquery.animation_frame.js
+            jquery.drager.js, jquery.rared.js, jquery.animation.js
     */
 
     var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -215,6 +215,8 @@
                 if (that._animationTimer) return false;
             }).on('click', function() {
                 if (that._animationTimer) return false;
+                
+                $wrapper.queue('rotate', []);
                 that.drager.stopMomentumAnimation();
 
                 var finalAngle = (Math.ceil(that.angle / 90) - 1) * 90;
@@ -225,23 +227,49 @@
 
                 dAngle = Math.abs(dAngle);
 
-                var animation_options = {
-                    duration: Math.round((dAngle / 90) * settings.speed),
-                    easing: 'linear'
-                };
-                if (dAngle < 30) {
-                    animation_options.complete = function() {
-                        finalAngle = processRightSlide(finalAngle - 90);
-                        that.angle = finalAngle + 90;
-                        setAngle(that.angle);
-                        startAnimation(that.angle, finalAngle, {
+                $wrapper.queue('rotate', function(next) {
+                    that._animationTimer = $.animate({
+                        duration: Math.round((dAngle / 90) * settings.speed),
+                        easing: 'linear',
+                        init: function() {
+                            this.from = that.angle;
+                            this.diff = finalAngle - that.angle;
+                        },
+                        step: function(eProgress) {
+                            setAngle(this.from + this.diff * eProgress);
+                        },
+                        complete: function() {
+                            next();
+                            that._animationTimer = null;
+                        }
+                    });
+                });
+                
+                if (dAngle < 20) {
+                    $wrapper.queue('rotate', function(next) {
+                        that._animationTimer = $.animate({
                             duration: settings.speed,
-                            easing: 'linear'
+                            easing: 'linear',
+                            init: function() {
+                                this.finalAngle = processRightSlide(finalAngle - 90);
+                                that.angle = this.finalAngle + 90;
+                                setAngle(that.angle);
+                                
+                                this.from = that.angle;
+                                this.diff = this.finalAngle - that.angle;
+                            },
+                            step: function(eProgress) {
+                                setAngle(this.from + this.diff * eProgress);
+                            },
+                            complete: function() {
+                                next();
+                                that._animationTimer = null;
+                            }
                         });
-                    }
+                    });
                 }
-
-                startAnimation(that.angle, finalAngle, animation_options);
+                
+                $wrapper.dequeue('rotate');
                 return false;
             });
 
@@ -249,6 +277,8 @@
                 if (that._animationTimer) return false;
             }).on('click', function() {
                 if (that._animationTimer) return false;
+                
+                $wrapper.queue('rotate', []);
                 that.drager.stopMomentumAnimation();
 
                 var finalAngle = (Math.floor(that.angle / 90) + 1) * 90;
@@ -259,23 +289,49 @@
 
                 dAngle = Math.abs(dAngle);
 
-                var animation_options = {
-                    duration: Math.round((dAngle / 90) * settings.speed),
-                    easing: 'linear'
-                };
-                if (dAngle < 30) {
-                    animation_options.complete = function () {
-                        finalAngle = processLeftSlide(finalAngle + 90);
-                        that.angle = finalAngle - 90;
-                        setAngle(that.angle);
-                        startAnimation(that.angle, finalAngle, {
+                $wrapper.queue('rotate', function(next) {
+                    that._animationTimer = $.animate({
+                        duration: Math.round((dAngle / 90) * settings.speed),
+                        easing: 'linear',
+                        init: function() {
+                            this.from = that.angle;
+                            this.diff = finalAngle - that.angle;
+                        },
+                        step: function(eProgress) {
+                            setAngle(this.from + this.diff * eProgress);
+                        },
+                        complete: function() {
+                            next();
+                            that._animationTimer = null;
+                        }
+                    });
+                });
+                
+                if (dAngle < 20) {
+                    $wrapper.queue('rotate', function(next) {
+                        that._animationTimer = $.animate({
                             duration: settings.speed,
-                            easing: 'linear'
+                            easing: 'linear',
+                            init: function() {
+                                this.finalAngle = processLeftSlide(finalAngle + 90);
+                                that.angle = this.finalAngle - 90;
+                                setAngle(that.angle);
+                                
+                                this.from = that.angle;
+                                this.diff = this.finalAngle - that.angle;
+                            },
+                            step: function(eProgress) {
+                                setAngle(this.from + this.diff * eProgress);
+                            },
+                            complete: function() {
+                                next();
+                                that._animationTimer = null;
+                            }
                         });
-                    }
+                    });
                 }
-
-                startAnimation(that.angle, finalAngle, animation_options);
+                
+                $wrapper.dequeue('rotate');
                 return false;
             });
             $controlsParent.append($left, $right);

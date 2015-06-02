@@ -5,7 +5,7 @@
         Родительский элемент должен иметь position, отличный от static.
 
         Требует:
-            jquery.rared.js, jquery.animation_frame.js
+            jquery.rared.js, jquery.animation.js
 
         Параметры:
             windowTopOffset         - расстояние от верха окна до ползающего блока

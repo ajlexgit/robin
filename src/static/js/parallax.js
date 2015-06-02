@@ -5,7 +5,7 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.rared.js, jquery.animation_frame.js
+            jquery.rared.js, jquery.animation.js
 
         <div id="block">
             <div class="parallax" style="background-image: url(../img/bg.jpg)">
