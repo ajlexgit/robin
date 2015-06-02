@@ -10,6 +10,11 @@
     </div>
 
     {{ input }}
+    <p class="hint">
+        {% trans 'Min dimensions: ' %}{{ min_dimensions|join:'x' }};
+        {% trans 'Max dimensions: ' %}{{ max_dimensions|join:'x' }}
+    </p>
+
     {% if crop_area %}
         <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">
             <button class="btn"

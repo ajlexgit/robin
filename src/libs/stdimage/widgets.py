@@ -29,12 +29,12 @@ class StdImageWidget(forms.ClearableFileInput):
         self.max_dimensions = kwargs.pop('max_dimensions')
         self.aspects = kwargs.pop('aspects')
         super().__init__(*args, **kwargs)
-        
+
     def render(self, name, value, attrs=None):
         input_tag = super(FileInput, self).render(name, value, dict(attrs, **{
             'class': 'uploader',
         }))
-        
+
         context = dict(
             name = name,
             input = input_tag,

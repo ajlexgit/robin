@@ -19,6 +19,12 @@
     z-index: 1;
 }
 
+/* Подсказка */
+.stdimage .hint {
+    font-weight: bold;
+    font-style: italic;
+}
+
 /* Чекбокс удаления файла */
 .stdimage .delete {
     vertical-align: text-bottom;

@@ -22,7 +22,7 @@
                 dependencies=(
                     ('sections', 'sections', True),
                 ),
-                expression="title__icontains",
+                expressions="title__icontains",
                 minimum_input_length=0,
             )
 
