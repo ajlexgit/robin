@@ -2,9 +2,6 @@
 {% load variation_field %}
 
 <div class="stdimage">
-    <p class="hint">
-        {% trans 'Dimensions: ' %} {% trans 'from' %} {{ min_dimensions|join:'x' }} {% trans 'to' %} {{ max_dimensions|join:'x' }}
-    </p>
     <div class="item-preview {% if not value %}hide{% endif %}"
          style="width:{{ admin_variation.size.0 }}px; height:{{ admin_variation.size.1 }}px">
         {% with variation_field=value|variation_field:admin_variation.name %}
@@ -12,6 +9,10 @@
         {% endwith %}
     </div>
 
+    <p class="hint">
+        {% trans 'Dimensions: ' %} {% trans 'from' %} {{ min_dimensions|join:'x' }} {% trans 'to' %} {{ max_dimensions|join:'x' }}
+    </p>
+    
     {{ input }}
 
     {% if crop_area %}
