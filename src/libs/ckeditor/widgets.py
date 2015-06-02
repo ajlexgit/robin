@@ -75,7 +75,7 @@ class CKEditorUploadWidget(CKEditorWidget):
 
         page_photos = []
         simple_photos = []
-        if isinstance(value, tuple):
+        if isinstance(value, (tuple, list)):
             page_photos = value[1].split(',')
             simple_photos = value[2].split(',')
             value = value[0]
