@@ -9,9 +9,6 @@ register = Library()
 re_pred = re.compile('\\b([\'\"\w]{1,3})\s+')
 
 
-def typograf_text(text):
-    return re_pred.sub('\\1&nbsp;', text)
-
 @register.filter
 def typograf(html):
     soup = Soup(html)
@@ -22,5 +19,4 @@ def typograf(html):
 
     body = soup.body.contents if soup.body else soup
     text = ''.join(str(tag) for tag in body)
-    text = text.replace('\u200b', '').strip()
-    return mark_safe(text)
+    return mark_safe(text.strip())

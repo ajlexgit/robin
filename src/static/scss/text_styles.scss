@@ -1,0 +1,19 @@
+@import 'mixins';
+
+.text-styles {
+  p {
+    margin: 0 0 10px;
+  }
+
+  a {
+    color: #551A8B;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+    &:active {
+      color: red;
+    }
+  }
+}

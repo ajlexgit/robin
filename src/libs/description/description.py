@@ -2,7 +2,8 @@ import re
 from bs4 import BeautifulSoup as Soup, NavigableString
 from django.utils.html import strip_tags
 
-re_spaces = re.compile('\n([ \r\t\xa0]*\n)+')
+re_newlines = re.compile('[ \r\t\xa0]*\n')
+
 
 def strip_tags_except(html, valid_tags=()):
     """ Удаление HTML-тэгов, кроме перечисленных в valid_tags """
@@ -28,8 +29,7 @@ def strip_tags_except(html, valid_tags=()):
 
     body = soup.body.contents if soup.body else soup
     text = '\n'.join(str(tag) for tag in body)
-    text = text.replace('\u200b', '').strip()
-    return re_spaces.sub('\n', text)
+    return re_newlines.sub('\n', text.strip())
 
 
 def _collect_lines(lines, maxlen):
@@ -62,6 +62,7 @@ def description(text, minlen, maxlen):
 
         Принимает текст, разделенный на параграфы символом перевода строки.
     """
+    text = re_newlines.sub('\n', text)
     paragraphs, other_paragraphs, paragraphs_len = _collect_lines(text.split('\n'), maxlen)
     if other_paragraphs and paragraphs_len < minlen:
         lines, other_lines, lines_len =  _collect_lines(other_paragraphs[0].split('. '), maxlen - paragraphs_len)
@@ -72,15 +73,27 @@ def description(text, minlen, maxlen):
             if paragraphs:
                 # Если уже что-то набрали параграфами - добавляем многоточие
                 soup = Soup(paragraphs[-1])
-                last_line = soup.findAll(text=True)[-1]
-                last_line.replaceWith(soup.new_string(last_line + ('..' if last_line[-1] == '.' else '...')))
-                body = soup.body.contents if soup.body else soup
-                paragraphs[-1] = '\n'.join(str(tag) for tag in body)
+                texts = soup.findAll(text=True)
+                if texts:
+                    last_line = texts[-1]
+                    last_line.replaceWith(soup.new_string(last_line + ('..' if last_line[-1] == '.' else '...')))
+                    body = soup.body.contents if soup.body else soup
+                    paragraphs[-1] = '\n'.join(str(tag) for tag in body)
             elif other_lines:
                 # Вообще текст набрать не удалось. Набираем по словам из первого предложения + многоточие
                 words, other_words, words_len = _collect_lines(other_lines[0].split(' '), maxlen)
                 paragraphs.append(' '.join(words) + '...')
 
     paragraphs = list(map(str.strip, paragraphs))
-    paragraphs = list(filter(bool, paragraphs))
+
+    index = 0
+    while index < len(paragraphs) and not paragraphs[index]:
+        paragraphs.pop(0)
+        index += 1
+
+    index = len(paragraphs) - 1
+    while index >= 0 and not paragraphs[index]:
+        paragraphs.pop()
+        index -= 1
+
     return '\n'.join(paragraphs)

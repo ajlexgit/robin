@@ -116,6 +116,7 @@ PIPELINE_CSS = {
             'scss/layout.scss',
             'scss/header.scss',
             'scss/footer.scss',
+            'scss/text_styles.scss',
             # 'scss/inlines.scss',
             'scss/popups/popups.scss',
             # 'scss/jquery.scrollbar.scss',
