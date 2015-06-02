@@ -2,32 +2,34 @@ import re
 from bs4 import BeautifulSoup as Soup, NavigableString
 from django.utils.html import strip_tags
 
+re_spaces = re.compile('\n([ \r\t\xa0]*\n)+')
 
 def strip_tags_except(html, valid_tags=()):
     """ Удаление HTML-тэгов, кроме перечисленных в valid_tags """
     soup = Soup(html)
     body = soup.body.contents if soup.body else soup
-    for tag in body:
+
+    def process_tag(tag):
         if isinstance(tag, NavigableString):
-            continue
+            return tag
 
         if tag.name in valid_tags:
-            for c in tag.contents:
-                if isinstance(c, NavigableString) and not c.strip():
-                    c.replaceWith('')
-            continue
+            for subtag in tag.contents:
+                subtag.replaceWith(process_tag(subtag))
+            return tag
+        else:
+            result = ""
+            for subtag in tag.contents:
+                result += str(process_tag(subtag))
+            return result
 
-        s = ""
-        for c in tag.contents:
-            if not isinstance(c, NavigableString):
-                c = strip_tags_except(str(c), valid_tags)
-            s += str(c)
-
-        tag.replaceWith(s)
+    for tag in body:
+        tag.replaceWith(process_tag(tag))
 
     body = soup.body.contents if soup.body else soup
     text = '\n'.join(str(tag) for tag in body)
-    return re.sub('\n([ \r\t\xa0]*\n)+', '\n', text.strip())
+    text = text.replace('\u200b', '').strip()
+    return re_spaces.sub('\n', text)
 
 
 def _collect_lines(lines, maxlen):
@@ -69,12 +71,11 @@ def description(text, minlen, maxlen):
             # Первое предложение следующего параграфа слишком длинное
             if paragraphs:
                 # Если уже что-то набрали параграфами - добавляем многоточие
-                last_line = paragraphs[-1].rstrip()
-                if last_line[-1] == '.':
-                    last_line = last_line[:-1] + '...'
-                else:
-                    last_line += '...'
-                paragraphs[-1] = last_line
+                soup = Soup(paragraphs[-1])
+                last_line = soup.findAll(text=True)[-1]
+                last_line.replaceWith(soup.new_string(last_line + ('..' if last_line[-1] == '.' else '...')))
+                body = soup.body.contents if soup.body else soup
+                paragraphs[-1] = '\n'.join(str(tag) for tag in body)
             elif other_lines:
                 # Вообще текст набрать не удалось. Набираем по словам из первого предложения + многоточие
                 words, other_words, words_len = _collect_lines(other_lines[0].split(' '), maxlen)
