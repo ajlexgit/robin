@@ -11,8 +11,7 @@
 
     {{ input }}
     <p class="hint">
-        {% trans 'Min dimensions: ' %}{{ min_dimensions|join:'x' }};
-        {% trans 'Max dimensions: ' %}{{ max_dimensions|join:'x' }}
+        {% trans 'Dimensions: ' %} {% trans 'from' %} {{ min_dimensions|join:'x' }} {% trans 'to' %} {{ max_dimensions|join:'x' }}
     </p>
 
     {% if crop_area %}

@@ -21,8 +21,10 @@
 
 /* Подсказка */
 .stdimage .hint {
+    color: gray;
+    font-size: 11px;
+    line-height: 1.4;
     font-weight: bold;
-    font-style: italic;
 }
 
 /* Чекбокс удаления файла */
