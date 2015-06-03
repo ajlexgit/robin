@@ -14,7 +14,7 @@ re_many_newlines = re.compile('\n{2,}')
 
 @register.filter(is_safe=True)
 def typograf(html):
-    soup = Soup(html)
+    soup = Soup(html, 'html5lib')
 
     for tag in soup.findAll(text=True):
         new_tag = soup.new_string(unescape(re_nbsp.sub('\\1&nbsp;', tag)))

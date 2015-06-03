@@ -7,7 +7,7 @@ re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 
 def strip_tags_except(html, valid_tags=()):
     """ Удаление HTML-тэгов, кроме перечисленных в valid_tags """
-    soup = Soup(html)
+    soup = Soup(html, 'html5lib')
     body = soup.body.contents if soup.body else soup
 
     def process_tag(tag):
@@ -72,7 +72,7 @@ def description(text, minlen, maxlen):
             # Первое предложение следующего параграфа слишком длинное
             if paragraphs:
                 # Если уже что-то набрали параграфами - добавляем многоточие
-                soup = Soup(paragraphs[-1])
+                soup = Soup(paragraphs[-1], 'html5lib')
                 texts = soup.findAll(text=True)
                 if texts:
                     last_line = texts[-1]

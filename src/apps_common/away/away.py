@@ -15,7 +15,7 @@ def away_links(request, html, target="_blank"):
         Заменяет все внешние ссылки в html-коде на единую точку с редиректом
     """
     site = get_current_site(request)
-    soup = Soup(html)
+    soup = Soup(html, 'html5lib')
     for tag in soup.findAll('a'):
         tag['target'] = target
         parsed = parse.urlparse(tag['href'])
