@@ -20,7 +20,7 @@ def seo_block(context, template='seo/block.html'):
     if not full:
         return ''
 
-    short = description(seo_instance.text, 500, 1024)
+    short = description(seo_instance.text, 500, 800)
 
     return loader.render_to_string(template, {
         'instance': seo_instance,

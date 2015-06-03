@@ -2,7 +2,7 @@
 
 .text-styles {
   p {
-    margin: 0 0 10px;
+    margin: 10px 0;
   }
 
   a {
@@ -14,6 +14,111 @@
     }
     &:active {
       color: red;
+    }
+  }
+
+  h1, h2, h3 {
+    margin: 30px 0;
+    line-height: 1.2;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    word-break: break-word;
+    @include header_font;
+    @include font-size(45px);
+    @include media(mobile) {
+      margin: 18px 0;
+      letter-spacing: 1px;
+      @include font-size(32px);
+    }
+  }
+
+  blockquote {
+    position: relative;
+    padding: 50px 0;
+    margin: 60px 0;
+    color: #FFFFFF;
+    @include media(mobile) {
+      padding: 20px 0;
+      margin: 30px 0;
+    }
+
+    p {
+      position: relative;
+      z-index: 5;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -450%;
+      height: 100%;
+      width: 1000%;
+      background-color: $dark;
+    }
+  }
+
+  ul {
+    padding-left: 1.8em;
+    margin: 1.4em 0;
+    @include media(mobile) {
+      margin: 1.1em 0;
+    }
+
+    li {
+      position: relative;
+
+      &:before {
+        content: '●';
+        position: absolute;
+        left: -1.4em;
+        top: 1.4em;
+        font-size: 0.6em;
+        @include transform(translateY(-50%));
+      }
+    }
+  }
+
+  ol {
+    list-style: decimal;
+    padding-left: 1.8em;
+    margin: 1.4em 0;
+    @include media(mobile) {
+      margin: 1.1em 0;
+    }
+  }
+
+
+  // One image
+  .single-image {
+    margin: 38px 0;
+    @include media(mobile) {
+      margin: 24px 0;
+    }
+
+    img {
+      height: auto;
+      max-width: 100%;
+    }
+  }
+
+  // Video 16:9
+  .page-video {
+    position: relative;
+    height: 0;
+    margin: 38px 0;
+    padding-top: 25px;
+    padding-bottom: 56.25%;
+    @include media(mobile) {
+      margin: 24px 0;
+    }
+
+    iframe {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
     }
   }
 }
