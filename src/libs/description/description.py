@@ -2,7 +2,7 @@ import re
 from bs4 import BeautifulSoup as Soup, NavigableString
 from django.utils.html import strip_tags
 
-re_newlines = re.compile('[ \r\t\xa0]*\n')
+re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 
 
 def strip_tags_except(html, valid_tags=()):
@@ -29,7 +29,7 @@ def strip_tags_except(html, valid_tags=()):
 
     body = soup.body.contents if soup.body else soup
     text = '\n'.join(str(tag) for tag in body)
-    return re_newlines.sub('\n', text.strip())
+    return re_clean_newlines.sub('\n', text.strip())
 
 
 def _collect_lines(lines, maxlen):
@@ -62,7 +62,7 @@ def description(text, minlen, maxlen):
 
         Принимает текст, разделенный на параграфы символом перевода строки.
     """
-    text = re_newlines.sub('\n', text)
+    text = re_clean_newlines.sub('\n', text)
     paragraphs, other_paragraphs, paragraphs_len = _collect_lines(text.split('\n'), maxlen)
     if other_paragraphs and paragraphs_len < minlen:
         lines, other_lines, lines_len =  _collect_lines(other_paragraphs[0].split('. '), maxlen - paragraphs_len)

@@ -208,15 +208,13 @@
                 dAngle = Math.abs(dAngle);
 
                 $wrapper.queue('rotate', function(next) {
+                    var from = that.angle;
+                    var diff = finalAngle - that.angle;
                     that._animationTimer = $.animate({
                         duration: Math.round((dAngle / 90) * settings.speed),
                         easing: 'linear',
-                        init: function() {
-                            this.from = that.angle;
-                            this.diff = finalAngle - that.angle;
-                        },
                         step: function(eProgress) {
-                            setAngle(this.from + this.diff * eProgress);
+                            setAngle(from + diff * eProgress);
                         },
                         complete: function() {
                             next();
@@ -227,19 +225,17 @@
                 
                 if (dAngle < 20) {
                     $wrapper.queue('rotate', function(next) {
+                        var finalAngle = processRightSlide(finalAngle - 90);
+                        that.angle = this.finalAngle + 90;
+                        setAngle(that.angle);
+                        
+                        var from = that.angle;
+                        var diff = finalAngle - that.angle;
                         that._animationTimer = $.animate({
                             duration: settings.speed,
                             easing: 'linear',
-                            init: function() {
-                                this.finalAngle = processRightSlide(finalAngle - 90);
-                                that.angle = this.finalAngle + 90;
-                                setAngle(that.angle);
-                                
-                                this.from = that.angle;
-                                this.diff = this.finalAngle - that.angle;
-                            },
                             step: function(eProgress) {
-                                setAngle(this.from + this.diff * eProgress);
+                                setAngle(from + diff * eProgress);
                             },
                             complete: function() {
                                 next();

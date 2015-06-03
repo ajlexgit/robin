@@ -172,16 +172,15 @@
         };
 
         that.animateMomentum = function(evt) {
+            var momentum = evt.momentum;
+            var diffX = momentum.endX - momentum.startX;
+            var diffY = momentum.endY - momentum.startY;
             that._momentumTimer = $.animate({
-                duration: evt.momentum.duration,
-                easing: evt.momentum.easing,
-                init: function() {
-                    this.diffX = evt.momentum.endX - evt.momentum.startX;
-                    this.diffY = evt.momentum.endY - evt.momentum.startY;
-                },
+                duration: momentum.duration,
+                easing: momentum.easing,
                 step: function(eProgress) {
-                    evt.dx = evt.momentum.startX + this.diffX * eProgress;
-                    evt.dy = evt.momentum.startY + this.diffY * eProgress;
+                    evt.dx = momentum.startX + diffX * eProgress;
+                    evt.dy = momentum.startY + diffY * eProgress;
                     evt.timeStamp = $.now();
                     settings.onDrag.call(that, evt);
                 }

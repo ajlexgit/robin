@@ -22,12 +22,12 @@ def description_filter(value, args):
     return description(value, *args)
 
 
-@register.filter(name="strip_tags_except")
+@register.filter(name="striptags_except")
 def strip_tags_except_filter(value, args):
     """
     Удаление HTML-тэгов, кроме перечисленных в valid_tags.
 
     Пример:
-        {{ text|strip_tags_except:"a, p" }}
+        {{ text|striptags_except:"a, p" }}
     """
     return strip_tags_except(value, [item.strip() for item in args.split(',')])

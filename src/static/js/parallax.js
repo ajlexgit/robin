@@ -8,7 +8,7 @@
             jquery.rared.js, jquery.animation.js
 
         <div id="block">
-            <div class="parallax" style="background-image: url(../img/bg.jpg)">
+            <div class="parallax" style="background-image: url(../img/bg.jpg)"></div>
 
             ...
         </div>
