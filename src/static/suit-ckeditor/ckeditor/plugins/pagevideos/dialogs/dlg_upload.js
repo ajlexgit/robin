@@ -44,18 +44,18 @@
                 }
 
 				$(container).oembed(url, {
-					onEmbed: function(e) {
+                    onEmbed: function(e) {
 						// Вставка HTML-кода
 						var element = $(container.$),
 							video = element.find('iframe');
-                        
+
                         // rel=0 for youtube
                         if (e.code[0].src.indexOf('?') >= 0) {
                             e.code[0].src += '&rel=0';
                         } else {
                             e.code[0].src += '?rel=0';
                         }
-                        
+
 						if (typeof e.code === 'string') {
 							if (video.length) {
 								video.replaceWith(e.code)
@@ -71,6 +71,40 @@
 						} else {
 							alert(gettext('Incorrect URL'))
 						}
+
+                        // Youtube size
+                        var info = $.fn.oembed.getOEmbedProvider(url);
+
+                        if (info.name == 'youtube') {
+                            var key = info.templateRegex.exec(url)[1];
+                            $.ajax({
+                                url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg&part=player',
+                                dataType: "jsonp",
+                                success: function (data) {
+                                    if (data.items && data.items.length) {
+                                        var item = data.items[0];
+                                        var code = item.player && item.player.embedHtml;
+                                        if (code) {
+                                            var width = /width="(\d+)"/i.exec(code);
+                                            var height = /height="(\d+)"/i.exec(code);
+
+                                            if (width && height) {
+                                                width = parseInt(width[1]);
+                                                height = parseInt(height[1]);
+
+                                                height = Math.ceil((height / width) * 425);
+                                                width = 425;
+
+                                                $(container.$).find('iframe').attr({
+                                                    width: width,
+                                                    height: height
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
 
 						element.attr('data-url', url).data('url', url);
 						CKEDITOR.dialog.getCurrent().hide()

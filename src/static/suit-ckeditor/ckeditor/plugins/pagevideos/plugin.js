@@ -27,7 +27,7 @@
             CKEDITOR.dialog.add("pagevideos", this.path + "dialogs/dlg_upload.js");
 
             CKEDITOR.scriptLoader.load(
-                CKEDITOR.getUrl(this.path + 'libs/jquery.oembed.min.js')
+                CKEDITOR.getUrl(this.path + 'libs/jquery.oembed.js')
             );
 
 
