@@ -1,35 +1,8 @@
 import re
-from bs4 import BeautifulSoup as Soup, NavigableString
+from bs4 import BeautifulSoup as Soup
 from django.utils.html import strip_tags
 
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
-
-
-def strip_tags_except(html, valid_tags=()):
-    """ Удаление HTML-тэгов, кроме перечисленных в valid_tags """
-    soup = Soup(html, 'html5lib')
-    body = soup.body.contents if soup.body else soup
-
-    def process_tag(tag):
-        if isinstance(tag, NavigableString):
-            return tag
-
-        if tag.name in valid_tags:
-            for subtag in tag.contents:
-                subtag.replaceWith(process_tag(subtag))
-            return tag
-        else:
-            result = ""
-            for subtag in tag.contents:
-                result += str(process_tag(subtag))
-            return result
-
-    for tag in body:
-        tag.replaceWith(process_tag(tag))
-
-    body = soup.body.contents if soup.body else soup
-    text = '\n'.join(str(tag) for tag in body)
-    return re_clean_newlines.sub('\n', text.strip())
 
 
 def _collect_lines(lines, maxlen):
@@ -62,6 +35,7 @@ def description(text, minlen, maxlen):
 
         Принимает текст, разделенный на параграфы символом перевода строки.
     """
+    text = text.replace('\u200b', '')
     text = re_clean_newlines.sub('\n', text)
     paragraphs, other_paragraphs, paragraphs_len = _collect_lines(text.split('\n'), maxlen)
     if other_paragraphs and paragraphs_len < minlen:

@@ -1,6 +1,6 @@
 import re
 from html import unescape
-from bs4 import BeautifulSoup as Soup
+from bs4 import BeautifulSoup as Soup, NavigableString
 from django.template import Library, defaultfilters
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
@@ -12,8 +12,47 @@ re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
 
 
+
+@register.filter(name="striptags_except")
+def strip_tags_except_filter(value, args):
+    """
+        Удаление HTML-тэгов, кроме перечисленных в valid_tags.
+
+        Пример:
+            {{ text|striptags_except:"a, p" }}
+    """
+    valid_tags = [item.strip() for item in args.split(',')]
+
+    def process_tag(tag):
+        if isinstance(tag, NavigableString):
+            return tag
+
+        if tag.name in valid_tags:
+            for subtag in tag.contents:
+                subtag.replaceWith(process_tag(subtag))
+            return tag
+        else:
+            result = ""
+            for subtag in tag.contents:
+                result += str(process_tag(subtag))
+            return result
+
+    soup = Soup(value, 'html5lib')
+    body = soup.body.contents if soup.body else soup
+
+    for tag in body:
+        tag.replaceWith(process_tag(tag))
+
+    body = soup.body.contents if soup.body else soup
+    text = '\n'.join(str(tag) for tag in body)
+    return re_clean_newlines.sub('\n', text.strip())
+
+
 @register.filter(is_safe=True)
 def typograf(html):
+    """
+        Удаление висячих предлогов
+    """
     soup = Soup(html, 'html5lib')
 
     for tag in soup.findAll(text=True):
@@ -27,6 +66,9 @@ def typograf(html):
 
 @register.filter
 def paragraphs(text):
+    """
+        Разбивка текста на параграфы в местах переносов строк
+    """
     text = re_clean_newlines.sub('\n', text)
     text = re_many_newlines.sub('\n', text)
     result = '<p>' + '</p><p>'.join(text.strip().split('\n')) + '</p>'
@@ -34,7 +76,10 @@ def paragraphs(text):
 
 
 @register.filter
-def clear_text(html):
+def clean(html):
+    """
+        Алиас для трех фильтров: VLAUE|striptags|linebreaksbr|typograf|safe
+    """
     text = strip_tags(html)
     text = defaultfilters.linebreaksbr(text)
     text = typograf(text)
