@@ -92,7 +92,7 @@
                                                 width = parseInt(width[1]);
                                                 height = parseInt(height[1]);
 
-                                                height = Math.ceil((height / width) * 425);
+                                                height = Math.ceil((height / width) * 425) + 25;
                                                 width = 425;
 
                                                 $(container.$).find('iframe').attr({
