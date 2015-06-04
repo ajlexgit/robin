@@ -113,13 +113,10 @@
     }
   }
 
-  // Video 16:9
+  // Video
   .page-video {
     position: relative;
-    height: 0;
     margin: 38px 0;
-    padding-top: 25px;
-    padding-bottom: 56.25%;
     color: #808080;
     line-height: 1.2;
     @include default_fontsize;
@@ -127,12 +124,9 @@
       margin: 24px 0;
     }
 
-    iframe {
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 100%;
+    .fluid-width-video-wrapper {
+      display: inline-block;
+      margin: 0 0 2px;
     }
   }
 }

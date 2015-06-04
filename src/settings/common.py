@@ -160,6 +160,7 @@ PIPELINE_JS = {
     'core': {
         'source_filenames': (
             'js/jquery.ajax_csrf.js',
+            'js/jquery.fitvids.js',
             'js/jquery.canvas_utils.js',
             'js/jquery.popups.js',
             'js/jquery.rared.js',
@@ -168,6 +169,7 @@ PIPELINE_JS = {
             # 'js/jquery.inlines.js',
             # 'js/jquery.scrollbar.js',
             'js/appear.js',
+            'js/text_styles.js',
             'js/win_height.js',
             'menu/js/menu.js',
             'seo/js/block.js',
