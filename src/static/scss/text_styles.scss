@@ -16,6 +16,16 @@
       color: red;
     }
   }
+  
+  img {
+    height: auto;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+
+  iframe {
+    margin-bottom: 10px;
+  }
 
   h1, h2, h3 {
     margin: 30px 0;
@@ -23,7 +33,6 @@
     letter-spacing: 1.8px;
     text-transform: uppercase;
     word-break: break-word;
-    @include header_font;
     @include font-size(45px);
     @include media(mobile) {
       margin: 18px 0;
@@ -54,7 +63,7 @@
       left: -450%;
       height: 100%;
       width: 1000%;
-      background-color: $dark;
+      background-color: #000000;
     }
   }
 
@@ -92,13 +101,15 @@
   // One image
   .single-image {
     margin: 38px 0;
+    color: #808080;
+    line-height: 1.2;
+    @include default_fontsize;
     @include media(mobile) {
       margin: 24px 0;
     }
-
+    
     img {
-      height: auto;
-      max-width: 100%;
+      margin: 0 0 5px;
     }
   }
 
@@ -109,6 +120,9 @@
     margin: 38px 0;
     padding-top: 25px;
     padding-bottom: 56.25%;
+    color: #808080;
+    line-height: 1.2;
+    @include default_fontsize;
     @include media(mobile) {
       margin: 24px 0;
     }

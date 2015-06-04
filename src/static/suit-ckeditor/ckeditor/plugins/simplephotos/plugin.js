@@ -18,7 +18,7 @@
             filters : {
                 max_file_size : editor.config.SIMPLEPHOTOS_MAX_FILE_SIZE,
                 mime_types: [
-                    {title : "Image files", extensions : "jpg,jpeg,gif,png,bmp,tif,tiff"}
+                    {title : "Image files", extensions : "jpg,jpeg,gif,png,bmp,tif,tiff"},
                 ]
             },
             unique_names : true,
@@ -78,6 +78,7 @@
                             return
                         } catch(e) {}
                     }
+
                     alert(err.message);
                 }
             }
