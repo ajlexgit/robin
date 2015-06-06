@@ -25,9 +25,10 @@
   .short-text {
     &:after {
       content: '>';
-      font-family: Verdana;
+      font-family: Tahoma;
+      line-height: 1;
       color: rgba(255, 255, 255, 0.8);
-      vertical-align: top;
+      @include font-size(8px);
     }
   }
 
