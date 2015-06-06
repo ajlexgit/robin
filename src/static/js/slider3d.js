@@ -283,7 +283,7 @@
                 
                 if (dAngle < 20) {
                     $wrapper.queue('rotate', function(next) {
-                        var nextFinalAngle = processRightSlide(finalAngle + 90);
+                        var nextFinalAngle = processLeftSlide(finalAngle + 90);
                         that.angle = nextFinalAngle - 90;
                         setAngle(that.angle);
                         
