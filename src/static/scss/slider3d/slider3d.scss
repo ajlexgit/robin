@@ -39,10 +39,12 @@
     }
 
     &.left {
+      margin-left: 1px;
       @include transform(translate3d(-50%, -50%, -0.5em) rotateY(-90deg));
     }
 
     &.right {
+      margin-left: -1px;
       @include transform(translate3d(50%, -50%, 0.5em) rotateY(90deg));
     }
   }

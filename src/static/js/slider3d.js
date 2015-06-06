@@ -27,7 +27,7 @@
         that.scroll2deg = 1;
 
         // Обновление глубины
-        that.update_depth = function() {
+        that.updateDepth = function() {
             $root.css({
                 perspective: $wrapper.outerWidth(),
                 fontSize: items.front.outerWidth()
@@ -41,7 +41,7 @@
             items.last = $slides.last();
 
             if (items.first.length) {
-                that.update_depth();
+                that.updateDepth();
                 enabled = items.first.get(0) != items.last.get(0);
             }
         };
@@ -318,7 +318,7 @@
         $('.slider3d').each(function() {
             var slider = $(this).data('slider');
             if (slider) {
-                slider.update_depth();
+                slider.updateDepth();
             }
         });
     }, 50));
@@ -331,11 +331,7 @@
             controlsParent: null
         }, options);
 
-        return this.each(function() {
-            var $slider = $(this);
-            var object = new Slider3D($slider, settings);
-            $slider.data('slider', object);
-        });
+        return new Slider3D(this.first(), settings);
     };
 
 })(jQuery);

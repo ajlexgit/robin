@@ -55,27 +55,27 @@
                     theme: settings.theme,
                     onready: function(block) {
                         // Функция, вызываемая после инициализации блока
-                        self.trigger('ready.social-buttons', [block]);
+                        self.trigger('ready.yandex-social-buttons', [block]);
                     },
                     onbeforeopen: function(block) {
                         // Функция, вызываемая перед открытием всплывающего окна 
-                        self.trigger('beforeopen.social-buttons', [block]);
+                        self.trigger('beforeopen.yandex-social-buttons', [block]);
                     },
                     onopen: function(block) {
                         // Функция, вызываемая после открытия всплывающего окна
-                        self.trigger('open.social-buttons', [block]);
+                        self.trigger('open.yandex-social-buttons', [block]);
                     },
                     onbeforeclose: function(block) {
                         // Функция, вызываемая перед закрытием всплывающего окна 
-                        self.trigger('beforeclose.social-buttons', [block]);
+                        self.trigger('beforeclose.yandex-social-buttons', [block]);
                     },
                     onclose: function(block) {
                         // Функция, вызываемая после закрытия всплывающего окна
-                        self.trigger('close.social-buttons', [block]);
+                        self.trigger('close.yandex-social-buttons', [block]);
                     },
                     onshare: function(service, block) {
                         // Функция, вызываемая после перехода пользователя на сервис
-                        self.trigger('share.social-buttons', [service, block]);
+                        self.trigger('share.yandex-social-buttons', [service, block]);
                     }
                 });
                 
@@ -104,7 +104,7 @@
     
     
     var init = function() {
-        $('.social-buttons').socialButtons();
+        $('.yandex-social-buttons').socialButtons();
     };
     
     // Динамически подключаем скрипт

@@ -7,12 +7,12 @@ from .social import social_buttons
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'social',
+                'yandex_social',
                 ...
             )
 
     Требуется подключить:
-        social/js/social.js
+        yandex_social/js/social.js
 
     Настройки:
         SOCIAL_BUTTONS_DEFAULT = ('vkontakte', 'facebook', 'twitter', 'gplus')
@@ -26,7 +26,7 @@ from .social import social_buttons
 
     Пример использования:
         views.py:
-            from social import social_buttons
+            from yandex_social import social_buttons
             from libs.description import description
             from django.utils.html import strip_tags
             ...
@@ -50,11 +50,11 @@ from .social import social_buttons
 
         template.html:
             ...
-            {{ social_buttons }}
+            {{ yandex_social_buttons }}
             ...
 
     Обновление блока через AJAX:
-        $('.social-buttons').socialButtons('update', {
+        $('.yandex_social-buttons').socialButtons('update', {
             url: 'http://example.com/page/1/',
             title: 'test',
             description: 'Hello',
