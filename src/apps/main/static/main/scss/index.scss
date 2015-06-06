@@ -85,3 +85,16 @@
     height: auto;
   }
 }
+
+#social_buttons {
+    background-color: #000000;
+    @include no_fontsize;
+    
+    .social-button {
+        margin-right: 10px;
+        
+        &:nth-last-of-type(1) {
+            margin-right: 0;
+        }
+    }
+}
