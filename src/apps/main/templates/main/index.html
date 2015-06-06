@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 {% load pipeline %}
+{% load social %}
 
 {% block static_head %}
     {{ block.super }}
@@ -64,5 +65,15 @@
             </div>
         </div>
     </div>
+    
+    {% social_share 'vk' %}
+    {% social_share 'fb' %}
+    {% social_share 'tw' %}
+    {% social_share 'gp' %}
+    {% social_share 'li' %}
+    {% social_share 'pi' %}
+    {% social_share 'sb' %}
+    {% social_share 'lj' %}
+    {% social_share 'dg' %}
 
 {% endblock content %}

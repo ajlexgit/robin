@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
+    'social',
 
     # Libs
     'libs.autocomplete',
@@ -133,6 +134,7 @@ PIPELINE_CSS = {
             'scss/slider3d/slider3d.scss',
             'scss/parallax.scss',
             'scss/video_bg.scss',
+            'social/scss/social.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',

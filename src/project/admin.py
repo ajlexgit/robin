@@ -1,7 +1,10 @@
 from django import forms
+from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.templatetags.admin_static import static
+from suit.widgets import AutosizedTextarea
+from libs.widgets import SplitDateTimeWidget, TimeWidget
 
 
 class ModelAdminMixin:
@@ -16,6 +19,26 @@ class ModelAdminMixin:
             'admin/css/jquery-ui/jquery-ui.min.css',
             'admin/css/admin_fixes.css',
         )
+    }
+    
+    formfield_overrides = {
+        models.CharField: {
+            'widget': forms.TextInput(attrs={
+                'class': 'input-xxlarge',
+            })
+        },
+        models.TextField: {
+            'widget': AutosizedTextarea(attrs={
+                'class': 'input-xxlarge',
+                'rows': 3,
+            })
+        },
+        models.DateTimeField: {
+            'widget': SplitDateTimeWidget
+        },
+        models.TimeField: {
+            'widget': TimeWidget
+        },
     }
 
     def view(self, obj):

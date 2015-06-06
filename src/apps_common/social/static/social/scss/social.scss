@@ -1,0 +1,43 @@
+@import "mixins";
+
+.social-button {
+    display: inline-block;
+    padding: 5px 10px;
+    @include no_fontsize;
+    
+    &:before {
+        content: '';
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        background: url(../img/medium.png) no-repeat;
+    }
+    
+    &.social-button-fb:before {
+        background-position: 0 0;
+    }
+    &.social-button-tw:before {
+        background-position: -31px 0;
+    }
+    &.social-button-vk:before {
+        background-position: -124px 0;
+    }
+    &.social-button-pi:before {
+        background-position: -155px 0;
+    }
+    &.social-button-gp:before {
+        background-position: -186px 0;
+    }
+    &.social-button-lj:before {
+        background-position: -248px 0;
+    }
+    &.social-button-dg:before {
+        background-position: -465px 0;
+    }
+    &.social-button-sb:before {
+        background-position: -496px 0;
+    }
+    &.social-button-li:before {
+        background-position: -1116px 0;
+    }
+}
