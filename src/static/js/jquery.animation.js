@@ -27,7 +27,7 @@
             complete: $.noop
         }, options);
         
-        settings.duration = Math.max(settings.duration, 20);
+        settings.duration = Math.max(settings.duration || 0, 20);
         settings.init.call(settings);
         
         var start = $.now();
