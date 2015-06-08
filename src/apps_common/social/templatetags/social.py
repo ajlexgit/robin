@@ -16,7 +16,7 @@ def social_share(context, service_name, **kwargs):
 
     # Собираем данные из Opengraph и аргументов
     params_in = {
-        'url': request.build_absolute_uri(),
+        'url': request.build_absolute_uri(request.path),
     }
     if hasattr(request, 'opengraph'):
         params_in.update(request.opengraph)
