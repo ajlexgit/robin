@@ -38,7 +38,7 @@ SERVICES = {
         'title': _('Facebook'),
         'endpoint': 'http://www.facebook.com/sharer.php',
         'allowed_params': {
-            'url': 'url',
+            'url': 'u',
             'description': 't',
         },
     },
