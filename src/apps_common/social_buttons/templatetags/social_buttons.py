@@ -21,7 +21,7 @@ def social_share(context, service_name, **kwargs):
     if hasattr(request, 'opengraph'):
         params_in.update(request.opengraph)
     params_in.update(kwargs)
-    
+
     # Абсолютный адрес для картинки
     if 'image' in params_in:
         params_in['image'] = request.build_absolute_uri(params_in['image'])
@@ -41,7 +41,7 @@ def social_share(context, service_name, **kwargs):
     url_parts[4] += '&' + params if url_parts[4] else params
     final_url = urlparse.urlunparse(url_parts)
 
-    return loader.render_to_string('social/button.html', {
+    return loader.render_to_string('social_buttons/button.html', {
         'service': service,
         'url': final_url,
     })

@@ -6,18 +6,18 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'social',
+                'social_buttons',
                 ...
             )
             MIDDLEWARE_CLASSES = (
                 ...
-                'social.middleware.OpengraphMiddleware',
+                'opengraph.middleware.OpengraphMiddleware',
                 ...
             )
 
     Пример использования:
         template.html:
-            {% load social %}
+            {% load social_buttons %}
             ...
             {% social_share 'vk' image=item.preview.url %}
             {% social_share 'fb' title="Hello" %}

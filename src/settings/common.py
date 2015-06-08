@@ -54,7 +54,7 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
-    'social',
+    'social_buttons',
 
     # Libs
     'libs.autocomplete',
@@ -134,7 +134,7 @@ PIPELINE_CSS = {
             'scss/slider3d/slider3d.scss',
             'scss/parallax.scss',
             'scss/video_bg.scss',
-            'social/scss/social.scss',
+            'social_buttons/scss/social_buttons.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -294,6 +294,11 @@ ALIAS_IN_URL = '[-\w\.&]+'
 RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
+
+# Social auth
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
