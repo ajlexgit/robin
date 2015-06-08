@@ -299,6 +299,9 @@ RECAPTCHA_DEFAULT_THEME = 'dark'
 GOOGLE_CLEINT_ID = '679523020493-3n788s4uteg72et6qgt1el0lksmpq3su.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '2Snc9cALa6F4tZtO_kIAyQb3'
 
+VK_CLEINT_ID = '3034888'
+VK_CLIENT_SECRET = 'wdAe5vCLVxlTlykIFD9y'
+
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
 # ==================================================================
