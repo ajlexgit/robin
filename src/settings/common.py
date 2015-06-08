@@ -295,6 +295,10 @@ RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
 
+# Social
+GOOGLE_CLEINT_ID = '679523020493-3n788s4uteg72et6qgt1el0lksmpq3su.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '2Snc9cALa6F4tZtO_kIAyQb3'
+
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
 # ==================================================================

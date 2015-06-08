@@ -31,7 +31,7 @@ class MainPageConfig(SingletonModel):
     coords2 = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
-    
+
     class Meta:
         verbose_name = _("Settings")
 

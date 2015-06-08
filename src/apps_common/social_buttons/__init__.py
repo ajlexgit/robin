@@ -22,4 +22,12 @@
             {% social_share 'vk' image=item.preview.url %}
             {% social_share 'fb' title="Hello" %}
             {% social_share 'tw' title="Hello" description="Test" %}
+
+
+    # === OAUTH ===
+    Установка:
+        urls.py:
+            ...
+            url(r'^social/', include('social_buttons.urls', namespace='social')),
+            ...
 """
