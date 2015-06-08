@@ -302,6 +302,9 @@ GOOGLE_CLIENT_SECRET = '2Snc9cALa6F4tZtO_kIAyQb3'
 VK_CLEINT_ID = '3034888'
 VK_CLIENT_SECRET = 'wdAe5vCLVxlTlykIFD9y'
 
+FACEBOOK_CLEINT_ID = '367071103367916'
+FACEBOOK_CLIENT_SECRET = 'd4d6a382e3c77a8488530d7c310b2f0e'
+
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
 # ==================================================================

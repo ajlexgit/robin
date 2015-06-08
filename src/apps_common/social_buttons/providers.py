@@ -110,7 +110,6 @@ class VKProvider(BaseProvider):
         url = ('https://api.vk.com/method/users.get?uids={user}&'
                'fields=uid,first_name,last_name,nickname,screen_name,sex,bdate,city,country,timezone,photo&'
                'access_token={token}')
-
         response = self.session.get(url.format(
             user=token.get('user_id'),
             token=token.get('access_token'),
@@ -121,7 +120,28 @@ class VKProvider(BaseProvider):
         print(data)
 
 
+class FacebookProvider(BaseProvider):
+    CLIENT_ID_PARAMNAME = 'FACEBOOK_CLEINT_ID'
+    CLIENT_SECRET_PARAMNAME = 'FACEBOOK_CLIENT_SECRET'
+
+    REDIRECT_URI = 'social:facebook-complete'
+
+    AUTH_URL = 'https://www.facebook.com/dialog/oauth'
+    TOKEN_URL = 'https://graph.facebook.com/oauth/access_token'
+
+    def get_data(self, token):
+        url = 'https://graph.facebook.com/me/?access_token={token}'
+        response = self.session.get(url.format(
+            token=token.get('access_token'),
+        ))
+        return response.json()
+
+    def process_data(self, data):
+        print(data)
+
+
 PROVIDERS = {
     'google': GoogleProvider,
+    'facebook': FacebookProvider,
     'vk': VKProvider,
 }
