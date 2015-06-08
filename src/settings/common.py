@@ -296,14 +296,14 @@ RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
 
 # Social
-GOOGLE_CLEINT_ID = '679523020493-3n788s4uteg72et6qgt1el0lksmpq3su.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = '2Snc9cALa6F4tZtO_kIAyQb3'
-
-VK_CLEINT_ID = '3034888'
-VK_CLIENT_SECRET = 'wdAe5vCLVxlTlykIFD9y'
-
-FACEBOOK_CLEINT_ID = '367071103367916'
-FACEBOOK_CLIENT_SECRET = 'd4d6a382e3c77a8488530d7c310b2f0e'
+# GOOGLE_CLEINT_ID = '679523020493-3n788s4uteg72et6qgt1el0lksmpq3su.apps.googleusercontent.com'
+# GOOGLE_CLIENT_SECRET = '2Snc9cALa6F4tZtO_kIAyQb3'
+#
+# VK_CLEINT_ID = '3034888'
+# VK_CLIENT_SECRET = 'wdAe5vCLVxlTlykIFD9y'
+#
+# FACEBOOK_CLEINT_ID = '367071103367916'
+# FACEBOOK_CLIENT_SECRET = 'd4d6a382e3c77a8488530d7c310b2f0e'
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

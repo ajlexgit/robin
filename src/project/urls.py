@@ -21,7 +21,6 @@ urlpatterns = patterns('',
     url(r'^away/$', 'away.views.away', name='away'),
     url(r'^autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
     url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
-    url(r'^social/', include('social_buttons.urls', namespace='social')),
 
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps}),
 )
