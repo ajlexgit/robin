@@ -30,7 +30,7 @@
         that.updateDepth = function() {
             $root.css({
                 perspective: $wrapper.outerWidth(),
-                fontSize: items.front.outerWidth()
+                fontSize: items.first.outerWidth()
             });
         };
 
@@ -40,10 +40,8 @@
             items.first = $slides.first();
             items.last = $slides.last();
 
-            if (items.first.length) {
-                that.updateDepth();
-                enabled = items.first.get(0) != items.last.get(0);
-            }
+            that.updateDepth();
+            enabled = items.first.get(0) != items.last.get(0);
         };
 
         // Получение следующего слайда
@@ -170,12 +168,12 @@
         });
 
         // Определение элементов
+        that.refresh();
+        
         items.front = $root.find('.front:first');
         if (!items.front.length) {
             items.front = items.first.addClass('front');
         }
-
-        that.refresh();
 
         items.left = getPrev(items.front);
         items.right = getNext(items.front);
