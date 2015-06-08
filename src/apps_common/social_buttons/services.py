@@ -48,7 +48,7 @@ SERVICES = {
         'endpoint': 'http://twitter.com/share',
         'allowed_params': {
             'url': 'url',
-            'description': 'text',
+            'title': 'text',
         },
     },
     'gp': {
