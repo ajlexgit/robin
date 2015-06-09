@@ -61,7 +61,6 @@ INSTALLED_APPS = (
     'libs.ckeditor',
     'libs.color_field',
     'libs.description',
-    'libs.hits',
     'libs.js_storage',
     'libs.opengraph',
     'libs.recaptcha',
