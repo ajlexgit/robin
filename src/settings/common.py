@@ -45,7 +45,6 @@ INSTALLED_APPS = (
 
     # Apps common
     'admin_log',
-    'away',
     'breadcrumbs',
     'comments',
     'files',
@@ -58,6 +57,7 @@ INSTALLED_APPS = (
 
     # Libs
     'libs.autocomplete',
+    'libs.away',
     'libs.ckeditor',
     'libs.color_field',
     'libs.description',
