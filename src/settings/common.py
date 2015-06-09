@@ -117,8 +117,6 @@ PIPELINE_CSS = {
             'scss/text_styles.scss',
             # 'scss/inlines.scss',
             'scss/popups/popups.scss',
-            # 'scss/jquery.scrollbar.scss',
-            # 'scss/jquery.scrollbar-theme.scss',
             # 'breadcrumbs/scss/breadcrumbs.scss',
             # 'comments/scss/comments.scss',
             'menu/scss/menu.scss',
@@ -165,7 +163,6 @@ PIPELINE_JS = {
             'js/jquery.readmore.min.js',
             'js/jquery.scrollTo.js',
             # 'js/jquery.inlines.js',
-            # 'js/jquery.scrollbar.js',
             'js/appear.js',
             'js/text_styles.js',
             'js/win_height.js',
@@ -267,7 +264,6 @@ SESSION_COOKIE_DOMAIN = None
 # Список скомпилированных регулярных выражений
 # запретных юзер-агентов
 DISALLOWED_USER_AGENTS = ()
-
 
 # ==================================================================
 # ==================== APPS SETTINGS ===============================
