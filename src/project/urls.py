@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^dladmin/', include(admin.site.urls)),
 
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),
-    url(r'^away/$', 'away.views.away', name='away'),
+    url(r'^away/$', 'libs.away.views.away', name='away'),
     url(r'^autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
     url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
 
