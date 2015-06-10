@@ -136,6 +136,8 @@
 
     &.instagram {
       iframe {
+        width: 100%;
+        max-width: 650px;
         border: 1px solid #E6E6E6;
         @include border_radius(4px);
       }

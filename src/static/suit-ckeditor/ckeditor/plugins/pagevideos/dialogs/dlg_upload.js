@@ -55,20 +55,25 @@
                         return
                     }
 
-                    var new_url = 'https://instagram.com/p/' + code[1] + '/embed/captioned/?v=4';
-                    // https://instagram.com/p/crIB4_D7fM/
+                    $container.attr('data-url', url).data('url', url);
 
                     var iframe = editor.document.createElement('iframe');
                     var $iframe = $(iframe.$).attr({
-                        src: new_url,
+                        src: 'https://instagram.com/p/' +code[1] + '/embed/captioned/?v=4',
                         width: 480,
                         height: 600,
                         frameborder: 0,
                         scrolling: 'no',
                         allowtransparency: true
                     });
+                    $container.html($iframe);
 
-                    $container.attr('data-url', url).data('url', url).html($iframe);
+                    var script = editor.document.createElement('script');
+                    var $script = $(script.$).attr({
+                        src: '//platform.instagram.com/en_US/embeds.js'
+                    });
+                    $container.append($script);
+
                     var dialog = CKEDITOR.dialog.getCurrent();
                     if (dialog) {
                         dialog.hide();
