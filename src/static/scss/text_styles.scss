@@ -3,6 +3,10 @@
 .text-styles {
   p {
     margin: 10px 0;
+    
+    &:nth-of-type(1) {
+      margin-top: 0;
+    }
   }
 
   a {
@@ -119,6 +123,7 @@
     margin: 38px 0;
     color: #808080;
     line-height: 1.2;
+    text-align: center;
     @include default_fontsize;
     @include media(mobile) {
       margin: 24px 0;
@@ -127,6 +132,17 @@
     .fluid-width-video-wrapper {
       display: inline-block;
       margin: 0 0 2px;
+    }
+
+    &.instagram {
+      iframe {
+        border: 1px solid #E6E6E6;
+        @include border_radius(4px);
+      }
+    }
+
+    iframe {
+      margin: 0;
     }
   }
 }

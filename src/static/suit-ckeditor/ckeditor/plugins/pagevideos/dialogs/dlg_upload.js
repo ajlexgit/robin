@@ -34,6 +34,7 @@
 
 			onOk: function() {
 				var url = this.getValueOf( 'tab-basic', 'embedCode' ),
+                    provider = $.fn.oembed.getOEmbedProvider(url),
 					container = editor.getSelection().getStartElement();
 
 				// Вставка родительского контейнера
@@ -43,71 +44,109 @@
 					editor.insertElement(container)
                 }
 
-				$(container).oembed(url, {
+                container.addClass(provider.name);
+                var $container = $(container.$);
+
+                // Fix for instagram
+                if (provider.name == 'instagram') {
+                    var code = /\/p\/([^\/]+)/g.exec(url);
+                    if (!code || (code.length < 2)) {
+                        alert('Wrong instagram url');
+                        return
+                    }
+
+                    var new_url = 'https://instagram.com/p/' + code[1] + '/embed/captioned/?v=4';
+                    // https://instagram.com/p/crIB4_D7fM/
+
+                    var iframe = editor.document.createElement('iframe');
+                    var $iframe = $(iframe.$).attr({
+                        src: new_url,
+                        width: 480,
+                        height: 640,
+                        frameborder: 0,
+                        scrolling: 'no',
+                        allowtransparency: true
+                    });
+
+                    $container.attr('data-url', url).data('url', url).html($iframe);
+                    var dialog = CKEDITOR.dialog.getCurrent();
+                    if (dialog) {
+                        dialog.hide();
+                    }
+                    return
+                }
+
+                $container.oembed(url, {
                     onEmbed: function(e) {
-						// Вставка HTML-кода
-						var element = $(container.$),
-							video = element.find('iframe');
+                        if (typeof e.code === 'string') {
+                            $container.html(e.code);
+                        } else if (typeof e.code[0].outerHTML === 'string') {
+                            // Вставка HTML-кода
+                            var video = $container.find('iframe');
 
-                        // rel=0 for youtube
-                        if (e.code[0].src.indexOf('?') >= 0) {
-                            e.code[0].src += '&rel=0';
-                        } else {
-                            e.code[0].src += '?rel=0';
-                        }
+                            // rel=0 for youtube
+                            if (e.code[0].src.indexOf('?') >= 0) {
+                                e.code[0].src += '&rel=0';
+                            } else {
+                                e.code[0].src += '?rel=0';
+                            }
 
-						if (typeof e.code === 'string') {
-							if (video.length) {
-								video.replaceWith(e.code)
-							} else {
-								element.html(e.code)
-							}
-						} else if (typeof e.code[0].outerHTML === 'string') {
-							if (video.length) {
-								video.replaceWith(e.code[0].outerHTML)
-							} else {
-								element.html(e.code[0].outerHTML)
-							}
-						} else {
-							alert(gettext('Incorrect URL'))
-						}
+                            if (typeof e.code === 'string') {
+                                if (video.length) {
+                                    video.replaceWith(e.code)
+                                } else {
+                                    $container.html(e.code)
+                                }
+                            } else if (typeof e.code[0].outerHTML === 'string') {
+                                if (video.length) {
+                                    video.replaceWith(e.code[0].outerHTML)
+                                } else {
+                                    $container.html(e.code[0].outerHTML)
+                                }
+                            } else {
+                                alert(gettext('Incorrect URL'))
+                            }
 
-                        // Youtube size
-                        var info = $.fn.oembed.getOEmbedProvider(url);
+                            // Youtube size
+                            if (provider.name == 'youtube') {
+                                var key = provider.templateRegex.exec(url)[1];
+                                $.ajax({
+                                    url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg&part=player',
+                                    dataType: "jsonp",
+                                    success: function (data) {
+                                        if (data.items && data.items.length) {
+                                            var item = data.items[0];
+                                            var code = item.player && item.player.embedHtml;
+                                            if (code) {
+                                                var width = /width="(\d+)"/i.exec(code);
+                                                var height = /height="(\d+)"/i.exec(code);
 
-                        if (info.name == 'youtube') {
-                            var key = info.templateRegex.exec(url)[1];
-                            $.ajax({
-                                url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg&part=player',
-                                dataType: "jsonp",
-                                success: function (data) {
-                                    if (data.items && data.items.length) {
-                                        var item = data.items[0];
-                                        var code = item.player && item.player.embedHtml;
-                                        if (code) {
-                                            var width = /width="(\d+)"/i.exec(code);
-                                            var height = /height="(\d+)"/i.exec(code);
+                                                if (width && height) {
+                                                    width = parseInt(width[1]);
+                                                    height = parseInt(height[1]);
 
-                                            if (width && height) {
-                                                width = parseInt(width[1]);
-                                                height = parseInt(height[1]);
+                                                    height = Math.ceil((height / width) * 425) + 25;
+                                                    width = 425;
 
-                                                height = Math.ceil((height / width) * 425) + 25;
-                                                width = 425;
-
-                                                $(container.$).find('iframe').attr({
-                                                    width: width,
-                                                    height: height
-                                                });
+                                                    $(container.$).find('iframe').attr({
+                                                        width: width,
+                                                        height: height
+                                                    });
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }
+                        } else {
+                            alert('Unknown URL service');
                         }
 
-						element.attr('data-url', url).data('url', url);
-						CKEDITOR.dialog.getCurrent().hide()
+                        $container.attr('data-url', url).data('url', url);
+                        var dialog = CKEDITOR.dialog.getCurrent();
+                        if (dialog) {
+                            dialog.hide();
+                        }
 					},
 					onError: function(externalUrl) {
 						if (externalUrl.indexOf("vimeo.com") > 0) {

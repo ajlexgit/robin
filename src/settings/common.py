@@ -157,10 +157,11 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/jquery.ajax_csrf.js',
             'js/jquery.fitvids.js',
+            'js/jquery.responsiveinstagram.js',
+            'js/jquery.fakelink.js',
             'js/jquery.canvas_utils.js',
-            'js/jquery.popups.js',
             'js/jquery.rared.js',
-            'js/jquery.readmore.min.js',
+            'js/jquery.popups.js',
             'js/jquery.scrollTo.js',
             # 'js/jquery.inlines.js',
             'js/appear.js',
