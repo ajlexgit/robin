@@ -2,15 +2,16 @@ import os
 import sys
 
 # popups: проверить кнопку закрытия
+# Избавиться от ADDITION_JS
+# Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении
 
 # типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
-# Сделать SHOW_VARIATION для StdImage + ссылку на исходник, если None
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
 # Gallery: zoom effect, keyboard, max photos count
 
-# Соц авторизация: http://django-social-auth.readthedocs.org/en/latest/installing.html
+# Соц авторизаци
 # Капча в комментах, если похоже на спам
 # пагинация AJAX с предзагрузкой
 # AJAX hit
