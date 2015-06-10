@@ -29,7 +29,7 @@
 
     {% seo_counters 'head' %}
 </head>
-<body>
+<body class="{% block bodyclass %}{% endblock %}">
     {% seo_counters 'body_top' %}
 
     <div id="wrapper">
