@@ -62,7 +62,7 @@
                     var $iframe = $(iframe.$).attr({
                         src: new_url,
                         width: 480,
-                        height: 640,
+                        height: 600,
                         frameborder: 0,
                         scrolling: 'no',
                         allowtransparency: true
