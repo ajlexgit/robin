@@ -14,6 +14,11 @@ class ModelAdminInlineMixin:
                 'class': 'input-xxlarge',
             })
         },
+        models.EmailField: {
+            'widget': forms.EmailInput(attrs={
+                'class': 'input-xxlarge',
+            })
+        },
         models.URLField: {
             'widget': URLWidget(attrs={
                 'class': 'input-xxlarge',
