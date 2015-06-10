@@ -5,29 +5,14 @@ from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
-from project.admin import ModelAdminMixin
-from suit.widgets import AutosizedTextarea
+from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from .models import SeoConfig, SeoData, Counter
 
-
-class SeoConfigForm(forms.ModelForm):
-    class Meta:
-        model = SeoConfig
-        widgets = {
-            'keywords': AutosizedTextarea(attrs={
-                'class': 'input-xxlarge',
-                'rows': 3,
-            }),
-            'description': AutosizedTextarea(attrs={
-                'class': 'input-xxlarge',
-                'rows': 3,
-            }),
-        }
 
 
 @admin.register(SeoConfig)
 class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
-    form = SeoConfigForm
+    pass
 
 
 class CounterForm(forms.ModelForm):
@@ -43,24 +28,8 @@ class CounterAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display = ('__str__', 'position')
 
 
-class SeoDataForm(forms.ModelForm):
-    class Meta:
-        model = SeoData
-        widgets = {
-            'keywords': AutosizedTextarea(attrs={
-                'class': 'input-xxlarge',
-                'rows': 3,
-            }),
-            'description': AutosizedTextarea(attrs={
-                'class': 'input-xxlarge',
-                'rows': 3,
-            }),
-        }
-
-
-class SeoDataAdmin(admin.ModelAdmin):
+class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
     model = SeoData
-    form = SeoDataForm
     fieldsets = (
         (_('SEO'), {
             'fields': ('title', 'keywords', 'description', 'text', ),

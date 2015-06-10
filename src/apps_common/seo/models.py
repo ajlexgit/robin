@@ -7,8 +7,8 @@ from solo.models import SingletonModel
 
 class SeoConfig(SingletonModel):
     title = models.CharField(_('site title'), max_length=128)
-    keywords = models.CharField(_('site keywords'), max_length=255, blank=True)
-    description = models.CharField(_('site description'), max_length=160, blank=True)
+    keywords = models.TextField(_('site keywords'), max_length=255, blank=True)
+    description = models.TextField(_('site description'), max_length=160, blank=True)
 
     class Meta:
         verbose_name = _('Site config')
@@ -20,8 +20,8 @@ class SeoData(models.Model):
     entity = generic.GenericForeignKey()
 
     title = models.CharField(_('title'), max_length=128, blank=True)
-    keywords = models.CharField(_('keywords'), max_length=255, blank=True)
-    description = models.CharField(_('description'), max_length=160, blank=True)
+    keywords = models.TextField(_('keywords'), max_length=255, blank=True)
+    description = models.TextField(_('description'), max_length=160, blank=True)
     text = models.TextField(_('text'), blank=True)
 
     class Meta:

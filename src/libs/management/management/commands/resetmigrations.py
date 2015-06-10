@@ -37,6 +37,6 @@ class Command(BaseCommand):
         # Создание новых миграций
         for name, path in result_apps.items():
             print('Create migrations for %s...' % name)
-            call_command('makemigrations', name, verbosity=0)
+            call_command('makemigrations', name.rsplit('.', 1)[-1], verbosity=0)
 
         call_command('migrate', verbosity=0)
