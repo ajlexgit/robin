@@ -17,6 +17,16 @@
             onStartDrag(event)                - начало перемещения
             onDrag(event)                     - процесс перемещения
             onMouseUp(event)                  - отпускание элемента
+
+        Примеры:
+            var drager = $.drager($element, {
+                onMouseDown: function(evt) {
+                    this.
+
+                    // prevent default
+                    return false
+                }
+            });
     */
 
     var getDx = function (fromPoint, toPoint) {
@@ -101,8 +111,8 @@
 
         that._dragged = false;
         that._momentumPoints = [];
-        that.dragging_allowed = false;
-        that.startPoint = null;
+        that._dragging_allowed = false;
+        that._startPoint = null;
 
         that.getEvent = function (event, type) {
             var pointEvent;
@@ -136,9 +146,9 @@
                 evt.startPoint = evt.point;
                 return evt;
             } else if (type == 'stop') {
-                evt.dx = getDx(that.startPoint, evt.point);
-                evt.dy = getDy(that.startPoint, evt.point);
-                evt.startPoint = that.startPoint;
+                evt.dx = getDx(that._startPoint, evt.point);
+                evt.dy = getDy(that._startPoint, evt.point);
+                evt.startPoint = that._startPoint;
 
                 evt.momentum = {
                     weight: settings.momentumWeight,
@@ -152,9 +162,9 @@
 
                 return evt;
             } else {
-                evt.dx = getDx(that.startPoint, evt.point);
-                evt.dy = getDy(that.startPoint, evt.point);
-                evt.startPoint = that.startPoint;
+                evt.dx = getDx(that._startPoint, evt.point);
+                evt.dy = getDy(that._startPoint, evt.point);
+                evt.startPoint = that._startPoint;
                 return evt;
             }
         };
@@ -211,8 +221,8 @@
 
             var evt = that.getEvent(event, 'start');
             that._dragged = false;
-            that.dragging_allowed = true;
-            that.startPoint = evt.point;
+            that._dragging_allowed = true;
+            that._startPoint = evt.point;
 
             that._momentumPoints = [];
             that.addMomentumPoint(evt);
@@ -221,7 +231,7 @@
         };
 
         var dragHandler = function (event) {
-            if (!that.dragging_allowed) return;
+            if (!that._dragging_allowed) return;
 
             var evt = that.getEvent(event, 'move');
 
@@ -239,8 +249,8 @@
         };
 
         var stopDragHandler = function (event) {
-            if (!that.dragging_allowed) return;
-            that.dragging_allowed = false;
+            if (!that._dragging_allowed) return;
+            that._dragging_allowed = false;
 
             var evt = that.getEvent(event, 'stop');
 
