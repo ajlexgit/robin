@@ -4,6 +4,7 @@ import sys
 # popups: проверить кнопку закрытия
 # Избавиться от ADDITION_JS
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении
+# Slider3D: span
 
 # типа ImageField но с превью и возможностью SVG
 # Custom fields: юзать descriptor_class?
