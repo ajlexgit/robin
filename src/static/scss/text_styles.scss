@@ -101,7 +101,7 @@
     margin: 2.2em 0;
     color: #808080;
     line-height: 1.2;
-    @include default_fontsize;
+    @include font-size(14px);
     
     img {
       margin: 0 0 5px;
@@ -123,11 +123,12 @@
     }
 
     &.instagram {
-      text-align: center;
-      
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+
       iframe {
         width: 100%;
-        max-width: 650px;
         border: 1px solid #E6E6E6;
         @include border_radius(4px);
       }
