@@ -2,11 +2,7 @@
 
 .text-styles {
   p {
-    margin: 10px 0;
-    
-    &:nth-of-type(1) {
-      margin-top: 0;
-    }
+    margin-bottom: 10px;
   }
 
   a {
@@ -32,16 +28,13 @@
   }
 
   h1, h2, h3 {
-    margin: 30px 0;
+    margin: 1.1em 0 0.55em;
     line-height: 1.2;
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
     word-break: break-word;
-    @include font-size(45px);
+    @include font-size(30px);
     @include media(mobile) {
-      margin: 18px 0;
       letter-spacing: 1px;
-      @include font-size(32px);
+      @include font-size(24px);
     }
   }
 
@@ -77,10 +70,7 @@
 
   ul {
     padding-left: 1.8em;
-    margin: 1.4em 0;
-    @include media(mobile) {
-      margin: 1.1em 0;
-    }
+    margin: 1.1em 0;
 
     li {
       position: relative;
@@ -99,22 +89,16 @@
   ol {
     list-style: decimal;
     padding-left: 1.8em;
-    margin: 1.4em 0;
-    @include media(mobile) {
-      margin: 1.1em 0;
-    }
+    margin: 1.1em 0;
   }
 
 
   // One image
   .single-image {
-    margin: 38px 0;
+    margin: 2.2em 0;
     color: #808080;
     line-height: 1.2;
     @include default_fontsize;
-    @include media(mobile) {
-      margin: 24px 0;
-    }
     
     img {
       margin: 0 0 5px;
@@ -124,15 +108,12 @@
   // Video
   .page-video {
     position: relative;
-    margin: 38px 0;
+    margin: 2.2em 0;
     color: #808080;
     line-height: 1.2;
     text-align: left;
     @include font-size(14px);
-    @include media(mobile) {
-      margin: 24px 0;
-    }
-
+    
     .fluid-width-video-wrapper {
       display: inline-block;
       margin: 0 0 2px;

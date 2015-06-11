@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% load pipeline %}
 {% load social_buttons %}
+{% load away %}
 
 {% block static_head %}
     {{ block.super }}
@@ -47,6 +48,14 @@
         </div>
     </div>
 
+    <div id="text-content" class="text-styles">
+        <div class="grid">
+            <div class="grid-col-wide-6 grid-col-6 grid-col-alone">
+                {% away config.text|typograf|safe %}
+            </div>
+        </div>
+    </div>
+    
     <div id="slider_example">
         <div class="grid">
             <div class="grid-col-8 grid-col-alone">

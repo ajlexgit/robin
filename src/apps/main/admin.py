@@ -11,7 +11,7 @@ class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-header'),
-            'fields': ('header_title', 'preview', 'description', 'address', 'coords', 'coords2'),
+            'fields': ('header_title', 'preview', 'text', 'description', 'address', 'coords', 'coords2'),
         }),
     )
     suit_form_tabs = (

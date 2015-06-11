@@ -68,7 +68,13 @@
                     });
                     $container.html($iframe);
 
-                                        var dialog = CKEDITOR.dialog.getCurrent();
+                    var script = editor.document.createElement('script');
+                    var $script = $(script.$).attr({
+                        src: '//platform.instagram.com/en_US/embeds.js'
+                    });
+                    $container.append($script);
+
+                    var dialog = CKEDITOR.dialog.getCurrent();
                     if (dialog) {
                         dialog.hide();
                     }

@@ -46,3 +46,10 @@ h1, h2, h3, h4 {
 li {
     padding: 5px 0;
 }
+
+blockquote {
+    margin: 0 0 1em;
+    padding: 1em 1em 1px;
+    color: white;
+    background-color: #2C2F35;
+}
