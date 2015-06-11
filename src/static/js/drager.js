@@ -368,8 +368,8 @@
         that.attach();
     };
 
-    $.drager = function (options) {
-        return new Drager(options);
+    $.drager = function ($root, options) {
+        return new Drager($root, options);
     };
 
 })(jQuery);
