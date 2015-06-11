@@ -47,17 +47,21 @@
 
   blockquote {
     position: relative;
-    padding: 50px 0;
+    padding: 60px 0;
     margin: 60px 0;
     color: #FFFFFF;
     @include media(mobile) {
-      padding: 20px 0;
+      padding: 30px 0;
       margin: 30px 0;
     }
 
     p {
       position: relative;
       z-index: 5;
+      
+      &:nth-last-of-type(1) {
+        margin-bottom: 0;
+      }
     }
 
     &:before {
@@ -123,8 +127,8 @@
     margin: 38px 0;
     color: #808080;
     line-height: 1.2;
-    text-align: center;
-    @include default_fontsize;
+    text-align: left;
+    @include font-size(14px);
     @include media(mobile) {
       margin: 24px 0;
     }
@@ -135,6 +139,8 @@
     }
 
     &.instagram {
+      text-align: center;
+      
       iframe {
         width: 100%;
         max-width: 650px;
