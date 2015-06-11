@@ -5,12 +5,13 @@
 
         Требует:
             jquery.animation.js
-        
+
         Параметры:
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
             momentumWeight: 500               - величина инерции
 
-            onStartDrag(event)                - нажатие на элемент
+            onMouseDown(event)                - нажатие мышью или тачпадом
+            onStartDrag(event)                - начало перемещения
             onDrag(event)                     - процесс перемещения
             onStopDrag(event)                 - отпускание элемента
     */
@@ -89,13 +90,15 @@
             momentumWeight: 500,
             momentumEasing: 'easeOutCubic',
 
+            onMouseDown: $.noop,
             onStartDrag: $.noop,
             onDrag: $.noop,
             onStopDrag: $.noop
         }, options);
 
+        that._dragged = false;
         that._momentumPoints = [];
-        that.dragging = false;
+        that.dragging_allowed = false;
         that.startPoint = null;
 
         that.getEvent = function(event, type) {
@@ -200,19 +203,25 @@
             that.stopMomentumAnimation();
 
             var evt = that.getEvent(event, 'start');
-            that.dragging = true;
+            that._dragged = false;
+            that.dragging_allowed = true;
             that.startPoint = evt.point;
 
             that._momentumPoints = [];
             that.addMomentumPoint(evt);
 
-            return settings.onStartDrag.call(that, evt);
+            return settings.onMouseDown.call(that, evt);
         };
 
         var dragHandler = function(event) {
-            if (!that.dragging) return;
+            if (!that.dragging_allowed) return;
 
             var evt = that.getEvent(event, 'move');
+
+            if (!that._dragged) {
+                that._dragged = true;
+                settings.onStartDrag.call(that, evt);
+            }
 
             var lastMomentum = that._momentumPoints[that._momentumPoints.length - 1];
             if (evt.timeStamp - lastMomentum.timeStamp > 200) {
@@ -223,8 +232,8 @@
         };
 
         var stopDragHandler = function(event) {
-            if (!that.dragging) return;
-            that.dragging = false;
+            if (!that.dragging_allowed) return;
+            that.dragging_allowed = false;
 
             var evt = that.getEvent(event, 'stop');
 
