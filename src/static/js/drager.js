@@ -244,9 +244,9 @@
             });
         };
 
-        var stopMomentumAnimation = function () {
+        that.stop = function (jumpToEnd) {
             if (that._momentumAnimation) {
-                that._momentumAnimation.stop();
+                that._momentumAnimation.stop(jumpToEnd);
                 that._momentumAnimation = null;
             }
         };
@@ -255,7 +255,7 @@
         // === Handlers ===
         // ================
         var mouseDownHandler = function (event) {
-            stopMomentumAnimation();
+            that.stop();
 
             var evt = getEvent(event, 'start');
             dragged = false;

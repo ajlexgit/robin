@@ -195,7 +195,7 @@
                 if (that._animation) return false;
 
                 $wrapper.queue('rotate', []);
-                that.drager.stopMomentumAnimation();
+                that.drager.stop();
 
                 var finalAngle = (Math.ceil(that.angle / 90) - 1) * 90;
                 var dAngle = finalAngle - that.angle;
@@ -253,7 +253,7 @@
                 if (that._animation) return false;
 
                 $wrapper.queue('rotate', []);
-                that.drager.stopMomentumAnimation();
+                that.drager.stop();
 
                 var finalAngle = (Math.floor(that.angle / 90) + 1) * 90;
                 var dAngle = finalAngle - that.angle;
