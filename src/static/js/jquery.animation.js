@@ -33,11 +33,11 @@
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
-        function(callback) {
+        function (callback) {
             window.setTimeout(callback, 1000 / 60);
         };
 
-    $.animation_frame = function(callback, element) {
+    $.animation_frame = function (callback, element) {
         return $.proxy(handler, window, callback, element)
     };
 
@@ -58,7 +58,7 @@
             complete: $.noop
         }, options);
 
-        var applyProgress = function() {
+        var applyProgress = function () {
             // Применение шага анимации (для уже установленного that.progress)
             var easeProgress = $.easing[that.settings.easing](that.progress);
             that.settings.step.call(that, easeProgress);
@@ -69,7 +69,7 @@
             }
         };
 
-        var timerHandle = function() {
+        var timerHandle = function () {
             // Применение шага анимации с вычислением that.progress
             that.progress = ($.now() - that._start) / that.duration;
             if (that.progress >= 1) {
@@ -81,7 +81,7 @@
         };
 
 
-        that.start = function() {
+        that.start = function () {
             // Запуск анимации
             if (that.paused && (that.progress < 1)) {
                 that.paused = false;
@@ -98,7 +98,7 @@
             return that
         };
 
-        that.stop = function(jumpToEnd) {
+        that.stop = function (jumpToEnd) {
             // Остановка анимации
             if (!that.paused) {
                 clearInterval(that._timer);
@@ -114,7 +114,7 @@
             return that
         };
 
-        that.reset = function() {
+        that.reset = function () {
             // Сброс анимации
             that.progress = 0;
             if (!that.paused) {
@@ -134,7 +134,7 @@
     }
 
     // Animate
-    $.animate = function(options) {
+    $.animate = function (options) {
         return new Animation(options);
     };
 
