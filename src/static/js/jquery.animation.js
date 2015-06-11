@@ -133,7 +133,6 @@
         }
     }
 
-    // Animate
     $.animate = function (options) {
         return new Animation(options);
     };

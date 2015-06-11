@@ -301,4 +301,8 @@
         }
     };
 
+    $.drager = function (options) {
+        return new Drager(options);
+    };
+
 })(jQuery);
