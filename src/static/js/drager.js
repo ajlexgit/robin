@@ -1,7 +1,10 @@
 (function($) {
 
     /*
-        Генерирует события перетаскивания.
+        Генерирует события перетаскивания. Реального перемещения не делает.
+        Это только интерфейс для реализации разных штук.
+        Есть настройки для реализации продолжения движения по инерции
+        при отпускании кнопки мыши.
 
         Требует:
             jquery.animation.js
@@ -10,22 +13,54 @@
             preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
             mouse: true                       - разрешить перетаскивание мышью
             touch: true                       - разрешить перетаскивание тачпадом
-            momentumWeight: 500               - величина инерции
+            momentumWeight: 500               - "вес" инерции (0 - нет инерции)
             momentumEasing: 'easeOutCubic'    - функция сглаживания иенрционного движения
 
             onMouseDown(event)                - нажатие мышью или тачпадом
             onStartDrag(event)                - начало перемещения
             onDrag(event)                     - процесс перемещения
+            onStopDrag(event)                 - конец перемещения
             onMouseUp(event)                  - отпускание элемента
 
         Примеры:
             var drager = $.drager($element, {
                 onMouseDown: function(evt) {
-                    this.
+                    ...
 
-                    // prevent default
+                    // Prevent default event (mousedown, touchstart)
                     return false
-                }
+                },
+                onStartDrag: function(evt) {
+                    ...
+                },
+                onDrag: function(evt) {
+                    var $element = $(evt.target);
+
+                    console.log('Diff X =', Math.abs(evt.dx));
+                    console.log('Diff Y =', Math.abs(evt.dy));
+                    console.log('startPoint =', evt.startPoint);
+                    console.log('current point =', evt.point);
+
+                    // Prevent default event (mousemove, touchmove)
+                    return false
+                },
+                onMouseUp: function(evt) {
+                    // Prevent momentum
+                    evt.momentum = null;
+
+                    // Override momentum
+                    evt.momentum.setMomentumSpeed(undefined, 1);    // меняет duration
+                    evt.momentum.setMomentumWeight(600);            // меняет duration
+                    evt.momentum.setMomentumEndPoint(200, 400);     // меняет duration
+                    evt.momentum.setMomentumDuration(2000);
+                    evt.momentum.setMomentumEasing('linear');
+
+                    // Prevent default event (mouseup, touchend);
+                    return false
+                },
+                onStopDrag: function(evt) {
+                    // тоже самое, что в onMouseUp
+                },
             });
     */
 
@@ -71,7 +106,7 @@
             this.setMomentumDuration(speed * this.momentum.weight);
         };
 
-        this.setMomentumPoint = function (endX, endY) {
+        this.setMomentumEndPoint = function (endX, endY) {
             var dx = endX - this.momentum.startX;
             var dy = endY - this.momentum.startY;
             var tx = this.momentum.speedX ? Math.abs(dx / this.momentum.speedX) : 0;
@@ -93,6 +128,7 @@
         };
     };
 
+    var dragerID = 0;
     window.Drager = function ($element, options) {
         var that = this;
         var settings = $.extend(true, {
@@ -106,13 +142,15 @@
             onMouseDown: $.noop,
             onStartDrag: $.noop,
             onDrag: $.noop,
+            onStopDrag: $.noop,
             onMouseUp: $.noop
         }, options);
 
-        that._dragged = false;
-        that._momentumPoints = [];
-        that._dragging_allowed = false;
-        that._startPoint = null;
+        var dragged = false;
+        var dragging_allowed = false;
+        var momentumPoints = [];
+        var startPoint = null;
+        that.id = dragerID++;
 
         var getEvent = function (event, type) {
             var pointEvent;
@@ -146,9 +184,9 @@
                 evt.startPoint = evt.point;
                 return evt;
             } else if (type == 'stop') {
-                evt.dx = getDx(that._startPoint, evt.point);
-                evt.dy = getDy(that._startPoint, evt.point);
-                evt.startPoint = that._startPoint;
+                evt.dx = getDx(startPoint, evt.point);
+                evt.dy = getDy(startPoint, evt.point);
+                evt.startPoint = startPoint;
 
                 evt.momentum = {
                     weight: settings.momentumWeight,
@@ -162,32 +200,32 @@
 
                 return evt;
             } else {
-                evt.dx = getDx(that._startPoint, evt.point);
-                evt.dy = getDy(that._startPoint, evt.point);
-                evt.startPoint = that._startPoint;
+                evt.dx = getDx(startPoint, evt.point);
+                evt.dy = getDy(startPoint, evt.point);
+                evt.startPoint = startPoint;
                 return evt;
             }
         };
 
-        that.addMomentumPoint = function (evt) {
+        var addMomentumPoint = function (evt) {
             var record = {
                 point: evt.point,
                 timeStamp: evt.timeStamp
             };
 
-            if (that._momentumPoints.length == 2) {
-                that._momentumPoints.shift();
+            if (momentumPoints.length == 2) {
+                momentumPoints.shift();
             }
-            that._momentumPoints.push(record);
+            momentumPoints.push(record);
         };
 
-        that.isMultiTouch = function (event) {
+        var isMultiTouch = function (event) {
             var orig = event.originalEvent;
             var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
             return touchPoints.length > 1;
         };
 
-        that.startMomentumAnimation = function (evt) {
+        var startMomentumAnimation = function (evt) {
             var momentum = evt.momentum;
             var diffX = momentum.endX - momentum.startX;
             var diffY = momentum.endY - momentum.startY;
@@ -206,7 +244,7 @@
             });
         };
 
-        that.stopMomentumAnimation = function () {
+        var stopMomentumAnimation = function () {
             if (that._momentumAnimation) {
                 that._momentumAnimation.stop();
                 that._momentumAnimation = null;
@@ -216,99 +254,117 @@
         // ================
         // === Handlers ===
         // ================
-        var startDragHandler = function (event) {
-            that.stopMomentumAnimation();
+        var mouseDownHandler = function (event) {
+            stopMomentumAnimation();
 
             var evt = getEvent(event, 'start');
-            that._dragged = false;
-            that._dragging_allowed = true;
-            that._startPoint = evt.point;
+            dragged = false;
+            dragging_allowed = true;
+            startPoint = evt.point;
 
-            that._momentumPoints = [];
-            that.addMomentumPoint(evt);
+            momentumPoints = [];
+            addMomentumPoint(evt);
 
             return settings.onMouseDown.call(that, evt);
         };
 
         var dragHandler = function (event) {
-            if (!that._dragging_allowed) return;
+            if (!dragging_allowed) return;
 
             var evt = getEvent(event, 'move');
 
-            if (!that._dragged) {
-                that._dragged = true;
+            if (!dragged) {
+                dragged = true;
                 settings.onStartDrag.call(that, evt);
             }
 
-            var lastMomentum = that._momentumPoints[that._momentumPoints.length - 1];
+            var lastMomentum = momentumPoints[momentumPoints.length - 1];
             if (evt.timeStamp - lastMomentum.timeStamp > 200) {
-                that.addMomentumPoint(evt);
+                addMomentumPoint(evt);
             }
 
             return settings.onDrag.call(that, evt);
         };
 
-        var stopDragHandler = function (event) {
-            if (!that._dragging_allowed) return;
-            that._dragging_allowed = false;
+        var mouseUpHandler = function (event) {
+            if (!dragging_allowed) return;
+            dragging_allowed = false;
 
             var evt = getEvent(event, 'stop');
 
-            that._dragged = false;
+            if (dragged) {
+                dragged = false;
 
-            // Вычисление параметров инерции
-            if (settings.momentumWeight) {
-                // Используем более старую точку, если последняя точка была
-                // совсем недавно.
-                var lastMomentum = that._momentumPoints[that._momentumPoints.length - 1];
-                if (evt.timeStamp - lastMomentum.timeStamp < 100) {
-                    if (that._momentumPoints.length == 2) {
-                        lastMomentum = that._momentumPoints[0];
+                // Вычисление параметров инерции
+                if (settings.momentumWeight) {
+                    // Используем более старую точку, если последняя точка была
+                    // совсем недавно.
+                    var lastMomentum = momentumPoints[momentumPoints.length - 1];
+                    if (evt.timeStamp - lastMomentum.timeStamp < 100) {
+                        if (momentumPoints.length == 2) {
+                            lastMomentum = momentumPoints[0];
+                        }
                     }
+
+                    evt.initMomentum(evt, lastMomentum);
                 }
 
-                evt.initMomentum(evt, lastMomentum);
+                settings.onStopDrag.call(that, evt);
             }
 
             var result = settings.onMouseUp.call(that, evt);
             if (evt.momentum && (evt.momentum.duration >= 100)) {
-                that.startMomentumAnimation(evt);
+                startMomentumAnimation(evt);
             }
             return result;
         };
 
-        // ====================
-        // === Mouse Events ===
-        // ====================
-        if (settings.mouse) {
-            // Блокируем дефолтовый Drag'n'Drop браузера
-            if (settings.preventDefault) {
-                $element.on('dragstart.drager', function () {
-                    return false;
-                });
+
+        that.detach = function() {
+            // Отвязываем все события, связанные с объектом
+            $element.off('.drager' + that.id);
+            $(document).off('.drager' + that.id);
+        };
+
+        that.attach = function () {
+            that.detach();
+
+            // ====================
+            // === Mouse Events ===
+            // ====================
+            if (settings.mouse) {
+                // Блокируем дефолтовый Drag'n'Drop браузера
+                if (settings.preventDefault) {
+                    $element.on('dragstart.drager' + that.id, function () {
+                        return false;
+                    });
+                }
+
+                $element.on('mousedown.drager' + that.id, mouseDownHandler);
+                $(document).on('mousemove.drager' + that.id, dragHandler);
+                $(document).on('mouseup.drager' + that.id, mouseUpHandler);
             }
 
-            $element.on('mousedown.drager', startDragHandler);
-            $(document).on('mousemove.drager', dragHandler);
-            $(document).on('mouseup.drager', stopDragHandler);
-        }
+            // ====================
+            // === Touch Events ===
+            // ====================
+            if (settings.touch) {
+                $element.on('touchstart.drager' + that.id, function (event) {
+                    if (isMultiTouch(event)) return;
+                    return mouseDownHandler.call(this, event);
+                });
+                $(document).on('touchmove.drager' + that.id, function (event) {
+                    if (isMultiTouch(event)) return;
+                    return dragHandler.call(this, event);
+                }).on('touchend.drager' + that.id, function (event) {
+                    if (isMultiTouch(event)) return;
+                    return mouseUpHandler.call(this, event);
+                });
+            }
+        };
 
-        // ====================
-        // === Touch Events ===
-        // ====================
-        if (settings.touch) {
-            $element.on('touchstart.drager', function (event) {
-                if (that.isMultiTouch(event)) return;
-                return startDragHandler.call(this, event);
-            });
-            $(document).on('touchmove.drager', function (event) {
-                if (that.isMultiTouch(event)) return;
-                return dragHandler.call(this, event);
-            }).on('touchend.drager', function (event) {
-                if (that.isMultiTouch(event)) return;
-                return stopDragHandler.call(this, event);
-            });
-        }
+        // Инициализация
+        that.attach();
     };
 
     $.drager = function (options) {
