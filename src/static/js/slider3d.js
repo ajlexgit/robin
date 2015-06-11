@@ -72,10 +72,10 @@
         };
 
         var stopAnimation = function() {
-            if (that._animationTimer) {
+            if (that._animation) {
+                that._animation.stop(true);
+                that._animation = null;
                 $wrapper.queue('rotate', []);
-                clearInterval(that._animationTimer);
-                that._animationTimer = null;
             }
         };
 
@@ -128,7 +128,7 @@
         // ==============
         // === DRAGER ===
         // ==============
-        that.drager = new Drager($root, {
+        that.drager = $.drager($root, {
             momentumWeight: 750,
             onStartDrag: function() {
                 stopAnimation();
@@ -169,7 +169,7 @@
 
         // Определение элементов
         that.refresh();
-        
+
         items.front = $root.find('.front:first');
         if (!items.front.length) {
             items.front = items.first.addClass('front');
@@ -190,10 +190,10 @@
             }
 
             var $right = $('<div>').addClass('arrow arrow-right').on('mousedown touchstart', function() {
-                if (that._animationTimer) return false;
+                if (that._animation) return false;
             }).on('click', function() {
-                if (that._animationTimer) return false;
-                
+                if (that._animation) return false;
+
                 $wrapper.queue('rotate', []);
                 that.drager.stopMomentumAnimation();
 
@@ -208,50 +208,50 @@
                 $wrapper.queue('rotate', function(next) {
                     var from = that.angle;
                     var diff = finalAngle - that.angle;
-                    that._animationTimer = $.animate({
+                    that._animation = $.animate({
                         duration: Math.round((dAngle / 90) * settings.speed),
                         easing: 'linear',
                         step: function(eProgress) {
                             setAngle(from + diff * eProgress);
                         },
                         complete: function() {
-                            that._animationTimer = null;
+                            that._animation = null;
                             next();
                         }
                     });
                 });
-                
+
                 if (dAngle < 20) {
                     $wrapper.queue('rotate', function(next) {
                         var nextFinalAngle = processRightSlide(finalAngle - 90);
                         that.angle = nextFinalAngle + 90;
                         setAngle(that.angle);
-                        
+
                         var from = that.angle;
                         var diff = nextFinalAngle - that.angle;
-                        that._animationTimer = $.animate({
+                        that._animation = $.animate({
                             duration: settings.speed,
                             easing: 'linear',
                             step: function(eProgress) {
                                 setAngle(from + diff * eProgress);
                             },
                             complete: function() {
-                                that._animationTimer = null;
+                                that._animation = null;
                                 next();
                             }
                         });
                     });
                 }
-                
+
                 $wrapper.dequeue('rotate');
                 return false;
             });
 
             var $left = $('<div>').addClass('arrow arrow-left').on('mousedown touchstart', function() {
-                if (that._animationTimer) return false;
+                if (that._animation) return false;
             }).on('click', function() {
-                if (that._animationTimer) return false;
-                
+                if (that._animation) return false;
+
                 $wrapper.queue('rotate', []);
                 that.drager.stopMomentumAnimation();
 
@@ -266,41 +266,41 @@
                 $wrapper.queue('rotate', function(next) {
                     var from = that.angle;
                     var diff = finalAngle - that.angle;
-                    that._animationTimer = $.animate({
+                    that._animation = $.animate({
                         duration: Math.round((dAngle / 90) * settings.speed),
                         easing: 'linear',
                         step: function(eProgress) {
                             setAngle(from + diff * eProgress);
                         },
                         complete: function() {
-                            that._animationTimer = null;
+                            that._animation = null;
                             next();
                         }
                     });
                 });
-                
+
                 if (dAngle < 20) {
                     $wrapper.queue('rotate', function(next) {
                         var nextFinalAngle = processLeftSlide(finalAngle + 90);
                         that.angle = nextFinalAngle - 90;
                         setAngle(that.angle);
-                        
+
                         var from = that.angle;
                         var diff = nextFinalAngle - that.angle;
-                        that._animationTimer = $.animate({
+                        that._animation = $.animate({
                             duration: settings.speed,
                             easing: 'linear',
                             step: function(eProgress) {
                                 setAngle(from + diff * eProgress);
                             },
                             complete: function() {
-                                that._animationTimer = null;
+                                that._animation = null;
                                 next();
                             }
                         });
                     });
                 }
-                
+
                 $wrapper.dequeue('rotate');
                 return false;
             });
