@@ -37,16 +37,19 @@
       @include font-size(24px);
     }
   }
+  
+  h3 {
+    @include font-size(36px);
+    @include media(mobile) {
+      @include font-size(24px);
+    }
+  }
 
   blockquote {
     position: relative;
-    padding: 60px 0;
-    margin: 60px 0;
+    padding: 3em 0;
+    margin: 3em 0 2.8em;
     color: #FFFFFF;
-    @include media(mobile) {
-      padding: 30px 0;
-      margin: 30px 0;
-    }
 
     p {
       position: relative;
