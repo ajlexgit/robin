@@ -44,6 +44,7 @@
 
     function Animation(options) {
         var that = this;
+        var startTime, timer;
         that.paused = true;
         that.settings = $.extend({
             duration: 1000,
@@ -71,10 +72,10 @@
 
         var timerHandle = function () {
             // Применение шага анимации с вычислением that.progress
-            that.progress = ($.now() - that._start) / that.duration;
+            that.progress = ($.now() - startTime) / that.duration;
             if (that.progress >= 1) {
                 that.progress = 1;
-                clearInterval(that._timer);
+                clearInterval(timer);
             }
 
             applyProgress();
@@ -87,11 +88,11 @@
                 that.paused = false;
 
                 if (that.progress) {
-                    that._start = $.now() - (that.progress * that.duration);
+                    startTime = $.now() - (that.progress * that.duration);
                 } else {
-                    that._start = $.now();
+                    startTime = $.now();
                 }
-                that._timer = setInterval(timerHandle, that.settings.delay);
+                timer = setInterval(timerHandle, that.settings.delay);
 
                 that.settings.start.call(that);
             }
@@ -101,7 +102,7 @@
         that.stop = function (jumpToEnd) {
             // Остановка анимации
             if (!that.paused) {
-                clearInterval(that._timer);
+                clearInterval(timer);
                 that.paused = true;
 
                 if (jumpToEnd) {
@@ -118,7 +119,7 @@
             // Сброс анимации
             that.progress = 0;
             if (!that.paused) {
-                that._start = $.now();
+                startTime = $.now();
             }
             that.duration = Math.max(that.settings.duration || 0, 20);
             return that
