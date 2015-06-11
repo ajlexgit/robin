@@ -114,7 +114,7 @@
         that._dragging_allowed = false;
         that._startPoint = null;
 
-        that.getEvent = function (event, type) {
+        var getEvent = function (event, type) {
             var pointEvent;
             if (event.type.substr(0, 5) == 'mouse') {
                 pointEvent = event;
@@ -219,7 +219,7 @@
         var startDragHandler = function (event) {
             that.stopMomentumAnimation();
 
-            var evt = that.getEvent(event, 'start');
+            var evt = getEvent(event, 'start');
             that._dragged = false;
             that._dragging_allowed = true;
             that._startPoint = evt.point;
@@ -233,7 +233,7 @@
         var dragHandler = function (event) {
             if (!that._dragging_allowed) return;
 
-            var evt = that.getEvent(event, 'move');
+            var evt = getEvent(event, 'move');
 
             if (!that._dragged) {
                 that._dragged = true;
@@ -252,7 +252,7 @@
             if (!that._dragging_allowed) return;
             that._dragging_allowed = false;
 
-            var evt = that.getEvent(event, 'stop');
+            var evt = getEvent(event, 'stop');
 
             that._dragged = false;
 
