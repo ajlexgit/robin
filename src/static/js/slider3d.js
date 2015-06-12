@@ -320,7 +320,7 @@
 
     $.fn.slider3d = function(options) {
         var settings = $.extend({
-            speed: 1000,
+            speed: 500,
             maxMomentumSpeed: 2,
             controls: true,
             controlsParent: null
