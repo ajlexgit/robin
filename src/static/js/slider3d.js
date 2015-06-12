@@ -72,6 +72,7 @@
         };
 
         var stopAnimation = function() {
+            that.drager.stop();
             if (that._animation) {
                 that._animation.stop(true);
                 that._animation = null;

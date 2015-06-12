@@ -10,9 +10,10 @@
             jquery.animation.js
 
         Параметры:
-            preventDefaultDrag: true/false    - предотвратить Drag по-умолчанию
+            preventDefaultDrag: true/false    - предотвратить событие drag по-умолчанию
             mouse: true                       - разрешить перетаскивание мышью
             touch: true                       - разрешить перетаскивание тачпадом
+            ignoreDistance: 10                - игнорировать краткие движения
             momentumWeight: 500               - "вес" инерции (0 - нет инерции)
             momentumEasing: 'easeOutCubic'    - функция сглаживания иенрционного движения
 
@@ -136,6 +137,7 @@
 
             mouse: true,
             touch: true,
+            ignoreDistance: 10,
             momentumWeight: 500,
             momentumEasing: 'easeOutCubic',
 
@@ -147,6 +149,7 @@
         }, options);
 
         var dragged = false;
+        var inPreventArea = true;
         var dragging_allowed = false;
         var momentumPoints = [];
         var startPoint = null;
@@ -255,11 +258,11 @@
         // === Handlers ===
         // ================
         var mouseDownHandler = function (event) {
-            that.stop();
-
             var evt = getEvent(event, 'start');
             dragged = false;
+            inPreventArea = settings.ignoreDistance > 0;
             dragging_allowed = true;
+
             startPoint = evt.point;
 
             momentumPoints = [];
@@ -272,6 +275,14 @@
             if (!dragging_allowed) return;
 
             var evt = getEvent(event, 'move');
+
+            if (inPreventArea) {
+                if (Math.max(Math.abs(evt.dx), Math.abs(evt.dy)) >= settings.ignoreDistance) {
+                    inPreventArea = false;
+                    startPoint = evt.point;
+                }
+                return
+            }
 
             if (!dragged) {
                 dragged = true;
