@@ -1,7 +1,6 @@
 import os
 import sys
 
-# popups: проверить кнопку закрытия
 # Избавиться от ADDITION_JS
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении
 # Slider3D: span
