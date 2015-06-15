@@ -10,7 +10,7 @@
 
     li {
       display: inline-block;
-      margin: 0 5px;
+      margin: 0 10px;
 
       &:nth-of-type(1) {
         margin-left: 0;
@@ -21,7 +21,7 @@
 
       a {
         display: inline-block;
-        padding: 5px 10px;
+        padding: 5px;
         @include default_fontsize;
 
         &:hover {
@@ -65,8 +65,8 @@
     @include transition-duration(0.75s);
   }
   &:before {
-    top: 11px;
-    box-shadow: #FFFFFF 0 -11px 0 0;
+    top: 0;
+    box-shadow: #FFFFFF 0 11px 0 0;
     @include transition-property(-webkit-transform, transform, box-shadow);
     @include transition-duration(0.75s, 0.75s, 0.2s);
     @include transition-delay(0s, 0s, 0.1s);

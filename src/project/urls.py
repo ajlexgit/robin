@@ -7,6 +7,8 @@ from .sitemaps import site_sitemaps
 
 urlpatterns = patterns('',
     url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^404/$', 'django.views.defaults.page_not_found'),
+    url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^users/', include('users.urls', namespace='users')),
 
     url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
