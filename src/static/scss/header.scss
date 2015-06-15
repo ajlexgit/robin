@@ -15,12 +15,16 @@
   .table {
     display: table;
     width: 100%;
+    
+    .cell {
+      float: none;
+      display: table-cell;
+      vertical-align: middle;
+    }
   }
-
-  .cell {
-    float: none;
-    display: table-cell;
-    vertical-align: middle;
+  
+  .menu-wrapper {
+    text-align: center;
   }
 }
 

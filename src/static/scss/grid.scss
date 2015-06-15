@@ -24,17 +24,22 @@
   @include border-box;
 }
 
+$cols_wide: 8;
+$cols_desktop: 8;
+$cols_tablet: 8;
+$cols_mobile: 4;
+
 // Wide-desktop (1200+)
 @include media(wide) {
-  @each $index in 1, 2, 3, 4, 5, 6, 7 {
+  @for $index from 1 through $cols_wide - 1 {
     .grid-col-wide-#{$index} {
       @extend .grid-col;
       float: left;
-      width: 12.5% * $index;
+      width: (100% / $cols_wide) * $index;
     }
   }
 
-  .grid-col-wide-8 {
+  .grid-col-wide-full {
     @extend .grid-col;
     width: 100%;
   }
@@ -42,15 +47,15 @@
 
 // Desktop (1024-1199)
 @include media(desktop) {
-  @each $index in 1, 2, 3, 4, 5, 6, 7 {
+  @for $index from 1 through $cols_desktop - 1 {
     .grid-col-#{$index} {
       @extend .grid-col;
       float: left;
-      width: 12.5% * $index;
+      width: (100% / $cols_desktop) * $index;
     }
   }
 
-  .grid-col-8 {
+  .grid-col-full {
     @extend .grid-col;
     width: 100%;
   }
@@ -58,15 +63,15 @@
 
 // Tablet (768-1023)
 @include media(tablet) {
-  @each $index in 1, 2, 3, 4, 5, 6, 7 {
+  @for $index from 1 through $cols_tablet - 1 {
     .grid-col-tablet-#{$index} {
       @extend .grid-col;
       float: left;
-      width: 12.5% * $index;
+      width: (100% / $cols_tablet) * $index;
     }
   }
 
-  .grid-col-tablet-8 {
+  .grid-col-tablet-full {
     @extend .grid-col;
     width: 100%;
   }
@@ -74,15 +79,15 @@
 
 // Mobile (-767)
 @include media(mobile) {
-  @each $index in 1, 2, 3 {
+  @for $index from 1 through $cols_mobile - 1 {
     .grid-col-mobile-#{$index} {
       @extend .grid-col;
       float: left;
-      width: 25% * $index;
+      width: (100% / $cols_mobile) * $index;
     }
   }
 
-  .grid-col-mobile-4 {
+  .grid-col-mobile-full {
     @extend .grid-col;
     width: 100%;
   }

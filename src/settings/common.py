@@ -40,13 +40,13 @@ INSTALLED_APPS = (
     'suit_ckeditor',
 
     # Apps
+    'config',
     'main',
     'users',
 
     # Apps common
     'admin_log',
     'breadcrumbs',
-    'comments',
     'files',
     'gallery',
     'menu',
@@ -102,6 +102,10 @@ SUIT_CONFIG = {
                 'seoconfig',
             ),
         },
+        {
+            'app': 'config',
+            'icon': 'icon-wrench',
+        },
     ),
 }
 
@@ -115,14 +119,9 @@ PIPELINE_CSS = {
             'scss/header.scss',
             'scss/footer.scss',
             'scss/text_styles.scss',
-            # 'scss/inlines.scss',
             'scss/popups/popups.scss',
-            # 'breadcrumbs/scss/breadcrumbs.scss',
-            # 'comments/scss/comments.scss',
             'menu/scss/menu.scss',
-            # 'paginator/scss/paginator.scss',
             'seo/scss/block.scss',
-            # 'users/scss/users.scss',
         ),
         'output_filename': 'css/head_core.css',
     },
@@ -162,13 +161,11 @@ PIPELINE_JS = {
             'js/jquery.rared.js',
             'js/jquery.popups.js',
             'js/jquery.scrollTo.js',
-            # 'js/jquery.inlines.js',
             'js/appear.js',
             'js/text_styles.js',
             'js/win_height.js',
             'menu/js/menu.js',
             'seo/js/block.js',
-            # 'users/js/users.js',
         ),
         'output_filename': 'js/core.js',
     },
@@ -272,9 +269,6 @@ DISALLOWED_USER_AGENTS = ()
 # Admin honeypot
 ADMIN_HONEYPOT_EMAIL_ADMINS = False
 
-# Comments
-COMMENT_USER_VOTES_CACHE_BACKEND = 'default'
-
 # Autocomplete
 AUTOCOMPLETE_CACHE_BACKEND = 'default'
 
@@ -289,16 +283,6 @@ ALIAS_IN_URL = '[-\w\.&]+'
 RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
-
-# Social
-# GOOGLE_CLEINT_ID = '679523020493-3n788s4uteg72et6qgt1el0lksmpq3su.apps.googleusercontent.com'
-# GOOGLE_CLIENT_SECRET = '2Snc9cALa6F4tZtO_kIAyQb3'
-#
-# VK_CLEINT_ID = '3034888'
-# VK_CLIENT_SECRET = 'wdAe5vCLVxlTlykIFD9y'
-#
-# FACEBOOK_CLEINT_ID = '367071103367916'
-# FACEBOOK_CLIENT_SECRET = 'd4d6a382e3c77a8488530d7c310b2f0e'
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

@@ -2,8 +2,6 @@ from django.db import models
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
-from yandex_maps import YandexCoordsField
-from google_maps import GoogleCoordsField
 from solo.models import SingletonModel
 from libs.media_storage import MediaStorage
 from libs.stdimage.fields import StdImageField
@@ -29,9 +27,6 @@ class MainPageConfig(SingletonModel):
     )
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     description = models.TextField(_('description'), blank=True)
-    address = models.CharField(_('address'), max_length=255, blank=True)
-    coords = YandexCoordsField(_('coordinates'), null=True, blank=True)
-    coords2 = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
