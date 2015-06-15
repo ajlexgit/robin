@@ -7,12 +7,10 @@ from .sitemaps import site_sitemaps
 
 urlpatterns = patterns('',
     url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^comments/', include('comments.urls', namespace='comments')),
     url(r'^users/', include('users.urls', namespace='users')),
 
     url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
 
-    url(r'^dladmin/comments/', include('comments.admin_urls', namespace='admin_comments')),
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
     url(r'^dladmin/', include(admin.site.urls)),

@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Избавиться от ADDITION_JS
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении
 # Slider3D: span
 

@@ -11,7 +11,7 @@ class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-header'),
-            'fields': ('header_title', 'preview', 'text', 'description', 'address', 'coords', 'coords2'),
+            'fields': ('header_title', 'preview', 'text', 'description'),
         }),
     )
     suit_form_tabs = (
@@ -19,9 +19,3 @@ class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args,  **kwargs)
-        self.ADDITION_JS += (
-            'main/admin/js/main.js',
-        )
