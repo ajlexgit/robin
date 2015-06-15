@@ -1,11 +1,14 @@
 {% load seo %}
+{% load solo_tags %}
 
 <div id="footer">
+    {% get_solo 'config.Config' as config %}
+    
     {% seo_block %}
 
-    <div class="contacts grid">
+    <div class="grid">
         <div class="grid-col-8 grid-col-alone">
-            <p class="copyright">&copy; {% now "Y" %} <a href="/" rel="nofollow">Project</a></p>
+            <a href="mailto:{{ config.email }}" class="email">{{ config.email }}</a>
         </div>
     </div>
 </div>
