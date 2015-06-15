@@ -36,7 +36,6 @@
 
   .grid-col-wide-full {
     @extend .grid-col;
-    @extend .grid-col-alone;
     width: 100%;
   }
 }
@@ -53,7 +52,6 @@
 
   .grid-col-full {
     @extend .grid-col;
-    @extend .grid-col-alone;
     width: 100%;
   }
 }
@@ -70,7 +68,6 @@
 
   .grid-col-tablet-full {
     @extend .grid-col;
-    @extend .grid-col-alone;
     width: 100%;
   }
 }
@@ -87,7 +84,6 @@
 
   .grid-col-mobile-full {
     @extend .grid-col;
-    @extend .grid-col-alone;
     width: 100%;
   }
 }
