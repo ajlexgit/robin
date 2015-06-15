@@ -4,7 +4,6 @@
 @include media(desktop, wide) {
   #main-menu {
     height: auto !important;
-    text-align: center;
     font-weight: bold;
     color: #FFFFFF;
     @include no_fontsize;
