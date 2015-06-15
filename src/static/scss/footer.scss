@@ -1,13 +1,15 @@
 @import 'mixins';
 
 #footer {
-  display: table-row;
-  height: 1px;
   color: white;
   background: black;
 
   .seo-text {
     padding-top: 30px;
+  }
+  
+  .inner {
+    padding: 30px 0 50px;
   }
 }
 
