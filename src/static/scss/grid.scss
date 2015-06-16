@@ -10,11 +10,10 @@
   @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
   }
-  
+
   .gc-alone {
     float: none;
     clear: both;
-    margin: 0 auto;
   }
 }
 
@@ -37,6 +36,13 @@ $cols_mobile: 4;
       float: left;
       width: (100% / $cols_wide) * $index;
     }
+
+    .gc-ml-wide-#{$index} {
+      margin-left: (100% / $cols_wide) * $index;
+    }
+    .gc-mr-wide-#{$index} {
+      margin-right: (100% / $cols_wide) * $index;
+    }
   }
 
   .gc-wide-full {
@@ -52,6 +58,13 @@ $cols_mobile: 4;
       @extend .gc;
       float: left;
       width: (100% / $cols_desktop) * $index;
+    }
+
+    .gc-ml-#{$index} {
+      margin-left: (100% / $cols_desktop) * $index;
+    }
+    .gc-mr-#{$index} {
+      margin-right: (100% / $cols_desktop) * $index;
     }
   }
 
@@ -69,6 +82,13 @@ $cols_mobile: 4;
       float: left;
       width: (100% / $cols_tablet) * $index;
     }
+
+    .gc-ml-tablet-#{$index} {
+      margin-left: (100% / $cols_tablet) * $index;
+    }
+    .gc-mr-tablet-#{$index} {
+      margin-right: (100% / $cols_tablet) * $index;
+    }
   }
 
   .gc-tablet-full {
@@ -84,6 +104,13 @@ $cols_mobile: 4;
       @extend .gc;
       float: left;
       width: (100% / $cols_mobile) * $index;
+    }
+
+    .gc-ml-mobile-#{$index} {
+      margin-left: (100% / $cols_mobile) * $index;
+    }
+    .gc-mr-mobile-#{$index} {
+      margin-right: (100% / $cols_mobile) * $index;
     }
   }
 
