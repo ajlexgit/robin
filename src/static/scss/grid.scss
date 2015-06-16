@@ -11,14 +11,14 @@
     margin: 0 auto;
   }
   
-  .grid-col-alone {
+  .gc-alone {
     float: none;
     clear: both;
     margin: 0 auto;
   }
 }
 
-.grid-col {
+.gc {
   min-height: 1px;
   padding: 0 $grid_col_padding;
   @include border-box;
@@ -32,15 +32,15 @@ $cols_mobile: 4;
 // Wide-desktop (1200+)
 @include media(wide) {
   @for $index from 1 through $cols_wide - 1 {
-    .grid-col-wide-#{$index} {
-      @extend .grid-col;
+    .gc-wide-#{$index} {
+      @extend .gc;
       float: left;
       width: (100% / $cols_wide) * $index;
     }
   }
 
-  .grid-col-wide-full {
-    @extend .grid-col;
+  .gc-wide-full {
+    @extend .gc;
     width: 100%;
   }
 }
@@ -48,15 +48,15 @@ $cols_mobile: 4;
 // Desktop (1024-1199)
 @include media(desktop) {
   @for $index from 1 through $cols_desktop - 1 {
-    .grid-col-#{$index} {
-      @extend .grid-col;
+    .gc-#{$index} {
+      @extend .gc;
       float: left;
       width: (100% / $cols_desktop) * $index;
     }
   }
 
-  .grid-col-full {
-    @extend .grid-col;
+  .gc-full {
+    @extend .gc;
     width: 100%;
   }
 }
@@ -64,15 +64,15 @@ $cols_mobile: 4;
 // Tablet (768-1023)
 @include media(tablet) {
   @for $index from 1 through $cols_tablet - 1 {
-    .grid-col-tablet-#{$index} {
-      @extend .grid-col;
+    .gc-tablet-#{$index} {
+      @extend .gc;
       float: left;
       width: (100% / $cols_tablet) * $index;
     }
   }
 
-  .grid-col-tablet-full {
-    @extend .grid-col;
+  .gc-tablet-full {
+    @extend .gc;
     width: 100%;
   }
 }
@@ -80,15 +80,15 @@ $cols_mobile: 4;
 // Mobile (-767)
 @include media(mobile) {
   @for $index from 1 through $cols_mobile - 1 {
-    .grid-col-mobile-#{$index} {
-      @extend .grid-col;
+    .gc-mobile-#{$index} {
+      @extend .gc;
       float: left;
       width: (100% / $cols_mobile) * $index;
     }
   }
 
-  .grid-col-mobile-full {
-    @extend .grid-col;
+  .gc-mobile-full {
+    @extend .gc;
     width: 100%;
   }
 }
