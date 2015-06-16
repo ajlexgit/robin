@@ -1,13 +1,10 @@
 @import 'mixins';
 
 #header {
-  position: absolute;
   padding: 45px 0;
-  left: 0;
-  top: 0;
-  width: 100%;
   z-index: 100;
   background: rgba(green, 0.8);
+  @include overlay($height: auto);
   @include media(mobile) {
     padding: 25px 0;
   }

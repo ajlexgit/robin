@@ -22,15 +22,15 @@
 
         <div class="inner">
             <div class="grid">
-                <div class="gray grid-col-wide-6 grid-col-6 grid-col-alone"
+                <div class="gray gc-wide-6 gc-6 gc-alone"
                      style="height: 200px">
                     <h1 class="title title-h1">{{ config.header_title }}</h1>
                 </div>
 
-                <div class="blue grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
+                <div class="blue gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2"
                      style="height: 50px">
                 </div>
-                <div class="yellow grid-col-wide-4 grid-col-4 grid-col-tablet-4 grid-col-mobile-2"
+                <div class="yellow gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2"
                      style="height: 50px">
                 </div>
             </div>
@@ -41,16 +41,16 @@
         <div class="parallax" style="background-image: url({% static 'main/img/background.jpeg' %})"></div>
 
         <div class="appear-block grid">
-            <div class="yellow grid-col-wide-2 grid-col-2 grid-col-tablet-4"></div>
-            <div class="red grid-col-wide-2 grid-col-2 grid-col-tablet-4"></div>
-            <div class="gray grid-col-wide-2 grid-col-2 grid-col-tablet-4"></div>
-            <div class="orange grid-col-wide-2 grid-col-2 grid-col-tablet-4"></div>
+            <div class="yellow gc-wide-2 gc-2 gc-tablet-4"></div>
+            <div class="red gc-wide-2 gc-2 gc-tablet-4"></div>
+            <div class="gray gc-wide-2 gc-2 gc-tablet-4"></div>
+            <div class="orange gc-wide-2 gc-2 gc-tablet-4"></div>
         </div>
     </div>
 
     <div id="text-content" class="text-styles">
         <div class="grid">
-            <div class="grid-col-wide-6 grid-col-6 grid-col-alone">
+            <div class="gc-wide-6 gc-6 gc-alone">
                 {% away config.text|typograf|safe %}
             </div>
         </div>
@@ -58,7 +58,7 @@
     
     <div id="slider_example">
         <div class="grid">
-            <div class="grid-col-full grid-col-alone">
+            <div class="gc-full gc-alone">
                 <div class="slider3d">
                     <div class="slider3d-wrapper">
                         <img class="slide front" src="{% static 'main/img/slider/Chrysanthemum.jpg' %}">
@@ -77,7 +77,7 @@
 
     <div id="social_buttons">
         <div class="grid">
-            <div class="grid-col-full grid-col-alone">
+            <div class="gc-full gc-alone">
                 {% social_share 'vk' %}
                 {% social_share 'fb' %}
                 {% social_share 'tw' %}
