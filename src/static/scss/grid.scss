@@ -28,6 +28,10 @@
   margin-right: auto;
 }
 
+.g-hidden {
+  display: none;
+}
+
 $cols_wide: 8;
 $cols_desktop: 8;
 $cols_tablet: 8;
@@ -48,6 +52,10 @@ $cols_mobile: 4;
     .gc-mr-wide-#{$index} {
       margin-right: (100% / $cols_wide) * $index;
     }
+  }
+
+  .g-wide-show {
+    display: block;
   }
 
   .gc-wide-full {
@@ -73,6 +81,10 @@ $cols_mobile: 4;
     }
   }
 
+  .g-show {
+    display: block;
+  }
+
   .gc-full {
     @extend .gc;
     width: 100%;
@@ -96,6 +108,10 @@ $cols_mobile: 4;
     }
   }
 
+  .g-tablet-show {
+    display: block;
+  }
+
   .gc-tablet-full {
     @extend .gc;
     width: 100%;
@@ -117,6 +133,10 @@ $cols_mobile: 4;
     .gc-mr-mobile-#{$index} {
       margin-right: (100% / $cols_mobile) * $index;
     }
+  }
+
+  .g-mobile-show {
+    display: block;
   }
 
   .gc-mobile-full {
