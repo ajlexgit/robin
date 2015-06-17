@@ -69,7 +69,8 @@ $mobile: 640px;
 // Боковые границы сетки
 $grid_padding_wide: 90px;
 $grid_padding: 50px;
-$grid_padding_mobile: 16px;
+$grid_padding_mobile: 30px;
+$grid_padding_mobile_mini: 16px;
 
 // Боковые границы каждого столбца
 $grid_space: 14px;
@@ -91,6 +92,11 @@ $grid_max_width: 1400px;
       #{$key}: $grid_padding_mobile;
     }
   }
+  @include media(mobile_mini) {
+    @each $key in $args {
+      #{$key}: $grid_padding_mobile_mini;
+    }
+  }
 }
 
 @mixin grid-full-paddings($args...) {
@@ -105,6 +111,11 @@ $grid_max_width: 1400px;
   @include media(mobile) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile + $grid_space;
+    }
+  }
+  @include media(mobile_mini) {
+    @each $key in $args {
+      #{$key}: $grid_padding_mobile_mini + $grid_space;
     }
   }
 }
