@@ -32,6 +32,9 @@ DEFAULT_VARIATION = dict(
     #       Создается фон нужного размера, в центр которого вписывается картинка
     action=ACTION_CROP,
 
+    # Положение картинки относительно фона
+    position=(0.5, 0.5),
+
     # Цвет фона, на который накладывается изображение, когда оно не может сохранить прозрачность
     background=(255, 255, 255, 0),
 
@@ -88,63 +91,68 @@ def is_size(value):
 def check_variations(variations, obj):
     from django.core import checks
     errors = []
-    
+
     for name, params in variations.items():
         if isinstance(params, tuple):
             params = {
                 'size': params,
             }
-        
+
         params = dict(DEFAULT_VARIATION, **params)
-        
+
         if not isinstance(params, dict):
             errors.append(checks.Error('variation %r should be a dict or tuple' % name, obj=obj))
-        
+
         if not params:
             errors.append(checks.Error('variation %r is empty' % name, obj=obj))
-        
+
         # size
         if 'size' not in params:
             errors.append(checks.Error('variation %r requires \'size\' value' % name, obj=obj))
         if not is_size(params['size']):
             errors.append(checks.Error('size of variation %r should be a tuple of 2 non-negative numbers' % name, obj=obj))
-        
+
         # action
         if 'action' not in params:
             errors.append(checks.Error('variation %r requires \'action\' value' % name, obj=obj))
         if params['action'] not in ACTIONS:
             errors.append(checks.Error('unknown action of variation %r' % name, obj=obj))
-        
+
+        # position
+        if 'position' in params:
+            if not isinstance(params['position'], (list, tuple)):
+                errors.append(checks.Error('position of variation %r should be a tuple or list' % name, obj=obj))
+
         # format
         if params['format']:
             fmt = str(params['format']).upper()
             if fmt not in ('JPG', 'JPEG', 'PNG'):
                 errors.append(checks.Error('unacceptable format of variation %r: %r. Allowed types: jpg, jpeg, png' % (name, fmt), obj=obj))
-        
+
         # overlay
         if params['overlay']:
             overlay_path = finders.find(params['overlay'])
             if not overlay_path:
                 errors.append(checks.Error('overlay file not found: %r' % params['overlay'], obj=obj))
-        
+
         # mask
         if params['mask']:
             mask_path = finders.find(params['mask'])
             if not mask_path:
                 errors.append(checks.Error('mask file not found: %r' % params['mask'], obj=obj))
-        
+
         if params['watermark']:
             watermark = dict(DEFAULT_WATERMARK, **params['watermark'])
-            
+
             if not isinstance(watermark, dict):
                 errors.append(checks.Error('watermark settings should be a dict', obj=obj))
-            
+
             # file
             if 'file' not in watermark:
                 errors.append(checks.Error('watermark file required for variation %r' % name, obj=obj))
             if not finders.find(watermark['file']):
                 errors.append(checks.Error('watermark file not found: %r' % watermark['file'], obj=obj))
-            
+
             # padding
             if not isinstance(watermark['padding'], (list, tuple)):
                 errors.append(checks.Error('watermark\'s padding should be a tuple or list', obj=obj))
@@ -152,7 +160,7 @@ def check_variations(variations, obj):
                 watermark['padding'] = tuple(map(int, watermark['padding']))
             except (ValueError, TypeError):
                 errors.append(checks.Error('invalid watermark padding: %r' % watermark['padding'], obj=obj))
-            
+
             # opacity
             try:
                 watermark['opacity'] = float(watermark['opacity'])
@@ -161,7 +169,7 @@ def check_variations(variations, obj):
             else:
                 if watermark['opacity'] < 0 or watermark['opacity'] > 1:
                     errors.append(checks.Error('watermark\'s opacity should be in interval [0, 1]', obj=obj))
-            
+
             # scale
             try:
                 watermark['scale'] = float(watermark['scale'])
@@ -170,12 +178,12 @@ def check_variations(variations, obj):
             else:
                 if watermark['scale'] <= 0:
                     errors.append(checks.Error('watermark\'s scale should be greater than 0', obj=obj))
-            
+
             # position
             watermark['position'] = str(watermark['position']).upper()
             if watermark['position'] not in ('TL', 'TR', 'BL', 'BR', 'C'):
                 errors.append(checks.Error('watermark\'s position should be in (TL, TR, BL, BR, C)', obj=obj))
-            
+
     return errors
 
 
@@ -189,7 +197,7 @@ def format_variations(variations):
             }
 
         final_params = dict(DEFAULT_VARIATION, name=name, **params)
-        
+
         # Проверка формата
         image_format = final_params.get('format')
         if image_format:
@@ -208,7 +216,7 @@ def format_variations(variations):
         # Mask
         if final_params['mask']:
             final_params['mask'] = finders.find(final_params['mask'])
-                
+
         # Водяной знак
         if final_params['watermark']:
             watermark = dict(DEFAULT_WATERMARK, **final_params['watermark'])
@@ -240,11 +248,11 @@ def format_aspects(value, variations):
     return tuple(result)
 
 
-def put_on_bg(image, bg_size, bg_color, masked=False):
+def put_on_bg(image, bg_size, bg_color, position, masked=False):
     """ Создание фона цветом bg_color и размера bg_size, на который будет наложена картинка image """
     background = Image.new('RGBA', bg_size, bg_color)
     size_diff = list(itertools.starmap(operator.sub, zip(background.size, image.size)))
-    offset = (size_diff[0]//2, size_diff[1]//2)
+    offset = (int(size_diff[0] * position[0]), int(size_diff[1] * position[1]))
     if masked:
         background.paste(image, offset, image)
     else:
@@ -319,6 +327,7 @@ def variation_resize(image, variation, target_format):
 
     # Действие при несовпадении размера
     target_action = variation['action']
+    target_position = variation['position']
     if target_action == ACTION_CROP:
         if image.size[0] < target_size[0] and image.size[1] < target_size[1]:
             # Если картинка меньше - оставляем её как есть
@@ -331,13 +340,13 @@ def variation_resize(image, variation, target_format):
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, masked=True)
+            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
     elif target_action == ACTION_CROP_ANYWAY:
         image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, masked=True)
+            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
     elif target_action == ACTION_STRETCH_BY_WIDTH:
         img_aspect = operator.truediv(*image.size)
 
@@ -346,13 +355,13 @@ def variation_resize(image, variation, target_format):
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, final_size, target_bgcolor, masked=True)
+            image = put_on_bg(image, final_size, target_bgcolor, target_position, masked=True)
     elif target_action == ACTION_INSCRIBE:
         image.thumbnail(target_size, resample=Image.ANTIALIAS)
 
         # Наложение с маской для формата PNG вызывает потерю качества
         masked = image.mode == 'RGBA' and target_format != 'PNG'
-        image = put_on_bg(image, target_size, target_bgcolor, masked=masked)
+        image = put_on_bg(image, target_size, target_bgcolor, target_position, masked=masked)
 
     return image
 

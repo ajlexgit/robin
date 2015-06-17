@@ -320,7 +320,8 @@ class VariationImageField(ImageField):
         # Уменьшенный в размере прозрачный GIF ужасен по качеству. Пока накладываем на фон
         if target_format == 'GIF':
             masked = variation_image.mode == 'RGBA'
-            variation_image = put_on_bg(variation_image, variation_image.size, variation['background'][:3], masked)
+            variation_image = put_on_bg(variation_image, variation_image.size, variation['background'][:3],
+                                        variation['position'], masked)
 
         # Основная обработка картинок
         variation_image = self._process_variation(variation_image, variation, target_format)
