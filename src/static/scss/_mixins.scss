@@ -72,7 +72,7 @@ $grid_padding: 50px;
 $grid_padding_mobile: 16px;
 
 // Боковые границы каждого столбца
-$grid_col_padding: 14px;
+$grid_space: 14px;
 
 // Максимальная ширина
 $grid_max_width: 1400px;
@@ -95,16 +95,16 @@ $grid_max_width: 1400px;
 
 @mixin grid-full-paddings($args...) {
   @each $key in $args {
-    #{$key}: $grid_padding_wide + $grid_col_padding;
+    #{$key}: $grid_padding_wide + $grid_space;
   }
   @include media(tablet, desktop) {
     @each $key in $args {
-      #{$key}: $grid_padding + $grid_col_padding;
+      #{$key}: $grid_padding + $grid_space;
     }
   }
   @include media(mobile) {
     @each $key in $args {
-      #{$key}: $grid_padding_mobile + $grid_col_padding;
+      #{$key}: $grid_padding_mobile + $grid_space;
     }
   }
 }
