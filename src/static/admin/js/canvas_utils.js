@@ -331,6 +331,126 @@
 
 
     /*
+        Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
+        Если картинка меньше - она масштабируется.
+
+        Параметры:
+            source      - Image-объект или canvas
+            width       - целевая ширина
+            height      - целевая высота
+            coords      - кординаты обрезки исходной картинки
+    */
+    $.cropAnywayToCanvas = function(options) {
+        var settings = $.extend({
+            source: null,
+            width: 100,
+            height: 100,
+            coords: null
+        }, options);
+
+        var target_ratio = settings.width / settings.height;
+        var final_w, final_h, final_l = 0, final_t = 0;
+
+        var canvas = document.createElement("canvas");
+        $.extend(canvas, canvasSize(
+            settings.width, settings.height
+        ));
+        var context = canvas.getContext && canvas.getContext('2d');
+        if (!context) {
+            console.error('Canvas not supported');
+            return
+        }
+
+        if (!settings.coords) {
+            settings.coords = [0, 0, settings.source.width, settings.source.height];
+        }
+        var coords_ratio = settings.coords[2] / settings.coords[3];
+
+        if (coords_ratio >= target_ratio) {
+            // картинка более "широкая", чем надо
+            final_h = settings.height;
+            final_w = final_h * coords_ratio;
+            final_l = (settings.width - final_w) / 2;
+
+            final_h = Math.round(final_h);
+            final_w = Math.round(final_w);
+            final_l = Math.round(final_l);
+        } else {
+            // картинка более "высокая", чем надо
+            final_w = settings.width;
+            final_h = final_w / coords_ratio;
+            final_t = (settings.height - final_h) / 2;
+
+            final_h = Math.round(final_h);
+            final_w = Math.round(final_w);
+            final_t = Math.round(final_t);
+        }
+
+        context.drawImage(
+            settings.source,
+            settings.coords[0],
+            settings.coords[1],
+            settings.coords[2],
+            settings.coords[3],
+            final_l,
+            final_t,
+            final_w,
+            final_h
+        );
+        return canvas;
+    };
+
+
+    /*
+        Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height]
+        по ширине. Высота игнорируется.
+
+        Параметры:
+            source      - Image-объект или canvas
+            width       - целевая ширина
+            height      - целевая высота
+            coords      - кординаты обрезки исходной картинки
+    */
+    $.stretchByWidthToCanvas = function(options) {
+        var settings = $.extend({
+            source: null,
+            width: 100,
+            height: 100,
+            coords: null
+        }, options);
+
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext && canvas.getContext('2d');
+        if (!context) {
+            console.error('Canvas not supported');
+            return
+        }
+
+        if (!settings.coords) {
+            settings.coords = [0, 0, settings.source.width, settings.source.height];
+        }
+        var coords_ratio = settings.coords[2] / settings.coords[3];
+
+        var final_w = settings.width;
+        var final_h = Math.round(final_w / coords_ratio);
+        $.extend(canvas, canvasSize(final_w, final_h));
+
+        context.drawImage(
+            settings.source,
+            settings.coords[0],
+            settings.coords[1],
+            settings.coords[2],
+            settings.coords[3],
+            0,
+            0,
+            final_w,
+            final_h
+        );
+        return canvas;
+    };
+
+
+    /*
         Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height],
         с фоновым цветом background, учитывая смещение position.
 
@@ -402,5 +522,5 @@
         );
         return canvas;
     };
-    
+
 })(jQuery);
