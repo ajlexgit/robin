@@ -51,17 +51,19 @@
             });
             $image.attr('src', canvas.toDataURL());
         } else if (action_id == 3) {
-            // stretch by width
-            canvas = $.stretchByWidthToCanvas({
+            // inscribe
+            canvas = $.inscribeToCanvas({
                 source: source,
                 width: target_size[0],
                 height: target_size[1],
-                coords: coords
+                coords: coords,
+                position: position,
+                background: background
             });
             $image.attr('src', canvas.toDataURL());
         } else if (action_id == 4) {
-            // inscribe
-            canvas = $.inscribeToCanvas({
+            // stretch by width
+            canvas = $.inscribeByWidthToCanvas({
                 source: source,
                 width: target_size[0],
                 height: target_size[1],

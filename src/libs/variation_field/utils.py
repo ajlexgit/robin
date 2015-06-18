@@ -7,9 +7,9 @@ from django.contrib.staticfiles import finders
 # Действия при несовпадении размера
 ACTION_CROP = 1
 ACTION_CROP_ANYWAY = 2
-ACTION_STRETCH_BY_WIDTH = 3
-ACTION_INSCRIBE = 4
-ACTIONS = (ACTION_CROP, ACTION_STRETCH_BY_WIDTH, ACTION_CROP_ANYWAY, ACTION_INSCRIBE)
+ACTION_INSCRIBE = 3
+ACTION_INSCRIBE_BY_WIDTH = 4
+ACTIONS = (ACTION_CROP, ACTION_CROP_ANYWAY, ACTION_INSCRIBE, ACTION_INSCRIBE_BY_WIDTH)
 
 
 DEFAULT_VARIATION = dict(
@@ -18,18 +18,22 @@ DEFAULT_VARIATION = dict(
 
     # Тактика при несовпадении размера:
     #   ACTION_CROP:
-    #       а) Картинка больше - уменьшить до нужного размера по одной из сторон и обрезать излишки
+    #       а) Картинка больше - пропорционально уменьшить до нужного размера и обрезать
     #       б) Картинка меньше - сохранить оригинал
-    #   ACTION_STRETCH_BY_WIDTH:
-    #       Растянуть картинку по ширине, оставив высоту пропорциональной.
-    #       Высота в параметре size игнорируется.
     #   ACTION_CROP_ANYWAY:
     #       а) Картинка больше - уменьшить до нужного размера по одной из сторон и обрезать излишки
     #       б) Картинка меньше - растянуть и обрезать
     #   ACTION_INSCRIBE:
     #       а) Картинка больше - уменьшить до нужного размера по одной из сторон
-    #       б) Картинка меньше - сохранить оригинал
-    #       Создается фон нужного размера, в центр которого вписывается картинка
+    #       б) Картинка меньше - берем оригинал
+    #       Создается фон нужного размера, в центр которого вписывается результат
+    #   ACTION_INSCRIBE_BY_WIDTH:
+    #       а) Картинка шире   - пропорционально уменьшить до нужного размера по ширине
+    #       б) Картинка уже    - пропорционально растянуть до нужного размера по ширине
+    #
+    #       Если высота в параметре size больше нуля, то производится дополнительная проверка:
+    #       в) если высота результата получилась больше, то исходная картинка вписывается
+    #          в холст точно как при ACTION_INSCRIBE
     action=ACTION_CROP,
 
     # Положение картинки относительно фона, если производится наложение
@@ -341,28 +345,28 @@ def variation_resize(image, variation, target_format):
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, (0.5, 0.5), masked=True)
+            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
     elif target_action == ACTION_CROP_ANYWAY:
         image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, (0.5, 0.5), masked=True)
-    elif target_action == ACTION_STRETCH_BY_WIDTH:
-        img_aspect = operator.truediv(*image.size)
-
-        final_size = (target_size[0], round(target_size[0] / img_aspect))
-        image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)
-
-        # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, final_size, target_bgcolor, (0.5, 0.5), masked=True)
+            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
     elif target_action == ACTION_INSCRIBE:
         image.thumbnail(target_size, resample=Image.ANTIALIAS)
 
         # Наложение с маской для формата PNG вызывает потерю качества
         masked = image.mode == 'RGBA' and target_format != 'PNG'
         image = put_on_bg(image, target_size, target_bgcolor, target_position, masked=masked)
+    elif target_action == ACTION_INSCRIBE_BY_WIDTH:
+        img_aspect = operator.truediv(*image.size)
+
+        final_size = (target_size[0], round(target_size[0] / img_aspect))
+        image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)
+
+        # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
+        if image.mode == 'RGBA' and target_format == 'JPEG':
+            image = put_on_bg(image, final_size, target_bgcolor, target_position, masked=True)
 
     return image
 

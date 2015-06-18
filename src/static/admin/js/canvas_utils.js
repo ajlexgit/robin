@@ -195,7 +195,7 @@
         return df.promise();
     };
 
-    
+
     /*
         Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
         Если картинка меньше - возвращается canvas с исходной картинкой.
@@ -356,55 +356,6 @@
 
 
     /*
-        Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height]
-        по ширине. Высота игнорируется.
-
-        Параметры:
-            source      - Image-объект или canvas
-            width       - целевая ширина
-            height      - целевая высота
-            coords      - кординаты обрезки исходной картинки
-    */
-    $.stretchByWidthToCanvas = function(options) {
-        var settings = $.extend({
-            source: null,
-            width: 100,
-            height: 100,
-            coords: null
-        }, options);
-
-        var canvas = document.createElement("canvas");
-        var context = canvas.getContext && canvas.getContext('2d');
-        if (!context) {
-            console.error('Canvas not supported');
-            return
-        }
-
-        if (!settings.coords) {
-            settings.coords = [0, 0, settings.source.width, settings.source.height];
-        }
-        var coords_ratio = settings.coords[2] / settings.coords[3];
-
-        var final_w = settings.width;
-        var final_h = Math.round(final_w / coords_ratio);
-        $.extend(canvas, canvasSize(final_w, final_h));
-
-        context.drawImage(
-            settings.source,
-            settings.coords[0],
-            settings.coords[1],
-            settings.coords[2],
-            settings.coords[3],
-            0,
-            0,
-            final_w,
-            final_h
-        );
-        return canvas;
-    };
-
-
-    /*
         Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height],
         с фоновым цветом background, учитывая смещение position.
 
@@ -462,6 +413,87 @@
         }
         final_l = (settings.width - final_w) * settings.position[0];
         final_t = (settings.height - final_h) * settings.position[1];
+
+        context.drawImage(
+            settings.source,
+            settings.coords[0],
+            settings.coords[1],
+            settings.coords[2],
+            settings.coords[3],
+            final_l,
+            final_t,
+            final_w,
+            final_h
+        );
+        return canvas;
+    };
+
+
+    /*
+        Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height]
+        по ширине.
+        Если указана целевая высота, то производится вписывание в холст как при $.inscribeToCanvas
+
+        Параметры:
+            source      - Image-объект или canvas
+            width       - целевая ширина
+            height      - целевая высота
+            coords      - кординаты обрезки исходной картинки
+            position    - смещение картинки относительно холста
+            background  - цвет фона холста
+    */
+    $.inscribeByWidthToCanvas = function(options) {
+        var settings = $.extend({
+            source: null,
+            width: 100,
+            height: 0,
+            coords: null,
+            position: [0.5, 0.5],
+            background: [255, 255, 255, 0]
+        }, options);
+
+        var final_w, final_h, final_l = 0, final_t = 0;
+
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext && canvas.getContext('2d');
+        if (!context) {
+            console.error('Canvas not supported');
+            return
+        }
+
+        if (!settings.coords) {
+            settings.coords = [0, 0, settings.source.width, settings.source.height];
+        }
+        var coords_ratio = settings.coords[2] / settings.coords[3];
+
+        final_w = settings.width;
+        final_h = Math.round(final_w / coords_ratio);
+        if ((settings.height > 0) && (final_h > settings.height)) {
+            // проверка высоты
+            $.extend(canvas, canvasSize(settings.width, settings.height));
+
+            if (!settings.position) {
+                settings.position = [0.5, 0.5];
+            }
+
+            if (!settings.background) {
+                settings.background = [255, 255, 255, 0];
+            }
+            settings.background[3] = (settings.background[3] / 256).toFixed(2);
+            context.fillStyle = 'rgba(' + settings.background.join(',') + ')';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            final_w = Math.min(settings.coords[2], settings.width);
+            final_h = final_w / coords_ratio;
+            if (final_h > settings.height) {
+                final_h = Math.min(settings.coords[3], settings.height);
+                final_w = final_h * coords_ratio;
+            }
+            final_l = (settings.width - final_w) * settings.position[0];
+            final_t = (settings.height - final_h) * settings.position[1];
+        } else {
+            $.extend(canvas, canvasSize(final_w, final_h));
+        }
 
         context.drawImage(
             settings.source,
