@@ -1,14 +1,18 @@
 /* Превью */
 .stdimage .item-preview {
+    display: inline-block;
     position: relative;
-    overflow: hidden;
     margin: 5px 0;
     box-shadow: 1px 1px 3px #808080;
 }
-.stdimage .item-preview img {
-    display: block;
-    position: relative;
-    max-width: none;
+
+.stdimage .hide {
+    display: none;
+}
+
+.stdimage .item-preview.preloader {
+    min-width: 200px;
+    min-height: 200px;
 }
 .stdimage .item-preview.preloader:before {
     content: '';
