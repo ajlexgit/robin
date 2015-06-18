@@ -360,13 +360,20 @@ def variation_resize(image, variation, target_format):
         image = put_on_bg(image, target_size, target_bgcolor, target_position, masked=masked)
     elif target_action == ACTION_INSCRIBE_BY_WIDTH:
         img_aspect = operator.truediv(*image.size)
-
         final_size = (target_size[0], round(target_size[0] / img_aspect))
-        image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)
 
-        # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if image.mode == 'RGBA' and target_format == 'JPEG':
-            image = put_on_bg(image, final_size, target_bgcolor, target_position, masked=True)
+        if (target_size[1] > 0) and (final_size[1] > target_size[1]):
+            image.thumbnail(target_size, resample=Image.ANTIALIAS)
+
+            # Наложение с маской для формата PNG вызывает потерю качества
+            masked = image.mode == 'RGBA' and target_format != 'PNG'
+            image = put_on_bg(image, target_size, target_bgcolor, target_position, masked=masked)
+        else:
+            image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)
+
+            # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
+            if image.mode == 'RGBA' and target_format == 'JPEG':
+                image = put_on_bg(image, final_size, target_bgcolor, target_position, masked=True)
 
     return image
 
