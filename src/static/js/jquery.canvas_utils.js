@@ -243,35 +243,49 @@
 
 
     /*
-        Попытка заполнить картинкой source (с обрезкой coords) холст размером target_size.
+        Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
         Если картинка меньше - возвращается canvas с исходной картинкой.
 
         Параметры:
-            source - Image-объект или canvas
-            coords - кординаты обрезки исходной картинки
-            target_size - целевой размер
+            source      - Image-объект или canvas
+            width       - целевая ширина
+            height      - целевая высота
+            coords      - кординаты обрезки исходной картинки
     */
-    $.cropToCanvas = function(source, target_size, coords) {
-        var canvas = document.createElement("canvas");
-        var target_ratio = target_size[0] / target_size[1];
+    $.cropToCanvas = function(options) {
+        var settings = $.extend({
+            source: null,
+            width: 100,
+            height: 100,
+            coords: null
+        }, options);
+
+        var target_ratio = settings.width / settings.height;
         var final_w, final_h, final_l = 0, final_t = 0;
 
-        if (!coords) {
-            coords = [0, 0, source.width, source.height];
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext && canvas.getContext('2d');
+        if (!context) {
+            console.error('Canvas not supported');
+            return
         }
-        var coords_ratio = coords[2] / coords[3];
 
-        if (coords[2] <= target_size[0]) {
+        if (!settings.coords) {
+            settings.coords = [0, 0, settings.source.width, settings.source.height];
+        }
+        var coords_ratio = settings.coords[2] / settings.coords[3];
+
+        if (settings.coords[2] <= settings.width) {
             // Ширина картинки меньше целевой
-            final_h = Math.min(coords[3], target_size[1]);
+            final_h = Math.min(settings.coords[3], settings.height);
             final_w = final_h * coords_ratio;
 
             final_h = Math.round(final_h);
             final_w = Math.round(final_w);
             $.extend(canvas, canvasSize(final_w, final_h));
-        } else if (coords[3] <= target_size[1]) {
+        } else if (settings.coords[3] <= settings.height) {
             // Высота картинки меньше целевой
-            final_w = Math.min(coords[2], target_size[0]);
+            final_w = Math.min(settings.coords[2], settings.width);
             final_h = final_w / coords_ratio;
 
             final_h = Math.round(final_h);
@@ -279,35 +293,114 @@
             $.extend(canvas, canvasSize(final_w, final_h));
         } else if (coords_ratio >= target_ratio) {
             // картинка более "широкая", чем надо
-            final_h = target_size[1];
+            final_h = settings.height;
             final_w = final_h * coords_ratio;
-            final_l = (target_size[0] - final_w) / 2;
+            final_l = (settings.width - final_w) / 2;
 
-            $.extend(canvas, canvasSize(target_size[0], target_size[1]));
+            $.extend(canvas, canvasSize(settings.width, settings.height));
 
             final_h = Math.round(final_h);
             final_w = Math.round(final_w);
             final_l = Math.round(final_l);
         } else {
             // картинка более "высокая", чем надо
-            final_w = target_size[0];
+            final_w = settings.width;
             final_h = final_w / coords_ratio;
-            final_t = (target_size[1] - final_h) / 2;
+            final_t = (settings.height - final_h) / 2;
 
-            $.extend(canvas, canvasSize(target_size[0], target_size[1]));
+            $.extend(canvas, canvasSize(settings.width, settings.height));
 
             final_h = Math.round(final_h);
             final_w = Math.round(final_w);
             final_t = Math.round(final_t);
         }
 
+        context.drawImage(
+            settings.source,
+            settings.coords[0],
+            settings.coords[1],
+            settings.coords[2],
+            settings.coords[3],
+            final_l,
+            final_t,
+            final_w,
+            final_h
+        );
+        return canvas;
+    };
+
+
+    /*
+        Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height],
+        с фоновым цветом background, учитывая смещение position.
+
+        Параметры:
+            source      - Image-объект или canvas
+            width       - целевая ширина
+            height      - целевая высота
+            coords      - кординаты обрезки исходной картинки
+            position    - смещение картинки относительно холста
+            background  - цвет фона холста
+    */
+    $.inscribeToCanvas = function(options) {
+        var settings = $.extend({
+            source: null,
+            width: 100,
+            height: 100,
+            coords: null,
+            position: [0.5, 0.5],
+            background: [255, 255, 255, 0]
+        }, options);
+
+        var final_w, final_h, final_l, final_t;
+
+        var canvas = document.createElement("canvas");
+        $.extend(canvas, canvasSize(
+            settings.width, settings.height
+        ));
         var context = canvas.getContext && canvas.getContext('2d');
         if (!context) {
             console.error('Canvas not supported');
             return
         }
-        context.drawImage(source, coords[0], coords[1], coords[2], coords[3], final_l, final_t, final_w, final_h);
+
+        if (!settings.coords) {
+            settings.coords = [0, 0, settings.source.width, settings.source.height];
+        }
+        var coords_ratio = settings.coords[2] / settings.coords[3];
+
+        if (!settings.position) {
+            settings.position = [0.5, 0.5];
+        }
+
+        if (!settings.background) {
+            settings.background = [255, 255, 255, 0];
+        }
+        settings.background[3] = (settings.background[3] / 256).toFixed(2);
+        context.fillStyle = 'rgba(' + settings.background.join(',') + ')';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        final_w = Math.min(settings.coords[2], settings.width);
+        final_h = final_w / coords_ratio;
+        if (final_h > settings.height) {
+            final_h = Math.min(settings.coords[3], settings.height);
+            final_w = final_h * coords_ratio;
+        }
+        final_l = (settings.width - final_w) * settings.position[0];
+        final_t = (settings.height - final_h) * settings.position[1];
+
+        context.drawImage(
+            settings.source,
+            settings.coords[0],
+            settings.coords[1],
+            settings.coords[2],
+            settings.coords[3],
+            final_l,
+            final_t,
+            final_w,
+            final_h
+        );
         return canvas;
     };
-
+    
 })(jQuery);
