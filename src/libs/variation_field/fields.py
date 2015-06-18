@@ -82,7 +82,10 @@ class VariationField(ImageFile):
 
     @property
     def url_nocache(self):
-        return self.storage.url(self.name) + '?_=%d' % self.storage.modified_time(self.name).timestamp()
+        if self.storage.exists(self.name):
+            return self.storage.url(self.name) + '?_=%d' % self.storage.modified_time(self.name).timestamp()
+        else:
+            return self.storage.url(self.name)
 
     @property
     def size(self):
