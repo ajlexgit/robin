@@ -41,6 +41,24 @@
                 coords: coords
             });
             $image.attr('src', canvas.toDataURL());
+        } else if (action_id == 2) {
+            // crop anyway
+            canvas = $.cropAnywayToCanvas({
+                source: source,
+                width: target_size[0],
+                height: target_size[1],
+                coords: coords
+            });
+            $image.attr('src', canvas.toDataURL());
+        } else if (action_id == 3) {
+            // stretch by width
+            canvas = $.stretchByWidthToCanvas({
+                source: source,
+                width: target_size[0],
+                height: target_size[1],
+                coords: coords
+            });
+            $image.attr('src', canvas.toDataURL());
         } else if (action_id == 4) {
             // inscribe
             canvas = $.inscribeToCanvas({
