@@ -195,10 +195,16 @@
                                 $.imageToCanvasDeferred(img, 600, 600).done(function(canvas) {
                                     img = null;
 
-                                    var $image = $('<img/>').attr('src', canvas.toDataURL());
+                                    var $image = $('<img/>');
                                     $preview.find('img').remove();
                                     $preview.prepend($image);
-                                    $.placeImage($preview, $image);
+                                    
+                                    var final_canvas = $.cropToCanvas({
+                                        source: canvas,
+                                        width: $preview.width(),
+                                        height: $preview.height()
+                                    });
+                                    $image.attr('src', final_canvas.toDataURL());
                                 });
                             }).always(function() {
                                 $controls.show();

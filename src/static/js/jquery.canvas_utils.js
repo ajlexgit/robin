@@ -195,53 +195,7 @@
         return df.promise();
     };
 
-    /*
-        Позиционирует $image внутри $container, чтобы показать центральную область картинки.
-    */
-    $.placeImage = function($container, $image, coords) {
-        var container_w = $container.width();
-        var container_h = $container.height();
-        var container_ratio = container_w / container_h;
-        var img_w = $image.prop('naturalWidth');
-        var img_h = $image.prop('naturalHeight');
-        var img_ratio = img_w / img_h;
-        var coords_ratio, float_h, float_w, crop_top, crop_left;
-
-        if (!coords) {
-            coords = [0, 0, img_w, img_h];
-            coords_ratio = img_ratio;
-        } else {
-            coords_ratio = coords[2] / coords[3];
-        }
-
-        if (img_ratio >= container_ratio) {
-            float_h = (container_h * img_h) / coords[3];
-            float_w = float_h * img_ratio;
-            crop_top = (coords[1] * float_h) / img_h;
-            crop_left = (coords[0] * float_w) / img_w;
-            var crop_w = Math.round( container_h * coords_ratio );
-            $image.css({
-                width: Math.round( float_w ),
-                height: Math.round( float_h ),
-                left: -Math.round( crop_left + ((crop_w - container_w) / 2) ),
-                top: -Math.round( crop_top )
-            });
-        } else {
-            float_w = (container_w * img_w) / coords[2];
-            float_h = float_w / img_ratio;
-            crop_top = (coords[1] * float_h) / img_h;
-            crop_left = (coords[0] * float_w) / img_w;
-            var crop_h = Math.round( container_w / coords_ratio );
-            $image.css({
-                width: Math.round( float_w ),
-                height: Math.round( float_h ),
-                left: -Math.round( crop_left ),
-                top: -Math.round( crop_top + ((crop_h - container_h) / 2) )
-            });
-        }
-    };
-
-
+    
     /*
         Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
         Если картинка меньше - возвращается canvas с исходной картинкой.

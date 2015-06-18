@@ -70,8 +70,6 @@
                 background: background
             });
             $image.attr('src', canvas.toDataURL());
-        } else {
-            $.placeImage($preview, $image, coords);
         }
     };
 
