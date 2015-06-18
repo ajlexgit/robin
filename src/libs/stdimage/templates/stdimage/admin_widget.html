@@ -6,6 +6,7 @@
          data-action="{{ admin_variation.action|default:1 }}"
          data-size="{{ admin_variation.size|join:'x' }}"
          data-position="{{ admin_variation.position|join:'x' }}"
+         data-background="{{ admin_variation.background|join:',' }}"
          data-source="{{ value.url_nocache }}">
         {% with variation_field=value|variation_field:admin_variation.name %}
             <img src="{{ variation_field.url_nocache }}">

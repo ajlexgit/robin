@@ -22,9 +22,35 @@
             return parseFloat(item);
         }).filter($.isNumeric).slice(0, 2);
 
+        // background
+        var background = $preview.data('background') || '255,255,255,0';
+        if (!$.isArray(background)) {
+            background = String(background).split(',');
+        }
+        background = background.map(function (item) {
+            return parseInt(item);
+        }).filter($.isNumeric).slice(0, 4);
 
+        var canvas;
         if (action_id == 1) {
-            var canvas = $.cropToCanvas(source, target_size, coords);
+            // crop
+            canvas = $.cropToCanvas({
+                source: source,
+                width: target_size[0],
+                height: target_size[1],
+                coords: coords
+            });
+            $image.attr('src', canvas.toDataURL());
+        } else if (action_id == 4) {
+            // inscribe
+            canvas = $.inscribeToCanvas({
+                source: source,
+                width: target_size[0],
+                height: target_size[1],
+                coords: coords,
+                position: position,
+                background: background
+            });
             $image.attr('src', canvas.toDataURL());
         } else {
             $.placeImage($preview, $image, coords);
