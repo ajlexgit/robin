@@ -32,7 +32,8 @@ DEFAULT_VARIATION = dict(
     #       Создается фон нужного размера, в центр которого вписывается картинка
     action=ACTION_CROP,
 
-    # Положение картинки относительно фона
+    # Положение картинки относительно фона, если производится наложение
+    # Учитывается только для ACTION_INSCRIBE
     position=(0.5, 0.5),
 
     # Цвет фона, на который накладывается изображение, когда оно не может сохранить прозрачность
@@ -340,13 +341,13 @@ def variation_resize(image, variation, target_format):
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
+            image = put_on_bg(image, image.size, target_bgcolor, (0.5, 0.5), masked=True)
     elif target_action == ACTION_CROP_ANYWAY:
         image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
+            image = put_on_bg(image, image.size, target_bgcolor, (0.5, 0.5), masked=True)
     elif target_action == ACTION_STRETCH_BY_WIDTH:
         img_aspect = operator.truediv(*image.size)
 
@@ -355,7 +356,7 @@ def variation_resize(image, variation, target_format):
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, final_size, target_bgcolor, target_position, masked=True)
+            image = put_on_bg(image, final_size, target_bgcolor, (0.5, 0.5), masked=True)
     elif target_action == ACTION_INSCRIBE:
         image.thumbnail(target_size, resample=Image.ANTIALIAS)
 

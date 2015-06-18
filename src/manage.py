@@ -1,6 +1,7 @@
 import os
 import sys
 
+# StdImage: удалить $.placeImage
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении
 # Slider3D: span
 
