@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
 
     window.Comments = (function() {
         function Comments($wrapper, options) {
