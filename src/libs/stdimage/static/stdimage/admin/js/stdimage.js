@@ -13,12 +13,21 @@
             return parseInt(item);
         }).filter($.isNumeric).slice(0, 2);
 
-        // position
-        var position = $preview.data('position') || '';
-        if (!$.isArray(position)) {
-            position = String(position).split('x');
+        // offset
+        var offset = $preview.data('offset') || '';
+        if (!$.isArray(offset)) {
+            offset = String(offset).split('x');
         }
-        position = position.map(function(item) {
+        offset = offset.map(function(item) {
+            return parseFloat(item);
+        }).filter($.isNumeric).slice(0, 2);
+
+        // center
+        var center = $preview.data('center') || '';
+        if (!$.isArray(center)) {
+            center = String(center).split('x');
+        }
+        center = center.map(function(item) {
             return parseFloat(item);
         }).filter($.isNumeric).slice(0, 2);
 
@@ -57,18 +66,20 @@
                 width: target_size[0],
                 height: target_size[1],
                 coords: coords,
-                position: position,
+                offset: offset,
+                center: center,
                 background: background
             });
             $image.attr('src', canvas.toDataURL());
         } else if (action_id == 4) {
-            // stretch by width
+            // inscribe by width
             canvas = $.inscribeByWidthToCanvas({
                 source: source,
                 width: target_size[0],
                 height: target_size[1],
                 coords: coords,
-                position: position,
+                offset: offset,
+                center: center,
                 background: background
             });
             $image.attr('src', canvas.toDataURL());

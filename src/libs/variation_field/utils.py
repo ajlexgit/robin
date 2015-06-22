@@ -36,9 +36,13 @@ DEFAULT_VARIATION = dict(
     #          в холст точно как при ACTION_INSCRIBE
     action=ACTION_CROP,
 
-    # Положение картинки относительно фона, если производится наложение
-    # Учитывается только для ACTION_INSCRIBE
-    position=(0.5, 0.5),
+    # Положение картинки относительно фона, если производится наложение.
+    # offset - отношение разницы размеров по горизонтали и вертикати.
+    # center - относительное положение центра накладываемой картинкию
+    # Можно указать только один из параметров offset/center.
+    # Учитывается только для ACTION_INSCRIBE и ACTION_INSCRIBE_BY_WIDTH.
+    offset=(0.5, 0.5),
+    center=None,
 
     # Цвет фона, на который накладывается изображение, когда оно не может сохранить прозрачность
     background=(255, 255, 255, 0),
@@ -123,10 +127,15 @@ def check_variations(variations, obj):
         if params['action'] not in ACTIONS:
             errors.append(checks.Error('unknown action of variation %r' % name, obj=obj))
 
-        # position
-        if 'position' in params:
-            if not isinstance(params['position'], (list, tuple)):
-                errors.append(checks.Error('position of variation %r should be a tuple or list' % name, obj=obj))
+        # offset
+        if 'offset' in params:
+            if params['offset'] and not isinstance(params['offset'], (list, tuple)):
+                errors.append(checks.Error('offset of variation %r should be a tuple or list' % name, obj=obj))
+
+        # center
+        if 'center' in params:
+            if params['center'] and not isinstance(params['center'], (list, tuple)):
+                errors.append(checks.Error('center of variation %r should be a tuple or list' % name, obj=obj))
 
         # format
         if params['format']:
@@ -253,15 +262,23 @@ def format_aspects(value, variations):
     return tuple(result)
 
 
-def put_on_bg(image, bg_size, bg_color, position, masked=False):
+def put_on_bg(image, bg_size, color=(255,255,255,0), offset=(0.5, 0.5), center=(0.5, 0.5), masked=False):
     """ Создание фона цветом bg_color и размера bg_size, на который будет наложена картинка image """
-    background = Image.new('RGBA', bg_size, bg_color)
-    size_diff = list(itertools.starmap(operator.sub, zip(background.size, image.size)))
-    offset = (int(size_diff[0] * position[0]), int(size_diff[1] * position[1]))
-    if masked:
-        background.paste(image, offset, image)
+    background = Image.new('RGBA', bg_size, color)
+
+    if center:
+        fianl_offset = (
+            round(background.size[0] * center[0] - image.size[0] / 2),
+            round(background.size[1] * center[1] - image.size[1] / 2)
+        )
     else:
-        background.paste(image, offset)
+        size_diff = list(itertools.starmap(operator.sub, zip(background.size, image.size)))
+        fianl_offset = (int(size_diff[0] * offset[0]), int(size_diff[1] * offset[1]))
+
+    if masked:
+        background.paste(image, fianl_offset, image)
+    else:
+        background.paste(image, fianl_offset)
     return background
 
 
@@ -316,7 +333,11 @@ def variation_resize(image, variation, target_format):
     """
         Изменение размера в соответствии с variation[action] и variation[size]
     """
-    target_bgcolor = variation['background']
+    bg_options = {
+        'color': variation['background'],
+        'offset': variation['offset'],
+        'center': variation['center'],
+    }
 
     # Целевой размер
     target_size = variation['size']
@@ -332,7 +353,6 @@ def variation_resize(image, variation, target_format):
 
     # Действие при несовпадении размера
     target_action = variation['action']
-    target_position = variation['position']
     if target_action == ACTION_CROP:
         if image.size[0] < target_size[0] and image.size[1] < target_size[1]:
             # Если картинка меньше - оставляем её как есть
@@ -345,19 +365,19 @@ def variation_resize(image, variation, target_format):
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
+            image = put_on_bg(image, image.size, masked=True, **bg_options)
     elif target_action == ACTION_CROP_ANYWAY:
         image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if image.mode == 'RGBA' and target_format=='JPEG':
-            image = put_on_bg(image, image.size, target_bgcolor, target_position, masked=True)
+            image = put_on_bg(image, image.size, masked=True, **bg_options)
     elif target_action == ACTION_INSCRIBE:
         image.thumbnail(target_size, resample=Image.ANTIALIAS)
 
         # Наложение с маской для формата PNG вызывает потерю качества
         masked = image.mode == 'RGBA' and target_format != 'PNG'
-        image = put_on_bg(image, target_size, target_bgcolor, target_position, masked=masked)
+        image = put_on_bg(image, target_size, masked=masked, **bg_options)
     elif target_action == ACTION_INSCRIBE_BY_WIDTH:
         img_aspect = operator.truediv(*image.size)
         final_size = (target_size[0], round(target_size[0] / img_aspect))
@@ -367,13 +387,13 @@ def variation_resize(image, variation, target_format):
 
             # Наложение с маской для формата PNG вызывает потерю качества
             masked = image.mode == 'RGBA' and target_format != 'PNG'
-            image = put_on_bg(image, target_size, target_bgcolor, target_position, masked=masked)
+            image = put_on_bg(image, target_size, masked=masked, **bg_options)
         else:
             image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)
 
             # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
             if image.mode == 'RGBA' and target_format == 'JPEG':
-                image = put_on_bg(image, final_size, target_bgcolor, target_position, masked=True)
+                image = put_on_bg(image, final_size, masked=True, **bg_options)
 
     return image
 

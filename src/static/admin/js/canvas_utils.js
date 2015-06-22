@@ -364,7 +364,8 @@
             width       - целевая ширина
             height      - целевая высота
             coords      - кординаты обрезки исходной картинки
-            position    - смещение картинки относительно холста
+            offset      - относительное смещение картинки относительно холста
+            center      - относительные координаты центра накладываемой картинки
             background  - цвет фона холста
     */
     $.inscribeToCanvas = function(options) {
@@ -373,7 +374,7 @@
             width: 100,
             height: 100,
             coords: null,
-            position: [0.5, 0.5],
+            offset: [0.5, 0.5],
             background: [255, 255, 255, 0]
         }, options);
 
@@ -394,8 +395,8 @@
         }
         var coords_ratio = settings.coords[2] / settings.coords[3];
 
-        if (!settings.position) {
-            settings.position = [0.5, 0.5];
+        if (!settings.offset) {
+            settings.offset = [0.5, 0.5];
         }
 
         if (!settings.background) {
@@ -411,8 +412,14 @@
             final_h = Math.min(settings.coords[3], settings.height);
             final_w = final_h * coords_ratio;
         }
-        final_l = (settings.width - final_w) * settings.position[0];
-        final_t = (settings.height - final_h) * settings.position[1];
+
+        if (settings.center && (settings.center.length == 2)) {
+            final_l = settings.width * settings.center[0] - final_w / 2;
+            final_t = settings.height * settings.center[1] - final_h / 2;
+        } else {
+            final_l = (settings.width - final_w) * settings.offset[0];
+            final_t = (settings.height - final_h) * settings.offset[1];
+        }
 
         context.drawImage(
             settings.source,
@@ -440,7 +447,8 @@
             width       - целевая ширина
             height      - целевая высота
             coords      - кординаты обрезки исходной картинки
-            position    - смещение картинки относительно холста
+            offset      - относительное смещение картинки относительно холста
+            center      - относительные координаты центра накладываемой картинки
             background  - цвет фона холста
     */
     $.inscribeByWidthToCanvas = function(options) {
@@ -449,7 +457,7 @@
             width: 100,
             height: 0,
             coords: null,
-            position: [0.5, 0.5],
+            offset: [0.5, 0.5],
             background: [255, 255, 255, 0]
         }, options);
 
@@ -473,8 +481,8 @@
             // проверка высоты
             $.extend(canvas, canvasSize(settings.width, settings.height));
 
-            if (!settings.position) {
-                settings.position = [0.5, 0.5];
+            if (!settings.offset) {
+                settings.offset = [0.5, 0.5];
             }
 
             if (!settings.background) {
@@ -490,8 +498,14 @@
                 final_h = Math.min(settings.coords[3], settings.height);
                 final_w = final_h * coords_ratio;
             }
-            final_l = (settings.width - final_w) * settings.position[0];
-            final_t = (settings.height - final_h) * settings.position[1];
+
+            if (settings.center && (settings.center.length == 2)) {
+                final_l = settings.width * settings.center[0] - final_w / 2;
+                final_t = settings.height * settings.center[1] - final_h / 2;
+            } else {
+                final_l = (settings.width - final_w) * settings.offset[0];
+                final_t = (settings.height - final_h) * settings.offset[1];
+            }
         } else {
             $.extend(canvas, canvasSize(final_w, final_h));
         }

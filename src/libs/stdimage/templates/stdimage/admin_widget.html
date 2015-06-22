@@ -5,7 +5,8 @@
     <div class="item-preview {% if not value %}hide{% endif %}"
          data-action="{{ admin_variation.action|default:1 }}"
          data-size="{{ admin_variation.size|join:'x' }}"
-         data-position="{{ admin_variation.position|join:'x' }}"
+         data-offset="{{ admin_variation.offset|default:''|join:'x' }}"
+         data-center="{{ admin_variation.center|default:''|join:'x' }}"
          data-background="{{ admin_variation.background|join:',' }}"
          data-source="{{ value.url_nocache }}">
         {% with variation_field=value|variation_field:admin_variation.name %}

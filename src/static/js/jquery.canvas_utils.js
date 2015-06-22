@@ -1,11 +1,11 @@
 (function($) {
 
     /*
-        Возвращает размеры canvas с учетом ограничений браузера.
-        Параметры:
-            img_width, img_height - исходные размеры картинки
-            max_width, max_height - целевые ограничения
-    */
+     Возвращает размеры canvas с учетом ограничений браузера.
+     Параметры:
+     img_width, img_height - исходные размеры картинки
+     max_width, max_height - целевые ограничения
+     */
     window.canvasSize = function(img_width, img_height, max_width, max_height) {
         var ratio = img_width / img_height;
         var width, height;
@@ -51,8 +51,8 @@
 
 
     /*
-        Создает Deferred-объект, который загружает картинку из файла.
-    */
+     Создает Deferred-объект, который загружает картинку из файла.
+     */
     $.fileReaderDeferred = function(file) {
         var df = $.Deferred();
         if (!window.FileReader) {
@@ -75,8 +75,8 @@
 
 
     /*
-        Создает Deferred-объект, который загружает картинку.
-    */
+     Создает Deferred-объект, который загружает картинку.
+     */
     $.imageDeferred = function(src) {
         var df = $.Deferred();
         var img = new Image();
@@ -92,19 +92,19 @@
 
 
     /*
-        Возвращает canvas с картинкой с указанными ограничениями размеров.
-        Можно не указывать размеры, или указать один из них.
+     Возвращает canvas с картинкой с указанными ограничениями размеров.
+     Можно не указывать размеры, или указать один из них.
 
-        Уменьшение размера происходит очень быстро, но некачественно.
+     Уменьшение размера происходит очень быстро, но некачественно.
 
-        Пример:
-            $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
-                $.imageDeferred(src).done(function(img) {
-                    var canvas = $.imageToCanvas(img, 360, 360);
-                    $('#test').after(canvas);
-                });
-            });
-    */
+     Пример:
+     $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
+     $.imageDeferred(src).done(function(img) {
+     var canvas = $.imageToCanvas(img, 360, 360);
+     $('#test').after(canvas);
+     });
+     });
+     */
     $.imageToCanvas = function(source, max_width, max_height) {
         // Первое уменьшение до максимально возможного размера
         var canvas = document.createElement("canvas");
@@ -122,22 +122,22 @@
 
 
     /*
-        Возвращает Deferred-объект, который возвращает canvas с картинкой с
-        указанными ограничениями размеров.
-        Можно не указывать размеры, или указать один из них.
+     Возвращает Deferred-объект, который возвращает canvas с картинкой с
+     указанными ограничениями размеров.
+     Можно не указывать размеры, или указать один из них.
 
-        Качество выше, чем у $.imageToCanvas, но всё равно не идеально.
-        Для лучшего качества используете плагин pica: https://github.com/nodeca/pica
+     Качество выше, чем у $.imageToCanvas, но всё равно не идеально.
+     Для лучшего качества используете плагин pica: https://github.com/nodeca/pica
 
-        Пример:
-            $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
-                $.imageDeferred(src).done(function(img) {
-                    $.imageToCanvasDeferred(img, 360, 360).done(function(canvas) {
-                        $('#test').after(canvas);
-                    });
-                });
-            });
-    */
+     Пример:
+     $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
+     $.imageDeferred(src).done(function(img) {
+     $.imageToCanvasDeferred(img, 360, 360).done(function(canvas) {
+     $('#test').after(canvas);
+     });
+     });
+     });
+     */
     $.imageToCanvasDeferred = function(source, max_width, max_height) {
         var df = $.Deferred();
 
@@ -197,15 +197,15 @@
 
 
     /*
-        Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
-        Если картинка меньше - возвращается canvas с исходной картинкой.
+     Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
+     Если картинка меньше - возвращается canvas с исходной картинкой.
 
-        Параметры:
-            source      - Image-объект или canvas
-            width       - целевая ширина
-            height      - целевая высота
-            coords      - кординаты обрезки исходной картинки
-    */
+     Параметры:
+     source      - Image-объект или canvas
+     width       - целевая ширина
+     height      - целевая высота
+     coords      - кординаты обрезки исходной картинки
+     */
     $.cropToCanvas = function(options) {
         var settings = $.extend({
             source: null,
@@ -285,15 +285,15 @@
 
 
     /*
-        Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
-        Если картинка меньше - она масштабируется.
+     Попытка заполнить картинкой source (с обрезкой coords) холст размером [width, height].
+     Если картинка меньше - она масштабируется.
 
-        Параметры:
-            source      - Image-объект или canvas
-            width       - целевая ширина
-            height      - целевая высота
-            coords      - кординаты обрезки исходной картинки
-    */
+     Параметры:
+     source      - Image-объект или canvas
+     width       - целевая ширина
+     height      - целевая высота
+     coords      - кординаты обрезки исходной картинки
+     */
     $.cropAnywayToCanvas = function(options) {
         var settings = $.extend({
             source: null,
@@ -356,24 +356,25 @@
 
 
     /*
-        Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height],
-        с фоновым цветом background, учитывая смещение position.
+     Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height],
+     с фоновым цветом background, учитывая смещение position.
 
-        Параметры:
-            source      - Image-объект или canvas
-            width       - целевая ширина
-            height      - целевая высота
-            coords      - кординаты обрезки исходной картинки
-            position    - смещение картинки относительно холста
-            background  - цвет фона холста
-    */
+     Параметры:
+     source      - Image-объект или canvas
+     width       - целевая ширина
+     height      - целевая высота
+     coords      - кординаты обрезки исходной картинки
+     offset      - относительное смещение картинки относительно холста
+     center      - относительные координаты центра накладываемой картинки
+     background  - цвет фона холста
+     */
     $.inscribeToCanvas = function(options) {
         var settings = $.extend({
             source: null,
             width: 100,
             height: 100,
             coords: null,
-            position: [0.5, 0.5],
+            offset: [0.5, 0.5],
             background: [255, 255, 255, 0]
         }, options);
 
@@ -394,8 +395,8 @@
         }
         var coords_ratio = settings.coords[2] / settings.coords[3];
 
-        if (!settings.position) {
-            settings.position = [0.5, 0.5];
+        if (!settings.offset) {
+            settings.offset = [0.5, 0.5];
         }
 
         if (!settings.background) {
@@ -411,8 +412,14 @@
             final_h = Math.min(settings.coords[3], settings.height);
             final_w = final_h * coords_ratio;
         }
-        final_l = (settings.width - final_w) * settings.position[0];
-        final_t = (settings.height - final_h) * settings.position[1];
+
+        if (settings.center && (settings.center.length == 2)) {
+            final_l = settings.width * settings.center[0] - final_w / 2;
+            final_t = settings.height * settings.center[1] - final_h / 2;
+        } else {
+            final_l = (settings.width - final_w) * settings.offset[0];
+            final_t = (settings.height - final_h) * settings.offset[1];
+        }
 
         context.drawImage(
             settings.source,
@@ -430,26 +437,27 @@
 
 
     /*
-        Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height]
-        по ширине.
-        Если указана целевая высота, то производится вписывание картинки source (с обрезкой coords)
-        в холст размером [width, height] как при $.inscribeToCanvas.
+     Попытка вписать картинку source (с обрезкой coords) в холст размером [width, height]
+     по ширине.
+     Если указана целевая высота, то производится вписывание картинки source (с обрезкой coords)
+     в холст размером [width, height] как при $.inscribeToCanvas.
 
-        Параметры:
-            source      - Image-объект или canvas
-            width       - целевая ширина
-            height      - целевая высота
-            coords      - кординаты обрезки исходной картинки
-            position    - смещение картинки относительно холста
-            background  - цвет фона холста
-    */
+     Параметры:
+     source      - Image-объект или canvas
+     width       - целевая ширина
+     height      - целевая высота
+     coords      - кординаты обрезки исходной картинки
+     offset      - относительное смещение картинки относительно холста
+     center      - относительные координаты центра накладываемой картинки
+     background  - цвет фона холста
+     */
     $.inscribeByWidthToCanvas = function(options) {
         var settings = $.extend({
             source: null,
             width: 100,
             height: 0,
             coords: null,
-            position: [0.5, 0.5],
+            offset: [0.5, 0.5],
             background: [255, 255, 255, 0]
         }, options);
 
@@ -473,8 +481,8 @@
             // проверка высоты
             $.extend(canvas, canvasSize(settings.width, settings.height));
 
-            if (!settings.position) {
-                settings.position = [0.5, 0.5];
+            if (!settings.offset) {
+                settings.offset = [0.5, 0.5];
             }
 
             if (!settings.background) {
@@ -490,8 +498,14 @@
                 final_h = Math.min(settings.coords[3], settings.height);
                 final_w = final_h * coords_ratio;
             }
-            final_l = (settings.width - final_w) * settings.position[0];
-            final_t = (settings.height - final_h) * settings.position[1];
+
+            if (settings.center && (settings.center.length == 2)) {
+                final_l = settings.width * settings.center[0] - final_w / 2;
+                final_t = settings.height * settings.center[1] - final_h / 2;
+            } else {
+                final_l = (settings.width - final_w) * settings.offset[0];
+                final_t = (settings.height - final_h) * settings.offset[1];
+            }
         } else {
             $.extend(canvas, canvasSize(final_w, final_h));
         }
