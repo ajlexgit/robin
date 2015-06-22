@@ -414,8 +414,8 @@
         }
 
         if (settings.center && (settings.center.length == 2)) {
-            final_l = settings.width * settings.center[0] - final_w / 2;
-            final_t = settings.height * settings.center[1] - final_h / 2;
+            final_l = Math.max(0, settings.width * settings.center[0] - final_w / 2);
+            final_t = Math.max(0, settings.height * settings.center[1] - final_h / 2);
         } else {
             final_l = (settings.width - final_w) * settings.offset[0];
             final_t = (settings.height - final_h) * settings.offset[1];
@@ -500,8 +500,8 @@
             }
 
             if (settings.center && (settings.center.length == 2)) {
-                final_l = settings.width * settings.center[0] - final_w / 2;
-                final_t = settings.height * settings.center[1] - final_h / 2;
+                final_l = Math.max(0, settings.width * settings.center[0] - final_w / 2);
+                final_t = Math.max(0, settings.height * settings.center[1] - final_h / 2);
             } else {
                 final_l = (settings.width - final_w) * settings.offset[0];
                 final_t = (settings.height - final_h) * settings.offset[1];
