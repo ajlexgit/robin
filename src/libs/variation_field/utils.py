@@ -268,8 +268,8 @@ def put_on_bg(image, bg_size, color=(255,255,255,0), offset=(0.5, 0.5), center=(
 
     if center:
         fianl_offset = (
-            round(background.size[0] * center[0] - image.size[0] / 2),
-            round(background.size[1] * center[1] - image.size[1] / 2)
+            max(0, int(background.size[0] * center[0] - image.size[0] / 2)),
+            max(0, int(background.size[1] * center[1] - image.size[1] / 2))
         )
     else:
         size_diff = list(itertools.starmap(operator.sub, zip(background.size, image.size)))
