@@ -1,7 +1,7 @@
 (function($) {
 
     window.Comments = (function() {
-        function Comments($wrapper, options) {
+        var Comments = function($wrapper, options) {
             this.settings = $.extend({
                 comment_class: 'comment',
                 comments_container_class: 'comments',
@@ -21,7 +21,7 @@
 
             // Сохраняем объект в DOM-элементе
             $wrapper.data('object', this);
-        }
+        };
 
         Comments.prototype.ajaxError = function(xhr, status, text) {
             return gettext('Ошибка соединения с сервером: ' + text);
