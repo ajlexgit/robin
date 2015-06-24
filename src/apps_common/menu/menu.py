@@ -4,19 +4,6 @@ from django.shortcuts import resolve_url
 from django.core.urlresolvers import NoReverseMatch
 
 
-def add_items_from_config(menulist, config, itemclass):
-    """ Создание пунктов меню из списка """
-    for item in config:
-        item_childs = item.pop('childs', [])
-
-        menu_item = itemclass(**item)
-
-        if item_childs:
-            add_items_from_config(menu_item, item_childs, itemclass)
-
-        menulist.append(menu_item)
-
-
 def set_active(menulist, request):
     """
         Установка активного пункта меню.
@@ -66,6 +53,19 @@ class MenuListMixin:
 
     def pop(self, index):
         return self._childs.pop(index)
+
+    def from_config(self, config, item_class):
+        """ Создание пунктов меню из списка """
+        self.clear()
+        for item in config:
+            item_childs = item.pop('childs', [])
+
+            menu_item = item_class(**item)
+
+            if item_childs:
+                menu_item.from_config(item_childs, item_class)
+
+            self.append(menu_item)
 
 
 class MenuItem(MenuListMixin):
@@ -129,7 +129,7 @@ class Menu(MenuListMixin):
         super().__init__()
         self.request = request
         if config:
-            add_items_from_config(self, config, itemclass=self.item_class)
+            self.from_config(config, self.item_class)
 
     def render(self, template):
         """ Рендер шаблона """
