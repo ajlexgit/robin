@@ -25,16 +25,10 @@ from .menu import Menu
                 'post_id': 2,
             },
 
-            # Жестко указанная ссылка
-            url='http://ya.ru/',
-
             # Аттрибуты ссылки
             attrs={
                 'target': '_blank',
             },
-
-            # CSS-классы пункта меню
-            classes=('red', ),
 
             # Дочерние пункты меню
             childs=[],
@@ -43,13 +37,13 @@ from .menu import Menu
 
     Также можно создавать меню на лету, пользуясь методами списка меню:
         menu = Menu(request)
-        menu.root.add(
-            MenuItem('Test', '/test/').childs.add(
+        menu.append(
+            MenuItem('Test', '/test/').append(
                 MenuItem('Subtest1', '/subtest/'),
             ),
             MenuItem('Test2', '/test2/'),
         )
-        menu.root.insert(
+        menu.insert(0,
             MenuItem('Test3', '/test3/'),
         )
         menu.render(template='menu/menu.html')

@@ -1,8 +1,8 @@
 <ul>
     {% for item in items %}
         <li class="{% if item.active %}active{% endif %} {{ item.classes }}">
-            <a href="{{ item.link }}" {{ item.attrs }}>{{ item.title }}</a>
-            
+            <a href="{{ item.link }}" {{ item.flat_attrs }}>{{ item.title }}</a>
+
             {% if item.childs %}
                 {% include 'menu/menu.html' with items=item.childs %}
             {% endif %}
