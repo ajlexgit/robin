@@ -32,7 +32,7 @@
     line-height: 1.2;
     word-break: break-word;
     @include font-size(30px);
-    @include media(mobile) {
+    @include media_interval(0, $media768) {
       letter-spacing: 1px;
       @include font-size(24px);
     }
@@ -40,7 +40,7 @@
   
   h3 {
     @include font-size(26px);
-    @include media(mobile) {
+    @include media_interval(0, $media768) {
       @include font-size(22px);
     }
   }

@@ -92,10 +92,10 @@
   text-align: center;
   @include border-box;
   @include no_fontsize;
-  @include media(desktop) {
+  @include media_interval($media1024, $media1200) {
     padding: 30px 0;
   }
-  @include media(mobile, tablet) {
+  @include media_interval(0, $media1024) {
     padding: 20px 0;
   }
 

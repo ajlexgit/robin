@@ -31,7 +31,7 @@ p {
 .title-h1 {
   line-height: 1;
   @include font-size(40px);
-  @include media(mobile) {
+  @include media_interval(0, $media768) {
     @include font-size(28px);
   }
 }
@@ -84,7 +84,7 @@ p {
     vertical-align: middle;
     @include border-box;
     @include no_fontsize;
-    @include media(mobile) {
+    @include media_interval(0, $media768) {
       padding-top: 110px;
     }
   }

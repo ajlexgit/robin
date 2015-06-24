@@ -1,7 +1,7 @@
 @import 'mixins';
 
 
-@include media(desktop, wide) {
+@include media_interval($media1024, 0) {
   #main-menu {
     height: auto !important;
     font-weight: bold;
@@ -51,7 +51,7 @@
   text-align: left;
   z-index: 105;
   @include unselectable;
-  @include media(mobile, tablet) {
+  @include media_interval(0, $media1024) {
     display: inline-block;
   }
 
@@ -94,7 +94,7 @@
   }
 }
 
-@include media(mobile, tablet) {
+@include media_interval(0, $media1024) {
   #main-menu {
     position: absolute;
     padding: 0 70px;

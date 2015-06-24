@@ -15,35 +15,10 @@
 @import 'mixins/unselectable';
 
 // Точки для media-queries
-$desktop_wide: 1200px;
-$tablet_wide: 1024px;
-$mobile_wide: 768px;
-$mobile: 640px;
-
-// Размеры окна
-@mixin media($args...) {
-  @function media-value($value) {
-    $conversion-map: (
-            wide: "screen and (min-width: #{$desktop_wide})",
-            desktop: "screen and (min-width: #{$tablet_wide}) and (max-width: #{$desktop_wide - 1px})",
-            tablet: "screen and (min-width: #{$mobile_wide}) and (max-width: #{$tablet_wide - 1px})",
-            mobile: "screen and (max-width: #{$mobile_wide - 1px})",
-            mobile_mini: "screen and (max-width: #{$mobile - 1px})"
-    );
-
-    @if map-has-key($conversion-map, $value) {
-      @return map-get($conversion-map, $value);
-    } @else {
-      @error "Not found media `#{$value}`";
-    }
-  }
-
-  @each $name in $args {
-    @media #{media-value($name)} {
-      @content;
-    }
-  }
-}
+$media1200: 1200px;
+$media1024: 1024px;
+$media768: 768px;
+$media640: 640px;
 
 @mixin media_interval($from, $to) {
   $line: "";
@@ -82,17 +57,17 @@ $grid_max_width: 1400px;
   @each $key in $args {
     #{$key}: $grid_padding_wide;
   }
-  @include media(tablet, desktop) {
+  @include media_interval($media768, $media1200) {
     @each $key in $args {
       #{$key}: $grid_padding;
     }
   }
-  @include media(mobile) {
+  @include media_interval($media640, $media768) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile;
     }
   }
-  @include media(mobile_mini) {
+  @include media_interval(0, $media640) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile_mini;
     }
@@ -103,17 +78,17 @@ $grid_max_width: 1400px;
   @each $key in $args {
     #{$key}: $grid_padding_wide + $grid_space;
   }
-  @include media(tablet, desktop) {
+  @include media_interval($media768, $media1200) {
     @each $key in $args {
       #{$key}: $grid_padding + $grid_space;
     }
   }
-  @include media(mobile) {
+  @include media_interval($media640, $media768) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile + $grid_space;
     }
   }
-  @include media(mobile_mini) {
+  @include media_interval(0, $media640) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile_mini + $grid_space;
     }

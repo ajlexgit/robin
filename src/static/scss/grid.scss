@@ -38,7 +38,7 @@ $cols_tablet: 8;
 $cols_mobile: 4;
 
 // Wide-desktop (1200+)
-@include media(wide) {
+@include media_interval($media1200, 0) {
   @for $index from 1 through $cols_wide - 1 {
     .gc-wide-#{$index} {
       @extend .gc;
@@ -65,7 +65,7 @@ $cols_mobile: 4;
 }
 
 // Desktop (1024-1199)
-@include media(desktop) {
+@include media_interval($media1024, $media1200) {
   @for $index from 1 through $cols_desktop - 1 {
     .gc-#{$index} {
       @extend .gc;
@@ -92,7 +92,7 @@ $cols_mobile: 4;
 }
 
 // Tablet (768-1023)
-@include media(tablet) {
+@include media_interval($media768, $media1024) {
   @for $index from 1 through $cols_tablet - 1 {
     .gc-tablet-#{$index} {
       @extend .gc;
@@ -119,7 +119,7 @@ $cols_mobile: 4;
 }
 
 // Mobile (-767)
-@include media(mobile) {
+@include media_interval(0, $media768) {
   @for $index from 1 through $cols_mobile - 1 {
     .gc-mobile-#{$index} {
       @extend .gc;
