@@ -19,7 +19,7 @@ $media1200: 1200px;
 $media1024: 1024px;
 $media768: 768px;
 $media640: 640px;
-$media590: 590px;
+$media600: 600px;
 
 @mixin media_interval($from, $to) {
   $line: "";
@@ -63,12 +63,12 @@ $grid_max_width: 1400px;
       #{$key}: $grid_padding;
     }
   }
-  @include media_interval($media590, $media768) {
+  @include media_interval($media600, $media768) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile;
     }
   }
-  @include media_interval(0, $media590) {
+  @include media_interval(0, $media600) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile_mini;
     }
@@ -84,12 +84,12 @@ $grid_max_width: 1400px;
       #{$key}: $grid_padding + $grid_space;
     }
   }
-  @include media_interval($media590, $media768) {
+  @include media_interval($media600, $media768) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile + $grid_space;
     }
   }
-  @include media_interval(0, $media590) {
+  @include media_interval(0, $media600) {
     @each $key in $args {
       #{$key}: $grid_padding_mobile_mini + $grid_space;
     }
