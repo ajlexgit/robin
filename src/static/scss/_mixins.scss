@@ -109,7 +109,7 @@ $text_color: #2C3035;
 
 @mixin default_fontsize() {
   @include font-size(16px);
-  @include media(mobile_mini) {
+  @include media_interval(0, $media640) {
     @include font-size(14px);
   }
 }

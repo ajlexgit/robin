@@ -7,6 +7,18 @@ from .widgets import GoogleCoordsFieldWidget
     Необходимо подключить:
         google_maps/js/google_maps.js
 
+    Установка:
+        settings.py:
+            INSTALLED_APPS = (
+                ...
+                'google_maps',
+                ...
+            )
+        
+        urls.py:
+            ...
+            url(r'^google_maps/', include('google_maps.urls', namespace='google_maps'))
+
     Настройки (settings.py):
         GOOGLE_MAP_PERMISSIONS - функция определения прав на получение координат
                                  по адресу через AJAX (по умолчанию - сотрудники)

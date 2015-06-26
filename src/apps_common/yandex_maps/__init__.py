@@ -7,6 +7,18 @@ from .widgets import YandexCoordsFieldWidget
     Необходимо подключить:
         yandex_maps/js/yandex_maps.js
 
+    Установка:
+        settings.py:
+            INSTALLED_APPS = (
+                ...
+                'yandex_maps',
+                ...
+            )
+        
+        urls.py:
+            ...
+            url(r'^yandex_maps/', include('yandex_maps.urls', namespace='yandex_maps'))
+    
     Настройки (settings.py):
         YANDEX_MAPS_API_KEY - ключ
         YANDEX_MAP_PERMISSIONS - функция определения прав на получение координат
