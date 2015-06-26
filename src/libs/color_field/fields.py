@@ -1,15 +1,62 @@
+import re
 from django.db import models
 from django.core import validators
-from .forms import ColorFormField
+from .widgets import ColorWidget
+
+re_color = re.compile('^#[0-9A-F]{6}$')
+re_hexcolor = re.compile('^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
-class ColorField(models.Field, metaclass=models.SubfieldBase):
-    """
-        Поле, хранящее цвет в формате #FFFFFF (в БД - FFFFFF).
-    """
+class FileDescriptor(object):
+    def __init__(self, field):
+        self.field = field
+
+    @staticmethod
+    def get_formatted_color(value):
+        if value is None:
+            return None
+
+        value = str(value)
+
+        # add hash
+        if value[0] != '#':
+            value = '#' + value
+
+        # upper
+        value = value.upper()
+
+        # convert to long format
+        color_match = re_hexcolor.match(value)
+        if color_match:
+            color = color_match.group(1)
+            if len(color) == 3:
+                value = '#' + ''.join(letter * 2 for letter in color)
+
+            return value
+        else:
+            return None
+
+    def __get__(self, instance=None, owner=None):
+        if instance is None:
+            raise AttributeError(
+                "The '%s' attribute can only be accessed from %s instances."
+                % (self.field.name, owner.__name__))
+
+        value = instance.__dict__[self.field.name]
+        instance.__dict__[self.field.name] = self.get_formatted_color(value)
+
+        return instance.__dict__[self.field.name]
+
+    def __set__(self, instance, value):
+        value = self.get_formatted_color(value)
+        instance.__dict__[self.field.name] = self.get_formatted_color(value)
+
+
+class ColorField(models.CharField):
+    descriptor_class = FileDescriptor
 
     default_validators = [
-        validators.RegexValidator('^#[0-9A-F]{6}$')
+        validators.RegexValidator(re_color)
     ]
 
     def __init__(self, *args, **kwargs):
@@ -22,32 +69,13 @@ class ColorField(models.Field, metaclass=models.SubfieldBase):
             del kwargs['max_length']
         return name, path, args, kwargs
 
-    def get_internal_type(self):
-        return "CharField"
-
-    def to_python(self, value):
-        """ Добавляем решетку при отображении значения """
-        value = super().to_python(value)
-        if value and isinstance(value, str):
-            value = value.upper().strip()
-            if not value.startswith('#'):
-                value = '#' + value
-
-        return value
-
-    def get_prep_value(self, value):
-        """ При сохранении в БД убираем решетку """
-        value = super().get_prep_value(value)
-        if isinstance(value, str):
-            if value.startswith('#'):
-                value = value[1:]
-
-        return value
+    def contribute_to_class(self, cls, *args, **kwargs):
+        super().contribute_to_class(cls, *args, **kwargs)
+        setattr(cls, self.name, self.descriptor_class(self))
 
     def formfield(self, **kwargs):
-        defaults = {
-            'form_class': ColorFormField,
-            'max_length': self.max_length,
-        }
-        defaults.update(kwargs)
-        return super().formfield(**defaults)
+        kwargs.update({
+            'widget': ColorWidget,
+            'max_length': None,
+        })
+        return super().formfield(**kwargs)

@@ -1,9 +1,14 @@
 from django import forms
-from suit.widgets import HTML5Input
+from django.forms.utils import flatatt
+from django.utils.encoding import force_text
+from django.utils.html import format_html
 
 
-class ColorWidget(forms.MultiWidget):
+class ColorWidget(forms.TextInput):
     """ Виджет цвета """
+
+    input_type = 'color'
+
     class Media:
         css = {
             'all': (
@@ -13,24 +18,22 @@ class ColorWidget(forms.MultiWidget):
         js = (
             'color_field/admin/js/color.js',
         )
-    
-    def __init__(self, attrs=None):
-        widgets = (
-            HTML5Input(input_type='color', attrs={
-                'class': 'colorfield-input input-small'
-            }),
-            forms.TextInput(attrs={
-                'class': 'colorfield-text input-small',
-                'pattern': '#?[0-9a-fA-F]{6}'
-            })
-        )
-        super(ColorWidget, self).__init__(widgets, attrs)
 
-    def decompress(self, value):
-        if value:
-            return value, value
-        else:
-            return None, None
+    def render(self, name, value, attrs=None):
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name, **{
+            'class': 'colorfield-input input-small',
+        })
 
-    def format_output(self, rendered_widgets):
-        return '&nbsp;'.join(rendered_widgets)
+        value = value or '#000000'
+        value = force_text(value).upper()
+        final_attrs['value'] = value
+
+        return format_html((
+            '<input {0} />&nbsp;<input {1} />'
+        ), flatatt(final_attrs), flatatt({
+            'type': 'text',
+            'class': 'colorfield-text input-small',
+            'pattern': '#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})',
+            'maxlength': 7,
+            'value': value,
+        }))
