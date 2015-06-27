@@ -35,7 +35,7 @@ class Coords:
         if self:
             return iter((self._lng, self._lat))
 
-    def __str__(self):
+    def __repr__(self):
         if self:
             return '{0}, {1}'.format(self.lng, self.lat)
         else:
