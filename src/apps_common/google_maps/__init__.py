@@ -1,6 +1,6 @@
 from .api import geocode
 from .models import geocode_cached
-from .fields import GoogleCoords, GoogleCoordsField
+from .fields import Coords, GoogleCoordsField
 from .widgets import GoogleCoordsFieldWidget
 
 """
@@ -14,7 +14,7 @@ from .widgets import GoogleCoordsFieldWidget
                 'google_maps',
                 ...
             )
-        
+
         urls.py:
             ...
             url(r'^google_maps/', include('google_maps.urls', namespace='google_maps'))

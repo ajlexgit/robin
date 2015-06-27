@@ -1,7 +1,6 @@
-from django.forms.widgets import TextInput
+from django import forms
 
-
-class YandexCoordsFieldWidget(TextInput):
+class YandexCoordsFieldWidget(forms.TextInput):
     attrs = None
 
     class Media:

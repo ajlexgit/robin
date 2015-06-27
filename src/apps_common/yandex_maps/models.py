@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from .api import geocode, DEFAULT
-from .fields import YmapCoords
+from .fields import Coords
 
 
 class MapAndAddress(models.Model):
@@ -27,7 +27,7 @@ def geocode_cached(address):
     или экземпляру YmapCoords из БД.
     Если записи в БД нет - определит координаты и сохранит результат в БД.
     """
-    if isinstance(address, YmapCoords):
+    if isinstance(address, Coords):
         return address.lng, address.lat if address else DEFAULT
 
     # Определяем координаты по адресу

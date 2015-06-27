@@ -1,7 +1,7 @@
-from django.forms.widgets import TextInput
+from django import forms
 
 
-class GoogleCoordsFieldWidget(TextInput):
+class GoogleCoordsFieldWidget(forms.TextInput):
     attrs = None
 
     class Media:

@@ -1,6 +1,6 @@
 from .api import geocode
 from .models import geocode_cached
-from .fields import YmapCoords, YandexCoordsField
+from .fields import Coords, YandexCoordsField
 from .widgets import YandexCoordsFieldWidget
 
 """
@@ -14,11 +14,11 @@ from .widgets import YandexCoordsFieldWidget
                 'yandex_maps',
                 ...
             )
-        
+
         urls.py:
             ...
             url(r'^yandex_maps/', include('yandex_maps.urls', namespace='yandex_maps'))
-    
+
     Настройки (settings.py):
         YANDEX_MAPS_API_KEY - ключ
         YANDEX_MAP_PERMISSIONS - функция определения прав на получение координат

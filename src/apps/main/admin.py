@@ -16,7 +16,8 @@ class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-header'),
-            'fields': ('header_title', 'preview', 'text', 'description', 'color'),
+            'fields': ('header_title', 'preview', 'text', 'description', 'color',
+                       'ya_coords', 'go_coords'),
         }),
     )
     inlines = (InlineSampleAdmin, )

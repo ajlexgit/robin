@@ -49,10 +49,12 @@ INSTALLED_APPS = (
     'breadcrumbs',
     'files',
     'gallery',
+    'google_maps',
     'menu',
     'paginator',
     'seo',
     'social_buttons',
+    'yandex_maps',
 
     # Libs
     'libs.autocomplete',

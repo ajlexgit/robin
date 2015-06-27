@@ -7,7 +7,7 @@ re_color = re.compile('^#[0-9A-F]{6}$')
 re_hexcolor = re.compile('^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
-class FileDescriptor(object):
+class ColorDescriptor(object):
     def __init__(self, field):
         self.field = field
 
@@ -51,7 +51,7 @@ class FileDescriptor(object):
 
 
 class ColorField(models.CharField):
-    descriptor_class = FileDescriptor
+    descriptor_class = ColorDescriptor
 
     default_validators = [
         validators.RegexValidator(re_color)

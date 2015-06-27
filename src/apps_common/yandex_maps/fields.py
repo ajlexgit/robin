@@ -1,31 +1,44 @@
 from django.db import models
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from .widgets import YandexCoordsFieldWidget
 
 
-class YmapCoords:
-    """ Класс для координат """
-    lng = None
-    lat = None
-    wrong_format = False
+class Coords:
+    _lat = None
+    _lng = None
 
-    def __init__(self, coords=None):
-        if not coords:
-            return
+    def __init__(self, lng=None, lat=None):
+        self.lng = lng
+        self.lat = lat
 
-        coords_list = coords.split(',')
+    @property
+    def lng(self):
+        return self._lng
+
+    @lng.setter
+    def lng(self, value):
         try:
-            self.lng = float(coords_list[0].strip())
-            self.lat = float(coords_list[1].strip())
+            self._lng = float(value)
         except (ValueError, TypeError):
-            self.wrong_format = True
+            self._lng = None
+
+    @property
+    def lat(self):
+        return self._lat
+
+    @lat.setter
+    def lat(self, value):
+        try:
+            self._lat = float(value)
+        except (ValueError, TypeError):
+            self._lat = None
 
     def __bool__(self):
-        return not self.lng is None and not self.lat is None
+        return self.lng is not  None and self.lat is not None
 
     def __iter__(self):
-        return iter((self.lng, self.lat))
+        if self:
+            return iter((self._lng, self._lat))
 
     def __str__(self):
         if self:
@@ -34,26 +47,36 @@ class YmapCoords:
             return ''
 
 
-class YandexCoordsField(models.Field, metaclass=models.SubfieldBase):
+class CoordsDescriptor(object):
+    def __init__(self, field):
+        self.field = field
+
+    def __get__(self, instance=None, owner=None):
+        if instance is None:
+            raise AttributeError(
+                "The '%s' attribute can only be accessed from %s instances."
+                % (self.field.name, owner.__name__))
+
+        value = instance.__dict__[self.field.name]
+
+        if isinstance(value, str):
+            value = value.split(',')
+
+        instance.__dict__[self.field.name] = self.field.attr_class(*value)
+
+        return instance.__dict__[self.field.name]
+
+    def __set__(self, instance, value):
+        instance.__dict__[self.field.name] = value
+
+
+class YandexCoordsField(models.CharField):
+    descriptor_class = CoordsDescriptor
+    attr_class = Coords
+
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('max_length', 32)
         super().__init__(*args, **kwargs)
-
-    def get_internal_type(self):
-        return "CharField"
-
-    def to_python(self, value):
-        """ Форматирование при чтении из БД """
-        if isinstance(value, YmapCoords):
-            return value
-        elif isinstance(value, str):
-            return YmapCoords(value.strip())
-        else:
-            return YmapCoords()
-
-    def get_prep_value(self, value):
-        """ При сохранении в БД """
-        return str(value)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -61,11 +84,9 @@ class YandexCoordsField(models.Field, metaclass=models.SubfieldBase):
             del kwargs['max_length']
         return name, path, args, kwargs
 
-    def validate(self, value, model_instance):
-        if value.wrong_format:
-            raise ValidationError('Invalid value')
-
-        super().validate(value, model_instance)
+    def contribute_to_class(self, cls, *args, **kwargs):
+        super().contribute_to_class(cls, *args, **kwargs)
+        setattr(cls, self.name, self.descriptor_class(self))
 
     def formfield(self, **kwargs):
         kwargs['widget'] = YandexCoordsFieldWidget(attrs={
