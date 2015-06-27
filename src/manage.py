@@ -7,7 +7,6 @@ import sys
 # Slider3D: span
 
 # типа ImageField но с превью и возможностью SVG
-# Custom fields: юзать descriptor_class?
 # Виджет выбора иконки из спрайта
 # Проверить CommentsAdminModelMixin при добавлении сущности
 # Gallery: zoom effect, keyboard, max photos count
