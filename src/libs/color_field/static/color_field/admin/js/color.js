@@ -1,26 +1,26 @@
 (function($) {
 
-    var format_color = function(value) {
-        value = value.toString().trim();
+    var color_regex = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-        if (value) {
-            if (value[0] != '#') {
-                value = '#' + value;
-            }
+    var format_color = function(value) {
+        var hex;
+
+        value = value.toString().trim();
+        if (!(hex = color_regex.exec(value))) {
+            return ''
         }
 
-        if (value.length == 4) {
+        hex = hex[1];
+        if (hex.length == 6) {
+            return '#' + hex.toUpperCase();
+        } else {
             var i = 0;
             var result = '#';
             var char;
-            while (char = value.charAt(++i)) {
+            while (char = hex.charAt(i++)) {
                 result += char + char;
             }
             return result.toUpperCase();
-        } else if (value.length == 7) {
-            return value.toUpperCase();
-        } else {
-            return '#000000'
         }
     };
 

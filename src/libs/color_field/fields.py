@@ -11,30 +11,28 @@ class FileDescriptor(object):
     def __init__(self, field):
         self.field = field
 
-    @staticmethod
-    def get_formatted_color(value):
+    def get_formatted_color(self, value):
         if value is None:
             return None
 
         value = str(value)
+        if value:
+            # add hash
+            if value[0] != '#':
+                value = '#' + value
 
-        # add hash
-        if value[0] != '#':
-            value = '#' + value
+            # upper
+            value = value.upper()
 
-        # upper
-        value = value.upper()
+            # convert to long format
+            color_match = re_hexcolor.match(value)
+            if color_match:
+                color = color_match.group(1)
+                if len(color) == 3:
+                    value = '#' + ''.join(letter * 2 for letter in color)
+                return value
 
-        # convert to long format
-        color_match = re_hexcolor.match(value)
-        if color_match:
-            color = color_match.group(1)
-            if len(color) == 3:
-                value = '#' + ''.join(letter * 2 for letter in color)
-
-            return value
-        else:
-            return None
+        return None if self.field.null else ''
 
     def __get__(self, instance=None, owner=None):
         if instance is None:
@@ -76,6 +74,5 @@ class ColorField(models.CharField):
     def formfield(self, **kwargs):
         kwargs.update({
             'widget': ColorWidget,
-            'max_length': None,
         })
         return super().formfield(**kwargs)
