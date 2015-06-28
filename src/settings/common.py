@@ -47,14 +47,13 @@ INSTALLED_APPS = (
     # Apps common
     'admin_log',
     'breadcrumbs',
+    'comments',
     'files',
     'gallery',
-    'google_maps',
     'menu',
     'paginator',
     'seo',
     'social_buttons',
-    'yandex_maps',
 
     # Libs
     'libs.autocomplete',
@@ -132,6 +131,7 @@ PIPELINE_CSS = {
             'scss/slider3d/slider3d.scss',
             'scss/parallax.scss',
             'scss/video_bg.scss',
+            'comments/scss/comments.scss',
             'social_buttons/scss/social_buttons.scss',
             'main/scss/index.scss',
         ),
@@ -177,6 +177,9 @@ PIPELINE_JS = {
             'js/drager.js',
             'js/parallax.js',
             'js/slider3d.js',
+            'js/autosize.js',
+            'comments/js/comments_class.js',
+            'comments/js/comments.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

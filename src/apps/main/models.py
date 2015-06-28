@@ -3,12 +3,10 @@ from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
-from google_maps.fields import GoogleCoordsField
 from libs.color_field import ColorField
 from libs.media_storage import MediaStorage
 from libs.stdimage.fields import StdImageField
 from libs.ckeditor.fields import CKEditorUploadField
-from yandex_maps.fields import YandexCoordsField
 
 
 class MainPageConfig(SingletonModel):
@@ -31,8 +29,6 @@ class MainPageConfig(SingletonModel):
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     description = models.TextField(_('description'), blank=True)
     color = ColorField(_('color'), blank=True, null=True)
-    ya_coords = YandexCoordsField(_('coords'), blank=True)
-    go_coords = GoogleCoordsField(_('coords'), blank=True)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 

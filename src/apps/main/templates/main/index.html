@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% load pipeline %}
 {% load social_buttons %}
+{% load comments %}
 {% load away %}
 
 {% block static_head %}
@@ -52,7 +53,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="slider_example">
         <div class="grid">
             <div class="gc-full gc-alone">
@@ -70,6 +71,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="comments">
+        {% comments config %}
     </div>
 
     <div id="social_buttons">

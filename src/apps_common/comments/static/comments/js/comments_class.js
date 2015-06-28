@@ -272,7 +272,7 @@
                         that.getBranch($parent_comment).last().after($comment);
                     } else {
                         // добавление корневого коммента
-                        $wrapper.find('.' + that.settings.comments_container_class).append($comment);
+                        that.$wrapper.find('.' + that.settings.comments_container_class).append($comment);
                         $form.find('textarea').val('').keyup();
                     }
                     df.resolve($comment, $parent_comment);
