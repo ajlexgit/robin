@@ -3,24 +3,27 @@ from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
-from suit_ckeditor.widgets import CKEditorWidget
+from suit_ckeditor.widgets import CKEditorWidget as DefaultCKEditorWidget
 from . import options
 
 
+class CKEditorWidget(DefaultCKEditorWidget):
+    class Media:
+        js = DefaultCKEditorWidget.Media.js + (
+            'admin/js/plupload/moxie.min.js',
+            'admin/js/plupload/plupload.min.js',
+            'admin/js/plupload/i18n/%s.js' % (settings.LANGUAGE_CODE.split('-')[0],),
+            'admin/js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
+        )
+        css = DefaultCKEditorWidget.Media.css
+
+
 class CKEditorUploadWidget(CKEditorWidget):
+    """ Виджет редактора, добавляющий данные для определения модели при загрузке файлов """
+
     model = None
     upload_pagephoto_url = None
     upload_simplephoto_url = None
-
-    """ Виджет редактора, добавляющий данные для определения модели при загрузке файлов """
-    class Media:
-        js = CKEditorWidget.Media.js + (
-            'admin/js/plupload/moxie.min.js',
-            'admin/js/plupload/plupload.min.js',
-            'admin/js/plupload/i18n/%s.js' % (settings.LANGUAGE_CODE.split('-')[0], ),
-            'admin/js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
-        )
-        css = CKEditorWidget.Media.css
 
     def value_from_datadict(self, data, files, name):
         text = data.get(name, None)

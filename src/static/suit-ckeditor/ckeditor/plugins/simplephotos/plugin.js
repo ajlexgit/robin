@@ -28,6 +28,7 @@
                 FilesAdded: function(up, files) {
                     plupload.each(files, function(file) {
                         var preloader = editor.document.createElement('img');
+                        preloader.addClass('simple-photo');
                         preloader.setAttribute('id', file.id);
                         preloader.setAttribute('src', path + 'preloader.gif');
                         editor.insertElement(preloader);
@@ -90,7 +91,7 @@
     CKEDITOR.plugins.add("simplephotos", {
         init: function (editor) {
             var c = editor.addCommand("simplephotos", new CKEDITOR.dialogCommand("simplephotos", {
-                allowedContent: 'img(*)[!src,alt,width,height,title,data-id]'
+                allowedContent: 'img(!simple-photo)[!src,alt,width,height,title,data-id]'
             }));
             c.modes = {
                 wysiwyg: 1,
