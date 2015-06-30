@@ -43,9 +43,12 @@
             Удаление всех пустых форм
         */
         Comments.prototype.removeEmptyForms = function() {
-            this.$wrapper.find('.' + this.settings.comments_container_class + ' form').each(function() {
+            var that = this;
+            that.$wrapper.find('.' + that.settings.comments_container_class + ' form').each(function() {
                 var $form = $(this);
+                var $comment = $form.closest('.' + that.settings.comment_class);
                 if (!$form.find('textarea').val()) {
+                    $comment.trigger('formclose', [$form.get(0)]);
                     $form.remove();
                 }
             });
@@ -83,7 +86,10 @@
         Comments.prototype.replyForm = function($comment) {
             var df = $.Deferred();
             this.removeEmptyForms();
-            $comment.find('form').remove();
+            $comment.find('form').each(function() {
+                $comment.trigger('formclose', [this]);
+                $(this).remove();
+            });
 
             var $reply_form = $(this.$reply_form_template);
             $reply_form.find('input[name="parent"]').val($comment.data('id'));
@@ -112,7 +118,10 @@
                         return df.reject(response.error);
                     }
                     that.removeEmptyForms();
-                    $comment.find('form').remove();
+                    $comment.find('form').each(function() {
+                        $comment.trigger('formclose', [this]);
+                        $(this).remove();
+                    });
 
                     var $edit_form = $(that.$edit_form_template);
                     $comment.append($edit_form);

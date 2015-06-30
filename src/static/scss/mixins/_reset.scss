@@ -22,7 +22,7 @@
   fieldset, form, label, legend,
   table, caption, tbody, tfoot, thead, tr, th, td,
   article, aside, canvas, details, embed,
-  figure, figcaption, footer, header, hgroup,
+  figure, figcaption, footer, header,
   menu, nav, output, ruby, section, summary,
   time, mark, audio, video {
     margin: 0;
@@ -82,6 +82,7 @@
     font-size: 100%;
     margin: 0;
     outline: 0;
+    outline-offset: 0;
     vertical-align: middle;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -89,6 +90,9 @@
   }
   textarea {
     resize: none;
+  }
+  button {
+    cursor: pointer;
   }
   label {
     display: inline-block;

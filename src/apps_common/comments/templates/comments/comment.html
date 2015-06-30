@@ -20,17 +20,15 @@
             {% endwith %}
         </div>
         
-        <a href="{% url 'users:profile' comment.user.username %}">
-            <img class="avatar" alt=""
+        <a class="avatar" href="{% url 'users:profile' comment.user.username %}">
+            <img alt=""
                  src="{{ comment.user.micro_avatar }}" 
                  width="{{ comment.user.avatar.variations.micro.size.0 }}"
                  height="{{ comment.user.avatar.variations.micro.size.1 }}">
         </a>
-        <a href="{% url 'users:profile' comment.user.username %}">
-            {{ comment.user.username }}
-        </a>
-        <a href="#comment-{{ comment.id }}" name="comment-{{ comment.id }}" class="hashlink">#</a>
-        <div class="date">{{ comment.created|date:"j E Y, H:i:s" }}</div>
+        <a class="nickname" href="{% url 'users:profile' comment.user.username %}">{{ comment.user.username }}</a>
+        <time datetime="{{ comment.created|date:"c" }}">{{ comment.created|shortdate }}</time>
+        <a class="hashlink" href="#comment-{{ comment.id }}" name="comment-{{ comment.id }}">#</a>
     </div>
     
     <div class="text">

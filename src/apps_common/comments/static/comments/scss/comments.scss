@@ -4,16 +4,12 @@
   form {
     button {
       margin-right: 10px;
+      @include default_fontsize;
     }
 
     textarea {
       width: 100%;
-    }
-
-    .error {
-      color: red;
-      margin-left: 12px;
-      vertical-align: middle;
+      @include default_fontsize;
     }
   }
 
@@ -26,15 +22,39 @@
 }
 
 .comment {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  line-height: 1;
+  @include no_fontsize;
 
   .info {
+    color: #808080;
     @include clearfix;
 
     .avatar {
       float: left;
       margin-right: 10px;
     }
+
+    .nickname {
+      color: #A0A0A0;
+      font-weight: bold;
+      @include font-size(12px);
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    time {
+      margin-left: 12px;
+      @include font-size(10px);
+    }
+
+    .hashlink {
+      margin-left: 12px;
+      @include font-size(12px);
+    }
+
     .rating {
       float: right;
       margin-top: 5px;
@@ -49,7 +69,7 @@
         display: inline-block;
         width: 22px;
         height: 22px;
-        margin-left: 5px;
+        margin-left: 8px;
         vertical-align: middle;
         @include unselectable;
 
@@ -60,6 +80,7 @@
           background: url(../img/dislike.png);
         }
       }
+
       &.disabled a {
         @include grayscale;
         @include opacity(0.5);
@@ -70,19 +91,16 @@
         }
       }
     }
-    .hashlink {
-      margin-left: 10px;
-    }
-    .date {
-      color: #808080;
-      margin-top: 10px;
-      @include font-size(10px);
-    }
   }
+
   .text {
-    margin-top: 4px;
+    color: white;
+    margin-top: 12px;
+    margin-bottom: 10px;
     word-break: break-all;
+    @include default_fontsize;
   }
+
   .actions {
     margin-top: 4px;
     @include font-size(10px);
@@ -90,7 +108,21 @@
     a {
       color: #808080;
       margin-right: 8px;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
+  }
+  &.inner-form-reply .reply {
+    color: #D0D0D0;
+  }
+  &.inner-form-edit .edit {
+    color: #D0D0D0;
+  }
+
+  > .form {
+    margin-top: 14px;
   }
 
   &.comment-level-1 {

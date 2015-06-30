@@ -15,12 +15,15 @@
             var $comment = $('.comment[data-id="'+current_comment[1]+'"]');
             $comment.addClass('comment-highlighted').switchClass('comment-highlighted', '', 2000);
         }
+    }).on('formclose.comments', '.comment', function(event, form) {
+        $(this).removeClass('inner-form inner-form-reply inner-form-edit');
     }).on('click.comments.reply', '.comment .reply', function() {
         // Форма ответа на коммент
         var $comment = $(this).closest('.comment'),
             object = $comment.closest('.comments-wrapper').data('object');
 
         object.replyForm($comment).done(function($reply_form) {
+            $comment.addClass('inner-form inner-form-reply');
             autosize($reply_form.find('textarea'));
         });
 
@@ -31,6 +34,7 @@
             object = $comment.closest('.comments-wrapper').data('object');
 
         object.editForm($comment).done(function($edit_form) {
+            $comment.addClass('inner-form inner-form-edit');
             autosize($edit_form.find('textarea'));
         }).fail(function(reason) {
             alert(reason);
@@ -97,7 +101,10 @@
         return false;
     }).on('click.comments.cancel', '.comment .btn-cancel', function() {
         // Удаление формы при клике на кнопку "Отмена"
-        $(this).closest('form').remove();
+        var $comment = $(this).closest('.comment');
+        var $form = $(this).closest('form');
+        $comment.trigger('formclose', [$form.get(0)]);
+        $form.remove();
         return false;
     }).on('submit.comments.post', '.comment-post-form', function() {
         // Добавление комментария

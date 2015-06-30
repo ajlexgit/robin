@@ -46,11 +46,11 @@
         </div>
     </div>
 
-    <div id="text-content" class="text-styles">
+    <div id="text-content">
         <div class="grid">
-            <div class="gc-wide-6 gc-6 gc-alone gc-center">
+            <article class="gc-wide-6 gc-6 gc-alone gc-center">
                 {% away config.text|typograf|safe %}
-            </div>
+            </article>
         </div>
     </div>
 
@@ -74,7 +74,11 @@
     </div>
 
     <div id="comments">
-        {% comments config %}
+        <div class="grid">
+            <div class="gc-full gc-alone">
+                {% comments config %}
+            </div>
+        </div>
     </div>
 
     <div id="social_buttons">
