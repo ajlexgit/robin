@@ -177,7 +177,6 @@ PIPELINE_JS = {
             'js/drager.js',
             'js/parallax.js',
             'js/slider3d.js',
-            'js/autosize.js',
             'comments/js/comments_class.js',
             'comments/js/comments.js',
             'main/js/index.js',

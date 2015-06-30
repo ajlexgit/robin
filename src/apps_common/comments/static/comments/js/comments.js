@@ -5,8 +5,6 @@
         $('.comments-wrapper').each(function() {
             var $container = $(this);
             new Comments($container);
-
-            autosize($container.find('.comments-form-wrapper textarea'));
         });
 
         // Подсвечиваем коммент, если перешли по его якорю
@@ -24,7 +22,6 @@
 
         object.replyForm($comment).done(function($reply_form) {
             $comment.addClass('inner-form inner-form-reply');
-            autosize($reply_form.find('textarea'));
         });
 
         return false;
@@ -35,7 +32,6 @@
 
         object.editForm($comment).done(function($edit_form) {
             $comment.addClass('inner-form inner-form-edit');
-            autosize($edit_form.find('textarea'));
         }).fail(function(reason) {
             alert(reason);
         });
