@@ -21,5 +21,4 @@ class IndexView(TemplateView):
         
         return self.render_to_response({
             'config': config,
-            'address': 'Тольятти, Майский проезд 64',
         })
