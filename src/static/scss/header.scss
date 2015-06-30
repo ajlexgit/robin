@@ -4,7 +4,6 @@ header {
   padding: 45px 0;
   z-index: 100;
   background: rgba(green, 0.8);
-  @include overlay($height: auto);
   @include media_interval(0, $media768) {
     padding: 25px 0;
   }
