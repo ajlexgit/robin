@@ -8,5 +8,5 @@ def opengraph(context):
     request = context.get('request')
     if not request:
         return ''
-    
+
     return request.opengraph.render()
