@@ -118,7 +118,6 @@
         var lang = $(document.documentElement).attr('lang');
 
         var script = document.createElement('script');
-        script.type = 'text/javascript';
         script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&language=' + lang;
         document.body.appendChild(script);
 

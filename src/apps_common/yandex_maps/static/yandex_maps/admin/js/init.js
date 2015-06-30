@@ -126,7 +126,6 @@
         var lang = $(document.documentElement).attr('lang');
 
         var script = document.createElement('script');
-        script.type = 'text/javascript';
         script.src = '//api-maps.yandex.ru/2.0-stable/?load=package.standard&onload=init_yandex_maps&lang=' + lang;
         document.body.appendChild(script);
 

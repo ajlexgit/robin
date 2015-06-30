@@ -110,7 +110,6 @@
     // Динамически подключаем скрипт
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
-    script.type = 'text/javascript';
     script.onreadystatechange = function () {
         if (this.readyState == 'complete') {
             init();

@@ -64,7 +64,7 @@
                         height: 600,
                         frameborder: 0,
                         scrolling: 'no',
-                        allowtransparency: true
+                        allowtransparency: ''
                     });
                     $container.html($iframe);
 
