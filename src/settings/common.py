@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'libs.management',
     'libs.opengraph',
     'libs.recaptcha',
+    'libs.sprite_image',
     'libs.stdimage',
     'libs.templatetags',
     'libs.variation_field',

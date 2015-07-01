@@ -1,0 +1,65 @@
+.sprite-icon-field {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 0;
+    line-height: 0;
+    vertical-align: middle;
+}
+
+.errors > .sprite-icon-field {
+    box-shadow: 1px 1px 3px 1px red;
+}
+
+/* Wrapper */
+.sprite-icon-field .wrapper {
+    position: relative;
+}
+
+.sprite-icon-field .wrapper.opened .sprite-icon-dropdown {
+    display: block;
+}
+
+/* Preview */
+.sprite-icon-preview, .sprite-icon-item {
+    cursor: pointer;
+    background: no-repeat 0 0 white;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.sprite-icon-preview {
+    box-shadow: 0 0 8px #888;
+}
+.sprite-icon-field .wrapper.opened .sprite-icon-preview {
+    box-shadow: 0 0 8px 1px #080;
+}
+
+/* Dropdown */
+.sprite-icon-dropdown {
+    display: none;
+    position: absolute;
+    margin-left: 10px;
+    left: 100%;
+    top: -5px;
+    z-index: 10;
+    cursor: default;
+    background-color: white;
+    box-shadow: 1px 1px 3px #888;
+}
+
+.sprite-icon-item {
+    display: inline-block;
+    margin: 5px;
+    box-shadow: 0 0 8px #666;
+}
+
+.sprite-icon-item.active {
+    box-shadow: 0 0 8px 1px #080;
+}
+
+.sprite-icon-item:hover {
+    box-shadow: 0 0 8px 1px #880;
+}

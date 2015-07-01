@@ -7,7 +7,7 @@ re_color = re.compile('^#[0-9A-F]{6}$')
 re_hexcolor = re.compile('^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
-class ColorDescriptor(object):
+class ColorDescriptor():
     def __init__(self, field):
         self.field = field
 
@@ -47,7 +47,7 @@ class ColorDescriptor(object):
 
     def __set__(self, instance, value):
         value = self.get_formatted_color(value)
-        instance.__dict__[self.field.name] = self.get_formatted_color(value)
+        instance.__dict__[self.field.name] = value
 
 
 class ColorField(models.CharField):

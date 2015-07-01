@@ -1,7 +1,7 @@
 import operator
 import itertools
 from PIL import Image, ImageOps, ImageEnhance
-from django.contrib.staticfiles import finders
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 
 # Действия при несовпадении размера
@@ -144,16 +144,12 @@ def check_variations(variations, obj):
                 errors.append(checks.Error('unacceptable format of variation %r: %r. Allowed types: jpg, jpeg, png' % (name, fmt), obj=obj))
 
         # overlay
-        if params['overlay']:
-            overlay_path = finders.find(params['overlay'])
-            if not overlay_path:
-                errors.append(checks.Error('overlay file not found: %r' % params['overlay'], obj=obj))
+        if params['overlay'] and not staticfiles_storage.exists(params['overlay']):
+            errors.append(checks.Error('overlay file not found: %r' % params['overlay'], obj=obj))
 
         # mask
-        if params['mask']:
-            mask_path = finders.find(params['mask'])
-            if not mask_path:
-                errors.append(checks.Error('mask file not found: %r' % params['mask'], obj=obj))
+        if params['mask'] and not staticfiles_storage.exists(params['mask']):
+            errors.append(checks.Error('mask file not found: %r' % params['mask'], obj=obj))
 
         if params['watermark']:
             watermark = dict(DEFAULT_WATERMARK, **params['watermark'])
@@ -164,7 +160,7 @@ def check_variations(variations, obj):
             # file
             if 'file' not in watermark:
                 errors.append(checks.Error('watermark file required for variation %r' % name, obj=obj))
-            if not finders.find(watermark['file']):
+            if not staticfiles_storage.exists(watermark['file']):
                 errors.append(checks.Error('watermark file not found: %r' % watermark['file'], obj=obj))
 
             # padding
@@ -225,16 +221,16 @@ def format_variations(variations):
 
         # Overlay
         if final_params['overlay']:
-            final_params['overlay'] = finders.find(final_params['overlay'])
+            final_params['overlay'] = staticfiles_storage.path(final_params['overlay'])
 
         # Mask
         if final_params['mask']:
-            final_params['mask'] = finders.find(final_params['mask'])
+            final_params['mask'] = staticfiles_storage.path(final_params['mask'])
 
         # Водяной знак
         if final_params['watermark']:
             watermark = dict(DEFAULT_WATERMARK, **final_params['watermark'])
-            watermark['file'] = finders.find(watermark['file'])
+            watermark['file'] = staticfiles_storage.path(watermark['file'])
             watermark['padding'] = tuple(map(int, watermark['padding']))
             watermark['opacity'] = float(watermark['opacity'])
             watermark['scale'] = float(watermark['scale'])
