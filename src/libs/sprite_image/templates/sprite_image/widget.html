@@ -5,6 +5,10 @@
         height: {{ widget.size.1 }}px;
         background-image: url({{ widget.sprite }});
     }
+
+    #sprite-icon-field-{{ name }} .sprite-icon-dropdown {
+        margin-left: {{ widget.size.0|add:20 }}px;
+    }
 </style>
 
 <div class="sprite-icon-field" id="sprite-icon-field-{{ name }}">

@@ -1,5 +1,4 @@
 .sprite-icon-field {
-    display: inline-block;
     margin-right: 10px;
     font-size: 0;
     line-height: 0;
@@ -13,10 +12,13 @@
 /* Wrapper */
 .sprite-icon-field .wrapper {
     position: relative;
+    padding: 1px 0;
 }
 
-.sprite-icon-field .wrapper.opened .sprite-icon-dropdown {
-    display: block;
+.sprite-icon-field .wrapper:after {
+    content: '';
+    display: table;
+    clear: both;
 }
 
 /* Preview */
@@ -30,24 +32,35 @@
     -ms-user-select: none;
     user-select: none;
 }
+
 .sprite-icon-preview {
+    float: left;
     box-shadow: 0 0 8px #888;
+
+    -webkit-transition: margin 0.3s;
+    -moz-transition: margin 0.3s;
+    -o-transition: margin 0.3s;
+    transition: margin 0.3s;
 }
-.sprite-icon-field .wrapper.opened .sprite-icon-preview {
+
+.sprite-icon-field.opened .sprite-icon-preview {
+    margin-top: 5px;
     box-shadow: 0 0 8px 1px #080;
 }
 
 /* Dropdown */
 .sprite-icon-dropdown {
     display: none;
-    position: absolute;
-    margin-left: 10px;
-    left: 100%;
-    top: -5px;
-    z-index: 10;
+    overflow: hidden;
+    margin-top: -5px;
+    padding: 4px;
     cursor: default;
     background-color: white;
-    box-shadow: 1px 1px 3px #888;
+    border: 1px solid #ccc;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
 .sprite-icon-item {

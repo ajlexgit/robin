@@ -1,27 +1,16 @@
 (function($) {
 
-    var DROPDOWN_MAX_WIDTH = 400;
-
     var SpriteImage = (function() {
         function SpriteImage($root) {
             this.$root = $root;
             this.$input = $root.find('input:first');
-            this.$wrapper = $root.find('.wrapper');
             this.$dropdown = $root.find('.sprite-icon-dropdown');
-
-            // Расчет Dropdown
-            var $items = this.$dropdown.children();
-            var $first_item = $items.eq(0);
-            var item_width = $first_item.outerWidth() + parseInt($first_item.css('margin-left')) +
-                parseInt($first_item.css('margin-right'));
-            var hor_count = Math.min(parseInt(DROPDOWN_MAX_WIDTH / item_width), $items.length);
-            this.$dropdown.width(hor_count * item_width);
 
             // Events
             var that = this;
             this.$root.off('.sprite-image');
             this.$root.on('click.sprite-image', '.sprite-icon-preview', function() {
-                if (!that.$wrapper.hasClass('opened')) {
+                if (!that.$root.hasClass('opened')) {
                     that.openDropdown();
                     return false;
                 }
@@ -41,7 +30,8 @@
         // Dropdown
         SpriteImage.prototype.openDropdown = function() {
             var that = this;
-            that.$wrapper.addClass('opened');
+            that.$root.addClass('opened');
+            that.$dropdown.stop().slideDown(300);
             $(document).off('.sprite-image').on('click.sprite-image', function() {
                 that.closeDropdown();
             });
@@ -49,7 +39,10 @@
 
         SpriteImage.prototype.closeDropdown = function() {
             $(document).off('.sprite-image');
-            this.$wrapper.removeClass('opened');
+            this.$root.removeClass('opened');
+            this.$dropdown.stop().slideUp(300, function() {
+                $(this).removeAttr('style')
+            });
         };
 
         return SpriteImage;
