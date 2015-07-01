@@ -5,6 +5,7 @@ import sys
 # проверить превью при ошибке фотки галереи
 # Slider3D: span
 
+# Gallery: восстановление из дампа
 # Gallery: zoom effect, keyboard, max photos count
 
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении

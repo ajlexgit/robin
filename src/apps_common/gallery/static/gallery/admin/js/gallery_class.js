@@ -197,8 +197,10 @@
 
                                     var $image = $('<img/>');
                                     $preview.find('img').remove();
-                                    $preview.prepend($image);
-                                    
+                                    $preview.prepend($image).css({
+                                        background: 'none'
+                                    });
+
                                     var final_canvas = $.cropToCanvas({
                                         source: canvas,
                                         width: $preview.width(),
