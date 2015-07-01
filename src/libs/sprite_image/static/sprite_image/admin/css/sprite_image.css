@@ -1,4 +1,5 @@
 .sprite-icon-field {
+    max-width: 544px;
     margin-right: 10px;
     font-size: 0;
     line-height: 0;
@@ -35,24 +36,23 @@
 
 .sprite-icon-preview {
     float: left;
+    margin: 5px 0 10px;
     box-shadow: 0 0 8px #888;
-
-    -webkit-transition: margin 0.3s;
-    -moz-transition: margin 0.3s;
-    -o-transition: margin 0.3s;
-    transition: margin 0.3s;
 }
 
 .sprite-icon-field.opened .sprite-icon-preview {
-    margin-top: 5px;
     box-shadow: 0 0 8px 1px #080;
 }
 
 /* Dropdown */
 .sprite-icon-dropdown {
     display: none;
-    overflow: hidden;
     margin-top: -5px;
+}
+
+.sprite-icon-list {
+    display: inline-block;
+    overflow: hidden;
     padding: 4px;
     cursor: default;
     background-color: white;
