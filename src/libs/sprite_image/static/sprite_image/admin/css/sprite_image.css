@@ -16,12 +16,6 @@
     padding: 1px 0;
 }
 
-.sprite-icon-field .wrapper:after {
-    content: '';
-    display: table;
-    clear: both;
-}
-
 /* Preview */
 .sprite-icon-preview, .sprite-icon-item {
     cursor: pointer;
