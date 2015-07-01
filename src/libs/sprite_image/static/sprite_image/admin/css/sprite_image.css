@@ -30,7 +30,6 @@
 
 .sprite-icon-preview {
     float: left;
-    margin: 5px 0 10px;
     box-shadow: 0 0 8px #888;
 }
 
@@ -41,12 +40,12 @@
 /* Dropdown */
 .sprite-icon-dropdown {
     display: none;
-    margin-top: -5px;
 }
 
 .sprite-icon-list {
     display: inline-block;
     overflow: hidden;
+    margin-left: 20px;
     padding: 4px;
     cursor: default;
     background-color: white;

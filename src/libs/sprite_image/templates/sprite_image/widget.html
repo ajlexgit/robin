@@ -9,7 +9,7 @@
                     background-position: {{ initial_position.0 }}px {{ initial_position.1 }}px">
         </div>
 
-        <div class="sprite-icon-dropdown" style="margin-left: {{ widget.size.0|add:20 }}px;">
+        <div class="sprite-icon-dropdown">
             <div class="sprite-icon-list">
                 {% for key, val in choices %}
                     <div class="sprite-icon-item {% if key == value %}active{% endif %}"
