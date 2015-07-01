@@ -1,4 +1,3 @@
-import json
 from django import forms
 from django.forms.utils import flatatt
 from django.template.loader import render_to_string
@@ -33,14 +32,13 @@ class SpriteImageWidget(forms.Widget):
         if text_value != '':
             final_attrs['value'] = text_value
 
-        choices_dict = dict(self.choices)
+        choices = tuple(self.choices)
+        choices_dict = dict(choices)
 
         return render_to_string(self.template, {
             'widget': self,
             'attrs': flatatt(final_attrs),
-            'name': name,
             'value': text_value,
-            'choices': choices_dict,
-            'choices_json': json.dumps(choices_dict),
+            'choices': choices,
             'initial_position': choices_dict.get(text_value, (0,0)),
         })

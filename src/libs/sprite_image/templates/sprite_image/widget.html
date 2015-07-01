@@ -1,29 +1,22 @@
-<style>
-    #sprite-icon-field-{{ name }} .sprite-icon-preview,
-    #sprite-icon-field-{{ name }} .sprite-icon-item {
-        width: {{ widget.size.0 }}px;
-        height: {{ widget.size.1 }}px;
-        background-image: url({{ widget.sprite }});
-    }
-
-    #sprite-icon-field-{{ name }} .sprite-icon-dropdown {
-        margin-left: {{ widget.size.0|add:20 }}px;
-    }
-</style>
-
-<div class="sprite-icon-field" id="sprite-icon-field-{{ name }}">
+<div class="sprite-icon-field">
     <input type="hidden" {{ attrs }}>
 
     <div class="wrapper">
         <div class="sprite-icon-preview"
-             style="background-position: {{ initial_position.0 }}px {{ initial_position.1 }}px">
+             style="width: {{ widget.size.0 }}px;
+                    height: {{ widget.size.1 }}px;
+                    background-image: url({{ widget.sprite }});
+                    background-position: {{ initial_position.0 }}px {{ initial_position.1 }}px">
         </div>
 
-        <div class="sprite-icon-dropdown">
+        <div class="sprite-icon-dropdown" style="margin-left: {{ widget.size.0|add:20 }}px;">
             <div class="sprite-icon-list">
-                {% for key, val in choices.items %}
+                {% for key, val in choices %}
                     <div class="sprite-icon-item {% if key == value %}active{% endif %}"
-                         style="background-position: {{ val.0 }}px {{ val.1 }}px"
+                         style="width: {{ widget.size.0 }}px;
+                                height: {{ widget.size.1 }}px;
+                                background-image: url({{ widget.sprite }});
+                                background-position: {{ val.0 }}px {{ val.1 }}px"
                          data-key="{{ key }}"></div>
                 {% endfor %}
             </div>
