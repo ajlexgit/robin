@@ -4,6 +4,7 @@
 {% load pipeline %}
 {% load social_buttons %}
 {% load comments %}
+{% load gallery %}
 {% load away %}
 
 {% block static_head %}
@@ -55,23 +56,31 @@
     </div>
 
     {% if config.gallery and config.gallery.image_items %}
-    <div id="slider_example">
-        <div class="grid">
-            <div class="gc-full gc-alone">
-                <div class="slider3d">
-                    <div class="slider3d-wrapper">
-                        {% for item in config.gallery.image_items %}
-                            <img class="slide {% if forloop.first %}front{% endif %}"
-                                 src="{{ item.image.normal.url }}"
-                                 alt=""
-                                 width="{{ item.image.normal.dimensions.0 }}"
-                                 height="{{ item.image.normal.dimensions.1 }}">
-                        {% endfor %}
+        <div id="slider_example">
+            <div class="grid">
+                <div class="gc-full gc-alone">
+                    <div class="slider3d">
+                        <div class="slider3d-wrapper">
+                            {% for item in config.gallery.image_items %}
+                                <img class="slide {% if forloop.first %}front{% endif %}"
+                                     src="{{ item.image.normal.url }}"
+                                     alt=""
+                                     width="{{ item.image.normal.dimensions.0 }}"
+                                     height="{{ item.image.normal.dimensions.1 }}">
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div id="gallery">
+            <div class="grid">
+                <div class="gc-full gc-alone">
+                    {% gallery config.gallery %}
+                </div>
+            </div>
+        </div>
     {% endif %}
 
     <div id="comments">

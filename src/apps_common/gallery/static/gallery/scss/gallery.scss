@@ -13,8 +13,11 @@
     margin: 0 8px 8px 0;
     @include unselectable;
 
-    &:nth-child(4n) {
+    &:nth-of-type(4n) {
       margin-right: 0;
+    }
+    &:nth-of-type(4n+1) {
+      clear: left;
     }
   }
 
@@ -47,7 +50,7 @@
     .gallery-button {
       z-index: 10;
       cursor: pointer;
-      @include overlay;
+      @include overlay($left:auto);
       @include unselectable;
 
       &:hover {

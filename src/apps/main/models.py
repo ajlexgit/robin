@@ -20,7 +20,10 @@ class MainGalleryImageItem(GalleryImageItem):
     ASPECTS = 'normal'
     VARIATIONS = dict(
         normal=dict(
-            size=(768, 576)
+            size=(768, 576),
+        ),
+        small=dict(
+            size=(160, 120),
         ),
         admin=dict(
             size=(160, 120),

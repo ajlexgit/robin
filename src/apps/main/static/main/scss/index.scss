@@ -90,6 +90,11 @@
   }
 }
 
+#gallery {
+  padding: 40px 0;
+  background: black;
+}
+
 #comments {
   padding: 40px 0;
   background: black;
@@ -98,10 +103,10 @@
 #social_buttons {
     background-color: #000000;
     @include no_fontsize;
-    
+
     .social-button {
         margin-right: 10px;
-        
+
         &:nth-last-of-type(1) {
             margin-right: 0;
         }
