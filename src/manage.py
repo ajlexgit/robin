@@ -1,8 +1,6 @@
 import os
 import sys
 
-
-# Gallery: восстановление из дампа
 # Gallery: zoom effect, keyboard, max photos count
 
 # Slider3D: span

@@ -23,7 +23,7 @@ from .fields import GalleryField
 
             SHOW_VARIATION = 'normal'
             ADMIN_VARIATION = 'micro'
-            ASPECTS = 'small'
+            ASPECTS = 'normal'
             VARIATIONS = dict(
                 normal=dict(
                     size=(400, 300)

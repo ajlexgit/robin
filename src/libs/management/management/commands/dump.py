@@ -1,7 +1,7 @@
 from django.core import management
 from optparse import make_option
 
-# pm dumpdata --natural --exclude=contenttypes --exclude=auth.Permission --exclude=admin.logentry
+# pm dumpdata --natural-foreign --exclude=contenttypes --exclude=auth.Permission --exclude=admin.logentry
 
 class Command(management.BaseCommand):
 
@@ -12,7 +12,7 @@ class Command(management.BaseCommand):
     def handle(self, *args, **options):
         management.call_command('dumpdata',
             *args,
-            natural=True,
+            use_natural_foreign_keys=True,
             exclude=('contenttypes', 'auth.Permission', 'admin.logentry'),
             **options
         )
