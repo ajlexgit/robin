@@ -5,47 +5,88 @@
     var RIGHT_ARROW = 'gallery-right-button';
     var MAIN_IMAGE = 'gallery-image';
 
-    var Gallery = function($container, selector) {
-        var that = this;
-        var popup = $.popup();
-        var $current_item;
+    window.Gallery = (function() {
+        function Gallery($root, options) {
+            this.$root = $root;
+            this.popup = $.popup();
+            this.settings = $.extend({
+                itemSelector: 'img',
+                itemVideoClass: 'gallery-item-video-link',
+                popupClass: 'popup-gallery',
+                popupVideoClass: 'popup-gallery-video'
+            }, options);
 
-        this.getCurrent = function() {
-            return $current_item;
+
+            var that = this;
+
+            // Открытие галереи при клике на элемент
+            this.$root.on('click.gallery', this.settings.itemSelector, function() {
+                that.showItem($(this));
+                return false;
+            });
+
+            // События стрелок окна и клиик на главной картинке
+            $(document).on('click.gallery', '.' + LEFT_ARROW, function() {
+                that.gotoNext();
+            }).on('click.gallery', '.' + RIGHT_ARROW, function() {
+                that.gotoPrev();
+            }).on('click.gallery', '.' + MAIN_IMAGE, $.rared(function() {
+                that.gotoNext();
+            }, 100));
+
+            // Обновление размеров окна
+            $(window).on('resize.gallery', $.rared(function() {
+                if (!that.popup) return;
+
+                var $main_img = that.popup.$content.find('.' + MAIN_IMAGE);
+                $main_img.css({
+                    height: 'auto'
+                });
+                var img_height = $main_img.height(),
+                    max_height = that.popup.$window.height();
+                if (img_height > max_height) {
+                    $main_img.width('').height(max_height);
+                }
+            }, 100));
+
+            // Сохранение объекта
+            this.$root.data('gallery', this);
+        }
+
+        // Получение текущего слайда
+        Gallery.prototype.getCurrent = function() {
+            return this._current_item;
         };
 
-        this._setCurrent = function($item) {
-            $current_item = $item;
-        };
-
-        this._nextOf = function($item) {
-            // Получение следующего элемента
-            var $next = $item.next(selector);
+        // Получение следующего слайда
+        Gallery.prototype.nextItem = function($item) {
+            var $next = $item.next(this.settings.itemSelector);
             if ($next.length) {
                 return $next;
             } else {
-                return $item.parent().find(selector).first();
+                return $item.parent().find(this.settings.itemSelector).first();
             }
         };
 
-        this._previousOf = function($item) {
-            // Получение предыдущего элемента
-            var $prev = $item.prev(selector);
+        // Получение предыдущего слайда
+        Gallery.prototype.prevItem = function($item) {
+            var $prev = $item.prev(this.settings.itemSelector);
             if ($prev.length) {
                 return $prev;
             } else {
-                return $item.parent().find(selector).last();
+                return $item.parent().find(this.settings.itemSelector).last();
             }
         };
 
-        this._activate_image = function($item) {
-            // Показ элемента $item, если он содержит картинку
+        // Переключение на указанный слайд-картинку
+        Gallery.prototype._gotoImageItem = function($item) {
+            var that = this;
             $.imageDeferred(
                 $item.data('big')
             ).done(function(img) {
                 var $main_img = $('<img>').addClass(MAIN_IMAGE).prop('src', img.src);
-                popup.update({
-                    classes: 'popup-gallery',
+                that.popup.update({
+                    classes: that.settings.popupClass,
                     content: $main_img,
                     clean: false,
                     ui: function(internal) {
@@ -60,7 +101,7 @@
                     }
                 });
 
-                popup.$content.css({
+                that.popup.$content.css({
                     maxWidth: img.width,
                     maxHeight: img.height
                 });
@@ -69,21 +110,22 @@
                     height: 'auto'
                 });
                 var img_height = $main_img.height(),
-                    max_height = popup.$window.height();
+                    max_height = that.popup.$window.height();
                 if (img_height > max_height) {
                     $main_img.width('').height(max_height);
                 }
             }).fail(function() {
-                $.popup().hide();
+                that.popup.hide();
             });
         };
 
-        this._activate_video = function($item) {
-            // Показ элемента $item, если он содержит видео
+        // Переключение на указанный слайд-видео
+        Gallery.prototype._gotoVideoItem = function($item) {
+            var that = this;
             var $frame = $('<div>').attr('id', 'gallery-video-player');
 
-            popup.update({
-                classes: 'popup-gallery popup-gallery-video',
+            this.popup.update({
+                classes: that.settings.popupClass + ' ' + that.settings.popupVideoClass,
                 content: $frame,
                 clean: true,
                 ui: function(internal) {
@@ -92,8 +134,7 @@
                         $('<div>').addClass(ARROW).addClass(LEFT_ARROW),
                         $('<div>').addClass(ARROW).addClass(RIGHT_ARROW)
                     ]
-                },
-                outClick: function() {
+                }, outClick: function() {
                     this.hide();
                 }
             });
@@ -108,11 +149,11 @@
                         rel: 0
                     }
                 }, function(player) {
-                    popup.on('slide.gallery hide.gallery', function() {
+                    that.popup.on('slide.gallery hide.gallery', function() {
                         if (player.stopVideo) {
                             player.stopVideo();
                         }
-                        popup.off('.gallery');
+                        that.popup.off('.gallery');
                     });
                 })
             } else if (provider == 2) {
@@ -120,112 +161,80 @@
                 $.vimeo($frame, {
                     videoId: $item.data('key')
                 }, function(player) {
-                    popup.on('slide.gallery hide.gallery', function() {
+                    that.popup.on('slide.gallery hide.gallery', function() {
                         if (player.api) {
                             player.api('pause');
                         }
-                        popup.off('.gallery');
+                        that.popup.off('.gallery');
                     });
                 })
             }
         };
 
-        this._activate = function($item) {
-            // Показ элемента $item
-            this._setCurrent($item);
-            if ($item.hasClass('gallery-item-video-link')) {
-                this._activate_video($item);
+        // Переход к слайду
+        Gallery.prototype._gotoItem = function($item) {
+            this._current_item = $item;
+            if ($item.hasClass(this.settings.itemVideoClass)) {
+                this._gotoVideoItem($item);
             } else {
-                this._activate_image($item);
+                this._gotoImageItem($item);
             }
         };
 
-        this.open = function($item) {
-            // Открытие окна галереи с активацией элемента $item
-            popup = $.popup.force({
+        // Открытие слайда
+        Gallery.prototype.showItem = function($item) {
+            this.popup = $.popup.force({
                 classes: 'preloader',
                 ui: $.noop,
                 outClick: $.noop
             });
-            popup.trigger('open.gallery');
-            this._activate($item);
+            this.popup.trigger('open.gallery');
+            this._gotoItem($item);
         };
 
-        this.slide_right = function() {
-            // Переход к следующему элементу галереи
-            var $next = that._nextOf(that.getCurrent());
+        // Показ следующего слайда
+        Gallery.prototype.gotoNext = function() {
+            var that = this;
+            var $next = that.nextItem(that.getCurrent());
             if (!$next.length) return;
 
-            popup.update({
-                classes: 'popup-gallery preloader',
+            that.popup.update({
+                classes: that.settings.popupClass + ' preloader',
                 outClick: $.noop
             });
 
-            popup.trigger('slide.gallery');
-            popup.trigger('slide-right.gallery');
-            that._activate($next);
+            that.popup.trigger('slide.gallery');
+            that.popup.trigger('slide-right.gallery');
+            that._gotoItem($next);
             return false;
         };
 
-        this.slide_left = function() {
-            // Переход к предыдущему элементу галереи
-            var $prev = that._previousOf(that.getCurrent());
+        // Показ предыдущего слайда
+        Gallery.prototype.gotoPrev = function() {
+            var that = this;
+            var $prev = that.prevItem(that.getCurrent());
             if (!$prev.length) return;
 
-            popup.update({
-                classes: 'popup-gallery preloader',
+            that.popup.update({
+                classes: that.settings.popupClass + ' preloader',
                 outClick: $.noop
             });
 
-            popup.trigger('slide.gallery');
-            popup.trigger('slide-left.gallery');
-            that._activate($prev);
+            that.popup.trigger('slide.gallery');
+            that.popup.trigger('slide-left.gallery');
+            that._gotoItem($prev);
             return false;
         };
 
-        // Сохранение объекта
-        $container.data('gallery', this);
-
-        // Защита от дублирования событий при повторном создании
-        $container.off('.gallery');
-        $(window).off('.gallery');
-        $(document).off('.gallery');
-
-        // Открытие галереи при клике на элемент
-        $container.on('click.gallery', selector, function() {
-            that.open($(this));
-            return false;
-        });
-
-        // События стрелок
-        $(document).on('click.gallery', '.' + LEFT_ARROW, this.slide_left);
-        $(document).on('click.gallery', '.' + RIGHT_ARROW, this.slide_right);
-
-        // Прокрутка элементов при клике на главной картинке
-        $(document).on('click.gallery', '.' + MAIN_IMAGE, $.rared(function() {
-            that.slide_right();
-        }, 100));
-
-        // Обновление размеров окна
-        $(window).on('resize.gallery', $.rared(function() {
-            if (!popup) return;
-
-            var $main_img = popup.$content.find('.' + MAIN_IMAGE);
-            $main_img.css({
-                height: 'auto'
-            });
-            var img_height = $main_img.height(),
-                max_height = popup.$window.height();
-            if (img_height > max_height) {
-                $main_img.width('').height(max_height);
-            }
-        }, 100));
-    };
+        return Gallery;
+    })();
 
 
     $.fn.gallery = function() {
         return this.each(function() {
-            new Gallery($(this), '.gallery-item');
+            new Gallery($(this), {
+                itemSelector: '.gallery-item'
+            });
         })
     }
 
