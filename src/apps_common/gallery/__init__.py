@@ -14,7 +14,7 @@ from .fields import GalleryField
         Проверка всех галерей на наличие привязки к сущности, пустоту и битые картинки
 
     Пример:
-        from gallery import GalleryBase, GalleryImageItem
+        from gallery import GalleryBase, GalleryImageItem, GalleryField
 
         class PostGalleryImageItem(GalleryImageItem):
             STORAGE_LOCATION = 'module/gallery'
@@ -25,6 +25,9 @@ from .fields import GalleryField
             ADMIN_VARIATION = 'micro'
             ASPECTS = 'small'
             VARIATIONS = dict(
+                normal=dict(
+                    size=(400, 300)
+                ),
                 small=dict(
                     size=(50, 50),
                 ),
@@ -35,6 +38,10 @@ from .fields import GalleryField
 
         class PostGallery(GalleryBase):
             IMAGE_MODEL = PostGalleryImageItem
+
+        class MyModel(models.Model):
+            ...
+            gallery = GalleryField(PostGallery, verbose_name=_('gallery'), blank=True, null=True)
 
     Перенарезка всех картинок галереи:
         1) for item in gallery.image_items:

@@ -18,7 +18,7 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-header'),
-            'fields': ('header_title', 'preview', 'text', 'description', 'color'),
+            'fields': ('header_title', 'preview', 'text', 'description', 'color', 'gallery'),
         }),
     )
     inlines = (InlineSampleAdmin, )
