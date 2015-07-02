@@ -1,7 +1,11 @@
 (function($) {
-    
+
     $(document).ready(function() {
-        $('.gallery').gallery();
+        $('.gallery').each(function() {
+            new Gallery($(this), {
+                itemSelector: '.gallery-item'
+            });
+        })
     })
-    
+
 })(jQuery);

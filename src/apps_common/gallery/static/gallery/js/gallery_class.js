@@ -229,13 +229,4 @@
         return Gallery;
     })();
 
-
-    $.fn.gallery = function() {
-        return this.each(function() {
-            new Gallery($(this), {
-                itemSelector: '.gallery-item'
-            });
-        })
-    }
-
 })(jQuery);
