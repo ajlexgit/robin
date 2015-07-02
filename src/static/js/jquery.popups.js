@@ -143,31 +143,31 @@
 
 
     var Popup = function() {
+        var that =this;
         var $body = $(document.body);
         this.visible = false;
 
         this.internal = {
             ui: function() {
-                var that = this,
-                    close_button = $('<div/>').attr('id', 'popup-close-button');
+                var close_button = $('<div/>').attr('id', 'popup-close-button');
                 return close_button.on('click', function() {
                     that.hide();
                     return false;
                 });
             },
             show: function() {
-                this.$windowWrapper.get(0).scrollTop = 0;
+                that.$windowWrapper.get(0).scrollTop = 0;
                 var $html = $(document.documentElement),
-                    saved = this.saveStyles($html, 'overflow', 'paddingRight');
+                    saved = that.saveStyles($html, 'overflow', 'paddingRight');
                 $html.css({
                     overflow: 'hidden',
-                    paddingRight: (parseInt(saved.paddingRight) || 0) + this.scrollWidth
+                    paddingRight: (parseInt(saved.paddingRight) || 0) + scrollWidth
                 });
             },
             hide: function() {
-                this._overlay();
-                this.$container.stop(true).hide();
-                this.loadStyles($(document.documentElement), 'overflow', 'paddingRight');
+                that._overlay();
+                that.$container.stop(true).hide();
+                that.loadStyles($(document.documentElement), 'overflow', 'paddingRight');
             }
         };
 
@@ -176,7 +176,7 @@
             var storage = $element.data(),
                 props = [].slice.call(arguments, 1),
                 result = {};
-            for (var i=0, l=props.length;i<l;i++) {
+            for (var i=0, l=props.length; i<l; i++) {
                 var storage_name = '_popup_'+props[i];
                 if (typeof storage[storage_name] == 'undefined') {
                     storage[storage_name] = result[props[i]] = $element.css(props[i]);
@@ -189,7 +189,7 @@
         this.loadStyles = function($element) {
             var storage = $element.data(),
                 props = [].slice.call(arguments, 1);
-            for (var i=0, l=props.length;i<l;i++) {
+            for (var i=0, l=props.length; i<l; i++) {
                 var storage_name = '_popup_'+props[i];
                 if (typeof storage[storage_name] != 'undefined') {
                     $element.css(props[i], storage[storage_name]);
@@ -199,9 +199,7 @@
         };
 
 
-        /*
-            Показ окна
-        */
+        // Показ окна
         this.show = function() {
             if (this.visible) return;
             this.visible = true;
@@ -211,9 +209,7 @@
             return this;
         };
 
-        /*
-            Скрытие окна
-        */
+        // Скрытие окна
         this.hide = function() {
             if (!this.visible) return;
             this.visible = false;
@@ -223,23 +219,21 @@
 
         // ============================
 
+        // Показ оверлея, если окно открыто и видимо. Иначе - скрытие оверлея
         this._overlay = function() {
             this.$overlay.hide();
-            if (this.visible && this.__overlay) {
+            if (this.visible && this._useOverlay) {
                 this.$overlay.show();
             }
         };
 
-        /*
-            Инициализация
-        */
+        // Инициализация
         this._init = function(settings) {
             this.$container = $('#' + ID_CONTAINER);
             this.$overlay = $('#' + ID_OVERLAY);
             this.$windowWrapper = $('#' + ID_WINDOW_WRAPPER);
             this.$window = $('#' + ID_WINDOW);
             this.$content = $('#' + ID_CONTENT);
-            this.scrollWidth = scrollWidth;
 
             if (!this.$container.length) {
                 this.$container = $('<div/>').attr('id', ID_CONTAINER);
@@ -321,7 +315,7 @@
 
             // Оверлэй
             if (typeof settings.overlay != 'undefined') {
-                this.__overlay = settings.overlay;
+                this._useOverlay = settings.overlay;
                 this._overlay();
             }
 
@@ -413,7 +407,7 @@
             that.trigger('before_hide');
             that.$container.animate({
                 opacity: 0
-            }, 200, function() {
+            }, 2000, function() {
                 internal.call(that);
                 that.trigger('hide');
             });
