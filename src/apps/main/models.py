@@ -12,21 +12,18 @@ from libs.stdimage import StdImageField
 
 class MainGalleryImageItem(GalleryImageItem):
     STORAGE_LOCATION = 'main/gallery'
-    MIN_DIMENSIONS = (400, 300)
+    MIN_DIMENSIONS = (768, 576)
     ADMIN_CLIENT_RESIZE = True
 
     SHOW_VARIATION = 'normal'
-    ADMIN_VARIATION = 'micro'
+    ADMIN_VARIATION = 'admin'
     ASPECTS = 'normal'
     VARIATIONS = dict(
         normal=dict(
-            size=(400, 300)
+            size=(768, 576)
         ),
-        small=dict(
-            size=(50, 50),
-        ),
-        micro=dict(
-            size=(120, 100),
+        admin=dict(
+            size=(160, 120),
         ),
     )
 
