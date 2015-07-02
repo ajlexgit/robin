@@ -407,7 +407,7 @@
             that.trigger('before_hide');
             that.$container.animate({
                 opacity: 0
-            }, 2000, function() {
+            }, 200, function() {
                 internal.call(that);
                 that.trigger('hide');
             });
