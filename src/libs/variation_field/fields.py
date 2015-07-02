@@ -154,6 +154,22 @@ class VariationImageFieldFile(ImageFieldFile):
             else:
                 self._cropsize = ()
 
+    @property
+    def variation_files(self):
+        """
+            Возвращает кортеж путей к вариациям файла.
+            Существование файлов не гарантировано.
+            !!! Пути не учитывают storage !!!
+        """
+        files_list = []
+
+        if self.name:
+            for name, variation in self.field.variations.items():
+                path = self.field._build_variation_name(variation, self.name)
+                files_list.append(path)
+
+        return tuple(files_list)
+
     def recut(self, *args, crop=None):
         """
             Перенарезка вариаций.

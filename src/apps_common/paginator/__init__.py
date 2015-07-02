@@ -28,7 +28,7 @@ from .paginator import Paginator, EmptyPage
             <!-- Навигация -->
             {% if paginator.num_pages > 1 %}
                 <div class="grid">
-                    <div class="grid-col-wide-6 grid-col-6 grid-col-tablet-6 grid-col-mobile-4 grid-col-alone">
+                    <div class="gc-wide-6 gc-6 gc-tablet-6 gc-mobile-4 gc-alone">
                         {{ paginator }}
                     </div>
                 </div>
