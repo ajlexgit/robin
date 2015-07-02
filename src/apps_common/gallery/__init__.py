@@ -14,34 +14,45 @@ from .fields import GalleryField
         Проверка всех галерей на наличие привязки к сущности, пустоту и битые картинки
 
     Пример:
-        from gallery import GalleryBase, GalleryImageItem, GalleryField
+        models.py:
+            from gallery import GalleryBase, GalleryImageItem, GalleryField
 
-        class PostGalleryImageItem(GalleryImageItem):
-            STORAGE_LOCATION = 'module/gallery'
-            MIN_DIMENSIONS = (400, 300)
-            ADMIN_CLIENT_RESIZE = True
+            class PostGalleryImageItem(GalleryImageItem):
+                STORAGE_LOCATION = 'module/gallery'
+                MIN_DIMENSIONS = (400, 300)
+                ADMIN_CLIENT_RESIZE = True
 
-            SHOW_VARIATION = 'normal'
-            ADMIN_VARIATION = 'micro'
-            ASPECTS = 'normal'
-            VARIATIONS = dict(
-                normal=dict(
-                    size=(400, 300)
-                ),
-                small=dict(
-                    size=(50, 50),
-                ),
-                micro=dict(
-                    size=(120, 100),
-                ),
-            )
+                SHOW_VARIATION = 'normal'
+                ADMIN_VARIATION = 'micro'
+                ASPECTS = 'normal'
+                VARIATIONS = dict(
+                    normal=dict(
+                        size=(400, 300)
+                    ),
+                    micro=dict(
+                        size=(120, 100),
+                    ),
+                )
 
-        class PostGallery(GalleryBase):
-            IMAGE_MODEL = PostGalleryImageItem
+            class PostGallery(GalleryBase):
+                IMAGE_MODEL = PostGalleryImageItem
 
-        class MyModel(models.Model):
-            ...
-            gallery = GalleryField(PostGallery, verbose_name=_('gallery'), blank=True, null=True)
+            class MyModel(models.Model):
+                ...
+                gallery = GalleryField(PostGallery, verbose_name=_('gallery'), blank=True, null=True)
+
+        template.html:
+            {% if config.gallery and config.gallery.image_items %}
+                ...
+                    {% for item in config.gallery.image_items %}
+                        <img class="{% if forloop.first %}first{% endif %}"
+                             src="{{ item.image.normal.url }}"
+                             alt=""
+                             width="{{ item.image.normal.dimensions.0 }}"
+                             height="{{ item.image.normal.dimensions.1 }}">
+                    {% endfor %}
+                ...
+            {%endif
 
     Перенарезка всех картинок галереи:
         1) for item in gallery.image_items:
