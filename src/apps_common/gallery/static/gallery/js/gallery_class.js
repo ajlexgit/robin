@@ -8,7 +8,6 @@
     window.Gallery = (function() {
         function Gallery($root, options) {
             this.$root = $root;
-            this.popup = $.popup();
             this.settings = $.extend({
                 itemSelector: 'img',
                 itemVideoClass: 'gallery-item-video-link',
@@ -36,7 +35,7 @@
 
             // Обновление размеров окна
             $(window).on('resize.gallery', $.rared(function() {
-                if (!that.popup) return;
+                if ((!that.popup) || (that.popup != $.popup())) return;
 
                 var $main_img = that.popup.$content.find('.' + MAIN_IMAGE);
                 $main_img.css({
@@ -124,7 +123,7 @@
             var that = this;
             var $frame = $('<div>').attr('id', 'gallery-video-player');
 
-            this.popup.update({
+            that.popup.update({
                 classes: that.settings.popupClass + ' ' + that.settings.popupVideoClass,
                 content: $frame,
                 clean: true,
@@ -173,6 +172,8 @@
 
         // Переход к слайду
         Gallery.prototype._gotoItem = function($item) {
+            if ((!this.popup) || (this.popup != $.popup())) return;
+
             this._current_item = $item;
             if ($item.hasClass(this.settings.itemVideoClass)) {
                 this._gotoVideoItem($item);
@@ -194,35 +195,37 @@
 
         // Показ следующего слайда
         Gallery.prototype.gotoNext = function() {
-            var that = this;
-            var $next = that.nextItem(that.getCurrent());
+            if ((!this.popup) || (this.popup != $.popup())) return;
+
+            var $next = this.nextItem(this.getCurrent());
             if (!$next.length) return;
 
-            that.popup.update({
-                classes: that.settings.popupClass + ' preloader',
+            this.popup.update({
+                classes: this.settings.popupClass + ' preloader',
                 outClick: $.noop
             });
 
-            that.popup.trigger('slide.gallery');
-            that.popup.trigger('slide-right.gallery');
-            that._gotoItem($next);
+            this.popup.trigger('slide.gallery');
+            this.popup.trigger('slide-right.gallery');
+            this._gotoItem($next);
             return false;
         };
 
         // Показ предыдущего слайда
         Gallery.prototype.gotoPrev = function() {
-            var that = this;
-            var $prev = that.prevItem(that.getCurrent());
+            if ((!this.popup) || (this.popup != $.popup())) return;
+
+            var $prev = this.prevItem(this.getCurrent());
             if (!$prev.length) return;
 
-            that.popup.update({
-                classes: that.settings.popupClass + ' preloader',
+            this.popup.update({
+                classes: this.settings.popupClass + ' preloader',
                 outClick: $.noop
             });
 
-            that.popup.trigger('slide.gallery');
-            that.popup.trigger('slide-left.gallery');
-            that._gotoItem($prev);
+            this.popup.trigger('slide.gallery');
+            this.popup.trigger('slide-left.gallery');
+            this._gotoItem($prev);
             return false;
         };
 
