@@ -1,6 +1,6 @@
 from django.template import Library
-from .. import options
-from ..menu import Menu
+from django.utils.translation import ugettext_lazy as _
+from ..menu import Menu, MenuItem
 
 register = Library()
 
@@ -12,5 +12,10 @@ def main_menu(context, template='menu/menu.html'):
     if not request:
         return ''
 
-    menu = Menu(request, options.MAIN_MENU)
+    menu = Menu(request)
+    menu.append(
+        MenuItem(_('News'), '#'),
+        MenuItem(_('Articles'), '#'),
+        MenuItem(_('Contacts'), '#'),
+    )
     return menu.render(template)

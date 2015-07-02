@@ -8,16 +8,18 @@ class Paginator(paginator.Paginator):
     parameter_name = 'page'
     template = 'paginator/paginator.html'
 
-    # При сжатии страниц: кол-во страниц, соседних текущей с каждой стороны,
-    # чьи номера будут показаны
-    page_neighbors = 2
-
-    # При сжатии страниц: минимальное кол-во страниц, заменямых многоточием
-    min_zip_pages = 2
-
     def __init__(self, request, *args, **kwargs):
+        # При сжатии страниц: кол-во страниц, соседних текущей с каждой стороны,
+        # чьи номера будут показаны
         self.page_neighbors = kwargs.pop('page_neighbors', 2)
+
+        # При сжатии страниц: кол-во страниц, соседних с граничными,
+        # чьи номера будут показаны
+        self.side_neighbors = kwargs.pop('side_neighbors', 0)
+
+        # При сжатии страниц: минимальное кол-во страниц, заменямых многоточием
         self.min_zip_pages = kwargs.pop('min_zip_pages', 2)
+
         super().__init__(*args, **kwargs)
         self.request = request
         if not self.allow_empty_first_page and self.count == 0:
@@ -49,18 +51,17 @@ class Paginator(paginator.Paginator):
     @cached_property
     def zipped_page_range(self):
         """ Список номеров страниц с учетом сокращения длинного списка """
-        page = self.page
-        left_page = max(1, page.number - self.page_neighbors)
-        right_page = min(self.num_pages, page.number + self.page_neighbors)
+        left_page = max(1, self.page.number - self.page_neighbors)
+        right_page = min(self.num_pages, self.page.number + self.page_neighbors)
         result = []
 
-        if left_page > 1 + self.page_neighbors + self.min_zip_pages:
-            result += list(range(1, 2 + self.page_neighbors)) + [None] + list(range(left_page, right_page + 1))
+        if left_page > 1 + self.side_neighbors + self.min_zip_pages:
+            result += list(range(1, 2 + self.side_neighbors)) + [None] + list(range(left_page, right_page + 1))
         else:
             result += list(range(1, right_page + 1))
 
-        if right_page < self.num_pages - self.page_neighbors - self.min_zip_pages:
-            result += [None] + list(range(self.num_pages - self.page_neighbors, self.num_pages + 1))
+        if right_page < self.num_pages - self.side_neighbors - self.min_zip_pages:
+            result += [None] + list(range(self.num_pages - self.side_neighbors, self.num_pages + 1))
         else:
             result += list(range(right_page + 1, self.num_pages + 1))
 
@@ -82,4 +83,3 @@ class Paginator(paginator.Paginator):
             'paginator': self,
             'page': page,
         })
-

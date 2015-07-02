@@ -47,21 +47,30 @@ from .paginator import Paginator, EmptyPage
         Paginator.page_neighbors - количество страниц, соседних
         с текущей с каждой стороны, чьи номера будут показаны.
 
+        Paginator.side_neighbors - количество страниц, соседних
+        с граничными, чьи номера будут показаны.
+
         Paginator.min_zip_pages - минимальное количествово страниц,
         заменямых на None.
 
     Примеры:
-        1) page_neighbors = 2, min_zip_pages = 2
+        1) page_neighbors = 2, side_neighbors = 0, min_zip_pages = 2
+            (1) 2 3 ... 10
+            1 2 (3) 4 5 ... 10
+            1 ... 5 6 (7) 8 9 10
+            1 ... 7 8 (9) 10
+
+        2) page_neighbors = 2, side_neighbors = 2, min_zip_pages = 2
             (1) 2 3 ... 8 9 10
             1 2 (3) 4 5 ... 8 9 10
             1 2 3 4 5 6 (7) 8 9 10
             1 2 3 ... 6 7 (8) 9 10
 
-        2) page_neighbors = 0, min_zip_pages = 2
+        3) page_neighbors = 0, side_neighbors = 0, min_zip_pages = 2
             (1) ... 10
-            1 2 3 (4) ... 10
+            1 2 (3) ... 10
             1 ... (5) ... 10
-            1 ... (7) 8 9 10
+            1 ... (8) 9 10
 
     Для реализации постраничной навигации, при которой все
     страницы изначально находятся на странице и навигация
