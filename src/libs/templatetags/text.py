@@ -7,10 +7,9 @@ from django.utils.safestring import mark_safe
 
 register = Library()
 
-re_nbsp = re.compile('\\b([\'\"\w]{1,3})\s+')
+re_nbsp = re.compile('\\b([\'\"\.\w]{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
-
 
 
 @register.filter(name="striptags_except")
