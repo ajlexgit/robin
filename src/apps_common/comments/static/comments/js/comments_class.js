@@ -27,9 +27,7 @@
             return gettext('Ошибка соединения с сервером: ' + text);
         };
 
-        /*
-            Возвращает jQuery-список, содержащий ветку комментариев
-        */
+        // Возвращает jQuery-список, содержащий ветку комментариев
         Comments.prototype.getBranch = function($parent_comment) {
             var that = this;
             var parent_comment_level = $parent_comment.data('level');
@@ -39,9 +37,7 @@
             }).addBack();
         };
 
-        /*
-            Удаление всех пустых форм
-        */
+        // Удаление всех пустых форм
         Comments.prototype.removeEmptyForms = function() {
             var that = this;
             that.$wrapper.find('.' + that.settings.comments_container_class + ' form').each(function() {
@@ -54,9 +50,7 @@
             });
         };
 
-        /*
-            Обновление всего блока комментариев
-        */
+        // Обновление всего блока комментариев
         Comments.prototype.refresh = function() {
             var that = this;
             var df = $.Deferred();
@@ -80,9 +74,7 @@
             return df.promise();
         };
 
-        /*
-            Показ формы ответа на коммент
-        */
+        // Показ формы ответа на коммент
         Comments.prototype.replyForm = function($comment) {
             var df = $.Deferred();
             this.removeEmptyForms();
@@ -99,9 +91,7 @@
             return df.resolve($reply_form);
         };
 
-        /*
-            Показ формы редактирования комментария
-        */
+        // Показ формы редактирования комментария
         Comments.prototype.editForm = function($comment) {
             var that = this;
             var df = $.Deferred();
@@ -136,9 +126,7 @@
             return df.promise();
         };
 
-        /*
-            Удаление комментария
-        */
+        // Удаление комментария
         Comments.prototype.remove = function($comment) {
             var that = this;
             var df = $.Deferred();
@@ -166,39 +154,7 @@
             return df.promise();
         };
 
-        /*
-            Удаление комментария
-        */
-        Comments.prototype.remove = function($comment) {
-            var that = this;
-            var df = $.Deferred();
-            $.ajax({
-                url: window.js_storage.comment_delete,
-                type: 'POST',
-                data: {
-                    content_type: that.content_type,
-                    object_id: that.object_id,
-                    comment: $comment.data('id')
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
-                    var $new_comment = $(response.html);
-                    $comment.replaceWith($new_comment);
-                    df.resolve($new_comment);
-                },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
-            });
-            return df.promise();
-        };
-
-        /*
-            Восстановление комментария
-        */
+        // Восстановление комментария
         Comments.prototype.restore = function($comment) {
             var that = this;
             var df = $.Deferred();
@@ -226,9 +182,7 @@
             return df.promise();
         };
 
-        /*
-            Оценка комментария
-        */
+        // Оценка комментария
         Comments.prototype.vote = function($comment, is_like) {
             var that = this;
             var df = $.Deferred();
@@ -257,9 +211,7 @@
             return df.promise();
         };
 
-        /*
-            Добавление комментария
-        */
+        // Добавление комментария
         Comments.prototype.post = function($form) {
             var that = this;
             var df = $.Deferred();
@@ -293,9 +245,7 @@
             return df.promise();
         };
 
-        /*
-            Редактирование комментария
-        */
+        // Редактирование комментария
         Comments.prototype.edit = function($form) {
             var that = this;
             var df = $.Deferred();

@@ -6,7 +6,7 @@
     var MAIN_IMAGE = 'gallery-image';
 
     window.Gallery = (function() {
-        function Gallery($root, options) {
+        var Gallery = function($root, options) {
             this.$root = $root;
             this.settings = $.extend({
                 itemSelector: 'img',

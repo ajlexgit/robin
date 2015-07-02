@@ -1,6 +1,7 @@
 import os
 import sys
 
+# JS classes for comments, popups, gallery admin
 # Gallery: zoom effect, keyboard, max photos count
 
 # Slider3D: span
