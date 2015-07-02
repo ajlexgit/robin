@@ -31,17 +31,25 @@
     margin: 1.1em 0 0.55em;
     line-height: 1.2;
     word-break: break-word;
+    font-weight: bold;
     @include font-size(30px);
     @include media_interval(0, $media768) {
       letter-spacing: 1px;
       @include font-size(24px);
     }
   }
-  
-  h3 {
+
+  h2 {
     @include font-size(26px);
     @include media_interval(0, $media768) {
       @include font-size(22px);
+    }
+  }
+
+  h3 {
+    @include font-size(20px);
+    @include media_interval(0, $media768) {
+      @include font-size(18px);
     }
   }
 
