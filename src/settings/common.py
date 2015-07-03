@@ -413,7 +413,7 @@ CKEDITOR_CONFIG_MINI = {
     'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
     'plugins': 'basicstyles,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
-               'htmlwriter,link,list,'
+               'htmlwriter,link,list,pastetext,'
                'removeformat,resize,showborders,sourcearea,'
                'tab,toolbar,wsc,wysiwygarea',
     'removeButtons': 'Anchor,Strike,Superscript,Subscript,JustifyBlock',
