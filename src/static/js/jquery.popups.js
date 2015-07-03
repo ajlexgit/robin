@@ -309,16 +309,15 @@
             this.$container.stop(true).show();
 
             // Вешаем событие на клик вне окна
-            $(document).off('.popup.out');
-            if ($.isFunction(this.settings.outClick)) {
-                var that = this;
-                $(document).on('click.popup.out', function(event) {
+            var that = this;
+            $(document).off('.popup.out').on('click.popup.out', function(event) {
+                if ($.isFunction(that.settings.outClick)) {
                     var $target = $(event.target);
                     if (!$target.closest(that.$window).length) {
                         that.settings.outClick.call(that, event);
                     }
-                });
-            }
+                }
+            });
 
             this.settings.show.call(this);
             return this;
@@ -379,13 +378,6 @@
             // Оверлэй
             if (typeof options.overlay != 'undefined') {
                 this._checkOverlay();
-            }
-
-            // Клик вне окна
-            if (typeof options.outClick != 'undefined') {
-                if (this.visible && !options.outClick) {
-                    $(document).off('.popup.out');
-                }
             }
 
             this.trigger('config');
