@@ -18,7 +18,7 @@
     }).on('click.comments.reply', '.comment .reply', function() {
         // Форма ответа на коммент
         var $comment = $(this).closest('.comment'),
-            object = $comment.closest('.comments-wrapper').data('object');
+            object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
 
         object.replyForm($comment).done(function($reply_form) {
             $comment.addClass('inner-form inner-form-reply');
@@ -28,7 +28,7 @@
     }).on('click.comments.edit', '.comment .edit', function() {
         // Форма редактирования коммента
         var $comment = $(this).closest('.comment'),
-            object = $comment.closest('.comments-wrapper').data('object');
+            object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
 
         object.editForm($comment).done(function($edit_form) {
             $comment.addClass('inner-form inner-form-edit');
@@ -41,7 +41,7 @@
         // Удаление коммента
         var $button = $(this),
             $comment = $button.closest('.comment'),
-            object = $comment.closest('.comments-wrapper').data('object');
+            object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
         if ($button.hasClass('disabled')) return false;
 
         $button.addClass('disabled');
@@ -56,7 +56,7 @@
         // Восстановление коммента
         var $button = $(this),
             $comment = $button.closest('.comment'),
-            object = $comment.closest('.comments-wrapper').data('object');
+            object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
         if ($button.hasClass('disabled')) return false;
 
         $button.addClass('disabled');
@@ -71,7 +71,7 @@
         // Голос ЗА коммент
         var $comment = $(this).closest('.comment'),
             $rating = $(this).closest('.rating'),
-            object = $comment.closest('.comments-wrapper').data('object');
+            object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
         if ($rating.hasClass('disabled')) return false;
 
         $rating.addClass('disabled');
@@ -85,7 +85,7 @@
         // Голос ПРОТИВ коммента
         var $comment = $(this).closest('.comment'),
             $rating = $(this).closest('.rating'),
-            object = $comment.closest('.comments-wrapper').data('object');
+            object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
         if ($rating.hasClass('disabled')) return false;
 
         $rating.addClass('disabled');
@@ -105,7 +105,7 @@
     }).on('submit.comments.post', '.comment-post-form', function() {
         // Добавление комментария
         var $form = $(this),
-            object = $form.closest('.comments-wrapper').data('object');
+            object = $form.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
         if ($form.hasClass('disabled')) return false;
 
         $form.addClass('disabled');
@@ -130,7 +130,7 @@
     }).on('submit.comments.change', '.comment-edit-form', function() {
         // Редактирование комментария
         var $form = $(this),
-            object = $form.closest('.comments-wrapper').data('object');
+            object = $form.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
         if ($form.hasClass('disabled')) return false;
 
         $form.addClass('disabled');
@@ -152,7 +152,7 @@
     }).on('login.auth.comments', function() {
         // Обновление комментов при авторизации
         $('.comments-wrapper').each(function() {
-            var object = $(this).data('object');
+            var object = $(this).data(window.COMMENTS_DATA_NAME);
             object.refresh().fail(function(reason) {
                 console.error(reason);
             });
@@ -160,16 +160,17 @@
     }).on('logout.auth.comments', function() {
         // Обновление комментов при выходе из профиля
         $('.comments-wrapper').each(function() {
-            var object = $(this).data('object');
+            var object = $(this).data(window.COMMENTS_DATA_NAME);
             object.refresh().fail(function(reason) {
                 console.error(reason);
             });
         });
     }).on('click.comments', function(event) {
+        // TODO: вешать только при открытии формы
         // Удаление пустых форм при клике вне формы комментирования
         $('.comments-wrapper').each(function() {
             if (!$(event.target).closest('form').closest(this).length) {
-                var object = $(this).data('object');
+                var object = $(this).data(window.COMMENTS_DATA_NAME);
                 object.removeEmptyForms();
             }
         });

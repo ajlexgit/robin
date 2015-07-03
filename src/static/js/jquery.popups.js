@@ -19,24 +19,21 @@
         // Поместить UI вне модального окна
         outer_ui: false,
 
-        // Содержимое окна
+        // HTML или метод, возвращающий содержимое окна
         content: ''
 
-        // Очистить элементы окна от классов и inline-стилей
-        clean: true
+        // HTML или метод, возвращающий дополнительные элементы окна, например кнопку закрытия.
+        ui: func()
 
-        // Метод, возвращающий дополнительные элементы окна, например кнопку закрытия.
-        ui: func(internal)
+        // Метод, вызываемый при показе окна.
+        // Должен вызвать метод this._defaultBeforeShow();
+        show: func()
 
-        // Метод, вызываемый при popup.show(). Принимает callback-функцию internal,
-        // которая выполняет действия по умолчанию.
-        show: func(internal)
+        // Метод, вызываемый при закрытии окна.
+        // Должен вызвать метод this._defaultAfterHide();
+        hide: func()
 
-        // Метод, вызываемый при popup.hide(). Принимает callback-функцию internal,
-        // которая выполняет действия по умолчанию.
-        hide: func(internal)
-
-        // Метод, вызываемый при клике вне окна. Принимает объект события.
+        // Метод, вызываемый при клике вне окна (либо false)
         outClick: func(event)
 
     Методы объекта окна:
@@ -49,8 +46,8 @@
         // Сохраняет значения указанных стилей css1, css2, ... элемента $element.
         popup.saveStyles($element, css1, css2, ...)
 
-        // Восстанавливает ранее сохраненные значения указанных стилей элемента $element.
-        popup.loadStyles($element, css1, css2, ...)
+        // Восстанавливает ранее сохраненные значения стилей элемента $element.
+        popup.loadStyles($element)
 
     Внутренняя система событий:
         popup.on(events, callback)
@@ -86,11 +83,15 @@
             $.popup({
                 overlay: false,
                 content: '<h1>I am alert example</h1>',
-                show: function(internal) {
-                    internal.call(this)
+                show: function() {
+                    this.trigger('before_show');
+                    this._defaultBeforeShow();
+                    this.trigger('show');
                 },
-                hide: function(internal) {
-                    internal.call(this)
+                hide: function() {
+                    this.trigger('before_hide');
+                    this._defaultAfterHide();
+                    this.trigger('hide');
                 },
                 outClick: $.noop
             }).show()
@@ -112,19 +113,43 @@
 
         7) Если окно видимо - обновить, иначе - создать и показать
             $.popup.force({
-                content: '<h1>I am alert example</h1>',
+                classes: 'preloader',
+                ui: false,
+                outClick: false
+            });
+
+            $.ajax({
+                ...
+                success: function(response) {
+                    $.popup({
+                        content: response
+                    });
+                },
+                ...
             })
 
     Инфа для разработчика:
         Блок $content введен в $window из-за необходимости разных значений overflow.
 */
 
-    var popup,
-        scrollWidth = (function() {
+    window.Popup = (function() {
+        // IDs
+        var ID_CONTAINER = 'popup-container';
+        var ID_OVERLAY = 'popup-overlay';
+        var ID_WINDOW_WRAPPER = 'popup-window-wrapper';
+        var ID_WINDOW = 'popup-window';
+        var ID_CONTENT = 'popup-content';
+        var ID_CLOSE_BUTTON = 'popup-close-button';
+
+        // ===================================================
+
+        var $body = $(document.body);
+        var $html = $(document.documentElement);
+        var scrollWidth = (function() {
             var div = document.createElement('div');
             div.style.position = 'absolute';
             div.style.overflowY = 'scroll';
-            div.style.width =  '20px';
+            div.style.width = '20px';
             div.style.visibility = 'hidden';
             div.style.padding = '0';
             div.style.fontSize = '0';
@@ -135,286 +160,288 @@
             return result;
         })();
 
-    var ID_CONTAINER = 'popup-container',
-        ID_OVERLAY = 'popup-overlay',
-        ID_WINDOW_WRAPPER = 'popup-window-wrapper',
-        ID_WINDOW = 'popup-window',
-        ID_CONTENT = 'popup-content';
+        var DEFAULT_SETTINGS = {
+            classes: '',
+            overlay: true,
+            content: '',
+            outer_ui: false,
+            clean: true,
 
-
-    var Popup = function() {
-        var that =this;
-        var $body = $(document.body);
-        this.visible = false;
-
-        this.internal = {
             ui: function() {
-                var close_button = $('<div/>').attr('id', 'popup-close-button');
-                return close_button.on('click', function() {
-                    that.hide();
-                    return false;
-                });
+                var that = this;
+                return that._defaultUI();
             },
+
             show: function() {
-                that.$windowWrapper.get(0).scrollTop = 0;
-                var $html = $(document.documentElement),
-                    saved = that.saveStyles($html, 'overflow', 'paddingRight');
-                $html.css({
-                    overflow: 'hidden',
-                    paddingRight: (parseInt(saved.paddingRight) || 0) + scrollWidth
+                var that = this;
+                that.trigger('before_show');
+                that._defaultBeforeShow();
+
+                that.$container.css({
+                    opacity: 0
+                }).animate({
+                    opacity: 1
+                }, 200, function() {
+                    that.trigger('show');
                 });
             },
+
             hide: function() {
-                that._overlay();
-                that.$container.stop(true).hide();
-                that.loadStyles($(document.documentElement), 'overflow', 'paddingRight');
+                var that = this;
+                that.trigger('before_hide');
+
+                that.$container.animate({
+                    opacity: 0
+                }, 200, function() {
+                    that._defaultAfterHide();
+                    that.trigger('hide');
+                });
+            },
+
+            outClick: function() {
+                this.hide();
             }
         };
 
-        // Сохранение CSS свойств элемента
-        this.saveStyles = function($element) {
-            var storage = $element.data(),
-                props = [].slice.call(arguments, 1),
-                result = {};
-            for (var i=0, l=props.length; i<l; i++) {
-                var storage_name = '_popup_'+props[i];
-                if (typeof storage[storage_name] == 'undefined') {
-                    storage[storage_name] = result[props[i]] = $element.css(props[i]);
-                }
-            }
-            return result;
-        };
+        // ===================================================
 
-        // Восстановление CSS свойств элемента
-        this.loadStyles = function($element) {
-            var storage = $element.data(),
-                props = [].slice.call(arguments, 1);
-            for (var i=0, l=props.length; i<l; i++) {
-                var storage_name = '_popup_'+props[i];
-                if (typeof storage[storage_name] != 'undefined') {
-                    $element.css(props[i], storage[storage_name]);
-                    delete storage[storage_name];
-                }
-            }
-        };
+        var Popup = function(options) {
+            $('#' + ID_CONTAINER).remove();
+            $('#' + ID_OVERLAY).remove();
+
+            // Создание DOM
+            this.$container = $('<div/>').attr('id', ID_CONTAINER);
+            this.$overlay = $('<div/>').attr('id', ID_OVERLAY);
+            this.$windowWrapper = $('<div/>').attr('id', ID_WINDOW_WRAPPER);
+            this.$window = $('<div/>').attr('id', ID_WINDOW);
+            this.$content = $('<div/>').attr('id', ID_CONTENT);
+            this.$window.append(this.$content);
+            this.$windowWrapper.append(this.$window);
+            this.$container.append(this.$windowWrapper);
+            $body.append(this.$overlay);
+            $body.append(this.$container);
 
 
-        // Показ окна
-        this.show = function() {
-            if (this.visible) return;
-            this.visible = true;
-            this._overlay();
-            this.$container.stop(true).show();
-            this.__show.call(this, this.internal.show);
-            return this;
-        };
-
-        // Скрытие окна
-        this.hide = function() {
-            if (!this.visible) return;
             this.visible = false;
-            this.__hide.call(this, this.internal.hide);
-            return this;
-        };
 
-        // ============================
-
-        // Показ оверлея, если окно открыто и видимо. Иначе - скрытие оверлея
-        this._overlay = function() {
-            this.$overlay.hide();
-            if (this.visible && this._useOverlay) {
-                this.$overlay.show();
-            }
-        };
-
-        // Инициализация
-        this._init = function(settings) {
-            this.$container = $('#' + ID_CONTAINER);
-            this.$overlay = $('#' + ID_OVERLAY);
-            this.$windowWrapper = $('#' + ID_WINDOW_WRAPPER);
-            this.$window = $('#' + ID_WINDOW);
-            this.$content = $('#' + ID_CONTENT);
-
-            if (!this.$container.length) {
-                this.$container = $('<div/>').attr('id', ID_CONTAINER);
-                this.$overlay = $('<div/>').attr('id', ID_OVERLAY);
-                this.$windowWrapper = $('<div/>').attr('id', ID_WINDOW_WRAPPER);
-                this.$window = $('<div/>').attr('id', ID_WINDOW);
-                this.$content = $('<div/>').attr('id', ID_CONTENT);
-
-                this.$window.append(this.$content);
-                this.$windowWrapper.append(this.$window);
-                this.$container.append(this.$windowWrapper);
-
-                $body.append(this.$overlay);
-                $body.append(this.$container);
-            }
-
-            this.update(settings);
+            this.settings = {};
+            this.update($.extend(true, {}, DEFAULT_SETTINGS, options));
 
             // Отвязываем все события
             this.$container.off('.popup');
 
-            if (!this.visible) {
-                this.$container.hide();
+            // Закрываем окно, если оно открыто
+            this._defaultAfterHide();
+        };
+
+
+        // Дополнительные элементы окна по умолчанию
+        Popup.prototype._defaultUI = function() {
+            var that = this;
+            var close_button = $('<div/>').attr('id', ID_CLOSE_BUTTON);
+            return close_button.on('click', function() {
+                that.hide();
+                return false;
+            });
+        };
+
+        // Действия по умолчания при показе окна
+        Popup.prototype._defaultBeforeShow = function() {
+            this.$windowWrapper.get(0).scrollTop = 0;
+
+            var styles = this._saveStyles($html, 'overflow', 'paddingRight');
+            $html.css({
+                overflow: 'hidden',
+                paddingRight: (parseInt(styles.paddingRight) || 0) + scrollWidth
+            });
+        };
+
+        // Действия по умолчания при закрытии окна
+        Popup.prototype._defaultAfterHide = function() {
+            this.$overlay.stop(true).hide();
+            this.$container.stop(true).hide();
+            this._loadStyles($html);
+        };
+
+
+        // Показ оверлея, если он разрешен. Иначе - скрытие оверлея
+        Popup.prototype._checkOverlay = function() {
+            this.$overlay.hide();
+            if (this.visible && this.settings.overlay) {
+                this.$overlay.show();
+            }
+        };
+
+
+        // Сохранение CSS-свойств элемента
+        Popup.prototype._saveStyles = function($element) {
+            var result = {};
+            var props = [].slice.call(arguments, 1);
+            for (var i = 0, l = props.length; i < l; i++) {
+                result[props[i]] = $element.css(props[i]);
             }
 
-            $(document).off('.popup.out').on('click.popup.out', function(event) {
-                if (!popup) return;
-                if (!$(event.target).closest(popup.$window).length) {
-                    popup.__outClick.call(popup, event);
-                }
-            });
+            $element.data('_popup_styles', result);
+            return result;
+        };
 
+        // Восстановление CSS-свойств элемента
+        Popup.prototype._loadStyles = function($element) {
+            var result = $element.data('_popup_styles');
+            if (!result) return;
+
+            for (var prop in result) {
+                if (result.hasOwnProperty(prop)) {
+                    $element.css(prop, result[prop]);
+                }
+            }
+
+            $element.removeData('_popup_styles');
+        };
+
+
+        // Показ окна
+        Popup.prototype.show = function() {
+            if (this.visible) return;
+            this.visible = true;
+
+            this._checkOverlay();
+            this.$container.stop(true).show();
+
+            // Вешаем событие на клик вне окна
+            $(document).off('.popup.out');
+            if ($.isFunction(this.settings.outClick)) {
+                var that = this;
+                $(document).on('click.popup.out', function(event) {
+                    var $target = $(event.target);
+                    if (!$target.closest(that.$window).length) {
+                        that.settings.outClick.call(that, event);
+                    }
+                });
+            }
+
+            this.settings.show.call(this);
             return this;
         };
 
-        // Применение параметров конфигурации
-        this.update = function(settings) {
-            var value;
+        // Скрытие окна
+        Popup.prototype.hide = function() {
+            if (!this.visible) return;
+            this.visible = false;
 
-            if (settings.clean) {
-                this.$container.removeClass().css('cssText', '');
-                this.$overlay.removeClass().css('cssText', '');
-                this.$windowWrapper.removeClass().css('cssText', '');
-                this.$window.removeClass().css('cssText', '');
-                this.$content.removeClass().css('cssText', '');
-            }
+            $(document).off('.popup.out');
+
+            this.settings.hide.call(this);
+            return this;
+        };
+
+        // Обновление конфигурации окна
+        Popup.prototype.update = function(options) {
+            $.extend(true, this.settings, options);
 
             // Установка класса
-            if (typeof settings.classes != 'undefined') {
-                this.$container.removeClass().addClass(settings.classes);
+            if (typeof options.classes != 'undefined') {
+                this.$container.removeClass().addClass(options.classes);
             }
 
             // Интерфейс
-            if (typeof settings.ui != 'undefined') {
-                if ($.isFunction(settings.ui)) {
-                    value = settings.ui.call(this, this.internal.ui);
-                } else {
-                    value = settings.ui;
+            if (typeof options.ui != 'undefined') {
+                var $ui = options.ui;
+                if ($.isFunction($ui)) {
+                    $ui = $ui.call(this);
                 }
-                if (settings.outer_ui) {
-                    this.$window.siblings().remove();
-                    this.$windowWrapper.prepend(value);
+
+                // Очистка $window
+                this.$content.detach();
+                this.$window.empty().append(this.$content);
+
+                // Очистка $windowWrapper
+                this.$window.detach();
+                this.$windowWrapper.empty().append(this.$window);
+
+                if (this.settings.outer_ui) {
+                    this.$windowWrapper.prepend($ui);
                 } else {
-                    this.$content.siblings().remove();
-                    this.$window.prepend(value);
+                    this.$window.prepend($ui);
                 }
             }
 
-            // Содержимое
-            if (typeof settings.content != 'undefined') {
-                if ($.isFunction(settings.content)) {
-                    value = settings.content.call(this);
-                } else {
-                    value = settings.content;
+            // Содержимое окна
+            if (typeof options.content != 'undefined') {
+                var $content = options.content;
+                if ($.isFunction($content)) {
+                    $content = $content.call(this);
                 }
-                this.$content.empty();
-                this.$content.append(value);
+
+                this.$content.empty().append($content);
             }
 
             // Оверлэй
-            if (typeof settings.overlay != 'undefined') {
-                this._useOverlay = settings.overlay;
-                this._overlay();
-            }
-
-            // Показ окна
-            if (typeof settings.show != 'undefined') {
-                this.__show = settings.show;
-            }
-
-            // Скрытие окна
-            if (typeof settings.hide != 'undefined') {
-                this.__hide = settings.hide;
+            if (typeof options.overlay != 'undefined') {
+                this._checkOverlay();
             }
 
             // Клик вне окна
-            if (typeof settings.outClick != 'undefined') {
-                this.__outClick = settings.outClick;
+            if (typeof options.outClick != 'undefined') {
+                if (this.visible && !options.outClick) {
+                    $(document).off('.popup.out');
+                }
             }
 
             this.trigger('config');
             return this;
         };
 
-        // Навешивание событий
-        var format_events = function(events) {
+        // ===================================================
+
+        // Превращает "keyup click" в "keyup.popup click.popup"
+        Popup.prototype._format_events = function(events) {
             events = events.trim().split(/\s+/);
             return events.join('.popup ') + '.popup';
         };
-        this.on = function(events) {
+
+        Popup.prototype.on = function(events) {
             var args = [].slice.call(arguments, 0);
-            args[0] = format_events(events);
+            args[0] = this._format_events(events);
+
             $.fn.on.apply(this.$container, args);
             return this;
         };
-        this.trigger = function(event) {
+
+        Popup.prototype.trigger = function(event) {
             var args = [].slice.call(arguments, 0);
-            args[0] = format_events(event);
+            args[0] = this._format_events(event);
+
             $.fn.trigger.apply(this.$container, args);
             return this;
         };
-        this.off = function(events) {
+
+        Popup.prototype.off = function(events) {
             this.$container.off(events);
             return this;
-        }
-    };
+        };
 
+        return Popup;
+    })();
+
+
+    var popup;
     $.popup = function(options) {
-        if (typeof options == 'undefined') return popup;
-        popup = popup ? popup : new Popup;
+        // $.popup() возвращает текущее окно
+        if (!options) return popup;
 
-        var settings = $.extend(true, {}, $.popup.defaults, options);
-        return popup._init(settings);
+        // $.popup({ ... }) создает новое окно
+        return popup = new Popup(options);
     };
 
     // Если окно видимо - обновляет, иначе - создает новое.
     // Предназначено для прелоадера
     $.popup.force = function(options) {
-        popup = popup ? popup : new Popup;
-        if (popup.visible) {
-            return popup.update(options)
-        } else {
-            var settings = $.extend(true, {}, $.popup.defaults, options);
-            return popup._init(settings).show();
+        if (popup && popup.visible) {
+            return popup.update(options);
         }
-    };
 
-    $.popup.defaults = {
-        classes: '',
-        overlay: true,
-        content: '',
-        outer_ui: false,
-        clean: true,
-        ui: function(internal) {
-            return internal.call(this);
-        },
-        show: function(internal) {
-            var that = this;
-            that.trigger('before_show');
-            internal.call(that);
-            that.$container.css({
-                opacity: 0
-            }).animate({
-                opacity: 1
-            }, 200, function() {
-                that.trigger('show');
-            });
-        },
-        hide: function(internal) {
-            var that = this;
-            that.trigger('before_hide');
-            that.$container.animate({
-                opacity: 0
-            }, 200, function() {
-                internal.call(that);
-                that.trigger('hide');
-            });
-        },
-        outClick: function() {
-            this.hide();
-        }
+        return popup = (new Popup(options)).show();
     };
 
 })(jQuery);

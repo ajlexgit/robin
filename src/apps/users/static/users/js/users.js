@@ -5,8 +5,8 @@
     $(document).on('click', '.register', function() {
         $.popup.force({
             classes: 'preloader',
-            ui: $.noop,
-            outClick: $.noop
+            ui: false,
+            outClick: false
         });
 
         $.ajax({
@@ -32,8 +32,8 @@
         var form = $(this);
         $.popup.force({
             classes: 'preloader',
-            ui: $.noop,
-            outClick: $.noop
+            ui: false,
+            outClick: false
         });
         $.ajax({
             url: window.js_storage.ajax_register,
@@ -71,8 +71,8 @@
     $(document).on('click', '.login', function() {
         $.popup.force({
             classes: 'preloader',
-            ui: $.noop,
-            outClick: $.noop
+            ui: false,
+            outClick: false
         });
         $.ajax({
             url: window.js_storage.ajax_login,
@@ -98,8 +98,8 @@
         var form = $(this);
         $.popup.force({
             classes: 'preloader',
-            ui: $.noop,
-            outClick: $.noop
+            ui: false,
+            outClick: false
         });
         $.ajax({
             url: window.js_storage.ajax_login,
@@ -157,8 +157,8 @@
     $(document).on('click', '.reset-password', function() {
         $.popup.force({
             classes: 'preloader',
-            ui: $.noop,
-            outClick: $.noop
+            ui: false,
+            outClick: false
         });
         $.ajax({
             url: window.js_storage.ajax_reset,
@@ -184,8 +184,8 @@
         var form = $(this);
         $.popup.force({
             classes: 'preloader',
-            ui: $.noop,
-            outClick: $.noop
+            ui: false,
+            outClick: false
         });
         $.ajax({
             url: window.js_storage.ajax_reset,

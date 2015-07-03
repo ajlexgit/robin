@@ -1,5 +1,8 @@
 (function($) {
 
+    // Имя data-атрибута для сохранения объекта
+    window.COMMENTS_DATA_NAME = 'comments';
+
     window.Comments = (function() {
         var Comments = function($wrapper, options) {
             this.settings = $.extend({
@@ -20,7 +23,7 @@
             $wrapper.removeAttr('data-content_type data-object_id');
 
             // Сохраняем объект в DOM-элементе
-            $wrapper.data('object', this);
+            $wrapper.data(window.COMMENTS_DATA_NAME, this);
         };
 
         Comments.prototype.ajaxError = function(xhr, status, text) {
