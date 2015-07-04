@@ -147,9 +147,10 @@
                 }
 
                 var dAngle = Math.round(evt.dx / that.scroll2deg);
+                var old_angle = that.angle;
                 that.angle = that.initial_angle + dAngle;
 
-                if (dAngle < 0) {
+                if (old_angle > that.angle) {
                     // крутим вправо
                     that.angle = processRightSlide(that.angle);
                 } else {
