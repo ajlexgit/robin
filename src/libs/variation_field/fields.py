@@ -164,7 +164,8 @@ class VariationImageFieldFile(ImageFieldFile):
         files_list = []
 
         if self.name:
-            for name, variation in self.field.variations.items():
+            variations = self.field.get_variations(self.instance)
+            for name, variation in variations.items():
                 path = self.field._build_variation_name(variation, self.name)
                 files_list.append(path)
 
@@ -267,7 +268,7 @@ class VariationImageField(ImageField):
 
     default_error_messages = dict(
         ImageField.default_error_messages,
-        not_image=_("Upload a valid image. The file you uploaded was either not an image or a corrupted image."),
+        not_image=_("Image invalid or corrupted"),
         not_enough_width=_('Image width should not be less than %(limit)s pixels'),
         not_enough_height=_('Image height should not be less than %(limit)s pixels'),
         too_much_width=_('Image width should not be greater than %(limit)s pixels'),
