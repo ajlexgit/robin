@@ -130,7 +130,7 @@
         // === DRAGER ===
         // ==============
         that.drager = $.drager($root, {
-            momentumWeight: 750,
+            momentumLightness: 750,
             onStartDrag: function() {
                 stopAnimation();
                 that.angle = that.angle % 360;
