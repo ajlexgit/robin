@@ -129,7 +129,7 @@
         // ==============
         // === DRAGER ===
         // ==============
-        that.drager = $.drager($root, {
+        that.drager = new Drager($root, {
             momentumLightness: 750,
             onStartDrag: function() {
                 stopAnimation();
