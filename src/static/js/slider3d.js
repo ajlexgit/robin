@@ -186,7 +186,7 @@
             if (typeof settings.controlsParent == 'string') {
                 $controlsParent = $(settings.controlsParent).first();
             } else if (settings.controlsParent) {
-                $controlsParent = settings.controlsParent.firat();
+                $controlsParent = settings.controlsParent.first();
             } else {
                 $controlsParent = $root;
             }
