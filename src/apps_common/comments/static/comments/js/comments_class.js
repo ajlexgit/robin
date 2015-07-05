@@ -4,7 +4,13 @@
     window.COMMENTS_DATA_NAME = 'comments';
 
     window.Comments = (function() {
-        var Comments = function($wrapper, options) {
+        var Comments = function(root, options) {
+            var $root = $(root).first();
+            if (!$root.length) {
+                console.error('Empty root element for Comments');
+                return
+            }
+
             this.settings = $.extend({
                 comment_class: 'comment',
                 comments_container_class: 'comments',
@@ -13,17 +19,17 @@
                 edit_template_class: 'comments-edit-template'
             }, options);
 
-            this.$wrapper = $wrapper;
-            this.content_type = $wrapper.data('content_type');
-            this.object_id = $wrapper.data('object_id');
-            this.$reply_form_template = $wrapper.find('.' + this.settings.reply_template_class).html();
-            this.$edit_form_template = $wrapper.find('.' + this.settings.edit_template_class).html();
+            this.$root = $root;
+            this.content_type = $root.data('content_type');
+            this.object_id = $root.data('object_id');
+            this.$reply_form_template = $root.find('.' + this.settings.reply_template_class).html();
+            this.$edit_form_template = $root.find('.' + this.settings.edit_template_class).html();
 
             // Удаляем атрибуты, чтобы лишний раз не палить
-            $wrapper.removeAttr('data-content_type data-object_id');
+            $root.removeAttr('data-content_type data-object_id');
 
             // Сохраняем объект в DOM-элементе
-            $wrapper.data(window.COMMENTS_DATA_NAME, this);
+            $root.data(window.COMMENTS_DATA_NAME, this);
         };
 
         Comments.prototype.ajaxError = function(xhr, status, text) {
@@ -43,7 +49,7 @@
         // Удаление всех пустых форм
         Comments.prototype.removeEmptyForms = function() {
             var that = this;
-            that.$wrapper.find('.' + that.settings.comments_container_class + ' form').each(function() {
+            that.$root.find('.' + that.settings.comments_container_class + ' form').each(function() {
                 var $form = $(this);
                 var $comment = $form.closest('.' + that.settings.comment_class);
                 if (!$form.find('textarea').val()) {
@@ -66,8 +72,8 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    that.$wrapper.find('.' + that.settings.comments_container_class).replaceWith(response.comments);
-                    that.$wrapper.find('.' + that.settings.form_container_class).replaceWith(response.initial_form);
+                    that.$root.find('.' + that.settings.comments_container_class).replaceWith(response.comments);
+                    that.$root.find('.' + that.settings.form_container_class).replaceWith(response.initial_form);
                     df.resolve();
                 },
                 error: function(xhr, status, text) {
@@ -236,7 +242,7 @@
                         that.getBranch($parent_comment).last().after($comment);
                     } else {
                         // добавление корневого коммента
-                        that.$wrapper.find('.' + that.settings.comments_container_class).append($comment);
+                        that.$root.find('.' + that.settings.comments_container_class).append($comment);
                         $form.find('textarea').val('').keyup();
                     }
                     df.resolve($comment, $parent_comment);

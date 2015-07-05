@@ -14,11 +14,10 @@
         // ===================================================
 
         var getActiveGallery = function() {
-            var result;
             var popup = $.popup();
-
             if (popup && popup.visible) {
                 // Ищем чьё окно видимо
+                var result = undefined;
                 $('.' + ROOT).each(function() {
                     var gallery = $(this).data(window.GALLERY_DATA_NAME);
                     if (gallery.popup === popup) {
@@ -26,8 +25,8 @@
                         return false;
                     }
                 });
+                return result;
             }
-            return result;
         };
 
         // ===================================================
@@ -69,7 +68,13 @@
 
         // ===================================================
 
-        var Gallery = function($root, options) {
+        var Gallery = function(root, options) {
+            var $root = $(root).first();
+            if (!$root.length) {
+                console.error('Empty root element for Gallery');
+                return
+            }
+
             this.settings = $.extend({
                 itemSelector: 'img',
                 itemVideoClass: 'gallery-item-video-link',

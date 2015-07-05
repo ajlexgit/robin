@@ -3,8 +3,7 @@
     $(document).ready(function() {
         // Инициализация комментариев
         $('.comments-wrapper').each(function() {
-            var $container = $(this);
-            new Comments($container);
+            new Comments(this);
         });
 
         // Подсвечиваем коммент, если перешли по его якорю
