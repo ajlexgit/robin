@@ -74,8 +74,6 @@
   }
   &:after {
     bottom: 0;
-    @include transition(-webkit-transform 0.75s);
-    @include transition(transform 0.75s);
   }
 
   &.active {

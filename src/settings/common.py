@@ -212,11 +212,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'breadcrumbs.middleware.BreadcrumbsMiddleware',
-    'seo.middleware.SeoMiddleware',
-
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
+    
+    'breadcrumbs.middleware.BreadcrumbsMiddleware',
+    'seo.middleware.SeoMiddleware',
 )
 
 ALLOWED_HOSTS = ()
