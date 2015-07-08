@@ -1,8 +1,12 @@
 import pytils
 from django.db import models
 
+ALIAS_REGEXP = '[-a-zA-Z0-9_]+'
+
 
 class AutoSlugField(models.SlugField):
+
+    SLUG_SPLITTERS = '-_'
 
     def __init__(self, *args, populate_from=None, **kwargs):
         """
@@ -12,15 +16,16 @@ class AutoSlugField(models.SlugField):
                 separator     - разделитель префикс алиаса от суффикса.
                                 (my_alias-1, my_alias-2, ...)
                 default_slug  - префикс по умолчанию, если populate_from пуст.
-            
+
             Пример:
-                alias = AutoSlugField(_('alias'), populate_from=('title', ), max_length=128, blank=True,
-                                      help_text=_('Leave it blank to auto generate it'),
-                                      unique=True, validators=[RegexValidator(settings.ALIAS_REGEXP)])
+                alias = AutoSlugField(_('alias'), populate_from=('title', ), unique=True,
+                                      help_text=_('Leave it blank to auto generate it'))
         """
         self.populate_from = populate_from
         self.separator = kwargs.pop('separator', '-')
         self.default_slug = kwargs.pop('default_slug', 'empty')
+        kwargs.setdefault('blank', True)
+        kwargs['max_length'] = kwargs.get('max_length', 64)
         super(AutoSlugField, self).__init__(*args, **kwargs)
 
     def _get_populate_value(self, instance):
@@ -38,12 +43,20 @@ class AutoSlugField(models.SlugField):
         return pytils.translit.slugify(value)
 
     def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
+        name, path, args, kwargs = super(models.SlugField, self).deconstruct()
         kwargs['populate_from'] = self.populate_from
+        if kwargs.get("max_length", None) == 64:
+            del kwargs['max_length']
+        if self.blank is True:
+            del kwargs['blank']
         if self.separator != '-':
             kwargs['separator'] = self.separator
         if self.default_slug != 'empty':
             kwargs['default_slug'] = self.default_slug
+        if self.db_index is False:
+            kwargs['db_index'] = False
+        else:
+            del kwargs['db_index']
         return name, path, args, kwargs
 
     def pre_save(self, instance, add):
@@ -62,6 +75,17 @@ class AutoSlugField(models.SlugField):
         slug = self._slugify(value) if value else ''
         if not slug:
             slug = None if self.null else self.default_slug
+
+        # max_length
+        if len(slug) > self.max_length:
+            position = self.max_length - 1
+            while position:
+                if slug[position] in self.SLUG_SPLITTERS:
+                    slug = slug[:position]
+                    break
+                position += 1
+            else:
+                slug = slug[:self.max_length]
 
         if self.unique:
             if qs.filter((self.attname, slug)).exists():
