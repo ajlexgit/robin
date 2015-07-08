@@ -102,9 +102,9 @@
             this.dy = 0;
         };
 
-        var _ = new Function;
+        var _ = function() { this.constructor = MouseDownDragerEvent; };
         _.prototype = parent.prototype;
-        _.prototype.constructor = _;
+        MouseDownDragerEvent.prototype = new _;
         return MouseDownDragerEvent;
     })(DragerEvent);
 
@@ -116,9 +116,9 @@
             this.dy = getDy(drager.startPoint, this.point);
         };
 
-        var _ = new Function;
+        var _ = function() { this.constructor = MouseMoveDragerEvent; };
         _.prototype = parent.prototype;
-        _.prototype.constructor = _;
+        MouseMoveDragerEvent.prototype = new _;
         return MouseMoveDragerEvent;
     })(DragerEvent);
 
@@ -187,9 +187,9 @@
             this.momentum.easing = easing;
         };
 
-        var _ = new Function;
+        var _ = function() { this.constructor = MouseUpDragerEvent; };
         _.prototype = parent.prototype;
-        _.prototype.constructor = _;
+        MouseUpDragerEvent.prototype = new _;
         return MouseUpDragerEvent;
     })(DragerEvent);
 
