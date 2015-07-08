@@ -239,10 +239,10 @@ RESET_PASSWORD_REDIRECT_URL = 'index'
 # Email
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = 'pix@zo-pa.ru'
-EMAIL_HOST_PASSWORD = 'trinitrotoluol'
+EMAIL_HOST_USER = 'noreply@asskicker.ru'
+EMAIL_HOST_PASSWORD = 'noreply66671301'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'pix@zo-pa.ru'
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@asskicker.ru'
 
 
 # Получатели писем о ошибках при DEBUG = False

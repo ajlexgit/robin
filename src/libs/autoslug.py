@@ -1,8 +1,9 @@
 import pytils
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 ALIAS_REGEXP = '[-a-zA-Z0-9_]+'
-
+DEFAULT_HELP = _('Leave it blank to auto generate it')
 
 class AutoSlugField(models.SlugField):
 
@@ -18,14 +19,14 @@ class AutoSlugField(models.SlugField):
                 default_slug  - префикс по умолчанию, если populate_from пуст.
 
             Пример:
-                alias = AutoSlugField(_('alias'), populate_from=('title', ), unique=True,
-                                      help_text=_('Leave it blank to auto generate it'))
+                alias = AutoSlugField(_('alias'), populate_from=('title', ), unique=True)
         """
         self.populate_from = populate_from
         self.separator = kwargs.pop('separator', '-')
         self.default_slug = kwargs.pop('default_slug', 'empty')
         kwargs.setdefault('blank', True)
         kwargs['max_length'] = kwargs.get('max_length', 64)
+        kwargs['help_text'] = kwargs.get('help_text', DEFAULT_HELP)
         super(AutoSlugField, self).__init__(*args, **kwargs)
 
     def _get_populate_value(self, instance):
@@ -49,6 +50,8 @@ class AutoSlugField(models.SlugField):
             del kwargs['max_length']
         if self.blank is True:
             del kwargs['blank']
+        if self.help_text == DEFAULT_HELP:
+            del kwargs['help_text']
         if self.separator != '-':
             kwargs['separator'] = self.separator
         if self.default_slug != 'empty':
