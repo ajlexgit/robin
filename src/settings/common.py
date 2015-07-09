@@ -235,6 +235,7 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'index'
 RESET_PASSWORD_REDIRECT_URL = 'index'
 
+SESSION_COOKIE_AGE = 7 * 24 * 3600
 
 # Email
 EMAIL_HOST = 'smtp.yandex.ru'
