@@ -1,0 +1,31 @@
+from django.template import loader, Context, RequestContext
+from django.views.generic.base import TemplateResponseMixin, View
+
+
+class TemplateExView(TemplateResponseMixin, View):
+    """
+        Расширенная версия TemplateView:
+        1) Позволяет переопределить шаблон в методе render_to_response
+        2) Позволяет рендерить шаблон в строку
+    """
+
+    def render_to_response(self, context=None, template=None, **response_kwargs):
+        template = template or self.template_name
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=template,
+            context=context,
+            **response_kwargs
+        )
+
+    def _resolve_context(self, context, current_app=None):
+        if not isinstance(context, Context):
+            return context
+        else:
+            return RequestContext(self.request, context, current_app=current_app)
+
+    def render_to_string(self, context=None, template=None, current_app=None):
+        template = template or self.template_name
+        context = self._resolve_context(context, current_app)
+        return loader.get_template(template).render(context)

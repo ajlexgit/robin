@@ -3,8 +3,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
-from django.views.generic import TemplateView
-from libs.string_view import RenderToStringMixin
+from libs.views import TemplateExView
 from libs.upload_chunked_file import upload_chunked_file, NotCompleteError
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 
@@ -22,7 +21,7 @@ def user_to_dict(user):
     return user_dict
 
 
-class LoginView(RenderToStringMixin, TemplateView):
+class LoginView(TemplateExView):
     """ AJAX login """
     template_name = 'users/ajax_login.html'
 
@@ -50,7 +49,7 @@ class LoginView(RenderToStringMixin, TemplateView):
             })
 
 
-class LogoutView(RenderToStringMixin, TemplateView):
+class LogoutView(TemplateExView):
     """ AJAX logout """
     def post(self, request):
         auth_logout(request)
@@ -59,7 +58,7 @@ class LogoutView(RenderToStringMixin, TemplateView):
         })
 
 
-class RegisterView(RenderToStringMixin, TemplateView):
+class RegisterView(TemplateExView):
     """ AJAX register """
     template_name = 'users/ajax_register.html'
 
@@ -91,7 +90,7 @@ class RegisterView(RenderToStringMixin, TemplateView):
             })
 
 
-class PasswordResetView(RenderToStringMixin, TemplateView):
+class PasswordResetView(TemplateExView):
     """ AJAX reset password """
     template_name = 'users/ajax_reset.html'
 
@@ -130,7 +129,7 @@ class PasswordResetView(RenderToStringMixin, TemplateView):
             })
 
 
-class AvatarUploadView(RenderToStringMixin, TemplateView):
+class AvatarUploadView(TemplateExView):
     """ Загрузка аватара """
     template_name = 'users/profile_avatar.html'
 
@@ -171,7 +170,7 @@ class AvatarUploadView(RenderToStringMixin, TemplateView):
         })
 
 
-class AvatarCropView(RenderToStringMixin, TemplateView):
+class AvatarCropView(TemplateExView):
     """ Обрезка аватара """
     template_name = 'users/profile_avatar.html'
 
@@ -207,7 +206,7 @@ class AvatarCropView(RenderToStringMixin, TemplateView):
         })
 
 
-class AvatarRemoveView(RenderToStringMixin, TemplateView):
+class AvatarRemoveView(TemplateExView):
     """ Удаление аватара """
     template_name = 'users/profile_avatar.html'
 

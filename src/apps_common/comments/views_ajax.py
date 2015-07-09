@@ -1,17 +1,16 @@
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, View
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, JsonResponse
-from libs.string_view import RenderToStringMixin
+from libs.views import TemplateExView
 from . import options
 from .models import Comment, CommentVote
 from .forms import CommentForm, CommentValidationForm
 from .voted_cache import update_voted_cache
 
 
-class RefreshView(RenderToStringMixin, View):
+class RefreshView(TemplateExView):
     """ Обновление всех комментариев """
     def get(self, request):
         content_type_id = request.GET.get('content_type') or None
@@ -36,7 +35,7 @@ class RefreshView(RenderToStringMixin, View):
         })
 
 
-class ChangeView(RenderToStringMixin, TemplateView):
+class ChangeView(TemplateExView):
     """ Редактирование комментария """
     template_name = 'comments/comment.html'
 
@@ -86,7 +85,7 @@ class ChangeView(RenderToStringMixin, TemplateView):
             })
 
 
-class DeleteView(RenderToStringMixin, TemplateView):
+class DeleteView(TemplateExView):
     """ Удаление комментария """
     template_name = 'comments/comment.html'
 
@@ -114,7 +113,7 @@ class DeleteView(RenderToStringMixin, TemplateView):
         })
 
 
-class RestoreView(RenderToStringMixin, TemplateView):
+class RestoreView(TemplateExView):
     """ Восстановление комментария """
     template_name = 'comments/comment.html'
 
@@ -142,7 +141,7 @@ class RestoreView(RenderToStringMixin, TemplateView):
         })
 
 
-class PostView(RenderToStringMixin, TemplateView):
+class PostView(TemplateExView):
     """ Добавление нового комментария """
     template_name = 'comments/comment.html'
 
@@ -174,7 +173,7 @@ class PostView(RenderToStringMixin, TemplateView):
             })
 
 
-class VoteView(RenderToStringMixin, TemplateView):
+class VoteView(TemplateExView):
     """ Голосование за комментарий """
     template_name = 'comments/comment.html'
     
