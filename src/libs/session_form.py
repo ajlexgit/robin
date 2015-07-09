@@ -41,11 +41,15 @@ class BaseMixin:
     @cached_property
     def form_data_key(self):
         """ Построение ключа сессии, где хранятся данные формы """
-        if self.session_store_id:
-            session_store_id = self.session_store_id
+        return self.get_class_key(str(self.prefix or ''))
+
+    @classmethod
+    def get_class_key(cls, prefix=''):
+        if cls.session_store_id:
+            session_store_id = cls.session_store_id
         else:
-            session_store_id = '.'.join((self.__class__.__module__, self.__class__.__qualname__))
-        hash_data = (session_store_id, str(self.prefix or ''))
+            session_store_id = '.'.join((cls.__module__, cls.__qualname__))
+        hash_data = (session_store_id, prefix)
         hash_data_bytes = ':'.join(hash_data).encode()
         return hashlib.sha1(hash_data_bytes).hexdigest()
 
@@ -115,7 +119,10 @@ class BaseMixin:
 
     def remove_from_session(self, request):
         """ Удаление данных и ошибок формы/формсета из сессии """
-        request.session.pop(self.form_data_key, None)
+        try:
+            del request.session[self.form_data_key]
+        except KeyError:
+            pass
 
 
 class SessionStoredFormMixin(BaseMixin):
