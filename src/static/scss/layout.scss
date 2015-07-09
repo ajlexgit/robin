@@ -14,13 +14,10 @@ body {
   @include default_fontsize;
 }
 
-input, button, select, textarea {
+input:not([type="radio"]):not([type="checkbox"]), select, textarea {
   padding: 5px 6px;
-  @include default_font;
-}
-
-input[type="text"], input[type="password"], input[type="email"], select, textarea {
   width: 170px;
+  @include default_font;
 }
 
 p {
