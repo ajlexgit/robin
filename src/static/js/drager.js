@@ -22,6 +22,8 @@
             onDrag(event)                     - процесс перемещения
             onStopDrag(event)                 - конец перемещения
             onMouseUp(event)                  - отпускание элемента
+            onMomentumStarted(momentum)       - инерционное движение запущено
+            onMomentumStopped(interrupted)    - остановка инерционного движения
 
         Примеры:
             var drager = new Drager(element, {
@@ -78,18 +80,38 @@
         return (clientDy || pageDy) >= 0 ? Math.max(clientDy, pageDy) : Math.min(clientDy, pageDy);
     };
 
+    var isMultiTouch = function(event) {
+        var orig = event.originalEvent;
+        var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
+        return touchPoints.length > 1;
+    };
+
+    var getTouchPoint = function(event) {
+        var orig = event.originalEvent;
+        if (typeof orig.changedTouches != 'undefined') {
+            return orig.changedTouches[0]
+        } else {
+            return orig
+        }
+    };
+
     // ===============================================
 
     var DragerEvent = (function() {
         return function(event, drager) {
+            var mouseEvent = event;
+            if (event.type.substr(0, 5) == 'touch') {
+                mouseEvent = getTouchPoint(event);
+            }
+
             this.origEvent = event;
             this.target = drager.$element.get(0);
             this.timeStamp = event.timeStamp;
             this.point = {
-                pageX: event.pageX,
-                pageY: event.pageY,
-                clientX: event.clientX,
-                clientY: event.clientY
+                pageX: mouseEvent.pageX,
+                pageY: mouseEvent.pageY,
+                clientX: mouseEvent.clientX,
+                clientY: mouseEvent.clientY
             }
         };
     })();
@@ -105,6 +127,7 @@
         var _ = function() { this.constructor = MouseDownDragerEvent; };
         _.prototype = parent.prototype;
         MouseDownDragerEvent.prototype = new _;
+
         return MouseDownDragerEvent;
     })(DragerEvent);
 
@@ -119,6 +142,7 @@
         var _ = function() { this.constructor = MouseMoveDragerEvent; };
         _.prototype = parent.prototype;
         MouseMoveDragerEvent.prototype = new _;
+
         return MouseMoveDragerEvent;
     })(DragerEvent);
 
@@ -138,6 +162,11 @@
                 duration: 0
             };
         };
+
+        var _ = function() { this.constructor = MouseUpDragerEvent; };
+        _.prototype = parent.prototype;
+        MouseUpDragerEvent.prototype = new _;
+
 
         MouseUpDragerEvent.prototype.autoCalcMomentum = function(evt, momentumPoint) {
             var dx = getDx(momentumPoint.point, evt.point);
@@ -187,9 +216,6 @@
             this.momentum.easing = easing;
         };
 
-        var _ = function() { this.constructor = MouseUpDragerEvent; };
-        _.prototype = parent.prototype;
-        MouseUpDragerEvent.prototype = new _;
         return MouseUpDragerEvent;
     })(DragerEvent);
 
@@ -197,21 +223,6 @@
 
     window.Drager = (function() {
         var dragerID = 0;
-
-        var isMultiTouch = function(event) {
-            var orig = event.originalEvent;
-            var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
-            return touchPoints.length > 1;
-        };
-
-        var getTouchPoint = function(event) {
-            var orig = event.originalEvent;
-            if (typeof orig.changedTouches != 'undefined') {
-                return orig.changedTouches[0]
-            } else {
-                return orig
-            }
-        };
 
         // Добавление контрольной точки, на основании которй будут вычисленены
         // параметры инерционного движения
@@ -245,12 +256,15 @@
                 ignoreDistance: 10,
                 momentumLightness: 500,
                 momentumEasing: 'easeOutCubic',
+                minMomentumDuration: 100,
 
                 onMouseDown: $.noop,
                 onStartDrag: $.noop,
                 onDrag: $.noop,
                 onStopDrag: $.noop,
-                onMouseUp: $.noop
+                onMouseUp: $.noop,
+                onMomentumStarted: $.noop,
+                onMomentumStopped: $.noop
             }, options);
 
 
@@ -292,6 +306,7 @@
                 },
                 complete: function() {
                     that._momentumAnimation = null;
+                    that.settings.onMomentumStopped.call(that, false);
                 }
             });
         };
@@ -301,6 +316,7 @@
             if (this._momentumAnimation) {
                 this._momentumAnimation.stop(jumpToEnd);
                 this._momentumAnimation = null;
+                this.settings.onMomentumStopped.call(this, true);
             }
         };
 
@@ -375,8 +391,9 @@
             }
 
             var result = this.settings.onMouseUp.call(this, evt);
-            if (evt.momentum && (evt.momentum.duration >= 100)) {
+            if (evt.momentum && (evt.momentum.duration >= this.settings.minMomentumDuration)) {
                 this._startMomentumAnimation(evt);
+                this.settings.onMomentumStarted.call(this, $.extend({}, evt.momentum));
             }
             return result;
         };
@@ -425,14 +442,14 @@
             if (this.settings.touch) {
                 this.$element.on('touchstart.drager' + this.id, function(event) {
                     if (isMultiTouch(event)) return;
-                    return that.mouseDownHandler.call(that, getTouchPoint(event));
+                    return that.mouseDownHandler.call(that, event);
                 });
                 $(document).on('touchmove.drager' + this.id, function(event) {
                     if (isMultiTouch(event)) return;
-                    return that.dragHandler.call(that, getTouchPoint(event));
+                    return that.dragHandler.call(that, event);
                 }).on('touchend.drager' + this.id, function(event) {
                     if (isMultiTouch(event)) return;
-                    return that.mouseUpHandler.call(that, getTouchPoint(event));
+                    return that.mouseUpHandler.call(that, event);
                 });
             }
         };

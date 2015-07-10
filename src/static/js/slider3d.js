@@ -74,7 +74,7 @@
         var stopAnimation = function() {
             that.drager.stop();
             if (that._animation) {
-                that._animation.stop(true);
+                that._animation.stop();
                 that._animation = null;
                 $wrapper.queue('rotate', []);
             }
@@ -142,7 +142,7 @@
                 var absDy = Math.abs(evt.dy);
 
                 // Блокировка вертикального скролла
-                if (absDy < (absDx * 3)) {
+                if ((absDy < (absDx * 3)) && (evt.origEvent.cancelable)) {
                     evt.origEvent.preventDefault();
                 }
 
@@ -166,6 +166,36 @@
                     Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedX)),
                     Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedY))
                 );
+            },
+            onMomentumStopped: function(interrupted) {
+                if (settings.snap && !interrupted) {
+                    var absAngle = Math.abs(that.angle) % 90;
+                    if (absAngle) {
+                        var finalAngle;
+                        if (absAngle < settings.snapThreshold) {
+                            finalAngle = 0
+                        } else {
+                            finalAngle = that.angle > 0 ? 90 : -90;
+                        }
+
+                        var dAngle = finalAngle - that.angle;
+                        $wrapper.queue('rotate', function(next) {
+                            var from = that.angle;
+                            that._animation = $.animate({
+                                duration: Math.round((Math.abs(dAngle) / 90) * settings.speed),
+                                easing: 'easeInCubic',
+                                step: function(eProgress) {
+                                    setAngle(from + dAngle * eProgress);
+                                },
+                                complete: function() {
+                                    that._animation = null;
+                                    next();
+                                }
+                            });
+                        });
+                        $wrapper.dequeue('rotate');
+                    }
+                }
             }
         });
 
@@ -196,8 +226,7 @@
             }).on('click', function() {
                 if (that._animation) return false;
 
-                $wrapper.queue('rotate', []);
-                that.drager.stop();
+                stopAnimation();
 
                 var finalAngle = (Math.ceil(that.angle / 90) - 1) * 90;
                 var dAngle = finalAngle - that.angle;
@@ -254,8 +283,7 @@
             }).on('click', function() {
                 if (that._animation) return false;
 
-                $wrapper.queue('rotate', []);
-                that.drager.stop();
+                stopAnimation();
 
                 var finalAngle = (Math.floor(that.angle / 90) + 1) * 90;
                 var dAngle = finalAngle - that.angle;
@@ -321,6 +349,8 @@
 
     $.fn.slider3d = function(options) {
         var settings = $.extend({
+            snap: true,
+            snapThreshold: 45,
             speed: 500,
             maxMomentumSpeed: 2,
             controls: true,
