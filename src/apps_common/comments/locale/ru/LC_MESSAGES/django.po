@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-24 08:42+0300\n"
+"POT-Creation-Date: 2015-07-20 11:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,87 +19,131 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: models.py:50
+#: admin_views.py:17 admin_views.py:41 views_ajax.py:68
+msgid "Comment not found"
+msgstr "Комментарий не найден"
+
+#: models.py:64
 msgid "parent comment"
 msgstr "родительский комментарий"
 
-#: models.py:51
+#: models.py:65
 msgid "author"
 msgstr "автор"
 
-#: models.py:52
+#: models.py:66
 msgid "text"
 msgstr "текст комментария"
 
-#: models.py:53
+#: models.py:67
 msgid "rating"
 msgstr "рейтинг"
 
-#: models.py:55
+#: models.py:69
 msgid "created on"
 msgstr "дата создания"
 
-#: models.py:56
+#: models.py:70
 msgid "deleted"
 msgstr "удален"
 
-#: models.py:58
+#: models.py:72
 msgid "deleted by"
 msgstr "удалил"
 
-#: models.py:59
+#: models.py:73
 msgid "visible"
 msgstr "видимый"
 
-#: models.py:60
+#: models.py:74
 msgid "order"
 msgstr "порядок"
 
-#: models.py:65
+#: models.py:79
 msgid "comment"
 msgstr "комментарий"
 
-#: models.py:66
+#: models.py:80
 msgid "comments"
 msgstr "комментарии"
 
-#: models.py:200
+#: models.py:192
 msgid "vote"
 msgstr "оценка"
 
-#: models.py:201
+#: models.py:193
 msgid "votes"
 msgstr "оценки"
 
-#: templates/comments/admin/admin_include.html:11
+#: permissions.py:23
+msgid "Authentication required"
+msgstr "Необходима авторизация"
+
+#: permissions.py:27
+msgid "You cannot reply to your own comment"
+msgstr "Вы не можете отвечать на свои комментарии"
+
+#: permissions.py:31
+msgid "You cannot vote for your own comment"
+msgstr "Вы не можете голосовать за свой комментарий"
+
+#: permissions.py:35
+msgid "You have already voted for this comment"
+msgstr "Вы уже проголосовали за этот комментарий"
+
+#: permissions.py:39
+msgid "You don't have permission to edit this comment"
+msgstr "У вас нет прав редактировать этот комментарий"
+
+#: permissions.py:43
+msgid "You don't have permission to delete this comment"
+msgstr "У вас нет прав на удаление этого комментария"
+
+#: permissions.py:47
+msgid "You don't have permission to restore this comment"
+msgstr "У вас нет прав на восстановление этого комментария"
+
+#: permissions.py:51
+msgid "This comment was deleted"
+msgstr "Комментарий удалён"
+
+#: permissions.py:55
+msgid "This comment was not deleted"
+msgstr "Комментарий не был удалён"
+
+#: templates/comments/admin/admin_include.html:10
 msgid "Comments"
 msgstr "Комментарии"
 
-#: templates/comments/admin/admin_include.html:26
+#: templates/comments/admin/admin_include.html:28
 msgid "Author"
 msgstr "Автор"
 
-#: templates/comments/admin/admin_include.html:31
+#: templates/comments/admin/admin_include.html:33
 msgid "Text"
 msgstr "Текст комментария"
 
-#: templates/comments/admin/admin_include.html:36
-#: templates/comments/admin/admin_include.html:61
-#: templates/comments/comment.html:52
+#: templates/comments/admin/admin_include.html:38
+#: templates/comments/admin/admin_include.html:63
+#: templates/comments/comment.html:44
 msgid "Delete"
 msgstr "Удалить"
 
-#: templates/comments/admin/admin_include.html:41
-#: templates/comments/admin/admin_include.html:64
-#: templates/comments/comment.html:49
+#: templates/comments/admin/admin_include.html:43
+#: templates/comments/admin/admin_include.html:66
+#: templates/comments/comment.html:41
 msgid "Restore"
 msgstr "Восстановить"
 
-#: templates/comments/comment.html:43
+#: templates/comments/admin/admin_include.html:73
+msgid "You should create instance first"
+msgstr "Сначала вы должны создать сущность"
+
+#: templates/comments/comment.html:35
 msgid "Reply"
 msgstr "Ответить"
 
-#: templates/comments/comment.html:46
+#: templates/comments/comment.html:38
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -125,3 +169,7 @@ msgid ""
 msgstr ""
 "Вы должны <a href=\"%(login_href)s\" class=\"login\">авторизоваться</a>, "
 "чтобы оставлять комментарии"
+
+#: views_ajax.py:221
+msgid "Bad vote value"
+msgstr "Некорректная оценка комментария"
