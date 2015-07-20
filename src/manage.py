@@ -1,6 +1,10 @@
 import os
 import sys
 
+# inlines.js: new JS classes + min, max, can_order, can__delete
+# inlines class with inlines.js
+# urls: app_name
+# devserver: template profiler
 # Gallery: zoom effect, keyboard, max photos count
 
 # Slider3D: span
