@@ -10,7 +10,7 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def comments(context, entity, template='comments/comments_block.html'):
+def comments_for(context, entity, template='comments/comments_block.html'):
     request = context['request']
     request.js_storage.update(
         comment_post=resolve_url('comments:post'),
@@ -27,10 +27,12 @@ def comments(context, entity, template='comments/comments_block.html'):
         'object_id': entity.pk,
     })
 
+    comments = Comment.objects.get_for(entity)
+
     context.update({
         'content_type': content_type.pk,
         'object_id': entity.pk,
-        'comments': Comment.objects.get_for(entity).with_permissions(request.user),
+        'comments': comments.with_permissions(request.user),
         'form': form,
         'avatar_size': users_options.AVATAR_MICRO,
     })

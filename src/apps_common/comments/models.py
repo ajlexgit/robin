@@ -104,9 +104,9 @@ class Comment(MPTTModel):
             self.order = 0 if order is None else order + 1
         else:
             # Обновляем видимость
-            descendants = self.get_descendants()
-            if descendants:
-                self.visible = descendants.filter(deleted=False).exists()
+            visible_descendants = self.get_descendants().filter(deleted=False)
+            if visible_descendants.exists():
+                self.visible = True
             else:
                 self.visible = not self.deleted
 
