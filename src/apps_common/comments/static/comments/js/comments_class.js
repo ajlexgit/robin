@@ -238,8 +238,9 @@
 
                     if ($parent_comment.length) {
                         // ответ на коммент
-                        $form.remove();
                         that.getBranch($parent_comment).last().after($comment);
+                        $parent_comment.trigger('formclose', [$form]);
+                        $form.remove();
                     } else {
                         // добавление корневого коммента
                         that.$root.find('.' + that.settings.comments_container_class).append($comment);

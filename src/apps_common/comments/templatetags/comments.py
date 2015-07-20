@@ -30,7 +30,7 @@ def comments(context, entity, template='comments/comments_block.html'):
     context.update({
         'content_type': content_type.pk,
         'object_id': entity.pk,
-        'comments': Comment.objects.get_for(entity),
+        'comments': Comment.objects.get_for(entity).with_permissions(request.user),
         'form': form,
         'avatar_size': users_options.AVATAR_MICRO,
     })

@@ -12,7 +12,7 @@ ALLOW_EDIT_TIME = 5 * 60
 ALLOW_DELETE_SELF_COMMENTS = False
 
 # Разрешить отвечать самому себе
-ALLOW_SELF_REPLY = False
+ALLOW_REPLY_SELF_COMMENTS = False
 
 # Разрешить голосовать за свой комментарий
-ALLOW_SELF_VOTE = False
+ALLOW_VOTE_SELF_COMMENTS = False

@@ -9,6 +9,7 @@ from mptt.managers import TreeManager
 from libs.now import now
 from libs.aliased_queryset import AliasedQuerySetMixin
 from . import options
+from . import permissions
 
 
 class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
@@ -35,6 +36,12 @@ class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
         )
         final_fields = set(mptt_fields + fields + tuple(mptt_meta.order_insertion_by))
         return super().only(*final_fields)
+
+    def with_permissions(self, user):
+        """ Генератор с полями прав на коммент """
+        for comment in self:
+            comment.add_permissions(user)
+            yield comment
 
 
 class CommentTreeManager(TreeManager):
@@ -129,68 +136,46 @@ class Comment(MPTTModel):
             parent.update(visible=not self.parent.deleted)
             parent.first().update_parent_visibility()
 
-    def can_reply(self, user):
-        if not user.is_authenticated():
-            return False
-
-        if not options.ALLOW_SELF_REPLY and self.user == user:
-            return False
+    def add_permissions(self, user):
+        # Может ли юзер ответить на комментарий
+        try:
+            permissions.check_reply(self, user)
+        except permissions.CommentException:
+            self.can_reply = False
         else:
-            return True
+            self.can_reply = True
 
-    def can_vote(self, user):
-        from .voted_cache import get_voted
-
-        if not user.is_authenticated():
-            return False
-
-        if not options.ALLOW_SELF_VOTE and self.user == user:
-            return False
-
-        voted = get_voted(user)
-        return voted.get(self.id) is None
-
-    def can_edit(self, user):
-        if not user.is_authenticated():
-            return False
-
-        if user.has_perm('comments.change_comment'):
-            return True
-        elif self.deleted:
-            return False
-        elif self.user == user:
-            if options.ALLOW_EDIT_TIME:
-                comment_life = now() - self.created
-                return comment_life.seconds < options.ALLOW_EDIT_TIME
-            return True
+        # Может ли юзер редактировать комментарий
+        try:
+            permissions.check_edit(self, user)
+        except permissions.CommentException:
+            self.can_edit = False
         else:
-            return False
+            self.can_edit = True
 
-    def can_delete(self, user):
-        if not user.is_authenticated():
-            return False
-
-        if self.deleted:
-            return False
-        elif user.has_perm('comments.delete_comment'):
-            return True
-        elif self.user == user and options.ALLOW_DELETE_SELF_COMMENTS:
-            return True
+        # Может ли юзер удалить комментарий
+        try:
+            permissions.check_delete(self, user)
+        except permissions.CommentException:
+            self.can_delete = False
         else:
-            return False
+            self.can_delete = True
 
-    def can_restore(self, user):
-        if not user.is_authenticated():
-            return False
-
-        if not self.deleted:
-            return False
-        elif user.has_perm('comments.delete_comment'):
-            return True
-        elif self.deleted_by == user and options.ALLOW_DELETE_SELF_COMMENTS:
-            return True
+        # Может ли юзер восстановить комментарий
+        try:
+            permissions.check_restore(self, user)
+        except permissions.CommentException:
+            self.can_restore = False
         else:
-            return False
+            self.can_restore = True
+
+        # Может ли юзер проголосовать за комментарий
+        try:
+            permissions.check_vote(self, user)
+        except permissions.CommentException:
+            self.can_vote = False
+        else:
+            self.can_vote = True
 
     def has_childs(self):
         childs = Comment.objects.filter(position__startswith=self.position)

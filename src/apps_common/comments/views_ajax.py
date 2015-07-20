@@ -1,10 +1,10 @@
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, JsonResponse
 from libs.views import TemplateExView
-from . import options
+from . import permissions
 from .models import Comment, CommentVote
 from .forms import CommentForm, CommentValidationForm
 from .voted_cache import update_voted_cache
@@ -23,7 +23,7 @@ class RefreshView(TemplateExView):
             raise Http404
 
         context = {
-            'comments': Comment.objects.get_for(obj),
+            'comments': Comment.objects.get_for(obj).with_permissions(request.user),
             'form': CommentForm(auto_id=False, initial={
                 'content_type': content_type_id,
                 'object_id': object_id,
@@ -41,16 +41,18 @@ class ChangeView(TemplateExView):
 
     def get(self, request):
         validation_form = CommentValidationForm(request.GET)
-        if validation_form.is_valid():
-            comment = validation_form.cleaned_data['comment']
-        else:
+        if not validation_form.is_valid():
             return JsonResponse({
                 'error': ';\n'.join(validation_form.error_list),
             })
 
-        if not comment.can_edit(request.user):
+        comment = validation_form.cleaned_data['comment']
+
+        try:
+            permissions.check_edit(comment, request.user)
+        except permissions.CommentException as e:
             return JsonResponse({
-                'error': 'У вас нет прав на редактирование этого комментария',
+                'error': e.reason,
             })
 
         return JsonResponse({
@@ -63,26 +65,30 @@ class ChangeView(TemplateExView):
             comment = Comment.objects.get(pk=comment_id)
         except Comment.DoesNotExist:
             return JsonResponse({
-                'error': 'Комментарий не найден',
-            })
-
-        if not comment.can_edit(request.user):
-            return JsonResponse({
-                'error': 'У вас нет прав на редактирование этого комментария',
+                'error': _('Comment not found'),
             })
 
         form = CommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            comment = form.save()
-            return JsonResponse({
-                'html': self.render_to_string({
-                    'comment': comment,
-                }),
-            })
-        else:
+        if not form.is_valid():
             return JsonResponse({
                 'error': ';\n'.join(form.error_list),
             })
+
+        try:
+            permissions.check_edit(comment, request.user)
+        except permissions.CommentException as e:
+            return JsonResponse({
+                'error': e.reason,
+            })
+
+        comment = form.save()
+        comment.add_permissions(request.user)
+
+        return JsonResponse({
+            'html': self.render_to_string({
+                'comment': comment,
+            }),
+        })
 
 
 class DeleteView(TemplateExView):
@@ -91,21 +97,25 @@ class DeleteView(TemplateExView):
 
     def post(self, request):
         validation_form = CommentValidationForm(request.POST)
-        if validation_form.is_valid():
-            comment = validation_form.cleaned_data['comment']
-        else:
+        if not validation_form.is_valid():
             return JsonResponse({
                 'error': ';\n'.join(validation_form.error_list),
             })
 
-        if not comment.can_delete(request.user):
+        comment = validation_form.cleaned_data['comment']
+
+        try:
+            permissions.check_delete(comment, request.user)
+        except permissions.CommentException as e:
             return JsonResponse({
-                'error': 'У вас нет прав на удаление этого комментария',
+                'error': e.reason,
             })
 
         comment.deleted = True
         comment.deleted_by = request.user
         comment.save()
+        comment.add_permissions(request.user)
+
         return JsonResponse({
             'html': self.render_to_string({
                 'comment': comment,
@@ -119,21 +129,25 @@ class RestoreView(TemplateExView):
 
     def post(self, request):
         validation_form = CommentValidationForm(request.POST)
-        if validation_form.is_valid():
-            comment = validation_form.cleaned_data['comment']
-        else:
+        if not validation_form.is_valid():
             return JsonResponse({
                 'error': ';\n'.join(validation_form.error_list),
             })
 
-        if not comment.can_restore(request.user):
+        comment = validation_form.cleaned_data['comment']
+
+        try:
+            permissions.check_restore(comment, request.user)
+        except permissions.CommentException as e:
             return JsonResponse({
-                'error': 'У вас нет прав на восстановление этого комментария',
+                'error': e.reason,
             })
 
         comment.deleted = False
         comment.deleted_by = None
         comment.save()
+        comment.add_permissions(request.user)
+
         return JsonResponse({
             'html': self.render_to_string({
                 'comment': comment,
@@ -146,77 +160,77 @@ class PostView(TemplateExView):
     template_name = 'comments/comment.html'
 
     def post(self, request):
-        if not request.user.is_authenticated():
-            return JsonResponse({
-                'error': 'Для отправки комментария необходимо авторизоваться',
-            })
-
         form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            if comment.parent and not comment.parent.can_reply(request.user):
-                return JsonResponse({
-                    'error': 'Вы не можете отвечать на свой комментарий',
-                })
-            
-            comment.user = request.user
-            comment.save()
-
-            return JsonResponse({
-                'html': self.render_to_string({
-                    'comment': comment,
-                }),
-            })
-        else:
+        if not form.is_valid():
             return JsonResponse({
                 'error': ';\n'.join(form.error_list),
             })
+
+        comment = form.save(commit=False)
+        comment.user = request.user
+
+        if comment.parent:
+            try:
+                permissions.check_reply(comment.parent, request.user)
+            except permissions.CommentException as e:
+                return JsonResponse({
+                    'error': e.reason,
+                })
+        else:
+            try:
+                permissions.check_add(comment, request.user)
+            except permissions.CommentException as e:
+                return JsonResponse({
+                    'error': e.reason,
+                })
+
+        comment.save()
+        comment.add_permissions(request.user)
+
+        return JsonResponse({
+            'html': self.render_to_string({
+                'comment': comment,
+            }),
+        })
 
 
 class VoteView(TemplateExView):
     """ Голосование за комментарий """
     template_name = 'comments/comment.html'
-    
+
     def post(self, request):
-        if not request.user.is_authenticated():
-            return JsonResponse({
-                'error': 'Для оценки комментариев необходимо авторизоваться',
-            })
-        
         validation_form = CommentValidationForm(request.POST)
-        if validation_form.is_valid():
-            comment = validation_form.cleaned_data['comment']
-        else:
+        if not validation_form.is_valid():
             return JsonResponse({
                 'error': ';\n'.join(validation_form.error_list),
             })
 
-        if not options.ALLOW_SELF_VOTE and comment.user == request.user:
-            return JsonResponse({
-                'error': 'Вы не можете голосовать за свой комментарий',
-            })
-        
+        comment = validation_form.cleaned_data['comment']
+
         try:
-            is_like = int(request.POST.get('is_like'))
+            permissions.check_vote(comment, request.user)
+        except permissions.CommentException as e:
+            return JsonResponse({
+                'error': e.reason,
+            })
+
+        try:
+            int_vote = int(request.POST.get('is_like'))
         except (TypeError, ValueError):
             return JsonResponse({
-                'error': 'Оценка некорректна',
+                'error': _('Bad vote value'),
             })
-            
-        try:
-            CommentVote(
-                comment=comment,
-                user=request.user,
-                value=1 if is_like else -1,
-            ).save()
-        except IntegrityError:
-            return JsonResponse({
-                'error': 'Вы уже проголосовали за этот комментарий',
-            })
-        
-        # Обновление кэша голосов юзера
+
+        vote = CommentVote(
+            comment=comment,
+            user=request.user,
+            value=1 if int_vote else -1,
+        )
+        vote.save()
         update_voted_cache(request.user)
-        
+
+        comment.add_permissions(request.user)
+
         return JsonResponse({
             'html': self.render_to_string({
                 'comment': comment,

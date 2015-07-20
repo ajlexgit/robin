@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load math %}
 {% load comments %}
 
 <script>
@@ -10,11 +11,13 @@
 
 {% if entity %}
     <table class="table table-striped table-bordered table-hover table-condensed">
-    <col width="4%"/>
-    <col width="20%"/>
-    <col />
-    <col width="8%"/>
-    <col width="10%"/>
+    <colgroup>
+        <col width="4%"/>
+        <col width="20%"/>
+        <col/>
+        <col width="8%"/>
+        <col width="10%"/>
+    </colgroup>
     <thead>
         <tr>
             <th class="view-column column-view">
