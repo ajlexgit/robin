@@ -214,7 +214,7 @@ MIDDLEWARE_CLASSES = (
 
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
-    
+
     'breadcrumbs.middleware.BreadcrumbsMiddleware',
     'seo.middleware.SeoMiddleware',
 )

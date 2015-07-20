@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% load i18n %}
+{% load dates %}
 {% load pipeline %}
 
 {% block static_head %}
@@ -19,7 +20,7 @@
         <div class="grid">
             <div class="gc-full gc-alone">
                 <h1 class="title-h1">{% with username=profile_user.username %}{% blocktrans %}Profile of «{{ username }}»{% endblocktrans %}{% endwith %}</h1>
-                
+
                 {% include 'users/profile_avatar.html' %}
                 <div class="profile-info">
                     {% with fullname=profile_user.get_full_name %}

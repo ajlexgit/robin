@@ -20,7 +20,7 @@ class TemplateExView(TemplateResponseMixin, View):
         )
 
     def _resolve_context(self, context, current_app=None):
-        if not isinstance(context, Context):
+        if isinstance(context, Context):
             return context
         else:
             return RequestContext(self.request, context, current_app=current_app)
