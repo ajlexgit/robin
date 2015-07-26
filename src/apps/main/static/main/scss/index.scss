@@ -80,6 +80,21 @@
   padding: 40px 0;
 }
 
+#social_buttons {
+  padding: 40px 0;
+  text-align: center;
+  background-color: #DDD;
+  @include no_fontsize;
+
+  .social-button {
+    margin-right: 10px;
+
+    &:nth-last-of-type(1) {
+        margin-right: 0;
+    }
+  }
+}
+
 #slider_example {
   padding: 40px 0;
   background: black;
@@ -102,26 +117,14 @@
 
 #form {
   padding: 40px 0;
-  background: #202020;
+  background: #222;
 
   label {
+    display: block;
     color: #FFFFFF;
   }
 
   .formset {
     margin-top: 20px;
   }
-}
-
-#social_buttons {
-    background-color: #000000;
-    @include no_fontsize;
-
-    .social-button {
-        margin-right: 10px;
-
-        &:nth-last-of-type(1) {
-            margin-right: 0;
-        }
-    }
 }

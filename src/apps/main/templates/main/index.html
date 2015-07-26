@@ -55,6 +55,22 @@
             </article>
         </div>
     </div>
+    
+    <div id="social_buttons">
+        <div class="grid">
+            <div class="gc-full gc-alone">
+                {% social_share 'vk' %}
+                {% social_share 'fb' %}
+                {% social_share 'tw' %}
+                {% social_share 'gp' %}
+                {% social_share 'li' %}
+                {% social_share 'pi' %}
+                {% social_share 'sb' %}
+                {% social_share 'lj' %}
+                {% social_share 'dg' %}
+            </div>
+        </div>
+    </div>
 
     {% if config.gallery and config.gallery.image_items %}
         <div id="slider_example">
@@ -110,7 +126,7 @@
                     {% for form in formset %}
                         <div class="formset">
                             {% if formset.can_delete %}
-                                {{ form.DELETE }}
+                                {{ form.DELETE.as_hidden }}
                             {% endif %}
                             
                             <fieldset>
@@ -123,22 +139,6 @@
                 </div>
             </div>
         </form>
-    </div>
-
-    <div id="social_buttons">
-        <div class="grid">
-            <div class="gc-full gc-alone">
-                {% social_share 'vk' %}
-                {% social_share 'fb' %}
-                {% social_share 'tw' %}
-                {% social_share 'gp' %}
-                {% social_share 'li' %}
-                {% social_share 'pi' %}
-                {% social_share 'sb' %}
-                {% social_share 'lj' %}
-                {% social_share 'dg' %}
-            </div>
-        </div>
     </div>
 
 {% endblock content %}

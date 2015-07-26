@@ -1,7 +1,6 @@
 from django.views.generic import TemplateView
-from django.forms import formset_factory
 from .models import MainPageConfig
-from .forms import MainForm, InlineForm
+from .forms import MainForm, InlineFormSet
 
 
 class IndexView(TemplateView):
@@ -11,16 +10,7 @@ class IndexView(TemplateView):
         config = MainPageConfig.get_solo()
 
         form = MainForm(prefix='main')
-        InlineFormset = formset_factory(InlineForm,
-            extra=1,
-            can_order=False,
-            can_delete=True,
-            max_num=3,
-            validate_max=True,
-            min_num=2,
-            validate_min=True
-        )
-        formset = InlineFormset(prefix='inlines')
+        formset = InlineFormSet(prefix='inlines')
 
         # SEO
         request.seo.set_instance(config)
