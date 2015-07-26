@@ -92,6 +92,39 @@
         </div>
     </div>
 
+    <div id="form">
+        <form method="post">
+            <div class="grid">
+                <div class="gc-full gc-alone">
+                    {% for field in form %}
+                        <fieldset>
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                        </fieldset>
+                    {% endfor %}
+                </div>
+                
+                <div class="gc-full gc-alone">
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                        <div class="formset">
+                            {% if formset.can_delete %}
+                                {{ form.DELETE }}
+                            {% endif %}
+                            
+                            <fieldset>
+                                {{ form.name.label_tag }}
+                                {{ form.name }}
+                                {{ form.name.errors }}
+                            </fieldset>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div id="social_buttons">
         <div class="grid">
             <div class="gc-full gc-alone">

@@ -1,4 +1,4 @@
-from django.template import Library, loader
+from django.template import Library, loader, RequestContext
 from django.shortcuts import resolve_url
 from django.contrib.contenttypes.models import ContentType
 from users import options as users_options
@@ -11,7 +11,10 @@ register = Library()
 
 @register.simple_tag(takes_context=True)
 def comments_for(context, entity, template='comments/comments_block.html'):
-    request = context['request']
+    request = context.get('request')
+    if not request:
+        return ''
+    
     request.js_storage.update(
         comment_post=resolve_url('comments:post'),
         comment_change=resolve_url('comments:change'),
@@ -29,14 +32,14 @@ def comments_for(context, entity, template='comments/comments_block.html'):
 
     comments = Comment.objects.get_for(entity)
 
-    context.update({
+    new_context = RequestContext(request, {
         'content_type': content_type.pk,
         'object_id': entity.pk,
         'comments': comments.with_permissions(request.user),
         'form': form,
         'avatar_size': users_options.AVATAR_MICRO,
     })
-    return loader.render_to_string(template, context)
+    return loader.render_to_string(template, new_context)
 
 
 @register.filter
