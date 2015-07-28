@@ -3,12 +3,13 @@
 .langs {
   display: inline-block;
   position: relative;
+  vertical-align: middle;
   @include no_fontsize;
 
   .flag {
     display: block;
-    width: 50px;
-    height: 33px;
+    width: 41px;
+    height: 27px;
     background: url(../img/flag-sprite.svg) no-repeat 0 0;
     background-size: 100% auto;
 
@@ -23,7 +24,7 @@
   ul {
     position: absolute;
     left: 0;
-    top: 33px;
+    top: 100%;
     visibility: hidden;
     @include opacity(0);
     @include transition(opacity 0.3s 0s, visibility 0s 0.3s);
