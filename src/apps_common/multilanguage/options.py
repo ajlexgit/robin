@@ -1,10 +1,10 @@
 LANGUAGES = (
     {
-        'code': 'en',
+        'code': 'en-US',
         'url': '//en.local.ru/',
     },
     {
-        'code': 'ru',
+        'code': 'ru-RU',
         'url': '//ru.local.ru/',
         'iso': ('RU', 'UA'),
     },

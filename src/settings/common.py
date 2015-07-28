@@ -11,7 +11,12 @@ SECRET_KEY = 'lr2b8&^p8dv#&b=4%op-0^2*vomo816l-*8*^5#o9@q!=zv@f$'
 DEBUG = False
 TEMPLATE_DEBUG = False
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'en-US'
+SHORT_LANGUAGE_CODE = LANGUAGE_CODE.strip('-')[0]
+LANGUAGES = (
+    ('ru-RU', _('Russian')),
+    ('en-US', _('English')),
+)
 
 TIME_ZONE = 'America/New_York'
 TIME_FORMAT = 'H:i'
@@ -193,7 +198,7 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/plupload/moxie.min.js',
             'js/plupload/plupload.min.js',
-            'js/plupload/i18n/%s.js' % LANGUAGE_CODE,
+            'js/plupload/i18n/%s.js' % SHORT_LANGUAGE_CODE,
             'js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
             'js/jquery.Jcrop.js',
             'js/cropdialog.js',
@@ -359,7 +364,7 @@ PIPELINE_SASS_ARGUMENTS = '-t nested'
 
 # Ckeditor
 CKEDITOR_CONFIG_DEFAULT = {
-    'language': LANGUAGE_CODE,
+    'language': SHORT_LANGUAGE_CODE,
     'height': 320,
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
@@ -405,7 +410,7 @@ CKEDITOR_CONFIG_DEFAULT = {
     ]
 }
 CKEDITOR_CONFIG_MINI = {
-    'language': LANGUAGE_CODE,
+    'language': SHORT_LANGUAGE_CODE,
     'height': 100,
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix',

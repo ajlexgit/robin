@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.shortcuts import redirect
 from libs.geocity import info
-from . import options
 from .utils import get_client_ip, disable_autoredirect, noredirect_url
+from . import options
 
 
 class LanguageRedirectMiddleware:
@@ -36,7 +36,7 @@ class LanguageRedirectMiddleware:
                 for lang in options.LANGUAGES:
                     iso = lang.get('iso')
                     if iso and ip_iso in iso:
-                        current_code = 'ru'
+                        current_code = lang['code']
                         break
 
             language = options.LANGUAGES_DICT.get(current_code)

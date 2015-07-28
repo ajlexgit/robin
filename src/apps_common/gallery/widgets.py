@@ -15,7 +15,7 @@ class GalleryWidget(forms.Widget):
             'admin/js/cropdialog.js',
             'admin/js/plupload/moxie.min.js',
             'admin/js/plupload/plupload.min.js',
-            'admin/js/plupload/i18n/%s.js' % (settings.LANGUAGE_CODE.split('-')[0], ),
+            'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
             'admin/js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
             'gallery/admin/js/gallery_class.js',
             'gallery/admin/js/jquery.gallery.js',

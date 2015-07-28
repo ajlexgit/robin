@@ -28,7 +28,7 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
         size='%dx%d' % (width, height,),
         zoom=zoom,
         maptype='roadmap',
-        language=settings.LANGUAGE_CODE,
+        language=settings.SHORT_LANGUAGE_CODE,
         markers='color:red|label:G|%s' % point,
     ))
 
@@ -43,7 +43,7 @@ def get_external_map_url(longitude, latitude, zoom=14):
     return HOSTED_MAPS_URL + parse.urlencode(dict(
         q='loc:%s' % point,
         t='r',
-        hl=settings.LANGUAGE_CODE,
+        hl=settings.SHORT_LANGUAGE_CODE,
         z=zoom,
     ))
 

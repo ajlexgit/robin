@@ -19,7 +19,7 @@ class AutocompleteWidgetMixin:
         js = (
             'autocomplete/js/autocomplete.js',
             'autocomplete/js/select2.min.js',
-            'autocomplete/js/select2_locale_%s.js' % (settings.LANGUAGE_CODE.split('-')[0]),
+            'autocomplete/js/select2_locale_%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
         )
         css = {
             'all': (
