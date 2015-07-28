@@ -1,6 +1,9 @@
 import re
 from html import unescape
+from softhyphen.html import get_hyphenator_for_language, SOFT_HYPHEN
 from bs4 import BeautifulSoup as Soup, NavigableString
+from django.conf import settings
+from django.core.cache import caches
 from django.template import Library, defaultfilters
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
@@ -83,3 +86,23 @@ def clean(html):
     text = defaultfilters.linebreaksbr(text)
     text = typograf(text)
     return mark_safe(text)
+
+
+@register.simple_tag(takes_context=True)
+def softhyphen(context, value, language=None):
+    request = context.get('request')
+    if not request:
+        return value
+
+    if not language:
+        language = settings.LANGUAGE_CODE
+
+    cache = caches['default']
+    key = ':'.join((value, language))
+    if cache.has_key(key):
+        return mark_safe(cache.get(key))
+    else:
+        hybernator = get_hyphenator_for_language(language)
+        result = hybernator.inserted(value, SOFT_HYPHEN)
+        cache.set(key, result, timeout=24 * 3600)
+        return mark_safe(result)

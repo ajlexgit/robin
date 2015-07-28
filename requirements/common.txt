@@ -5,13 +5,13 @@ django-mptt==0.6.1
 django-phonenumber-field==0.7.2
 django-pipeline==1.4.3
 django-redis==3.5.1
+django-softhyphen==1.0.1
 django-solo==1.1.0
 django-suit==0.2.12
 django-suit-ckeditor==0.0.2
 beautifulsoup4==4.3.2
 html5lib==0.999
 Pillow==2.7.0
-pyhyphen==2.0.5
 pysyge==0.2.0
 pytils==0.3
 psycopg2==2.6
