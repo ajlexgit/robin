@@ -11,6 +11,7 @@ django-suit-ckeditor==0.0.2
 beautifulsoup4==4.3.2
 html5lib==0.999
 Pillow==2.7.0
+pyhyphen==2.0.5
 pysyge==0.2.0
 pytils==0.3
 psycopg2==2.6
