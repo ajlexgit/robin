@@ -13,10 +13,10 @@
     background: url(../img/flag-sprite.svg) no-repeat 0 0;
     background-size: 100% auto;
 
-    &.en {
+    &.en-US {
       background-position: 0 99.79591836734694%;
     }
-    &.ru {
+    &.ru-RU {
       background-position: 0 85.71224489795918%;
     }
   }
