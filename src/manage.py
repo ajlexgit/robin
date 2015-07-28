@@ -1,6 +1,7 @@
 import os
 import sys
 
+# multilanguage
 # inlines.js: new JS classes + min, max, can_order, can__delete
 # inlines class with inlines.js
 # urls: app_name
