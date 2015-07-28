@@ -42,7 +42,7 @@ def comments_for(context, entity, template='comments/comments_block.html'):
     return loader.render_to_string(template, new_context)
 
 
-@register.filter
+@register.filter(is_safe=True)
 def format_rating(value):
     if value > 0:
         return '%+d' % value
@@ -52,7 +52,7 @@ def format_rating(value):
         return value
 
 
-@register.filter
+@register.filter(is_safe=True)
 def get_vote(comment, user):
     """
     Получение голоса юзера за коммент.

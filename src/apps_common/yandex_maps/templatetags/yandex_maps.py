@@ -5,7 +5,7 @@ from ..models import geocode_cached
 register = Library()
 
 
-@register.filter
+@register.filter(is_safe=True)
 def yandex_map_static(address, params=None):
     """
     Фильтр, который возвращает URL картинки с картой.
@@ -31,7 +31,7 @@ def yandex_map_static(address, params=None):
     return get_static_map_url(lng, lat, *params)
 
 
-@register.filter
+@register.filter(is_safe=True)
 def yandex_map_external(address, zoom=14):
     """
     Фильтр, который возвращает URL карты у яндекса.

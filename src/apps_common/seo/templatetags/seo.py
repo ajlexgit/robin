@@ -1,5 +1,4 @@
 from django.template import loader, Library
-from django.utils.safestring import mark_safe
 from libs.description import description
 from ..models import Counter
 
@@ -37,4 +36,4 @@ def seo_counters(position):
         return ''
 
     content = '\n'.join(c.content for c in counters)
-    return mark_safe(content)
+    return content

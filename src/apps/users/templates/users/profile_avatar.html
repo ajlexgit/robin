@@ -14,7 +14,7 @@
             {% if profile_user.avatar %}
                 <a href="#" id="crop-avatar" data-source="{{ profile_user.avatar.url_nocache }}"
                    data-crop="{{ profile_user.avatar_crop }}"
-                   data-aspect="{{ profile_user.avatar.variations.normal.size|tuplediv|to_json }}"
+                   data-aspect="{{ profile_user.avatar.variations.normal.size|tuplediv }}"
                    data-min_dimensions="{{ profile_user.avatar.variations.normal.size|join:"x" }}">{% trans 'Change thumbnail' %}</a>
             {% endif %}
         </div>
