@@ -13,7 +13,10 @@ register = Library()
 re_nbsp = re.compile('\\b(\w{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
+
 hybernator = get_hyphenator_for_language(settings.LANGUAGE_CODE)
+hybernator.left = 4
+hybernator.right = 3
 
 
 def hybernate_string(string):
@@ -104,5 +107,5 @@ def softhyphen(value):
         return cache.get(key)
     else:
         result = hybernate_string(value)
-        cache.set(key, result, timeout=24 * 3600)
+        cache.set(key, result, timeout=6*3600)
         return result
