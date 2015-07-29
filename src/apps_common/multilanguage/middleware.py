@@ -43,5 +43,6 @@ class LanguageRedirectMiddleware:
             if language:
                 # язык сессии не совпадает с языком сайта - редиректим
                 if language['code'] != settings.LANGUAGE_CODE:
+                    disable_autoredirect(request)
                     redirect_url = noredirect_url(language['url'], forced_path=request.path)
                     return redirect(redirect_url)
