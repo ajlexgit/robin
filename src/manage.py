@@ -1,7 +1,8 @@
 import os
 import sys
 
-# multilanguage
+# валюты
+# multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete
 # inlines class with inlines.js
 # urls: app_name
