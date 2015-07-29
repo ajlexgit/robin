@@ -1,5 +1,6 @@
 import re
 from html import unescape
+from django.utils.safestring import mark_safe
 from softhyphen.html import get_hyphenator_for_language, SOFT_HYPHEN
 from bs4 import BeautifulSoup as Soup, NavigableString
 from django.conf import settings
@@ -9,9 +10,33 @@ from django.utils.html import strip_tags
 
 register = Library()
 
-re_nbsp = re.compile('\\b([\'\"\.\w]{1,3})\s+')
+re_nbsp = re.compile('\\b(\w{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
+hybernator = get_hyphenator_for_language(settings.LANGUAGE_CODE)
+
+
+def hybernate_string(string):
+    result = (
+        hybernator.inserted(word, SOFT_HYPHEN)
+        for word in string.split()
+    )
+    return ' '.join(result)
+
+
+def process_tag(tag, valid_tags=()):
+    if isinstance(tag, NavigableString):
+        return tag
+
+    if tag.name in valid_tags:
+        for subtag in tag.contents:
+            subtag.replaceWith(process_tag(subtag, valid_tags))
+        return tag
+    else:
+        result = ""
+        for subtag in tag.contents:
+            result += str(process_tag(subtag, valid_tags))
+        return result
 
 
 @register.filter(is_safe=True, name="striptags_except")
@@ -22,26 +47,12 @@ def strip_tags_except_filter(html, args):
         Пример:
             {{ text|striptags_except:"a, p" }}
     """
-    def process_tag(tag):
-        if isinstance(tag, NavigableString):
-            return tag
-
-        if tag.name in valid_tags:
-            for subtag in tag.contents:
-                subtag.replaceWith(process_tag(subtag))
-            return tag
-        else:
-            result = ""
-            for subtag in tag.contents:
-                result += str(process_tag(subtag))
-            return result
-
     valid_tags = [item.strip() for item in args.split(',')]
 
     soup = Soup(html, 'html5lib')
 
     for tag in soup.body:
-        tag.replaceWith(process_tag(tag))
+        tag.replaceWith(process_tag(tag, valid_tags))
 
     result = soup.body.decode_contents()
     return re_clean_newlines.sub('\n', result)
@@ -72,32 +83,26 @@ def paragraphs(text):
     return result
 
 
-@register.filter(is_safe=True, needs_autoescape=True)
+@register.filter(needs_autoescape=True)
 def clean(html, autoescape=None):
     """
-        Алиас для трех фильтров: striptags, linebreaksbr, typograf
+        Алиас для трех фильтров: striptags, linebreaksbr, typograf, safe
     """
     text = strip_tags(html)
     text = defaultfilters.linebreaksbr(text, autoescape=autoescape)
     text = typograf(text)
-    return text
+    return mark_safe(text)
 
 
-@register.simple_tag(takes_context=True)
-def softhyphen(context, value, language=None):
-    request = context.get('request')
-    if not request:
-        return value
-
-    if not language:
-        language = settings.LANGUAGE_CODE
-
+@register.filter(is_safe=True)
+def softhyphen(value):
     cache = caches['default']
+    language = settings.LANGUAGE_CODE
+
     key = ':'.join((value, language))
     if cache.has_key(key):
         return cache.get(key)
     else:
-        hybernator = get_hyphenator_for_language(language)
-        result = hybernator.inserted(value, SOFT_HYPHEN)
+        result = hybernate_string(value)
         cache.set(key, result, timeout=24 * 3600)
         return result
