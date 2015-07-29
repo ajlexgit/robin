@@ -410,6 +410,42 @@ CKEDITOR_CONFIG_DEFAULT = {
         },
     ]
 }
+CKEDITOR_CONFIG_MEDIUM = {
+    'language': SHORT_LANGUAGE_CODE,
+    'height': 220,
+    'forcePasteAsPlainText': True,
+    'extraPlugins': 'autogrow,textlen,enterfix',
+    'autoGrow_maxHeight': '540',
+    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
+    'plugins': 'basicstyles,clipboard,undo,contextmenu,'
+               'elementspath,enterkey,entities,floatingspace,'
+               'format,htmlwriter,link,'
+               'removeformat,resize,'
+               'showborders,sourcearea,tab,'
+               'toolbar,wsc,wysiwygarea',
+    'toolbar': [
+        {
+            'name': 'document',
+            'items': ['Source']
+        },
+        {
+            'name': 'clipboard',
+            'items': ['Undo', 'Redo']
+        },
+        {
+            'name': 'links',
+            'items': ['Link', 'Unlink']
+        },
+        {
+            'name': 'basicstyles',
+            'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
+        },
+        {
+            'name': 'styles',
+            'items': ['Format']
+        },
+    ]
+}
 CKEDITOR_CONFIG_MINI = {
     'language': SHORT_LANGUAGE_CODE,
     'height': 100,
