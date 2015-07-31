@@ -91,7 +91,7 @@ def clean(html, autoescape=None):
     """
         Алиас для трех фильтров: striptags, linebreaksbr, typograf, safe
     """
-    text = strip_tags(html)
+    text = strip_tags(str(html))
     text = defaultfilters.linebreaksbr(text, autoescape=autoescape)
     text = typograf(text)
     return mark_safe(text)
