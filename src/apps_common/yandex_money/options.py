@@ -2,8 +2,12 @@ from django.conf import settings
 
 # Кошелек получателя
 WALLET = getattr(settings, 'YANDEX_MONEY_WALLET')
-if not WALLET or len(WALLET) != 14:
+if not WALLET:
     raise ValueError('Invalid YANDEX_MONEY_WALLET setting')
+
+SECRET = getattr(settings, 'YANDEX_MONEY_SECRET')
+if not SECRET:
+    raise ValueError('Invalid YANDEX_MONEY_SECRET setting')
 
 DEFAULT_DESCRIPTION = getattr(settings, 'YANDEX_MONEY_DEFAULT_DESCRIPTION')
 if not DEFAULT_DESCRIPTION:

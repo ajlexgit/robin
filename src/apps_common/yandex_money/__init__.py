@@ -16,6 +16,9 @@
         YANDEX_MONEY_WALLET = '41001984822868'
         # Номер кошелька-получателя
 
+        YANDEX_MONEY_SECRET = '4FOx8cth9Rqd7CT7AV4HBLES'
+        # Секретный ключ для валидации
+
         YANDEX_MONEY_DEFAULT_DESCRIPTION = _('Evolut')
         # Название платежей о умолчанию
 
@@ -29,4 +32,18 @@
 
                 <button>{% trans 'Pay' %}</button>
             </form>
+
+        views.py:
+            # Валидация:
+            from yandex_money.validation import validate, InvalidPaymentRequest
+
+            def payment_callback(request):
+                ...
+
+                try:
+                    validate(request)
+                except InvalidPaymentRequest:
+                    raise Http404
+
+                ...
 """
