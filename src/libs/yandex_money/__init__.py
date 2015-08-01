@@ -8,7 +8,7 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'yandex_money',
+                'libs.yandex_money',
                 ...
             )
 
@@ -35,7 +35,7 @@
 
         views.py:
             # Валидация:
-            from yandex_money.validation import validate, InvalidPaymentRequest
+            from libs.yandex_money.validation import validate, InvalidPaymentRequest
 
             def payment_callback(request):
                 ...
