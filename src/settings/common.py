@@ -13,7 +13,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 
 LANGUAGE_CODE = 'en-US'
-SHORT_LANGUAGE_CODE = LANGUAGE_CODE.strip('-')[0]
+SHORT_LANGUAGE_CODE = LANGUAGE_CODE.split('-')[0]
 LANGUAGES = (
     ('ru-RU', _('Russian')),
     ('en-US', _('English')),
