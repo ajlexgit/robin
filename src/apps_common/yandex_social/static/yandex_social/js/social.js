@@ -1,9 +1,9 @@
 (function($) {
-    
+
     /*
         Соцкнопки Яндекс.Поделиться.
     */
-    
+
     $.fn.socialButtons = function(options) {
         if (arguments[0] == 'update') {
             // Обновление ссылок
@@ -11,7 +11,7 @@
             return this.each(function() {
                 var self = $(this),
                     share = self.data('share');
-                
+
                 if (share) {
                     var new_options = {
                         link: options.url || share._default.url,
@@ -31,15 +31,15 @@
                 console.error('window.Ya is not defined');
                 return this
             }
-            
+
             return this.each(function() {
                 var self = $(this),
                     settings = $.extend(true, {}, $.fn.socialButtons.defaults, self.data(), options);
-                
+
                 if (typeof settings.buttons == 'string') {
                     settings.buttons = settings.buttons.split(',');
                 }
-                
+
                 var share = new Ya.share({
                     element: this.id,
                     elementStyle: {
@@ -58,7 +58,7 @@
                         self.trigger('ready.yandex-social-buttons', [block]);
                     },
                     onbeforeopen: function(block) {
-                        // Функция, вызываемая перед открытием всплывающего окна 
+                        // Функция, вызываемая перед открытием всплывающего окна
                         self.trigger('beforeopen.yandex-social-buttons', [block]);
                     },
                     onopen: function(block) {
@@ -66,7 +66,7 @@
                         self.trigger('open.yandex-social-buttons', [block]);
                     },
                     onbeforeclose: function(block) {
-                        // Функция, вызываемая перед закрытием всплывающего окна 
+                        // Функция, вызываемая перед закрытием всплывающего окна
                         self.trigger('beforeclose.yandex-social-buttons', [block]);
                     },
                     onclose: function(block) {
@@ -78,35 +78,35 @@
                         self.trigger('share.yandex-social-buttons', [service, block]);
                     }
                 });
-                
+
                 share._default = {
                     url: settings.url,
                     title: settings.title,
                     description: settings.description,
                     image: settings.image
                 };
-                
+
                 // Сохранеям объект в элемент
                 self.data('share', share);
             })
         }
     };
-    
+
     $.fn.socialButtons.defaults = {
         buttons: 'vkontakte,facebook,twitter,gplus',
         type: 'default',
         theme: 'counter',
-        url: '', 
-        title: '', 
-        description: '', 
+        url: '',
+        title: '',
+        description: '',
         image: ''
     };
-    
-    
+
+
     var init = function() {
         $('.yandex-social-buttons').socialButtons();
     };
-    
+
     // Динамически подключаем скрипт
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
@@ -118,5 +118,5 @@
     script.onload = init;
     script.src = '//yastatic.net/share/share.js';
     head.appendChild(script);
-    
+
 })(jQuery);

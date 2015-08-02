@@ -1,5 +1,5 @@
 (function($) {
-    
+
     $(document).on('change', '.file-on-page', function() {
         var self = $(this),
             short_name = /[^/\\]+$/.exec(self.val()),
@@ -7,5 +7,5 @@
 
         name_field.val(short_name);
     });
-    
+
 })(jQuery);

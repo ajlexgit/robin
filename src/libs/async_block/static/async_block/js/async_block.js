@@ -1,5 +1,5 @@
 (function($) {
-    
+
     $(document).ready(function() {
         $('.async-block').each(function() {
             var self = $(this);

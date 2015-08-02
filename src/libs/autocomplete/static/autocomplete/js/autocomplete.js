@@ -85,7 +85,7 @@
                     }
                 },
                 dropdownCssClass: "bigdrop",
-                escapeMarkup: function (m) { 
+                escapeMarkup: function (m) {
                     return m;
                 }
             });
