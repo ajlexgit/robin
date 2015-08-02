@@ -5,7 +5,7 @@
 {{ form.media }}
 <form method="post" action="{% url 'users:login' %}" id="ajax-login-form" autocomplete="off">
     {% csrf_token %}
-    
+
     {{ form.non_field_errors.as_ul }}
     <fieldset class="{{ form.username.errors.classes }}">
         {{ form.username.label_tag }}
@@ -17,7 +17,7 @@
         {{ form.password }}
         {{ form.password.errors }}
     </fieldset>
-    
+
     <fieldset>
         <button type="submit" class="btn">{% trans 'Sign in' %}</button>
         <a href="{% url 'users:reset' %}" class="reset-password">{% trans 'Forgot your password?' %}</a>
