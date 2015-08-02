@@ -14,3 +14,4 @@
 """
 
 from .fields import ValuteField
+from .valute import Valute

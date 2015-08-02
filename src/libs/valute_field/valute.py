@@ -1,4 +1,4 @@
-from decimal import Decimal, getcontext
+from decimal import Decimal, getcontext, ROUND_CEILING
 from django.conf import settings
 from django.db.backends.utils import format_number
 
@@ -12,9 +12,10 @@ class DollarFormatter:
     alternate_format = '${}'
 
     @classmethod
-    def format(cls, value):
+    def canonical(cls, value, rounding=ROUND_CEILING):
         context = getcontext().copy()
         context.prec = cls.max_digits
+        context.rounding = rounding
         result = '{0:f}'.format(value.quantize(Decimal('.1') ** cls.decimal_places, context=context))
         if cls.separator != '.':
             result = result.replace('.', cls.separator)
@@ -22,11 +23,11 @@ class DollarFormatter:
 
     @classmethod
     def utf(cls, value):
-        return cls.utf_format.format(cls.format(value))
+        return cls.utf_format.format(cls.canonical(value))
 
     @classmethod
     def alternate(cls, value):
-        return cls.alternate_format.format(cls.format(value))
+        return cls.alternate_format.format(cls.canonical(value))
 
 
 class RoubleFormatter(DollarFormatter):
@@ -44,6 +45,9 @@ FORMATTER = FORMATTERS[settings.SHORT_LANGUAGE_CODE]
 
 
 class Valute(Decimal):
+    def canonical(self, rounding=ROUND_CEILING):
+        return FORMATTER.canonical(self, rounding=rounding)
+    
     @property
     def utf(self):
         return FORMATTER.utf(self)
