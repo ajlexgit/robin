@@ -1,12 +1,12 @@
 from decimal import Decimal, getcontext, ROUND_CEILING
 from django.conf import settings
-from django.db.backends.utils import format_number
 
 
 class DollarFormatter:
     max_digits = 18
     decimal_places = 2
     separator = ','
+    trail_zero_frac = True
     utf_format = '${}'
     alternate_format = '${}'
 
@@ -15,20 +15,31 @@ class DollarFormatter:
         context = getcontext().copy()
         context.prec = cls.max_digits
         context.rounding = rounding
-        return value.quantize(Decimal('.1') ** cls.decimal_places, context=context)
+        result = value.quantize(Decimal('.1') ** cls.decimal_places, context=context)
+        return Valute(result)
+
+    @classmethod
+    def to_string(cls, value):
+        str_value = '{0:f}'.format(value)
+        dec_int, dec_frac = str_value.split('.')
+        if cls.trail_zero_frac:
+            trailed_frac = dec_frac.rstrip('0')
+            if not trailed_frac:
+                dec_frac = ''
+
+        if dec_frac:
+            return cls.separator.join((dec_int, dec_frac))
+
+        return dec_int
 
     @classmethod
     def utf(cls, value):
-        str_value = '{0:f}'.format(cls.canonical(value))
-        if cls.separator != '.':
-            str_value = str_value.replace('.', cls.separator)
+        str_value = cls.to_string(cls.canonical(value))
         return cls.utf_format.format(str_value)
 
     @classmethod
     def alternate(cls, value):
-        str_value = '{0:f}'.format(cls.canonical(value))
-        if cls.separator != '.':
-            str_value = str_value.replace('.', cls.separator)
+        str_value = cls.to_string(cls.canonical(value))
         return cls.alternate_format.format(str_value)
 
 
@@ -48,7 +59,7 @@ FORMATTER = FORMATTERS[settings.SHORT_LANGUAGE_CODE]
 class Valute(Decimal):
     def canonical(self, rounding=ROUND_CEILING):
         return FORMATTER.canonical(self, rounding=rounding)
-    
+
     @property
     def utf(self):
         return FORMATTER.utf(self)

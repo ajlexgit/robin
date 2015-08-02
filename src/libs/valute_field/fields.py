@@ -1,5 +1,4 @@
 from django.db import models
-from django.core import validators
 from .valute import Valute
 
 DEFAULT_MAX_DIGITS = 18
