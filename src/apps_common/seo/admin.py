@@ -9,7 +9,6 @@ from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from .models import SeoConfig, SeoData, Counter
 
 
-
 @admin.register(SeoConfig)
 class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     pass

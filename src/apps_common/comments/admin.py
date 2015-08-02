@@ -20,8 +20,13 @@ class CommentsModelAdminMixin:
         self.suit_form_includes = default_includes + (
             ('comments/admin/admin_include.html', self.suit_comments_position, self.suit_comments_tab),
         )
-        self.ADDITION_JS += (
-            'comments/admin/js/comments.js',
+
+    @property
+    def media(self):
+        return super().media + forms.Media(
+            js = (
+                'comments/admin/js/comments.js',
+            )
         )
 
     def change_view(self, request, object_id, *args, **kwargs):
