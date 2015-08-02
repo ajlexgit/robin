@@ -7,7 +7,6 @@ class DollarFormatter:
     max_digits = 18
     decimal_places = 2
     separator = ','
-
     utf_format = '${}'
     alternate_format = '${}'
 
@@ -16,23 +15,25 @@ class DollarFormatter:
         context = getcontext().copy()
         context.prec = cls.max_digits
         context.rounding = rounding
-        result = '{0:f}'.format(value.quantize(Decimal('.1') ** cls.decimal_places, context=context))
-        if cls.separator != '.':
-            result = result.replace('.', cls.separator)
-        return result
+        return value.quantize(Decimal('.1') ** cls.decimal_places, context=context)
 
     @classmethod
     def utf(cls, value):
-        return cls.utf_format.format(cls.canonical(value))
+        str_value = '{0:f}'.format(cls.canonical(value))
+        if cls.separator != '.':
+            str_value = str_value.replace('.', cls.separator)
+        return cls.utf_format.format(str_value)
 
     @classmethod
     def alternate(cls, value):
-        return cls.alternate_format.format(cls.canonical(value))
+        str_value = '{0:f}'.format(cls.canonical(value))
+        if cls.separator != '.':
+            str_value = str_value.replace('.', cls.separator)
+        return cls.alternate_format.format(str_value)
 
 
 class RoubleFormatter(DollarFormatter):
     separator = '.'
-
     utf_format = '{}\u20bd'
     alternate_format = '{} руб.'
 
