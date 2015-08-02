@@ -6,12 +6,12 @@
                 'libs.autocomplete',
                 ...
             )
-    
+
         urls.py:
             ...
             url(r'^autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
             ...
-    
+
     Необязательные настройки:
         AUTOCOMPLETE_CACHE_BACKEND = 'default'
 

@@ -29,7 +29,7 @@ def load_modules():
             instance = cls()
         except:
             raise
-            
+
         MODULES.append(instance)
 
 if not MODULES:

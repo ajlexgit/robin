@@ -11,7 +11,7 @@ class TemplateExView(TemplateResponseMixin, View):
     def render_to_response(self, context=None, template=None, dirs=None, **response_kwargs):
         template = template or self.template_name
         template = loader.get_template(template, dirs=dirs)
-        
+
         response_kwargs.setdefault('content_type', self.content_type)
         return self.response_class(
             request=self.request,

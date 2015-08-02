@@ -8,7 +8,7 @@
                 'breadcrumbs.middleware.BreadcrumbsMiddleware',
                 ...
             )
-            
+
             INSTALLED_APPS = (
                 ...
                 'breadcrumbs',

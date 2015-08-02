@@ -4,7 +4,7 @@ __all__ = ('devprofile', 'devprofiler')
 
 """
     Кастомный сервер для разработки.
-    
+
     Установка:
         INSTALLED_APPS = (
             'devserver',
@@ -15,7 +15,7 @@ __all__ = ('devprofile', 'devprofiler')
             ...
             'devserver.middleware.DevServerMiddleware',
         )
-    
+
     Настройки:
         DEVSERVER_MODULES = (...)
         DEVSERVER_IGNORED_PREFIXES = (
@@ -24,18 +24,18 @@ __all__ = ('devprofile', 'devprofiler')
             '/favicon',
         )
         DEVSERVER_SQL_MIN_DURATION = None
-    
-    
+
+
     Профилирование функций:
         from devserver import devprofile
-        
+
         @devprofile
         def get(self, request, post_id):
             ...
-    
+
     Профилирование участков кода:
         from devserver import devprofiler
-        
+
         with devprofiler('entity fetch'):
             e = Entity.objects.get(pk=1)
 """

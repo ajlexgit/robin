@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^ajax/avatar_upload/$', views_ajax.AvatarUploadView.as_view(), name='avatar_upload'),
     url(r'^ajax/avatar_crop/$', views_ajax.AvatarCropView.as_view(), name='avatar_crop'),
     url(r'^ajax/avatar_delete/$', views_ajax.AvatarRemoveView.as_view(), name='avatar_delete'),
-    
+
     url(r'^login/$', views.LoginView.as_view(), name='login'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^register/$', views.RegisterView.as_view(), name='register'),

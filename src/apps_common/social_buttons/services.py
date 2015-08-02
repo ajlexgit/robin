@@ -5,21 +5,21 @@ def lj_description(**kwargs):
     title = kwargs.get('title')
     image = kwargs.get('image')
     description = kwargs.get('description')
-    
+
     result = ''
     if title:
         result += '<h1>%s</h1>\n' % title
-    
+
     if image:
         result += '<img src="%s">\n' % image
-    
+
     result += description + '\n'
-    
+
     if url:
         result += '<a href="{0}" title>{0}</a>'.format(url)
-    
+
     return result
-    
+
 
 SERVICES = {
     'vk': {

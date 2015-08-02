@@ -15,9 +15,9 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
             'invalid': 'Токен некорректен',
         }
     )
-    
+
     protect_change_fields = ('content_type', 'object_id', 'parent')
-    
+
     class Meta:
         model = Comment
         widgets = {
@@ -44,7 +44,7 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
                 'required': 'Введите текст комментария',
             },
         }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['hash'].initial = self.build_hash()
@@ -54,7 +54,7 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
         object_id = self['object_id'].value()
         hashkey = 'ct:{}:oi:{}'.format(content_type, object_id)
         return hashlib.md5(hashkey.encode()).hexdigest()
-    
+
     def clean_hash(self):
         form_hash = self.cleaned_data.get('hash')
         true_hash = self.build_hash()
@@ -70,7 +70,7 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
             if parent.content_type != content_type or parent.object_id != object_id:
                 return self.add_field_error('parent', 'object_mismatch')
         return parent
-        
+
 
 class CommentValidationForm(PlainErrorFormMixin, forms.Form):
     """ Форма для валидации входных значений при действиях над комментом """
@@ -95,7 +95,7 @@ class CommentValidationForm(PlainErrorFormMixin, forms.Form):
             'object_mismatch': 'Комментарий не относится к этой сущности',
         }
     )
-    
+
     def clean_object_id(self):
         content_type = self.cleaned_data.get('content_type')
         object_id = self.cleaned_data.get('object_id')
@@ -104,10 +104,10 @@ class CommentValidationForm(PlainErrorFormMixin, forms.Form):
         except ObjectDoesNotExist:
             return self.add_field_error('object_id', 'not_found')
         return obj
-    
+
     def clean(self):
         obj = self.cleaned_data.get('object_id')
         comment = self.cleaned_data.get('comment')
         if obj and comment and comment.entity != obj:
             return self.add_field_error('comment', 'object_mismatch')
-        
+

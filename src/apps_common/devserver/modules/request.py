@@ -10,7 +10,7 @@ class RequestModule(DevServerModule):
         Вывод адреса запроса и статуса ответа
     """
     logger_name = 'status'
-    
+
     def process_request(self, request):
         date = ' %s ' % datetime.now().strftime('%H:%m:%S')
         date = date.center(30, '=')
@@ -19,9 +19,9 @@ class RequestModule(DevServerModule):
 
     def process_response(self, request, response):
         code = str(response.status_code)
-        
+
         msg = str(code)
-        
+
         # Utilize terminal colors, if available
         if code[0] == '2':
             # Put 2XX first, since it should be the common case
@@ -39,7 +39,7 @@ class RequestModule(DevServerModule):
         else:
             # Any 5XX, or any other response
             msg = style.HTTP_SERVER_ERROR(msg)
-        
+
         self.logger.info(msg)
         self.logger.flush()
-            
+

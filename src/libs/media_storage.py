@@ -15,7 +15,7 @@ class MediaStorage(FileSystemStorage):
             location = os.path.join(settings.MEDIA_ROOT, directory)
             base_url = '%s%s/' % (settings.MEDIA_URL, directory.strip(' /'))
         super().__init__(location, base_url)
-        
+
     def set_directory(self, directory):
         """ Динамическое изменение директории """
         directory = directory.strip(' /')

@@ -10,9 +10,9 @@ class Command(BaseCommand):
             print('ERROR: there are hidden comments which are not deleted!')
             print(check_valid)
             return
-        
+
         deleted = Comment.objects.filter(deleted=True, visible=False)
         count = deleted.count()
         deleted.delete()
-        
+
         print('Deleted {} comments'.format(count))

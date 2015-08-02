@@ -26,7 +26,7 @@ class DevserverCursorWrapper(utils.CursorWrapper):
     def __init__(self, cursor, db, logger):
         super().__init__(cursor, db)
         self.logger = logger
-    
+
     def execute(self, sql, params=()):
         start = datetime.now()
         try:
@@ -54,7 +54,7 @@ class DevserverCursorWrapper(utils.CursorWrapper):
                                     start = source.read(offsets[0])
                                     line_num = start.count('\n') + 1
                                     token = source.read(offsets[1] - offsets[0])
-                                    
+
                                 caller = '%s (node %r, line %s)' % (loader.loadname, token, line_num)
                                 stack.append(colorize(caller, fg='green'))
                                 break

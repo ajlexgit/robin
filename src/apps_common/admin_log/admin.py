@@ -23,22 +23,22 @@ class LogEntryAdminForm(forms.ModelForm):
         required=False,
         label=_('Entry')
     )
-    
+
     user_link = forms.Field(
         required=False,
         label=_('User')
     )
-    
+
     class Meta:
         model = LogEntry
         widgets = {
             'action_flag': forms.Select(choices=ACTION_CHOICES),
             'change_message': forms.Textarea(attrs={'class': 'input-block-level', 'rows': 4}),
         }
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         try:
             obj = self.instance.get_edited_object()
         except ObjectDoesNotExist:
@@ -46,7 +46,7 @@ class LogEntryAdminForm(forms.ModelForm):
             self.fields['object_link'].help_text = '--//--'
         else:
             self.fields['object_link'].widget = LinkWidget(self.instance.get_admin_url(), obj)
-        
+
         if self.instance.user:
             admin_user_model = settings.AUTH_USER_MODEL.lower().replace('.', '_')
             self.fields['user_link'].widget = LinkWidget(
@@ -57,7 +57,7 @@ class LogEntryAdminForm(forms.ModelForm):
             self.fields['user_link'].widget = forms.HiddenInput()
             self.fields['user_link'].help_text = '--//--'
 
-        
+
 class LogEntryActionFilter(SimpleListFilter):
     title = _('Action type')
     parameter_name = 'action_flag'
@@ -71,7 +71,7 @@ class LogEntryActionFilter(SimpleListFilter):
             return queryset.filter(action_flag=value)
         else:
             return queryset
-            
+
 
 @admin.register(LogEntry)
 class LogEntryAdmin(ModelAdminMixin, admin.ModelAdmin):
@@ -94,21 +94,21 @@ class LogEntryAdmin(ModelAdminMixin, admin.ModelAdmin):
     def user_link(self, obj):
         admin_user_model = settings.AUTH_USER_MODEL.lower().replace('.', '_')
         return '<a href="%s" target="_blank">%s</a>' % (
-            resolve_url('admin:{}_change'.format(admin_user_model), obj.user.pk), 
+            resolve_url('admin:{}_change'.format(admin_user_model), obj.user.pk),
             obj.user.username
         )
     user_link.short_description = _('User')
     user_link.allow_tags = True
-    
+
     def action_type(self, obj):
         return dict(ACTION_CHOICES).get(obj.action_flag)
     action_type.short_description = _('Action type')
-    
+
     def has_add_permission(self, request):
         return False
-       
+
     def has_delete_permission(self, request, obj=None):
         return False
-    
+
     def get_actions(self, request):
         return ()

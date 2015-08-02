@@ -19,4 +19,4 @@ class SlimWSGIRequestHandler(WSGIRequestHandler):
         )
         handler.request_handler = self      # backpointer for logging
         handler.run(self.server.get_app())
-    
+

@@ -1,7 +1,7 @@
 from django.template import loader, Library
 
 register = Library()
-    
+
 
 @register.simple_tag
 def gallery(gallery_instance, template='gallery/gallery.html'):

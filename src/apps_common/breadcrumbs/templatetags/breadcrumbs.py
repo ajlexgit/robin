@@ -9,5 +9,5 @@ def breadcrumbs(context, template=None):
     request = context.get('request')
     if not request:
         return ''
-    
+
     return render_breadcrumbs(request.breadcrumbs, template)

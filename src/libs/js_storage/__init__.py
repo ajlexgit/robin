@@ -11,7 +11,7 @@ JS_STORAGE = {}
                 'libs.js_storage',
                 ...
             )
-            
+
             MIDDLEWARE_CLASSES = (
                 ...
                 # обязательно до ResolutionMiddleware, если она используется
@@ -26,13 +26,13 @@ JS_STORAGE = {}
                 request.js_storage['var1'] = 5
                 request.js_storage.update(x=1, y='2')
                 ...
-        
+
         # Можно объявлять переменные для всего сайта:
         apps.py:
             class Config(AppConfig):
                 name = 'users'
                 verbose_name = "Пользователи"
-                
+
                 def ready(self):
                     from django.shortcuts import resolve_url
                     from libs.js_storage import JS_STORAGE

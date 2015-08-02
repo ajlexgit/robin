@@ -18,4 +18,4 @@ class ProfileRenderModule(DevServerModule):
         duration = datetime.now() - self.start
         duration_fmt = '%dms' % ms_from_timedelta(duration)
         self.logger.info(colorize(duration_fmt, fg='white'))
-            
+

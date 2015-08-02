@@ -39,7 +39,7 @@ class StdImageFieldFile(VariationImageFieldFile):
 
 class StdImageField(FieldChecksMixin, VariationImageField):
     attr_class = StdImageFieldFile
-    
+
     def __init__(self, verbose_name=None, name=None, variations=None, **kwargs):
         self.admin_variation = kwargs.pop('admin_variation', None)
         self.min_dimensions = kwargs.pop('min_dimensions', MIN_DIMENSIONS_DEFAULT)
@@ -57,7 +57,7 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         # Аспекты кропа. По умолчанию будет использоваться первый. Остальные можно использовать с помощью JS
         self._aspects = kwargs.pop('aspects', ())
         self.aspects = format_aspects(self._aspects, self._variations)
-        
+
         super().__init__(verbose_name, name, **kwargs)
 
     def custom_check(self):
@@ -74,7 +74,7 @@ class StdImageField(FieldChecksMixin, VariationImageField):
             errors.append(
                 self.check_error('max_source_dimensions should be a tuple of 2 non-negative numbers')
             )
-        
+
         if not self._variations:
             errors.append(
                 self.check_error('variations required')
@@ -84,7 +84,7 @@ class StdImageField(FieldChecksMixin, VariationImageField):
                 self.check_error('variations should be a dict')
             )
         errors.extend(check_variations(self._variations, self))
-        
+
         if self._aspects:
             aspects = self._aspects if isinstance(self._aspects, tuple) else (self._aspects, )
             for aspect in aspects:
@@ -147,15 +147,15 @@ class StdImageField(FieldChecksMixin, VariationImageField):
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
         return self.min_dimensions
-    
+
     def get_max_dimensions(self, instance):
         """ Возвращает максимальные размеры картинки для загрузки """
         return self.max_dimensions
-    
+
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
         return self.max_size
-    
+
     def build_source_name(self, instance, ext):
         """ Построение имени файла исходника """
         return '%s_%s.%s' % (self.name, instance.pk, ext.lower())
@@ -178,7 +178,7 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         # Если не загрузили новый файл и не обрезали старый исходник - выходим
         if not new_file_uploaded and not cropsize:
             return
-        
+
         # Удаляем временные атрибуты
         if hasattr(instance, new_file_attrname):
             delattr(instance, new_file_attrname)
@@ -199,7 +199,7 @@ class StdImageField(FieldChecksMixin, VariationImageField):
                     draft = source_img.draft(None, draft_size)
                     if draft is None:
                         source_img = source_img.resize(draft_size, Image.LINEAR)
-                    
+
                     # Учитываем изменение размера исходника на области обрезки
                     field_file.cropsize = cropsize
                     if field_file.cropsize:
@@ -230,13 +230,13 @@ class StdImageField(FieldChecksMixin, VariationImageField):
                     self.storage.save(source_path, source)
             else:
                 ct = ContentFile(b'')
-                
+
                 source_info['quality'] = self.get_source_quality(instance)
                 try:
                     source_img.save(ct, source_format, optimize=1, **source_info)
                 except IOError:
                     source_img.save(ct, source_format, **source_info)
-                
+
                 self.storage.save(source_path, ct)
 
             # Удаляем загруженный исходник

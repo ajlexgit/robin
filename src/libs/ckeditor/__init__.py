@@ -15,7 +15,7 @@ pm clean_page_photos
             'libs.ckeditor',
             ...
         )
-        
+
         CKEDITOR_CONFIG_MINI = {
             'lang': 'ru',
             'height': 100,
@@ -52,20 +52,20 @@ pm clean_page_photos
                 },
             ]
         }
-        
+
     urls.py:
         ...
         url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
         ...
-        
-        
+
+
     Пример использования:
         models.py:
             from libs.ckeditor import CKEditorUploadField
-            
+
             class MyModel(models.Model):
                 ...
                 text = CKEditorUploadField('текст', editor_options=settings.CKEDITOR_CONFIG_MINI)
                 ...
-        
+
 """
