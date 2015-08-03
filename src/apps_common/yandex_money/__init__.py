@@ -41,7 +41,7 @@
                 ...
 
                 try:
-                    validate(request)
+                    payment = validate(request)
                 except InvalidPaymentRequest:
                     raise Http404
 
