@@ -25,14 +25,14 @@ def page_photo_filename(instance, filename):
     if instance.pk:
         directory = '%04d' % (instance.pk // 1000)
     return os.path.join(directory, os.path.basename(filename))
-    
+
 
 class PagePhoto(models.Model):
     """ Модель фото на страницу """
     app_name = models.CharField(_('application'), max_length=30, blank=True)
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
-    photo = StdImageField(_('image'), 
+    photo = StdImageField(_('image'),
         storage = MediaStorage(options.PAGE_PHOTOS_PATH),
         upload_to = page_photo_filename,
         blank = True,
@@ -62,13 +62,13 @@ class PagePhoto(models.Model):
             'entry_id': self.instance_id,
         }
 
-        
+
 class SimplePhoto(models.Model):
     """ Модель фото на страницу """
     app_name = models.CharField(_('application'), max_length=30, blank=True)
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
-    photo = StdImageField(_('image'), 
+    photo = StdImageField(_('image'),
         storage = MediaStorage(options.SIMPLE_PHOTOS_PATH),
         upload_to = page_photo_filename,
         blank = True,
@@ -93,4 +93,4 @@ class SimplePhoto(models.Model):
             'model': self.model_name,
             'entry_id': self.instance_id,
         }
-        
+

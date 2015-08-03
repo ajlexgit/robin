@@ -13,7 +13,7 @@ def generate_filepath(instance, filename):
 class PageFile(models.Model):
     """ Модель файла на страницу """
     STORAGE_LOCATION = None
-    
+
     file = RemovableFileField(storage=MediaStorage(), upload_to=generate_filepath, max_length=150, verbose_name=_('file'))
     displayed_name = models.CharField(max_length=150, verbose_name=_('display name'), blank=True,
                                       help_text=_('If you leave it empty the file name will be used'))
@@ -30,10 +30,10 @@ class PageFile(models.Model):
         if self.STORAGE_LOCATION:
             field.storage.set_directory(self.STORAGE_LOCATION)
         super().__init__(*args, **kwargs)
-        
+
     def __str__(self, *args, **kwargs):
         return self.displayed_name
-    
+
     def save(self, *args, **kwargs):
         # Если не задано отображаемое имя - устанавливаем равным имени файла
         if not self.displayed_name:
@@ -44,6 +44,6 @@ class PageFile(models.Model):
             original = self._default_manager.get(pk=self.pk)
             if original.file != self.file:
                 original.file.delete()
-        
+
         super().save(*args, **kwargs)
-        
+

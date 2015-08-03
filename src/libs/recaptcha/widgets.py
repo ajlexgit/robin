@@ -7,7 +7,7 @@ from django.forms.utils import flatatt
 class ReCaptchaWidget(forms.Widget):
     theme = None
     callback = None
-    
+
     class Media:
         js = (
             'recaptcha/js/recaptcha.js',

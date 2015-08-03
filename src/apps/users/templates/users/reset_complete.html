@@ -5,7 +5,7 @@
     <h1 class="title-h1">{% trans 'Reset password' %}</h1>
 
     <p>{% trans 'Your password was successfully changed. You will be redirected to a new page in 5 seconds.' %}</p>
-    
+
     <script>
         setTimeout(function() {
             location.href = '{{ redirect|default:"/" }}';

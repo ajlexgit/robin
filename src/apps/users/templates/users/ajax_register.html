@@ -6,7 +6,7 @@
 <form method="post" action="{% url 'users:register' %}" id="ajax-register-form" autocomplete="off">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ request.GET.next }}">
-    
+
     {{ form.non_field_errors.as_ul }}
     <fieldset class="{{ form.username.errors.classes }}">
         {{ form.username.label_tag }}
@@ -28,7 +28,7 @@
         {{ form.password2 }}
         {{ form.password2.errors }}
     </fieldset>
-    
+
     <fieldset>
         <button type="submit" class="btn">{% trans 'Register' %}</button>
     </fieldset>

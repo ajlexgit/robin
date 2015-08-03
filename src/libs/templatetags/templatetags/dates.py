@@ -13,7 +13,7 @@ year_re = re.compile('[\s\.]+(Y|y)')
 def shortdate(value):
     """
         Выводит дату и время с учетом разницы во времени:
-        
+
         сегодня, 21:00
         вчера, 21:00
         16 февраля, 21:00       # текущий год
@@ -21,7 +21,7 @@ def shortdate(value):
     """
     now = timezone.localtime(timezone.now())
     diff = now - value
-    
+
     if diff < timezone.timedelta():
         return defaultfilters.date(value)
     elif diff < timezone.timedelta(1):

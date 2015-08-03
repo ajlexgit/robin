@@ -68,7 +68,7 @@
         var that = this,
             max_reached = false,
             min_reached = false;
-        
+
         that.root = $(block);
         that.opts = $.extend({}, $.fn.formset.defaults, options);
         that.emptyForm = that.root.find('.' + that.opts.emptyCssClass);
@@ -78,7 +78,7 @@
             .prop("autocomplete", 'off');
         that.minForms = $("#id_" + that.opts.prefix + "-MIN_NUM_FORMS")
             .prop("autocomplete", 'off');
-        
+
         // Функция установки префикса всем элементам формы
         var setFormIndex = function($form, index) {
             updateElementIndex($form.get(0), that.opts.prefix, index);
@@ -86,12 +86,12 @@
                 updateElementIndex(this, that.opts.prefix, index);
             });
         };
-        
+
         var isMax = function(forms_count) {
             var maxCount = parseInt(that.maxForms.val()) || 1000;
             return max_reached = forms_count >= maxCount
         };
-        
+
         var isMin = function(forms_count) {
             var minCount = parseInt(that.minForms.val()) || 0;
             return min_reached = forms_count <= minCount
@@ -110,12 +110,12 @@
             if (max_reached) {
                 return
             }
-                
+
             row.removeClass(that.opts.emptyCssClass)
                 .addClass(that.opts.formCssClass)
                 .attr("id", that.opts.prefix + '-' + forms_count);
             setFormIndex(row, that.totalForms.val());
-            
+
             // Обновление счетчика форм
             that.totalForms.val(++forms_count);
 
@@ -126,12 +126,12 @@
             if (min_reached && !isMin(forms_count)) {
                 that.opts.minUnreached.call(that);
             }
-            
+
             // Callback достижения максимума форм
             if (isMax(forms_count)) {
                 that.opts.maxReached.call(that);
             }
-            
+
             return false;
         };
 
@@ -144,7 +144,7 @@
             if (min_reached) {
                 return
             }
-            
+
             // Обновление префиксов оставшихся форм
             var forms = that.getForms().filter(function() {
                 return this != row.get(0)
@@ -154,24 +154,24 @@
 
             // Обновление счетчика форм
             that.totalForms.val(forms.length);
-            
+
             // Удаление формы
             that.opts.deletingForm.call(that, row);
-            
+
             // Callback уменьшения кол-ва форм после достижения максимума
             if (max_reached && !isMax(forms.length)) {
                 that.opts.maxUnreached.call(that);
             }
-            
+
             // Callback достижения минимума форм
             if (isMin(forms.length)) {
                 that.opts.minReached.call(that);
             }
-            
+
             return false;
         };
 
-        
+
         // Устанавливаем ID каждой форме, кроме шаблонной
         var forms = that.getForms().each(function(i) {
             var $form = $(this);
@@ -179,7 +179,7 @@
                 $form.prop('id', that.opts.prefix + '-' + i);
             }
         });
-        
+
         // Проверяем количество форм
         if (isMax(forms.length)) {
             that.opts.maxReached.call(that);
@@ -187,7 +187,7 @@
         if (isMin(forms.length)) {
             that.opts.minReached.call(that);
         }
-        
+
         // Подключаем событие к кнопке добавления
         that.root.find('.' + that.opts.addCssClass)
             .off('.formset')
@@ -214,12 +214,12 @@
         deleteCssClass: "delete-row",
         emptyCssClass: "empty-row",
         formCssClass: "form-row",
-        
+
         max_reached: $.noop,
         min_reached: $.noop,
         max_unreached: $.noop,
         min_unreached: $.noop,
-        
+
         addingForm: function(row) {
             row.insertBefore(this.emptyForm);
         },

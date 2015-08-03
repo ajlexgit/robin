@@ -7,7 +7,7 @@ from ... import options as geocity_options
 
 def reporthook(blocknum, bs, size):
     bar_width = 20
-    
+
     progress = (blocknum * bs) / size
     bar_filled = round(bar_width * progress)
     line = 'Uploading... [%s>%s] %s%%\r' % (
@@ -26,10 +26,10 @@ class Command(BaseCommand):
         except error.HTTPError as e:
             print(e)
             return
-        
+
         print()
         with ZipFile(filename, 'r') as zf:
             zf.extract(geocity_options.DB_NAME, os.path.dirname(geocity_options.DB_PATH))
-        
+
         print('Done')
-            
+

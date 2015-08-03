@@ -2,7 +2,7 @@ OPENGRAPH = {}
 
 """
     Тэги Opengraph.
-    
+
     Установка:
         settings.py:
             INSTALLED_APPS = (
@@ -10,13 +10,13 @@ OPENGRAPH = {}
                 'libs.opengraph',
                 ...
             )
-            
+
             MIDDLEWARE_CLASSES = (
                 ...
                 'libs.opengraph.middleware.OpengraphMiddleware',
                 ...
             )
-    
+
     Пример использования:
         views.py:
             def my_page(request):
@@ -29,19 +29,19 @@ OPENGRAPH = {}
                     'description': description(strip_tags(post.text), 50, 150),
                 })
                 ...
-    
+
         # Можно объявлять переменные для всего сайта:
         apps.py:
             class Config(AppConfig):
                 name = 'users'
                 verbose_name = "Пользователи"
-                
+
                 def ready(self):
                     from libs.opengraph import OPENGRAPH
                     OPENGRAPH.update({
                         'fk:app': '12345'
                     })
-    
+
         template.html:
             {% load opengraph %}
             ...

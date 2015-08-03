@@ -9,7 +9,7 @@ class StdImageFormField(ImageField):
         if not isinstance(aspects, tuple):
             aspects = (aspects, )
         self.aspects = tuple(str(round(float(value), 4)) for value in aspects)
-        
+
         kwargs['widget'] = StdImageWidget(
             variations = kwargs.pop('variations'),
             admin_variation = kwargs.pop('admin_variation'),
@@ -25,6 +25,6 @@ class StdImageFormField(ImageField):
         final_data, delete, cropsize = data
         return (
             super().clean(final_data, initial),
-            delete, 
+            delete,
             cropsize
         )

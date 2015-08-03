@@ -3,7 +3,7 @@
 .social-button {
     display: inline-block;
     @include no_fontsize;
-    
+
     &:before {
         content: '';
         display: inline-block;
@@ -11,7 +11,7 @@
         height: 30px;
         background: url(../img/medium.png) no-repeat;
     }
-    
+
     &.social-button-fb:before {
         background-position: 0 0;
     }

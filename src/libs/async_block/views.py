@@ -14,7 +14,7 @@ class AsyncBlockView(TemplateView):
             if key in self.allowed and value is not None:
                 result[key] = value
         return result
-    
+
     def render(self, request, **kwargs):
         """ Генерация блока """
         raise NotImplementedError

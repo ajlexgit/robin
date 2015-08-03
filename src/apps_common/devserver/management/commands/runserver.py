@@ -27,12 +27,12 @@ def run(addr, port, wsgi_handler, ipv6=False, threading=False):
     httpd = httpd_cls(server_address, SlimWSGIRequestHandler, ipv6=ipv6)
     httpd.set_app(wsgi_handler)
     httpd.serve_forever()
-    
+
 
 class Command(BaseCommand):
     def get_handler(self, *args, **options):
         handler = super().get_handler(*args, **options)
-        
+
         if 'django.contrib.staticfiles' in settings.INSTALLED_APPS:
             handler = StaticFilesHandler(handler)
 

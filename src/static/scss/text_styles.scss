@@ -16,7 +16,7 @@
       color: red;
     }
   }
-  
+
   img {
     height: auto;
     max-width: 100%;
@@ -67,7 +67,7 @@
     p {
       position: relative;
       z-index: 5;
-      
+
       &:nth-last-of-type(1) {
         margin-bottom: 0;
       }
@@ -115,7 +115,7 @@
     color: #808080;
     line-height: 1.2;
     @include font-size(14px);
-    
+
     img {
       margin: 0 0 5px;
     }
@@ -129,7 +129,7 @@
     line-height: 1.2;
     text-align: left;
     @include font-size(14px);
-    
+
     .fluid-width-video-wrapper {
       display: inline-block;
       margin: 0 0 2px;

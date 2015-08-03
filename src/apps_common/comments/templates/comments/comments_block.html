@@ -4,7 +4,7 @@
 <div class="comments-wrapper" data-content_type="{{ content_type }}" data-object_id="{{ object_id }}">
     {% include 'comments/comments.html' %}
     {% include 'comments/comments_form.html' %}
-    
+
     <!-- reply form template -->
     <script class="comments-reply-template" type="text/template">
         <form action="{% url 'comments:post' %}" method="post" class="form comment-post-form" autocomplete="off">

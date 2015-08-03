@@ -29,7 +29,7 @@
         <input type="hidden" class="app_label" name="app_label" value="{{ app_label }}"/>
         <input type="hidden" class="model_name" name="model_name" value="{{ model_name }}"/>
         <input type="hidden" class="gallery_id" name="{{ name }}" id="id_{{ name }}" value="{{ gallery.pk|default:"" }}"/>
-        
+
         <div class="gallery-wrapper">
             {% if gallery %}
                 {% include gallery_model.ADMIN_TEMPLATE_ITEMS %}
@@ -37,7 +37,7 @@
                 {% include gallery_model.ADMIN_TEMPLATE_EMPTY %}
             {% endif %}
         </div>
-        
+
         {% block templates %}
             <script id="{{ name }}_image_template" type="text/template">
                 <div class="gallery-item gallery-item-image"

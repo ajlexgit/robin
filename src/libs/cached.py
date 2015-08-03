@@ -25,9 +25,9 @@ def make_key(func, params=(), additions=()):
 
 
 def cached(cache_time, key_params=(), key_addition=(), backend='default'):
-    """ Декоратор кэширования функций и методов, 
+    """ Декоратор кэширования функций и методов,
     использующий для составления ключа значения параметров функции.
-    
+
     Поддерживает указание атрибутов параметров, например "request.city.id".
     Данная нотация может быть использована и для свойств и для индексов (dectionary.index).
 
@@ -35,24 +35,24 @@ def cached(cache_time, key_params=(), key_addition=(), backend='default'):
         cache_time      - время кэширования в секундах
         key_params      - список/кортеж имен параметров функции, которые
                           будут использованы для составления ключа кэша
-        key_addition    - список/кортеж дополнительных значений, которые будут использованы 
+        key_addition    - список/кортеж дополнительных значений, которые будут использованы
                           для составления ключа кэша
         backend         - идентификатор используемого бэкенда кэширования
-    
+
     Пример использования:
         @cached(600, ['title', 'address.street', 'addition.key'], [settings.CACHE_VERSION])
         def MyFunc(title, address, addition={'key': 1})
             ...
             return ...
-    
+
     """
     cache = caches[backend]
-    
+
     def decorator(func):
         varnames = func.__code__.co_varnames
         _defaults = func.__defaults__ or ()
         defaults = dict(zip(varnames[-len(_defaults):], _defaults))
-        
+
         def wrapper(*args, **kwargs):
             func_args = defaults.copy()
             func_args.update(zip(varnames[:len(args)], args))
@@ -88,7 +88,7 @@ def cached(cache_time, key_params=(), key_addition=(), backend='default'):
                     amplitude = round(cache_time * 0.1)
                     final_time = max(20, cache_time + randint(-amplitude, amplitude))
                     cache.set(key, result, final_time)
-                
+
                 return result
         return wrapper
     return decorator

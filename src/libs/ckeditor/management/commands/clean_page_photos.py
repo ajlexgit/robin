@@ -9,9 +9,9 @@ class Command(BaseCommand):
         print('Deleting %s page photos...' % page_photos.count(), end=' ')
         page_photos.delete()
         print('Done')
-        
+
         simple_photos = SimplePhoto.objects.filter(instance_id=0)
         print('Deleting %s simple photos...' % simple_photos.count(), end=' ')
         simple_photos.delete()
         print('Done')
-        
+

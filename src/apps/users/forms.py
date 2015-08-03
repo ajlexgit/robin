@@ -13,7 +13,7 @@ class LoginForm(PlainErrorFormMixin, SessionStoredFormMixin, AuthenticationForm)
         'invalid_login': _('Login or password incorrect'),
         'inactive': _('Account blocked'),
     }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = _('Login')
@@ -25,7 +25,7 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         'duplicate_email': _('E-mail address already registered'),
         'password_mismatch': _('Passwords do not match'),
     }
-    
+
     username = forms.RegexField(label=_('Login'), min_length=3, max_length=30,
         regex=r'^[\w.@+-]+$',
         error_messages={
@@ -33,7 +33,7 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
             'min_length': _('Login must be at least %(limit_value)s characters long'),
             'max_length': _('Login must be no more than %(limit_value)s characters'),
         })
-    
+
     email = forms.EmailField(
         label='E-mail',
         required=True,
@@ -41,11 +41,11 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
             'invalid': _('E-mail incorrect'),
         }
     )
-    
+
     class Meta:
         model = get_user_model()
         fields = ('username', 'email')
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = _('Login')
@@ -59,7 +59,7 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         except UserModel.DoesNotExist:
             return username
         self.add_field_error('username', 'duplicate_username')
-    
+
     def clean_email(self):
         UserModel = get_user_model()
         email = self.cleaned_data["email"]
@@ -74,7 +74,7 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
     error_messages = {
         'unregistered_email': _('E-mail is not registered'),
     }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].label = 'E-mail'
@@ -93,7 +93,7 @@ class SetPasswordForm(PlainErrorFormMixin, DefaultSetPasswordForm):
     error_messages = {
         'password_mismatch': _('Passwords do not match'),
     }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['new_password2'].label = _('Confirm password')

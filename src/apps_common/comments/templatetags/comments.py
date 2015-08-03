@@ -14,7 +14,7 @@ def comments_for(context, entity, template='comments/comments_block.html'):
     request = context.get('request')
     if not request:
         return ''
-    
+
     request.js_storage.update(
         comment_post=resolve_url('comments:post'),
         comment_change=resolve_url('comments:change'),

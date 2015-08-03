@@ -22,4 +22,4 @@ class DebugPipelineStorage(DebugStorageMixin, PipelineStorage):
 
 class DebugPipelineCachedStorage(DebugStorageMixin, PipelineCachedStorage):
     pass
-    
+

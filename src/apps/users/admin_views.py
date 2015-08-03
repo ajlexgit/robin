@@ -18,6 +18,6 @@ def login_as(request, user_id):
             if user == backend.get_user(user.pk):
                 user.backend = "%s.%s" % (backend.__module__, backend.__class__.__name__)
                 break
-        
+
         login(request, user)
         return redirect(settings.LOGIN_REDIRECT_URL)

@@ -55,7 +55,7 @@
             </article>
         </div>
     </div>
-    
+
     <div id="social_buttons">
         <div class="grid">
             <div class="gc-full gc-alone">
@@ -120,7 +120,7 @@
                         </fieldset>
                     {% endfor %}
                 </div>
-                
+
                 <div class="gc-full gc-alone">
                     {{ formset.management_form }}
                     {% for form in formset %}
@@ -128,7 +128,7 @@
                             {% if formset.can_delete %}
                                 {{ form.DELETE.as_hidden }}
                             {% endif %}
-                            
+
                             <fieldset>
                                 {{ form.name.label_tag }}
                                 {{ form.name }}
