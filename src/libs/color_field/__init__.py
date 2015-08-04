@@ -5,4 +5,5 @@
         color = ColorField('цвет', blank=True, default='#FF0000')
 """
 
-from .fields import ColorField
+from .color import Color
+from .fields import ColorField, ColorOpacityField
