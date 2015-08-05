@@ -1,7 +1,4 @@
 from django.forms import widgets
-from django.forms.utils import flatatt
-from django.utils.encoding import force_text
-from django.utils.html import format_html
 from .color import Color
 
 
@@ -105,5 +102,5 @@ class ColorOpacityWidget(widgets.MultiWidget):
         _color, color, opacity = super().value_from_datadict(data, files, name)
         if not color:
             return None
-        color_obj = Color(color, opacity)
+        color_obj = Color(color, opacity or '1')
         return color_obj.to_string()

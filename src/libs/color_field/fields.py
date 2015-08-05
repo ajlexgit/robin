@@ -1,6 +1,4 @@
-from decimal import Decimal
 from django.db import models
-from django.core import validators
 from .widgets import ColorWidget, ColorOpacityWidget
 from .color import Color
 

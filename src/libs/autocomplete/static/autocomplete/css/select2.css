@@ -63,6 +63,11 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
     background-image: linear-gradient(top, #fff 0%, #eee 50%);
 }
 
+/* fix for Suit */
+.table .selected .select2-container .select2-choice {
+    color: #444;
+}
+
 .select2-container.select2-drop-above .select2-choice {
     border-bottom-color: #aaa;
 
