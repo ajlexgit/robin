@@ -7,6 +7,10 @@ class Color:
 
     def __new__(cls, color, opacity='1'):
         self = object.__new__(cls)
+
+        if ':' in color:
+            color, opacity = color.split(':')
+
         self.color = color
         self.opacity = opacity
         return self
@@ -26,7 +30,7 @@ class Color:
         context = getcontext().copy()
         context.prec = 3
         self._opacity = cleaned_opacity.quantize(Decimal('0.01'), context=context)
-        
+
     @property
     def color(self):
         return '#%s' % self._color
@@ -42,7 +46,7 @@ class Color:
                 int(cleaned_color[i:i+2], 16)
                 for i in range(0, len(cleaned_color), 2)
             )
-        
+
     @property
     def rgb(self):
         return 'rgb({0}, {1}, {2})'.format(*self._int_color)
@@ -50,6 +54,9 @@ class Color:
     @property
     def rgba(self):
         return 'rgba({1}, {2}, {3}, {0})'.format(self.opacity, *self._int_color)
+
+    def to_string(self):
+        return '{}:{}'.format(self._color, self._opacity)
 
     def __repr__(self):
         if self._opacity == 1:

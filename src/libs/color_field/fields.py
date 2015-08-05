@@ -17,27 +17,26 @@ class ColorField(models.Field, metaclass=models.SubfieldBase):
 
     def get_internal_type(self):
         return "CharField"
-        
+
     def to_python(self, value):
         if value is None or value == '':
             return value
         if isinstance(value, Color):
             return value
         return Color(value)
-    
+
     def get_prep_value(self, value):
         if value is None or value == '':
             return value
         return value._color
-    
+
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
-    
+
     def formfield(self, **kwargs):
         kwargs.update({
             'widget': ColorWidget,
-            'max_length': 7,
         })
         return super().formfield(**kwargs)
 
@@ -54,7 +53,7 @@ class ColorOpacityField(models.Field, metaclass=models.SubfieldBase):
 
     def get_internal_type(self):
         return "CharField"
-    
+
     def to_python(self, value):
         if value is None or value == '':
             return value
@@ -62,24 +61,19 @@ class ColorOpacityField(models.Field, metaclass=models.SubfieldBase):
             return value
         if isinstance(value, (list, tuple)):
             return Color(*value)
-            
-        if ':' in value:
-            return Color(*value.split(':'))
-        else:
-            return Color(value)
-            
+        return Color(value)
+
     def get_prep_value(self, value):
         if value is None or value == '':
             return value
-        return '{}:{}'.format(value._color, value._opacity)
+        return value.to_string()
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
-        
+
     def formfield(self, **kwargs):
         kwargs.update({
-            'widget': ColorWidget,
-            'max_length': 7,
+            'widget': ColorOpacityWidget,
         })
         return super().formfield(**kwargs)
