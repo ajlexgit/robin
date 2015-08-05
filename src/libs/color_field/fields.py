@@ -1,78 +1,83 @@
-import re
+from decimal import Decimal
 from django.db import models
 from django.core import validators
-from .widgets import ColorWidget
-
-re_color = re.compile('^#[0-9A-F]{6}$')
-re_hexcolor = re.compile('^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
+from .widgets import ColorWidget, ColorOpacityWidget
+from .color import Color
 
 
-class ColorDescriptor():
-    def __init__(self, field):
-        self.field = field
-
-    def get_formatted_color(self, value):
-        if value is None:
-            return None
-
-        value = str(value)
-        if value:
-            # add hash
-            if value[0] != '#':
-                value = '#' + value
-
-            # upper
-            value = value.upper()
-
-            # convert to long format
-            color_match = re_hexcolor.match(value)
-            if color_match:
-                color = color_match.group(1)
-                if len(color) == 3:
-                    value = '#' + ''.join(letter * 2 for letter in color)
-                return value
-
-        return None if self.field.null else ''
-
-    def __get__(self, instance=None, owner=None):
-        if instance is None:
-            raise AttributeError(
-                "The '%s' attribute can only be accessed from %s instances."
-                % (self.field.name, owner.__name__))
-
-        value = instance.__dict__[self.field.name]
-        instance.__dict__[self.field.name] = self.get_formatted_color(value)
-
-        return instance.__dict__[self.field.name]
-
-    def __set__(self, instance, value):
-        value = self.get_formatted_color(value)
-        instance.__dict__[self.field.name] = value
-
-
-class ColorField(models.CharField):
-    descriptor_class = ColorDescriptor
-
-    default_validators = [
-        validators.RegexValidator(re_color)
-    ]
-
+class ColorField(models.Field, metaclass=models.SubfieldBase):
     def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 7
+        kwargs['max_length'] = 6
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
-        if kwargs['max_length'] == 7:
-            del kwargs['max_length']
+        del kwargs['max_length']
         return name, path, args, kwargs
 
-    def contribute_to_class(self, cls, *args, **kwargs):
-        super().contribute_to_class(cls, *args, **kwargs)
-        setattr(cls, self.name, self.descriptor_class(self))
+    def get_internal_type(self):
+        return "CharField"
+
+    def to_python(self, value):
+        if value is None or value == '':
+            return value
+        if isinstance(value, Color):
+            return value
+        return Color(value)
+
+    def get_prep_value(self, value):
+        if value is None or value == '':
+            return value
+        if not isinstance(value, Color):
+            value = Color(value)
+        return value._color
+
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
 
     def formfield(self, **kwargs):
         kwargs.update({
             'widget': ColorWidget,
+        })
+        return super().formfield(**kwargs)
+
+
+class ColorOpacityField(models.Field, metaclass=models.SubfieldBase):
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 11
+        super().__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        del kwargs['max_length']
+        return name, path, args, kwargs
+
+    def get_internal_type(self):
+        return "CharField"
+
+    def to_python(self, value):
+        if value is None or value == '':
+            return value
+        if isinstance(value, Color):
+            return value
+        if isinstance(value, (list, tuple)):
+            return Color(*value)
+        return Color(value)
+
+    def get_prep_value(self, value):
+        if value is None or value == '':
+            return value
+        if not isinstance(value, Color):
+            value = Color(value)
+        return value.to_string()
+
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
+
+    def formfield(self, **kwargs):
+        kwargs.update({
+            'widget': ColorOpacityWidget,
         })
         return super().formfield(**kwargs)

@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from gallery import GalleryBase, GalleryImageItem, GalleryField
 from libs.ckeditor import CKEditorUploadField
-from libs.color_field import ColorField
+from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.media_storage import MediaStorage
 from libs.stdimage import StdImageField
@@ -57,6 +57,7 @@ class MainPageConfig(SingletonModel):
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     description = models.TextField(_('description'), blank=True)
     color = ColorField(_('color'), blank=True)
+    color2 = ColorOpacityField(_('color2'), blank=True)
     price = ValuteField(_('price'),
         validators=[MinValueValidator(0)]
     )
@@ -74,7 +75,7 @@ class MainPageConfig(SingletonModel):
 class InlineSample(models.Model):
     config = models.ForeignKey(MainPageConfig, verbose_name=_('config'))
 
-    color = ColorField(_('color'))
+    color = ColorOpacityField(_('color'))
 
     class Meta:
         verbose_name = _("Inline sample")
