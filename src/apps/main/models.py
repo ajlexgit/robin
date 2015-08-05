@@ -75,7 +75,7 @@ class MainPageConfig(SingletonModel):
 class InlineSample(models.Model):
     config = models.ForeignKey(MainPageConfig, verbose_name=_('config'))
 
-    color = ColorField(_('color'))
+    color = ColorOpacityField(_('color'))
 
     class Meta:
         verbose_name = _("Inline sample")

@@ -28,6 +28,8 @@ class ColorField(models.Field, metaclass=models.SubfieldBase):
     def get_prep_value(self, value):
         if value is None or value == '':
             return value
+        if not isinstance(value, Color):
+            value = Color(value)
         return value._color
 
     def value_to_string(self, obj):
@@ -66,6 +68,8 @@ class ColorOpacityField(models.Field, metaclass=models.SubfieldBase):
     def get_prep_value(self, value):
         if value is None or value == '':
             return value
+        if not isinstance(value, Color):
+            value = Color(value)
         return value.to_string()
 
     def value_to_string(self, obj):

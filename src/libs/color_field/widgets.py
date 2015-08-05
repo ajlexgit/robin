@@ -20,12 +20,12 @@ class ColorWidget(widgets.MultiWidget):
     def __init__(self, attrs=None):
         color_widget = widgets.TextInput(attrs={
             'type': 'color',
-            'class': 'colorfield-input input-small',
+            'class': 'colorfield-preview input-small',
         })
         input_widget = widgets.TextInput(attrs={
             'max_length': 7,
             'placeholder': 'hex color',
-            'class': 'colorfield-text input-small',
+            'class': 'colorfield-hex input-small',
             'pattern': '#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})',
         })
         _widgets = (color_widget, input_widget)
@@ -47,6 +47,8 @@ class ColorWidget(widgets.MultiWidget):
 
     def value_from_datadict(self, data, files, name):
         _color, color = super().value_from_datadict(data, files, name)
+        if not color:
+            return None
         color_obj = Color(color)
         return color_obj.color
 
@@ -66,12 +68,12 @@ class ColorOpacityWidget(widgets.MultiWidget):
     def __init__(self, attrs=None):
         color_widget = widgets.TextInput(attrs={
             'type': 'color',
-            'class': 'colorfield-input input-small',
+            'class': 'colorfield-preview input-small',
         })
         input_widget = widgets.TextInput(attrs={
             'max_length': 7,
             'placeholder': 'hex color',
-            'class': 'colorfield-text input-small',
+            'class': 'colorfield-hex input-small',
             'pattern': '#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})',
         })
         opacity_widget = widgets.TextInput(attrs={
@@ -101,5 +103,7 @@ class ColorOpacityWidget(widgets.MultiWidget):
 
     def value_from_datadict(self, data, files, name):
         _color, color, opacity = super().value_from_datadict(data, files, name)
+        if not color:
+            return None
         color_obj = Color(color, opacity)
         return color_obj.to_string()
