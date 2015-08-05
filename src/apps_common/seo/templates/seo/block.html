@@ -5,15 +5,15 @@
         <div class="text-wrapper {% if animated %}animated{% endif %}">
             {% if animated %}
                 <p class="text short-text">
-                    {{ short_text|typograf }}
+                    {{ short_text|typograf|safe }}
                 </p>
 
                 <p class="text full-text hidden-text">
-                    {{ full_text|typograf }}
+                    {{ full_text|typograf|safe }}
                 </p>
             {% else %}
                 <p class="text full-text">
-                    {{ full_text|typograf }}
+                    {{ full_text|typograf|safe }}
                 </p>
             {% endif %}
         </div>

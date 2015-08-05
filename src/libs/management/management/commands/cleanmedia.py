@@ -24,6 +24,9 @@ class Command(management.BaseCommand):
 
         # Удаляем ссылки на файлы, которые упомянуты в БД
         for model in apps.get_models():
+            if not model._meta.managed:
+                continue
+
             file_fields = []
             for field in model._meta.concrete_fields:
                 if isinstance(field, models.FileField):
