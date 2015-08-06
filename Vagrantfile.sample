@@ -16,6 +16,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "git"
     chef.add_recipe "postgresql"
     chef.add_recipe "python3"
+    chef.add_recipe "libxml"
+    chef.add_recipe "libxslt"
     chef.add_recipe "libsass"
     chef.add_recipe "locale"
     chef.add_recipe "libjpeg"
