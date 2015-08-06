@@ -105,6 +105,14 @@ SUIT_CONFIG = {
             'icon': 'icon-file',
         },
         {
+            'icon': 'icon-file',
+            'label': 'Blocks',
+            'models': (
+                'main.mainblockfirst',
+                'main.mainblocksecond',
+            ),
+        },
+        {
             'app': 'seo',
             'icon': 'icon-tasks',
             'models': (

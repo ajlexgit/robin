@@ -15,6 +15,11 @@ class AttachableBlockRefForm(forms.ModelForm):
         minimum_input_length=0,
     )
 
+    class Meta:
+        widgets = {
+            'block_model': forms.Select,
+        }
+
 
 class AttachableBlockRefTabularInline(ModelAdminInlineMixin, SortableTabularInline):
     form = AttachableBlockRefForm

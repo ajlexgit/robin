@@ -3,32 +3,24 @@
     привязывать их к конкретным страницам и менять порядок их следования
     через интерфейс администратора.
 
-    1. Для каждого блока должна быть создана модель:
-            from attached_blocks import AttachableBlock, register_block
-
-            # если name не указан, будет использован verbose_name_plural
-            @register_block(name='My super blocks')
-            class MyBlock(AttachableBlock):
-                pass
-
-    2. Для каждого блока должна быть создана функция рендеринга:
-            from attached_blocks import register_block_renderer
-
-            @register_block_renderer
-            def my_block_render(request, block):
-                ...
-
+    1. Для каждого блока должна быть создана модель.
+    2. Для каждого блока должна быть создана функция рендеринга.
     3. Для каждой модели, у экземпляров которой должна быть
-       возможность подключать блоки, нужно создать связь:
-            from attached_blocks import AttachableBlockRef
+       возможность подключать блоки, нужно создать связь.
+    4. Добавить inline-модель для админки.
+
+    Пример:
+        # models.py
+
+            from attachable_blocks import AttachableBlock, AttachableBlockRef, register_block
+
 
             class MyPage(models.Model):
                 ...
-                blocks = models.ManyToManyField(Block,
+                blocks = models.ManyToManyField(AttachableBlock,
                     symmetrical=False,
-                    through='PageBlocks',
+                    through='MyPageBlockRef',
                 )
-
 
             class MyPageBlockRef(AttachableBlockRef):
                 page = models.ForeignKey(MyPage)
@@ -36,6 +28,41 @@
                 class Meta(AttachableBlockRef.Meta):
                     unique_together = ('block_model', 'page')
 
+            @register_block(name='My super blocks')
+            class MyBlock(AttachableBlock):
+                pass
+
+
+        # views.py
+
+            from attachable_blocks import register_block_renderer
+            from .models import MyBlock
+
+            @register_block_renderer(MyBlock)
+            def my_block_render(request, block):
+                ...
+
+
+        # admin.py
+
+            from attachable_blocks import AttachableBlockRefTabularInline
+            from .models import MyPageBlockRef
+
+            class MyPageBlockRefInline(AttachableBlockRefTabularInline):
+                model = MyPageBlockRef
+                suit_classes = 'suit-tab suit-tab-blocks'
+
+            ...
+
+            class MyPageAdmin(admin.ModelAdmin):
+                ...
+                inlines = (MyPageBlockRefInline, ...)
+                ...
+                suit_form_tabs = (
+                    ...
+                    ('blocks', _('Blocks')),
+                    ...
+                )
 
 
 
@@ -73,5 +100,6 @@
             inlines = (..., PageBlocksInline, ...)
 """
 
-from .models import AttachableBlock
+from .models import AttachableBlock, AttachableBlockRef
 from .register import get_block_subclass, register_block, register_block_renderer
+from .admin import AttachableBlockRefTabularInline, AttachableBlockRefStackedInline

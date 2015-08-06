@@ -10,6 +10,7 @@ from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.media_storage import MediaStorage
 from libs.stdimage import StdImageField
+from attachable_blocks import AttachableBlock, AttachableBlockRef, register_block
 
 
 class MainGalleryImageItem(GalleryImageItem):
@@ -63,6 +64,10 @@ class MainPageConfig(SingletonModel):
     )
     gallery = GalleryField(MainGallery, verbose_name=_('gallery'), blank=True, null=True)
 
+    blocks = models.ManyToManyField(AttachableBlock,
+        symmetrical=False,
+        through='MainPageBlockRef',
+    )
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
@@ -70,6 +75,23 @@ class MainPageConfig(SingletonModel):
 
     def get_absolute_url(self):
         return resolve_url('index')
+
+
+@register_block(name='First block type')
+class MainBlockFirst(AttachableBlock):
+    pass
+
+
+@register_block(name='Second block type')
+class MainBlockSecond(AttachableBlock):
+    pass
+
+
+class MainPageBlockRef(AttachableBlockRef):
+    page = models.ForeignKey(MainPageConfig)
+
+    class Meta(AttachableBlockRef.Meta):
+        unique_together = ('block_model', 'page')
 
 
 class InlineSample(models.Model):

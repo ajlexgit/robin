@@ -25,7 +25,8 @@ def register_block_renderer(cls):
 
 def get_block_choices():
     """ Получение вариантов типа блока для селектов """
-    return _BLOCK_NAMES.items()
+    for key, value in _BLOCK_NAMES.items():
+        yield (key, value)
 
 
 def get_block_subclass(block):
