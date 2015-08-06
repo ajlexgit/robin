@@ -58,7 +58,7 @@
 
             ...
 
-            {% render_blocks page_object %}
+            {% render_attached_blocks page_object %}
 
 """
 

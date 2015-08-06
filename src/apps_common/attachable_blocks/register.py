@@ -32,7 +32,7 @@ def get_block_choices():
 def get_block_subclass(block):
     """ Получение конкретного блока по экземпляру базового класса блока """
     BlockModel = get_model(block.block_type)
-    return BlockModel.objects.get(pk=block.block.pk)
+    return BlockModel.objects.get(pk=block.pk)
 
 
 def get_block_renderer(block):

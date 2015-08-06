@@ -8,7 +8,7 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def render_blocks(context, entity):
+def render_attached_blocks(context, entity):
     request = context.get('request')
     if not request:
         return ''

@@ -47,4 +47,4 @@ class AttachableBlockRef(models.Model):
         verbose_name = _('Block reference')
         verbose_name_plural = _('Block references')
         ordering = ('order', )
-        unique_together = ('content_type', 'object_id', 'block_type')
+        unique_together = ('content_type', 'object_id', 'block_type', 'block')
