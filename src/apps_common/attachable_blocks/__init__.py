@@ -6,8 +6,12 @@
     1. Для каждого блока должна быть создана модель.
     2. Для каждого блока должна быть создана функция рендеринга.
     3. Для каждой модели, у экземпляров которой должна быть
-       возможность подключать блоки, нужно создать связь.
-    4. Добавить inline-модель для админки.
+       возможность подключать блоки, нужно создать модель связи с
+       блоками под именем blocks.
+    4. Добавить модели блоков для админки.
+    5. Добавить inline-модель связи страницы с блоками для админки.
+    6. Вставить inline-модель связи страницы с блоками в поле inlines
+       модели страницы в админке.
 
     Пример:
         # models.py
@@ -46,7 +50,11 @@
         # admin.py
 
             from attachable_blocks import AttachableBlockRefTabularInline
-            from .models import MyPageBlockRef
+            from .models import MyBlock, MyPageBlockRef
+
+            @admin.register(MyBlock)
+            class MyBlockAdmin(admin.ModelAdmin):
+                list_display = ('__str__', 'visible')
 
             class MyPageBlockRefInline(AttachableBlockRefTabularInline):
                 model = MyPageBlockRef

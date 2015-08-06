@@ -103,6 +103,9 @@ SUIT_CONFIG = {
         {
             'app': 'main',
             'icon': 'icon-file',
+            'models': (
+                'mainpageconfig',
+            )
         },
         {
             'icon': 'icon-file',

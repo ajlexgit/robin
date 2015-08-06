@@ -14,7 +14,7 @@ class AttachableBlock(models.Model):
     )
     label = models.CharField(_('label'), max_length=128, help_text=_('For inner use'))
     visible = models.BooleanField(_('visible'), default=False)
-    created = models.DateTimeField(_('create date'))
+    created = models.DateTimeField(_('create date'), editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
@@ -23,7 +23,6 @@ class AttachableBlock(models.Model):
         ordering = ('label', )
 
     def save(self, *args, **kwargs):
-        self.block_model = self.BLOCK_TYPE
         if not self.created:
             self.created = now()
         super().save(*args, **kwargs)

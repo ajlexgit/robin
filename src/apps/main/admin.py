@@ -5,13 +5,23 @@ from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
 from comments.admin import CommentsModelAdminMixin
 from attachable_blocks import AttachableBlockRefTabularInline
-from .models import MainPageConfig, MainPageBlockRef, InlineSample
+from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, MainPageBlockRef, InlineSample
 
 
 class InlineSampleAdmin(admin.TabularInline):
     model = InlineSample
     extra = 0
     suit_classes = 'suit-tab suit-tab-header'
+
+
+@admin.register(MainBlockFirst)
+class MainBlockFirstAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'visible')
+
+
+@admin.register(MainBlockSecond)
+class MainBlockSecondAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'visible')
 
 
 class MainPageBlockRefInline(AttachableBlockRefTabularInline):

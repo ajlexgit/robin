@@ -79,12 +79,14 @@ class MainPageConfig(SingletonModel):
 
 @register_block(name='First block type')
 class MainBlockFirst(AttachableBlock):
-    pass
+    class Meta:
+        verbose_name_plural = _("First blocks")
 
 
 @register_block(name='Second block type')
 class MainBlockSecond(AttachableBlock):
-    pass
+    class Meta:
+        verbose_name_plural = _("Second blocks")
 
 
 class MainPageBlockRef(AttachableBlockRef):
