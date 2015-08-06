@@ -14,7 +14,7 @@ class AttachableBlock(models.Model):
     )
     label = models.CharField(_('label'), max_length=128, help_text=_('For inner use'))
     visible = models.BooleanField(_('visible'), default=False)
-    created = models.DecimalField(_('create date'))
+    created = models.DateTimeField(_('create date'))
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:

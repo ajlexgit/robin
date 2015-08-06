@@ -4,21 +4,37 @@
     через интерфейс администратора.
 
     1. Для каждого блока должна быть создана модель:
-        from attached_blocks import AttachableBlock, register_block
+            from attached_blocks import AttachableBlock, register_block
 
-        # если name не указан, будет использован verbose_name_plural
-        @register_block(name='My super blocks')
-        class MyBlock(AttachableBlock):
-            pass
+            # если name не указан, будет использован verbose_name_plural
+            @register_block(name='My super blocks')
+            class MyBlock(AttachableBlock):
+                pass
 
-    2. Для каждого блока должна быть создана функция рендеринга
-       конкретного экземпляра блока:
-        from attached_blocks import register_block_renderer
+    2. Для каждого блока должна быть создана функция рендеринга:
+            from attached_blocks import register_block_renderer
 
-        @register_block_renderer
-        def my_block_render(request, block):
-            ...
+            @register_block_renderer
+            def my_block_render(request, block):
+                ...
 
+    3. Для каждой модели, у экземпляров которой должна быть
+       возможность подключать блоки, нужно создать связь:
+            from attached_blocks import AttachableBlockRef
+
+            class MyPage(models.Model):
+                ...
+                blocks = models.ManyToManyField(Block,
+                    symmetrical=False,
+                    through='PageBlocks',
+                )
+
+
+            class MyPageBlockRef(AttachableBlockRef):
+                page = models.ForeignKey(MyPage)
+
+                class Meta(AttachableBlockRef.Meta):
+                    unique_together = ('block_model', 'page')
 
 
 
@@ -58,4 +74,4 @@
 """
 
 from .models import AttachableBlock
-from .register import register_block, register_block_renderer
+from .register import get_block_subclass, register_block, register_block_renderer
