@@ -33,9 +33,9 @@ class IndexView(TemplateView):
 
 @register_block_renderer(MainBlockFirst)
 def render_first_block(request, block):
-    return '<div class="block-1"></div>'
+    return '<div class="block-1">%s</div>' % block.label
 
 
 @register_block_renderer(MainBlockSecond)
 def render_second_block(request, block):
-    return '<div class="block-2"></div>'
+    return '<div class="block-2">%s</div>' % block.label

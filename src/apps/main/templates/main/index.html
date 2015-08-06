@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 {% load pipeline %}
+{% load attachable_blocks %}
 {% load social_buttons %}
 {% load comments %}
 {% load gallery %}
@@ -140,5 +141,7 @@
             </div>
         </form>
     </div>
+
+    {% render_blocks config %}
 
 {% endblock content %}

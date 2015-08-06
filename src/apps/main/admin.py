@@ -5,13 +5,17 @@ from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
 from comments.admin import CommentsModelAdminMixin
 from attachable_blocks import AttachableBlockRefTabularInline
-from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, MainPageBlockRef, InlineSample
+from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample
 
 
 class InlineSampleAdmin(admin.TabularInline):
     model = InlineSample
     extra = 0
     suit_classes = 'suit-tab suit-tab-header'
+
+
+class MyPageBlockRefInline(AttachableBlockRefTabularInline):
+    suit_classes = 'suit-tab suit-tab-blocks'
 
 
 @admin.register(MainBlockFirst)
@@ -24,11 +28,6 @@ class MainBlockSecondAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'visible')
 
 
-class MainPageBlockRefInline(AttachableBlockRefTabularInline):
-    model = MainPageBlockRef
-    suit_classes = 'suit-tab suit-tab-blocks'
-
-
 @admin.register(MainPageConfig)
 class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
@@ -37,7 +36,7 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
             'fields': ('header_title', 'preview', 'text', 'description', 'color', 'color2' ,'price', 'gallery'),
         }),
     )
-    inlines = (InlineSampleAdmin, MainPageBlockRefInline)
+    inlines = (InlineSampleAdmin, MyPageBlockRefInline)
     suit_form_tabs = (
         ('header', _('Header')),
         ('comments', _('Comments')),

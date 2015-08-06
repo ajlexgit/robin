@@ -1,5 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.template import Library
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.contenttypes.models import ContentType
+from ..models import AttachableBlockRef
 from ..register import get_block_subclass, get_block_renderer
 
 register = Library()
@@ -11,10 +13,12 @@ def render_blocks(context, entity):
     if not request:
         return ''
 
-    if not hasattr(entity, 'blocks'):
-        return ''
-
-    block_refs = entity.blocks.through.objects.filter(block__visible=True)
+    ct = ContentType.objects.get_for_model(entity)
+    block_refs = AttachableBlockRef.objects.filter(
+        block__visible=True,
+        content_type=ct,
+        object_id=entity.pk,
+    )
 
     output = []
     for block_ref in block_refs:
