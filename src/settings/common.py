@@ -52,6 +52,7 @@ INSTALLED_APPS = (
 
     # Apps common
     'admin_log',
+    'attachable_blocks',
     'breadcrumbs',
     'comments',
     'files',

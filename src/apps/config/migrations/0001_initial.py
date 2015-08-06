@@ -13,10 +13,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Config',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-                ('email', models.EmailField(max_length=255, verbose_name='email', blank=True)),
-                ('phone', models.CharField(max_length=32, verbose_name='phone', blank=True)),
-                ('social_facebook', models.URLField(max_length=255, verbose_name='facebook', blank=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('email', models.EmailField(verbose_name='email', max_length=255, blank=True)),
+                ('phone', models.CharField(verbose_name='phone', max_length=32, blank=True)),
+                ('social_facebook', models.URLField(verbose_name='facebook', max_length=255, blank=True)),
             ],
             options={
                 'verbose_name': 'Configuration',
