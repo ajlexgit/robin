@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from hashlib import md5
 from django import forms
 from django.conf import settings
@@ -38,8 +36,8 @@ class BasePaymentForm(forms.Form):
         BAD_SHOP_ID = 1
 
     error_messages = {
-        ERROR_MESSAGE_CODES.BAD_SCID: u'scid не совпадает с YANDEX_MONEY_SCID',
-        ERROR_MESSAGE_CODES.BAD_SHOP_ID: u'scid не совпадает с YANDEX_MONEY_SHOP_ID'
+        ERROR_MESSAGE_CODES.BAD_SCID: u'scid не совпадает с YANDEX_KASSA_SCID',
+        ERROR_MESSAGE_CODES.BAD_SHOP_ID: u'scid не совпадает с YANDEX_KASSA_SHOP_ID'
     }
 
     class ACTION:
@@ -51,8 +49,8 @@ class BasePaymentForm(forms.Form):
             (CPAYMENT, u'Уведомления о переводе'),
         )
 
-    shopId = forms.IntegerField(initial=settings.YANDEX_MONEY_SHOP_ID)
-    scid = forms.IntegerField(initial=settings.YANDEX_MONEY_SCID)
+    shopId = forms.IntegerField(initial=settings.YANDEX_KASSA_SHOP_ID)
+    scid = forms.IntegerField(initial=settings.YANDEX_KASSA_SCID)
     orderNumber = forms.CharField(min_length=1, max_length=64)
     customerNumber = forms.CharField(min_length=1, max_length=64)
     paymentType = forms.CharField(label=u'Способ оплаты',
@@ -85,7 +83,7 @@ class BasePaymentForm(forms.Form):
             cd['shopId'],
             cd['invoiceId'],
             cd['customerNumber'],
-            settings.YANDEX_MONEY_SHOP_PASSWORD,
+            settings.YANDEX_KASSA_SHOP_PASSWORD,
         ))).encode()).hexdigest().upper()
 
     @classmethod
@@ -95,7 +93,7 @@ class BasePaymentForm(forms.Form):
     def clean_scid(self):
         scid = self.cleaned_data['scid']
         if (
-            scid != settings.YANDEX_MONEY_SCID and
+            scid != settings.YANDEX_KASSA_SCID and
             not scid in Payment.get_used_scids()
         ):
             raise forms.ValidationError(self.error_messages[self.ERROR_MESSAGE_CODES.BAD_SCID])
@@ -104,7 +102,7 @@ class BasePaymentForm(forms.Form):
     def clean_shopId(self):
         shop_id = self.cleaned_data['shopId']
         if (
-            shop_id != settings.YANDEX_MONEY_SHOP_ID and
+            shop_id != settings.YANDEX_KASSA_SHOP_ID and
             not shop_id in Payment.get_used_shop_ids()
         ):
             raise forms.ValidationError(self.error_messages[self.ERROR_MESSAGE_CODES.BAD_SHOP_ID])
@@ -118,8 +116,8 @@ class PaymentForm(BasePaymentForm):
     cps_phone = forms.CharField(label='Телефон',
                                 max_length=15, required=False)
 
-    shopFailURL = forms.URLField(initial=settings.YANDEX_MONEY_FAIL_URL)
-    shopSuccessURL = forms.URLField(initial=settings.YANDEX_MONEY_SUCCESS_URL)
+    shopFailURL = forms.URLField(initial=settings.YANDEX_KASSA_FAIL_URL)
+    shopSuccessURL = forms.URLField(initial=settings.YANDEX_KASSA_SUCCESS_URL)
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.pop('instance')
@@ -128,11 +126,6 @@ class PaymentForm(BasePaymentForm):
         self.fields.pop('md5')
         self.fields.pop('action')
         self.fields.pop('orderSumBankPaycash')
-
-        if not getattr(settings, 'YANDEX_MONEY_DEBUG', False):
-            for name in self.fields:
-                if name not in self.get_display_field_names():
-                    self.fields[name].widget = forms.HiddenInput()
 
         if instance:
             self.fields['sum'].initial = instance.order_amount

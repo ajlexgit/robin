@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-
 from uuid import uuid4
-
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
-
 from .signals import payment_process
 from .signals import payment_completed
 
@@ -61,9 +57,9 @@ class Payment(models.Model):
 
     # Required request fields
     shop_id = models.PositiveIntegerField(
-        u'ID магазина', default=settings.YANDEX_MONEY_SHOP_ID)
+        u'ID магазина', default=settings.YANDEX_KASSA_SHOP_ID)
     scid = models.PositiveIntegerField(
-        u'Номер витрины', default=settings.YANDEX_MONEY_SCID)
+        u'Номер витрины', default=settings.YANDEX_KASSA_SCID)
     customer_number = models.CharField(
         u'Идентификатор плательщика', max_length=64)
     order_amount = models.DecimalField(
@@ -82,9 +78,9 @@ class Payment(models.Model):
     cps_phone = models.CharField(
         u'Телефон плательщика', max_length=15, blank=True, null=True)
     success_url = models.URLField(
-        u'URL успешной оплаты', default=settings.YANDEX_MONEY_SUCCESS_URL)
+        u'URL успешной оплаты', default=settings.YANDEX_KASSA_SUCCESS_URL)
     fail_url = models.URLField(
-        u'URL неуспешной оплаты', default=settings.YANDEX_MONEY_FAIL_URL)
+        u'URL неуспешной оплаты', default=settings.YANDEX_KASSA_FAIL_URL)
 
     # Transaction info
     status = models.CharField(
