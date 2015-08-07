@@ -5,12 +5,12 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from gallery import GalleryBase, GalleryImageItem, GalleryField
+from attachable_blocks import AttachableBlock, register_block
 from libs.ckeditor import CKEditorUploadField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.media_storage import MediaStorage
 from libs.stdimage import StdImageField
-from attachable_blocks import AttachableBlock, register_block
 
 
 class MainGalleryImageItem(GalleryImageItem):
@@ -75,12 +75,16 @@ class MainPageConfig(SingletonModel):
 
 @register_block(name='First block type')
 class MainBlockFirst(AttachableBlock):
+    BLOCK_VIEW = 'main.views.render_first_block'
+    
     class Meta:
         verbose_name_plural = _("First blocks")
 
 
 @register_block(name='Second block type')
 class MainBlockSecond(AttachableBlock):
+    BLOCK_VIEW = 'main.views.render_second_block'
+    
     class Meta:
         verbose_name_plural = _("Second blocks")
 

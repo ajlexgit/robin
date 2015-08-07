@@ -1,5 +1,4 @@
 from django.views.generic import TemplateView
-from attachable_blocks import register_block_renderer
 from .models import MainPageConfig, MainBlockFirst, MainBlockSecond
 from .forms import MainForm, InlineFormSet
 
@@ -31,11 +30,9 @@ class IndexView(TemplateView):
         })
 
 
-@register_block_renderer(MainBlockFirst)
 def render_first_block(request, block):
     return '<div class="block-1">%s</div>' % block.label
 
 
-@register_block_renderer(MainBlockSecond)
 def render_second_block(request, block):
     return '<div class="block-2">%s</div>' % block.label

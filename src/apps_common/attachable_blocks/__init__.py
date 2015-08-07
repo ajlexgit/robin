@@ -8,31 +8,26 @@
     3. Добавить inline в админскую модель страницы, к которой нужно присоединять блоки
 
     Пример:
-        # models.py
+        # blocks/models.py
 
             from attachable_blocks import AttachableBlock, register_block
 
             @register_block(name='My super blocks')
             class MyBlock(AttachableBlock):
-                pass
+                BLOCK_VIEW = 'blocks.views.my_block_render'
 
-
-        # views.py
-
-            from attachable_blocks import register_block_renderer
-            from .models import MyBlock
-
-            @register_block_renderer(MyBlock)
-            def my_block_render(request, block):
-                ...
-
-
-        # block/admin.py
+        # blocks/admin.py
             from .models import MyBlock
 
             @admin.register(MyBlock)
             class MyBlockAdmin(admin.ModelAdmin):
                 list_display = ('__str__', 'visible')
+
+
+        # blocks/views.py
+
+            def my_block_render(request, block):
+                ...
 
         # page/admin.py
 
@@ -62,6 +57,6 @@
 
 """
 
+from .register import register_block
 from .models import AttachableBlock, AttachableBlockRef
-from .register import register_block, register_block_renderer
 from .admin import AttachableBlockRefTabularInline, AttachableBlockRefStackedInline

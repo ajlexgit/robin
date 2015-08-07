@@ -2,7 +2,6 @@ from inspect import isclass
 from .utils import get_model, get_block_type
 
 _BLOCK_NAMES = {}
-_BLOCK_RENDERERS = {}
 
 
 def register_block(name=None):
@@ -14,19 +13,10 @@ def register_block(name=None):
         return block_cls
 
     if isclass(name):
-        block_cls = name
+        cls = name
         name = None
-        return decorator(block_cls)
+        return decorator(cls)
 
-    return decorator
-
-
-def register_block_renderer(block_cls):
-    """ Задает блоку функцию рендеринга """
-    block_id = get_block_type(block_cls)
-    def decorator(func):
-        _BLOCK_RENDERERS[block_id] = func
-        return func
     return decorator
 
 
@@ -40,8 +30,3 @@ def get_block_subclass(block):
     """ Получение конкретного блока по экземпляру базового класса блока """
     BlockModel = get_model(block.block_type)
     return BlockModel.objects.get(pk=block.pk)
-
-
-def get_block_renderer(block):
-    """ Получение функции рендеринга конкретного блока по экземпляру базового класса блока """
-    return _BLOCK_RENDERERS.get(block.block_type)

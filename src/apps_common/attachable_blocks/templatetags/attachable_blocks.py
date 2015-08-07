@@ -2,7 +2,8 @@ from django.template import Library
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from ..models import AttachableBlockRef
-from ..register import get_block_subclass, get_block_renderer
+from ..register import get_block_subclass
+from ..utils import get_block_view
 
 register = Library()
 
@@ -27,12 +28,12 @@ def render_attached_blocks(context, entity):
         except ObjectDoesNotExist:
             continue
 
-        render_func = get_block_renderer(block_ref.block)
-        if not render_func:
+        block_view = get_block_view(real_block)
+        if not block_view:
             continue
 
         output.append(
-            render_func(request, real_block)
+            block_view(request, real_block)
         )
 
     return ''.join(output)
