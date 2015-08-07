@@ -27,19 +27,19 @@
                 ...
 
 
-        # admin.py
-
-            from attachable_blocks import AttachableBlockRefTabularInline
+        # block/admin.py
             from .models import MyBlock
-
-            class MyPageBlockRefInline(AttachableBlockRefTabularInline):
-                suit_classes = 'suit-tab suit-tab-blocks'
-
-            ...
 
             @admin.register(MyBlock)
             class MyBlockAdmin(admin.ModelAdmin):
                 list_display = ('__str__', 'visible')
+
+        # page/admin.py
+
+            from attachable_blocks import AttachableBlockRefTabularInline
+
+            class MyPageBlockRefInline(AttachableBlockRefTabularInline):
+                suit_classes = 'suit-tab suit-tab-blocks'
 
             @admin.register(MyPage)
             class MyPageAdmin(admin.ModelAdmin):

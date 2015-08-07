@@ -1,3 +1,4 @@
+from inspect import isclass
 from .utils import get_model, get_block_type
 
 _BLOCK_NAMES = {}
@@ -11,6 +12,12 @@ def register_block(name=None):
         block_name = name or block_cls._meta.verbose_name_plural
         _BLOCK_NAMES[block_id] = block_name
         return block_cls
+
+    if isclass(name):
+        block_cls = name
+        name = None
+        return decorator(block_cls)
+
     return decorator
 
 
