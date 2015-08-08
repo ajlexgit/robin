@@ -354,7 +354,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     BASE_DIR + "/static/",
 )
-STATICFILES_STORAGE = 'libs.debug_storage.DebugPipelineStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+)
 
 
 # Pipeline
