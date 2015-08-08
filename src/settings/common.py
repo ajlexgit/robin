@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 
     'admin_honeypot',
-    'phonenumber_field',
     'pipeline',
     'mptt',
     'solo',
