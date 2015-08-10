@@ -1,6 +1,7 @@
 from django.db import models
 from django.core import exceptions
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.contrib.staticfiles.finders import get_finders
 from libs.checks import FieldChecksMixin
 from .forms import SpriteImageFormField
 from .widgets import SpriteImageWidget
@@ -64,7 +65,11 @@ class SpriteImageField(FieldChecksMixin, models.CharField):
                 self.check_error('sprite required')
             )
         else:
-            if not staticfiles_storage.exists(self.sprite):
+            for finder in get_finders():
+                result = finder.find(self.sprite, all=all)
+                if result:
+                    break
+            else:
                 errors.append(
                     self.check_error('sprite %s not found' % self.sprite)
                 )

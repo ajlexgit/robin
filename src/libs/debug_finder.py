@@ -8,7 +8,7 @@ class PipelineFinder(BaseStorageFinder):
 
     def find(self, path, all=False):
         if settings.DEBUG or not settings.PIPELINE_ENABLED:
-            return super(PipelineFinder, self).find(path, all)
+            return super().find(path, all)
         else:
             return []
 
