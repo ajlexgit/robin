@@ -43,7 +43,7 @@ class PageFile(models.Model):
         if self.pk is not None:
             original = self._default_manager.get(pk=self.pk)
             if original.file != self.file:
-                original.file.delete()
+                original.file.delete(save=False)
 
         super().save(*args, **kwargs)
 
