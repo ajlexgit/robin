@@ -10,7 +10,7 @@ Vagrantfile
 #Development configuration
 dev.py
 media
-static
+/static
 
 #Python
 __pycache__
