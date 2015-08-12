@@ -7,6 +7,7 @@ from django.shortcuts import redirect, resolve_url, get_object_or_404
 from django.views.generic import View, TemplateView
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.views import logout as default_logout, password_reset, password_reset_confirm
+from libs.session_form import SessionFormView
 from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
 
 
@@ -20,33 +21,23 @@ def get_redirect_url(request):
     return redirect_to
 
 
-class LoginView(TemplateView):
+class LoginView(SessionFormView):
     """ Страница авторизации """
     template_name = 'users/login.html'
+    form_class = LoginForm
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return redirect(get_redirect_url(request))
 
         # Seo
         request.seo.set(title=_('Authorization'))
 
-        form = LoginForm()
-        form.load_from_session(request)
-        return self.render_to_response({
-            'form': form,
-        })
+        return super().get(request, *args, **kwargs)
 
-    @staticmethod
-    def post(request):
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            form.remove_from_session(request)
-            auth_login(request, form.get_user())
-            return redirect(get_redirect_url(request))
-        else:
-            form.save_to_session(request)
-            return redirect(request.build_absolute_uri())
+    def form_valid(self, form):
+        auth_login(self.request, form.get_user())
+        return redirect(get_redirect_url(self.request))
 
 
 class LogoutView(View):
@@ -56,35 +47,25 @@ class LogoutView(View):
         return default_logout(request, *args, **kwargs)
 
 
-class RegisterView(TemplateView):
+class RegisterView(SessionFormView):
     """ Страница регистрации """
     template_name = 'users/register.html'
+    form_class = RegisterForm
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         # Seo
         request.seo.set(title=_('Registration'))
 
-        form = RegisterForm()
-        form.load_from_session(request)
-        return self.render_to_response({
-            'form': form,
-        })
+        return super().get(request, *args, **kwargs)
 
-    @staticmethod
-    def post(request):
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.remove_from_session(request)
-            user = form.save()
-            user = authenticate(
-                username=user.username,
-                password=form.cleaned_data.get('password1')
-            )
-            auth_login(request, user)
-            return redirect(get_redirect_url(request))
-        else:
-            form.save_to_session(request)
-            return redirect(request.build_absolute_uri())
+    def form_valid(self, form):
+        user = form.save()
+        user = authenticate(
+            username=user.username,
+            password=form.cleaned_data.get('password1')
+        )
+        auth_login(self.request, user)
+        return redirect(get_redirect_url(self.request))
 
 
 class PasswordResetView(View):

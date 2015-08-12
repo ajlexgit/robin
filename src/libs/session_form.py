@@ -24,8 +24,10 @@
 """
 import time
 import hashlib
+from django.views.generic.edit import FormView
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
+from django.http.response import HttpResponseRedirect
 
 
 class BaseMixin:
@@ -212,3 +214,25 @@ class SessionStoredFormSetMixin(BaseMixin):
     def is_min_forms(self):
         """ Проверка достижения минимального кол-ва форм """
         return self.total_form_count() <= self.min_num
+
+
+class SessionFormView(FormView):
+
+    def get(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form.load_from_session(self.request)
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            form.remove_from_session(self.request)
+            return self.form_valid(form)
+        else:
+            form.save_to_session(self.request)
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(self.request.build_absolute_uri())

@@ -1,5 +1,5 @@
 """
-    Плагин кассы Яндекса.
+    Модуль приема оплаты на Яндекс-кошелек.
 
     Документация:
         https://money.yandex.ru/i/forms/guide-to-custom-p2p-forms.pdf

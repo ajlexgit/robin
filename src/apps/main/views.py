@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from .models import MainPageConfig, MainBlockFirst, MainBlockSecond
+from .models import MainPageConfig
 from .forms import MainForm, InlineFormSet
 
 

@@ -1,9 +1,10 @@
 from django.forms import model_to_dict
+from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, JsonResponse
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
-from libs.views import TemplateExView
+from libs.views import TemplateExView, RenderToStringMixin
 from libs.upload_chunked_file import upload_chunked_file, NotCompleteError
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 
@@ -21,32 +22,25 @@ def user_to_dict(user):
     return user_dict
 
 
-class LoginView(TemplateExView):
+class LoginView(RenderToStringMixin, FormView):
     """ AJAX login """
     template_name = 'users/ajax_login.html'
+    form_class = LoginForm
 
-    def get(self, request):
-        """ Содержимое окна авторизации """
-        return self.render_to_response({
-            'form': LoginForm(),
+    def form_valid(self, form):
+        user = form.get_user()
+        auth_login(self.request, user)
+        return JsonResponse({
+            'user': user_to_dict(user),
+            'auth_block': self.render_to_string(template='users/auth_block.html'),
         })
 
-    def post(self, request):
-        """ AJAX авторизация """
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            return JsonResponse({
-                'user': user_to_dict(user),
-                'auth_block': self.render_to_string(template='users/auth_block.html'),
-            })
-        else:
-            return JsonResponse({
-                'errors': self.render_to_string({
-                    'form': form,
-                }),
-            })
+    def form_invalid(self, form):
+        return JsonResponse({
+            'errors': self.render_to_string({
+                'form': form,
+            }),
+        })
 
 
 class LogoutView(TemplateExView):
@@ -58,75 +52,64 @@ class LogoutView(TemplateExView):
         })
 
 
-class RegisterView(TemplateExView):
+class RegisterView(RenderToStringMixin, FormView):
     """ AJAX register """
     template_name = 'users/ajax_register.html'
+    form_class = RegisterForm
 
-    def get(self, request):
-        """ Содержимое окна регистрации """
-        return self.render_to_response({
-            'form': RegisterForm(),
+    def form_valid(self, form):
+        user = form.save()
+        user = authenticate(
+            username=user.username,
+            password=form.cleaned_data.get('password1')
+        )
+        auth_login(self.request, user)
+        return JsonResponse({
+            'user': user_to_dict(user),
+            'auth_block': self.render_to_string(template='users/auth_block.html'),
         })
 
-    def post(self, request):
-        """ AJAX регистрация """
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user = authenticate(
-                username=user.username,
-                password=form.cleaned_data.get('password1')
-            )
-            auth_login(request, user)
-            return JsonResponse({
-                'user': user_to_dict(user),
-                'auth_block': self.render_to_string(template='users/auth_block.html'),
-            })
-        else:
-            return JsonResponse({
-                'errors': self.render_to_string({
-                    'form': form,
-                }),
-            })
+    def form_invalid(self, form):
+        return JsonResponse({
+            'errors': self.render_to_string({
+                'form': form,
+            }),
+        })
 
 
-class PasswordResetView(TemplateExView):
+class PasswordResetView(RenderToStringMixin, FormView):
     """ AJAX reset password """
     template_name = 'users/ajax_reset.html'
+    form_class = PasswordResetForm
+    email = ''
 
-    def get(self, request):
-        """ Содержимое окна сброса пароля """
-        return self.render_to_response({
-            'form': PasswordResetForm(),
+    def post(self, request, *args, **kwargs):
+        self.email = request.POST.get('email', '')
+        request.session['reset_email'] = self.email
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        opts = {
+            'use_https': self.request.is_secure(),
+            'token_generator': default_token_generator,
+            'email_template_name': 'users/reset_email.html',
+            'subject_template_name': 'users/reset_subject.txt',
+            'request': self.request,
+            'html_email_template_name': 'users/reset_email.html',
+        }
+        form.save(**opts)
+        return JsonResponse({
+            'done': self.render_to_string({
+                'email': self.email,
+            }, template='users/ajax_reset_done.html'),
         })
 
-    def post(self, request):
-        """ AJAX сброс пароля """
-        email = request.POST.get('email', '')
-        request.session['reset_email'] = email
-
-        form = PasswordResetForm(request.POST)
-        if form.is_valid():
-            opts = {
-                'use_https': request.is_secure(),
-                'token_generator': default_token_generator,
-                'email_template_name': 'users/reset_email.html',
-                'subject_template_name': 'users/reset_subject.txt',
-                'request': request,
-                'html_email_template_name': 'users/reset_email.html',
-            }
-            form.save(**opts)
-            return JsonResponse({
-                'done': self.render_to_string({
-                    'email': email,
-                }, template='users/ajax_reset_done.html'),
-            })
-        else:
-            return JsonResponse({
-                'errors': self.render_to_string({
-                    'form': form,
-                }),
-            })
+    def form_invalid(self, form):
+        return JsonResponse({
+            'errors': self.render_to_string({
+                'form': form,
+            }),
+        })
 
 
 class AvatarUploadView(TemplateExView):
