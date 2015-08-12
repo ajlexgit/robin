@@ -11,11 +11,11 @@
             rec = elem.getBoundingClientRect(),
 
             topInviz = rec.top > vpHeight,
-            bottonInviz = rec.bottom < 0,
+            bottomInviz = rec.bottom <= 0,
             leftInviz = rec.left > vpWidth,
-            rightInviz = rec.right < 0,
+            rightInviz = rec.right <= 0,
 
-            vVisible = !(topInviz || bottonInviz),
+            vVisible = !(topInviz || bottomInviz),
             hVisible = !(leftInviz || rightInviz);
 
         direction = direction || 'both';
