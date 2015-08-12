@@ -76,7 +76,7 @@ class MainPageConfig(SingletonModel):
 @register_block(name='First block type')
 class MainBlockFirst(AttachableBlock):
     BLOCK_VIEW = 'main.views.render_first_block'
-    
+
     class Meta:
         verbose_name_plural = _("First blocks")
 
@@ -84,7 +84,7 @@ class MainBlockFirst(AttachableBlock):
 @register_block(name='Second block type')
 class MainBlockSecond(AttachableBlock):
     BLOCK_VIEW = 'main.views.render_second_block'
-    
+
     class Meta:
         verbose_name_plural = _("Second blocks")
 
