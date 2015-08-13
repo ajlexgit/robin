@@ -105,6 +105,29 @@
                 bind_autocomplete_widget(row.find('.autocomplete_widget'));
             });
         }
+
+        // add popup callback
+        var oldDismissAddAnotherPopup = window.dismissAddAnotherPopup;
+        window.dismissAddAnotherPopup = function(win, newId, newRepr) {
+            newId = html_unescape(newId);
+            var name = windowname_to_id(win.name);
+            var $elem = $('#' + name);
+            if ($elem.length && $elem.hasClass('autocomplete_widget')) {
+                var select2 = $elem.data('select2');
+                if (select2.opts.multiple) {
+                    var initial = select2.val() || [];
+                    initial.push(newId);
+                    select2.val(initial);
+                } else {
+                    select2.val(newId);
+                }
+
+                win.close();
+                return;
+            }
+
+            oldDismissAddAnotherPopup(win, newId, newRepr);
+        }
     });
 
 })(jQuery);

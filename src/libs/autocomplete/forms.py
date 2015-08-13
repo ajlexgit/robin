@@ -10,6 +10,7 @@ class AutocompleteMixin:
                  placeholder=_('Search element'),
                  stringify_method='__str__',
                  minimum_input_length=2,
+                 can_add_related=True,
                  close_on_select=True,
                  **kwargs):
         """
@@ -38,6 +39,9 @@ class AutocompleteMixin:
                 Минимальное количество введенных символов для запуска
                 автокомплита
 
+            can_add_related: bool
+                Добавлять ссылку на добавление сущности
+
             close_on_select: bool
                 Закрывать список после выбора элемента
         """
@@ -52,6 +56,7 @@ class AutocompleteMixin:
         super().__init__(*args, **kwargs)
         self.widget.stringify_method = stringify_method
         self.widget.dependencies = dependencies
+        self.widget.can_add_related = int(bool(can_add_related))
 
     def widget_attrs(self, widget):
         return {
