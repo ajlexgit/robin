@@ -25,7 +25,7 @@
             onStopDrag(event)                 - конец перемещения
             onMouseUp(event)                  - отпускание элемента
             onMomentumStarted(momentum)       - инерция запущена
-            onMomentumStopped(interrupted)    - остановка инерции
+            onMomentumStopped(completed)      - остановка инерции
 
         Примеры:
             var drager = new Drager(element, {
@@ -62,10 +62,15 @@
                     momentum.setEasing('linear');
                     return momentum;
                 },
-                onStopDrag: function(evt) {
-
+                onStopDrag: function(evt, momentum) {
+                    if (!momentum) {
+                        // не будет инерции
+                    }
                 },
-                onMouseUp: function(evt) {
+                onMouseUp: function(evt, momentum) {
+                    if (!momentum) {
+                        // не будет инерции
+                    }
 
                     // блокировка всплытия события mouseup или touchend
                     return false
@@ -337,17 +342,17 @@
                 },
                 complete: function() {
                     that._momentumAnimation = null;
-                    that.settings.onMomentumStopped.call(that, false);
+                    that.settings.onMomentumStopped.call(that, true);
                 }
             });
         };
 
         // Остановка инерционного движения
-        Drager.prototype.stop = function(jumpToEnd) {
+        Drager.prototype.stopMomentum = function(jumpToEnd) {
             if (this._momentumAnimation) {
                 this._momentumAnimation.stop(jumpToEnd);
                 this._momentumAnimation = null;
-                this.settings.onMomentumStopped.call(this, true);
+                this.settings.onMomentumStopped.call(this, false);
             }
         };
 
@@ -413,10 +418,10 @@
                     }
                 }
 
-                this.settings.onStopDrag.call(this, evt);
+                this.settings.onStopDrag.call(this, evt, momentum);
             }
 
-            var result = this.settings.onMouseUp.call(this, evt);
+            var result = this.settings.onMouseUp.call(this, evt, momentum);
 
             // запуск инерции
             if (momentum) {

@@ -72,12 +72,42 @@
         };
 
         var stopAnimation = function() {
-            that.drager.stop();
+            that.drager.stopMomentum();
             if (that._animation) {
                 that._animation.stop();
                 that._animation = null;
                 $wrapper.queue('rotate', []);
             }
+        };
+
+        // Выравнивающая анимация
+        var snapAnimation = function() {
+            var absAngle = Math.abs(that.angle) % 90;
+            if (!absAngle) return;
+
+            var finalAngle;
+            if (absAngle < settings.snapThreshold) {
+                finalAngle = 0
+            } else {
+                finalAngle = that.angle > 0 ? 90 : -90;
+            }
+
+            var dAngle = finalAngle - that.angle;
+            $wrapper.queue('rotate', function(next) {
+                var from = that.angle;
+                that._animation = $.animate({
+                    duration: Math.round((Math.abs(dAngle) / 90) * settings.speed),
+                    easing: 'easeInCubic',
+                    step: function(eProgress) {
+                        setAngle(from + dAngle * eProgress);
+                    },
+                    complete: function() {
+                        that._animation = null;
+                        next();
+                    }
+                });
+            });
+            $wrapper.dequeue('rotate');
         };
 
         var processRightSlide = function(angle) {
@@ -168,35 +198,16 @@
                 );
                 return momentum;
             },
-            onMomentumStopped: function(interrupted) {
-                if (settings.snap && !interrupted) {
-                    var absAngle = Math.abs(that.angle) % 90;
-                    if (absAngle) {
-                        var finalAngle;
-                        if (absAngle < settings.snapThreshold) {
-                            finalAngle = 0
-                        } else {
-                            finalAngle = that.angle > 0 ? 90 : -90;
-                        }
-
-                        var dAngle = finalAngle - that.angle;
-                        $wrapper.queue('rotate', function(next) {
-                            var from = that.angle;
-                            that._animation = $.animate({
-                                duration: Math.round((Math.abs(dAngle) / 90) * settings.speed),
-                                easing: 'easeInCubic',
-                                step: function(eProgress) {
-                                    setAngle(from + dAngle * eProgress);
-                                },
-                                complete: function() {
-                                    that._animation = null;
-                                    next();
-                                }
-                            });
-                        });
-                        $wrapper.dequeue('rotate');
-                    }
+            onStopDrag: function(evt, momentum) {
+                if (!momentum) {
+                    snapAnimation();
                 }
+            },
+            onMomentumStopped: function(completed) {
+                if (!completed) return;
+                if (!settings.snap) return;
+
+                snapAnimation();
             }
         });
 
