@@ -6,7 +6,6 @@ import sys
 # inlines class with inlines.js
 
 # JS slider: loop, dots, arrows, 2+ per slide
-# Slider3D: span
 
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 # Соц авторизаци
