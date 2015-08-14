@@ -160,12 +160,13 @@
 
                 setAngle(that.angle);
             },
-            onStopDrag: function(evt) {
+            onSetMomentum: function(evt, momentum) {
                 // Ограничение скорости
-                evt.setMomentumSpeed(
-                    Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedX)),
-                    Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, evt.momentum.speedY))
+                momentum.setSpeed(
+                    Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, momentum.speedX)),
+                    Math.max(-settings.maxMomentumSpeed, Math.min(settings.maxMomentumSpeed, momentum.speedY))
                 );
+                return momentum;
             },
             onMomentumStopped: function(interrupted) {
                 if (settings.snap && !interrupted) {

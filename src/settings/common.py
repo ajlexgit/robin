@@ -89,16 +89,6 @@ SUIT_CONFIG = {
 
     # menu
     'MENU': (
-        'sites',
-        'admin',
-        {
-            'app': 'auth',
-            'icon': 'icon-lock',
-            'models': (
-                'group',
-                'users.customuser',
-            )
-        },
         {
             'app': 'main',
             'icon': 'icon-file',
@@ -115,16 +105,28 @@ SUIT_CONFIG = {
             ),
         },
         {
+            'app': 'config',
+            'icon': 'icon-wrench',
+        },
+        '-',
+        '-',
+        'sites',
+        'admin',
+        {
+            'app': 'auth',
+            'icon': 'icon-lock',
+            'models': (
+                'group',
+                'users.customuser',
+            )
+        },
+        {
             'app': 'seo',
             'icon': 'icon-tasks',
             'models': (
                 'counter',
                 'seoconfig',
             ),
-        },
-        {
-            'app': 'config',
-            'icon': 'icon-wrench',
         },
     ),
 }

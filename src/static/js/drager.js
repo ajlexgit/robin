@@ -14,16 +14,18 @@
             mouse: true                       - разрешить перетаскивание мышью
             touch: true                       - разрешить перетаскивание тачпадом
             ignoreDistance: 10                - игнорировать краткие движения
+            momentum: true                    - добавлять движение по инерции
             momentumLightness: 500            - "легкость" инерции (0 - нет инерции)
             momentumEasing: 'easeOutCubic'    - функция сглаживания иенрционного движения
 
             onMouseDown(event)                - нажатие мышью или тачпадом
             onStartDrag(event)                - начало перемещения
             onDrag(event)                     - процесс перемещения
+            onSetMomentum(event, momentum)    - для модификации параметров инерции
             onStopDrag(event)                 - конец перемещения
             onMouseUp(event)                  - отпускание элемента
-            onMomentumStarted(momentum)       - инерционное движение запущено
-            onMomentumStopped(interrupted)    - остановка инерционного движения
+            onMomentumStarted(momentum)       - инерция запущена
+            onMomentumStopped(interrupted)    - остановка инерции
 
         Примеры:
             var drager = new Drager(element, {
@@ -48,19 +50,22 @@
                     // блокировка всплытия события mousemove или touchmove
                     return false
                 },
-                onStopDrag: function(evt) {
+                onSetMomentum: function(evt, momentum) {
                     // предотвращение инерционного движения
-                    evt.momentum = null;
+                    return false;
 
                     // Модификация параметров инерционного движения
-                    evt.momentum.setMomentumSpeed(undefined, 1);
-                    evt.momentum.setMomentumLightness(600);
-                    evt.momentum.setMomentumEndPoint(200, 400);
-                    evt.momentum.setMomentumDuration(2000);
-                    evt.momentum.setMomentumEasing('linear');
+                    momentum.setSpeed(undefined, 1);
+                    momentum.setLightness(600);
+                    momentum.setEndPoint(200, 400);
+                    momentum.setDuration(2000);
+                    momentum.setEasing('linear');
+                    return momentum;
+                },
+                onStopDrag: function(evt) {
+
                 },
                 onMouseUp: function(evt) {
-                    // тоже что в onStopDrag
 
                     // блокировка всплытия события mouseup или touchend
                     return false
@@ -94,6 +99,67 @@
             return orig
         }
     };
+
+    // ===============================================
+
+    var Momentum = (function() {
+        var Momentum = function(drager, event, momentumPoint) {
+            this.lightness = drager.settings.momentumLightness;
+            this.easing = drager.settings.momentumEasing;
+            this.startX = event.dx;
+            this.startY = event.dy;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.duration = 0;
+
+            var dx = getDx(momentumPoint.point, event.point);
+            var dy = getDy(momentumPoint.point, event.point);
+            var duration = event.origEvent.timeStamp - momentumPoint.timeStamp;
+            this.setSpeed(dx / duration, dy / duration);
+        };
+
+        Momentum.prototype.setSpeed = function(speedX, speedY) {
+            if (typeof speedX != 'undefined') {
+                this.speedX = speedX;
+            }
+            if (typeof speedY != 'undefined') {
+                this.speedY = speedY;
+            }
+
+            var speed = Math.max(Math.abs(this.speedX), Math.abs(this.speedY));
+            this.setDuration(speed * this.lightness);
+        };
+
+        Momentum.prototype.setDuration = function(duration) {
+            this.duration = Math.abs(duration) || 0;
+            this.endX = this.startX + this.speedX * this.duration;
+            this.endY = this.startY + this.speedY * this.duration;
+        };
+
+        Momentum.prototype.setLightness = function(lightness) {
+            this.lightness = lightness;
+
+            var speed = Math.max(Math.abs(this.speedX), Math.abs(this.speedY));
+            this.setDuration(speed * this.lightness);
+        };
+
+        Momentum.prototype.setEndPoint = function(endX, endY) {
+            var dx = endX - this.startX;
+            var dy = endY - this.startY;
+            var tx = this.speedX ? Math.abs(dx / this.speedX) : 0;
+            var ty = this.speedY ? Math.abs(dy / this.speedY) : 0;
+
+            this.duration = Math.max(tx, ty) || 0;
+            this.endX = endX;
+            this.endY = endY;
+        };
+
+        Momentum.prototype.setEasing = function(easing) {
+            this.easing = easing;
+        };
+
+        return Momentum;
+    })();
 
     // ===============================================
 
@@ -152,69 +218,11 @@
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
-            this.momentum = {
-                lightness: drager.settings.momentumLightness,
-                easing: drager.settings.momentumEasing,
-                startX: this.dx,
-                startY: this.dy,
-                speedX: 0,
-                speedY: 0,
-                duration: 0
-            };
         };
 
         var _ = function() { this.constructor = MouseUpDragerEvent; };
         _.prototype = parent.prototype;
         MouseUpDragerEvent.prototype = new _;
-
-
-        MouseUpDragerEvent.prototype.autoCalcMomentum = function(evt, momentumPoint) {
-            var dx = getDx(momentumPoint.point, evt.point);
-            var dy = getDy(momentumPoint.point, evt.point);
-            var duration = evt.origEvent.timeStamp - momentumPoint.timeStamp;
-
-            this.setMomentumSpeed(dx / duration, dy / duration);
-        };
-
-        MouseUpDragerEvent.prototype.setMomentumSpeed = function(speedX, speedY) {
-            if (typeof speedX != 'undefined') {
-                this.momentum.speedX = speedX;
-            }
-            if (typeof speedY != 'undefined') {
-                this.momentum.speedY = speedY;
-            }
-
-            var speed = Math.max(Math.abs(this.momentum.speedX), Math.abs(this.momentum.speedY));
-            this.setMomentumDuration(speed * this.momentum.lightness);
-        };
-
-        MouseUpDragerEvent.prototype.setMomentumLightness = function(lightness) {
-            this.momentum.lightness = lightness;
-
-            var speed = Math.max(Math.abs(this.momentum.speedX), Math.abs(this.momentum.speedY));
-            this.setMomentumDuration(speed * this.momentum.lightness);
-        };
-
-        MouseUpDragerEvent.prototype.setMomentumEndPoint = function(endX, endY) {
-            var dx = endX - this.momentum.startX;
-            var dy = endY - this.momentum.startY;
-            var tx = this.momentum.speedX ? Math.abs(dx / this.momentum.speedX) : 0;
-            var ty = this.momentum.speedY ? Math.abs(dy / this.momentum.speedY) : 0;
-
-            this.momentum.duration = Math.max(tx, ty) || 0;
-            this.momentum.endX = endX;
-            this.momentum.endY = endY;
-        };
-
-        MouseUpDragerEvent.prototype.setMomentumDuration = function(duration) {
-            this.momentum.duration = Math.abs(duration) || 0;
-            this.momentum.endX = this.momentum.startX + this.momentum.speedX * this.momentum.duration;
-            this.momentum.endY = this.momentum.startY + this.momentum.speedY * this.momentum.duration;
-        };
-
-        MouseUpDragerEvent.prototype.setMomentumEasing = function(easing) {
-            this.momentum.easing = easing;
-        };
 
         return MouseUpDragerEvent;
     })(DragerEvent);
@@ -223,20 +231,6 @@
 
     window.Drager = (function() {
         var dragerID = 0;
-
-        // Добавление контрольной точки, на основании которй будут вычисленены
-        // параметры инерционного движения
-        var addMomentumPoint = function(evt, pointsArray) {
-            var record = {
-                point: evt.point,
-                timeStamp: evt.timeStamp
-            };
-
-            if (pointsArray.length == 2) {
-                pointsArray.shift();
-            }
-            pointsArray.push(record);
-        };
 
         // ================================================
 
@@ -254,6 +248,7 @@
                 mouse: true,
                 touch: true,
                 ignoreDistance: 10,
+                momentum: true,
                 momentumLightness: 500,
                 momentumEasing: 'easeOutCubic',
                 minMomentumDuration: 100,
@@ -262,6 +257,7 @@
                 onStartDrag: $.noop,
                 onDrag: $.noop,
                 onStopDrag: $.noop,
+                onSetMomentum: function(evt, momentum) { return momentum },
                 onMouseUp: $.noop,
                 onMomentumStarted: $.noop,
                 onMomentumStopped: $.noop
@@ -280,7 +276,7 @@
             this._dragging_allowed = false;
 
             // Точки, на основани которых будет вычислена скорость инерциального движения
-            this.momentumPoints = [];
+            this._momentumPoints = [];
 
             // Точка начала перемещения
             this.startPoint = null;
@@ -289,10 +285,45 @@
             this.attach();
         };
 
+        // Добавление точки вычисления инерции
+        Drager.prototype._addMomentumPoint = function(evt) {
+            if (this._momentumPoints.length) {
+                // Если недавно уже добавляли - выходим
+                var lastPoint = this._momentumPoints[this._momentumPoints.length - 1];
+                if (evt.timeStamp - lastPoint.timeStamp < 200) {
+                    return
+                }
+            }
+
+            var record = {
+                point: evt.point,
+                timeStamp: evt.timeStamp
+            };
+
+            if (this._momentumPoints.length == 2) {
+                this._momentumPoints.shift();
+            }
+            this._momentumPoints.push(record);
+        };
+
+        // Получение точки вычисления инерции
+        Drager.prototype._getMomentumPoint = function(evt) {
+            if (!this._momentumPoints.length) {
+                return
+            }
+
+            var lastPoint = this._momentumPoints[this._momentumPoints.length - 1];
+            if (evt.timeStamp - lastPoint.timeStamp < 100) {
+                if (this._momentumPoints.length == 2) {
+                    lastPoint = this._momentumPoints[0];
+                }
+            }
+            return lastPoint;
+        };
+
         // Запуск инерционного движения
-        Drager.prototype._startMomentumAnimation = function(evt) {
+        Drager.prototype.startMomentum = function(evt, momentum) {
             var that = this;
-            var momentum = evt.momentum;
             var diffX = momentum.endX - momentum.startX;
             var diffY = momentum.endY - momentum.startY;
             that._momentumAnimation = $.animate({
@@ -329,11 +360,10 @@
             this.wasDragged = false;
             this._inPreventArea = this.settings.ignoreDistance > 0;
             this._dragging_allowed = true;
+            this._momentumPoints = [];
+            this._addMomentumPoint(evt);
 
             this.startPoint = evt.point;
-
-            this.momentumPoints = [];
-            addMomentumPoint(evt, this.momentumPoints);
 
             return this.settings.onMouseDown.call(this, evt);
         };
@@ -356,10 +386,7 @@
                 this.settings.onStartDrag.call(this, evt);
             }
 
-            var lastMomentum = this.momentumPoints[this.momentumPoints.length - 1];
-            if (evt.timeStamp - lastMomentum.timeStamp > 200) {
-                addMomentumPoint(evt, this.momentumPoints);
-            }
+            this._addMomentumPoint(evt);
 
             return this.settings.onDrag.call(this, evt);
         };
@@ -368,33 +395,35 @@
             if (!this._dragging_allowed) return;
             this._dragging_allowed = false;
 
+            var momentum;
             var evt = new MouseUpDragerEvent(event, this);
 
             if (this.wasDragged) {
                 this.wasDragged = false;
 
                 // Вычисление параметров инерции
-                if (this.settings.momentumLightness > 0) {
-                    // Используем более старую точку, если последняя точка была
-                    // совсем недавно.
-                    var lastMomentum = this.momentumPoints[this.momentumPoints.length - 1];
-                    if (evt.timeStamp - lastMomentum.timeStamp < 100) {
-                        if (this.momentumPoints.length == 2) {
-                            lastMomentum = this.momentumPoints[0];
+                if (this.settings.momentum) {
+                    var lastPoint = this._getMomentumPoint(evt);
+                    if (lastPoint) {
+                        momentum = new Momentum(this, evt, lastPoint);
+                        momentum = this.settings.onSetMomentum.call(this, evt, momentum);
+                        if (!momentum || (momentum.duration < this.settings.minMomentumDuration)) {
+                            momentum = null;
                         }
                     }
-
-                    evt.autoCalcMomentum(evt, lastMomentum);
                 }
 
                 this.settings.onStopDrag.call(this, evt);
             }
 
             var result = this.settings.onMouseUp.call(this, evt);
-            if (evt.momentum && (evt.momentum.duration >= this.settings.minMomentumDuration)) {
-                this._startMomentumAnimation(evt);
-                this.settings.onMomentumStarted.call(this, $.extend({}, evt.momentum));
+
+            // запуск инерции
+            if (momentum) {
+                this.startMomentum(evt, momentum);
+                this.settings.onMomentumStarted.call(this, momentum);
             }
+
             return result;
         };
 
