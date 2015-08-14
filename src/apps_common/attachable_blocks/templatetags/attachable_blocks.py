@@ -9,7 +9,7 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def render_attached_blocks(context, entity):
+def render_attached_blocks(context, entity, frame=0):
     request = context.get('request')
     if not request:
         return ''
@@ -19,6 +19,7 @@ def render_attached_blocks(context, entity):
         block__visible=True,
         content_type=ct,
         object_id=entity.pk,
+        frame=frame
     )
 
     output = []

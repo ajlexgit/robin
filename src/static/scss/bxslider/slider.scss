@@ -21,7 +21,7 @@
   }
 
   .bx-controls {
-    z-index: 1;
+    z-index: 3;
     @include overlay;
     @include clearfix;
     @include border-box;

@@ -16,18 +16,28 @@
             class MyBlock(AttachableBlock):
                 BLOCK_VIEW = 'blocks.views.my_block_render'
 
+                class Meta:
+                    verbose_name = _('Block')
+                    verbose_name_plural = _('Blocks')
+
+                def __str__(self):
+                    return '%s (Block)' % self.pk
+
         # blocks/admin.py
             from .models import MyBlock
 
             @admin.register(MyBlock)
             class MyBlockAdmin(admin.ModelAdmin):
-                list_display = ('__str__', 'visible')
+                list_display = ('label', 'visible')
 
 
         # blocks/views.py
 
             def my_block_render(request, block):
-                ...
+                context = RequestContext(request, {
+                    'block': block,
+                })
+                return loader.render_to_string('block.html', context_instance=context)
 
         # page/admin.py
 

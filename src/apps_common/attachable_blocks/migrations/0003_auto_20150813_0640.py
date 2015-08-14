@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attachableblock',
             name='block_type',
-            field=models.CharField(editable=False, max_length=255, choices=[('main.mainblockfirst', 'First block type'), ('main.mainblocksecond', 'Second block type')], verbose_name='block type'),
+            field=models.CharField(max_length=255, editable=False, choices=[('blocks.advantagesblock', 'Advantages blocks'), ('blocks.blogblock', 'Blog blocks'), ('blocks.counterblock', 'Counter blocks'), ('blocks.expertblock', 'Expert blocks')], verbose_name='block type'),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='attachableblockref',
             name='block_type',
-            field=models.CharField(max_length=255, choices=[('main.mainblockfirst', 'First block type'), ('main.mainblocksecond', 'Second block type')], verbose_name='block type'),
+            field=models.CharField(max_length=255, choices=[('blocks.advantagesblock', 'Advantages blocks'), ('blocks.blogblock', 'Blog blocks'), ('blocks.counterblock', 'Counter blocks'), ('blocks.expertblock', 'Expert blocks')], verbose_name='block type'),
             preserve_default=True,
         ),
     ]

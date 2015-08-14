@@ -1,4 +1,3 @@
-from importlib import import_module
 from django.db import models
 from django.core import checks
 from django.contrib.contenttypes.models import ContentType
@@ -71,10 +70,11 @@ class AttachableBlockRef(models.Model):
 
     block_type = models.CharField(_('block type'), max_length=255, choices=get_block_choices())
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'))
+    frame = models.PositiveSmallIntegerField(_('frame'), default=0)
     order = models.PositiveIntegerField(_('order'), default=0)
 
     class Meta:
         verbose_name = _('Block reference')
         verbose_name_plural = _('Block references')
-        ordering = ('order', )
+        ordering = ('frame', 'order')
         unique_together = ('content_type', 'object_id', 'block_type', 'block')

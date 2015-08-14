@@ -18,19 +18,26 @@ class AttachableBlockRefForm(forms.ModelForm):
 
     class Meta:
         widgets = {
-            'block_type': forms.Select,
+            'block_type': forms.Select(attrs={
+                'class': 'input-medium',
+            }),
+            'frame': forms.TextInput(attrs={
+                'type': 'number',
+                'class': 'input-mini',
+                'min': 0,
+            })
         }
 
 
 class AttachableBlockRefTabularInline(ModelAdminInlineMixin, SortableTabularInlineBase, GenericTabularInline):
     form = AttachableBlockRefForm
     model = AttachableBlockRef
-    fields = ('block_type', 'block')
+    fields = ('block_type', 'block', 'frame')
     extra = 0
 
 
 class AttachableBlockRefStackedInline(ModelAdminInlineMixin, SortableTabularInlineBase, GenericStackedInline):
     form = AttachableBlockRefForm
     model = AttachableBlockRef
-    fields = ('block_type', 'block')
+    fields = ('block_type', 'block', 'frame')
     extra = 0
