@@ -134,7 +134,8 @@ class GalleryImageItem(GalleryItemBase):
     # Качество картинок вариаций по умолчанию
     DEFAULT_QUALITY = 85
 
-    # Имя вариации, которая используется для полноэкранного просмотра картинки в админке
+    # Имя вариации, которая используется для полноэкранного просмотра картинки в админке.
+    # Если None - будет показан исходник. Если False - не будет показано ничего
     SHOW_VARIATION = None
 
     # Имя вариации, которая показывается в админке
@@ -246,11 +247,14 @@ class GalleryImageItem(GalleryItemBase):
 
     @property
     def browse_url(self):
-        if isinstance(self.SHOW_VARIATION, str):
+        if self.SHOW_VARIATION is False:
+            return ''
+        elif self.SHOW_VARIATION is None:
+            return self.image.url
+        else:
             show_variation = getattr(self.image, self.SHOW_VARIATION, None)
             if show_variation:
                 return show_variation.url
-        return ''
 
     def copy_for(self, dest_gallery, **kwargs):
         """ Создание копии текущего элемента для другой галереи """

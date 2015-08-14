@@ -20,7 +20,7 @@
 
                 <input type="hidden" class="item-id" value="{{ item.id }}"/>
 
-                <a href="{{ item.browse_url }}" target="_blank" class="item-show">
+                <a {% if item.browse_url %}href="{{ item.browse_url }}"{% endif %} target="_blank" class="item-show">
                 {% with variation_field=item.image|variation_field:item.ADMIN_VARIATION %}
                     {% if variation_field %}
                         <img src="{{ variation_field.url }}">
