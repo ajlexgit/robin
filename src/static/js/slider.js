@@ -42,7 +42,10 @@
             this.$items = this.getItems();
 
             // создаем слайды
-            this.createSlides(this.opts.slideItems);
+            this.$slides = this.createSlides(this.opts.slideItems);
+
+            // установка класса первому слайду
+            this.$slides.first().addClass(this.opts.slideActiveClass);
         };
 
         // Метод, возвращающий объект настроек по умолчанию
@@ -51,6 +54,7 @@
                 rootClass: 'slider-root',
                 listClass: 'slider-list',
                 slideClass: 'slider-slide',
+                slideActiveClass: 'slider-slide-ative',
                 itemSelector: 'img',
                 slideItems: 2
             };
@@ -70,19 +74,23 @@
 
         // Метод, возвращающий массив ссылок на items
         Slider.prototype.getItems = function() {
-            var $items = this.$list.find(this.opts.itemSelector);
-            return $items.toArray();
+            return this.$list.find(this.opts.itemSelector);
         };
 
         // Метод, возвращающий массив ссылок на items
         Slider.prototype.createSlides = function(slideItems) {
+            var $slides = $();
             this.$list.empty();
+
             var slide_count = Math.ceil(this.$items.length / slideItems);
             for (var i=0;i<slide_count;i++) {
                 var $slide = $('<div>').addClass(this.opts.slideClass);
                 $slide.append(this.$items.slice(i * slideItems, (i+1) * slideItems));
                 this.$list.append($slide);
+                $slides.push($slide.get(0));
             }
+
+            return $slides;
         };
 
         return Slider;
