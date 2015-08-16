@@ -98,6 +98,19 @@
 #slider_example {
   padding: 40px 0;
   background: black;
+
+  img {
+    display: none;
+    &:nth-of-type(1) {
+      display: inline-block;
+    }
+  }
+
+  .slider-root {
+    img {
+      display: inline-block;
+    }
+  }
 }
 
 #gallery {
