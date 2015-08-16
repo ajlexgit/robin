@@ -30,7 +30,9 @@
 
     // Slider
     $(document).ready(function() {
-        $('#slider_example').find('.slider3d').slider3d();
+        var $elem = $('.slider');
+
+        window.slider = new Slider($elem);
     });
 
 })(jQuery);

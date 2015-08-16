@@ -150,7 +150,7 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
-            'scss/slider3d/slider3d.scss',
+            'scss/slider/slider.scss',
             'scss/parallax.scss',
             'scss/video_bg.scss',
             'gallery/scss/gallery.scss',
@@ -199,7 +199,7 @@ PIPELINE_JS = {
             'js/jquery.animation.js',
             'js/drager.js',
             'js/parallax.js',
-            'js/slider3d.js',
+            'js/slider.js',
             'comments/js/comments_class.js',
             'comments/js/comments.js',
             'gallery/js/gallery_class.js',

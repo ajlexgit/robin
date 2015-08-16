@@ -77,16 +77,14 @@
         <div id="slider_example">
             <div class="grid">
                 <div class="gc-full gc-alone">
-                    <div class="slider3d">
-                        <div class="slider3d-wrapper">
-                            {% for item in config.gallery.image_items %}
-                                <img class="slide {% if forloop.first %}front{% endif %}"
-                                     src="{{ item.image.normal.url }}"
-                                     alt=""
-                                     width="{{ item.image.normal.dimensions.0 }}"
-                                     height="{{ item.image.normal.dimensions.1 }}">
-                            {% endfor %}
-                        </div>
+                    <div class="slider">
+                        {% for item in config.gallery.image_items %}
+                            <img class="slide {% if forloop.first %}front{% endif %}"
+                                 src="{{ item.image.normal.url }}"
+                                 alt=""
+                                 width="{{ item.image.normal.dimensions.0 }}"
+                                 height="{{ item.image.normal.dimensions.1 }}">
+                        {% endfor %}
                     </div>
                 </div>
             </div>

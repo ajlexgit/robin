@@ -5,6 +5,15 @@
 
         Требует:
             jquery.rared.js, jquery.animation.js, drager.js
+
+        HTML:
+            <div class="slider3d">
+                <div class="slider3d-wrapper">
+                    <img class="slide front">
+                    <img class="slide">
+                    ...
+                </div>
+            </div>
     */
 
     var transitionend = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -82,6 +91,8 @@
 
         // Выравнивающая анимация
         var snapAnimation = function() {
+            if (!settings.snap) return;
+
             var absAngle = Math.abs(that.angle) % 90;
             if (!absAngle) return;
 
@@ -204,10 +215,9 @@
                 }
             },
             onMomentumStopped: function(completed) {
-                if (!completed) return;
-                if (!settings.snap) return;
-
-                snapAnimation();
+                if (completed) {
+                    snapAnimation();
+                }
             }
         });
 
