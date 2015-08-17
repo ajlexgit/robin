@@ -1,0 +1,58 @@
+@import "mixins";
+
+
+.slider-root {
+
+  // Controls
+  .slider-arrow {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
+    @include unselectable;
+    &.slider-arrow-left {
+      left: 0;
+      &:hover {
+        &:before {
+          background-position: left -40px;
+          @include transform(translate(-50%, -50%) scale(1.2));
+        }
+      }
+
+      &:before {
+        background-position: left 0;
+      }
+    }
+    &.slider-arrow-right {
+      right: 0;
+      &:hover {
+        &:before {
+          background-position: right -40px;
+          @include transform(translate(-50%, -50%) scale(1.2));
+        }
+      }
+
+      &:before {
+        background-position: right 0;
+      }
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 40px;
+      height: 40px;
+      background: url(arrows.png) no-repeat;
+      background-size: 200%;
+      @include transform(translate(-50%, -50%));
+      @include transition-property(-webkit-transform, transform);
+      @include transition-duration(0.3s);
+      @include transition-timing-function(linear);
+    }
+  }
+}

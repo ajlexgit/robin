@@ -80,6 +80,11 @@
                     <div class="slider">
                         {% for item in config.gallery.image_items %}
                             <img class="slide"
+                                 {% if forloop.counter == 3 or forloop.counter == 4 %}
+                                     style="width: 30%;"
+                                 {% elif forloop.counter == 5 or forloop.counter == 6 %}
+                                     style="height: 500px;"
+                                 {% endif %}
                                  src="{{ item.image.normal.url }}"
                                  alt=""
                                  width="{{ item.image.normal.dimensions.0 }}"

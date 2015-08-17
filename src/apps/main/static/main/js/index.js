@@ -32,7 +32,12 @@
     $(document).ready(function() {
         var $elem = $('.slider');
 
-        window.slider = new Slider($elem);
+        window.slider = new Slider($elem, {
+            adaptiveHeight: false,
+            plugins: [
+                new SliderControlsPlugin()
+            ]
+        });
     });
 
 })(jQuery);
