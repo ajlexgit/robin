@@ -3,7 +3,7 @@
     window.SliderSimpleAnimationPlugin = (function(parent) {
         var defaults = {
             speed: 300,
-            easing: 'ease-in'
+            easing: 'easeOutCubic'
         };
 
         // Инициализация плагина
@@ -28,15 +28,16 @@
             // определяем направление
             if (slider.opts.loop) {
                 var slides_count = slider.$slides.length;
-                
-                if (toIndex > fromIndex) {
-                    var right_way = toIndex - fromIndex;
-                    var left_way = fromIndex + slides_count - toIndex;
-                } else {
-                    right_way = toIndex + slides_count - fromIndex;
-                    left_way = fromIndex - toIndex;
-                }
 
+                var diff = toIndex - fromIndex;
+                var right_way = diff + (diff > 0 ? 0 : slides_count);
+                var left_way = (diff > 0 ? slides_count : 0) - diff;
+
+                if (right_way < left_way) {
+                    this.slideRight(slider, $fromSlide, $toSlide);
+                } else {
+                    this.slideLeft(slider, $fromSlide, $toSlide);
+                }
             } else {
                 if (toIndex > fromIndex) {
                     this.slideRight(slider, $fromSlide, $toSlide);
@@ -44,48 +45,100 @@
                     this.slideLeft(slider, $fromSlide, $toSlide);
                 }
             }
-
-            $fromSlide.css({
-                'left': ''
-            });
-            $toSlide.css({
-                'left': '0'
-            });
-            slider.$currentSlide = $toSlide;
         };
 
         SliderSimpleAnimationPlugin.prototype.slideRight = function(slider, $fromSlide, $toSlide) {
+            if ($fromSlide._animation) {
+                return
+            }
 
+            $fromSlide.css({
+                zIndex: 5
+            });
+            $toSlide.css({
+                left: '100%',
+                zIndex: 10
+            });
+
+            slider.$currentSlide = $toSlide;
+
+            $fromSlide._animation = $.animate({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                init: function() {
+                    this.initial = parseInt($fromSlide.get(0).style.left);
+                    this.diff = -100 - this.initial;
+                },
+                step: function(eProgress) {
+                    $fromSlide.css('left', this.initial + this.diff * eProgress + '%');
+                },
+                complete: function() {
+                    $fromSlide._animation = null;
+                }
+            });
+
+            $toSlide._animation = $.animate({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                init: function() {
+                    this.initial = parseInt($toSlide.get(0).style.left);
+                    this.diff = -this.initial;
+                },
+                step: function(eProgress) {
+                    $toSlide.css('left', this.initial + this.diff * eProgress + '%');
+                },
+                complete: function() {
+                    $toSlide._animation = null;
+                }
+            });
         };
 
         SliderSimpleAnimationPlugin.prototype.slideLeft = function(slider, $fromSlide, $toSlide) {
+            if ($fromSlide._animation) {
+                return
+            }
 
+            $fromSlide.css({
+                zIndex: 5
+            });
+            $toSlide.css({
+                left: '-100%',
+                zIndex: 10
+            });
+
+            slider.$currentSlide = $toSlide;
+
+            $fromSlide._animation = $.animate({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                init: function() {
+                    this.initial = parseInt($fromSlide.get(0).style.left);
+                    this.diff = 100 - this.initial;
+                },
+                step: function(eProgress) {
+                    $fromSlide.css('left', this.initial + this.diff * eProgress + '%');
+                },
+                complete: function() {
+                    $fromSlide._animation = null;
+                }
+            });
+
+            $toSlide._animation = $.animate({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                init: function() {
+                    this.initial = parseInt($toSlide.get(0).style.left);
+                    this.diff = -this.initial;
+                },
+                step: function(eProgress) {
+                    $toSlide.css('left', this.initial + this.diff * eProgress + '%');
+                },
+                complete: function() {
+                    $toSlide._animation = null;
+                }
+            });
         };
 
-        // Скролл к следующему слайду
-//        SliderControlsPlugin.prototype.slideRight = function(slider) {
-//            var $curr = slider.$currentSlide;
-//            var $next = slider.getNextSlide($curr);
-//            if (!$next || !$next.length) {
-//                return
-//            }
-//
-//            // можно ли крутить
-//            if (this.canSlideRight(slider, $curr, $next) === false) {
-//                return
-//            }
-//
-//            this.processSlideRight(slider, $curr, $next);
-//        };
-//
-//
-//        // Подготовка текущего слайда
-//        SliderControlsPlugin.prototype.canSlideRight = function(slider, $currentSlide, $nextSlide) {
-//            if ($currentSlide._animation) {
-//                return false
-//            }
-//        };
-//
 //        // Подготовка текущего слайда
 //        SliderControlsPlugin.prototype.processSlideRight = function(slider, $currentSlide, $nextSlide) {
 //            $currentSlide.css({
@@ -129,30 +182,6 @@
 //            });
 //        };
 //
-//
-//        // Скролл к следующему слайду
-//        SliderControlsPlugin.prototype.slideLeft = function(slider) {
-//            var $curr = slider.$currentSlide;
-//            var $prev = slider.getPreviousSlide($curr);
-//            if (!$prev || !$prev.length) {
-//                return
-//            }
-//
-//            // можно ли крутить
-//            if (this.canSlideLeft(slider, $curr, $prev) === false) {
-//                return
-//            }
-//
-//            this.processSlideLeft(slider, $curr, $prev);
-//        };
-//
-//
-//        // Подготовка текущего слайда
-//        SliderControlsPlugin.prototype.canSlideLeft = function(slider, $currentSlide) {
-//            if ($currentSlide._animation) {
-//                return false
-//            }
-//        };
 //
 //        // Подготовка текущего слайда
 //        SliderControlsPlugin.prototype.processSlideLeft = function(slider, $currentSlide, $previousSlide) {

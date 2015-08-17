@@ -201,7 +201,7 @@
             while (index--) {
                 var plugin = this.plugins[index];
                 if (methodName in plugin) {
-                    return plugin[methodName];
+                    return $.proxy(plugin[methodName], plugin);
                 }
             }
         };
