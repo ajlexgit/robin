@@ -224,3 +224,36 @@ def crop_item(request):
     return JsonResponse({
         'preview_url': getattr(item.image, item.ADMIN_VARIATION).url_nocache
     })
+
+
+@admin.site.admin_view
+def get_description(request):
+    """ Получение описания картинки """
+    gallery = _get_gallery(request)
+    item = _get_gallery_item(request, gallery)
+    if not item.is_image or not item.image.exists():
+        raise Http404
+
+    return JsonResponse({
+        'description': item.description
+    })
+
+
+@admin.site.admin_view
+def set_description(request):
+    """ Установка описания картинки """
+    gallery = _get_gallery(request)
+    item = _get_gallery_item(request, gallery)
+    if not item.is_image or not item.image.exists():
+        raise Http404
+
+    description = request.POST.get('description', None)
+    if description is None:
+        raise Http404
+
+    item.description = description
+    item.save()
+
+    return JsonResponse({
+        'description': item.description
+    })

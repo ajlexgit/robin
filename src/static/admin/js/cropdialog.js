@@ -66,6 +66,7 @@
                 title: gettext('Crop image'),
                 width: 610,
                 minHeight: 300,
+                closeText: '',
                 show: { effect: "fadeIn", duration: 100 },
                 hide: { effect: "fadeOut", duration: 100 },
                 modal: true,

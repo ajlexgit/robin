@@ -456,8 +456,10 @@
         that.rotateItem = function($item, direction) {
             direction = direction || 'left';
 
-            if (query) query.abort();
-            return query = $.ajax({
+            if ($item.get(0).query) {
+                $item.get(0).query.abort();
+            }
+            return $item.get(0).query = $.ajax({
                 url: window.admin_gallery_rotate_item + '?direction=' + direction,
                 type: 'POST',
                 data: {
@@ -493,8 +495,10 @@
                 coords: coords
             });
 
-            if (query) query.abort();
-            return query = $.ajax({
+            if ($item.get(0).query) {
+                $item.get(0).query.abort();
+            }
+            return $item.get(0).query = $.ajax({
                 url: window.admin_gallery_crop_item,
                 type: 'POST',
                 data: data,
@@ -508,6 +512,67 @@
                 },
                 error: function() {
                     alert(gettext('Failed crop image'));
+                },
+                complete: function() {
+                    $item.removeClass('gallery-item-locked');
+                }
+            });
+        };
+
+        // Получение подписи к картинке
+        that.getItemDescription = function($item, extra) {
+            var data = $.extend({}, extra, {
+                app_label: that.app_label,
+                model_name: that.model_name,
+                gallery_id: that.gallery_id,
+                item_id: parseInt($item.find('.item-id').val()) || 0
+            });
+
+            if ($item.get(0).query) {
+                $item.get(0).query.abort();
+            }
+            return $item.get(0).query = $.ajax({
+                url: window.admin_gallery_get_description,
+                type: 'POST',
+                async: false,
+                data: data,
+                beforeSend: function() {
+                    $item.addClass('gallery-item-locked');
+                },
+                error: function() {
+                    alert(gettext('Failed getting description'));
+                },
+                complete: function() {
+                    $item.removeClass('gallery-item-locked');
+                }
+            });
+        };
+
+        // Установка подписи к картинке
+        that.setItemDescription = function($item, description, extra) {
+            var data = $.extend({}, extra, {
+                app_label: that.app_label,
+                model_name: that.model_name,
+                gallery_id: that.gallery_id,
+                item_id: parseInt($item.find('.item-id').val()) || 0,
+                description: description
+            });
+
+            if ($item.get(0).query) {
+                $item.get(0).query.abort();
+            }
+            return $item.get(0).query = $.ajax({
+                url: window.admin_gallery_set_description,
+                type: 'POST',
+                data: data,
+                beforeSend: function() {
+                    $item.addClass('gallery-item-locked');
+                },
+                success: function(resp) {
+
+                },
+                error: function() {
+                    alert(gettext('Failed setting description'));
                 },
                 complete: function() {
                     $item.removeClass('gallery-item-locked');

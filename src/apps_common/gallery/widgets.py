@@ -26,6 +26,7 @@ class GalleryWidget(forms.Widget):
                 'admin/css/jcrop/jquery.Jcrop.css',
                 'admin/css/cropdialog/cropdialog.css',
                 'gallery/admin/css/gallery.css',
+                'gallery/admin/css/description_window.css',
             )
         }
 

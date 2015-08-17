@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     url(r'^delete_item/$', admin_views.delete_item, name='delete_item'),
     url(r'^rotate_item/$', admin_views.rotate_item, name='rotate_item'),
     url(r'^crop_item/$', admin_views.crop_item, name='crop_item'),
+    url(r'^get_description/$', admin_views.get_description, name='get_description'),
+    url(r'^set_description/$', admin_views.set_description, name='set_description'),
 )

@@ -46,27 +46,87 @@
     }).on('click.gallery', '.item-delete', function() {
         /* Удаление картинки */
         var self = $(this),
+            $item = self.closest('.gallery-item'),
             gallery = self.closest('.gallery').gallery('object');
 
-        gallery.deleteItem(self.closest('.gallery-item'));
+        gallery.deleteItem($item);
         return false;
     }).on('click.gallery', '.item-rotate-left', function() {
         /* Поворот картинки против часовой стрелки */
         var self = $(this),
+            $item = self.closest('.gallery-item'),
             gallery = self.closest('.gallery').gallery('object');
 
-        gallery.rotateItem(self.closest('.gallery-item'), 'left').done(function() {
-            self.closest('.gallery-item').find('.item-crop').removeData('crop');
+        gallery.rotateItem($item, 'left').done(function() {
+            $item.find('.item-crop').removeData('crop');
         });
         return false;
     }).on('click.gallery', '.item-rotate-right', function() {
         /* Поворот картинки по часовой стрелке */
         var self = $(this),
+            $item = self.closest('.gallery-item'),
             gallery = self.closest('.gallery').gallery('object');
 
-        gallery.rotateItem(self.closest('.gallery-item'), 'right').done(function() {
-            self.closest('.gallery-item').find('.item-crop').removeData('crop');
+        gallery.rotateItem($item, 'right').done(function() {
+            $item.find('.item-crop').removeData('crop');
         });
+        return false;
+    }).on('click.gallery', '.item-description', function() {
+        /* Редактирвоание описания картинки */
+        var self = $(this),
+            $item = self.closest('.gallery-item'),
+            gallery = self.closest('.gallery').gallery('object');
+
+        var $template = $('<div>')
+            .attr('id', 'description-dialog')
+            .append('<textarea>')
+            .appendTo('body');
+
+        gallery.getItemDescription($item).done(function(response) {
+            $template.find('textarea').val(response.description);
+
+            var dialog = $template.dialog({
+                title: gettext('Set description'),
+                width: 540,
+                closeText: '',
+                show: {
+                    effect: "fadeIn",
+                    duration: 100
+                },
+                hide: {
+                    effect: "fadeOut",
+                    duration: 100
+                },
+                modal: true,
+                resizable: false,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    of: window
+                },
+                buttons: [
+                    {
+                        text: gettext('Cancel'),
+                        click: function() {
+                            $(this).dialog('close');
+                        }
+                    },
+                    {
+                        text: gettext('Ok'),
+                        click: function() {
+                            $(this).dialog('close');
+                            gallery.setItemDescription($item, $template.find('textarea').val());
+                        }
+                    }
+                ],
+                close: function() {
+                    dialog.empty();
+                    dialog.remove();
+                    dialog = null;
+                }
+            });
+        });
+
         return false;
     });
 

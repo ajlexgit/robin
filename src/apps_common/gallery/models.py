@@ -53,6 +53,7 @@ class GalleryItemBase(ModelChecksMixin, models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     gallery = generic.GenericForeignKey(for_concrete_model=False)
+    description = models.TextField(_('description'), blank=True)
 
     order = models.PositiveIntegerField(_('order'), default=0)
     created = models.DateTimeField(_('created on'))
@@ -134,8 +135,7 @@ class GalleryImageItem(GalleryItemBase):
     # Качество картинок вариаций по умолчанию
     DEFAULT_QUALITY = 85
 
-    # Имя вариации, которая используется для полноэкранного просмотра картинки в админке.
-    # Если None - будет показан исходник. Если False - не будет показано ничего
+    # Имя вариации, которая используется для полноэкранного просмотра картинки в админке
     SHOW_VARIATION = None
 
     # Имя вариации, которая показывается в админке
