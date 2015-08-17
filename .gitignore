@@ -9,8 +9,9 @@ Vagrantfile
 
 #Development configuration
 dev.py
-media
+/media
 /static
+/venv
 
 #Python
 __pycache__
