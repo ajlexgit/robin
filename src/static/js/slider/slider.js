@@ -6,6 +6,16 @@
         Требует:
             jquery.rared.js
 
+        Может подключать к себе плагины:
+            var slider = new Slider($mylist);
+            slider.attachPlugin(
+                new SliderControlsPlugin({
+                    speed: 800
+                })
+            ).attachPlugin(
+                new SliderOtherPlugin()
+            );
+
 
         HTML input:
             <div>
@@ -62,10 +72,7 @@
             this.$currentSlide = this.getStartSlide();
             this.$currentSlide.css('left', '0');
 
-            // PLUGINS init
-            $.each(this.opts.plugins, function(index, plugin) {
-                plugin.init(that)
-            });
+            this.plugins = [];
 
             // обновление высоты
             this.updateListHeight();
@@ -78,7 +85,6 @@
             }
 
             var loadHandle = $.rared(function() {
-                console.log('load');
                 that.updateListHeight();
             }, 100);
 
@@ -96,9 +102,7 @@
                 itemSelector: 'img',
                 slideItems: 2,
                 loop: true,
-                adaptiveHeight: true,
-
-                plugins: []
+                adaptiveHeight: true
             };
         };
 
@@ -184,15 +188,53 @@
             }
         };
 
+        // Подключение плагина
+        Slider.prototype.attachPlugin = function(plugin) {
+            this.plugins.push(plugin);
+            plugin.onAttach(this);
+            return this;
+        };
+
+        // Получение метода плагина по имени
+        Slider.prototype.getPluginMethod = function(methodName) {
+            var index = this.plugins.length;
+            while (index--) {
+                var plugin = this.plugins[index];
+                if (methodName in plugin) {
+                    return plugin[methodName];
+                }
+            }
+        };
+
+        // Переопределяемый метод смены слайда
+        Slider.prototype.slide = function($fromSlide, $toSlide) {
+            // jQuery event
+            this.$list.trigger('beforeSlide.slider', [$fromSlide, $toSlide]);
+
+            var method = this.getPluginMethod('slide');
+            if (method) {
+                method(this, $fromSlide, $toSlide);
+            } else {
+                $fromSlide.css({
+                    'left': ''
+                });
+                $toSlide.css({
+                    'left': '0'
+                });
+                this.$currentSlide = $toSlide;
+            }
+
+            // jQuery event
+            this.$list.trigger('slide.slider', [$fromSlide, $toSlide]);
+        };
+
         return Slider;
     })();
 
 
     window.SliderPlugin = (function() {
         var SliderPlugin = function(settings) {
-            // настройки
-            var defaults = this.getDefaultOpts();
-            this.opts = $.extend(true, defaults, settings);
+
         };
 
         // Настройки по умолчанию
@@ -201,7 +243,7 @@
         };
 
         // Инициализация
-        SliderPlugin.prototype.init = function(slider) {
+        SliderPlugin.prototype.onAttach = function(slider) {
 
         };
 

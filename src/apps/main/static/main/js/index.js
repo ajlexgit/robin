@@ -33,11 +33,12 @@
         var $elem = $('.slider');
 
         window.slider = new Slider($elem, {
-            adaptiveHeight: false,
-            plugins: [
-                new SliderControlsPlugin()
-            ]
-        });
+            adaptiveHeight: false
+        }).attachPlugin(
+            new SliderSimpleAnimationPlugin()
+        ).attachPlugin(
+            new SliderControlsPlugin()
+        );
     });
 
 })(jQuery);

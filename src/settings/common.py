@@ -202,6 +202,7 @@ PIPELINE_JS = {
             'js/parallax.js',
             'js/slider/slider.js',
             'js/slider/slider_controls.js',
+            'js/slider/slider_simple_slide.js',
             'comments/js/comments_class.js',
             'comments/js/comments.js',
             'gallery/js/gallery_class.js',
