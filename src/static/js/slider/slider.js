@@ -64,7 +64,7 @@
             this.setCurrentSlide($startSlide, true);
 
             // обновление высоты
-            this.updateListHeight();
+            this.updateListHeight(true);
 
             // обновление высоты по мере загрузки картинок
             if (this.opts.adaptiveHeight) {
@@ -74,7 +74,7 @@
             }
 
             var loadHandle = $.rared(function() {
-                that.updateListHeight();
+                that.updateListHeight(true);
             }, 100);
 
             $images.one('load', loadHandle);
@@ -134,29 +134,6 @@
                 if (methodName in plugin) {
                     plugin[methodName].apply(plugin, args);
                 }
-            }
-        };
-
-
-        /*
-            Обновление высоты slider.$list в зависимости от высоты слайдов
-            и настройки adaptiveHeight
-         */
-        Slider.prototype.updateListHeight = function() {
-            if (this.opts.adaptiveHeight) {
-                var height = this.$currentSlide.height();
-                this.$list.height(height);
-            } else {
-                var maxHeight = 0;
-                $.each(this.$slides, function(i, slide) {
-                    var $slide = $(slide);
-                    $slide.height('');
-                    var height = $slide.height();
-                    if (height > maxHeight) {
-                        maxHeight = height;
-                    }
-                });
-                this.$list.height(maxHeight);
             }
         };
 
@@ -249,7 +226,12 @@
         // ================ create slides ================
         // ===============================================
 
-        // Метод, возвращающий массив ссылок на items
+        /*
+            Создание слайдов, содержащих по slideItems элементов
+            в каждом слайде.
+
+            В каждом плагине вызывает методы beforeSetSlideItems и afterSetSlideItems
+         */
         Slider.prototype.setSlideItems = function(slideItems) {
             this.beforeSetSlideItems();
 
@@ -274,7 +256,7 @@
             this.setCurrentSlide($startSlide, true);
 
             // обновление высоты
-            this.updateListHeight();
+            this.updateListHeight(true);
 
             this.afterSetSlideItems();
         };
@@ -301,6 +283,32 @@
             this.callPluginsMethod('afterSetSlideItems', [this], true);
         };
 
+
+        // ===============================================
+        // ================= update height ===============
+        // ===============================================
+
+        /*
+            Обновление высоты slider.$list в зависимости от высоты слайдов
+            и настройки adaptiveHeight
+         */
+        Slider.prototype.updateListHeight = function(instantly) {
+            if (this.opts.adaptiveHeight) {
+                var height = this.$currentSlide.height();
+                this.$list.height(height);
+            } else {
+                var maxHeight = 0;
+                $.each(this.$slides, function(i, slide) {
+                    var $slide = $(slide);
+                    $slide.height('');
+                    var height = $slide.height();
+                    if (height > maxHeight) {
+                        maxHeight = height;
+                    }
+                });
+                this.$list.height(maxHeight);
+            }
+        };
 
         // ===============================================
         // =============== slide animation ===============
@@ -392,11 +400,11 @@
     // Обновление высоты слайдера
     $(window).on('load.slider', function() {
         $.each(sliders, function(i, slider) {
-            slider.updateListHeight()
+            slider.updateListHeight(true)
         });
     }).on('resize.slider', $.rared(function() {
         $.each(sliders, function(i, slider) {
-            slider.updateListHeight()
+            slider.updateListHeight(true)
         });
     }, 100));
 

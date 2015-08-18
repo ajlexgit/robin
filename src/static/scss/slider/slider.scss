@@ -13,14 +13,12 @@
 
   .slider-slide {
     position: absolute;
-    top: 50%;
+    top: 0;
     left: -200%;
     width: 100%;
     max-width: 100%;
     text-align: center;
     z-index: 2;
-    backface-visibility: hidden;
-    @include transform(translate3d(0, -50%, 0));
 
     img {
       width: 50%;
