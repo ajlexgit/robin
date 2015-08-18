@@ -61,7 +61,7 @@
 
             // активация текущего слайда
             var $startSlide = this.getStartSlide();
-            this.setStartSlide($startSlide);
+            this.setCurrentSlide($startSlide, true);
 
             // обновление высоты
             this.updateListHeight();
@@ -205,12 +205,19 @@
             return this.$slides.first();
         };
 
-        // Активация начального слайда
-        Slider.prototype.setStartSlide = function($slide) {
+        // Активация слайда
+        Slider.prototype.setCurrentSlide = function($slide, instantly) {
             this.$currentSlide = $slide;
-            $slide.css({
-                left: '0'
-            })
+
+            if (instantly) {
+                $slide.css({
+                    left: '0'
+                })
+            }
+
+            if (this.opts.adaptiveHeight) {
+                this.updateListHeight()
+            }
         };
 
         // Метод, возвращающий следующий слайд
@@ -264,7 +271,7 @@
 
             // активация текущего слайда
             var $startSlide = $current_item.closest('.' + this.opts.slideClass);
-            this.setStartSlide($startSlide);
+            this.setCurrentSlide($startSlide, true);
 
             // обновление высоты
             this.updateListHeight();
@@ -325,7 +332,7 @@
                 $toSlide.css({
                     'left': '0'
                 });
-                this.$currentSlide = $toSlide;
+                this.setCurrentSlide($toSlide);
 
                 this.afterSlide($fromSlide, $toSlide);
             }

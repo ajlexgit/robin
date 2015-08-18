@@ -21,6 +21,8 @@
          */
         SliderSimpleAnimationPlugin.prototype.onAttach = function(slider) {
             slider._animated = false;
+
+            slider.$list.css('transition', 'height ' + (this.opts.speed / 1000) + 's');
         };
 
         SliderSimpleAnimationPlugin.prototype.beforeSlide = function(slider) {
@@ -32,7 +34,6 @@
         };
 
         SliderSimpleAnimationPlugin.prototype.beforeCreateSlides = function(slider) {
-            console.log('create');
             if (this._animation) {
                 this._animation.stop(true)
             }
@@ -89,7 +90,7 @@
                 left: '100%',
                 zIndex: 10
             });
-            slider.$currentSlide = $toSlide;
+            slider.setCurrentSlide($toSlide);
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -125,7 +126,7 @@
                 left: '-100%',
                 zIndex: 10
             });
-            slider.$currentSlide = $toSlide;
+            slider.setCurrentSlide($toSlide);
 
             this._animation = $.animate({
                 duration: this.opts.speed,
