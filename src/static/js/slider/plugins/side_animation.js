@@ -3,7 +3,6 @@
     window.SideAnimation = (function(parent) {
         var defaults = {
             speed: 300,
-            transitionDelay: 150,
             easing: 'easeOutCubic'
         };
 
@@ -23,9 +22,8 @@
         SliderSimpleAnimationPlugin.prototype.onAttach = function(slider) {
             slider._animated = false;
 
-            var transitionSpeed = ((this.opts.speed - this.opts.transitionDelay) / 1000).toFixed(1) + 's';
-            var transitionDelay = (this.opts.transitionDelay / 1000).toFixed(1) + 's';
-            var transition = 'height ' + transitionSpeed + ' ' + transitionDelay;
+            var transitionSpeed = (this.opts.speed / 1000).toFixed(1) + 's';
+            var transition = 'height ' + transitionSpeed;
             slider.$list.css('transition', transition);
         };
 

@@ -38,8 +38,7 @@
             new ControlsPlugin()
         ).attachPlugin(
             new SideAnimation({
-                speed: 1000,
-                transitionDelay: 500
+                speed: 1000
             })
         );
     });
