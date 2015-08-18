@@ -35,6 +35,9 @@
 
             var that = this;
 
+            this.plugins = [];
+            this.$currentSlide = $();
+
             // настройки
             var defaults = this.getDefaultOpts();
             this.opts = $.extend(true, defaults, settings);
@@ -54,14 +57,11 @@
             this.$items.addClass(this.opts.itemClass);
 
             // создаем слайды
-            this.$slides = this.createSlides(this.opts.slideItems);
-            this.$slides.addClass(this.opts.slideClass);
+            this.setSlideItems(this.opts.slideItems);
 
-            // текущий слайд
-            this.$currentSlide = this.getStartSlide();
-            this.$currentSlide.css('left', '0');
-
-            this.plugins = [];
+            // активация текущего слайда
+            var $startSlide = this.getStartSlide();
+            this.setStartSlide($startSlide);
 
             // обновление высоты
             this.updateListHeight();
@@ -88,13 +88,12 @@
             Подключение плагина.
 
             Пример:
-                var slider = new Slider($mylist);
-                slider.attachPlugin(
-                    new SliderControlsPlugin({
-                        speed: 800
-                    })
+                var slider = new Slider($mylist, {
+                    adaptiveHeight: false
+                }).attachPlugin(
+                    new ControlsPlugin()
                 ).attachPlugin(
-                    new SliderOtherPlugin()
+                    new SideAnimation()
                 );
          */
         Slider.prototype.attachPlugin = function(plugin) {
@@ -197,33 +196,22 @@
             return this.$list.find(this.opts.itemSelector);
         };
 
-        // Метод, возвращающий массив ссылок на items
-        Slider.prototype.createSlides = function(slideItems) {
-            var $slides = $();
-            var slide_count = Math.ceil(this.$items.length / slideItems);
+        // ===============================================
+        // =============== slides methods ================
+        // ===============================================
 
-            this.$list.empty();
-            for (var i=0;i<slide_count;i++) {
-                var $slide = $('<div>');
-                this.$list.append(
-                    $slide.append(
-                        this.$items.slice(i * slideItems, (i + 1) * slideItems)
-                    )
-                );
-                $slides.push($slide.get(0));
-            }
-            return $slides;
-        };
-
-        // Метод, возвращающий начальный активный слайд
+        // Метод, возвращающий начально активный слайд
         Slider.prototype.getStartSlide = function() {
             return this.$slides.first();
         };
 
-
-        // ===============================================
-        // =============== slides methods ================
-        // ===============================================
+        // Активация начального слайда
+        Slider.prototype.setStartSlide = function($slide) {
+            this.$currentSlide = $slide;
+            $slide.css({
+                left: '0'
+            })
+        };
 
         // Метод, возвращающий следующий слайд
         Slider.prototype.getNextSlide = function($slide) {
@@ -247,6 +235,63 @@
             if (this.opts.loop) {
                 return this.$slides.eq(this.$slides.length - 1);
             }
+        };
+
+
+        // ===============================================
+        // ================ create slides ================
+        // ===============================================
+
+        // Метод, возвращающий массив ссылок на items
+        Slider.prototype.setSlideItems = function(slideItems) {
+            this.beforeSetSlideItems();
+
+            var slide_count = Math.ceil(this.$items.length / slideItems);
+            var $current_item = this.$currentSlide.find('.' + this.opts.itemClass + ':first');
+
+            this.$slides = $();
+            this.$list.empty();
+            for (var i = 0; i < slide_count; i++) {
+                var $slide = $('<div>');
+                this.$list.append(
+                    $slide.append(
+                        this.$items.slice(i * slideItems, (i + 1) * slideItems)
+                    )
+                );
+                this.$slides.push($slide.get(0));
+            }
+            this.$slides.addClass(this.opts.slideClass);
+
+            // активация текущего слайда
+            var $startSlide = $current_item.closest('.' + this.opts.slideClass);
+            this.setStartSlide($startSlide);
+
+            // обновление высоты
+            this.updateListHeight();
+
+            this.afterSetSlideItems();
+        };
+
+        /*
+            Метод, вызываемый в каждом плагине (от последнего к первому)
+            перед созданием слайдов.
+         */
+        Slider.prototype.beforeSetSlideItems = function() {
+            this.callPluginsMethod('beforeSetSlideItems', [this]);
+
+            // jQuery event
+            this.$list.trigger('beforeSetSlideItems.slider');
+        };
+
+        /*
+            Метод, вызываемый в каждом плагине (от первого к последнему)
+            после созданием слайдов.
+         */
+        Slider.prototype.afterSetSlideItems = function() {
+            // jQuery event
+            this.$list.trigger('afterSetSlideItems.slider');
+
+            this.callPluginsMethod('afterSetSlideItems', [this], true);
         };
 
 

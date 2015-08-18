@@ -1,6 +1,6 @@
 (function($) {
 
-    window.SliderSimpleAnimationPlugin = (function(parent) {
+    window.SideAnimation = (function(parent) {
         var defaults = {
             speed: 300,
             easing: 'easeOutCubic'
@@ -29,6 +29,13 @@
 
         SliderSimpleAnimationPlugin.prototype.afterSlide = function(slider) {
             slider._animated = false;
+        };
+
+        SliderSimpleAnimationPlugin.prototype.beforeCreateSlides = function(slider) {
+            console.log('create');
+            if (this._animation) {
+                this._animation.stop(true)
+            }
         };
 
         /*
@@ -84,7 +91,7 @@
             });
             slider.$currentSlide = $toSlide;
 
-            $.animate({
+            this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
@@ -120,7 +127,7 @@
             });
             slider.$currentSlide = $toSlide;
 
-            $.animate({
+            this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {

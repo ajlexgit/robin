@@ -47,7 +47,7 @@
       top: 50%;
       width: 40px;
       height: 40px;
-      background: url(arrows.png) no-repeat;
+      background: url(../arrows.png) no-repeat;
       background-size: 200%;
       @include transform(translate(-50%, -50%));
       @include transition-property(-webkit-transform, transform);

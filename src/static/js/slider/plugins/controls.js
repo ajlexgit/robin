@@ -1,6 +1,6 @@
 (function($) {
 
-    window.SliderControlsPlugin = (function(parent) {
+    window.ControlsPlugin = (function(parent) {
         var defaults = {
             container: null
         };
