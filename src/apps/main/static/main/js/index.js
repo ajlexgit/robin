@@ -36,7 +36,7 @@
             adaptiveHeight: false
         }).attachPlugin(
             new SliderSimpleAnimationPlugin({
-                speed: 4000
+                speed: 1000
             })
         ).attachPlugin(
             new SliderControlsPlugin()

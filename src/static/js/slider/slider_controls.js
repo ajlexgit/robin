@@ -15,7 +15,9 @@
         SliderControlsPlugin.prototype = new _;
 
 
-        // Подключение плагина
+        /*
+            Добавление методов слайдеру и добавление стрелок в DOM слайдера
+         */
         SliderControlsPlugin.prototype.onAttach = function(slider) {
             parent.prototype.onAttach.call(this, slider);
 
@@ -47,7 +49,9 @@
             };
         };
 
-        // Метод, возвращающий контейнер, куда будут добавлены стрелки
+        /*
+            Возвращает контейнер, в который будут добавлены стрелки
+         */
         SliderControlsPlugin.prototype.getContainer = function(slider) {
             if (this.opts.container) {
                 var $container = $(this.opts.container);
@@ -57,7 +61,9 @@
             return $container;
         };
 
-        // Метод, добавляющий стрелки
+        /*
+            Добавление стрелок в DOM
+         */
         SliderControlsPlugin.prototype.createControls = function(slider, $container) {
             var $left = $('<div>')
                 .addClass('slider-arrow slider-arrow-left')

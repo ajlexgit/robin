@@ -9,8 +9,6 @@
         // Инициализация плагина
         var SliderSimpleAnimationPlugin = function(settings) {
             this.opts = $.extend(true, defaults, settings);
-
-            this.animations = [];
         };
 
         var _ = function() { this.constructor = SliderSimpleAnimationPlugin; };
@@ -18,8 +16,30 @@
         SliderSimpleAnimationPlugin.prototype = new _;
 
 
-        // Переопределяем метод скролла
+        /*
+            Добавление слайдеру флага анимирования
+         */
+        SliderSimpleAnimationPlugin.prototype.onAttach = function(slider) {
+            slider._animated = false;
+        };
+
+        SliderSimpleAnimationPlugin.prototype.beforeSlide = function(slider) {
+            slider._animated = true;
+        };
+
+        SliderSimpleAnimationPlugin.prototype.afterSlide = function(slider) {
+            slider._animated = false;
+        };
+
+        /*
+            Реализация метода перехода от одного слайда к другому
+            посредством выдвигания с края слайдера
+         */
         SliderSimpleAnimationPlugin.prototype.slide = function(slider, $fromSlide, $toSlide) {
+            if (slider._animated) {
+                return
+            }
+
             var fromIndex = slider.$slides.index($fromSlide);
             var toIndex = slider.$slides.index($toSlide);
 
@@ -49,7 +69,12 @@
             }
         };
 
+        /*
+            Появление нового слайда справа от текущего
+         */
         SliderSimpleAnimationPlugin.prototype.slideRight = function(slider, $fromSlide, $toSlide) {
+            slider.beforeSlide($fromSlide, $toSlide);
+
             $fromSlide.css({
                 zIndex: 5
             });
@@ -57,11 +82,9 @@
                 left: '100%',
                 zIndex: 10
             });
-
             slider.$currentSlide = $toSlide;
 
-            var that = this;
-            var animation = $.animate({
+            $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
@@ -76,23 +99,18 @@
                     $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
                 },
                 complete: function() {
-                    $.each(that.animations, function(i, e) {
-                        if (e.obj === animation) {
-                            that.animations.splice(i, 1);
-                            return false
-                        }
-                    });
+                    slider._animated = false;
+                    slider.afterSlide($fromSlide, $toSlide);
                 }
-            });
-
-            this.animations.push({
-                from: $fromSlide,
-                to: $toSlide,
-                obj: animation
             });
         };
 
+        /*
+            Появление нового слайда слева от текущего
+         */
         SliderSimpleAnimationPlugin.prototype.slideLeft = function(slider, $fromSlide, $toSlide) {
+            slider.beforeSlide($fromSlide, $toSlide);
+
             $fromSlide.css({
                 zIndex: 5
             });
@@ -100,11 +118,9 @@
                 left: '-100%',
                 zIndex: 10
             });
-
             slider.$currentSlide = $toSlide;
 
-            var that = this;
-            var animation = $.animate({
+            $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
@@ -119,19 +135,9 @@
                     $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
                 },
                 complete: function() {
-                    $.each(that.animations, function(i, e) {
-                        if (e.obj === animation) {
-                            that.animations.splice(i, 1);
-                            return false
-                        }
-                    });
+                    slider._animated = false;
+                    slider.afterSlide($fromSlide, $toSlide);
                 }
-            });
-
-            this.animations.push({
-                from: $fromSlide,
-                to: $toSlide,
-                obj: animation
             });
         };
 

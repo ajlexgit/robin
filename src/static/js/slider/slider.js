@@ -6,17 +6,6 @@
         Требует:
             jquery.rared.js
 
-        Может подключать к себе плагины:
-            var slider = new Slider($mylist);
-            slider.attachPlugin(
-                new SliderControlsPlugin({
-                    speed: 800
-                })
-            ).attachPlugin(
-                new SliderOtherPlugin()
-            );
-
-
         HTML input:
             <div>
                 <img>
@@ -91,6 +80,92 @@
             $images.one('load', loadHandle);
         };
 
+        // ===============================================
+        // ============== system methods =================
+        // ===============================================
+
+        /*
+            Подключение плагина.
+
+            Пример:
+                var slider = new Slider($mylist);
+                slider.attachPlugin(
+                    new SliderControlsPlugin({
+                        speed: 800
+                    })
+                ).attachPlugin(
+                    new SliderOtherPlugin()
+                );
+         */
+        Slider.prototype.attachPlugin = function(plugin) {
+            this.plugins.push(plugin);
+            plugin.onAttach(this);
+            return this;
+        };
+
+        /*
+            Поиск первой реализации метода methodName среди плагинов,
+            начиная с последнего подключенного
+         */
+        Slider.prototype.getFirstPluginMethod = function(methodName) {
+            var index = this.plugins.length;
+            while (index--) {
+                var plugin = this.plugins[index];
+                if (methodName in plugin) {
+                    return $.proxy(plugin[methodName], plugin);
+                }
+            }
+        };
+
+        /*
+            Вызом метода methodName с агрументами args во всех плагинах,
+            в которых этот метод реализован.
+            Если reversed=true, обход плагинов будет в обратном порядке
+            (от поключенных первыми)
+         */
+        Slider.prototype.callPluginsMethod = function(methodName, args, reversed) {
+            var plugins = this.plugins.concat();
+            if (reversed) {
+                plugins.reverse();
+            }
+
+            var index = plugins.length;
+            while (index--) {
+                var plugin = plugins[index];
+                if (methodName in plugin) {
+                    plugin[methodName].apply(plugin, args);
+                }
+            }
+        };
+
+
+        /*
+            Обновление высоты slider.$list в зависимости от высоты слайдов
+            и настройки adaptiveHeight
+         */
+        Slider.prototype.updateListHeight = function() {
+            if (this.opts.adaptiveHeight) {
+                var height = this.$currentSlide.height();
+                this.$list.height(height);
+            } else {
+                var maxHeight = 0;
+                $.each(this.$slides, function(i, slide) {
+                    var $slide = $(slide);
+                    $slide.height('');
+                    var height = $slide.height();
+                    if (height > maxHeight) {
+                        maxHeight = height;
+                    }
+                });
+                this.$list.height(maxHeight);
+            }
+        };
+
+
+        // ===============================================
+        // =========== initialization methods ============
+        // ===============================================
+
         // Метод, возвращающий объект настроек по умолчанию
         Slider.prototype.getDefaultOpts = function() {
             return {
@@ -145,6 +220,11 @@
             return this.$slides.first();
         };
 
+
+        // ===============================================
+        // =============== slides methods ================
+        // ===============================================
+
         // Метод, возвращающий следующий слайд
         Slider.prototype.getNextSlide = function($slide) {
             var index = this.$slides.index($slide);
@@ -169,52 +249,31 @@
             }
         };
 
-        // Метод, обновляющий высоту слайдера
-        Slider.prototype.updateListHeight = function() {
-            if (this.opts.adaptiveHeight) {
-                var height = this.$currentSlide.height();
-                this.$list.height(height);
-            } else {
-                var maxHeight = 0;
-                $.each(this.$slides, function(i, slide) {
-                    var $slide = $(slide);
-                    $slide.height('');
-                    var height = $slide.height();
-                    if (height > maxHeight) {
-                        maxHeight = height;
-                    }
-                });
-                this.$list.height(maxHeight);
-            }
-        };
 
-        // Подключение плагина
-        Slider.prototype.attachPlugin = function(plugin) {
-            this.plugins.push(plugin);
-            plugin.onAttach(this);
-            return this;
-        };
+        // ===============================================
+        // =============== slide animation ===============
+        // ===============================================
 
-        // Получение метода плагина по имени
-        Slider.prototype.getPluginMethod = function(methodName) {
-            var index = this.plugins.length;
-            while (index--) {
-                var plugin = this.plugins[index];
-                if (methodName in plugin) {
-                    return $.proxy(plugin[methodName], plugin);
-                }
-            }
-        };
+        /*
+            Переопределяемый метод смены слайда от $fromSlide к $toSlide.
 
-        // Переопределяемый метод смены слайда
+            Плагины могут переопределить этот метод. Будет использован метод
+            плагина, подключенного последним.
+
+            В реализации этого метода НЕОБХОДИМО вызывать методы слайдера
+            beforeSlide и afterSlide:
+                slider.beforeSlide($fromSlide, $toSlide);
+                ....
+                slider.afterSlide($fromSlide, $toSlide);
+         */
         Slider.prototype.slide = function($fromSlide, $toSlide) {
-            // jQuery event
-            this.$list.trigger('beforeSlide.slider', [$fromSlide, $toSlide]);
-
-            var method = this.getPluginMethod('slide');
+            var method = this.getFirstPluginMethod('slide');
             if (method) {
                 method(this, $fromSlide, $toSlide);
             } else {
+                // поведение по умолчанию
+                this.beforeSlide($fromSlide, $toSlide);
+
                 $fromSlide.css({
                     'left': ''
                 });
@@ -222,10 +281,37 @@
                     'left': '0'
                 });
                 this.$currentSlide = $toSlide;
+
+                this.afterSlide($fromSlide, $toSlide);
             }
+        };
+
+        /*
+            Метод, вызываемый в каждом плагине (от последнего к первому)
+            перед переходом к слайду.
+         */
+        Slider.prototype.beforeSlide = function($fromSlide, $toSlide) {
+            this.callPluginsMethod('beforeSlide', [this, $fromSlide, $toSlide]);
 
             // jQuery event
-            this.$list.trigger('slide.slider', [$fromSlide, $toSlide]);
+            this.$list.trigger('beforeSlide.slider', [
+                $fromSlide,
+                $toSlide
+            ]);
+        };
+
+        /*
+            Метод, вызываемый в каждом плагине (от первого к последнему)
+            после перехода к слайду.
+         */
+        Slider.prototype.afterSlide = function($fromSlide, $toSlide) {
+            // jQuery event
+            this.$list.trigger('afterSlide.slider', [
+                $fromSlide,
+                $toSlide
+            ]);
+
+            this.callPluginsMethod('afterSlide', [this, $fromSlide, $toSlide], true);
         };
 
         return Slider;
