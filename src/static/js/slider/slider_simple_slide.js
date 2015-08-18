@@ -17,7 +17,7 @@
 
 
         /*
-            Добавление слайдеру флага анимирования
+            Добавление слайдеру флага анимирования для блокировки множественного нажатия
          */
         SliderSimpleAnimationPlugin.prototype.onAttach = function(slider) {
             slider._animated = false;
@@ -55,10 +55,10 @@
                 var right_way = diff + (diff > 0 ? 0 : slides_count);
                 var left_way = (diff > 0 ? slides_count : 0) - diff;
 
-                if (right_way < left_way) {
-                    this.slideRight(slider, $fromSlide, $toSlide);
-                } else {
+                if (left_way < right_way) {
                     this.slideLeft(slider, $fromSlide, $toSlide);
+                } else {
+                    this.slideRight(slider, $fromSlide, $toSlide);
                 }
             } else {
                 if (toIndex > fromIndex) {
