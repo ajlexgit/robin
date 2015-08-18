@@ -35,7 +35,9 @@
         window.slider = new Slider($elem, {
             adaptiveHeight: false
         }).attachPlugin(
-            new SliderSimpleAnimationPlugin()
+            new SliderSimpleAnimationPlugin({
+                speed: 4000
+            })
         ).attachPlugin(
             new SliderControlsPlugin()
         );
