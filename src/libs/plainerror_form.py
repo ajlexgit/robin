@@ -54,5 +54,10 @@ class PlainErrorFormMixin:
 
     @property
     def error_list(self):
-        """ Список всех ошибок """
+        """ Список ошибок полей """
         return tuple((key, self.errors.get(key)) for key in self.fields if key in self.errors)
+
+    @property
+    def error_list_full(self):
+        """ Список всех ошибок """
+        return tuple(self.errors.items())
