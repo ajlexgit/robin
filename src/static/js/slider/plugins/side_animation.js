@@ -48,15 +48,17 @@
             Обеспечиваем моментальную смену высоты, когда это необходимо
          */
         SliderSimpleAnimationPlugin.prototype.beforeUpdateListHeight = function(slider, instantly) {
-            if (instantly) {
-                this._old_transition = slider.$list.css('transition');
-                slider.$list.css('transition', '');
+            var current_transition = slider.$list.css('transition');
+            if (instantly && (current_transition != 'none')) {
+                this._old_transition = current_transition;
+                slider.$list.css('transition', 'none');
             }
         };
 
         SliderSimpleAnimationPlugin.prototype.afterUpdateListHeight = function(slider, instantly) {
-            if (instantly) {
+            if (instantly && this._old_transition) {
                 slider.$list.css('transition', this._old_transition);
+                this._old_transition = null;
             }
         };
 

@@ -4,7 +4,7 @@
         Основа слайдеров.
 
         Требует:
-            jquery.rared.js, jquery.animation.js
+            jquery.rared.js
 
         HTML input:
             <div>
@@ -315,9 +315,9 @@
 
                 // отдельным кадром анимации, чтобы избежать схлопывания изменений стилей
                 var that = this;
-                $.animation_frame(function() {
+                setTimeout(function() {
                     that.afterUpdateListHeight(instantly, current_height, final_height);
-                }, 0);
+                }, 1000 / 60);
             }
         };
 
