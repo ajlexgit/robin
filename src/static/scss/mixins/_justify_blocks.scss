@@ -1,0 +1,10 @@
+@mixin justify() {
+  font-size: 0;
+  text-align: justify;
+  text-justify: distribute-all-lines; // IE fix
+  &:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+  }
+}
