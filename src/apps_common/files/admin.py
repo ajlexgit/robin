@@ -1,5 +1,4 @@
 from django import forms
-from suit.admin import SortableTabularInline
 from .models import PageFile
 
 
@@ -15,7 +14,7 @@ class PageFileForm(forms.ModelForm):
         }
 
 
-class PageFileInline(SortableTabularInline):
+class PageFileInlineMixin():
     model = PageFile
     form = PageFileForm
     extra = 0

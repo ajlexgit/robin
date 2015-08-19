@@ -58,7 +58,7 @@ def strip_tags_except_filter(html, args):
         tag.replaceWith(process_tag(tag, valid_tags))
 
     result = soup.body.decode_contents()
-    return re_clean_newlines.sub('\n', result)
+    return re_clean_newlines.sub('\n', result).replace('\xa0', '&nbsp;')
 
 
 @register.filter(is_safe=True)
@@ -72,7 +72,7 @@ def typograf(html):
             new_tag = soup.new_string(unescape(re_nbsp.sub('\\1&nbsp;', tag)))
             tag.replace_with(new_tag)
 
-    return soup.body.decode_contents()
+    return soup.body.decode_contents().replace('\xa0', '&nbsp;')
 
 
 @register.filter(is_safe=True)

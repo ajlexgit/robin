@@ -16,9 +16,10 @@ from .models import PageFile
                     return '%d/%s' % (self.module.pk, filename)
 
         admin.py:
+            from suit.admin import SortableStackedInline
+            from files.admin import PageFileInlineMixin
             from .models import ModuleFile
-            from files.admin import PageFileInline
 
-            class ModuleFileInline(PageFileInline):
+            class ModuleFileInline(PageFileInlineMixin, SortableStackedInline):
                 model = ModuleFile
 """
