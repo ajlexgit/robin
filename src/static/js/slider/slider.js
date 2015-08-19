@@ -4,7 +4,7 @@
         Основа слайдеров.
 
         Требует:
-            jquery.rared.js
+            jquery.rared.js, jquery.animation.js
 
         HTML input:
             <div>
@@ -293,21 +293,54 @@
             и настройки adaptiveHeight
          */
         Slider.prototype.updateListHeight = function(instantly) {
+            var final_height = 0;
+            var current_height = this.$list.outerHeight();
+
             if (this.opts.adaptiveHeight) {
-                var height = this.$currentSlide.height();
-                this.$list.height(height);
+                final_height = this.$currentSlide.outerHeight();
             } else {
-                var maxHeight = 0;
                 $.each(this.$slides, function(i, slide) {
                     var $slide = $(slide);
                     $slide.height('');
-                    var height = $slide.height();
-                    if (height > maxHeight) {
-                        maxHeight = height;
+                    var height = $slide.outerHeight();
+                    if (height > final_height) {
+                        final_height = height;
                     }
                 });
-                this.$list.height(maxHeight);
             }
+
+            if (current_height != final_height) {
+                this.beforeUpdateListHeight(instantly, current_height, final_height);
+                this.$list.outerHeight(final_height);
+
+                // отдельным кадром анимации, чтобы избежать схлопывания изменений стилей
+                var that = this;
+                $.animation_frame(function() {
+                    that.afterUpdateListHeight(instantly, current_height, final_height);
+                }, 0);
+            }
+        };
+
+        /*
+            Метод, вызываемый в каждом плагине (от последнего к первому)
+            перед обновлением высоты списка.
+         */
+        Slider.prototype.beforeUpdateListHeight = function(instantly, current, final) {
+            this.callPluginsMethod('beforeUpdateListHeight', [this, instantly, current, final]);
+
+            // jQuery event
+            this.$list.trigger('beforeUpdateListHeight.slider', [instantly, current, final]);
+        };
+
+        /*
+            Метод, вызываемый в каждом плагине (от первого к последнему)
+            после обновления высоты списка.
+         */
+        Slider.prototype.afterUpdateListHeight = function(instantly, current, final) {
+            // jQuery event
+            this.$list.trigger('afterUpdateListHeight.slider', [instantly, current, final]);
+
+            this.callPluginsMethod('afterUpdateListHeight', [this, instantly, current, final], true);
         };
 
         // ===============================================

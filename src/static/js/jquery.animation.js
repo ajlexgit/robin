@@ -37,7 +37,7 @@
             window.setTimeout(callback, 1000 / 60);
         };
 
-    $.animation_frame = function (callback, element) {
+    $.animation_frame = function(callback, element) {
         return $.proxy(handler, window, callback, element)
     };
 

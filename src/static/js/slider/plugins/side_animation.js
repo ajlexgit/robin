@@ -35,9 +35,28 @@
             slider._animated = false;
         };
 
-        SliderSimpleAnimationPlugin.prototype.beforeCreateSlides = function(slider) {
+        /*
+            Останавливаем анимацию при изменении кол-ва элементов в слайде
+         */
+        SliderSimpleAnimationPlugin.prototype.beforeSetSlideItems = function() {
             if (this._animation) {
                 this._animation.stop(true)
+            }
+        };
+
+        /*
+            Обеспечиваем моментальную смену высоты, когда это необходимо
+         */
+        SliderSimpleAnimationPlugin.prototype.beforeUpdateListHeight = function(slider, instantly) {
+            if (instantly) {
+                this._old_transition = slider.$list.css('transition');
+                slider.$list.css('transition', '');
+            }
+        };
+
+        SliderSimpleAnimationPlugin.prototype.afterUpdateListHeight = function(slider, instantly) {
+            if (instantly) {
+                slider.$list.css('transition', this._old_transition);
             }
         };
 
