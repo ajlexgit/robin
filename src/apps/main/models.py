@@ -10,7 +10,7 @@ from libs.ckeditor import CKEditorUploadField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.media_storage import MediaStorage
-from libs.stdimage import StdImageField
+from libs.stdimage import StdImageField, ACTION_INSCRIBE
 
 
 class MainGalleryImageItem(GalleryImageItem):
@@ -52,6 +52,19 @@ class MainPageConfig(SingletonModel):
             ),
             admin=dict(
                 size=(360, 270),
+            ),
+        ),
+    )
+    preview2 = StdImageField(_('preview'),
+        storage=MediaStorage('main/preview2'),
+        min_dimensions=(100, 100),
+        admin_variation='normal',
+        crop_area=True,
+        aspects=('normal',),
+        variations=dict(
+            normal=dict(
+                size=(140, 140),
+                action=ACTION_INSCRIBE,
             ),
         ),
     )

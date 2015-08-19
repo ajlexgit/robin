@@ -1,12 +1,11 @@
 import os
 import sys
 
-# проверить новое условие PNG
 # multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete
 # inlines class with inlines.js
 
-# JS slider: loop, dots, arrows, 2+ per slide
+# JS slider: dots, drag
 
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 # Соц авторизаци
