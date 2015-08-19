@@ -37,8 +37,8 @@ DEFAULT_VARIATION = dict(
     action=ACTION_CROP,
 
     # Положение картинки относительно фона, если производится наложение.
-    # offset - отношение разницы размеров по горизонтали и вертикали.
-    # center - относительное положение центра накладываемой картинки.
+    # offset - отношение разницы размеров по горизонтали и вертикати.
+    # center - относительное положение центра накладываемой картинкию
     # Можно указать только один из параметров offset/center.
     # Учитывается только для ACTION_INSCRIBE и ACTION_INSCRIBE_BY_WIDTH.
     offset=(0.5, 0.5),
@@ -360,19 +360,19 @@ def variation_resize(image, variation, target_format):
             image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if image.mode == 'RGBA' and target_format=='JPEG':
+        if image.mode == 'RGBA' and target_format == 'JPEG':
             image = put_on_bg(image, image.size, masked=True, **bg_options)
     elif target_action == ACTION_CROP_ANYWAY:
         image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if image.mode == 'RGBA' and target_format=='JPEG':
+        if image.mode == 'RGBA' and target_format == 'JPEG':
             image = put_on_bg(image, image.size, masked=True, **bg_options)
     elif target_action == ACTION_INSCRIBE:
         image.thumbnail(target_size, resample=Image.ANTIALIAS)
 
-        # Наложение с маской для формата PNG вызывает потерю качества
-        masked = image.mode == 'RGBA' and target_format != 'PNG'
+        # TODO: image.mode == 'RGBA' and target_format != 'PNG'
+        masked = image.mode == 'RGBA'
         image = put_on_bg(image, target_size, masked=masked, **bg_options)
     elif target_action == ACTION_INSCRIBE_BY_WIDTH:
         img_aspect = operator.truediv(*image.size)
@@ -381,8 +381,8 @@ def variation_resize(image, variation, target_format):
         if (target_size[1] > 0) and (final_size[1] > target_size[1]):
             image.thumbnail(target_size, resample=Image.ANTIALIAS)
 
-            # Наложение с маской для формата PNG вызывает потерю качества
-            masked = image.mode == 'RGBA' and target_format != 'PNG'
+            # TODO: image.mode == 'RGBA' and target_format != 'PNG'
+            masked = image.mode == 'RGBA'
             image = put_on_bg(image, target_size, masked=masked, **bg_options)
         else:
             image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)

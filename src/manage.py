@@ -1,6 +1,7 @@
 import os
 import sys
 
+# проверить новое условие PNG
 # multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete
 # inlines class with inlines.js
