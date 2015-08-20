@@ -37,6 +37,8 @@
         }).attachPlugin(
             new ControlsPlugin()
         ).attachPlugin(
+            new PagerPlugin()
+        ).attachPlugin(
             new SideAnimation({
                 speed: 1000
             })

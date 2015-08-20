@@ -2,57 +2,67 @@
 
     window.ControlsPlugin = (function(parent) {
         var defaults = {
+            arrowClass: 'slider-arrow',
+            arrowLeftClass: 'slider-arrow-left',
+            arrowRightClass: 'slider-arrow-right',
             container: null
         };
 
         // Инициализация плагина
-        var SliderControlsPlugin = function(settings) {
+        var ControlsPlugin = function(settings) {
             this.opts = $.extend(true, defaults, settings);
         };
 
-        var _ = function() { this.constructor = SliderControlsPlugin; };
+        var _ = function() { this.constructor = ControlsPlugin; };
         _.prototype = parent.prototype;
-        SliderControlsPlugin.prototype = new _;
+        ControlsPlugin.prototype = new _;
 
 
         /*
             Добавление методов слайдеру и добавление стрелок в DOM слайдера
          */
-        SliderControlsPlugin.prototype.onAttach = function(slider) {
+        ControlsPlugin.prototype.onAttach = function(slider) {
             parent.prototype.onAttach.call(this, slider);
 
-            // Добавление стрелок
-            var $container = this.getContainer(slider);
-            if ($container.length) {
-                $container = $container.first();
-                slider.controls = this.createControls(slider, $container);
-            }
+            this.createControls(slider);
 
             slider.slideNext = function() {
-                var $curr = this.$currentSlide;
-                var $next = this.getNextSlide($curr);
+                var $next = this.getNextSlide(this.$currentSlide);
                 if (!$next || !$next.length) {
                     return
                 }
 
-                this.slide($curr, $next);
+                this.slide($next);
             };
 
             slider.slidePrevious = function() {
-                var $curr = this.$currentSlide;
-                var $prev = this.getPreviousSlide($curr);
+                var $prev = this.getPreviousSlide(this.$currentSlide);
                 if (!$prev || !$prev.length) {
                     return
                 }
 
-                this.slide($curr, $prev);
+                this.slide($prev);
             };
+        };
+
+
+        /*
+            Создание стрелок
+         */
+        ControlsPlugin.prototype.createControls = function(slider) {
+            this.$container = this.getContainer(slider);
+            if (this.$container.length) {
+                this.$container = this.$container.first();
+                this.createControlItems(slider);
+            } else {
+                this.$container = null;
+            }
         };
 
         /*
             Возвращает контейнер, в который будут добавлены стрелки
          */
-        SliderControlsPlugin.prototype.getContainer = function(slider) {
+        ControlsPlugin.prototype.getContainer = function(slider) {
             if (this.opts.container) {
                 var $container = $(this.opts.container);
             } else {
@@ -64,28 +74,25 @@
         /*
             Добавление стрелок в DOM
          */
-        SliderControlsPlugin.prototype.createControls = function(slider, $container) {
+        ControlsPlugin.prototype.createControlItems = function(slider) {
             var $left = $('<div>')
-                .addClass('slider-arrow slider-arrow-left')
-                .appendTo($container)
-                .on('click', function() {
+                .addClass(this.opts.arrowClass)
+                .addClass(this.opts.arrowLeftClass)
+                .on('click.slider', function() {
                     slider.slidePrevious();
                 });
 
             var $right = $('<div>')
-                .addClass('slider-arrow slider-arrow-right')
-                .appendTo($container)
-                .on('click', function() {
+                .addClass(this.opts.arrowClass)
+                .addClass(this.opts.arrowRightClass)
+                .on('click.slider', function() {
                     slider.slideNext();
                 });
 
-            return {
-                left: $left,
-                right: $right
-            };
+            this.$container.append($left, $right);
         };
 
-        return SliderControlsPlugin;
+        return ControlsPlugin;
     })(SliderPlugin);
 
 })(jQuery);

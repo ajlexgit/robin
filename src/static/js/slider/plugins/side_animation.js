@@ -66,12 +66,12 @@
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SliderSimpleAnimationPlugin.prototype.slide = function(slider, $fromSlide, $toSlide) {
+        SliderSimpleAnimationPlugin.prototype.slide = function(slider, $toSlide) {
             if (slider._animated) {
                 return
             }
 
-            var fromIndex = slider.$slides.index($fromSlide);
+            var fromIndex = slider.$slides.index(slider.$currentSlide);
             var toIndex = slider.$slides.index($toSlide);
 
             if (fromIndex == toIndex) {
@@ -87,15 +87,15 @@
                 var left_way = (diff > 0 ? slides_count : 0) - diff;
 
                 if (left_way < right_way) {
-                    this.slideLeft(slider, $fromSlide, $toSlide);
+                    this.slideLeft(slider, $toSlide);
                 } else {
-                    this.slideRight(slider, $fromSlide, $toSlide);
+                    this.slideRight(slider, $toSlide);
                 }
             } else {
                 if (toIndex > fromIndex) {
-                    this.slideRight(slider, $fromSlide, $toSlide);
+                    this.slideRight(slider, $toSlide);
                 } else {
-                    this.slideLeft(slider, $fromSlide, $toSlide);
+                    this.slideLeft(slider, $toSlide);
                 }
             }
         };
@@ -103,8 +103,10 @@
         /*
             Появление нового слайда справа от текущего
          */
-        SliderSimpleAnimationPlugin.prototype.slideRight = function(slider, $fromSlide, $toSlide) {
-            slider.beforeSlide($fromSlide, $toSlide);
+        SliderSimpleAnimationPlugin.prototype.slideRight = function(slider, $toSlide) {
+            var $fromSlide = slider.$currentSlide;
+
+            slider.beforeSlide($toSlide);
 
             $fromSlide.css({
                 zIndex: 5
@@ -113,7 +115,10 @@
                 left: '100%',
                 zIndex: 10
             });
-            slider.setCurrentSlide($toSlide);
+            slider._setCurrentSlide($toSlide);
+            if (slider.opts.adaptiveHeight) {
+                slider.updateListHeight()
+            }
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -131,7 +136,7 @@
                 },
                 complete: function() {
                     slider._animated = false;
-                    slider.afterSlide($fromSlide, $toSlide);
+                    slider.afterSlide($toSlide);
                 }
             });
         };
@@ -139,8 +144,10 @@
         /*
             Появление нового слайда слева от текущего
          */
-        SliderSimpleAnimationPlugin.prototype.slideLeft = function(slider, $fromSlide, $toSlide) {
-            slider.beforeSlide($fromSlide, $toSlide);
+        SliderSimpleAnimationPlugin.prototype.slideLeft = function(slider, $toSlide) {
+            var $fromSlide = slider.$currentSlide;
+
+            slider.beforeSlide($toSlide);
 
             $fromSlide.css({
                 zIndex: 5
@@ -149,7 +156,10 @@
                 left: '-100%',
                 zIndex: 10
             });
-            slider.setCurrentSlide($toSlide);
+            slider._setCurrentSlide($toSlide);
+            if (slider.opts.adaptiveHeight) {
+                slider.updateListHeight()
+            }
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -167,7 +177,7 @@
                 },
                 complete: function() {
                     slider._animated = false;
-                    slider.afterSlide($fromSlide, $toSlide);
+                    slider.afterSlide($toSlide);
                 }
             });
         };
