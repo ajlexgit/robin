@@ -228,10 +228,6 @@
             В каждом плагине вызывает методы beforeSetSlideItems и afterSetSlideItems
          */
         Slider.prototype.setSlideItems = function(slideItems) {
-            if (this.opts.slideItems == slideItems) {
-                return
-            }
-
             this.beforeSetSlideItems();
 
             var slide_count = Math.ceil(this.$items.length / slideItems);
