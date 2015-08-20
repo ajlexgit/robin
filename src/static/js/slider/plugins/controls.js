@@ -19,7 +19,7 @@
 
 
         /*
-            Добавление методов слайдеру и добавление стрелок в DOM слайдера
+            Создание стрелок при подключении плагина
          */
         ControlsPlugin.prototype.onAttach = function(slider) {
             parent.prototype.onAttach.call(this, slider);

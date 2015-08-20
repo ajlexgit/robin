@@ -19,17 +19,17 @@
 
 
         /*
-            Обновление кнопок при подключении
+            Создание кнопок при подключении плагина
          */
         PagerPlugin.prototype.onAttach = function(slider) {
             this.createPager(slider);
         };
 
         /*
-            Установка активной кнопки перед переходом
+            Установка активной кнопки перед переходом к слайду
          */
-        PagerPlugin.prototype.beforeSlide = function(slider, $toSlide) {
-            this.activateBySlide(slider, $toSlide);
+        PagerPlugin.prototype.beforeSlide = function(slider, $toSlide, instantly) {
+            this.activatePagerItemBySlide(slider, $toSlide);
         };
 
         /*
@@ -48,7 +48,7 @@
             if (this.$container.length) {
                 this.$container = this.$container.first();
                 this.createPagerItems(slider);
-                this.activateBySlide(slider, slider.$currentSlide);
+                this.activatePagerItemBySlide(slider, slider.$currentSlide);
             } else {
                 this.$container = null;
             }
@@ -89,9 +89,9 @@
         };
 
         /*
-            Активация кнопки по слайду
+            Активация соответствующей кнопки по объекту слайда
          */
-        PagerPlugin.prototype.activateBySlide = function(slider, $slide) {
+        PagerPlugin.prototype.activatePagerItemBySlide = function(slider, $slide) {
             var slideIndex = slider.$slides.index($slide);
             if (this.$container.length) {
                 var $item = this.$container.find('.' + this.opts.itemClass).eq(slideIndex);

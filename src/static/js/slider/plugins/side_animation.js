@@ -1,25 +1,25 @@
 (function($) {
 
-    window.SideAnimation = (function(parent) {
+    window.SliderSideAnimation = (function(parent) {
         var defaults = {
             speed: 300,
             easing: 'easeOutCubic'
         };
 
         // Инициализация плагина
-        var SliderSimpleAnimationPlugin = function(settings) {
+        var SideAnimation = function(settings) {
             this.opts = $.extend(true, defaults, settings);
         };
 
-        var _ = function() { this.constructor = SliderSimpleAnimationPlugin; };
+        var _ = function() { this.constructor = SideAnimation; };
         _.prototype = parent.prototype;
-        SliderSimpleAnimationPlugin.prototype = new _;
+        SideAnimation.prototype = new _;
 
 
         /*
             Добавление слайдеру флага анимирования для блокировки множественного нажатия
          */
-        SliderSimpleAnimationPlugin.prototype.onAttach = function(slider) {
+        SideAnimation.prototype.onAttach = function(slider) {
             slider._animated = false;
 
             var transitionSpeed = (this.opts.speed / 1000).toFixed(1) + 's';
@@ -27,18 +27,18 @@
             slider.$list.css('transition', transition);
         };
 
-        SliderSimpleAnimationPlugin.prototype.beforeSlide = function(slider) {
+        SideAnimation.prototype.beforeSlide = function(slider, $toSlide, instantly) {
             slider._animated = true;
         };
 
-        SliderSimpleAnimationPlugin.prototype.afterSlide = function(slider) {
+        SideAnimation.prototype.afterSlide = function(slider, $toSlide, instantly) {
             slider._animated = false;
         };
 
         /*
             Останавливаем анимацию при изменении кол-ва элементов в слайде
          */
-        SliderSimpleAnimationPlugin.prototype.beforeSetSlideItems = function() {
+        SideAnimation.prototype.beforeSetSlideItems = function() {
             if (this._animation) {
                 this._animation.stop(true)
             }
@@ -47,7 +47,7 @@
         /*
             Обеспечиваем моментальную смену высоты, когда это необходимо
          */
-        SliderSimpleAnimationPlugin.prototype.beforeUpdateListHeight = function(slider, instantly) {
+        SideAnimation.prototype.beforeUpdateListHeight = function(slider, instantly) {
             var current_transition = slider.$list.css('transition');
             if (instantly && (current_transition != 'none')) {
                 this._old_transition = current_transition;
@@ -55,7 +55,7 @@
             }
         };
 
-        SliderSimpleAnimationPlugin.prototype.afterUpdateListHeight = function(slider, instantly) {
+        SideAnimation.prototype.afterUpdateListHeight = function(slider, instantly) {
             if (instantly && this._old_transition) {
                 slider.$list.css('transition', this._old_transition);
                 this._old_transition = null;
@@ -66,7 +66,7 @@
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SliderSimpleAnimationPlugin.prototype.slideTo = function(slider, $toSlide) {
+        SideAnimation.prototype.slideTo = function(slider, $toSlide) {
             if (slider._animated) {
                 return
             }
@@ -103,22 +103,16 @@
         /*
             Появление нового слайда справа от текущего
          */
-        SliderSimpleAnimationPlugin.prototype.slideRight = function(slider, $toSlide) {
+        SideAnimation.prototype.slideRight = function(slider, $toSlide) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
 
-            $fromSlide.css({
-                zIndex: 5
-            });
             $toSlide.css({
-                left: '100%',
-                zIndex: 10
+                left: '100%'
             });
             slider._setCurrentSlide($toSlide);
-            if (slider.opts.adaptiveHeight) {
-                slider.updateListHeight()
-            }
+            slider.updateListHeight();
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -135,6 +129,9 @@
                     $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
                 },
                 complete: function() {
+                    $fromSlide.css({
+                        left: ''
+                    });
                     slider._animated = false;
                     slider.afterSlide($toSlide);
                 }
@@ -144,22 +141,16 @@
         /*
             Появление нового слайда слева от текущего
          */
-        SliderSimpleAnimationPlugin.prototype.slideLeft = function(slider, $toSlide) {
+        SideAnimation.prototype.slideLeft = function(slider, $toSlide) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
 
-            $fromSlide.css({
-                zIndex: 5
-            });
             $toSlide.css({
-                left: '-100%',
-                zIndex: 10
+                left: '-100%'
             });
             slider._setCurrentSlide($toSlide);
-            if (slider.opts.adaptiveHeight) {
-                slider.updateListHeight()
-            }
+            slider.updateListHeight();
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -176,13 +167,16 @@
                     $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
                 },
                 complete: function() {
+                    $fromSlide.css({
+                        left: ''
+                    });
                     slider._animated = false;
                     slider.afterSlide($toSlide);
                 }
             });
         };
 
-        return SliderSimpleAnimationPlugin;
+        return SideAnimation;
     })(SliderPlugin);
 
 })(jQuery);

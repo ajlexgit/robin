@@ -61,10 +61,7 @@
 
             // активация текущего слайда
             var $startSlide = this._getStartSlide();
-            this._setCurrentSlide($startSlide, true);
-
-            // обновление высоты
-            this.updateListHeight(true);
+            this.slideNowTo($startSlide);
 
             // обновление высоты по мере загрузки картинок
             if (this.opts.adaptiveHeight) {
@@ -183,19 +180,17 @@
         };
 
         // Активация слайда
-        Slider.prototype._setCurrentSlide = function($slide, instantly) {
+        Slider.prototype._setCurrentSlide = function($slide) {
             this.$currentSlide = $slide;
-
-            if (instantly) {
-                $slide.css({
-                    left: '0'
-                });
-            }
         };
 
         // Метод, возвращающий следующий слайд
-        Slider.prototype.getNextSlide = function($slide) {
-            var index = this.$slides.index($slide);
+        Slider.prototype.getNextSlide = function($fromSlide) {
+            if (!$fromSlide || !$fromSlide.length) {
+                $fromSlide = this.$currentSlide;
+            }
+
+            var index = this.$slides.index($fromSlide);
             if (++index < this.$slides.length) {
                 return this.$slides.eq(index);
             }
@@ -206,8 +201,12 @@
         };
 
         // Метод, возвращающий предыдущий слайд
-        Slider.prototype.getPreviousSlide = function($slide) {
-            var index = this.$slides.index($slide);
+        Slider.prototype.getPreviousSlide = function($fromSlide) {
+            if (!$fromSlide || !$fromSlide.length) {
+                $fromSlide = this.$currentSlide;
+            }
+
+            var index = this.$slides.index($fromSlide);
             if (--index >= 0) {
                 return this.$slides.eq(index);
             }
@@ -249,12 +248,9 @@
 
             // активация текущего слайда
             var $startSlide = $current_item.closest('.' + this.opts.slideClass);
-            this._setCurrentSlide($startSlide, true);
+            this.slideNowTo($startSlide);
 
             this.afterSetSlideItems();
-
-            // обновление высоты
-            this.updateListHeight(true);
         };
 
         /*
@@ -339,9 +335,53 @@
             this.callPluginsMethod('afterUpdateListHeight', [this, instantly, current, final], true);
         };
 
+
         // ===============================================
         // =============== slide animation ===============
         // ===============================================
+
+        /*
+            Переопределяемый метод смены текущего слайда на $toSlide БЕЗ АНИМАЦИИ.
+
+            Плагины могут переопределить этот метод. Будет использован метод
+            плагина, подключенного последним.
+
+            В реализации этого метода НЕОБХОДИМО вызывать методы слайдера
+            beforeSlide и afterSlide:
+                slider.beforeSlide($toSlide, true);
+                ....
+                slider.afterSlide($toSlide, true);
+         */
+        Slider.prototype.slideNowTo = function($toSlide) {
+            if (!$toSlide.length || (this.$slides.index($toSlide) < 0)) {
+                return
+            }
+
+            // скролл к уже активному слайду
+            if (this.$currentSlide.get(0) === $toSlide.get(0)) {
+                return
+            }
+
+            var method = this.getFirstPluginMethod('slideNowTo');
+            if (method) {
+                method(this, $toSlide);
+            } else {
+                // поведение по умолчанию
+                this.beforeSlide($toSlide, true);
+
+                this.$slides.css({
+                    left: ''
+                });
+                $toSlide.css({
+                    left: '0'
+                });
+                this._setCurrentSlide($toSlide);
+
+                this.updateListHeight(true);
+
+                this.afterSlide($toSlide, true);
+            }
+        };
 
         /*
             Переопределяемый метод смены текущего слайда на $toSlide.
@@ -360,6 +400,11 @@
                 return
             }
 
+            // скролл к уже активному слайду
+            if (this.$currentSlide.get(0) === $toSlide.get(0)) {
+                return
+            }
+
             var method = this.getFirstPluginMethod('slideTo');
             if (method) {
                 method(this, $toSlide);
@@ -370,12 +415,12 @@
                 this.$slides.css({
                     left: ''
                 });
+                $toSlide.css({
+                    left: '0'
+                });
+                this._setCurrentSlide($toSlide);
 
-                this._setCurrentSlide($toSlide, true);
-
-                if (this.opts.adaptiveHeight) {
-                    this.updateListHeight()
-                }
+                this.updateListHeight();
 
                 this.afterSlide($toSlide);
             }
@@ -385,22 +430,22 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед переходом к слайду.
          */
-        Slider.prototype.beforeSlide = function($toSlide) {
-            this.callPluginsMethod('beforeSlide', [this, $toSlide]);
+        Slider.prototype.beforeSlide = function($toSlide, instantly) {
+            this.callPluginsMethod('beforeSlide', [this, $toSlide, instantly]);
 
             // jQuery event
-            this.$list.trigger('beforeSlide.slider', [$toSlide]);
+            this.$list.trigger('beforeSlide.slider', [$toSlide, instantly]);
         };
 
         /*
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после перехода к слайду.
          */
-        Slider.prototype.afterSlide = function($toSlide) {
+        Slider.prototype.afterSlide = function($toSlide, instantly) {
             // jQuery event
-            this.$list.trigger('afterSlide.slider', [$toSlide]);
+            this.$list.trigger('afterSlide.slider', [$toSlide, instantly]);
 
-            this.callPluginsMethod('afterSlide', [this, $toSlide], true);
+            this.callPluginsMethod('afterSlide', [this, $toSlide, instantly], true);
         };
 
         return Slider;

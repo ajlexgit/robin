@@ -39,7 +39,7 @@
         ).attachPlugin(
             new PagerPlugin()
         ).attachPlugin(
-            new SideAnimation({
+            new SliderSideAnimation({
                 speed: 1000
             })
         );
