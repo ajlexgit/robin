@@ -77,8 +77,45 @@
             $images.one('load', loadHandle);
         };
 
+
         // ===============================================
-        // ============== system methods =================
+        // =========== initialization methods ============
+        // ===============================================
+
+        // Метод, возвращающий объект настроек по умолчанию
+        Slider.prototype.getDefaultOpts = function() {
+            return {
+                rootClass: 'slider-root',
+                listClass: 'slider-list',
+                slideClass: 'slider-slide',
+                itemClass: 'slider-item',
+
+                itemSelector: 'img',
+                slideItems: 2,
+                loop: true,
+                adaptiveHeight: true
+            };
+        };
+
+        // Метод, возвращающий ссылку на объект-список
+        Slider.prototype._createList = function($element) {
+            return $element;
+        };
+
+        // Метод, возвращающий ссылку на объект-обертку
+        Slider.prototype._createRoot = function($element) {
+            $element.wrap('<div>');
+            return $element.parent();
+        };
+
+        // Метод, возвращающий массив ссылок на items
+        Slider.prototype._createItems = function() {
+            return this.$list.find(this.opts.itemSelector);
+        };
+
+
+        // ===============================================
+        // ============== plugin methods =================
         // ===============================================
 
         /*
@@ -134,41 +171,6 @@
             }
         };
 
-
-        // ===============================================
-        // =========== initialization methods ============
-        // ===============================================
-
-        // Метод, возвращающий объект настроек по умолчанию
-        Slider.prototype.getDefaultOpts = function() {
-            return {
-                rootClass: 'slider-root',
-                listClass: 'slider-list',
-                slideClass: 'slider-slide',
-                itemClass: 'slider-item',
-
-                itemSelector: 'img',
-                slideItems: 2,
-                loop: true,
-                adaptiveHeight: true
-            };
-        };
-
-        // Метод, возвращающий ссылку на объект-список
-        Slider.prototype._createList = function($element) {
-            return $element;
-        };
-
-        // Метод, возвращающий ссылку на объект-обертку
-        Slider.prototype._createRoot = function($element) {
-            $element.wrap('<div>');
-            return $element.parent();
-        };
-
-        // Метод, возвращающий массив ссылок на items
-        Slider.prototype._createItems = function() {
-            return this.$list.find(this.opts.itemSelector);
-        };
 
         // ===============================================
         // =============== slides methods ================
