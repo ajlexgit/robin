@@ -228,6 +228,10 @@
             В каждом плагине вызывает методы beforeSetSlideItems и afterSetSlideItems
          */
         Slider.prototype.setSlideItems = function(slideItems) {
+            if (this.opts.slideItems == slideItems) {
+                return
+            }
+
             this.beforeSetSlideItems();
 
             var slide_count = Math.ceil(this.$items.length / slideItems);
@@ -245,6 +249,9 @@
                 this.$slides.push($slide.get(0));
             }
             this.$slides.addClass(this.opts.slideClass);
+
+            // сохранение количества элементов в слайде
+            this.opts.slideItems = slideItems;
 
             // активация текущего слайда
             var $startSlide = $current_item.closest('.' + this.opts.slideClass);
