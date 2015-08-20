@@ -1,6 +1,6 @@
 (function($) {
 
-    window.ControlsPlugin = (function(parent) {
+    window.SliderControlsPlugin = (function(parent) {
         var defaults = {
             arrowClass: 'slider-arrow',
             arrowLeftClass: 'slider-arrow-left',

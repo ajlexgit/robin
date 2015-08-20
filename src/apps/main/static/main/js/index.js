@@ -35,9 +35,9 @@
         window.slider = new Slider($elem, {
             adaptiveHeight: true
         }).attachPlugin(
-            new ControlsPlugin()
+            new SliderControlsPlugin()
         ).attachPlugin(
-            new PagerPlugin()
+            new SliderNavigationPlugin()
         ).attachPlugin(
             new SliderSideAnimation({
                 speed: 1000

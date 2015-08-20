@@ -1,54 +1,54 @@
 (function($) {
 
-    window.PagerPlugin = (function(parent) {
+    window.SliderNavigationPlugin = (function(parent) {
         var defaults = {
-            pagerClass: 'slider-pager',
-            itemClass: 'slider-pager-item',
+            wrapperClass: 'slider-navigation',
+            itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
             container: null
         };
 
         // Инициализация плагина
-        var PagerPlugin = function(settings) {
+        var NavigationPlugin = function(settings) {
             this.opts = $.extend(true, defaults, settings);
         };
 
-        var _ = function() { this.constructor = PagerPlugin; };
+        var _ = function() { this.constructor = NavigationPlugin; };
         _.prototype = parent.prototype;
-        PagerPlugin.prototype = new _;
+        NavigationPlugin.prototype = new _;
 
 
         /*
             Создание кнопок при подключении плагина
          */
-        PagerPlugin.prototype.onAttach = function(slider) {
-            this.createPager(slider);
+        NavigationPlugin.prototype.onAttach = function(slider) {
+            this.createNavigation(slider);
         };
 
         /*
             Установка активной кнопки перед переходом к слайду
          */
-        PagerPlugin.prototype.beforeSlide = function(slider, $toSlide, instantly) {
-            this.activatePagerItemBySlide(slider, $toSlide);
+        NavigationPlugin.prototype.beforeSlide = function(slider, $toSlide, instantly) {
+            this.activateNavigationItemBySlide(slider, $toSlide);
         };
 
         /*
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
-        PagerPlugin.prototype.afterSetSlideItems = function(slider) {
-            this.createPager(slider);
+        NavigationPlugin.prototype.afterSetSlideItems = function(slider) {
+            this.createNavigation(slider);
         };
 
 
         /*
             Создание кнопок
          */
-        PagerPlugin.prototype.createPager = function(slider) {
+        NavigationPlugin.prototype.createNavigation = function(slider) {
             this.$container = this.getContainer(slider);
             if (this.$container.length) {
                 this.$container = this.$container.first();
-                this.createPagerItems(slider);
-                this.activatePagerItemBySlide(slider, slider.$currentSlide);
+                this.createNavigationItems(slider);
+                this.activateNavigationItemBySlide(slider, slider.$currentSlide);
             } else {
                 this.$container = null;
             }
@@ -57,7 +57,7 @@
         /*
             Возвращает контейнер, в который будут добавлены кнопки
          */
-        PagerPlugin.prototype.getContainer = function(slider) {
+        NavigationPlugin.prototype.getContainer = function(slider) {
             if (this.opts.container) {
                 var $container = $(this.opts.container);
             } else {
@@ -69,9 +69,9 @@
         /*
             Добавление кнопок в DOM
          */
-        PagerPlugin.prototype.createPagerItems = function(slider) {
-            this.$container.find('.' + this.opts.pagerClass).remove();
-            var $wrapper = $('<div/>').addClass(this.opts.pagerClass);
+        NavigationPlugin.prototype.createNavigationItems = function(slider) {
+            this.$container.find('.' + this.opts.wrapperClass).remove();
+            var $wrapper = $('<div/>').addClass(this.opts.wrapperClass);
             this.$container.append($wrapper);
 
             for(var i=0;i<slider.$slides.length;i++) {
@@ -91,7 +91,7 @@
         /*
             Активация соответствующей кнопки по объекту слайда
          */
-        PagerPlugin.prototype.activatePagerItemBySlide = function(slider, $slide) {
+        NavigationPlugin.prototype.activateNavigationItemBySlide = function(slider, $slide) {
             var slideIndex = slider.$slides.index($slide);
             if (this.$container.length) {
                 var $item = this.$container.find('.' + this.opts.itemClass).eq(slideIndex);
@@ -101,7 +101,7 @@
             }
         };
 
-        return PagerPlugin;
+        return NavigationPlugin;
     })(SliderPlugin);
 
 })(jQuery);

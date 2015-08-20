@@ -11,13 +11,13 @@ $dot_active_color: rgba(#3B91CA, 1);
 
 .slider-root {
 
-  // Pager
-  .slider-pager {
+  // Navigation
+  .slider-navigation {
     margin-top: 20px;
     text-align: center;
     @include unselectable;
 
-    .slider-pager-item {
+    .slider-navigation-item {
       display: inline-block;
       position: relative;
       width: $item_size;

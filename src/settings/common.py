@@ -152,7 +152,7 @@ PIPELINE_CSS = {
         'source_filenames': (
             'scss/slider/slider.scss',
             'scss/slider/plugins/controls.scss',
-            'scss/slider/plugins/pager.scss',
+            'scss/slider/plugins/navigation.scss',
             'scss/parallax.scss',
             'scss/video_bg.scss',
             'gallery/scss/gallery.scss',
@@ -204,7 +204,7 @@ PIPELINE_JS = {
             'js/slider/slider.js',
             'js/slider/plugins/side_animation.js',
             'js/slider/plugins/controls.js',
-            'js/slider/plugins/pager.js',
+            'js/slider/plugins/navigation.js',
             'comments/js/comments_class.js',
             'comments/js/comments.js',
             'gallery/js/gallery_class.js',
