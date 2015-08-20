@@ -32,7 +32,7 @@
                     return
                 }
 
-                this.slide($next);
+                this.slideTo($next);
             };
 
             slider.slidePrevious = function() {
@@ -41,7 +41,7 @@
                     return
                 }
 
-                this.slide($prev);
+                this.slideTo($prev);
             };
         };
 

@@ -35,7 +35,7 @@
 
             var that = this;
 
-            this.plugins = [];
+            this._plugins = [];
             this.$currentSlide = $();
 
             // настройки
@@ -43,17 +43,17 @@
             this.opts = $.extend(true, defaults, settings);
 
             // сохраняем ссылку на список
-            this.$list = this.createList($element);
+            this.$list = this._createList($element);
             this.$list.addClass(this.opts.listClass);
 
             // оборачиваем список в обертку
-            this.$root = this.createRoot($element);
+            this.$root = this._createRoot($element);
             this.$root.addClass(this.opts.rootClass);
             this.$root.data('slider', this);
             sliders.push(this);
 
             // сохраняем массив items
-            this.$items = this.createItems();
+            this.$items = this._createItems();
             this.$items.addClass(this.opts.itemClass);
 
             // создаем слайды
@@ -97,7 +97,7 @@
                 );
          */
         Slider.prototype.attachPlugin = function(plugin) {
-            this.plugins.push(plugin);
+            this._plugins.push(plugin);
             plugin.onAttach(this);
             return this;
         };
@@ -107,9 +107,9 @@
             начиная с последнего подключенного
          */
         Slider.prototype.getFirstPluginMethod = function(methodName) {
-            var index = this.plugins.length;
+            var index = this._plugins.length;
             while (index--) {
-                var plugin = this.plugins[index];
+                var plugin = this._plugins[index];
                 if (methodName in plugin) {
                     return $.proxy(plugin[methodName], plugin);
                 }
@@ -123,7 +123,7 @@
             (от поключенных первыми)
          */
         Slider.prototype.callPluginsMethod = function(methodName, args, reversed) {
-            var plugins = this.plugins.concat();
+            var plugins = this._plugins.concat();
             if (reversed) {
                 plugins.reverse();
             }
@@ -158,18 +158,18 @@
         };
 
         // Метод, возвращающий ссылку на объект-список
-        Slider.prototype.createList = function($element) {
+        Slider.prototype._createList = function($element) {
             return $element;
         };
 
         // Метод, возвращающий ссылку на объект-обертку
-        Slider.prototype.createRoot = function($element) {
+        Slider.prototype._createRoot = function($element) {
             $element.wrap('<div>');
             return $element.parent();
         };
 
         // Метод, возвращающий массив ссылок на items
-        Slider.prototype.createItems = function() {
+        Slider.prototype._createItems = function() {
             return this.$list.find(this.opts.itemSelector);
         };
 
@@ -355,12 +355,12 @@
                 ....
                 slider.afterSlide($toSlide);
          */
-        Slider.prototype.slide = function($toSlide) {
+        Slider.prototype.slideTo = function($toSlide) {
             if (!$toSlide.length || (this.$slides.index($toSlide) < 0)) {
                 return
             }
 
-            var method = this.getFirstPluginMethod('slide');
+            var method = this.getFirstPluginMethod('slideTo');
             if (method) {
                 method(this, $toSlide);
             } else {

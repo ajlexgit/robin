@@ -66,7 +66,7 @@
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SliderSimpleAnimationPlugin.prototype.slide = function(slider, $toSlide) {
+        SliderSimpleAnimationPlugin.prototype.slideTo = function(slider, $toSlide) {
             if (slider._animated) {
                 return
             }
