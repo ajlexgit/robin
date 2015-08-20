@@ -1,11 +1,13 @@
 import os
 import sys
 
+# IE: popup moves to top
+
 # multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete
 # inlines class with inlines.js
 
-# JS slider: dots, drag
+# JS slider: drag
 
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 # Соц авторизаци
