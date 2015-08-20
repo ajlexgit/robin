@@ -33,7 +33,7 @@
         var $elem = $('.slider');
 
         window.slider = new Slider($elem, {
-            adaptiveHeight: true
+            slideItems: 2
         }).attachPlugin(
             new SliderControlsPlugin()
         ).attachPlugin(

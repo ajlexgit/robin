@@ -91,7 +91,7 @@
                 itemClass: 'slider-item',
 
                 itemSelector: 'img',
-                slideItems: 2,
+                slideItems: 1,
                 loop: true,
                 adaptiveHeight: true
             };
