@@ -88,6 +88,7 @@ def upload_chunked_file(request, param_name, allow_memory=True):
             for chunk in file.chunks():
                 tmp.write(chunk)
             tmp.seek(0)
+            tmp.flush()
             return tmp
     else:
         # pluploader отправляет имя "blob"
@@ -117,6 +118,7 @@ def upload_chunked_file(request, param_name, allow_memory=True):
             raise NotLastChunk('%d of %d' % (chunk_num + 1, chunk_count))
 
         tmp.seek(0)
+        tmp.flush()
 
         file_info = os.stat(tempfile_path)
         return TempUploadedFile(
