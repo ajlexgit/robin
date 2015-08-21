@@ -249,9 +249,10 @@
         Popup.prototype._defaultBeforeShow = function() {
             this.$windowWrapper.get(0).scrollTop = 0;
 
-            var styles = this._saveStyles($html, 'overflow', 'paddingRight');
-            $html.css({
-                overflow: 'hidden',
+            var styles = this._saveStyles($body, 'overflowX', 'overflowY', 'paddingRight');
+            $body.css({
+                overflowX: 'hidden',
+                overflowY: 'hidden',
                 paddingRight: (parseInt(styles.paddingRight) || 0) + scrollWidth
             });
         };
@@ -260,7 +261,7 @@
         Popup.prototype._defaultAfterHide = function() {
             this.$overlay.stop(true).hide();
             this.$container.stop(true).hide();
-            this._loadStyles($html);
+            this._loadStyles($body);
         };
 
 
