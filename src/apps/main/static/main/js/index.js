@@ -39,7 +39,10 @@
         ).attachPlugin(
             new SliderNavigationPlugin()
         ).attachPlugin(
-            new SliderAutoscrollPlugin()
+            new SliderAutoscrollPlugin({
+                direction: 'random',
+                animated: false
+            })
         ).attachPlugin(
             new SliderSideAnimation({
                 speed: 1000

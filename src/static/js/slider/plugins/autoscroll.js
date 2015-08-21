@@ -2,8 +2,9 @@
 
     window.SliderAutoscrollPlugin = (function(parent) {
         var defaults = {
-            next: true,
+            direction: 'next',  // next / prev / random
             stopOnHover: true,
+            animated: true,
             interval: 3000
         };
 
@@ -21,10 +22,19 @@
             Создание кнопок при подключении плагина
          */
         AutoscrollPlugin.prototype.onAttach = function(slider) {
-            if (this.opts.next) {
-                this._timerHandler = $.proxy(this.slideToNext, this, slider);
-            } else {
+            if (this.opts.direction == 'prev') {
                 this._timerHandler = $.proxy(this.slideToPrev, this, slider);
+            } else if (this.opts.direction == 'random') {
+                this._timerHandler = $.proxy(this.slideToRandom, this, slider);
+            } else {
+                this._timerHandler = $.proxy(this.slideToNext, this, slider);
+            }
+
+            // анимированный переход или нет
+            if (this.opts.animated) {
+                this._slideTo = $.proxy(slider.slideTo, slider);
+            } else {
+                this._slideTo = $.proxy(slider.slideNowTo, slider);
             }
 
             this.startTimer(slider);
@@ -33,9 +43,9 @@
             if (this.opts.stopOnHover) {
                 var that = this;
                 slider.$listWrapper.on('mouseenter.slider.autoscroll', function () {
-                    that.stopTimer(slider);
+                    that.stopTimer();
                 }).on('mouseleave.slider.autoscroll', function () {
-                    that.startTimer(slider);
+                    that.startTimer();
                 });
             }
         };
@@ -44,14 +54,17 @@
         /*
             Создание таймера
          */
-        AutoscrollPlugin.prototype.startTimer = function(slider) {
+        AutoscrollPlugin.prototype.startTimer = function() {
+            if (this._timer) {
+                clearInterval(this._timer);
+            }
             this._timer = setInterval(this._timerHandler, this.opts.interval);
         };
 
         /*
             Остановка таймера
          */
-        AutoscrollPlugin.prototype.stopTimer = function(slider) {
+        AutoscrollPlugin.prototype.stopTimer = function() {
             if (this._timer) {
                 clearInterval(this._timer);
                 this._timer = null;
@@ -67,7 +80,7 @@
                 return
             }
 
-            slider.slideTo($next);
+            this._slideTo($next);
         };
 
         /*
@@ -79,7 +92,18 @@
                 return
             }
 
-            slider.slideTo($prev);
+            this._slideTo($prev);
+        };
+
+        /*
+            Скролл на рандом
+         */
+        AutoscrollPlugin.prototype.slideToRandom = function(slider) {
+            var slides_count = slider.$slides.length;
+            var random_index = Math.floor(Math.random() * (slides_count - 1));
+            var current_index = slider.$slides.index(slider.$currentSlide);
+            var final_index = (random_index < current_index) ? random_index : random_index + 1;
+            this._slideTo(slider.$slides.eq(final_index));
         };
 
         return AutoscrollPlugin;

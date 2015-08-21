@@ -47,16 +47,16 @@
         /*
             Обеспечиваем моментальную смену высоты, когда это необходимо
          */
-        SideAnimation.prototype.beforeUpdateListHeight = function(slider, instantly) {
+        SideAnimation.prototype.beforeUpdateListHeight = function(slider, forced) {
             var current_transition = slider.$list.css('transition');
-            if (instantly && current_transition && (current_transition != 'none')) {
+            if (forced && current_transition && (current_transition != 'none')) {
                 this._old_transition = current_transition;
                 slider.$list.css('transition', 'none');
             }
         };
 
-        SideAnimation.prototype.afterUpdateListHeight = function(slider, instantly) {
-            if (instantly && this._old_transition) {
+        SideAnimation.prototype.afterUpdateListHeight = function(slider, forced) {
+            if (forced && this._old_transition) {
                 slider.$list.css('transition', this._old_transition);
                 this._old_transition = null;
             }

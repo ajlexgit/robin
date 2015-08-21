@@ -67,7 +67,7 @@
 
             // активация текущего слайда
             var $startSlide = this._getStartSlide();
-            this.slideNowTo($startSlide);
+            this.slideNowTo($startSlide, true);
 
             // обновление высоты по мере загрузки картинок
             if (this.opts.adaptiveHeight) {
@@ -164,22 +164,29 @@
         };
 
         /*
-            Вызом метода methodName с агрументами args во всех плагинах,
+            Вызом метода methodName с агрументами [slider, *additionArgs] во всех плагинах,
             в которых этот метод реализован.
+
+            Первым аргументом ВСЕГДА стоит slider, независимо от значения additionArgs.
+
             Если reversed=true, обход плагинов будет в обратном порядке
             (от поключенных первыми)
          */
-        Slider.prototype.callPluginsMethod = function(methodName, args, reversed) {
+        Slider.prototype.callPluginsMethod = function(methodName, additionArgs, reversed) {
             var plugins = this._plugins.concat();
             if (reversed) {
                 plugins.reverse();
             }
 
+            var final_args = additionArgs || [];
+            final_args = Array.prototype.slice.call(final_args);
+            final_args.unshift(this);
+
             var index = plugins.length;
             while (index--) {
                 var plugin = plugins[index];
                 if (methodName in plugin) {
-                    plugin[methodName].apply(plugin, args);
+                    plugin[methodName].apply(plugin, final_args);
                 }
             }
         };
@@ -276,7 +283,7 @@
             перед созданием слайдов.
          */
         Slider.prototype.beforeSetSlideItems = function() {
-            this.callPluginsMethod('beforeSetSlideItems', [this]);
+            this.callPluginsMethod('beforeSetSlideItems');
 
             // jQuery event
             this.$list.trigger('beforeSetSlideItems.slider');
@@ -290,7 +297,7 @@
             // jQuery event
             this.$list.trigger('afterSetSlideItems.slider');
 
-            this.callPluginsMethod('afterSetSlideItems', [this], true);
+            this.callPluginsMethod('afterSetSlideItems', null, true);
         };
 
 
@@ -302,7 +309,7 @@
             Обновление высоты slider.$list в зависимости от высоты слайдов
             и настройки adaptiveHeight
          */
-        Slider.prototype.updateListHeight = function(instantly) {
+        Slider.prototype.updateListHeight = function(forced) {
             var final_height = 0;
             var current_height = this.$list.outerHeight();
 
@@ -320,13 +327,13 @@
             }
 
             if (current_height != final_height) {
-                this.beforeUpdateListHeight(instantly, current_height, final_height);
+                this.beforeUpdateListHeight(forced, current_height, final_height);
                 this.$list.outerHeight(final_height);
 
                 // отдельным кадром анимации, чтобы избежать схлопывания изменений стилей
                 var that = this;
                 setTimeout(function() {
-                    that.afterUpdateListHeight(instantly, current_height, final_height);
+                    that.afterUpdateListHeight(forced, current_height, final_height);
                 }, 1000 / 60);
             }
         };
@@ -335,22 +342,22 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед обновлением высоты списка.
          */
-        Slider.prototype.beforeUpdateListHeight = function(instantly, current, final) {
-            this.callPluginsMethod('beforeUpdateListHeight', [this, instantly, current, final]);
+        Slider.prototype.beforeUpdateListHeight = function(forced, current, final) {
+            this.callPluginsMethod('beforeUpdateListHeight', arguments);
 
             // jQuery event
-            this.$list.trigger('beforeUpdateListHeight.slider', [instantly, current, final]);
+            this.$list.trigger('beforeUpdateListHeight.slider', arguments);
         };
 
         /*
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после обновления высоты списка.
          */
-        Slider.prototype.afterUpdateListHeight = function(instantly, current, final) {
+        Slider.prototype.afterUpdateListHeight = function(forced, current, final) {
             // jQuery event
-            this.$list.trigger('afterUpdateListHeight.slider', [instantly, current, final]);
+            this.$list.trigger('afterUpdateListHeight.slider', arguments);
 
-            this.callPluginsMethod('afterUpdateListHeight', [this, instantly, current, final], true);
+            this.callPluginsMethod('afterUpdateListHeight', arguments, true);
         };
 
 
@@ -370,7 +377,7 @@
                 ....
                 slider.afterSlide($toSlide, true);
          */
-        Slider.prototype.slideNowTo = function($toSlide) {
+        Slider.prototype.slideNowTo = function($toSlide, forceListHeight) {
             if (!$toSlide.length || (this.$slides.index($toSlide) < 0)) {
                 return
             }
@@ -395,7 +402,7 @@
                 });
                 this._setCurrentSlide($toSlide);
 
-                this.updateListHeight(true);
+                this.updateListHeight(forceListHeight);
 
                 this.afterSlide($toSlide, true);
             }
@@ -449,10 +456,10 @@
             перед переходом к слайду.
          */
         Slider.prototype.beforeSlide = function($toSlide, instantly) {
-            this.callPluginsMethod('beforeSlide', [this, $toSlide, instantly]);
+            this.callPluginsMethod('beforeSlide', arguments);
 
             // jQuery event
-            this.$list.trigger('beforeSlide.slider', [$toSlide, instantly]);
+            this.$list.trigger('beforeSlide.slider', arguments);
         };
 
         /*
@@ -461,9 +468,9 @@
          */
         Slider.prototype.afterSlide = function($toSlide, instantly) {
             // jQuery event
-            this.$list.trigger('afterSlide.slider', [$toSlide, instantly]);
+            this.$list.trigger('afterSlide.slider', arguments);
 
-            this.callPluginsMethod('afterSlide', [this, $toSlide, instantly], true);
+            this.callPluginsMethod('afterSlide', arguments, true);
         };
 
         return Slider;
