@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from libs.views import TemplateExView, RenderToStringMixin
-from libs.upload_chunked_file import upload_chunked_file, NotCompleteError
+from libs.upload_chunked_file import upload_chunked_file, FileMissingError, NotLastChunk
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 
 
@@ -123,9 +123,9 @@ class AvatarUploadView(TemplateExView):
 
         try:
             uploaded_file = upload_chunked_file(request, 'image')
-        except (LookupError, FileNotFoundError):
+        except FileMissingError:
             raise Http404
-        except NotCompleteError:
+        except NotLastChunk:
             return HttpResponse()
 
         request.user.avatar.save(uploaded_file.name, uploaded_file, save=False)

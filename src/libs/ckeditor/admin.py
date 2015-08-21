@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.http import JsonResponse, Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
-from libs.upload_chunked_file import upload_chunked_file, NotCompleteError
+from libs.upload_chunked_file import upload_chunked_file, FileMissingError, NotLastChunk
 from .models import PagePhoto, SimplePhoto, generate_tag
 
 
@@ -50,9 +50,9 @@ def upload_pagephoto(request):
 
     try:
         uploaded_file = upload_chunked_file(request, 'image')
-    except (LookupError, FileNotFoundError):
+    except FileMissingError:
         raise Http404
-    except NotCompleteError:
+    except NotLastChunk:
         return HttpResponse()
 
     # Создание экземпляра элемента галереи
@@ -97,9 +97,9 @@ def upload_simplephoto(request):
 
     try:
         uploaded_file = upload_chunked_file(request, 'image')
-    except (LookupError, FileNotFoundError):
+    except FileMissingError:
         raise Http404
-    except NotCompleteError:
+    except NotLastChunk:
         return HttpResponse()
 
 

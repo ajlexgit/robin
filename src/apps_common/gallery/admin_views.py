@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse, Http404, HttpResponse
-from libs.upload_chunked_file import upload_chunked_file, NotCompleteError
+from libs.upload_chunked_file import upload_chunked_file, FileMissingError, NotLastChunk
 from . import options
 
 
@@ -90,9 +90,11 @@ def upload(request):
 
     try:
         uploaded_file = upload_chunked_file(request, 'image')
-    except (LookupError, FileNotFoundError):
-        raise Http404
-    except NotCompleteError:
+    except FileMissingError as e:
+        return JsonResponse({
+            'message': str(e),
+        }, status=400)
+    except NotLastChunk:
         return HttpResponse()
 
     # Создание экземпляра элемента галереи
