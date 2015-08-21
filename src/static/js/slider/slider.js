@@ -132,6 +132,17 @@
         // ===============================================
 
         /*
+            Добавление текущего объекта к массиву аргументов.
+
+         */
+        Slider.prototype._argsWithThis = function(args) {
+            var final_args = args || [];
+            final_args = Array.prototype.slice.call(final_args);
+            final_args.unshift(this);
+            return final_args;
+        };
+
+        /*
             Подключение плагина.
 
             Пример:
@@ -178,9 +189,7 @@
                 plugins.reverse();
             }
 
-            var final_args = additionArgs || [];
-            final_args = Array.prototype.slice.call(final_args);
-            final_args.unshift(this);
+            var final_args = this._argsWithThis(additionArgs);
 
             var index = plugins.length;
             while (index--) {
@@ -387,9 +396,10 @@
                 return
             }
 
+            var final_args = this._argsWithThis(arguments);
             var method = this.getFirstPluginMethod('slideNowTo');
             if (method) {
-                method(this, arguments);
+                method.apply(null, final_args);
             } else {
                 // поведение по умолчанию
                 this.beforeSlide($toSlide, true);
@@ -420,7 +430,7 @@
                 ....
                 slider.afterSlide($toSlide);
          */
-        Slider.prototype.slideTo = function($toSlide) {
+        Slider.prototype.slideTo = function($toSlide, forceListHeight) {
             if (!$toSlide.length || (this.$slides.index($toSlide) < 0)) {
                 return
             }
@@ -430,9 +440,10 @@
                 return
             }
 
+            var final_args = this._argsWithThis(arguments);
             var method = this.getFirstPluginMethod('slideTo');
             if (method) {
-                method(this, arguments);
+                method.apply(null, final_args);
             } else {
                 // поведение по умолчанию
                 this.beforeSlide($toSlide);
@@ -445,7 +456,7 @@
                 });
                 this._setCurrentSlide($toSlide);
 
-                this.updateListHeight();
+                this.updateListHeight(forceListHeight);
 
                 this.afterSlide($toSlide);
             }

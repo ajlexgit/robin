@@ -63,10 +63,32 @@
         };
 
         /*
+            Реализация метода перехода от одного слайда к другому БЕЗ АНИМАЦИИ
+         */
+        SideAnimation.prototype.slideNowTo = function(slider, $toSlide, forceListHeight) {
+            if (slider._animated) {
+                return
+            }
+
+            slider.beforeSlide($toSlide, true);
+
+            slider.$slides.css({
+                left: ''
+            });
+            $toSlide.css({
+                left: '0'
+            });
+            slider._setCurrentSlide($toSlide);
+            slider.updateListHeight(forceListHeight);
+
+            slider.afterSlide($toSlide, true);
+        };
+
+        /*
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SideAnimation.prototype.slideTo = function(slider, $toSlide) {
+        SideAnimation.prototype.slideTo = function(slider, $toSlide, forceListHeight) {
             if (slider._animated) {
                 return
             }
@@ -87,15 +109,15 @@
                 var left_way = (diff > 0 ? slides_count : 0) - diff;
 
                 if (left_way < right_way) {
-                    this.slideLeft(slider, $toSlide);
+                    this.slideLeft.apply(this, arguments);
                 } else {
-                    this.slideRight(slider, $toSlide);
+                    this.slideRight.apply(this, arguments);
                 }
             } else {
                 if (toIndex > fromIndex) {
-                    this.slideRight(slider, $toSlide);
+                    this.slideRight.apply(this, arguments);
                 } else {
-                    this.slideLeft(slider, $toSlide);
+                    this.slideLeft.apply(this, arguments);
                 }
             }
         };
@@ -103,7 +125,7 @@
         /*
             Появление нового слайда справа от текущего
          */
-        SideAnimation.prototype.slideRight = function(slider, $toSlide) {
+        SideAnimation.prototype.slideRight = function(slider, $toSlide, forceListHeight) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
@@ -112,7 +134,7 @@
                 left: '100%'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight();
+            slider.updateListHeight(forceListHeight);
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -141,7 +163,7 @@
         /*
             Появление нового слайда слева от текущего
          */
-        SideAnimation.prototype.slideLeft = function(slider, $toSlide) {
+        SideAnimation.prototype.slideLeft = function(slider, $toSlide, forceListHeight) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
@@ -150,7 +172,7 @@
                 left: '-100%'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight();
+            slider.updateListHeight(forceListHeight);
 
             this._animation = $.animate({
                 duration: this.opts.speed,
