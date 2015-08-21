@@ -389,7 +389,7 @@
 
             var method = this.getFirstPluginMethod('slideNowTo');
             if (method) {
-                method(this, $toSlide);
+                method(this, arguments);
             } else {
                 // поведение по умолчанию
                 this.beforeSlide($toSlide, true);
@@ -432,7 +432,7 @@
 
             var method = this.getFirstPluginMethod('slideTo');
             if (method) {
-                method(this, $toSlide);
+                method(this, arguments);
             } else {
                 // поведение по умолчанию
                 this.beforeSlide($toSlide);
