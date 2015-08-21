@@ -33,7 +33,7 @@
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
-        function (callback) {
+        function(callback) {
             window.setTimeout(callback, 1000 / 60);
         };
 
@@ -49,7 +49,7 @@
         var Animation = function(settings) {
             this.opts = $.extend({
                 duration: 1000,
-                delay: 20,
+                delay: 40,
                 easing: 'linear',
                 paused: false,
 

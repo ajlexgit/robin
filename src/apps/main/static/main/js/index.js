@@ -33,8 +33,8 @@
         var $elem = $('.slider');
 
         window.slider = new Slider($elem, {
-            loop: false,
             adaptiveHeight: true,
+            adaptiveHeightTransition: 800,
             slideItems: 2
         }).attachPlugin(
             new SliderControlsPlugin()
@@ -47,7 +47,7 @@
             })
         ).attachPlugin(
             new SliderSideAnimation({
-                speed: 1000
+                speed: 800
             })
         );
     });

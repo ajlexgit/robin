@@ -2,7 +2,7 @@
 
     window.SliderSideAnimation = (function(parent) {
         var defaults = {
-            speed: 300,
+            speed: 800,
             easing: 'easeOutCubic'
         };
 
@@ -21,10 +21,6 @@
          */
         SideAnimation.prototype.onAttach = function(slider) {
             slider._animated = false;
-
-            var transitionSpeed = (this.opts.speed / 1000).toFixed(1) + 's';
-            var transition = 'height ' + transitionSpeed;
-            slider.$list.css('transition', transition);
         };
 
         SideAnimation.prototype.beforeSlide = function(slider, $toSlide, instantly) {
@@ -41,24 +37,6 @@
         SideAnimation.prototype.beforeSetSlideItems = function() {
             if (this._animation) {
                 this._animation.stop(true)
-            }
-        };
-
-        /*
-            Обеспечиваем моментальную смену высоты, когда это необходимо
-         */
-        SideAnimation.prototype.beforeUpdateListHeight = function(slider, forced) {
-            var current_transition = slider.$list.css('transition');
-            if (forced && current_transition && (current_transition != 'none')) {
-                this._old_transition = current_transition;
-                slider.$list.css('transition', 'none');
-            }
-        };
-
-        SideAnimation.prototype.afterUpdateListHeight = function(slider, forced) {
-            if (forced && this._old_transition) {
-                slider.$list.css('transition', this._old_transition);
-                this._old_transition = null;
             }
         };
 
@@ -142,13 +120,16 @@
                 init: function() {
                     this.from_initial = parseInt($fromSlide.get(0).style.left);
                     this.from_diff = -100 - this.from_initial;
-
                     this.to_initial = parseInt($toSlide.get(0).style.left);
                     this.to_diff = -this.to_initial;
                 },
                 step: function(eProgress) {
-                    $fromSlide.css('left', this.from_initial + this.from_diff * eProgress + '%');
-                    $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
+                    var fromLeft = this.from_initial + this.from_diff * eProgress + '%';
+                    var toLeft = this.to_initial + this.to_diff * eProgress + '%';
+                    $.animation_frame(function() {
+                        $fromSlide.css('left', fromLeft);
+                        $toSlide.css('left', toLeft);
+                    }, slider.$list.get(0))();
                 },
                 complete: function() {
                     $fromSlide.css({
@@ -180,13 +161,16 @@
                 init: function() {
                     this.from_initial = parseInt($fromSlide.get(0).style.left);
                     this.from_diff = 100 - this.from_initial;
-
                     this.to_initial = parseInt($toSlide.get(0).style.left);
                     this.to_diff = -this.to_initial;
                 },
                 step: function(eProgress) {
-                    $fromSlide.css('left', this.from_initial + this.from_diff * eProgress + '%');
-                    $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
+                    var fromLeft = this.from_initial + this.from_diff * eProgress + '%';
+                    var toLeft = this.to_initial + this.to_diff * eProgress + '%';
+                    $.animation_frame(function() {
+                        $fromSlide.css('left', fromLeft);
+                        $toSlide.css('left', toLeft);
+                    }, slider.$list.get(0))();
                 },
                 complete: function() {
                     $fromSlide.css({

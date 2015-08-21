@@ -100,7 +100,8 @@
                 itemSelector: 'img',
                 slideItems: 1,
                 loop: true,
-                adaptiveHeight: true
+                adaptiveHeight: true,
+                adaptiveHeightTransition: 800
             };
         };
 
@@ -336,14 +337,33 @@
             }
 
             if (current_height != final_height) {
-                this.beforeUpdateListHeight(forced, current_height, final_height);
-                this.$list.outerHeight(final_height);
+                if (this._adaptive_animation) {
+                    this._adaptive_animation.stop();
+                }
 
-                // отдельным кадром анимации, чтобы избежать схлопывания изменений стилей
-                var that = this;
-                setTimeout(function() {
-                    that.afterUpdateListHeight(forced, current_height, final_height);
-                }, 1000 / 60);
+                this.beforeUpdateListHeight(current_height, final_height, forced);
+                if (forced || !this.opts.adaptiveHeightTransition) {
+                    this.$list.outerHeight(final_height);
+                } else {
+                    var that = this;
+                    this._adaptive_animation = $.animate({
+                        duration: this.opts.adaptiveHeightTransition,
+                        delay: 60,
+                        easing: 'easeOutCubic',
+                        init: function() {
+                            this.initial = that.$list.outerHeight();
+                            this.diff = final_height - this.initial;
+                        },
+                        step: function(eProgress) {
+                            var height = this.initial + (this.diff * eProgress);
+                            $.animation_frame(function() {
+                                that.$list.outerHeight(height);
+                            }, that.$list.get(0))();
+                        }
+                    })
+                }
+
+                this.afterUpdateListHeight(current_height, final_height, forced);
             }
         };
 
