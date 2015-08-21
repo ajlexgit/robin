@@ -144,7 +144,6 @@
         // ===================================================
 
         var $body = $(document.body);
-        var $html = $(document.documentElement);
         var scrollWidth = (function() {
             var div = document.createElement('div');
             div.style.position = 'absolute';
@@ -249,19 +248,14 @@
         Popup.prototype._defaultBeforeShow = function() {
             this.$windowWrapper.get(0).scrollTop = 0;
 
-            var styles = this._saveStyles($body, 'overflowX', 'overflowY', 'paddingRight');
-            $body.css({
-                overflowX: 'hidden',
-                overflowY: 'hidden',
-                paddingRight: (parseInt(styles.paddingRight) || 0) + scrollWidth
-            });
+            this._hideScrollbar();
         };
 
         // Действия по умолчания при закрытии окна
         Popup.prototype._defaultAfterHide = function() {
             this.$overlay.stop(true).hide();
             this.$container.stop(true).hide();
-            this._loadStyles($body);
+            this._showScrollbar();
         };
 
 
@@ -274,30 +268,24 @@
         };
 
 
-        // Сохранение CSS-свойств элемента
-        Popup.prototype._saveStyles = function($element) {
-            var result = {};
-            var props = [].slice.call(arguments, 1);
-            for (var i = 0, l = props.length; i < l; i++) {
-                result[props[i]] = $element.css(props[i]);
-            }
-
-            $element.data('_popup_styles', result);
-            return result;
+        // Скрытие дефолтного скроллбара
+        Popup.prototype._hideScrollbar = function() {
+            var body_padding = parseInt($body.css('paddingRight')) || 0;
+            $body.addClass('popup-no-scrollbar');
+            $body.css({
+                paddingRight: body_padding + scrollWidth
+            });
+            $body.data('_popup_old_padding', body_padding);
         };
 
-        // Восстановление CSS-свойств элемента
-        Popup.prototype._loadStyles = function($element) {
-            var result = $element.data('_popup_styles');
-            if (!result) return;
-
-            for (var prop in result) {
-                if (result.hasOwnProperty(prop)) {
-                    $element.css(prop, result[prop]);
-                }
-            }
-
-            $element.removeData('_popup_styles');
+        // Показ дефолтного скроллбара
+        Popup.prototype._showScrollbar = function() {
+            var body_padding = $body.data('_popup_old_padding') || 0;
+            $body.css({
+                paddingRight: body_padding
+            });
+            $body.removeClass('popup-no-scrollbar');
+            $body.removeData('_popup_old_padding');
         };
 
 

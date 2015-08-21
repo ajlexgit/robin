@@ -1,5 +1,10 @@
 @import 'mixins';
 
+.popup-no-scrollbar {
+  overflow: hidden !important;
+}
+
+
 #popup-overlay {
   @include opacity(0.8);
   position: fixed;
