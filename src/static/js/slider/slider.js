@@ -46,8 +46,12 @@
             this.$list = this._createList($element);
             this.$list.addClass(this.opts.listClass);
 
-            // оборачиваем список в обертку
-            this.$root = this._createRoot($element);
+            // создание обертки списка
+            this.$listWrapper = this._createListWrapper();
+            this.$listWrapper.addClass(this.opts.listWrapperClass);
+
+            // создание корневого элемента слайдера
+            this.$root = this._createRoot();
             this.$root.addClass(this.opts.rootClass);
             this.$root.data('slider', this);
             sliders.push(this);
@@ -87,6 +91,7 @@
             return {
                 rootClass: 'slider-root',
                 listClass: 'slider-list',
+                listWrapperClass: 'slider-list-wrapper',
                 slideClass: 'slider-slide',
                 itemClass: 'slider-item',
 
@@ -102,10 +107,16 @@
             return $element;
         };
 
-        // Метод, возвращающий ссылку на объект-обертку
-        Slider.prototype._createRoot = function($element) {
-            $element.wrap('<div>');
-            return $element.parent();
+        // Метод, возвращающий ссылку на объект-обертку списка
+        Slider.prototype._createListWrapper = function() {
+            this.$list.wrap('<div>');
+            return this.$list.parent();
+        };
+
+        // Метод, возвращающий ссылку на объект-обертку слайдера
+        Slider.prototype._createRoot = function() {
+            this.$listWrapper.wrap('<div>');
+            return this.$listWrapper.parent();
         };
 
         // Метод, возвращающий массив ссылок на items

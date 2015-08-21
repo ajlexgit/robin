@@ -66,7 +66,7 @@
             if (this.opts.container) {
                 var $container = $(this.opts.container);
             } else {
-                $container = slider.$root
+                $container = slider.$listWrapper
             }
             return $container;
         };
