@@ -420,7 +420,7 @@ class GalleryBase(ModelChecksMixin, models.Model):
                 errors[item.pk] = ', '.join(item_errors)
                 continue
 
-            new_item.clean()
+            new_item.full_clean()
             new_item.save()
             new_item.after_copy(**kwargs)
             success[item.pk] = new_item.pk

@@ -71,7 +71,7 @@ def upload_pagephoto(request):
             'message': ', '.join(e.messages),
         }, status=400)
 
-    pagephoto.clean()
+    pagephoto.full_clean()
     pagephoto.save()
 
     return JsonResponse({
@@ -119,7 +119,7 @@ def upload_simplephoto(request):
             'message': ', '.join(e.messages),
         }, status=400)
 
-    simplephoto.clean()
+    simplephoto.full_clean()
     simplephoto.save()
 
     return JsonResponse({
