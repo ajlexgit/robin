@@ -39,6 +39,8 @@
         ).attachPlugin(
             new SliderNavigationPlugin()
         ).attachPlugin(
+            new SliderAutoscrollPlugin()
+        ).attachPlugin(
             new SliderSideAnimation({
                 speed: 1000
             })

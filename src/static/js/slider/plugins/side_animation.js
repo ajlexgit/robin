@@ -25,7 +25,6 @@
             var transitionSpeed = (this.opts.speed / 1000).toFixed(1) + 's';
             var transition = 'height ' + transitionSpeed;
             slider.$list.css('transition', transition);
-            console.log('set transition');
         };
 
         SideAnimation.prototype.beforeSlide = function(slider, $toSlide, instantly) {

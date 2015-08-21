@@ -78,14 +78,14 @@
             var $left = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowLeftClass)
-                .on('click.slider', function() {
+                .on('click.slider.controls', function() {
                     slider.slidePrevious();
                 });
 
             var $right = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowRightClass)
-                .on('click.slider', function() {
+                .on('click.slider.controls', function() {
                     slider.slideNext();
                 });
 
