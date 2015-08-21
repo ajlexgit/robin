@@ -7,22 +7,24 @@
             jquery.rared.js
 
         HTML input:
-            <div>
+            <div class="slider">
+                <img>
                 <img>
                 ...
             </div>
 
-        HTML output:
-            <div role="root">
-                <ul role="list">
-                    <li role="slide">
-                        <img role="item">
-                        <img role="item">
-                        ...
-                    </li>
-                    ...
-                </ul>
-            </div>
+        JS пример:
+            var slider = new Slider($elem, {
+                slideItems: 2
+            }).attachPlugin(
+                new SliderControlsPlugin()
+            ).attachPlugin(
+                new SliderNavigationPlugin()
+            ).attachPlugin(
+                new SliderSideAnimation({
+                    speed: 1000
+                })
+            );
     */
 
     var sliders = [];
