@@ -25,6 +25,7 @@
             var transitionSpeed = (this.opts.speed / 1000).toFixed(1) + 's';
             var transition = 'height ' + transitionSpeed;
             slider.$list.css('transition', transition);
+            console.log('set transition');
         };
 
         SideAnimation.prototype.beforeSlide = function(slider, $toSlide, instantly) {
@@ -49,7 +50,7 @@
          */
         SideAnimation.prototype.beforeUpdateListHeight = function(slider, instantly) {
             var current_transition = slider.$list.css('transition');
-            if (instantly && (current_transition != 'none')) {
+            if (instantly && current_transition && (current_transition != 'none')) {
                 this._old_transition = current_transition;
                 slider.$list.css('transition', 'none');
             }
