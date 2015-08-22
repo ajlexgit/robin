@@ -1,7 +1,7 @@
 import os
 import sys
 
-# JS slider: drag, fade animation
+# JS slider: drag, start slide
 
 # multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete

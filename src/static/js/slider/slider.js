@@ -19,24 +19,29 @@
                 adaptiveHeightTransition: 800,
                 slideItems: 2
             }).attachPlugin(
+                // стрелки управления
                 new SliderControlsPlugin({
                     animationName: 'side'
                 })
             ).attachPlugin(
+                // точки навигации
                 new SliderNavigationPlugin({
                     animationName: 'side'
                 })
             ).attachPlugin(
+                // автопрокрутка
                 new SliderAutoscrollPlugin({
                     direction: 'random',
                     interval: 3000,
                     animationName: 'fade'
                 })
             ).attachPlugin(
+                // анимация листания
                 new SliderSideAnimation({
                     slideMarginPercent:5
                 })
             ).attachPlugin(
+                // анимация исчезания
                 new SliderFadeAnimation()
             );
     */
