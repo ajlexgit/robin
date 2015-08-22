@@ -47,7 +47,8 @@
             })
         ).attachPlugin(
             new SliderSideAnimation({
-                speed: 800
+                speed: 800,
+                slideMarginPercent:5
             })
         );
     });

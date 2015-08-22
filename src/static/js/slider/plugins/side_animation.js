@@ -3,6 +3,7 @@
     window.SliderSideAnimation = (function(parent) {
         var defaults = {
             speed: 800,
+            slideMarginPercent: 0,
             easing: 'easeOutCubic'
         };
 
@@ -109,17 +110,18 @@
             slider.beforeSlide($toSlide);
 
             $toSlide.css({
-                left: '100%'
+                left: 100 + this.opts.slideMarginPercent + '%'
             });
             slider._setCurrentSlide($toSlide);
             slider.updateListHeight(forceListHeight);
 
+            var that =this;
             this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
                     this.from_initial = parseInt($fromSlide.get(0).style.left);
-                    this.from_diff = -100 - this.from_initial;
+                    this.from_diff = (-100 - that.opts.slideMarginPercent) - this.from_initial;
                     this.to_initial = parseInt($toSlide.get(0).style.left);
                     this.to_diff = -this.to_initial;
                 },
@@ -150,17 +152,18 @@
             slider.beforeSlide($toSlide);
 
             $toSlide.css({
-                left: '-100%'
+                left: -100 - this.opts.slideMarginPercent + '%'
             });
             slider._setCurrentSlide($toSlide);
             slider.updateListHeight(forceListHeight);
 
+            var that = this;
             this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
                     this.from_initial = parseInt($fromSlide.get(0).style.left);
-                    this.from_diff = 100 - this.from_initial;
+                    this.from_diff = (100 + that.opts.slideMarginPercent) - this.from_initial;
                     this.to_initial = parseInt($toSlide.get(0).style.left);
                     this.to_diff = -this.to_initial;
                 },
