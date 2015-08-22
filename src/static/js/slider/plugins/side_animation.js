@@ -2,6 +2,7 @@
 
     window.SliderSideAnimation = (function(parent) {
         var defaults = {
+            name: 'side',
             speed: 800,
             slideMarginPercent: 0,
             easing: 'easeOutCubic'
@@ -16,58 +17,11 @@
         _.prototype = parent.prototype;
         SideAnimation.prototype = new _;
 
-
-        /*
-            Добавление слайдеру флага анимирования для блокировки множественного нажатия
-         */
-        SideAnimation.prototype.onAttach = function(slider) {
-            slider._animated = false;
-        };
-
-        SideAnimation.prototype.beforeSlide = function(slider, $toSlide, instantly) {
-            slider._animated = true;
-        };
-
-        SideAnimation.prototype.afterSlide = function(slider, $toSlide, instantly) {
-            slider._animated = false;
-        };
-
-        /*
-            Останавливаем анимацию при изменении кол-ва элементов в слайде
-         */
-        SideAnimation.prototype.beforeSetSlideItems = function() {
-            if (this._animation) {
-                this._animation.stop(true)
-            }
-        };
-
-        /*
-            Реализация метода перехода от одного слайда к другому БЕЗ АНИМАЦИИ
-         */
-        SideAnimation.prototype.slideNowTo = function(slider, $toSlide, forceListHeight) {
-            if (slider._animated) {
-                return
-            }
-
-            slider.beforeSlide($toSlide, true);
-
-            slider.$slides.css({
-                left: ''
-            });
-            $toSlide.css({
-                left: '0'
-            });
-            slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(forceListHeight);
-
-            slider.afterSlide($toSlide, true);
-        };
-
         /*
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SideAnimation.prototype.slideTo = function(slider, $toSlide, forceListHeight) {
+        SideAnimation.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }
@@ -104,7 +58,7 @@
         /*
             Появление нового слайда справа от текущего
          */
-        SideAnimation.prototype.slideRight = function(slider, $toSlide, forceListHeight) {
+        SideAnimation.prototype.slideRight = function(slider, $toSlide, animatedHeight) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
@@ -113,7 +67,7 @@
                 left: 100 + this.opts.slideMarginPercent + '%'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(forceListHeight);
+            slider.updateListHeight(animatedHeight);
 
             var that =this;
             this._animation = $.animate({
@@ -146,7 +100,7 @@
         /*
             Появление нового слайда слева от текущего
          */
-        SideAnimation.prototype.slideLeft = function(slider, $toSlide, forceListHeight) {
+        SideAnimation.prototype.slideLeft = function(slider, $toSlide, animatedHeight) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
@@ -155,7 +109,7 @@
                 left: -100 - this.opts.slideMarginPercent + '%'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(forceListHeight);
+            slider.updateListHeight(animatedHeight);
 
             var that = this;
             this._animation = $.animate({

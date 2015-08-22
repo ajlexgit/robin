@@ -5,12 +5,19 @@
             arrowClass: 'slider-arrow',
             arrowLeftClass: 'slider-arrow-left',
             arrowRightClass: 'slider-arrow-right',
+
+            animationName: '',
+            animatedHeight: true,
             container: null
         };
 
         // Инициализация плагина
         var ControlsPlugin = function(settings) {
             this.opts = $.extend(true, defaults, settings);
+
+            if (!this.opts.animationName) {
+                console.error('Controls plugin must set animationName');
+            }
         };
 
         var _ = function() { this.constructor = ControlsPlugin; };
@@ -26,13 +33,14 @@
 
             this.createControls(slider);
 
+            var that = this;
             slider.slideNext = function() {
                 var $next = this.getNextSlide(this.$currentSlide);
                 if (!$next || !$next.length) {
                     return
                 }
 
-                this.slideTo($next);
+                this.slideTo($next, that.opts.animationName, that.opts.animatedHeight);
             };
 
             slider.slidePrevious = function() {
@@ -41,7 +49,7 @@
                     return
                 }
 
-                this.slideTo($prev);
+                this.slideTo($prev, that.opts.animationName, that.opts.animatedHeight);
             };
         };
 

@@ -37,13 +37,18 @@
             adaptiveHeightTransition: 800,
             slideItems: 2
         }).attachPlugin(
-            new SliderControlsPlugin()
+            new SliderControlsPlugin({
+                animationName: 'side'
+            })
         ).attachPlugin(
-            new SliderNavigationPlugin()
+            new SliderNavigationPlugin({
+                animationName: 'side'
+            })
         ).attachPlugin(
             new SliderAutoscrollPlugin({
                 direction: 'random',
-                animated: false
+                interval: 3000,
+                animationName: 'instant'
             })
         ).attachPlugin(
             new SliderSideAnimation({
