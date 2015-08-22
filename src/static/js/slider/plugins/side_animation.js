@@ -91,7 +91,6 @@
                     $fromSlide.css({
                         left: ''
                     });
-                    slider._animated = false;
                     slider.afterSlide($toSlide);
                 }
             });
@@ -133,7 +132,6 @@
                     $fromSlide.css({
                         left: ''
                     });
-                    slider._animated = false;
                     slider.afterSlide($toSlide);
                 }
             });

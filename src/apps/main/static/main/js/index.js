@@ -38,7 +38,7 @@
             slideItems: 2
         }).attachPlugin(
             new SliderControlsPlugin({
-                animationName: 'side'
+                animationName: 'fade'
             })
         ).attachPlugin(
             new SliderNavigationPlugin({
@@ -54,6 +54,10 @@
             new SliderSideAnimation({
                 speed: 800,
                 slideMarginPercent:5
+            })
+        ).attachPlugin(
+            new SliderFadeAnimation({
+                speed: 800
             })
         );
     });
