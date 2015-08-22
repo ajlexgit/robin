@@ -15,15 +15,29 @@
 
         JS пример:
             var slider = new Slider($elem, {
+                adaptiveHeight: true,
+                adaptiveHeightTransition: 800,
                 slideItems: 2
             }).attachPlugin(
-                new SliderControlsPlugin()
+                new SliderControlsPlugin({
+                    animationName: 'side'
+                })
             ).attachPlugin(
-                new SliderNavigationPlugin()
+                new SliderNavigationPlugin({
+                    animationName: 'side'
+                })
+            ).attachPlugin(
+                new SliderAutoscrollPlugin({
+                    direction: 'random',
+                    interval: 3000,
+                    animationName: 'fade'
+                })
             ).attachPlugin(
                 new SliderSideAnimation({
-                    speed: 1000
+                    slideMarginPercent:5
                 })
+            ).attachPlugin(
+                new SliderFadeAnimation()
             );
     */
 
