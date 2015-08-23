@@ -121,6 +121,7 @@
                 slideClass: 'slider-slide',
                 itemClass: 'slider-item',
 
+                initialActiveClass: 'active',
                 initialAnimationName: 'instant',
                 initialAnimatedHeight: false,
                 setSlideItemsAnimationName: 'instant',
@@ -235,6 +236,10 @@
 
         // Метод, возвращающий начально активный слайд
         Slider.prototype._getStartSlide = function() {
+            var $active = this.$items.filter('.' + this.opts.initialActiveClass);
+            if ($active.length) {
+                return $active.first().closest('.' + this.opts.slideClass);
+            }
             return this.$slides.first();
         };
 
