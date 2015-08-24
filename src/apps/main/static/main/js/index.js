@@ -35,7 +35,7 @@
         window.slider = new Slider($elem, {
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
-            slideItems: 2
+            slideItems: 1
         }).attachPlugin(
             new SliderControlsPlugin({
                 animationName: 'side'
@@ -44,13 +44,13 @@
             new SliderNavigationPlugin({
                 animationName: 'side'
             })
-        ).attachPlugin(
+        )/*.attachPlugin(
             new SliderAutoscrollPlugin({
                 direction: 'random',
                 interval: 3000,
                 animationName: 'fade'
             })
-        ).attachPlugin(
+        )*/.attachPlugin(
             new SliderSideAnimation({
                 slideMarginPercent:5
             })

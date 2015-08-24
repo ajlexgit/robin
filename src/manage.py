@@ -2,7 +2,6 @@ import os
 import sys
 
 # JS slider: drag
-# try to fontface mixin
 
 # multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete
