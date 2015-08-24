@@ -6,13 +6,13 @@ from solo.models import SingletonModel
 
 
 class SeoDataManager(models.Manager):
+    def get_for(self, obj):
+        ct = ContentType.objects.get_for_model(obj.__class__)
+        return self.model.objects.get(content_type=ct, object_id=obj.pk)
+
     def get_or_create_for(self, obj):
         ct = ContentType.objects.get_for_model(obj.__class__)
         return self.model.objects.get_or_create(content_type=ct, object_id=obj.pk)
-
-    def get_for(self, obj):
-        seodata, created = self.get_or_create_for(obj)
-        return seodata
 
 
 class SeoConfig(SingletonModel):
