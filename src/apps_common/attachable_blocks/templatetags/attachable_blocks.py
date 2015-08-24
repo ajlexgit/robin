@@ -1,7 +1,7 @@
 from django.template import Library
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
-from ..models import AttachableBlockRef
+from ..models import AttachableBlock, AttachableBlockRef
 from ..register import get_block_subclass
 from ..utils import get_block_view
 
@@ -38,3 +38,19 @@ def render_attached_blocks(context, entity, frame=0):
         )
 
     return ''.join(output)
+
+
+@register.simple_tag(takes_context=True)
+def render_attachable_block(context, block):
+    request = context.get('request')
+    if not request:
+        return ''
+
+    if not isinstance(block, AttachableBlock):
+        return ''
+
+    block_view = get_block_view(block)
+    if not block_view:
+        return ''
+
+    return block_view(request, block)
