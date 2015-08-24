@@ -22,7 +22,7 @@
             return {
                 animationName: '',
                 animatedHeight: true,
-                
+
                 wrapperClass: 'slider-navigation',
                 itemClass: 'slider-navigation-item',
                 activeItemClass: 'active',
