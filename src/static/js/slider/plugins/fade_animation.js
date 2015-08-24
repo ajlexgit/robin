@@ -6,13 +6,15 @@
             parent.call(this, settings);
         };
 
-        var _ = function() { this.constructor = FadeAnimation; };
+        var _ = function() {
+            this.constructor = FadeAnimation;
+        };
         _.prototype = parent.prototype;
         FadeAnimation.prototype = new _;
 
 
         // Настройки по умолчанию
-        FadeAnimation.prototype.getDefaultOpts = function () {
+        FadeAnimation.prototype.getDefaultOpts = function() {
             return {
                 name: 'fade',
                 speed: 800,

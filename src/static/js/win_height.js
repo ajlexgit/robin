@@ -12,7 +12,7 @@
             $.winHeight('.block', 0.9);      - разовая установка высоты на 90% высоты окна
             $('.block').winHeight(0.9);      - обновляемая высота d 90% высоты окна
 
-    */
+     */
 
     var winBlocks = [];
     var $window = $(window);
@@ -30,7 +30,7 @@
             $blocks = $($blocks);
         }
 
-        return $blocks.each(function () {
+        return $blocks.each(function() {
             var $block = $(this).height('auto');
             var block_height = $block.outerHeight();
             var final_height = Math.round(win_height * multiplier);
@@ -46,7 +46,7 @@
     }, 50));
 
     $.fn.winHeight = function(multiplier) {
-        return this.each(function () {
+        return this.each(function() {
             var $block = $(this);
 
             var winBlock = {

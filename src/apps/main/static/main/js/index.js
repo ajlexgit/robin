@@ -38,8 +38,20 @@
             adaptiveHeightTransition: 800,
             slideItems: 1
         }).attachPlugin(
+            new SliderSideAnimation({
+                speed: 800,
+                slideMarginPercent: 5
+            })
+        ).attachPlugin(
+            new SliderSideLoopAnimation({
+                speed: 800,
+                slideMarginPercent: 5
+            })
+        ).attachPlugin(
+            new SliderFadeAnimation()
+        ).attachPlugin(
             new SliderControlsPlugin({
-                animationName: 'side'
+                animationName: 'side-loop'
             })
         ).attachPlugin(
             new SliderNavigationPlugin({
@@ -51,13 +63,6 @@
                 interval: 3000,
                 animationName: 'fade'
             })
-        ).attachPlugin(
-            new SliderSideAnimation({
-                speed: 800,
-                slideMarginPercent:5
-            })
-        ).attachPlugin(
-            new SliderFadeAnimation()
         );
     });
 

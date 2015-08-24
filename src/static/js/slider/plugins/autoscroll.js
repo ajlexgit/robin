@@ -10,13 +10,15 @@
             }
         };
 
-        var _ = function() { this.constructor = AutoscrollPlugin; };
+        var _ = function() {
+            this.constructor = AutoscrollPlugin;
+        };
         _.prototype = parent.prototype;
         AutoscrollPlugin.prototype = new _;
 
 
         // Настройки по умолчанию
-        AutoscrollPlugin.prototype.getDefaultOpts = function () {
+        AutoscrollPlugin.prototype.getDefaultOpts = function() {
             return {
                 direction: 'next',  // next / prev / random
                 stopOnHover: true,
@@ -46,9 +48,9 @@
             // остановка таймера при наведении на слайдер
             if (this.opts.stopOnHover) {
                 var that = this;
-                slider.$root.on('mouseenter.slider.autoscroll', function () {
+                slider.$root.on('mouseenter.slider.autoscroll', function() {
                     that.stopTimer();
-                }).on('mouseleave.slider.autoscroll', function () {
+                }).on('mouseleave.slider.autoscroll', function() {
                     that.startTimer();
                 });
             }

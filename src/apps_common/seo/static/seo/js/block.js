@@ -15,11 +15,11 @@
                 height: endHeight
             }, {
                 duration: 800,
-                complete: function () {
+                complete: function() {
                     $hidden.height('');
                 }
             });
-        }).on('click', '.full-text', function () {
+        }).on('click', '.full-text', function() {
             var $self = $(this);
             var $hidden = $self.closest('.seo-text').find('.hidden-text');
             if (!$hidden.length) {
@@ -33,7 +33,7 @@
                 height: endHeight
             }, {
                 duration: 800,
-                complete: function () {
+                complete: function() {
                     $hidden.removeClass('hidden-text');
                     $self.addClass('hidden-text').height('');
                 }

@@ -36,7 +36,7 @@
         if (!$.isArray(background)) {
             background = String(background).split(',');
         }
-        background = background.map(function (item) {
+        background = background.map(function(item) {
             return parseInt(item);
         }).filter($.isNumeric).slice(0, 4);
 

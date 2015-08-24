@@ -6,13 +6,15 @@
             parent.call(this, settings);
         };
 
-        var _ = function() { this.constructor = SideAnimation; };
+        var _ = function() {
+            this.constructor = SideAnimation;
+        };
         _.prototype = parent.prototype;
         SideAnimation.prototype = new _;
 
 
         // Настройки по умолчанию
-        SideAnimation.prototype.getDefaultOpts = function () {
+        SideAnimation.prototype.getDefaultOpts = function() {
             return {
                 name: 'side',
                 speed: 800,
@@ -176,13 +178,13 @@
             this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
-                init: function () {
+                init: function() {
                     for (var i = 0; i < animations.length; i++) {
                         var animation_data = animations[i];
                         animation_data.diff = animation_data.to_left - animation_data.from_left;
                     }
                 },
-                step: function (eProgress) {
+                step: function(eProgress) {
                     for (var i = 0; i < animations.length; i++) {
                         var animation_data = animations[i];
                         var left = animation_data.from_left + animation_data.diff * eProgress;
@@ -191,7 +193,7 @@
                         })
                     }
                 },
-                complete: function () {
+                complete: function() {
                     for (var i = 0; i < (animations.length - 1); i++) {
                         var animation_data = animations[i];
                         animation_data.$animatedSlide.css({
@@ -212,27 +214,29 @@
     //  кратчайшему пути.
     //========================================================
     window.SliderSideLoopAnimation = (function(parent) {
-        var SideLoopAnimation = function (settings) {
-            this.opts = $.extend(true, defaults, settings);
+        var SideLoopAnimation = function(settings) {
+            parent.call(this, settings);
         };
 
-        var _ = function () { this.constructor = SideLoopAnimation; };
+        var _ = function() {
+            this.constructor = SideLoopAnimation;
+        };
         _.prototype = parent.prototype;
         SideLoopAnimation.prototype = new _;
 
 
         // Настройки по умолчанию
-        SideLoopAnimation.prototype.getDefaultOpts = function () {
+        SideLoopAnimation.prototype.getDefaultOpts = function() {
             var defaults = parent.prototype.getDefaultOpts.call(this);
             return $.extend(true, defaults, {
-                name: 'side-loop',
+                name: 'side-loop'
             });
         };
 
         /*
             Выбор направления анимации
          */
-        SideLoopAnimation.prototype.chooseSlideDirection = function (slider, $toSlide, animatedHeight, slide_info) {
+        SideLoopAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slider.opts.loop) {

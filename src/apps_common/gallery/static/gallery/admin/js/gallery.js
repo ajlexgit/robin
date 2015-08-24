@@ -9,7 +9,7 @@
         });
 
         if (window.Suit) {
-            Suit.after_inline.register('gallery', function (inline_prefix, row) {
+            Suit.after_inline.register('gallery', function(inline_prefix, row) {
                 $(row).find('.gallery-standart').gallery();
             });
         }

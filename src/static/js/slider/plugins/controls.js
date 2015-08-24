@@ -10,13 +10,15 @@
             }
         };
 
-        var _ = function() { this.constructor = ControlsPlugin; };
+        var _ = function() {
+            this.constructor = ControlsPlugin;
+        };
         _.prototype = parent.prototype;
         ControlsPlugin.prototype = new _;
 
 
         // Настройки по умолчанию
-        ControlsPlugin.prototype.getDefaultOpts = function () {
+        ControlsPlugin.prototype.getDefaultOpts = function() {
             return {
                 arrowClass: 'slider-arrow',
                 arrowLeftClass: 'slider-arrow-left',

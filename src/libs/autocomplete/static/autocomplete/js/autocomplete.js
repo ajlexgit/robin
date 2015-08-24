@@ -16,7 +16,7 @@
             }
 
             var parents = parent_ids.map(function(parent_id) {
-                return $('#id_' + parent_id).on('change', function () {
+                return $('#id_' + parent_id).on('change', function() {
                     self.change();
                 });
             });
@@ -32,7 +32,7 @@
                     type: 'POST',
                     quietMillis: 100,
                     dataType: 'json',
-                    data: function (term, page, page_limit) {
+                    data: function(term, page, page_limit) {
                         var data = {
                             q: term,
                             page_limit: page_limit || 30,
@@ -47,7 +47,7 @@
                         }
                         return data;
                     },
-                    results: function (data, page) {
+                    results: function(data, page) {
                         return {
                             results: data.result,
                             more: (page * 30) < data.total
@@ -72,7 +72,7 @@
                             type: 'POST',
                             dataType: "json",
                             data: data,
-                            success: function (response) {
+                            success: function(response) {
                                 if (self_data.multiple) {
                                     response = response.result;
                                 } else {
@@ -85,7 +85,7 @@
                     }
                 },
                 dropdownCssClass: "bigdrop",
-                escapeMarkup: function (m) {
+                escapeMarkup: function(m) {
                     return m;
                 }
             });
@@ -101,7 +101,7 @@
         });
 
         if (window.Suit) {
-            Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row){
+            Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
                 bind_autocomplete_widget(row.find('.autocomplete_widget'));
             });
         }

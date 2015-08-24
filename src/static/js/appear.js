@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
 
     /*
         Добавляет события видимости элемента.
@@ -10,7 +10,7 @@
             $('#block').appear().on('appear', function() {
                 $(this).addClass('visible');
             });
-    */
+     */
 
     var appear_blocks = [];
 
@@ -34,7 +34,7 @@
         var vpWidth = document.documentElement.clientWidth,
             vpHeight = document.documentElement.clientHeight;
 
-        for(var i=0, l=appear_blocks.length; i<l; i++) {
+        for (var i = 0, l = appear_blocks.length; i < l; i++) {
             var appear_block = appear_blocks[i],
                 settings = appear_block.settings,
                 rect = appear_block.element.getBoundingClientRect(),

@@ -10,13 +10,15 @@
             }
         };
 
-        var _ = function() { this.constructor = NavigationPlugin; };
+        var _ = function() {
+            this.constructor = NavigationPlugin;
+        };
         _.prototype = parent.prototype;
         NavigationPlugin.prototype = new _;
 
 
         // Настройки по умолчанию
-        NavigationPlugin.prototype.getDefaultOpts = function () {
+        NavigationPlugin.prototype.getDefaultOpts = function() {
             return {
                 wrapperClass: 'slider-navigation',
                 itemClass: 'slider-navigation-item',
@@ -86,10 +88,10 @@
             var $wrapper = $('<div/>').addClass(this.opts.wrapperClass);
             this.$container.append($wrapper);
 
-            for(var i=0;i<slider.$slides.length;i++) {
+            for (var i = 0; i < slider.$slides.length; i++) {
                 var $item = $('<a>').addClass(this.opts.itemClass)
                     .data('slideIndex', i)
-                    .text(i+1);
+                    .text(i + 1);
                 $wrapper.append($item);
             }
 

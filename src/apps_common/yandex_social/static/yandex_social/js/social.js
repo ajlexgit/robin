@@ -2,7 +2,7 @@
 
     /*
         Соцкнопки Яндекс.Поделиться.
-    */
+     */
 
     $.fn.socialButtons = function(options) {
         if (arguments[0] == 'update') {
@@ -110,7 +110,7 @@
     // Динамически подключаем скрипт
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
-    script.onreadystatechange = function () {
+    script.onreadystatechange = function() {
         if (this.readyState == 'complete') {
             init();
         }

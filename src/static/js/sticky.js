@@ -11,7 +11,7 @@
             windowTopOffset         - расстояние от верха окна до ползающего блока
             containerBottomOffset   - расстояние от низа родительского блока
                                       до ползающего блока
-    */
+     */
 
     var userAgent = window.navigator.userAgent.toLowerCase(),
         ios = /iphone|ipod|ipad/.test(userAgent);
@@ -109,7 +109,7 @@
     };
 
     var scrollHandler = function() {
-        for (var i= 0, l=stickies.length; i<l; i++) {
+        for (var i = 0, l = stickies.length; i < l; i++) {
             processSticky(stickies[i]);
         }
     };
@@ -137,7 +137,7 @@
             $(document).off('.sticky');
             $window.off('load.sticky');
 
-            $.each(stickies, function (index, sticky) {
+            $.each(stickies, function(index, sticky) {
                 sticky.$block.css({
                     position: 'static',
                     width: ''

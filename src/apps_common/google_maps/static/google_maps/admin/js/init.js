@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
 
     // Получение координат из строки "lng, lat"
     var text2coords = function(text) {

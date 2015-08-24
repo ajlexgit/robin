@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
     var map_index = 0;
 
     var YandexMap = function($map) {
@@ -31,7 +31,7 @@
         $(document).trigger('yandex-maps-ready');
     };
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         var lang = $(document.documentElement).attr('lang');
         var script = document.createElement('script');
         script.src = '//api-maps.yandex.ru/2.0-stable/?load=package.standard&onload=init_yandex_maps&lang=' + lang;

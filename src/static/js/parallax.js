@@ -7,20 +7,20 @@
         Требует:
             jquery.rared.js, jquery.animation.js
 
-        <div id="block">
+        Пример:
+            <div id="block">
             <div class="parallax" style="background-image: url(../img/bg.jpg)"></div>
 
             ...
-        </div>
+            </div>
 
-
-        $(document).ready(function () {
-            $('#block').parallax({
-                enlarge: 400,
-                intensity: 0.5
+            $(document).ready(function() {
+                $('#block').parallax({
+                    enlarge: 400,
+                    intensity: 0.5
+                });
             });
-        });
-    */
+     */
 
     var enabled = false;
     var parallaxImages = [];
@@ -86,7 +86,7 @@
 
     $window.on('resize.parallax', $.rared(function() {
         if (enabled) {
-            $.each(parallaxImages, function (index, parallaxImage) {
+            $.each(parallaxImages, function(index, parallaxImage) {
                 recalcParallax(parallaxImage);
             });
 
@@ -96,7 +96,7 @@
                 $(document).off('.parallax');
                 $window.off('load.parallax');
 
-                $.each(parallaxImages, function (index, parallaxImage) {
+                $.each(parallaxImages, function(index, parallaxImage) {
                     parallaxImage.background.css({
                         transform: '',
                         height: ''
@@ -104,7 +104,7 @@
                 });
             }
         } else if (window.innerWidth >= $.parallax.min_width) {
-            $.each(parallaxImages, function (index, parallaxImage) {
+            $.each(parallaxImages, function(index, parallaxImage) {
                 recalcParallax(parallaxImage);
             });
 
