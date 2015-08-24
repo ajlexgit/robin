@@ -128,6 +128,8 @@ SUIT_CONFIG = {
                 'seoconfig',
             ),
         },
+        '-',
+        '-',
     ),
 }
 
