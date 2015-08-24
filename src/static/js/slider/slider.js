@@ -15,34 +15,36 @@
 
         JS пример:
             var slider = new Slider($elem, {
+                loop: true,
                 adaptiveHeight: true,
                 adaptiveHeightTransition: 800,
-                slideItems: 2
+                slideItems: 1
             }).attachPlugin(
-                // стрелки управления
-                new SliderControlsPlugin({
-                    animationName: 'side'
+                new SliderSideAnimation({
+                    speed: 800,
+                    slideMarginPercent: 5
                 })
             ).attachPlugin(
-                // точки навигации
+                new SliderSideLoopAnimation({
+                    speed: 800,
+                    slideMarginPercent: 5
+                })
+            ).attachPlugin(
+                new SliderFadeAnimation()
+            ).attachPlugin(
+                new SliderControlsPlugin({
+                    animationName: 'side-loop'
+                })
+            ).attachPlugin(
                 new SliderNavigationPlugin({
                     animationName: 'side'
                 })
             ).attachPlugin(
-                // автопрокрутка
                 new SliderAutoscrollPlugin({
                     direction: 'random',
                     interval: 3000,
                     animationName: 'fade'
                 })
-            ).attachPlugin(
-                // анимация листания
-                new SliderSideAnimation({
-                    slideMarginPercent:5
-                })
-            ).attachPlugin(
-                // анимация исчезания
-                new SliderFadeAnimation()
             );
     */
 
