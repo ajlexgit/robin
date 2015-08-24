@@ -4,7 +4,7 @@
         Основа слайдеров.
 
         Требует:
-            jquery.rared.js
+            jquery.rared.js, jquery.animation.js
 
         HTML input:
             <div class="slider">
