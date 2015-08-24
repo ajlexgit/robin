@@ -1,19 +1,9 @@
 (function($) {
 
     window.SliderControlsPlugin = (function(parent) {
-        var defaults = {
-            arrowClass: 'slider-arrow',
-            arrowLeftClass: 'slider-arrow-left',
-            arrowRightClass: 'slider-arrow-right',
-
-            animationName: '',
-            animatedHeight: true,
-            container: null
-        };
-
         // Инициализация плагина
         var ControlsPlugin = function(settings) {
-            this.opts = $.extend(true, defaults, settings);
+            parent.call(this, settings);
 
             if (!this.opts.animationName) {
                 console.error('Controls plugin must set animationName');
@@ -24,6 +14,19 @@
         _.prototype = parent.prototype;
         ControlsPlugin.prototype = new _;
 
+
+        // Настройки по умолчанию
+        ControlsPlugin.prototype.getDefaultOpts = function () {
+            return {
+                arrowClass: 'slider-arrow',
+                arrowLeftClass: 'slider-arrow-left',
+                arrowRightClass: 'slider-arrow-right',
+
+                animationName: '',
+                animatedHeight: true,
+                container: null
+            };
+        };
 
         /*
             Создание стрелок при подключении плагина

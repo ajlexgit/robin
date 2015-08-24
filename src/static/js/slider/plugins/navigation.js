@@ -1,19 +1,9 @@
 (function($) {
 
     window.SliderNavigationPlugin = (function(parent) {
-        var defaults = {
-            wrapperClass: 'slider-navigation',
-            itemClass: 'slider-navigation-item',
-            activeItemClass: 'active',
-
-            animationName: '',
-            animatedHeight: true,
-            container: null
-        };
-
         // Инициализация плагина
         var NavigationPlugin = function(settings) {
-            this.opts = $.extend(true, defaults, settings);
+            parent.call(this, settings);
 
             if (!this.opts.animationName) {
                 console.error('Navigation plugin must set animationName');
@@ -24,6 +14,19 @@
         _.prototype = parent.prototype;
         NavigationPlugin.prototype = new _;
 
+
+        // Настройки по умолчанию
+        NavigationPlugin.prototype.getDefaultOpts = function () {
+            return {
+                wrapperClass: 'slider-navigation',
+                itemClass: 'slider-navigation-item',
+                activeItemClass: 'active',
+
+                animationName: '',
+                animatedHeight: true,
+                container: null
+            };
+        };
 
         /*
             Создание кнопок при подключении плагина

@@ -496,7 +496,9 @@
     //            Базовый класс анимации
     // ================================================
     window.SliderPlugin = (function() {
-        var SliderPlugin = function(settings) {};
+        var SliderPlugin = function(settings) {
+            this.opts = $.extend(true, this.getDefaultOpts(), settings);
+        };
 
         // Настройки по умолчанию
         SliderPlugin.prototype.getDefaultOpts = function() {
@@ -516,13 +518,9 @@
     //          Плагин мгновенной анимации
     // ================================================
     window.SliderInstantAnimation = (function(parent) {
-        var defaults = {
-            name: 'instant'
-        };
-
         // Инициализация плагина
         var InstantAnimation = function(settings) {
-            this.opts = $.extend(true, defaults, settings);
+            this.opts = $.extend(true, this.getDefaultOpts(), settings);
         };
 
         var _ = function() {
@@ -530,6 +528,14 @@
         };
         _.prototype = parent.prototype;
         InstantAnimation.prototype = new _;
+
+
+        // Настройки по умолчанию
+        InstantAnimation.prototype.getDefaultOpts = function() {
+            return {
+                name: 'instant'
+            };
+        };
 
         /*
             Реализация метода перехода от одного слайда к другому

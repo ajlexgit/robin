@@ -1,18 +1,9 @@
 (function($) {
 
     window.SliderAutoscrollPlugin = (function(parent) {
-        var defaults = {
-            direction: 'next',  // next / prev / random
-            stopOnHover: true,
-            interval: 3000,
-
-            animationName: '',
-            animatedHeight: true
-        };
-
         // Инициализация плагина
         var AutoscrollPlugin = function(settings) {
-            this.opts = $.extend(true, defaults, settings);
+            parent.call(this, settings);
 
             if (!this.opts.animationName) {
                 console.error('Autoscroll plugin must set animationName');
@@ -23,6 +14,18 @@
         _.prototype = parent.prototype;
         AutoscrollPlugin.prototype = new _;
 
+
+        // Настройки по умолчанию
+        AutoscrollPlugin.prototype.getDefaultOpts = function () {
+            return {
+                direction: 'next',  // next / prev / random
+                stopOnHover: true,
+                interval: 3000,
+
+                animationName: '',
+                animatedHeight: true
+            };
+        };
 
         /*
             Создание кнопок при подключении плагина

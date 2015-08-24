@@ -1,20 +1,24 @@
 (function($) {
 
     window.SliderFadeAnimation = (function(parent) {
-        var defaults = {
-            name: 'fade',
-            speed: 800,
-            easing: 'linear'
-        };
-
         // Инициализация плагина
         var FadeAnimation = function(settings) {
-            this.opts = $.extend(true, defaults, settings);
+            parent.call(this, settings);
         };
 
         var _ = function() { this.constructor = FadeAnimation; };
         _.prototype = parent.prototype;
         FadeAnimation.prototype = new _;
+
+
+        // Настройки по умолчанию
+        FadeAnimation.prototype.getDefaultOpts = function () {
+            return {
+                name: 'fade',
+                speed: 800,
+                easing: 'linear'
+            };
+        };
 
         /*
             Реализация метода перехода от одного слайда к другому

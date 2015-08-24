@@ -1,22 +1,26 @@
 (function($) {
 
     window.SliderSideAnimation = (function(parent) {
-        var defaults = {
-            name: 'side',
-            speed: 800,
-            showIntermediate: true,
-            slideMarginPercent: 0,
-            easing: 'easeOutCubic'
-        };
-
         // Инициализация плагина
         var SideAnimation = function(settings) {
-            this.opts = $.extend(true, defaults, settings);
+            parent.call(this, settings);
         };
 
         var _ = function() { this.constructor = SideAnimation; };
         _.prototype = parent.prototype;
         SideAnimation.prototype = new _;
+
+
+        // Настройки по умолчанию
+        SideAnimation.prototype.getDefaultOpts = function () {
+            return {
+                name: 'side',
+                speed: 800,
+                showIntermediate: true,
+                slideMarginPercent: 0,
+                easing: 'easeOutCubic'
+            };
+        };
 
         /*
             Реализация метода перехода от одного слайда к другому
@@ -46,26 +50,12 @@
         SideAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
-            if (slider.opts.loop) {
-                var slides_count = slider.$slides.length;
-                var right_way = diff + (diff > 0 ? 0 : slides_count);
-                var left_way = (diff > 0 ? slides_count : 0) - diff;
-
-                if (left_way < right_way) {
-                    slide_info.count = left_way;
-                    this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
-                } else {
-                    slide_info.count = right_way;
-                    this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
-                }
+            if (slide_info.toIndex > slide_info.fromIndex) {
+                slide_info.count = diff;
+                this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
             } else {
-                if (slide_info.toIndex > slide_info.fromIndex) {
-                    slide_info.count = diff;
-                    this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
-                } else {
-                    slide_info.count = -diff;
-                    this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
-                }
+                slide_info.count = -diff;
+                this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
             }
         };
 
@@ -215,5 +205,60 @@
 
         return SideAnimation;
     })(SliderPlugin);
+
+
+    //========================================================
+    //  Анимация, выбирающая для направление, соответствующее
+    //  кратчайшему пути.
+    //========================================================
+    window.SliderSideLoopAnimation = (function(parent) {
+        var SideLoopAnimation = function (settings) {
+            this.opts = $.extend(true, defaults, settings);
+        };
+
+        var _ = function () { this.constructor = SideLoopAnimation; };
+        _.prototype = parent.prototype;
+        SideLoopAnimation.prototype = new _;
+
+
+        // Настройки по умолчанию
+        SideLoopAnimation.prototype.getDefaultOpts = function () {
+            var defaults = parent.prototype.getDefaultOpts.call(this);
+            return $.extend(true, defaults, {
+                name: 'side-loop',
+            });
+        };
+
+        /*
+            Выбор направления анимации
+         */
+        SideLoopAnimation.prototype.chooseSlideDirection = function (slider, $toSlide, animatedHeight, slide_info) {
+            var diff = slide_info.toIndex - slide_info.fromIndex;
+
+            if (slider.opts.loop) {
+                var slides_count = slider.$slides.length;
+                var right_way = diff + (diff > 0 ? 0 : slides_count);
+                var left_way = (diff > 0 ? slides_count : 0) - diff;
+
+                if (left_way < right_way) {
+                    slide_info.count = left_way;
+                    this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
+                } else {
+                    slide_info.count = right_way;
+                    this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
+                }
+            } else {
+                if (slide_info.toIndex > slide_info.fromIndex) {
+                    slide_info.count = diff;
+                    this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
+                } else {
+                    slide_info.count = -diff;
+                    this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
+                }
+            }
+        };
+
+        return SideLoopAnimation;
+    })(SliderSideAnimation);
 
 })(jQuery);
