@@ -20,12 +20,13 @@
         // Настройки по умолчанию
         NavigationPlugin.prototype.getDefaultOpts = function() {
             return {
+                animationName: '',
+                animatedHeight: true,
+                
                 wrapperClass: 'slider-navigation',
                 itemClass: 'slider-navigation-item',
                 activeItemClass: 'active',
 
-                animationName: '',
-                animatedHeight: true,
                 container: null
             };
         };

@@ -20,12 +20,12 @@
         // Настройки по умолчанию
         AutoscrollPlugin.prototype.getDefaultOpts = function() {
             return {
+                animationName: '',
+                animatedHeight: true,
+
                 direction: 'next',  // next / prev / random
                 stopOnHover: true,
-                interval: 3000,
-
-                animationName: '',
-                animatedHeight: true
+                interval: 3000
             };
         };
 

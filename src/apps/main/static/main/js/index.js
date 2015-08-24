@@ -59,9 +59,9 @@
             })
         ).attachPlugin(
             new SliderAutoscrollPlugin({
+                animationName: 'fade',
                 direction: 'random',
-                interval: 3000,
-                animationName: 'fade'
+                interval: 3000
             })
         );
     });

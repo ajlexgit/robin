@@ -20,12 +20,13 @@
         // Настройки по умолчанию
         ControlsPlugin.prototype.getDefaultOpts = function() {
             return {
+                animationName: '',
+                animatedHeight: true,
+
                 arrowClass: 'slider-arrow',
                 arrowLeftClass: 'slider-arrow-left',
                 arrowRightClass: 'slider-arrow-right',
 
-                animationName: '',
-                animatedHeight: true,
                 container: null
             };
         };
