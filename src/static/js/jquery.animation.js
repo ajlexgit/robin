@@ -49,7 +49,7 @@
         var Animation = function(settings) {
             this.opts = $.extend({
                 duration: 1000,
-                delay: 40,
+                delay: 20,
                 easing: 'linear',
                 paused: false,
 

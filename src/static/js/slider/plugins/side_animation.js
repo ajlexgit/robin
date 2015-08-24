@@ -31,14 +31,21 @@
                 fromIndex: slider.$slides.index(slider.$currentSlide),
                 toIndex: slider.$slides.index($toSlide)
             };
-            var diff = slide_info.toIndex - slide_info.fromIndex;
 
             // тот же слайд?
             if (slide_info.fromIndex == slide_info.toIndex) {
                 return
             }
 
-            // определяем направление
+            this.chooseSlideDirection(slider, $toSlide, animatedHeight, slide_info);
+        };
+
+        /*
+            Выбор направления анимации
+         */
+        SideAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+            var diff = slide_info.toIndex - slide_info.fromIndex;
+
             if (slider.opts.loop) {
                 var slides_count = slider.$slides.length;
                 var right_way = diff + (diff > 0 ? 0 : slides_count);

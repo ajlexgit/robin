@@ -41,6 +41,7 @@
 
             slider._animation = $.animate({
                 duration: this.opts.speed,
+                delay: 50,
                 easing: this.opts.easing,
                 step: function(eProgress) {
                     $fromSlide.css({

@@ -33,6 +33,7 @@
         var $elem = $('.slider');
 
         window.slider = new Slider($elem, {
+            loop: true,
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
             slideItems: 1
@@ -44,14 +45,15 @@
             new SliderNavigationPlugin({
                 animationName: 'side'
             })
-        )/*.attachPlugin(
+        ).attachPlugin(
             new SliderAutoscrollPlugin({
                 direction: 'random',
                 interval: 3000,
                 animationName: 'fade'
             })
-        )*/.attachPlugin(
+        ).attachPlugin(
             new SliderSideAnimation({
+                speed: 800,
                 slideMarginPercent:5
             })
         ).attachPlugin(
