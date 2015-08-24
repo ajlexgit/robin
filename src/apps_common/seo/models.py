@@ -6,9 +6,13 @@ from solo.models import SingletonModel
 
 
 class SeoDataManager(models.Manager):
-    def get_for(self, obj):
+    def get_or_create_for(self, obj):
         ct = ContentType.objects.get_for_model(obj.__class__)
-        return self.model.objects.get(content_type=ct, object_id=obj.pk)
+        return self.model.objects.get_or_create(content_type=ct, object_id=obj.pk)
+
+    def get_for(self, obj):
+        seodata, created = self.get_or_create_for(obj)
+        return seodata
 
 
 class SeoConfig(SingletonModel):
@@ -28,6 +32,7 @@ class SeoData(models.Model):
     title = models.CharField(_('title'), max_length=128, blank=True)
     keywords = models.TextField(_('keywords'), max_length=255, blank=True)
     description = models.TextField(_('description'), max_length=160, blank=True)
+    text_title = models.CharField('text title', max_length=128, blank=True)
     text = models.TextField(_('text'), blank=True)
 
     objects = SeoDataManager()
@@ -36,6 +41,9 @@ class SeoData(models.Model):
         verbose_name = _('SEO data')
         verbose_name_plural = _('SEO data')
         unique_together = ('content_type', 'object_id')
+
+    def __str__(self):
+        return 'SeoData for %s(#%s)' % (self.content_type.name, self.object_id)
 
 
 class Counter(models.Model):
