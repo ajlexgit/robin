@@ -203,6 +203,7 @@ PIPELINE_JS = {
             'js/parallax.js',
             'js/slider/slider.js',
             'js/slider/plugins/side_animation.js',
+            'js/slider/plugins/fade_animation.js',
             'js/slider/plugins/autoscroll.js',
             'js/slider/plugins/navigation.js',
             'js/slider/plugins/controls.js',

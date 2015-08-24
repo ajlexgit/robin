@@ -5,12 +5,19 @@
             wrapperClass: 'slider-navigation',
             itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
+
+            animationName: '',
+            animatedHeight: true,
             container: null
         };
 
         // Инициализация плагина
         var NavigationPlugin = function(settings) {
             this.opts = $.extend(true, defaults, settings);
+
+            if (!this.opts.animationName) {
+                console.error('Navigation plugin must set animationName');
+            }
         };
 
         var _ = function() { this.constructor = NavigationPlugin; };
@@ -22,13 +29,15 @@
             Создание кнопок при подключении плагина
          */
         NavigationPlugin.prototype.onAttach = function(slider) {
+            parent.prototype.onAttach.call(this, slider);
+
             this.createNavigation(slider);
         };
 
         /*
             Установка активной кнопки перед переходом к слайду
          */
-        NavigationPlugin.prototype.beforeSlide = function(slider, $toSlide, instantly) {
+        NavigationPlugin.prototype.beforeSlide = function(slider, $toSlide) {
             this.activateNavigationItemBySlide(slider, $toSlide);
         };
 
@@ -81,10 +90,11 @@
                 $wrapper.append($item);
             }
 
+            var that = this;
             $wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
-                slider.slideTo(slider.$slides.eq(slideIndex));
+                slider.slideTo(slider.$slides.eq(slideIndex), that.opts.animationName, that.opts.animatedHeight);
             });
         };
 

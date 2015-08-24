@@ -4,13 +4,19 @@
         var defaults = {
             direction: 'next',  // next / prev / random
             stopOnHover: true,
-            animated: true,
-            interval: 3000
+            interval: 3000,
+
+            animationName: '',
+            animatedHeight: true
         };
 
         // Инициализация плагина
         var AutoscrollPlugin = function(settings) {
             this.opts = $.extend(true, defaults, settings);
+
+            if (!this.opts.animationName) {
+                console.error('Autoscroll plugin must set animationName');
+            }
         };
 
         var _ = function() { this.constructor = AutoscrollPlugin; };
@@ -22,6 +28,8 @@
             Создание кнопок при подключении плагина
          */
         AutoscrollPlugin.prototype.onAttach = function(slider) {
+            parent.prototype.onAttach.call(this, slider);
+
             if (this.opts.direction == 'prev') {
                 this._timerHandler = $.proxy(this.slideToPrev, this, slider);
             } else if (this.opts.direction == 'random') {
@@ -30,19 +38,12 @@
                 this._timerHandler = $.proxy(this.slideToNext, this, slider);
             }
 
-            // анимированный переход или нет
-            if (this.opts.animated) {
-                this._slideTo = $.proxy(slider.slideTo, slider);
-            } else {
-                this._slideTo = $.proxy(slider.slideNowTo, slider);
-            }
-
             this.startTimer(slider);
 
             // остановка таймера при наведении на слайдер
             if (this.opts.stopOnHover) {
                 var that = this;
-                slider.$listWrapper.on('mouseenter.slider.autoscroll', function () {
+                slider.$root.on('mouseenter.slider.autoscroll', function () {
                     that.stopTimer();
                 }).on('mouseleave.slider.autoscroll', function () {
                     that.startTimer();
@@ -80,7 +81,7 @@
                 return
             }
 
-            this._slideTo($next);
+            slider.slideTo($next, this.opts.animationName, this.opts.animatedHeight);
         };
 
         /*
@@ -92,7 +93,7 @@
                 return
             }
 
-            this._slideTo($prev);
+            slider.slideTo($prev, this.opts.animationName, this.opts.animatedHeight);
         };
 
         /*
@@ -103,7 +104,8 @@
             var random_index = Math.floor(Math.random() * (slides_count - 1));
             var current_index = slider.$slides.index(slider.$currentSlide);
             var final_index = (random_index < current_index) ? random_index : random_index + 1;
-            this._slideTo(slider.$slides.eq(final_index));
+
+            slider.slideTo(slider.$slides.eq(final_index), this.opts.animationName, this.opts.animatedHeight);
         };
 
         return AutoscrollPlugin;

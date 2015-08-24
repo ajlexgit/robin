@@ -2,7 +2,9 @@
 
     window.SliderSideAnimation = (function(parent) {
         var defaults = {
-            speed: 300,
+            name: 'side',
+            speed: 800,
+            slideMarginPercent: 0,
             easing: 'easeOutCubic'
         };
 
@@ -15,80 +17,11 @@
         _.prototype = parent.prototype;
         SideAnimation.prototype = new _;
 
-
-        /*
-            Добавление слайдеру флага анимирования для блокировки множественного нажатия
-         */
-        SideAnimation.prototype.onAttach = function(slider) {
-            slider._animated = false;
-
-            var transitionSpeed = (this.opts.speed / 1000).toFixed(1) + 's';
-            var transition = 'height ' + transitionSpeed;
-            slider.$list.css('transition', transition);
-        };
-
-        SideAnimation.prototype.beforeSlide = function(slider, $toSlide, instantly) {
-            slider._animated = true;
-        };
-
-        SideAnimation.prototype.afterSlide = function(slider, $toSlide, instantly) {
-            slider._animated = false;
-        };
-
-        /*
-            Останавливаем анимацию при изменении кол-ва элементов в слайде
-         */
-        SideAnimation.prototype.beforeSetSlideItems = function() {
-            if (this._animation) {
-                this._animation.stop(true)
-            }
-        };
-
-        /*
-            Обеспечиваем моментальную смену высоты, когда это необходимо
-         */
-        SideAnimation.prototype.beforeUpdateListHeight = function(slider, forced) {
-            var current_transition = slider.$list.css('transition');
-            if (forced && current_transition && (current_transition != 'none')) {
-                this._old_transition = current_transition;
-                slider.$list.css('transition', 'none');
-            }
-        };
-
-        SideAnimation.prototype.afterUpdateListHeight = function(slider, forced) {
-            if (forced && this._old_transition) {
-                slider.$list.css('transition', this._old_transition);
-                this._old_transition = null;
-            }
-        };
-
-        /*
-            Реализация метода перехода от одного слайда к другому БЕЗ АНИМАЦИИ
-         */
-        SideAnimation.prototype.slideNowTo = function(slider, $toSlide, forceListHeight) {
-            if (slider._animated) {
-                return
-            }
-
-            slider.beforeSlide($toSlide, true);
-
-            slider.$slides.css({
-                left: ''
-            });
-            $toSlide.css({
-                left: '0'
-            });
-            slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(forceListHeight);
-
-            slider.afterSlide($toSlide, true);
-        };
-
         /*
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SideAnimation.prototype.slideTo = function(slider, $toSlide, forceListHeight) {
+        SideAnimation.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }
@@ -125,36 +58,39 @@
         /*
             Появление нового слайда справа от текущего
          */
-        SideAnimation.prototype.slideRight = function(slider, $toSlide, forceListHeight) {
+        SideAnimation.prototype.slideRight = function(slider, $toSlide, animatedHeight) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
 
             $toSlide.css({
-                left: '100%'
+                left: 100 + this.opts.slideMarginPercent + '%'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(forceListHeight);
+            slider.updateListHeight(animatedHeight);
 
+            var that =this;
             this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
                     this.from_initial = parseInt($fromSlide.get(0).style.left);
-                    this.from_diff = -100 - this.from_initial;
-
+                    this.from_diff = (-100 - that.opts.slideMarginPercent) - this.from_initial;
                     this.to_initial = parseInt($toSlide.get(0).style.left);
                     this.to_diff = -this.to_initial;
                 },
                 step: function(eProgress) {
-                    $fromSlide.css('left', this.from_initial + this.from_diff * eProgress + '%');
-                    $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
+                    var fromLeft = this.from_initial + this.from_diff * eProgress + '%';
+                    var toLeft = this.to_initial + this.to_diff * eProgress + '%';
+                    $.animation_frame(function() {
+                        $fromSlide.css('left', fromLeft);
+                        $toSlide.css('left', toLeft);
+                    }, slider.$list.get(0))();
                 },
                 complete: function() {
                     $fromSlide.css({
                         left: ''
                     });
-                    slider._animated = false;
                     slider.afterSlide($toSlide);
                 }
             });
@@ -163,36 +99,39 @@
         /*
             Появление нового слайда слева от текущего
          */
-        SideAnimation.prototype.slideLeft = function(slider, $toSlide, forceListHeight) {
+        SideAnimation.prototype.slideLeft = function(slider, $toSlide, animatedHeight) {
             var $fromSlide = slider.$currentSlide;
 
             slider.beforeSlide($toSlide);
 
             $toSlide.css({
-                left: '-100%'
+                left: -100 - this.opts.slideMarginPercent + '%'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(forceListHeight);
+            slider.updateListHeight(animatedHeight);
 
+            var that = this;
             this._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
                     this.from_initial = parseInt($fromSlide.get(0).style.left);
-                    this.from_diff = 100 - this.from_initial;
-
+                    this.from_diff = (100 + that.opts.slideMarginPercent) - this.from_initial;
                     this.to_initial = parseInt($toSlide.get(0).style.left);
                     this.to_diff = -this.to_initial;
                 },
                 step: function(eProgress) {
-                    $fromSlide.css('left', this.from_initial + this.from_diff * eProgress + '%');
-                    $toSlide.css('left', this.to_initial + this.to_diff * eProgress + '%');
+                    var fromLeft = this.from_initial + this.from_diff * eProgress + '%';
+                    var toLeft = this.to_initial + this.to_diff * eProgress + '%';
+                    $.animation_frame(function() {
+                        $fromSlide.css('left', fromLeft);
+                        $toSlide.css('left', toLeft);
+                    }, slider.$list.get(0))();
                 },
                 complete: function() {
                     $fromSlide.css({
                         left: ''
                     });
-                    slider._animated = false;
                     slider.afterSlide($toSlide);
                 }
             });
