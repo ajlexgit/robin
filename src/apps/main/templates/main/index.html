@@ -82,7 +82,7 @@
                 <div class="gc-full gc-alone">
                     <div class="slider">
                         {% for item in config.gallery.image_items %}
-                            <img class="slide {% if forloop.counter == 5 %}active{% endif %}"
+                            <img class="slide {% if forloop.counter == 1 %}active{% endif %}"
                                  {% if forloop.counter == 3 or forloop.counter == 4 %}
                                      style="width: 30%;"
                                  {% elif forloop.counter == 5 or forloop.counter == 6 %}

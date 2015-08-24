@@ -49,7 +49,8 @@
                     $toSlide.css({
                         opacity: eProgress
                     });
-                }, complete: function() {
+                },
+                complete: function() {
                     $fromSlide.css({
                         zIndex: '',
                         left: '',
