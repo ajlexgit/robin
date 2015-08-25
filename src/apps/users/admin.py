@@ -2,13 +2,13 @@ from django import forms
 from django.contrib import admin
 from django.shortcuts import resolve_url
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext_lazy as _
 from project.admin import ModelAdminMixin
 from .models import CustomUser
 
 
-class CustomUserForm(forms.ModelForm):
+class CustomUserForm(UserChangeForm):
     class Meta:
         model = CustomUser
         widgets = {
