@@ -12,7 +12,9 @@ class InlineForm(forms.ModelForm):
         model = ClientInlineFormModel
 
 
-InlineFormSet = forms.modelformset_factory(ClientInlineFormModel,
+InlineFormSet = forms.inlineformset_factory(
+    ClientFormModel,
+    ClientInlineFormModel,
     InlineForm,
     extra=1,
     can_order=True,

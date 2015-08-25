@@ -116,7 +116,13 @@ class InlineSample(models.Model):
 class ClientFormModel(models.Model):
     title = models.CharField(_('title'), max_length=128, blank=True, default='Example')
 
+    def __str__(self):
+        return self.title
+
 
 class ClientInlineFormModel(models.Model):
     form = models.ForeignKey(ClientFormModel)
     name = models.CharField(_('name'), max_length=128, default='Test')
+
+    def __str__(self):
+        return self.name
