@@ -16,6 +16,9 @@
             this.management = this.getManagementForm();
         };
 
+        /*
+            Настройки по умолчанию
+         */
         Formset.prototype.getDefaultOpts = function() {
             return {
                 prefix: 'form'

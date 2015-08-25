@@ -31,6 +31,18 @@ class IndexView(TemplateView):
         })
 
     def post(self, request, *args, **kwargs):
+        form = MainForm(request.POST, request.FILES, prefix='main')
+        formset = InlineFormSet(request.POST, request.FILES, prefix='inlines')
+
+        form_valid = form.is_valid()
+        formset_valid = formset.is_valid()
+        print(form_valid, formset_valid)
+
+        obj = form.save(commit=False)
+        print('Obj', obj)
+        for inline_obj in formset.save(commit=False):
+            print('Inline obj', inline_obj)
+
         return redirect('index')
 
 

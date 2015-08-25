@@ -1,21 +1,19 @@
 from django import forms
+from .models import ClientFormModel, ClientInlineFormModel
 
 
-class MainForm(forms.Form):
-    title = forms.CharField(
-        label='Title',
-        required=False
-    )
+class MainForm(forms.ModelForm):
+    class Meta:
+        model = ClientFormModel
 
 
-class InlineForm(forms.Form):
-    name = forms.CharField(
-        label='Name',
-        required=False
-    )
+class InlineForm(forms.ModelForm):
+    class Meta:
+        model = ClientInlineFormModel
 
 
-InlineFormSet = forms.formset_factory(InlineForm,
+InlineFormSet = forms.modelformset_factory(ClientInlineFormModel,
+    InlineForm,
     extra=1,
     can_order=True,
     can_delete=True,

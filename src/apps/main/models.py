@@ -110,3 +110,13 @@ class InlineSample(models.Model):
     class Meta:
         verbose_name = _("Inline sample")
         verbose_name_plural = _('Inline samples')
+
+
+
+class ClientFormModel(models.Model):
+    title = models.CharField(_('title'), max_length=128, blank=True, default='Example')
+
+
+class ClientInlineFormModel(models.Model):
+    form = models.ForeignKey(ClientFormModel)
+    name = models.CharField(_('name'), max_length=128, default='Test')
