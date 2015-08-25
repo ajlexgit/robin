@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
@@ -224,7 +225,7 @@ class VoteView(TemplateExView):
 
         comment = validation_form.cleaned_data['comment']
 
-        if not request.user.has_perm('comments.can_post'):
+        if not request.user.has_perm('comments.can_vote'):
             return JsonResponse({
                 'error': _('You don\'t have permission to vote for this comment'),
             })
@@ -241,7 +242,10 @@ class VoteView(TemplateExView):
             user=request.user,
             value=1 if int_vote else -1,
         )
-        vote.save()
+        try:
+            vote.save()
+        except IntegrityError:
+            pass
         update_voted_cache(request.user)
 
         comment.add_permissions(request.user)

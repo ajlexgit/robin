@@ -159,7 +159,7 @@ class CommentVote(models.Model):
     """ Рейтинг комментария """
     comment = models.ForeignKey(Comment, related_name='votes')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comment_votes')
-    value = models.SmallIntegerField()
+    value = models.SmallIntegerField(choices=((1, '+1'), (-1, '-1')))
 
     class Meta:
         verbose_name = _('vote')

@@ -1,5 +1,4 @@
 from django.contrib.auth.backends import ModelBackend
-from django.utils.translation import ugettext_lazy as _
 from libs.now import now
 from . import options
 from .models import Comment
