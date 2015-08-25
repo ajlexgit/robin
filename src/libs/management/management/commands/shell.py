@@ -75,7 +75,8 @@ class Command(NoArgsCommand):
         imported_objects = self.import_objects()
         bpython.embed(imported_objects)
 
-    def import_objects(self):
+    @staticmethod
+    def import_objects():
         imported_objects = {}
         imports = SHELL_IMPORTS.copy()
 

@@ -34,9 +34,9 @@ class Command(management.BaseCommand):
 
             if file_fields:
                 objects = model.objects.all().only(*file_fields)
-                for object in objects:
+                for obj in objects:
                     for field in file_fields:
-                        filefield = getattr(object, field, None)
+                        filefield = getattr(obj, field, None)
                         if filefield.name and filefield.storage.exists(filefield.name):
 
                             # Стандартное поле файла

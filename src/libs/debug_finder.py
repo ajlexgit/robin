@@ -6,9 +6,9 @@ from django.contrib.staticfiles.finders import BaseStorageFinder
 class PipelineFinder(BaseStorageFinder):
     storage = staticfiles_storage
 
-    def find(self, path, all=False):
+    def find(self, *args, **kwargs):
         if settings.DEBUG or not settings.PIPELINE_ENABLED:
-            return super().find(path, all)
+            return super().find(*args, **kwargs)
         else:
             return []
 

@@ -8,9 +8,9 @@ register = Library()
 
 
 @register.filter
-def to_json(object):
-    if isinstance(object, QuerySet):
-        result = serialize('json', object)
+def to_json(obj):
+    if isinstance(obj, QuerySet):
+        result = serialize('json', obj)
     else:
-        result = json.dumps(object)
+        result = json.dumps(obj)
     return mark_safe(result)
