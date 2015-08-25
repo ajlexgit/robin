@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 
 
 class MainForm(forms.Form):
@@ -18,7 +17,7 @@ class InlineForm(forms.Form):
 
 InlineFormSet = forms.formset_factory(InlineForm,
     extra=1,
-    can_order=False,
+    can_order=True,
     can_delete=True,
     max_num=4,
     validate_max=True,

@@ -10,144 +10,149 @@
 {% load text %}
 
 {% block static_head %}
-    {{ block.super }}
-    {% stylesheet 'main_page' %}
+  {{ block.super }}
+  {% stylesheet 'main_page' %}
 {% endblock static_head %}
 
 {% block static_js %}
-    {{ block.super }}
-    {% javascript 'main_page' %}
+  {{ block.super }}
+  {% javascript 'main_page' %}
 {% endblock static_js %}
 
 
 {% block content %}
-    <div id="video" class="section video-bg-container" style="background-image: url({% static 'main/img/river.jpg' %})">
-        <video class="video-bg" autoplay="" loop="" preload="auto" muted="">
-            <source src="{% static 'main/img/river.mp4' %}">
-            <source src="{% static 'main/img/river.ogv' %}">
-        </video>
+  <div id="video" class="section video-bg-container" style="background-image: url({% static 'main/img/river.jpg' %})">
+    <video class="video-bg" autoplay="" loop="" preload="auto" muted="">
+      <source src="{% static 'main/img/river.mp4' %}">
+      <source src="{% static 'main/img/river.ogv' %}">
+    </video>
 
-        <div class="inner">
-            <div class="grid">
-                <div class="gray gc-wide-6 gc-6 gc-alone gc-center" style="height: 200px">
-                    <h1 class="title title-h1">{{ config.header_title }}</h1>
-                </div>
-
-                <div class="blue gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2" style="height: 50px">
-                </div>
-                <div class="yellow gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2" style="height: 50px">
-                </div>
-            </div>
+    <div class="inner">
+      <div class="grid">
+        <div class="gray gc-wide-6 gc-6 gc-alone gc-center" style="height: 200px">
+          <h1 class="title title-h1">{{ config.header_title }}</h1>
         </div>
+
+        <div class="blue gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2" style="height: 50px">
+        </div>
+        <div class="yellow gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2" style="height: 50px">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="parallax_sample">
+    <div class="parallax" style="background-image: url({% static 'main/img/background.jpeg' %})"></div>
+
+    <div class="appear-block grid">
+      <div class="yellow gc-wide-2 gc-2 gc-tablet-4"></div>
+      <div class="red gc-wide-2 gc-2 gc-tablet-4"></div>
+      <div class="gray gc-wide-2 gc-2 gc-tablet-4"></div>
+      <div class="orange gc-wide-2 gc-2 gc-tablet-4"></div>
+    </div>
+  </div>
+
+  <div id="text-content">
+    <div class="grid">
+      <article class="text-styles gc-wide-6 gc-6 gc-alone gc-center">
+        {% away config.text|typograf %}
+      </article>
+    </div>
+  </div>
+
+  <div id="social_buttons">
+    <div class="grid">
+      <div class="gc-full gc-alone">
+        {% social_share 'vk' %}
+        {% social_share 'fb' %}
+        {% social_share 'tw' %}
+        {% social_share 'gp' %}
+        {% social_share 'li' %}
+        {% social_share 'pi' %}
+        {% social_share 'sb' %}
+        {% social_share 'lj' %}
+        {% social_share 'dg' %}
+      </div>
+    </div>
+  </div>
+
+  {% if config.gallery and config.gallery.image_items %}
+    <div id="slider_example">
+      <div class="grid">
+        <div class="gc-full gc-alone">
+          <div class="slider">
+            {% for item in config.gallery.image_items %}
+              <img class="slide {% if forloop.counter == 1 %}active{% endif %}"
+                  {% if forloop.counter == 3 or forloop.counter == 4 %}
+                   style="width: 30%;"
+                  {% elif forloop.counter == 5 or forloop.counter == 6 %}
+                   style="height: 500px;"
+                  {% endif %}
+                   src="{{ item.image.normal.url }}"
+                   alt=""
+                   width="{{ item.image.normal.dimensions.0 }}"
+                   height="{{ item.image.normal.dimensions.1 }}">
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="parallax_sample">
-        <div class="parallax" style="background-image: url({% static 'main/img/background.jpeg' %})"></div>
-
-        <div class="appear-block grid">
-            <div class="yellow gc-wide-2 gc-2 gc-tablet-4"></div>
-            <div class="red gc-wide-2 gc-2 gc-tablet-4"></div>
-            <div class="gray gc-wide-2 gc-2 gc-tablet-4"></div>
-            <div class="orange gc-wide-2 gc-2 gc-tablet-4"></div>
+    <div id="gallery">
+      <div class="grid">
+        <div class="gc-full gc-alone">
+          {% gallery config.gallery %}
         </div>
+      </div>
     </div>
+  {% endif %}
 
-    <div id="text-content">
-        <div class="grid">
-            <article class="text-styles gc-wide-6 gc-6 gc-alone gc-center">
-                {% away config.text|typograf %}
-            </article>
-        </div>
+  <div id="comments">
+    <div class="grid">
+      <div class="gc-full gc-alone">
+        {% comments_for config %}
+      </div>
     </div>
+  </div>
 
-    <div id="social_buttons">
-        <div class="grid">
-            <div class="gc-full gc-alone">
-                {% social_share 'vk' %}
-                {% social_share 'fb' %}
-                {% social_share 'tw' %}
-                {% social_share 'gp' %}
-                {% social_share 'li' %}
-                {% social_share 'pi' %}
-                {% social_share 'sb' %}
-                {% social_share 'lj' %}
-                {% social_share 'dg' %}
-            </div>
-        </div>
-    </div>
-
-    {% if config.gallery and config.gallery.image_items %}
-        <div id="slider_example">
-            <div class="grid">
-                <div class="gc-full gc-alone">
-                    <div class="slider">
-                        {% for item in config.gallery.image_items %}
-                            <img class="slide {% if forloop.counter == 1 %}active{% endif %}"
-                                 {% if forloop.counter == 3 or forloop.counter == 4 %}
-                                     style="width: 30%;"
-                                 {% elif forloop.counter == 5 or forloop.counter == 6 %}
-                                     style="height: 500px;"
-                                 {% endif %}
-                                 src="{{ item.image.normal.url }}"
-                                 alt=""
-                                 width="{{ item.image.normal.dimensions.0 }}"
-                                 height="{{ item.image.normal.dimensions.1 }}">
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+  <div id="form">
+    <form method="post">
+      <div class="grid">
+        <div class="gc-full gc-alone">
+          {% for field in form %}
+            <fieldset>
+              {{ field.label_tag }}
+              {{ field }}
+              {{ field.errors }}
+            </fieldset>
+          {% endfor %}
         </div>
 
-        <div id="gallery">
-            <div class="grid">
-                <div class="gc-full gc-alone">
-                    {% gallery config.gallery %}
-                </div>
+        <div class="gc-full gc-alone">
+          {{ formset.management_form }}
+          {% for form in formset %}
+            <div class="formset">
+              {% if formset.can_delete %}
+                {{ form.DELETE.as_hidden }}
+              {% endif %}
+
+              {% if formset.can_order %}
+                {{ form.ORDER.as_hidden }}
+              {% endif %}
+
+              <fieldset>
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
+              </fieldset>
+              <input type="submit" value="Send">
             </div>
+          {% endfor %}
         </div>
-    {% endif %}
+      </div>
+    </form>
+  </div>
 
-    <div id="comments">
-        <div class="grid">
-            <div class="gc-full gc-alone">
-                {% comments_for config %}
-            </div>
-        </div>
-    </div>
-
-    <div id="form">
-        <form method="post">
-            <div class="grid">
-                <div class="gc-full gc-alone">
-                    {% for field in form %}
-                        <fieldset>
-                            {{ field.label_tag }}
-                            {{ field }}
-                            {{ field.errors }}
-                        </fieldset>
-                    {% endfor %}
-                </div>
-
-                <div class="gc-full gc-alone">
-                    {{ formset.management_form }}
-                    {% for form in formset %}
-                        <div class="formset">
-                            {% if formset.can_delete %}
-                                {{ form.DELETE.as_hidden }}
-                            {% endif %}
-
-                            <fieldset>
-                                {{ form.name.label_tag }}
-                                {{ form.name }}
-                                {{ form.name.errors }}
-                            </fieldset>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </form>
-    </div>
-
-    {% render_attached_blocks config %}
+  {% render_attached_blocks config %}
 
 {% endblock content %}

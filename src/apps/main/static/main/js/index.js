@@ -30,8 +30,9 @@
 
     // Slider
     $(document).ready(function() {
-        var $elem = $('.slider');
 
+        // slider
+        var $elem = $('.slider');
         window.slider = new Slider($elem, {
             loop: true,
             adaptiveHeight: true,
@@ -57,13 +58,18 @@
             new SliderNavigationPlugin({
                 animationName: 'side'
             })
-        ).attachPlugin(
+        )/*.attachPlugin(
             new SliderAutoscrollPlugin({
                 animationName: 'fade',
                 direction: 'random',
                 interval: 3000
             })
-        );
+        )*/;
+
+        // inlines
+        window.formset = new Formset('#form', {
+            prefix: 'inlines'
+        })
     });
 
 })(jQuery);

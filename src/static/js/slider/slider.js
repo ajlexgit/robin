@@ -14,7 +14,7 @@
             </div>
 
         JS пример:
-            var slider = new Slider($elem, {
+            var slider = new Slider('#slider', {
                 loop: true,
                 adaptiveHeight: true,
                 adaptiveHeightTransition: 800,
@@ -51,8 +51,10 @@
     var sliders = [];
 
     window.Slider = (function() {
-        var Slider = function($element, settings) {
-            if (!$element || !$element.length) {
+        var Slider = function(element, settings) {
+            var $element = $(element).first();
+            if (!$element.length) {
+                console.error('empty root element for Slider');
                 return
             }
 

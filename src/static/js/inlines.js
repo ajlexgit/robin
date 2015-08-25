@@ -1,5 +1,61 @@
 (function($) {
 
+    window.Formset = (function() {
+        var Formset = function(root, settings) {
+            var $root = $(root).first();
+            if (!$root.length) {
+                console.error('empty root element for Formset');
+                return
+            } else {
+                this.$root = $root;
+            }
+
+            this.opts = $.extend(true, this.getDefaultOpts(), settings);
+
+            // mangement form
+            this.management = this.getManagementForm();
+        };
+
+        Formset.prototype.getDefaultOpts = function() {
+            return {
+                prefix: 'form'
+            }
+        };
+
+        /*
+            Получение полей management-формы
+         */
+        Formset.prototype.getManagementForm = function() {
+            var $total_forms = $('#id_' + this.opts.prefix + '-TOTAL_FORMS');
+            var $initial_forms = $('#id_' + this.opts.prefix + '-INITIAL_FORMS');
+            var $min_num_forms = $('#id_' + this.opts.prefix + '-MIN_NUM_FORMS');
+            var $max_num_forms = $('#id_' + this.opts.prefix + '-MAX_NUM_FORMS');
+
+            if (!$total_forms.length) {
+                console.error('Not found TOTAL_FORMS field');
+            }
+            if (!$initial_forms.length) {
+                console.error('Not found INITIAL_FORMS field');
+            }
+            if (!$min_num_forms.length) {
+                console.error('Not found MIN_NUM_FORMS field');
+            }
+            if (!$max_num_forms.length) {
+                console.error('Not found MAX_NUM_FORMS field');
+            }
+
+            return {
+                $total_forms: $total_forms,
+                $initial_forms: $initial_forms,
+                $min_num_forms: $min_num_forms,
+                $max_num_forms: $max_num_forms
+            }
+        };
+
+        return Formset;
+    })();
+
+
     /*
      *  Обработчик формсетов с клиентской стороны.
      *
@@ -43,7 +99,7 @@
     /*
      * Заменяет __prefix__ или индекс элемента el на index
      **/
-    var updateElementIndex = function(el, prefix, index) {
+    /*var updateElementIndex = function(el, prefix, index) {
         var id_regex = new RegExp("(" + prefix + "-(\\d+|__prefix__))"),
             replacement = prefix + "-" + index;
 
@@ -62,9 +118,9 @@
         if (el.name) {
             el.name = el.name.replace(id_regex, replacement);
         }
-    };
+    };*/
 
-    window.Formset = function(block, options) {
+    /*window.Formset = function(block, options) {
         var that = this,
             max_reached = false,
             min_reached = false;
@@ -226,6 +282,6 @@
         deletingForm: function(row) {
             row.remove();
         }
-    };
+    };*/
 
 })(jQuery);

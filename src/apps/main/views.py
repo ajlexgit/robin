@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from .models import MainPageConfig
 from .forms import MainForm, InlineFormSet
@@ -6,7 +7,7 @@ from .forms import MainForm, InlineFormSet
 class IndexView(TemplateView):
     template_name = 'main/index.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         config = MainPageConfig.get_solo()
 
         form = MainForm(prefix='main')
@@ -28,6 +29,9 @@ class IndexView(TemplateView):
             'form': form,
             'formset': formset,
         })
+
+    def post(self, request, *args, **kwargs):
+        return redirect('index')
 
 
 def render_first_block(request, block):
