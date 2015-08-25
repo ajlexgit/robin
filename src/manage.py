@@ -2,6 +2,7 @@ import os
 import sys
 
 # JS slider: drag
+# Comments perms: superuser errors
 
 # multilanguage on same site
 # inlines.js: new JS classes + min, max, can_order, can__delete
