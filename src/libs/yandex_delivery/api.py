@@ -5,6 +5,7 @@ from django.core.cache import caches
 # Документация
 # http://docs.yandexdelivery.apiary.io/
 
+
 METHOD_KEYS = {
     'getPaymentMethods': 'b925c7c8dbc471e0a7724670804db66fb2f3752ed0b8f5dab9442c554c896f93',
     'getSenderOrders': 'b925c7c8dbc471e0a7724670804db66f364683c8e19e234954f89a7a071ea062',
@@ -150,17 +151,24 @@ def searchDeliveryList(city_from, city_to, weight, height, width, length, **kwar
     return _request('searchDeliveryList', data)
 
 
-def promoDeliveryList(city_to, **kwargs):
+def promoDeliveryList(city_to, default_weight=None, default_width=None, default_height=None, default_length=None, **kwargs):
     """ Получение доступных вариантов доставки для среднего заказа """
     warehouse = getWarehouseInfo()
-    requisite = getRequisiteInfo()
-    promo = requisite['data']['promoRequest']
+
+    # определяем умолчания
+    if not any((default_weight, default_width, default_height, default_length)):
+        requisite = getRequisiteInfo()
+        promo = requisite['data']['promoRequest']
+        default_weight = default_weight or promo['weight']
+        default_width = default_width or promo['width']
+        default_height = default_height or promo['height']
+        default_length = default_length or promo['length']
 
     city_from = warehouse['data']['address_model']['city']
-    weight = kwargs.pop('weight', promo['weight'])
-    width = kwargs.pop('width', promo['width'])
-    height = kwargs.pop('height', promo['height'])
-    length = kwargs.pop('length', promo['length'])
+    weight = kwargs.pop('weight', default_weight)
+    width = kwargs.pop('width', default_width)
+    height = kwargs.pop('height', default_height)
+    length = kwargs.pop('length', default_length)
 
     return searchDeliveryList(city_from, city_to, weight, height, width, length, **kwargs)
 
