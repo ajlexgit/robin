@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="comments-form-wrapper">
-    {% if request.user.is_authenticated %}
+    {% if perms.comments.can_post %}
         <form action="{% url 'comments:post' %}" method="post" class="form comment-post-form" autocomplete="off">
             {% csrf_token %}
             {{ form.content_type }}

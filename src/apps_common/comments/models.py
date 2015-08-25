@@ -9,7 +9,6 @@ from mptt.managers import TreeManager
 from libs.now import now
 from libs.aliased_queryset import AliasedQuerySetMixin
 from . import options
-from . import permissions
 
 
 class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
@@ -78,6 +77,13 @@ class Comment(MPTTModel):
     class Meta:
         verbose_name = _('comment')
         verbose_name_plural = _('comments')
+        permissions = (
+            ('can_reply', 'Can reply on comment'),
+            ('can_post', 'Can post comment'),
+            ('can_edit', 'Can edit comment'),
+            ('can_delete', 'Can delete comment'),
+            ('can_vote', 'Can vote for comment'),
+        )
 
     class MPTTMeta:
         order_insertion_by = ['order']
@@ -137,45 +143,12 @@ class Comment(MPTTModel):
             parent.first().update_parent_visibility()
 
     def add_permissions(self, user):
-        # Может ли юзер ответить на комментарий
-        try:
-            permissions.check_reply(self, user)
-        except permissions.CommentException:
-            self.can_reply = False
-        else:
-            self.can_reply = True
-
-        # Может ли юзер редактировать комментарий
-        try:
-            permissions.check_edit(self, user)
-        except permissions.CommentException:
-            self.can_edit = False
-        else:
-            self.can_edit = True
-
-        # Может ли юзер удалить комментарий
-        try:
-            permissions.check_delete(self, user)
-        except permissions.CommentException:
-            self.can_delete = False
-        else:
-            self.can_delete = True
-
-        # Может ли юзер восстановить комментарий
-        try:
-            permissions.check_restore(self, user)
-        except permissions.CommentException:
-            self.can_restore = False
-        else:
-            self.can_restore = True
-
-        # Может ли юзер проголосовать за комментарий
-        try:
-            permissions.check_vote(self, user)
-        except permissions.CommentException:
-            self.can_vote = False
-        else:
-            self.can_vote = True
+        self.can_post = user.has_perm('comments.can_post')
+        self.can_reply = user.has_perm('comments.can_reply', self)
+        self.can_edit = user.has_perm('comments.can_edit', self)
+        self.can_delete = user.has_perm('comments.can_delete', self)
+        self.can_restore = user.has_perm('comments.can_restore', self)
+        self.can_vote = user.has_perm('comments.can_vote', self)
 
     def has_childs(self):
         childs = Comment.objects.filter(position__startswith=self.position)

@@ -261,6 +261,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 SITE_ID = 1
 ANONYMOUS_USER_ID = -1
 AUTH_USER_MODEL = 'users.CustomUser'
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'comments.backends.CommentPermissionsBackend'
+)
 
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'index'

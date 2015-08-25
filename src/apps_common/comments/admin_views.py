@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
-from . import permissions
 from .models import Comment
 
 
@@ -17,11 +16,9 @@ def delete_comment(request):
             'error': _('Comment not found'),
         })
 
-    try:
-        permissions.check_delete(comment, request.user)
-    except permissions.CommentException as e:
+    if not request.user.has_perm('comments.can_delete', comment):
         return JsonResponse({
-            'error': e.reason,
+            'error': _('You don\'t have permission to delete this comment')
         })
 
     comment.deleted = True
@@ -41,11 +38,9 @@ def restore_comment(request):
             'error': _('Comment not found'),
         })
 
-    try:
-        permissions.check_restore(comment, request.user)
-    except permissions.CommentException as e:
+    if not request.user.has_perm('comments.can_restore', comment):
         return JsonResponse({
-            'error': e.reason,
+            'error': _('You don\'t have permission to restore this comment')
         })
 
     comment.deleted = False

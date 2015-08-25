@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, JsonResponse
 from libs.views import TemplateExView
-from . import permissions
 from .models import Comment, CommentVote
 from .forms import CommentForm, CommentValidationForm
 from .voted_cache import update_voted_cache
@@ -40,6 +39,11 @@ class ChangeView(TemplateExView):
     template_name = 'comments/comment.html'
 
     def get(self, request):
+        if not request.user.is_authenticated():
+            return JsonResponse({
+                'error': _('Authentication required'),
+            })
+
         validation_form = CommentValidationForm(request.GET)
         if not validation_form.is_valid():
             return JsonResponse({
@@ -48,11 +52,9 @@ class ChangeView(TemplateExView):
 
         comment = validation_form.cleaned_data['comment']
 
-        try:
-            permissions.check_edit(comment, request.user)
-        except permissions.CommentException as e:
+        if not request.user.has_perm('comments.can_edit', comment):
             return JsonResponse({
-                'error': e.reason,
+                'error': _('You don\'t have permission to edit this comment')
             })
 
         return JsonResponse({
@@ -60,6 +62,11 @@ class ChangeView(TemplateExView):
         })
 
     def post(self, request):
+        if not request.user.is_authenticated():
+            return JsonResponse({
+                'error': _('Authentication required'),
+            })
+
         try:
             comment_id = request.POST.get('comment') or None
             comment = Comment.objects.get(pk=comment_id)
@@ -74,11 +81,9 @@ class ChangeView(TemplateExView):
                 'error': ';\n'.join(form.error_list),
             })
 
-        try:
-            permissions.check_edit(comment, request.user)
-        except permissions.CommentException as e:
+        if not request.user.has_perm('comments.can_edit', comment):
             return JsonResponse({
-                'error': e.reason,
+                'error': _('You don\'t have permission to edit this comment')
             })
 
         comment = form.save()
@@ -96,6 +101,11 @@ class DeleteView(TemplateExView):
     template_name = 'comments/comment.html'
 
     def post(self, request):
+        if not request.user.is_authenticated():
+            return JsonResponse({
+                'error': _('Authentication required'),
+            })
+
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
             return JsonResponse({
@@ -104,11 +114,9 @@ class DeleteView(TemplateExView):
 
         comment = validation_form.cleaned_data['comment']
 
-        try:
-            permissions.check_delete(comment, request.user)
-        except permissions.CommentException as e:
+        if not request.user.has_perm('comments.can_delete', comment):
             return JsonResponse({
-                'error': e.reason,
+                'error': _('You don\'t have permission to delete this comment')
             })
 
         comment.deleted = True
@@ -128,6 +136,11 @@ class RestoreView(TemplateExView):
     template_name = 'comments/comment.html'
 
     def post(self, request):
+        if not request.user.is_authenticated():
+            return JsonResponse({
+                'error': _('Authentication required'),
+            })
+
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
             return JsonResponse({
@@ -136,11 +149,9 @@ class RestoreView(TemplateExView):
 
         comment = validation_form.cleaned_data['comment']
 
-        try:
-            permissions.check_restore(comment, request.user)
-        except permissions.CommentException as e:
+        if not request.user.has_perm('comments.can_restore', comment):
             return JsonResponse({
-                'error': e.reason,
+                'error': _('You don\'t have permission to restore this comment')
             })
 
         comment.deleted = False
@@ -160,6 +171,11 @@ class PostView(TemplateExView):
     template_name = 'comments/comment.html'
 
     def post(self, request):
+        if not request.user.is_authenticated():
+            return JsonResponse({
+                'error': _('Authentication required'),
+            })
+
         form = CommentForm(request.POST)
         if not form.is_valid():
             return JsonResponse({
@@ -169,19 +185,15 @@ class PostView(TemplateExView):
         comment = form.save(commit=False)
         comment.user = request.user
 
+        if not request.user.has_perm('comments.can_post'):
+            return JsonResponse({
+                'error': _('You don\'t have permission to post comment'),
+            })
+
         if comment.parent:
-            try:
-                permissions.check_reply(comment.parent, request.user)
-            except permissions.CommentException as e:
+            if not request.user.has_perm('comments.can_reply', comment.parent):
                 return JsonResponse({
-                    'error': e.reason,
-                })
-        else:
-            try:
-                permissions.check_add(comment, request.user)
-            except permissions.CommentException as e:
-                return JsonResponse({
-                    'error': e.reason,
+                    'error': _('You can\'t reply to your own comment'),
                 })
 
         comment.save()
@@ -199,6 +211,11 @@ class VoteView(TemplateExView):
     template_name = 'comments/comment.html'
 
     def post(self, request):
+        if not request.user.is_authenticated():
+            return JsonResponse({
+                'error': _('Authentication required'),
+            })
+
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
             return JsonResponse({
@@ -207,11 +224,9 @@ class VoteView(TemplateExView):
 
         comment = validation_form.cleaned_data['comment']
 
-        try:
-            permissions.check_vote(comment, request.user)
-        except permissions.CommentException as e:
+        if not request.user.has_perm('comments.can_post'):
             return JsonResponse({
-                'error': e.reason,
+                'error': _('You don\'t have permission to vote for this comment'),
             })
 
         try:
