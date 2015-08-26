@@ -107,7 +107,7 @@
 
             var that = this;
             var loadHandle = $.rared(function() {
-                that.updateListHeight(that.opts.initialAnimatedHeight);
+                that.updateListHeight();
             }, 100);
 
             $images.one('load', loadHandle);

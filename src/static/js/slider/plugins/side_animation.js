@@ -67,7 +67,7 @@
         SideAnimation.prototype.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slider_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this.opts.slideMarginPercent;
 
             slider.beforeSlide($toSlide);
 
@@ -90,14 +90,14 @@
             for (i = 0; i < animatedSlidesCount; i++) {
                 var $animatedSlide = animatedSlides[i];
 
-                var left = i * slider_left;
+                var left = i * slide_left;
                 $animatedSlide.css({
                     left: left + '%'
                 });
                 animations.push({
                     $animatedSlide: $animatedSlide,
                     from_left: left,
-                    to_left: left - ((animatedSlidesCount - 1) * slider_left)
+                    to_left: left - ((animatedSlidesCount - 1) * slide_left)
                 });
             }
 
@@ -141,7 +141,7 @@
         SideAnimation.prototype.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slider_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this.opts.slideMarginPercent;
 
             slider.beforeSlide($toSlide);
 
@@ -164,14 +164,14 @@
             for (i = 0; i < animatedSlidesCount; i++) {
                 var $animatedSlide = animatedSlides[i];
 
-                var left = -i * slider_left;
+                var left = -i * slide_left;
                 $animatedSlide.css({
                     left: left + '%'
                 });
                 animations.push({
                     $animatedSlide: $animatedSlide,
                     from_left: left,
-                    to_left: left + ((animatedSlidesCount - 1) * slider_left)
+                    to_left: left + ((animatedSlidesCount - 1) * slide_left)
                 });
             }
 
@@ -218,6 +218,11 @@
 
         };
 
+        SideAnimation.prototype._dxToPercents = function(slider, dx) {
+            var slider_width = slider.$list.outerWidth();
+            return 100 * dx / slider_width
+        };
+
         /*
             Перетаскивание слайдов мышью или тачпадом
          */
@@ -227,6 +232,10 @@
                 return
             }
 
+            var $currSlide, $sideSlide;
+            var dxPercents = this._dxToPercents(evt.dx);
+            var absDxPercents = Math.abs(dxPercents);
+            var slide_left = 100 + this.opts.slideMarginPercent;
 
             // метод перехода к соседнему слайду по направлению движения
             if (evt.dx > 0) {
@@ -235,18 +244,14 @@
                 getSideSlide = $.proxy(slider.getNextSlide, slider);
             }
 
-            var $currSlide, $sideSlide;
-            var absDx = Math.abs(evt.dx);
-            var slider_width = Math.round(slider.$list.outerWidth() * (1 + (this.opts.slideMarginPercent / 100)));
-
             // жесткий переход к слайду
-            if (absDx > slider_width) {
+            if (absDxPercents > slide_left) {
                 slider.$slides.css({
                     left: ''
                 });
 
-                var passCount = Math.floor(absDx / slider_width);
-                absDx = absDx % slider_width;
+                var passCount = Math.floor(dxPercents);
+                absDxPercents = absDxPercents - slide_left * passCount;
                 drag_plugin.drager.startPoint = evt.point;
 
                 var i = 0;
@@ -270,18 +275,20 @@
             $currSlide = slider.$currentSlide;
             $sideSlide = getSideSlide($currSlide);
             if (evt.dx > 0) {
+                // тащим вправо
                 $currSlide.css({
-                    left: absDx
+                    left: absDxPercents
                 });
                 $sideSlide.css({
-                    left: absDx - slider_width
+                    left: absDxPercents - slide_left
                 });
             } else {
+                // тащим влево
                 $currSlide.css({
-                    left: -absDx
+                    left: -absDxPercents
                 });
                 $sideSlide.css({
-                    left: -absDx + slider_width
+                    left: -absDxPercents + slide_left
                 });
             }
         };
@@ -291,21 +298,20 @@
             Завершение перетаскивания слайда
          */
         SideAnimation.prototype.dragStop = function(slider, drag_plugin, evt) {
-            var absDx = Math.abs(evt.dx);
-            var slider_width = Math.round(slider.$list.outerWidth() * (1 + (this.opts.slideMarginPercent / 100)));
-            var dragPercent = Math.round(100 * absDx / slider_width);
+            var dxPercents = this._dxToPercents(evt.dx);
+            var absDxPercents = Math.abs(dxPercents);
 
             var $currSlide = slider.$currentSlide;
             if (evt.dx > 0) {
                 var $prevSlide = slider.getPreviousSlide($currSlide);
-                if (dragPercent > drag_plugin.opts.minSlidePercent) {
+                if (absDxPercents > drag_plugin.opts.minSlidePercent) {
                     this.dragChooseLeft(slider, $prevSlide, $currSlide);
                 } else {
                     this.dragChooseRight(slider, $prevSlide, $currSlide);
                 }
             } else {
                 var $nextSlide = slider.getNextSlide($currSlide);
-                if (dragPercent > drag_plugin.opts.minSlidePercent) {
+                if (absDxPercents > drag_plugin.opts.minSlidePercent) {
                     this.dragChooseLeft(slider, $currSlide, $nextSlide);
                 } else {
                     this.dragChooseRight(slider, $currSlide, $nextSlide);
