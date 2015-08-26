@@ -336,10 +336,10 @@
             перед созданием слайдов.
          */
         Slider.prototype.beforeSetSlideItems = function() {
-            this.callPluginsMethod('beforeSetSlideItems');
-
             // jQuery event
             this.$list.trigger('beforeSetSlideItems.slider');
+
+            this.callPluginsMethod('beforeSetSlideItems');
         };
 
         /*
@@ -347,10 +347,10 @@
             после созданием слайдов.
          */
         Slider.prototype.afterSetSlideItems = function() {
+            this.callPluginsMethod('afterSetSlideItems', null, true);
+
             // jQuery event
             this.$list.trigger('afterSetSlideItems.slider');
-
-            this.callPluginsMethod('afterSetSlideItems', null, true);
         };
 
 
@@ -415,10 +415,10 @@
             перед обновлением высоты списка.
          */
         Slider.prototype.beforeUpdateListHeight = function(current, final, animatedHeight) {
-            this.callPluginsMethod('beforeUpdateListHeight', arguments);
-
             // jQuery event
             this.$list.trigger('beforeUpdateListHeight.slider', arguments);
+
+            this.callPluginsMethod('beforeUpdateListHeight', arguments);
         };
 
         /*
@@ -426,10 +426,10 @@
             после обновления высоты списка.
          */
         Slider.prototype.afterUpdateListHeight = function(current, final, animatedHeight) {
+            this.callPluginsMethod('afterUpdateListHeight', arguments, true);
+
             // jQuery event
             this.$list.trigger('afterUpdateListHeight.slider', arguments);
-
-            this.callPluginsMethod('afterUpdateListHeight', arguments, true);
         };
 
 
@@ -475,10 +475,10 @@
         Slider.prototype.beforeSlide = function($toSlide) {
             this._animated = true;
 
-            this.callPluginsMethod('beforeSlide', arguments);
-
             // jQuery event
             this.$list.trigger('beforeSlide.slider', arguments);
+
+            this.callPluginsMethod('beforeSlide', arguments);
         };
 
         /*
@@ -486,12 +486,12 @@
             после перехода к слайду.
          */
         Slider.prototype.afterSlide = function($toSlide) {
-            // jQuery event
-            this.$list.trigger('afterSlide.slider', arguments);
+            this._animated = false;
 
             this.callPluginsMethod('afterSlide', arguments, true);
 
-            this._animated = false;
+            // jQuery event
+            this.$list.trigger('afterSlide.slider', arguments);
         };
 
         return Slider;

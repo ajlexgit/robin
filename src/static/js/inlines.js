@@ -86,7 +86,10 @@
                 formClass: 'form',
                 emptyFormClass: 'empty-form',
 
-                prefix: 'form'
+                prefix: 'form',
+
+                beforeDeleteForm: $.noop,
+                afterDeleteForm: $.noop
             }
         };
 
@@ -134,45 +137,11 @@
             return this.$container.find('.' + this.opts.formClass);
         };
 
-
         /*
-            Удаление формы. Устанавливает поле DELETE, если оно есть.
-            Если форма не была сохранена в БД, уменьшает TOTAL_FORMS.
-
-            Должен вызывать beforeDeleteForm и afterDeleteForm.
+            Получение шаблона новой формы
          */
-        Formset.prototype.deleteForm = function(form_selector) {
-            var $form = $.findFirstElement(form_selector, this.$container);
-            if (!$form.length) {
-                console.error('Not found form to be deleted');
-                return
-            }
-
-            if (this.beforeDeleteForm($form) === false) {
-                return
-            }
-
-            this.deleteFieldVal($form, true);
-            this.hideForm($form);
-        };
-
-        Formset.prototype.beforeDeleteForm = function($form) {
-            // jQuery event
-            this.$container.trigger('beforeDeleteForm.formset', [$form]);
-        };
-
-        Formset.prototype.afterDeleteForm = function($form) {
-            // jQuery event
-            this.$container.trigger('afterDeleteForm.formset', [$form]);
-
-            var form_data = $form.data();
-            if (!form_data.initial) {
-                $form.remove();
-
-                // уменьшаем TOTAL_FORMS
-                var total_forms = parseInt(this.management.$total_forms.val()) || 0;
-                this.management.$total_forms.val(--total_forms);
-            }
+        Formset.prototype.getEmptyForm = function() {
+            return this.$root.find('.' + this.opts.emptyFormClass).first();
         };
 
         /*
@@ -205,6 +174,48 @@
             }
         };
 
+
+        /*
+            Удаление формы. Устанавливает поле DELETE, если оно есть.
+
+            Если установлен hide_form, будет вызвана анимация скрытия формы.
+
+            Должен вызывать beforeDeleteForm и afterDeleteForm.
+         */
+        Formset.prototype.deleteForm = function(form_selector, hide_form) {
+            var $form = $.findFirstElement(form_selector, this.$container);
+            if (!$form.length) {
+                console.error('Not found form to be deleted');
+                return
+            }
+
+            if (this.beforeDeleteForm($form) === false) {
+                return
+            }
+
+            this.deleteFieldVal($form, true);
+
+            if (hide_form) {
+                this.hideForm($form);
+            } else {
+                this.afterDeleteForm($form);
+            }
+        };
+
+        Formset.prototype.beforeDeleteForm = function($form) {
+            // jQuery event
+            this.$container.trigger('beforeDeleteForm.formset', [$form]);
+
+            return this.opts.beforeDeleteForm.call(this, $form);
+        };
+
+        Formset.prototype.afterDeleteForm = function($form) {
+            this.opts.afterDeleteForm.call(this, $form);
+
+            // jQuery event
+            this.$container.trigger('afterDeleteForm.formset', [$form]);
+        };
+
         /*
             Скрытие формы.
 
@@ -213,17 +224,19 @@
         Formset.prototype.hideForm = function($form) {
             var that = this;
             $form.slideUp(300, function() {
+                var form_data = $form.data();
+                if (!form_data.initial) {
+                    $form.remove();
+
+                    // уменьшаем TOTAL_FORMS
+                    var total_forms = parseInt(that.management.$total_forms.val()) || 0;
+                    that.management.$total_forms.val(--total_forms);
+                }
+
                 that.afterDeleteForm($form);
             });
         };
 
-
-        /*
-            Получение шаблона новой формы
-         */
-        Formset.prototype.getEmptyForm = function() {
-            return this.$root.find('.' + this.opts.emptyFormClass).first();
-        };
 
         /*
             Добавление новой формы.
