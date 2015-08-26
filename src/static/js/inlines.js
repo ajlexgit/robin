@@ -208,6 +208,22 @@
         };
 
         Formset.prototype.beforeDeleteForm = function($form) {
+            // ищем кол-во форм, которые не помечены удаленными
+            var that = this;
+            var final_count = 0;
+            var $forms = this.getForms();
+            $forms.each(function() {
+                if (!that.formDeleted(this)) {
+                    final_count++;
+                }
+            });
+
+            // предотвращаем добавление, если превышено кол-во форм
+            var min_num_forms = parseInt(this.management.$min_num_forms.val()) || 0;
+            if (final_count <= min_num_forms) {
+                return false;
+            }
+
             // jQuery event
             this.$container.trigger('beforeDeleteForm.formset', [$form]);
 
