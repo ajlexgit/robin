@@ -402,7 +402,7 @@
                     delay: 60,
                     easing: 'easeOutCubic',
                     init: function() {
-                        this.initial = that.$list.outerHeight();
+                        this.initial = current_height;
                         this.diff = final_height - this.initial;
                     },
                     step: function(eProgress) {
