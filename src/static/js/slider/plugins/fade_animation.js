@@ -43,7 +43,6 @@
                 zIndex: 3
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(animatedHeight);
 
             slider._animation = $.animate({
                 duration: this.opts.speed,
@@ -70,6 +69,8 @@
                     slider.afterSlide($toSlide);
                 }
             });
+
+            slider.updateListHeight(animatedHeight);
         };
 
         return FadeAnimation;

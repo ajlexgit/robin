@@ -553,7 +553,6 @@
             }
 
             slider.beforeSlide($toSlide);
-
             slider.$slides.css({
                 left: ''
             });
@@ -561,9 +560,9 @@
                 left: '0'
             });
             slider._setCurrentSlide($toSlide);
-            slider.updateListHeight(animatedHeight);
-
             slider.afterSlide($toSlide);
+
+            slider.updateListHeight(animatedHeight);
         };
 
         return InstantAnimation;
