@@ -1,6 +1,10 @@
 (function($) {
 
     /*
+        Плагин для работы с inline-формами на клиенте.
+
+        Требует:
+            jquery.utils.js
 
         Пример HTML:
             <div id="formset">

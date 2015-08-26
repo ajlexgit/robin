@@ -4,7 +4,7 @@
         Открытие диалогового окна с картинкой для кропа
 
         Требует:
-            jquery.canvas_utils.js, jquery.popups.js
+            jquery.utils.js, jquery.popups.js
 
         Настройки:
             // Функция или значение пути к картинке. Если вернет false - диалог не откроется.

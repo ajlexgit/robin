@@ -5,7 +5,7 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.rared.js, jquery.animation.js
+            jquery.utils.js
 
         Пример:
             <div id="block">

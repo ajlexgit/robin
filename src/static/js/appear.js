@@ -4,7 +4,7 @@
         Добавляет события видимости элемента.
 
         Требует:
-            jquery.rared.js
+            jquery.utils.js
 
         Пример:
             $('#block').appear().on('appear', function() {

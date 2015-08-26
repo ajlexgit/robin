@@ -179,6 +179,7 @@ PIPELINE_JS = {
             'js/jquery-2.1.4.min.js',
             'js/jquery-ui.min.js',
             'js/jquery.cookie.js',
+            'js/jquery.utils.js',
         ),
         'output_filename': 'js/head_core.js',
     },
@@ -187,8 +188,6 @@ PIPELINE_JS = {
             'js/jquery.ajax_csrf.js',
             'js/jquery.fitvids.js',
             'js/jquery.fakelink.js',
-            'js/jquery.canvas_utils.js',
-            'js/jquery.rared.js',
             'js/jquery.popups.js',
             'js/jquery.scrollTo.js',
             'js/appear.js',
@@ -201,7 +200,6 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/jquery.animation.js',
             'js/slider/slider.js',
             'js/slider/plugins/side_animation.js',
             'js/slider/plugins/fade_animation.js',

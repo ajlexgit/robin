@@ -4,7 +4,7 @@
         Плагин 3D-слайдера.
 
         Требует:
-            jquery.rared.js, jquery.animation.js, drager.js
+            jquery.utils.js, drager.js
 
         HTML:
             <div class="slider3d">

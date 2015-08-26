@@ -7,7 +7,7 @@
         при отпускании кнопки мыши.
 
         Требует:
-            jquery.animation.js
+            jquery.utils.js
 
         Параметры:
             preventDefaultDrag: true/false    - предотвратить событие drag по-умолчанию

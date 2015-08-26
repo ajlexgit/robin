@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
-from .models import MainPageConfig, ClientFormModel, ClientInlineFormModel
+from .models import MainPageConfig, ClientFormModel
 from .forms import MainForm, InlineFormSet
 
 
