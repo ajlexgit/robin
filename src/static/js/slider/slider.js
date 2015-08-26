@@ -369,6 +369,7 @@
             var final_height = 0;
             var current_height = this.$list.outerHeight();
 
+            // определение финальной высоты слайдера
             if (this.opts.adaptiveHeight) {
                 final_height = this.$currentSlide.outerHeight();
             } else {
@@ -382,42 +383,47 @@
                 });
             }
 
-            if (current_height != final_height) {
-                if (this._adaptive_animation) {
-                    this._adaptive_animation.stop();
-                }
-
-                this.beforeUpdateListHeight(current_height, final_height, animatedHeight);
-                if (animatedHeight && this.opts.adaptiveHeightTransition) {
-                    var that = this;
-                    this._adaptive_animation = $.animate({
-                        duration: this.opts.adaptiveHeightTransition,
-                        delay: 60,
-                        easing: 'easeOutCubic',
-                        init: function() {
-                            this.initial = that.$list.outerHeight();
-                            this.diff = final_height - this.initial;
-                        },
-                        step: function(eProgress) {
-                            var height = this.initial + (this.diff * eProgress);
-                            $.animation_frame(function() {
-                                that.$list.outerHeight(height);
-                            }, that.$list.get(0))();
-                        }
-                    })
-                } else {
-                    this.$list.outerHeight(final_height);
-                }
-
-                this.afterUpdateListHeight(current_height, final_height, animatedHeight);
+            // высота не меняется - выходим
+            if (current_height == final_height) {
+                return
             }
+
+            // прерываем анимация высоты, если она идёт
+            if (this._adaptive_animation) {
+                this._adaptive_animation.stop();
+            }
+
+            this.beforeUpdateListHeight(current_height, final_height);
+            if (animatedHeight && this.opts.adaptiveHeightTransition) {
+                // с анимацией
+                var that = this;
+                this._adaptive_animation = $.animate({
+                    duration: this.opts.adaptiveHeightTransition,
+                    delay: 60,
+                    easing: 'easeOutCubic',
+                    init: function() {
+                        this.initial = that.$list.outerHeight();
+                        this.diff = final_height - this.initial;
+                    },
+                    step: function(eProgress) {
+                        var height = this.initial + (this.diff * eProgress);
+                        $.animation_frame(function() {
+                            that.$list.outerHeight(height);
+                        }, that.$list.get(0))();
+                    }
+                })
+            } else {
+                // мгновенно
+                this.$list.outerHeight(final_height);
+            }
+            this.afterUpdateListHeight(current_height, final_height);
         };
 
         /*
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед обновлением высоты списка.
          */
-        Slider.prototype.beforeUpdateListHeight = function(current, final, animatedHeight) {
+        Slider.prototype.beforeUpdateListHeight = function(current, final) {
             // jQuery event
             this.$list.trigger('beforeUpdateListHeight.slider', arguments);
 
@@ -428,7 +434,7 @@
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после обновления высоты списка.
          */
-        Slider.prototype.afterUpdateListHeight = function(current, final, animatedHeight) {
+        Slider.prototype.afterUpdateListHeight = function(current, final) {
             this.callPluginsMethod('afterUpdateListHeight', arguments, true);
 
             // jQuery event
