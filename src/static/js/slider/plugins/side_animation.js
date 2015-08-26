@@ -314,10 +314,6 @@
         };
 
         SideAnimation.prototype.dragChooseLeft = function(slider, $leftSlide, $rightSlide) {
-            var slider_width = Math.round(slider.$list.outerWidth() * (1 + (this.opts.slideMarginPercent / 100)));
-            var $leftPosition = parseInt($leftSlide.css('left'));
-            var $rightPosition = parseInt($rightSlide.css('left'));
-
             slider.beforeSlide($leftSlide);
             slider._setCurrentSlide($leftSlide);
             slider._animation = $.animate({
@@ -339,8 +335,24 @@
         };
 
         SideAnimation.prototype.dragChooseRight = function(slider, $leftSlide, $rightSlide) {
+            slider.beforeSlide($rightSlide);
+            slider._setCurrentSlide($rightSlide);
+            slider._animation = $.animate({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                init: function() {
 
-            slider.afterSlide($rightSlide);
+                },
+                step: function(eProgress) {
+
+                },
+                complete: function() {
+                    $leftSlide.css({
+                        left: ''
+                    });
+                    slider.afterSlide($rightSlide);
+                }
+            });
         };
 
         return SideAnimation;
