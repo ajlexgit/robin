@@ -4,8 +4,6 @@ import sys
 # JS slider: drag
 
 # multilanguage on same site
-# inlines.js: new JS classes + min, max, can_order, can__delete
-# inlines class with inlines.js
 
 
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
