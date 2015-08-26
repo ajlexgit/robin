@@ -54,7 +54,7 @@
         var Slider = function(element, settings) {
             var $element = $(element).first();
             if (!$element.length) {
-                console.error('empty root element for Slider');
+                console.error('Empty root element for Slider');
                 return
             }
 

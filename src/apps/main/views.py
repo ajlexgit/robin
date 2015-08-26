@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
-from .models import MainPageConfig
+from .models import MainPageConfig, ClientFormModel, ClientInlineFormModel
 from .forms import MainForm, InlineFormSet
 
 
@@ -10,8 +10,9 @@ class IndexView(TemplateView):
     def get(self, request, *args, **kwargs):
         config = MainPageConfig.get_solo()
 
-        form = MainForm(prefix='main')
-        formset = InlineFormSet(prefix='inlines')
+        form_obj = ClientFormModel.objects.first()
+        form = MainForm(instance=form_obj, prefix='main')
+        formset = InlineFormSet(initial=[{'name': 'truba'}], instance=form_obj, prefix='inlines')
 
         # SEO
         request.seo.set_instance(config)
@@ -31,17 +32,16 @@ class IndexView(TemplateView):
         })
 
     def post(self, request, *args, **kwargs):
-        form = MainForm(request.POST, request.FILES, prefix='main')
-        formset = InlineFormSet(request.POST, request.FILES, prefix='inlines')
+        form_obj = ClientFormModel.objects.first()
+        form = MainForm(request.POST, request.FILES, instance=form_obj, prefix='main')
+        formset = InlineFormSet(request.POST, request.FILES, initial=[{'name': 'truba'}], instance=form_obj, prefix='inlines')
 
         form_valid = form.is_valid()
         formset_valid = formset.is_valid()
-        print(form_valid, formset_valid)
 
-        obj = form.save(commit=False)
-        print('Obj', obj)
-        for inline_obj in formset.save(commit=False):
-            print('Inline obj', inline_obj)
+        if form_valid and formset_valid:
+            form.save()
+            formset.save()
 
         return redirect('index')
 

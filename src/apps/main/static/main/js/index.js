@@ -67,7 +67,7 @@
         )*/;
 
         // inlines
-        window.formset = new Formset('#form', {
+        window.formset = new Formset('#form .formset', {
             prefix: 'inlines'
         })
     });

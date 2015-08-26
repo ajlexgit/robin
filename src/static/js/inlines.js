@@ -1,10 +1,52 @@
 (function($) {
 
+    /*
+
+        Пример HTML:
+            <div id="formset">
+                {{ formset.management_form }}
+
+                <div class="forms">
+                  {% for form in formset %}
+                    <div class="form">
+                      {{ form }}
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <div class="form empty-form">
+                   {% with form=formset.empty_form %}
+                       {{ form }}
+                  {% endwith %}
+                </div>
+            </div>
+
+     */
+
+    var prefix_regexp = /__prefix__/i;
+    var setElementIndex = function(element, index) {
+        // label tag
+        var for_value = element.getAttribute('for');
+        if (for_value) {
+            element.setAttribute('for', for_value.replace(prefix_regexp, index));
+        }
+
+        // ID attr
+        if (element.id) {
+            element.id = element.id.replace(prefix_regexp, index);
+        }
+
+        // name attr
+        if (element.name) {
+            element.name = element.name.replace(prefix_regexp, index);
+        }
+    };
+
     window.Formset = (function() {
         var Formset = function(root, settings) {
             var $root = $(root).first();
             if (!$root.length) {
-                console.error('empty root element for Formset');
+                console.error('Empty root element for Formset');
                 return
             } else {
                 this.$root = $root;
@@ -14,6 +56,23 @@
 
             // mangement form
             this.management = this.getManagementForm();
+
+            // forms container
+            this.$container = this.getFormsContainer();
+
+            // Находим формы, которые уже есть
+            var $initial_forms = this.getForms();
+
+            // индекс следующей добавленной формы
+            this.nextFormIndex = $initial_forms.length;
+
+            // Помечаем реально начальные формы
+            var initial_count = parseInt(this.management.$initial_forms.val());
+            if ($initial_forms.length < initial_count) {
+                console.error('INITIAL_FORMS is less than real from count');
+                return
+            }
+            $initial_forms.slice(0, initial_count).data('initial', true);
         };
 
         /*
@@ -21,7 +80,12 @@
          */
         Formset.prototype.getDefaultOpts = function() {
             return {
-                prefix: 'form'
+                formsContainerClass: 'forms',
+                emptyFormClass: 'empty-form',
+                formClass: 'form',
+
+                prefix: 'form',
+                pkFieldName: 'id'
             }
         };
 
@@ -53,6 +117,133 @@
                 $min_num_forms: $min_num_forms,
                 $max_num_forms: $max_num_forms
             }
+        };
+
+        /*
+            Получение всех форм набора
+         */
+        Formset.prototype.getFormsContainer = function() {
+            return this.$root.find('.' + this.opts.formsContainerClass);
+        };
+
+        /*
+            Получение всех форм набора
+         */
+        Formset.prototype.getForms = function() {
+            return this.$container.find('.' + this.opts.formClass);
+        };
+
+
+        /*
+            Удаление формы. Устанавливает флаг DELETE, если он есть.
+            Если форма не была сохранена в БД, уменьшает TOTAL_FORMS.
+
+            Должен вызывать beforeDeleteForm и
+         */
+        Formset.prototype.deleteForm = function($form) {
+            if (this.beforeDeleteForm($form) === false) {
+                return
+            }
+
+            var form_data = $form.data();
+            if (form_data.initial) {
+                this.markFormDeleted($form);
+                this.hideForm($form);
+            } else {
+                this.hideForm($form, true);
+            }
+        };
+
+        Formset.prototype.beforeDeleteForm = function($form) {
+            // jQuery event
+            this.$container.trigger('beforeDeleteForm.formset', [$form]);
+        };
+
+        Formset.prototype.afterDeleteForm = function($form) {
+            // jQuery event
+            this.$container.trigger('afterDeleteForm.formset', [$form]);
+        };
+
+        /*
+            Отметка initial-формы, что она должна быть удалена
+         */
+        Formset.prototype.markFormDeleted = function($form) {
+            var id_prefix = 'id_' + this.opts.prefix + '-';
+            var $delete_field = $form.find('[id^="' + id_prefix + '"][id$="-DELETE"]').first();
+            $delete_field.prop('checked', true).val('1').change();
+        };
+
+        /*
+            Скрытие формы. Если установлен флаг remove - после
+            скрытия форма должна быть удалена из DOM.
+
+            Должен вызывать afterDeleteForm.
+         */
+        Formset.prototype.hideForm = function($form, remove) {
+            var that = this;
+            $form.slideUp(300, function() {
+                that.afterDeleteForm($form);
+
+                if (remove) {
+                    $form.remove()
+                }
+            });
+        };
+
+
+        /*
+            Получение шаблона новой формы
+         */
+        Formset.prototype.getEmptyForm = function() {
+            return this.$root.find('.' + this.opts.emptyFormClass).first();
+        };
+
+        /*
+            Добавление новой формы.
+
+            Должен вызывать beforeAddForm и afterAddForm.
+         */
+        Formset.prototype.addForm = function() {
+            if (this.beforeAddForm() === false) {
+                return
+            }
+
+            var $template = this.getEmptyForm();
+            if (!$template.length) {
+                console.error('Not found empty form template');
+                return
+            }
+
+            var $form = $template.clone(true).removeClass(this.opts.emptyFormClass);
+            $form.hide().appendTo(this.$container);
+
+            // заменяем префикс
+            var that = this;
+            $form.find('*').each(function() {
+                setElementIndex(this, that.nextFormIndex);
+            });
+            this.nextFormIndex++;
+
+            this.afterAddForm($form);
+        };
+
+        Formset.prototype.beforeAddForm = function() {
+            // jQuery event
+            this.$container.trigger('beforeAddForm.formset');
+        };
+
+        Formset.prototype.afterAddForm = function($form) {
+            this.showForm($form);
+
+            // jQuery event
+            this.$container.trigger('afterAddForm.formset', [$form]);
+        };
+
+        /*
+            Показ скрытой формы
+         */
+        Formset.prototype.showForm = function($form) {
+            $form.slideDown(300);
         };
 
         return Formset;
