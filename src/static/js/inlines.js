@@ -147,7 +147,7 @@
         /*
             Установка или получение значения DELETE-поля формы
          */
-        Formset.prototype.deleteFieldVal = function(form_selector, value) {
+        Formset.prototype.formDeleted = function(form_selector, value) {
             var $form = $.findFirstElement(form_selector, this.$container);
             if (!$form.length) {
                 console.error('Not found form');
@@ -193,7 +193,7 @@
                 return
             }
 
-            this.deleteFieldVal($form, true);
+            this.formDeleted($form, true);
 
             if (hide_form) {
                 this.hideForm($form);
@@ -279,7 +279,7 @@
             var final_count = 0;
             var $forms = this.getForms();
             $forms.each(function() {
-                if (!that.deleteFieldVal(this)) {
+                if (!that.formDeleted(this)) {
                     final_count++;
                 }
             });
