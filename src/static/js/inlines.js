@@ -83,11 +83,10 @@
         Formset.prototype.getDefaultOpts = function() {
             return {
                 formsContainerClass: 'forms',
-                emptyFormClass: 'empty-form',
                 formClass: 'form',
+                emptyFormClass: 'empty-form',
 
-                prefix: 'form',
-                pkFieldName: 'id'
+                prefix: 'form'
             }
         };
 
@@ -145,14 +144,15 @@
         Formset.prototype.deleteForm = function(form_selector) {
             var $form = $.findFirstElement(form_selector, this.$container);
             if (!$form.length) {
-                console.error('Not founf form to be deleted');
+                console.error('Not found form to be deleted');
                 return
             }
 
             if (this.beforeDeleteForm($form) === false) {
                 return
             }
-            this.markFormDeleted($form);
+
+            this.deleteFieldVal($form, true);
             this.hideForm($form);
         };
 
@@ -176,12 +176,33 @@
         };
 
         /*
-            Отметка initial-формы, что она должна быть удалена
+            Установка или получение значения DELETE-поля формы
          */
-        Formset.prototype.markFormDeleted = function($form) {
-            var id_prefix = 'id_' + this.opts.prefix + '-';
-            var $delete_field = $form.find('[id^="' + id_prefix + '"][id$="-DELETE"]').first();
-            $delete_field.prop('checked', true).val('1').change();
+        Formset.prototype.deleteFieldVal = function(form_selector, value) {
+            var $form = $.findFirstElement(form_selector, this.$container);
+            if (!$form.length) {
+                console.error('Not found form');
+                return
+            }
+
+            var $field = $form.find('[name^="' + this.opts.prefix + '-"][name="-DELETE"]').first();
+            var field_type = $field.prop('type');
+            if (value == undefined) {
+                // получение значения
+                if ((field_type == 'checkbox') || (field_type == 'radio')) {
+                    return $field.prop('checked');
+                } else {
+                    return Boolean($field.val()) || false;
+                }
+            } else {
+                // установка значения
+                value = Boolean(value) || false;
+                if ((field_type == 'checkbox') || (field_type == 'radio')) {
+                    return $field.prop('checked', value);
+                } else {
+                    return $field.val(Number(value))
+                }
+            }
         };
 
         /*
@@ -238,6 +259,22 @@
         };
 
         Formset.prototype.beforeAddForm = function() {
+            var max_num_forms = parseInt(this.management.$max_num_forms.val()) || 1000;
+
+            // ищем кол-во форм, которые не помечены удаленными
+            var that = this;
+            var final_count = 0;
+            var $forms = this.getForms();
+            $forms.each(function() {
+                if (!that.deleteFieldVal(this)) {
+                    final_count++;
+                }
+            });
+
+            if (final_count >= max_num_forms) {
+                return false;
+            }
+
             // jQuery event
             this.$container.trigger('beforeAddForm.formset');
         };
