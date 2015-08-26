@@ -240,13 +240,12 @@
         // ================================================
 
         var Drager = function(element, options) {
-            var $element = $(element).first();
-            if (!$element.length) {
+            this.$element = $.findFirstElement(element);
+            if (!this.$element.length) {
                 console.error('Empty element for Drager');
                 return
             }
 
-            this.$element = $element;
             this.settings = $.extend(true, {
                 preventDefault: true,
 

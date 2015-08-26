@@ -27,7 +27,7 @@
                     slideMarginPercent: 5
                 })
             ).attachPlugin(
-                new SliderSideLoopAnimation({
+                new SliderSideShortestAnimation({
                     speed: 800,
                     slideMarginPercent: 5
                 })
@@ -35,7 +35,7 @@
                 new SliderFadeAnimation()
             ).attachPlugin(
                 new SliderControlsPlugin({
-                    animationName: 'side-loop'
+                    animationName: 'side-shortest'
                 })
             ).attachPlugin(
                 new SliderNavigationPlugin({
@@ -200,14 +200,17 @@
         /*
             Поиск реализации метода анимации среди плагинов
          */
-        Slider.prototype.getAnimationMethod = function(animationName) {
+        Slider.prototype.getAnimationMethod = function(animationName, methodName) {
+            methodName = methodName || 'slideTo';
             var index = this._plugins.length;
             while (index--) {
                 var plugin = this._plugins[index];
-                if (('slideTo' in plugin) && (plugin.opts.name == animationName)) {
-                    return $.proxy(plugin.slideTo, plugin);
+                if ((methodName in plugin) && (plugin.opts.name == animationName)) {
+                    return $.proxy(plugin[methodName], plugin);
                 }
             }
+
+            console.error('Not found method "' + methodName + '" with name "' + animationName + '"');
         };
 
         /*
@@ -463,8 +466,6 @@
             var method = this.getAnimationMethod(animationName);
             if (method) {
                 method.call(null, this, $toSlide, animatedHeight);
-            } else {
-                console.error('Not found animation method named "' + animationName + '"');
             }
         };
 

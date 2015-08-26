@@ -37,14 +37,14 @@
             loop: true,
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
-            slideItems: 1
+            slideItems: 2
         }).attachPlugin(
             new SliderSideAnimation({
                 speed: 800,
                 slideMarginPercent: 5
             })
         ).attachPlugin(
-            new SliderSideLoopAnimation({
+            new SliderSideShortestAnimation({
                 speed: 800,
                 slideMarginPercent: 5
             })
@@ -52,10 +52,14 @@
             new SliderFadeAnimation()
         ).attachPlugin(
             new SliderControlsPlugin({
-                animationName: 'side-loop'
+                animationName: 'side-shortest'
             })
         ).attachPlugin(
             new SliderNavigationPlugin({
+                animationName: 'side'
+            })
+        ).attachPlugin(
+            new SliderDragPlugin({
                 animationName: 'side'
             })
         )/*.attachPlugin(

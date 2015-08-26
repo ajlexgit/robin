@@ -2,6 +2,7 @@ import os
 import sys
 
 # JS slider: drag
+# JS hide controls in end, isLast, isFirst
 
 # multilanguage on same site
 

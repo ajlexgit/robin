@@ -73,8 +73,9 @@
 
             // определяем слайды, учавствующие в анимации
             if (this.opts.showIntermediate) {
+                var i = 0;
                 var $slide = slider.$currentSlide;
-                for (var i = 0; i <= slide_info.count; i++) {
+                while ($slide.length && (i++ <= slide_info.count)) {
                     animatedSlides.push($slide);
 
                     $slide = slider.getNextSlide($slide);
@@ -145,8 +146,9 @@
 
             // определяем слайды, учавствующие в анимации
             if (this.opts.showIntermediate) {
+                var i = 0;
                 var $slide = slider.$currentSlide;
-                for (var i = 0; i <= slide_info.count; i++) {
+                while ($slide.length && (i++ <= slide_info.count)) {
                     animatedSlides.push($slide);
 
                     $slide = slider.getPreviousSlide($slide);
@@ -210,33 +212,33 @@
 
 
     //========================================================
-    //  Анимация, выбирающая для направление, соответствующее
+    //  Анимация, выбирающая направление, соответствующее
     //  кратчайшему пути.
     //========================================================
-    window.SliderSideLoopAnimation = (function(parent) {
-        var SideLoopAnimation = function(settings) {
+    window.SliderSideShortestAnimation = (function(parent) {
+        var SideShortestAnimation = function(settings) {
             parent.call(this, settings);
         };
 
         var _ = function() {
-            this.constructor = SideLoopAnimation;
+            this.constructor = SideShortestAnimation;
         };
         _.prototype = parent.prototype;
-        SideLoopAnimation.prototype = new _;
+        SideShortestAnimation.prototype = new _;
 
 
         // Настройки по умолчанию
-        SideLoopAnimation.prototype.getDefaultOpts = function() {
+        SideShortestAnimation.prototype.getDefaultOpts = function() {
             var defaults = parent.prototype.getDefaultOpts.call(this);
             return $.extend(true, defaults, {
-                name: 'side-loop'
+                name: 'side-shortest'
             });
         };
 
         /*
             Выбор направления анимации
          */
-        SideLoopAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        SideShortestAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slider.opts.loop) {
@@ -262,7 +264,7 @@
             }
         };
 
-        return SideLoopAnimation;
+        return SideShortestAnimation;
     })(SliderSideAnimation);
 
 })(jQuery);
