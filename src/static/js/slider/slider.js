@@ -1,16 +1,18 @@
 (function($) {
 
     /*
-        Основа слайдеров.
+        Модуль слайдера с подключаемыми плагинами.
 
         Требует:
             jquery.utils.js
 
         HTML input:
-            <div class="slider">
-                <img>
-                <img>
-                ...
+            <div id="slider-wrapper">
+                <div id="slider">
+                    <img>
+                    <img>
+                    ...
+                </div>
             </div>
 
         JS пример:
@@ -52,7 +54,7 @@
 
     window.Slider = (function() {
         var Slider = function(element, settings) {
-            var $element = $(element).first();
+            var $element = $.findFirstElement(element);
             if (!$element.length) {
                 console.error('Empty root element for Slider');
                 return

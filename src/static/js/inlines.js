@@ -1,7 +1,7 @@
 (function($) {
 
     /*
-        Плагин для работы с inline-формами на клиенте.
+        Модуль для работы с inline-формами на клиенте.
 
         Требует:
             jquery.utils.js
@@ -48,12 +48,10 @@
 
     window.Formset = (function() {
         var Formset = function(root, settings) {
-            var $root = $(root).first();
-            if (!$root.length) {
+            this.$root = $.findFirstElement(root);
+            if (!this.$root.length) {
                 console.error('Empty root element for Formset');
                 return
-            } else {
-                this.$root = $root;
             }
 
             this.opts = $.extend(true, this.getDefaultOpts(), settings);
