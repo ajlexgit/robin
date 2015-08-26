@@ -149,7 +149,7 @@
                   {{ form.name }}
                   {{ form.name.errors }}
 
-                  <a class="delete" href="#" style="color: white">delete</a>
+                  <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
                 </div>
               {% endfor %}
             </div>
@@ -166,11 +166,9 @@
                 {{ form.name }}
                 {{ form.name.errors }}
 
-                <a class="delete" href="#" style="color: white">delete</a>
+                <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
               {% endwith %}
             </div>
-
-            <a class="add" href="#" style="color: white">add</a>
           </div>
 
 
@@ -190,7 +188,11 @@
             </fieldset>
           </div>
 
-          <input type="submit" value="Send">
+          <div style="margin-top: 10px;">
+            <a class="add" href="#" style="color: white;">add form</a>
+          </div>
+
+          <input type="submit" value="Send" style="margin-top: 10px;">
         </div>
       </div>
     </form>
