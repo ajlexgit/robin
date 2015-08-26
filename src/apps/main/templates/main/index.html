@@ -148,6 +148,8 @@
                   {{ form.name.label_tag }}
                   {{ form.name }}
                   {{ form.name.errors }}
+
+                  <a class="delete" href="#" style="color: white">delete</a>
                 </div>
               {% endfor %}
             </div>
@@ -163,8 +165,12 @@
                 {{ form.name.label_tag }}
                 {{ form.name }}
                 {{ form.name.errors }}
+
+                <a class="delete" href="#" style="color: white">delete</a>
               {% endwith %}
             </div>
+
+            <a class="add" href="#" style="color: white">add</a>
           </div>
 
 

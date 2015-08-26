@@ -156,7 +156,7 @@
                 return
             }
 
-            var $field = $form.find('[name^="' + this.opts.prefix + '-"][name="-DELETE"]').first();
+            var $field = $form.find('[name^="' + this.opts.prefix + '-"][name$="-DELETE"]').first();
             var field_type = $field.prop('type');
             if (value == undefined) {
                 // получение значения
