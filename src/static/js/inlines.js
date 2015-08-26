@@ -88,6 +88,8 @@
 
                 prefix: 'form',
 
+                beforeAddForm: $.noop,
+                afterAddForm: $.noop,
                 beforeDeleteForm: $.noop,
                 afterDeleteForm: $.noop
             }
@@ -177,20 +179,21 @@
 
         /*
             Удаление формы. Устанавливает поле DELETE, если оно есть.
-
             Если установлен hide_form, будет вызвана анимация скрытия формы.
 
             Должен вызывать beforeDeleteForm и afterDeleteForm.
+
+            Возвращает jQuery-объект удаленной формы или false
          */
         Formset.prototype.deleteForm = function(form_selector, hide_form) {
             var $form = $.findFirstElement(form_selector, this.$container);
             if (!$form.length) {
                 console.error('Not found form to be deleted');
-                return
+                return false
             }
 
             if (this.beforeDeleteForm($form) === false) {
-                return
+                return false
             }
 
             this.formDeleted($form, true);
@@ -200,6 +203,8 @@
             } else {
                 this.afterDeleteForm($form);
             }
+
+            return $form;
         };
 
         Formset.prototype.beforeDeleteForm = function($form) {
@@ -217,7 +222,7 @@
         };
 
         /*
-            Скрытие формы.
+            Скрытие (с возможным удалением) формы.
 
             Должен вызывать afterDeleteForm.
          */
@@ -242,16 +247,18 @@
             Добавление новой формы.
 
             Должен вызывать beforeAddForm и afterAddForm.
+
+            Возвращает jQuery-объект новой формы или false
          */
         Formset.prototype.addForm = function() {
             if (this.beforeAddForm() === false) {
-                return
+                return false
             }
 
             var $template = this.getEmptyForm();
             if (!$template.length) {
                 console.error('Not found empty form template');
-                return
+                return false
             }
 
             var $form = $template.clone(true).removeClass(this.opts.emptyFormClass);
@@ -269,11 +276,11 @@
             this.nextFormIndex++;
 
             this.afterAddForm($form);
+
+            return $form;
         };
 
         Formset.prototype.beforeAddForm = function() {
-            var max_num_forms = parseInt(this.management.$max_num_forms.val()) || 1000;
-
             // ищем кол-во форм, которые не помечены удаленными
             var that = this;
             var final_count = 0;
@@ -284,19 +291,25 @@
                 }
             });
 
+            // предотвращаем добавление, если превышено кол-во форм
+            var max_num_forms = parseInt(this.management.$max_num_forms.val()) || 1000;
             if (final_count >= max_num_forms) {
                 return false;
             }
 
             // jQuery event
             this.$container.trigger('beforeAddForm.formset');
+
+            return this.opts.beforeAddForm.call(this);
         };
 
         Formset.prototype.afterAddForm = function($form) {
-            this.showForm($form);
+            this.opts.afterAddForm.call(this, $form);
 
             // jQuery event
             this.$container.trigger('afterAddForm.formset', [$form]);
+
+            this.showForm($form);
         };
 
         /*
