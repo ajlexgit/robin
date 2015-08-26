@@ -69,7 +69,7 @@
             this.nextFormIndex = $initial_forms.length;
 
             // Помечаем реально начальные формы
-            var initial_count = parseInt(this.management.$initial_forms.val());
+            var initial_count = parseInt(this.management.$initial_forms.val()) || 0;
             if ($initial_forms.length < initial_count) {
                 console.error('INITIAL_FORMS is less than real from count');
                 return
@@ -137,23 +137,23 @@
 
 
         /*
-            Удаление формы. Устанавливает флаг DELETE, если он есть.
+            Удаление формы. Устанавливает поле DELETE, если оно есть.
             Если форма не была сохранена в БД, уменьшает TOTAL_FORMS.
 
-            Должен вызывать beforeDeleteForm и
+            Должен вызывать beforeDeleteForm и afterDeleteForm.
          */
-        Formset.prototype.deleteForm = function($form) {
-            if (this.beforeDeleteForm($form) === false) {
+        Formset.prototype.deleteForm = function(form_selector) {
+            var $form = $.findFirstElement(form_selector, this.$container);
+            if (!$form.length) {
+                console.error('Not founf form to be deleted');
                 return
             }
 
-            var form_data = $form.data();
-            if (form_data.initial) {
-                this.markFormDeleted($form);
-                this.hideForm($form);
-            } else {
-                this.hideForm($form, true);
+            if (this.beforeDeleteForm($form) === false) {
+                return
             }
+            this.markFormDeleted($form);
+            this.hideForm($form);
         };
 
         Formset.prototype.beforeDeleteForm = function($form) {
@@ -164,6 +164,15 @@
         Formset.prototype.afterDeleteForm = function($form) {
             // jQuery event
             this.$container.trigger('afterDeleteForm.formset', [$form]);
+
+            var form_data = $form.data();
+            if (!form_data.initial) {
+                $form.remove();
+
+                // уменьшаем TOTAL_FORMS
+                var total_forms = parseInt(this.management.$total_forms.val()) || 0;
+                this.management.$total_forms.val(--total_forms);
+            }
         };
 
         /*
@@ -176,19 +185,14 @@
         };
 
         /*
-            Скрытие формы. Если установлен флаг remove - после
-            скрытия форма должна быть удалена из DOM.
+            Скрытие формы.
 
             Должен вызывать afterDeleteForm.
          */
-        Formset.prototype.hideForm = function($form, remove) {
+        Formset.prototype.hideForm = function($form) {
             var that = this;
             $form.slideUp(300, function() {
                 that.afterDeleteForm($form);
-
-                if (remove) {
-                    $form.remove()
-                }
             });
         };
 
@@ -218,6 +222,10 @@
 
             var $form = $template.clone(true).removeClass(this.opts.emptyFormClass);
             $form.hide().appendTo(this.$container);
+
+            // увеличиваем TOTAL_FORMS
+            var total_forms = parseInt(this.management.$total_forms.val()) || 0;
+            this.management.$total_forms.val(++total_forms);
 
             // заменяем префикс
             var that = this;
