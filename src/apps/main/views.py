@@ -12,7 +12,7 @@ class IndexView(TemplateView):
 
         form_obj = ClientFormModel.objects.first()
         form = MainForm(instance=form_obj, prefix='main')
-        formset = InlineFormSet(initial=[{'name': 'truba'}], instance=form_obj, prefix='inlines')
+        formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
         # SEO
         request.seo.set_instance(config)
@@ -34,7 +34,7 @@ class IndexView(TemplateView):
     def post(self, request, *args, **kwargs):
         form_obj = ClientFormModel.objects.first()
         form = MainForm(request.POST, request.FILES, instance=form_obj, prefix='main')
-        formset = InlineFormSet(request.POST, request.FILES, initial=[{'name': 'truba'}], instance=form_obj, prefix='inlines')
+        formset = InlineFormSet(request.POST, request.FILES, instance=form_obj, prefix='inlines')
 
         form_valid = form.is_valid()
         formset_valid = formset.is_valid()
