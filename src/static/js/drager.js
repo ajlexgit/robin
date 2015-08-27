@@ -454,7 +454,7 @@
             if (this.settings.mouse) {
                 // Блокируем дефолтовый Drag'n'Drop браузера
                 if (this.settings.preventDefault) {
-                    this.$element.on('dragstart.drager' + this.id, function(event) {
+                    this.$element.on('dragstart.drager' + this.id, function() {
                         return false;
                     });
                 }
