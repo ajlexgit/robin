@@ -20,7 +20,7 @@
                 touch: true,
                 ignoreDistance: 10,
 
-                thresholdPercents: 15,
+                slideThreshold: 50,
 
                 speed: 800,
                 easing: 'easeOutCubic',
@@ -121,11 +121,13 @@
             absDxPercents = absDxPercents % slide_left;
 
             // определяем активный слайд
+            var listWidth = slider.$list.outerWidth();
+            var absPixels = Math.abs(evt.dx) % listWidth;
             var farDirection = (evt.dx > 0) == (evt.dx > this._oldDx);
             if (farDirection) {
-                var chooseFar = (absDxPercents > this.opts.thresholdPercents);
+                var chooseFar = (absPixels > this.opts.slideThreshold);
             } else {
-                chooseFar = ((slide_left - absDxPercents) < this.opts.thresholdPercents);
+                chooseFar = ((listWidth - absPixels) < this.opts.slideThreshold);
             }
 
             var $newCurrentSlide;
