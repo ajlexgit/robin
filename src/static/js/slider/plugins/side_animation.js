@@ -258,7 +258,7 @@
                 $currSlide = slider.$currentSlide;
                 while (i++ < passCount) {
                     $sideSlide = getSideSlide($currSlide);
-                    if ($sideSlide.length) {
+                    if ($sideSlide) {
                         $currSlide = $sideSlide;
                     } else {
                         break
@@ -279,17 +279,23 @@
                 $currSlide.css({
                     left: absDxPercents + '%'
                 });
-                $sideSlide.css({
-                    left: absDxPercents - slide_left + '%'
-                });
+                
+                if ($sideSlide) {
+                    $sideSlide.css({
+                        left: absDxPercents - slide_left + '%'
+                    });
+                }
             } else {
                 // тащим влево
                 $currSlide.css({
                     left: -absDxPercents + '%'
                 });
-                $sideSlide.css({
-                    left: -absDxPercents + slide_left + '%'
-                });
+                
+                if ($sideSlide) {
+                    $sideSlide.css({
+                        left: -absDxPercents + slide_left + '%'
+                    });
+                }
             }
         };
 
@@ -304,14 +310,14 @@
             var $currSlide = slider.$currentSlide;
             if (evt.dx > 0) {
                 var $prevSlide = slider.getPreviousSlide($currSlide);
-                if (absDxPercents > drag_plugin.opts.minSlidePercent) {
+                if ($prevSlide && (absDxPercents > drag_plugin.opts.minSlidePercent)) {
                     this.dragChooseLeft(slider, $prevSlide, $currSlide);
                 } else {
                     this.dragChooseRight(slider, $prevSlide, $currSlide);
                 }
             } else {
                 var $nextSlide = slider.getNextSlide($currSlide);
-                if (absDxPercents > drag_plugin.opts.minSlidePercent) {
+                if ($nextSlide && (absDxPercents > drag_plugin.opts.minSlidePercent)) {
                     this.dragChooseRight(slider, $currSlide, $nextSlide);
                 } else {
                     this.dragChooseLeft(slider, $currSlide, $nextSlide);
@@ -332,15 +338,19 @@
                 delay: 40,
                 easing: this.opts.easing,
                 init: function() {
-                    this.left_initial = parseFloat($leftSlide.get(0).style.left);
-                    this.left_diff = -this.left_initial;
+                    if ($leftSlide) {
+                        this.left_initial = parseFloat($leftSlide.get(0).style.left);
+                        this.left_diff = -this.left_initial;
+                    }
                     this.right_initial = parseFloat($rightSlide.get(0).style.left);
                     this.right_diff = slide_left - this.right_initial;
                 },
                 step: function(eProgress) {
-                    $leftSlide.css({
-                        left: this.left_initial + this.left_diff * eProgress + '%'
-                    });
+                    if ($leftSlide) {
+                        $leftSlide.css({
+                            left: this.left_initial + this.left_diff * eProgress + '%'
+                        });
+                    }
                     $rightSlide.css({
                         left: this.right_initial + this.right_diff * eProgress + '%'
                     });
@@ -371,16 +381,20 @@
                 init: function() {
                     this.left_initial = parseFloat($leftSlide.get(0).style.left);
                     this.left_diff = -slide_left - this.left_initial;
-                    this.right_initial = parseFloat($rightSlide.get(0).style.left);
-                    this.right_diff = -this.right_initial;
+                    if ($rightSlide) {
+                        this.right_initial = parseFloat($rightSlide.get(0).style.left);
+                        this.right_diff = -this.right_initial;
+                    }
                 },
                 step: function(eProgress) {
                     $leftSlide.css({
                         left: this.left_initial + this.left_diff * eProgress + '%'
                     });
-                    $rightSlide.css({
-                        left: this.right_initial + this.right_diff * eProgress + '%'
-                    });
+                    if ($rightSlide) {
+                        $rightSlide.css({
+                            left: this.right_initial + this.right_diff * eProgress + '%'
+                        });
+                    }
                 },
                 complete: function() {
                     $leftSlide.css({
