@@ -4,16 +4,16 @@
 
 {{ form.media }}
 <form method="post" action="" id="ajax-reset-password-form" autocomplete="off">
-    {% csrf_token %}
+  {% csrf_token %}
 
-    {{ form.non_field_errors.as_ul }}
-    <fieldset class="{{ form.email.errors.classes }}">
-        {{ form.email.label_tag }}
-        {{ form.email }}
-        {{ form.email.errors }}
-    </fieldset>
+  {{ form.non_field_errors.as_ul }}
+  <fieldset class="{{ form.email.errors.classes }}">
+    {{ form.email.label_tag }}
+    {{ form.email }}
+    {{ form.email.errors }}
+  </fieldset>
 
-    <fieldset>
-        <button type="submit" class="btn">{% trans 'Continue' %}</button>
-    </fieldset>
+  <fieldset>
+    <button type="submit" class="btn">{% trans 'Continue' %}</button>
+  </fieldset>
 </form>

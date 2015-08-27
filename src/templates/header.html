@@ -2,22 +2,23 @@
 {% load multilanguage %}
 
 <header>
-    <div class="table grid">
-        <div class="cell gc-wide-2 gc-2 gc-tablet-6 gc-mobile-3">
-            <a href="/" id="logo"></a>
-        </div>
-
-        <div class="cell gc-wide-4 gc-4 gc-tablet-1 gc-mobile-1">
-            <div class="menu-wrapper">
-                <span id="mobile-menu"></span>
-                <div id="main-menu">
-                    {% main_menu %}
-                </div>
-            </div>
-        </div>
-
-        <div class="cell gc-wide-1 gc-1 gc-tablet-1 gc-mobile-full">
-            {% select_language %}
-        </div>
+  <div class="table grid">
+    <div class="cell gc-wide-2 gc-2 gc-tablet-6 gc-mobile-3">
+      <a href="/" id="logo"></a>
     </div>
+
+    <div class="cell gc-wide-4 gc-4 gc-tablet-1 gc-mobile-1">
+      <div class="menu-wrapper">
+        <span id="mobile-menu"></span>
+
+        <div id="main-menu">
+          {% main_menu %}
+        </div>
+      </div>
+    </div>
+
+    <div class="cell gc-wide-1 gc-1 gc-tablet-1 gc-mobile-full">
+      {% select_language %}
+    </div>
+  </div>
 </header>

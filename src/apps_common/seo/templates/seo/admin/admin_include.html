@@ -1,12 +1,12 @@
 {% load i18n %}
 
 {% if object_id %}
-    {{ adminForm.media }}
+  {{ adminForm.media }}
 
-    <div class="alert alert-info">{% trans 'Attention! Errors in SEO form will not prevent saving of main form' %}</div>
-    {% for fieldset in adminForm %}
-        {% include 'admin/includes/fieldset.html' %}
-    {% endfor %}
+  <div class="alert alert-info">{% trans 'Attention! Errors in SEO form will not prevent saving of main form' %}</div>
+  {% for fieldset in adminForm %}
+    {% include 'admin/includes/fieldset.html' %}
+  {% endfor %}
 {% else %}
-    <div class="alert alert-info">{% trans 'You should create instance first' %}</div>
+  <div class="alert alert-info">{% trans 'You should create instance first' %}</div>
 {% endif %}
