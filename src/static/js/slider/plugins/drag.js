@@ -153,7 +153,7 @@
             }
 
             this._oldDx = evt.dx;
-            this._oldMovedSlides = $($nearSlide, $farSlide);
+            this._oldMovedSlides = $nearSlide.add($farSlide);
         };
 
         /*
