@@ -75,7 +75,7 @@
             if (this.opts.showIntermediate) {
                 var i = 0;
                 var $slide = slider.$currentSlide;
-                while ($slide.length && (i++ <= slide_info.count)) {
+                while ($slide && (i++ <= slide_info.count)) {
                     animatedSlides.push($slide);
 
                     $slide = slider.getNextSlide($slide);
@@ -149,7 +149,7 @@
             if (this.opts.showIntermediate) {
                 var i = 0;
                 var $slide = slider.$currentSlide;
-                while ($slide.length && (i++ <= slide_info.count)) {
+                while ($slide && (i++ <= slide_info.count)) {
                     animatedSlides.push($slide);
 
                     $slide = slider.getPreviousSlide($slide);
@@ -279,7 +279,7 @@
                 $currSlide.css({
                     left: absDxPercents + '%'
                 });
-                
+
                 if ($sideSlide) {
                     $sideSlide.css({
                         left: absDxPercents - slide_left + '%'
@@ -290,7 +290,7 @@
                 $currSlide.css({
                     left: -absDxPercents + '%'
                 });
-                
+
                 if ($sideSlide) {
                     $sideSlide.css({
                         left: -absDxPercents + slide_left + '%'
@@ -327,7 +327,7 @@
 
         SideAnimation.prototype.dragChooseLeft = function(slider, $leftSlide, $rightSlide) {
             var slide_left = 100 + this.opts.slideMarginPercent;
-            var offsetPercentage = slide_left - parseFloat($rightSlide.get(0).style.left);
+            var offsetPercentage = -parseFloat($leftSlide.get(0).style.left);
             var duration = Math.round(this.opts.speed * offsetPercentage / 100);
             duration = Math.max(100, duration);
 
@@ -338,27 +338,29 @@
                 delay: 40,
                 easing: this.opts.easing,
                 init: function() {
-                    if ($leftSlide) {
-                        this.left_initial = parseFloat($leftSlide.get(0).style.left);
-                        this.left_diff = -this.left_initial;
+                    this.left_initial = parseFloat($leftSlide.get(0).style.left);
+                    this.left_diff = -this.left_initial;
+                    if ($rightSlide) {
+                        this.right_initial = parseFloat($rightSlide.get(0).style.left);
+                        this.right_diff = slide_left - this.right_initial;
                     }
-                    this.right_initial = parseFloat($rightSlide.get(0).style.left);
-                    this.right_diff = slide_left - this.right_initial;
                 },
                 step: function(eProgress) {
-                    if ($leftSlide) {
-                        $leftSlide.css({
-                            left: this.left_initial + this.left_diff * eProgress + '%'
+                    $leftSlide.css({
+                        left: this.left_initial + this.left_diff * eProgress + '%'
+                    });
+                    if ($rightSlide) {
+                        $rightSlide.css({
+                            left: this.right_initial + this.right_diff * eProgress + '%'
                         });
                     }
-                    $rightSlide.css({
-                        left: this.right_initial + this.right_diff * eProgress + '%'
-                    });
                 },
                 complete: function() {
-                    $rightSlide.css({
-                        left: ''
-                    });
+                    if ($rightSlide) {
+                        $rightSlide.css({
+                            left: ''
+                        });
+                    }
                     slider.afterSlide($leftSlide);
                 }
             });
@@ -379,27 +381,29 @@
                 delay: 40,
                 easing: this.opts.easing,
                 init: function() {
-                    this.left_initial = parseFloat($leftSlide.get(0).style.left);
-                    this.left_diff = -slide_left - this.left_initial;
-                    if ($rightSlide) {
-                        this.right_initial = parseFloat($rightSlide.get(0).style.left);
-                        this.right_diff = -this.right_initial;
+                    if ($leftSlide) {
+                        this.left_initial = parseFloat($leftSlide.get(0).style.left);
+                        this.left_diff = -slide_left - this.left_initial;
                     }
+                    this.right_initial = parseFloat($rightSlide.get(0).style.left);
+                    this.right_diff = -this.right_initial;
                 },
                 step: function(eProgress) {
-                    $leftSlide.css({
-                        left: this.left_initial + this.left_diff * eProgress + '%'
-                    });
-                    if ($rightSlide) {
-                        $rightSlide.css({
-                            left: this.right_initial + this.right_diff * eProgress + '%'
+                    if ($leftSlide) {
+                        $leftSlide.css({
+                            left: this.left_initial + this.left_diff * eProgress + '%'
                         });
                     }
+                    $rightSlide.css({
+                        left: this.right_initial + this.right_diff * eProgress + '%'
+                    });
                 },
                 complete: function() {
-                    $leftSlide.css({
-                        left: ''
-                    });
+                    if ($leftSlide) {
+                        $leftSlide.css({
+                            left: ''
+                        });
+                    }
                     slider.afterSlide($rightSlide);
                 }
             });
