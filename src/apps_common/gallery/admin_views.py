@@ -112,7 +112,7 @@ def upload(request):
             'message': ', '.join(e.messages),
         }, status=400)
 
-    item.full_clean()
+    item.clean()
     item.save()
 
     response = {
@@ -154,7 +154,7 @@ def upload_video(request):
                 video_key=video_key,
                 video_preview=video_preview,
             )
-            item.full_clean()
+            item.clean()
             item.save()
 
             response = {
