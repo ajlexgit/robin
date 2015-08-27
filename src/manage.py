@@ -1,8 +1,6 @@
 import os
 import sys
 
-# JS hide controls in end
-
 # multilanguage on same site
 
 

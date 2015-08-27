@@ -17,30 +17,40 @@
     z-index: 10;
     cursor: pointer;
     @include unselectable;
+    &:hover {
+      &:before {
+        background-position-y: -40px;
+        @include transform(translate3d(-50%, -50%, 0) scale(1.2));
+      }
+    }
+
     &.slider-arrow-left {
       left: 0;
-      &:hover {
-        &:before {
-          background-position: left -40px;
-          @include transform(translate3d(-50%, -50%, 0) scale(1.2));
-        }
-      }
 
       &:before {
         background-position: left 0;
       }
     }
+
     &.slider-arrow-right {
       right: 0;
+
+      &:before {
+        background-position: right 0;
+      }
+    }
+
+    &.slider-arrow-disabled {
+      cursor: default;
       &:hover {
         &:before {
-          background-position: right -40px;
-          @include transform(translate3d(-50%, -50%, 0) scale(1.2));
+          background-position-y: 0;
+          @include transform(translate3d(-50%, -50%, 0) scale(1));
         }
       }
 
       &:before {
-        background-position: right 0;
+        @include opacity(0.2);
       }
     }
 

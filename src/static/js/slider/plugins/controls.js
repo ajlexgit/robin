@@ -26,8 +26,10 @@
                 arrowClass: 'slider-arrow',
                 arrowLeftClass: 'slider-arrow-left',
                 arrowRightClass: 'slider-arrow-right',
+                arrowDisabledClass: 'slider-arrow-disabled',
 
-                container: null
+                container: null,
+                disableOnEnd: true
             };
         };
 
@@ -38,6 +40,11 @@
             parent.prototype.onAttach.call(this, slider);
 
             this.createControls(slider);
+
+            // проверка на активность
+            if (this.opts.disableOnEnd) {
+                this.checkAllowed(slider);
+            }
 
             var that = this;
             slider.slideNext = function() {
@@ -55,6 +62,15 @@
             };
         };
 
+
+        /*
+            Деактивируем стрелки на границах сладера
+         */
+        ControlsPlugin.prototype.afterSetCurrentSlide = function(slider, $slide) {
+            if (this.opts.disableOnEnd) {
+                this.checkAllowed(slider);
+            }
+        };
 
         /*
             Создание стрелок
@@ -75,21 +91,51 @@
             Добавление стрелок в DOM
          */
         ControlsPlugin.prototype.createControlItems = function(slider) {
-            var $left = $('<div>')
+            var that = this;
+
+            this.$left = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowLeftClass)
                 .on('click.slider.controls', function() {
+                    if ($(this).hasClass(that.opts.arrowDisabledClass)) {
+                        return false
+                    }
+
                     slider.slidePrevious();
                 });
 
-            var $right = $('<div>')
+            this.$right = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowRightClass)
                 .on('click.slider.controls', function() {
+                    if ($(this).hasClass(that.opts.arrowDisabledClass)) {
+                        return false
+                    }
+
                     slider.slideNext();
                 });
 
-            this.$container.append($left, $right);
+            this.$container.append(this.$left, this.$right);
+        };
+
+        /*
+            Проверка и деактивация кнопок на границах
+         */
+        ControlsPlugin.prototype.checkAllowed = function(slider) {
+            var $next = slider.getNextSlide(slider.$currentSlide);
+            var $prev = slider.getPreviousSlide(slider.$currentSlide);
+
+            if (!$prev || !$prev.length) {
+                this.$left.addClass(this.opts.arrowDisabledClass)
+            } else {
+                this.$left.removeClass(this.opts.arrowDisabledClass)
+            }
+
+            if (!$next || !$next.length) {
+                this.$right.addClass(this.opts.arrowDisabledClass)
+            } else {
+                this.$right.removeClass(this.opts.arrowDisabledClass)
+            }
         };
 
         return ControlsPlugin;
