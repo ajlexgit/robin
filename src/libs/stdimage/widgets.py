@@ -1,10 +1,9 @@
 from django import forms
-from django.forms.widgets import FileInput
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 
-class StdImageWidget(forms.ClearableFileInput):
+class StdImageWidget(forms.FileInput):
     class Media:
         js = (
             'admin/js/jquery.Jcrop.js',
@@ -31,7 +30,7 @@ class StdImageWidget(forms.ClearableFileInput):
         super().__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
-        input_tag = super(FileInput, self).render(name, value, dict(attrs, **{
+        input_tag = super().render(name, value, dict(attrs, **{
             'class': 'uploader',
         }))
 
