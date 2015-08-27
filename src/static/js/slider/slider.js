@@ -271,6 +271,8 @@
             if (this.opts.loop) {
                 return this.$slides.eq(0);
             }
+
+            return $();
         };
 
         // Метод, возвращающий предыдущий слайд
@@ -287,6 +289,8 @@
             if (this.opts.loop) {
                 return this.$slides.eq(this.$slides.length - 1);
             }
+
+            return $();
         };
 
 
@@ -459,7 +463,7 @@
             slider._animation.
          */
         Slider.prototype.slideTo = function($toSlide, animationName, animatedHeight) {
-            if (!$toSlide.length || (this.$slides.index($toSlide) < 0)) {
+            if (!$toSlide || !$toSlide.length || (this.$slides.index($toSlide) < 0)) {
                 return
             }
 

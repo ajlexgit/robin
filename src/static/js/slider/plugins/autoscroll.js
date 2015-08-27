@@ -82,11 +82,9 @@
          */
         AutoscrollPlugin.prototype.slideToNext = function(slider) {
             var $next = slider.getNextSlide(slider.$currentSlide);
-            if (!$next || !$next.length) {
-                return
+            if ($next.length) {
+                slider.slideTo($next, this.opts.animationName, this.opts.animatedHeight);
             }
-
-            slider.slideTo($next, this.opts.animationName, this.opts.animatedHeight);
         };
 
         /*
@@ -94,11 +92,9 @@
          */
         AutoscrollPlugin.prototype.slideToPrev = function(slider) {
             var $prev = slider.getPreviousSlide(slider.$currentSlide);
-            if (!$prev || !$prev.length) {
-                return
+            if ($prev.length) {
+                slider.slideTo($prev, this.opts.animationName, this.opts.animatedHeight);
             }
-
-            slider.slideTo($prev, this.opts.animationName, this.opts.animatedHeight);
         };
 
         /*

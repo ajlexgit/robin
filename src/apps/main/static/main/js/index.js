@@ -60,7 +60,7 @@
             })
         ).attachPlugin(
             new SliderDragPlugin({
-                animationName: 'side'
+                slideMarginPercent: 5
             })
         )/*.attachPlugin(
             new SliderAutoscrollPlugin({

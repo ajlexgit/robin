@@ -42,20 +42,16 @@
             var that = this;
             slider.slideNext = function() {
                 var $next = this.getNextSlide(this.$currentSlide);
-                if (!$next || !$next.length) {
-                    return
+                if ($next.length) {
+                    this.slideTo($next, that.opts.animationName, that.opts.animatedHeight);
                 }
-
-                this.slideTo($next, that.opts.animationName, that.opts.animatedHeight);
             };
 
             slider.slidePrevious = function() {
                 var $prev = this.getPreviousSlide(this.$currentSlide);
-                if (!$prev || !$prev.length) {
-                    return
+                if ($prev.length) {
+                    this.slideTo($prev, that.opts.animationName, that.opts.animatedHeight);
                 }
-
-                this.slideTo($prev, that.opts.animationName, that.opts.animatedHeight);
             };
         };
 
@@ -64,25 +60,15 @@
             Создание стрелок
          */
         ControlsPlugin.prototype.createControls = function(slider) {
-            this.$container = this.getContainer(slider);
-            if (this.$container.length) {
-                this.$container = this.$container.first();
-                this.createControlItems(slider);
-            } else {
-                this.$container = null;
-            }
-        };
-
-        /*
-            Возвращает контейнер, в который будут добавлены стрелки
-         */
-        ControlsPlugin.prototype.getContainer = function(slider) {
             if (this.opts.container) {
-                var $container = $(this.opts.container);
+                this.$container = $.findFirstElement(this.opts.container);
             } else {
-                $container = slider.$listWrapper
+                this.$container = slider.$listWrapper;
             }
-            return $container;
+
+            if (this.$container.length) {
+                this.createControlItems(slider);
+            }
         };
 
         /*
