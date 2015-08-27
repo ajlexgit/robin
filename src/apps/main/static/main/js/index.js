@@ -62,13 +62,13 @@
             new SliderDragPlugin({
                 slideMarginPercent: 5
             })
-        )/*.attachPlugin(
+        ).attachPlugin(
             new SliderAutoscrollPlugin({
                 animationName: 'fade',
                 direction: 'random',
                 interval: 3000
             })
-        )*/;
+        );
 
         // inlines
         window.formset = new Formset('#form .formset', {

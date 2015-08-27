@@ -49,28 +49,42 @@
             if (this.opts.stopOnHover) {
                 var that = this;
                 slider.$root.on('mouseenter.slider.autoscroll', function() {
-                    that.stopTimer();
+                    that.stopTimer(slider);
                 }).on('mouseleave.slider.autoscroll', function() {
-                    that.startTimer();
+                    that.startTimer(slider);
                 });
             }
         };
 
 
         /*
+            Переустановка таймера при измеении кол-ва слайдов
+         */
+        AutoscrollPlugin.prototype.afterSetSlideItems = function(slider) {
+            if (this._timer) {
+                this.startTimer(slider);
+            }
+        };
+
+        /*
             Создание таймера
          */
-        AutoscrollPlugin.prototype.startTimer = function() {
+        AutoscrollPlugin.prototype.startTimer = function(slider) {
+            if (slider.$slides.length < 2) {
+                return
+            }
+
             if (this._timer) {
                 clearInterval(this._timer);
             }
+
             this._timer = setInterval(this._timerHandler, this.opts.interval);
         };
 
         /*
             Остановка таймера
          */
-        AutoscrollPlugin.prototype.stopTimer = function() {
+        AutoscrollPlugin.prototype.stopTimer = function(slider) {
             if (this._timer) {
                 clearInterval(this._timer);
                 this._timer = null;
