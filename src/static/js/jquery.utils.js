@@ -100,8 +100,8 @@
         // Остановка анимации
         Animation.prototype.stop = function(jumpToEnd) {
             if (!this.paused) {
-                clearInterval(this._timer);
                 this.paused = true;
+                clearInterval(this._timer);
 
                 if (jumpToEnd) {
                     this.progress = 1;
@@ -115,6 +115,10 @@
 
         // Применение шага анимации с вычислением that.progress
         Animation.prototype._timerHandle = function() {
+            if (this.paused) {
+                return
+            }
+
             this.progress = ($.now() - this._startTime) / this._duration;
             if (this.progress >= 1) {
                 this.progress = 1;

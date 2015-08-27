@@ -423,14 +423,14 @@
                 });
             }
 
-            // высота не меняется - выходим
-            if (current_height == final_height) {
-                return
-            }
-
             // прерываем анимация высоты, если она идёт
             if (this._adaptive_animation) {
                 this._adaptive_animation.stop();
+            }
+
+            // высота не меняется - выходим
+            if (current_height == final_height) {
+                return
             }
 
             this.beforeUpdateListHeight(current_height, final_height);

@@ -77,13 +77,7 @@
             this.$startSlide = slider.$currentSlide;
 
             this._oldDx = 0;
-
-            // метод перехода к соседнему слайду по направлению движения
-            if (evt.dx > 0) {
-                this._getSideSlide = $.proxy(slider.getPreviousSlide, slider);
-            } else {
-                this._getSideSlide = $.proxy(slider.getNextSlide, slider);
-            }
+            this._oldMovedSlides = $();
         };
 
 
@@ -94,6 +88,13 @@
             var dxPercents = this._dxToPercents(slider, evt);
             var absDxPercents = Math.abs(dxPercents);
             var slide_left = 100 + this.opts.slideMarginPercent;
+
+            // метод перехода к соседнему слайду по направлению движения
+            if (evt.dx > 0) {
+                this._getSideSlide = $.proxy(slider.getPreviousSlide, slider);
+            } else {
+                this._getSideSlide = $.proxy(slider.getNextSlide, slider);
+            }
 
             // находим пару слайдов, которые видимы в данный момент
             var passSlideCount = Math.floor(absDxPercents / slide_left);
@@ -133,7 +134,12 @@
                 slider.updateListHeight(this.opts.animatedHeight);
             }
 
-            // перемещение слайдов
+            // очищаем позицию слайдов, которые перемещались ранее
+            this._oldMovedSlides.css({
+                left: ''
+            });
+
+            // перемещение текущих слайдов
             var nearSlidePosition = evt.dx > 0 ? absDxPercents : -absDxPercents;
             $nearSlide.css({
                 left: nearSlidePosition + '%'
@@ -147,6 +153,7 @@
             }
 
             this._oldDx = evt.dx;
+            this._oldMovedSlides = $($nearSlide, $farSlide);
         };
 
         /*
