@@ -7,54 +7,54 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="keywords" content="{{ seo.keywords }}" />
-    <meta name="description" content="{{ seo.description }}" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{{ seo.title }}{% endblock %}</title>
-    <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon" />
-    <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
-    <script>
-        var docElement = document.documentElement;
-        docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
-    </script>
-    <script src="{% url 'jsi18n' %}"></script>
+  <meta charset="utf-8">
+  <meta name="keywords" content="{{ seo.keywords }}"/>
+  <meta name="description" content="{{ seo.description }}"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ seo.title }}{% endblock %}</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
+  <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
+  <script>
+    var docElement = document.documentElement;
+    docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
+  </script>
+  <script src="{% url 'jsi18n' %}"></script>
 
-    {% opengraph %}
+  {% opengraph %}
 
-    {% javascript 'head_core' %}
-    {% stylesheet 'head_core' %}
-    {% block static_head %}
-    {% endblock static_head %}
+  {% javascript 'head_core' %}
+  {% stylesheet 'head_core' %}
+  {% block static_head %}
+  {% endblock static_head %}
 
-    {% seo_counters 'head' %}
+  {% seo_counters 'head' %}
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
-    {% seo_counters 'body_top' %}
+{% seo_counters 'body_top' %}
 
-    <div id="wrapper">
-        <div class="header-wrapper">
-            {% block header %}
-                {% include 'header.html' %}
-            {% endblock header %}
-        </div>
+<div id="wrapper">
+  <div class="header-wrapper">
+    {% block header %}
+      {% include 'header.html' %}
+    {% endblock header %}
+  </div>
 
-        <div class="content-wrapper">
-            {% block content %}{% endblock content %}
-        </div>
+  <div class="content-wrapper">
+    {% block content %}{% endblock content %}
+  </div>
 
-        <div class="footer-wrapper">
-            {% block footer %}
-                {% include 'footer.html' %}
-            {% endblock footer %}
-        </div>
-    </div>
+  <div class="footer-wrapper">
+    {% block footer %}
+      {% include 'footer.html' %}
+    {% endblock footer %}
+  </div>
+</div>
 
-    {% block static_js %}
-        {% js_storage_out %}
-        {% javascript 'core' %}
-    {% endblock static_js %}
+{% block static_js %}
+  {% js_storage_out %}
+  {% javascript 'core' %}
+{% endblock static_js %}
 
-    {% seo_counters 'body_bottom' %}
+{% seo_counters 'body_bottom' %}
 </body>
 </html>
