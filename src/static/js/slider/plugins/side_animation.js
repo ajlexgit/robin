@@ -67,7 +67,7 @@
         SideAnimation.prototype.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slider_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this.opts.slideMarginPercent;
 
             slider.beforeSlide($toSlide);
 
@@ -90,14 +90,14 @@
             for (i = 0; i < animatedSlidesCount; i++) {
                 var $animatedSlide = animatedSlides[i];
 
-                var left = i * slider_left;
+                var left = i * slide_left;
                 $animatedSlide.css({
                     left: left + '%'
                 });
                 animations.push({
                     $animatedSlide: $animatedSlide,
                     from_left: left,
-                    to_left: left - ((animatedSlidesCount - 1) * slider_left)
+                    to_left: left - ((animatedSlidesCount - 1) * slide_left)
                 });
             }
 
@@ -141,7 +141,7 @@
         SideAnimation.prototype.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slider_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this.opts.slideMarginPercent;
 
             slider.beforeSlide($toSlide);
 
@@ -164,14 +164,14 @@
             for (i = 0; i < animatedSlidesCount; i++) {
                 var $animatedSlide = animatedSlides[i];
 
-                var left = -i * slider_left;
+                var left = -i * slide_left;
                 $animatedSlide.css({
                     left: left + '%'
                 });
                 animations.push({
                     $animatedSlide: $animatedSlide,
                     from_left: left,
-                    to_left: left + ((animatedSlidesCount - 1) * slider_left)
+                    to_left: left + ((animatedSlidesCount - 1) * slide_left)
                 });
             }
 
@@ -218,6 +218,11 @@
 
         };
 
+        SideAnimation.prototype._dxToPercents = function(slider, dx) {
+            var slider_width = slider.$list.outerWidth();
+            return 100 * dx / slider_width
+        };
+
         /*
             Перетаскивание слайдов мышью или тачпадом
          */
@@ -227,6 +232,10 @@
                 return
             }
 
+            var $currSlide, $sideSlide;
+            var dxPercents = this._dxToPercents(slider, evt.dx);
+            var absDxPercents = Math.abs(dxPercents);
+            var slide_left = 100 + this.opts.slideMarginPercent;
 
             // метод перехода к соседнему слайду по направлению движения
             if (evt.dx > 0) {
@@ -235,25 +244,21 @@
                 getSideSlide = $.proxy(slider.getNextSlide, slider);
             }
 
-            var $currSlide, $sideSlide;
-            var absDx = Math.abs(evt.dx);
-            var slider_width = Math.round(slider.$list.outerWidth() * (1 + (this.opts.slideMarginPercent / 100)));
-
             // жесткий переход к слайду
-            if (absDx > slider_width) {
+            if (absDxPercents > slide_left) {
                 slider.$slides.css({
                     left: ''
                 });
 
-                var passCount = Math.floor(absDx / slider_width);
-                absDx = absDx % slider_width;
+                var passCount = Math.floor(absDxPercents);
+                absDxPercents = absDxPercents - slide_left * passCount;
                 drag_plugin.drager.startPoint = evt.point;
 
                 var i = 0;
                 $currSlide = slider.$currentSlide;
                 while (i++ < passCount) {
                     $sideSlide = getSideSlide($currSlide);
-                    if ($sideSlide.length) {
+                    if ($sideSlide) {
                         $currSlide = $sideSlide;
                     } else {
                         break
@@ -270,19 +275,27 @@
             $currSlide = slider.$currentSlide;
             $sideSlide = getSideSlide($currSlide);
             if (evt.dx > 0) {
+                // тащим вправо
                 $currSlide.css({
-                    left: absDx
+                    left: absDxPercents + '%'
                 });
-                $sideSlide.css({
-                    left: absDx - slider_width
-                });
+                
+                if ($sideSlide) {
+                    $sideSlide.css({
+                        left: absDxPercents - slide_left + '%'
+                    });
+                }
             } else {
+                // тащим влево
                 $currSlide.css({
-                    left: -absDx
+                    left: -absDxPercents + '%'
                 });
-                $sideSlide.css({
-                    left: -absDx + slider_width
-                });
+                
+                if ($sideSlide) {
+                    $sideSlide.css({
+                        left: -absDxPercents + slide_left + '%'
+                    });
+                }
             }
         };
 
@@ -291,39 +304,56 @@
             Завершение перетаскивания слайда
          */
         SideAnimation.prototype.dragStop = function(slider, drag_plugin, evt) {
-            var absDx = Math.abs(evt.dx);
-            var slider_width = Math.round(slider.$list.outerWidth() * (1 + (this.opts.slideMarginPercent / 100)));
-            var dragPercent = Math.round(100 * absDx / slider_width);
+            var dxPercents = this._dxToPercents(slider, evt.dx);
+            var absDxPercents = Math.abs(dxPercents);
 
             var $currSlide = slider.$currentSlide;
             if (evt.dx > 0) {
                 var $prevSlide = slider.getPreviousSlide($currSlide);
-                if (dragPercent > drag_plugin.opts.minSlidePercent) {
+                if ($prevSlide && (absDxPercents > drag_plugin.opts.minSlidePercent)) {
                     this.dragChooseLeft(slider, $prevSlide, $currSlide);
                 } else {
                     this.dragChooseRight(slider, $prevSlide, $currSlide);
                 }
             } else {
                 var $nextSlide = slider.getNextSlide($currSlide);
-                if (dragPercent > drag_plugin.opts.minSlidePercent) {
-                    this.dragChooseLeft(slider, $currSlide, $nextSlide);
-                } else {
+                if ($nextSlide && (absDxPercents > drag_plugin.opts.minSlidePercent)) {
                     this.dragChooseRight(slider, $currSlide, $nextSlide);
+                } else {
+                    this.dragChooseLeft(slider, $currSlide, $nextSlide);
                 }
             }
         };
 
         SideAnimation.prototype.dragChooseLeft = function(slider, $leftSlide, $rightSlide) {
+            var slide_left = 100 + this.opts.slideMarginPercent;
+            var offsetPercentage = slide_left - parseFloat($rightSlide.get(0).style.left);
+            var duration = Math.round(this.opts.speed * offsetPercentage / 100);
+            duration = Math.max(100, duration);
+
             slider.beforeSlide($leftSlide);
             slider._setCurrentSlide($leftSlide);
             slider._animation = $.animate({
-                duration: this.opts.speed,
+                duration: duration,
+                delay: 40,
                 easing: this.opts.easing,
                 init: function() {
-
+                    if ($leftSlide) {
+                        this.left_initial = parseFloat($leftSlide.get(0).style.left);
+                        this.left_diff = -this.left_initial;
+                    }
+                    this.right_initial = parseFloat($rightSlide.get(0).style.left);
+                    this.right_diff = slide_left - this.right_initial;
                 },
                 step: function(eProgress) {
-
+                    if ($leftSlide) {
+                        $leftSlide.css({
+                            left: this.left_initial + this.left_diff * eProgress + '%'
+                        });
+                    }
+                    $rightSlide.css({
+                        left: this.right_initial + this.right_diff * eProgress + '%'
+                    });
                 },
                 complete: function() {
                     $rightSlide.css({
@@ -332,19 +362,39 @@
                     slider.afterSlide($leftSlide);
                 }
             });
+
+            slider.updateListHeight(true);
         };
 
         SideAnimation.prototype.dragChooseRight = function(slider, $leftSlide, $rightSlide) {
+            var slide_left = 100 + this.opts.slideMarginPercent;
+            var offsetPercentage = parseFloat($rightSlide.get(0).style.left);
+            var duration = Math.round(this.opts.speed * offsetPercentage / 100);
+            duration = Math.max(100, duration);
+
             slider.beforeSlide($rightSlide);
             slider._setCurrentSlide($rightSlide);
             slider._animation = $.animate({
-                duration: this.opts.speed,
+                duration: duration,
+                delay: 40,
                 easing: this.opts.easing,
                 init: function() {
-
+                    this.left_initial = parseFloat($leftSlide.get(0).style.left);
+                    this.left_diff = -slide_left - this.left_initial;
+                    if ($rightSlide) {
+                        this.right_initial = parseFloat($rightSlide.get(0).style.left);
+                        this.right_diff = -this.right_initial;
+                    }
                 },
                 step: function(eProgress) {
-
+                    $leftSlide.css({
+                        left: this.left_initial + this.left_diff * eProgress + '%'
+                    });
+                    if ($rightSlide) {
+                        $rightSlide.css({
+                            left: this.right_initial + this.right_diff * eProgress + '%'
+                        });
+                    }
                 },
                 complete: function() {
                     $leftSlide.css({
@@ -353,6 +403,8 @@
                     slider.afterSlide($rightSlide);
                 }
             });
+
+            slider.updateListHeight(true);
         };
 
         return SideAnimation;

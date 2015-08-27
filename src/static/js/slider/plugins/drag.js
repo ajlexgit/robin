@@ -27,7 +27,7 @@
                 touch: true,
                 ignoreDistance: 10,
 
-                minSlidePercent: 20
+                minSlidePercent: 15
             };
         };
 

@@ -1,7 +1,6 @@
 import os
 import sys
 
-# JS adaptiveHeight to adaptiveHeightSpeed
 # JS slider: drag, drag percents
 # JS hide controls in end, isLast, isFirst
 
