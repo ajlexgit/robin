@@ -1,7 +1,7 @@
 import os
 import sys
 
-# JS slider: drag, не блокировать вертикальный скролл тачем
+# JS slider: не блокировать вертикальный скролл тачем
 # JS hide controls in end, isLast, isFirst
 
 # multilanguage on same site
