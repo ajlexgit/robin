@@ -42,8 +42,9 @@
                 ignoreDistance: this.opts.ignoreDistance,
                 momentum: false,
 
-                onStartDrag: function(evt) {
-                    that.onStartDrag(slider, evt);
+                onStartDrag: function() {
+                    // Запоминаем слайд, с которого начали перетаскивание
+                    that.$startSlide = slider.$currentSlide;
                 },
                 onDrag: function(evt) {
                     that.onDrag(slider, evt);
@@ -80,23 +81,17 @@
             return 100 * evt.dx / slider_width
         };
 
-        /*
-            Начало перетаскивания
-         */
-        DragPlugin.prototype.onStartDrag = function(slider, evt) {
-
-        };
 
         /*
             Перетаскивание слайдов мышью или тачпадом
          */
         DragPlugin.prototype.onDrag = function(slider, evt) {
             if (slider._animated) {
+                // если идет анимация - игнорируем
                 this.drager.startPoint = evt.point;
                 return
             }
 
-            var $currSlide, $sideSlide;
             var dxPercents = this._dxToPercents(slider, evt);
             var absDxPercents = Math.abs(dxPercents);
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -108,8 +103,11 @@
                 getSideSlide = $.proxy(slider.getNextSlide, slider);
             }
 
+            var $floorSlide = this.$startSlide;
+
+
             // жесткий переход к слайду
-            if (absDxPercents > slide_left) {
+            /*if (absDxPercents > slide_left) {
                 slider.$slides.css({
                     left: ''
                 });
@@ -160,7 +158,7 @@
                         left: -absDxPercents + slide_left + '%'
                     });
                 }
-            }
+            }*/
         };
 
         DragPlugin.prototype.dragChooseLeft = function(slider, $leftSlide, $rightSlide) {

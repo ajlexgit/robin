@@ -263,13 +263,13 @@
                 $fromSlide = this.$currentSlide;
             }
 
-            var index = this.$slides.index($fromSlide);
-            if (++index < this.$slides.length) {
-                return this.$slides.eq(index);
-            }
+            var slides_count = this.$slides.length;
+            var index = this.$slides.index($fromSlide) + 1;
 
             if (this.opts.loop) {
-                return this.$slides.eq(0);
+                return this.$slides.eq(index % slides_count);
+            } else if (index < slides_count) {
+                return this.$slides.eq(index);
             }
 
             return $();
@@ -281,13 +281,13 @@
                 $fromSlide = this.$currentSlide;
             }
 
-            var index = this.$slides.index($fromSlide);
-            if (--index >= 0) {
-                return this.$slides.eq(index);
-            }
+            var slides_count = this.$slides.length;
+            var index = this.$slides.index($fromSlide) - 1;
 
             if (this.opts.loop) {
-                return this.$slides.eq(this.$slides.length - 1);
+                return this.$slides.eq(index % slides_count);
+            } else if (index >= 0) {
+                return this.$slides.eq(index);
             }
 
             return $();

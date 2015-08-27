@@ -34,7 +34,7 @@
         // slider
         var $elem = $('.slider');
         window.slider = new Slider($elem, {
-            loop: true,
+            loop: false,
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
             slideItems: 2

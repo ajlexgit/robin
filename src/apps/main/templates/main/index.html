@@ -83,7 +83,7 @@
           <div class="slider">
             {% for item in config.gallery.image_items %}
               <img class="slide {% if forloop.counter == 1 %}active{% endif %}"
-                  {% if forloop.counter == 7 or forloop.counter == 8 %}
+                  {% if forloop.counter == 3 or forloop.counter == 4 %}
                    style="height: 200px;"
                   {% endif %}
                    src="{{ item.image.normal.url }}"
