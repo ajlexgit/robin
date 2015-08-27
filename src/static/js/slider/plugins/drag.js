@@ -76,6 +76,8 @@
             // Запоминаем слайд, с которого начали перетаскивание
             this.$startSlide = slider.$currentSlide;
 
+            this._oldDx = 0;
+
             // метод перехода к соседнему слайду по направлению движения
             if (evt.dx > 0) {
                 this._getSideSlide = $.proxy(slider.getPreviousSlide, slider);
@@ -105,13 +107,20 @@
             }
             var $farSlide = this._getSideSlide($nearSlide);
 
-
             // нормализация процента смещения
             absDxPercents = absDxPercents % slide_left;
 
-            // определяем текущий слайд
-            if ($farSlide.length && (absDxPercents > this.opts.thresholdPercents)) {
-                var $newCurrentSlide = $farSlide;
+            // определяем активный слайд
+            var farDirection = (evt.dx > 0) == (evt.dx > this._oldDx);
+            if (farDirection) {
+                var chooseFar = (absDxPercents > this.opts.thresholdPercents);
+            } else {
+                chooseFar = ((slide_left - absDxPercents) < this.opts.thresholdPercents);
+            }
+
+            var $newCurrentSlide;
+            if (chooseFar && $farSlide.length) {
+                $newCurrentSlide = $farSlide;
             } else {
                 $newCurrentSlide = $nearSlide;
             }
@@ -136,6 +145,8 @@
                     left: farSlidePosition + '%'
                 });
             }
+
+            this._oldDx = evt.dx;
         };
 
         /*

@@ -454,17 +454,17 @@
             if (this.settings.mouse) {
                 // Блокируем дефолтовый Drag'n'Drop браузера
                 if (this.settings.preventDefault) {
-                    this.$element.on('dragstart.drager' + this.id, function() {
+                    this.$element.on('dragstart.drager' + this.id, function(event) {
                         return false;
                     });
                 }
 
-                this.$element.on('mousedown.drager' + this.id, function() {
+                this.$element.on('mousedown.drager' + this.id, function(event) {
                     return that.mouseDownHandler.call(that, event);
                 });
-                $(document).on('mousemove.drager' + this.id, function() {
+                $(document).on('mousemove.drager' + this.id, function(event) {
                     return that.dragHandler.call(that, event);
-                }).on('mouseup.drager' + this.id, function() {
+                }).on('mouseup.drager' + this.id, function(event) {
                     return that.mouseUpHandler.call(that, event);
                 });
             }
