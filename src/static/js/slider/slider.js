@@ -252,19 +252,18 @@
             return this.$slides.first();
         };
 
-        // Активация слайда
-        Slider.prototype._setCurrentSlide = function($slide) {
-            this.$currentSlide = $slide;
-        };
-
-        // Метод, возвращающий следующий слайд
-        Slider.prototype.getNextSlide = function($fromSlide) {
+        /*
+            Метод, возвращающий следующий слайд. Возможно указать количество
+            слайдов, которые нужно пропустить.
+         */
+        Slider.prototype.getNextSlide = function($fromSlide, passCount) {
             if (!$fromSlide || !$fromSlide.length) {
                 $fromSlide = this.$currentSlide;
             }
 
+            passCount = passCount || 0;
             var slides_count = this.$slides.length;
-            var index = this.$slides.index($fromSlide) + 1;
+            var index = this.$slides.index($fromSlide) + (passCount || 0) + 1;
 
             if (this.opts.loop) {
                 return this.$slides.eq(index % slides_count);
@@ -275,14 +274,17 @@
             return $();
         };
 
-        // Метод, возвращающий предыдущий слайд
-        Slider.prototype.getPreviousSlide = function($fromSlide) {
+        /*
+            Метод, возвращающий предыдущий слайд. Возможно указать количество
+            слайдов, которые нужно пропустить.
+         */
+        Slider.prototype.getPreviousSlide = function($fromSlide, passCount) {
             if (!$fromSlide || !$fromSlide.length) {
                 $fromSlide = this.$currentSlide;
             }
 
             var slides_count = this.$slides.length;
-            var index = this.$slides.index($fromSlide) - 1;
+            var index = this.$slides.index($fromSlide) - (passCount || 0) - 1;
 
             if (this.opts.loop) {
                 return this.$slides.eq(index % slides_count);
@@ -293,6 +295,40 @@
             return $();
         };
 
+        // ===============================================
+        // ================ current slide ================
+        // ===============================================
+
+        /*
+            Изменение текущего слайда
+         */
+        Slider.prototype.setCurrentSlide = function($slide) {
+            if (!$slide || !$slide.length || (this.$slides.index($slide) < 0)) {
+                return
+            }
+
+            if (this.$currentSlide && (this.$currentSlide.get(0) == $slide.get(0))) {
+                return
+            }
+
+            this.beforeSetCurrentSlide($slide);
+            this.$currentSlide = $slide;
+            this.afterSetCurrentSlide($slide);
+        };
+
+        Slider.prototype.beforeSetCurrentSlide = function($slide) {
+            // jQuery event
+            this.$list.trigger('beforeSetCurrentSlide.slider', [$slide]);
+
+            this.callPluginsMethod('beforeSetCurrentSlide', [$slide]);
+        };
+
+        Slider.prototype.afterSetCurrentSlide = function($slide) {
+            this.callPluginsMethod('afterSetCurrentSlide', [$slide], true);
+
+            // jQuery event
+            this.$list.trigger('afterSetCurrentSlide.slider' ,[$slide]);
+        };
 
         // ===============================================
         // ================ create slides ================
@@ -569,7 +605,7 @@
             $toSlide.css({
                 left: '0'
             });
-            slider._setCurrentSlide($toSlide);
+            slider.setCurrentSlide($toSlide);
             slider.afterSlide($toSlide);
 
             slider.updateListHeight(animatedHeight);

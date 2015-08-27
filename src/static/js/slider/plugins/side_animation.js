@@ -101,7 +101,7 @@
                 });
             }
 
-            slider._setCurrentSlide($toSlide);
+            slider.setCurrentSlide($toSlide);
 
             this._animation = $.animate({
                 duration: this.opts.speed,
@@ -175,7 +175,7 @@
                 });
             }
 
-            slider._setCurrentSlide($toSlide);
+            slider.setCurrentSlide($toSlide);
 
             this._animation = $.animate({
                 duration: this.opts.speed,

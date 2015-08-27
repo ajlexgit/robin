@@ -42,7 +42,7 @@
                 opacity: 0,
                 zIndex: 3
             });
-            slider._setCurrentSlide($toSlide);
+            slider.setCurrentSlide($toSlide);
 
             slider._animation = $.animate({
                 duration: this.opts.speed,

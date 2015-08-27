@@ -41,10 +41,10 @@
         };
 
         /*
-            Установка активной кнопки перед переходом к слайду
+            Установка активной кнопки после укстановки активного слайда
          */
-        NavigationPlugin.prototype.beforeSlide = function(slider, $toSlide) {
-            this.activateNavigationItemBySlide(slider, $toSlide);
+        NavigationPlugin.prototype.afterSetCurrentSlide = function(slider, $slide) {
+            this.activateNavigationItemBySlide(slider, $slide);
         };
 
         /*
