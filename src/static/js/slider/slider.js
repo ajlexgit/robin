@@ -304,16 +304,17 @@
          */
         Slider.prototype.setCurrentSlide = function($slide) {
             if (!$slide || !$slide.length || (this.$slides.index($slide) < 0)) {
-                return
+                return false
             }
 
             if (this.$currentSlide && (this.$currentSlide.get(0) == $slide.get(0))) {
-                return
+                return false
             }
 
             this.beforeSetCurrentSlide($slide);
             this.$currentSlide = $slide;
             this.afterSetCurrentSlide($slide);
+            return $slide
         };
 
         Slider.prototype.beforeSetCurrentSlide = function($slide) {
