@@ -40,11 +40,7 @@
             parent.prototype.onAttach.call(this, slider);
 
             this.createControls(slider);
-
-            // проверка на активность
-            if (this.opts.disableOnEnd) {
-                this.checkAllowed(slider);
-            }
+            this.checkAllowed(slider);
 
             var that = this;
             slider.slideNext = function() {
@@ -67,9 +63,7 @@
             Деактивируем стрелки на границах сладера
          */
         ControlsPlugin.prototype.afterSetCurrentSlide = function(slider, $slide) {
-            if (this.opts.disableOnEnd) {
-                this.checkAllowed(slider);
-            }
+            this.checkAllowed(slider);
         };
 
         /*
@@ -122,16 +116,17 @@
             Проверка и деактивация кнопок на границах
          */
         ControlsPlugin.prototype.checkAllowed = function(slider) {
-            var $next = slider.getNextSlide(slider.$currentSlide);
-            var $prev = slider.getPreviousSlide(slider.$currentSlide);
+            var $curr = slider.$currentSlide;
+            var $next = slider.getNextSlide($curr);
+            var $prev = slider.getPreviousSlide($curr);
 
-            if (!$prev || !$prev.length) {
+            if (this.opts.disableOnEnd && (!$prev || !$prev.length || ($curr.get(0) == $prev.get(0)))) {
                 this.$left.addClass(this.opts.arrowDisabledClass)
             } else {
                 this.$left.removeClass(this.opts.arrowDisabledClass)
             }
 
-            if (!$next || !$next.length) {
+            if (this.opts.disableOnEnd && (!$next || !$next.length || ($curr.get(0) == $next.get(0)))) {
                 this.$right.addClass(this.opts.arrowDisabledClass)
             } else {
                 this.$right.removeClass(this.opts.arrowDisabledClass)

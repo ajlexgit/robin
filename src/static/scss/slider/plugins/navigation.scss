@@ -59,5 +59,9 @@ $dot_active_color: rgba(#3B91CA, 1);
         }
       }
     }
+
+    &.slider-navigation-disabled {
+      display: none;
+    }
   }
 }

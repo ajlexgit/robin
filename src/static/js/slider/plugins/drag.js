@@ -96,17 +96,26 @@
                 this._getSideSlide = $.proxy(slider.getNextSlide, slider);
             }
 
+            // очищаем позицию слайдов, которые перемещались ранее
+            this._oldMovedSlides.css({
+                left: ''
+            });
+
             // находим пару слайдов, которые видимы в данный момент
             var passSlideCount = Math.floor(absDxPercents / slide_left);
             if (passSlideCount > 0) {
                 var $nearSlide = this._getSideSlide(this.$startSlide, passSlideCount - 1);
-                if (!$nearSlide.length) {
+                if (!$nearSlide.length || (slider.$slides.length < 2)) {
                     return
                 }
             } else {
                 $nearSlide = this.$startSlide;
             }
+
             var $farSlide = this._getSideSlide($nearSlide);
+            if ($farSlide.get(0) == $nearSlide.get(0)) {
+                $farSlide = $();
+            }
 
             // нормализация процента смещения
             absDxPercents = absDxPercents % slide_left;
@@ -134,11 +143,6 @@
                 slider.updateListHeight(this.opts.animatedHeight);
             }
 
-            // очищаем позицию слайдов, которые перемещались ранее
-            this._oldMovedSlides.css({
-                left: ''
-            });
-
             // перемещение текущих слайдов
             var nearSlidePosition = evt.dx > 0 ? absDxPercents : -absDxPercents;
             $nearSlide.css({
@@ -161,11 +165,22 @@
          */
         DragPlugin.prototype.onStopDrag = function(slider, evt) {
             var $currSlide = slider.$currentSlide;
+
             var $nextSlide = slider.getNextSlide($currSlide);
+            if ($nextSlide.get(0) == $currSlide.get(0)) {
+                $nextSlide = $()
+            }
+
             var $prevSlide = slider.getPreviousSlide($currSlide);
+            if ($prevSlide.get(0) == $currSlide.get(0)) {
+                $prevSlide = $()
+            }
 
             var slide_left = 100 + this.opts.slideMarginPercent;
             var currSlidePosition = parseFloat($currSlide.get(0).style.left);
+            if (isNaN(currSlidePosition)) {
+                currSlidePosition = evt.dx > 0 ? slide_left : -slide_left;
+            }
             var duration = Math.round(this.opts.speed * Math.abs(currSlidePosition) / 100);
 
             slider.beforeSlide($currSlide);

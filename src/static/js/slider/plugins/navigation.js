@@ -24,10 +24,12 @@
                 animatedHeight: true,
 
                 wrapperClass: 'slider-navigation',
+                wrapperDisabledClass: 'slider-navigation-disabled',
                 itemClass: 'slider-navigation-item',
                 activeItemClass: 'active',
 
-                container: null
+                container: null,
+                oneSlideDisable: true
             };
         };
 
@@ -38,10 +40,11 @@
             parent.prototype.onAttach.call(this, slider);
 
             this.createNavigation(slider);
+            this.checkEnabled(slider);
         };
 
         /*
-            Установка активной кнопки после укстановки активного слайда
+            Установка активной кнопки после установки активного слайда
          */
         NavigationPlugin.prototype.afterSetCurrentSlide = function(slider, $slide) {
             this.activateNavigationItemBySlide(slider, $slide);
@@ -52,6 +55,7 @@
          */
         NavigationPlugin.prototype.afterSetSlideItems = function(slider) {
             this.createNavigation(slider);
+            this.checkEnabled(slider);
         };
 
 
@@ -86,18 +90,17 @@
          */
         NavigationPlugin.prototype.createNavigationItems = function(slider) {
             this.$container.find('.' + this.opts.wrapperClass).remove();
-            var $wrapper = $('<div/>').addClass(this.opts.wrapperClass);
-            this.$container.append($wrapper);
+            this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
             for (var i = 0; i < slider.$slides.length; i++) {
                 var $item = $('<a>').addClass(this.opts.itemClass)
                     .data('slideIndex', i)
                     .text(i + 1);
-                $wrapper.append($item);
+                this.$wrapper.append($item);
             }
 
             var that = this;
-            $wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
+            this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
                 slider.slideTo(slider.$slides.eq(slideIndex), that.opts.animationName, that.opts.animatedHeight);
@@ -114,6 +117,17 @@
                 $item.addClass(this.opts.activeItemClass);
                 $item.siblings('.' + this.opts.itemClass + '.' + this.opts.activeItemClass)
                     .removeClass(this.opts.activeItemClass);
+            }
+        };
+
+        /*
+            Деактивация навигации на одном слайде
+         */
+        NavigationPlugin.prototype.checkEnabled = function(slider) {
+            if (this.opts.oneSlideDisable && (slider.$slides.length < 2)) {
+                this.$wrapper.addClass(this.opts.wrapperDisabledClass);
+            } else {
+                this.$wrapper.removeClass(this.opts.wrapperDisabledClass);
             }
         };
 
