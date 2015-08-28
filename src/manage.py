@@ -1,6 +1,7 @@
 import os
 import sys
 
+# JS slider on drag one
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 
 # multilanguage on same site
