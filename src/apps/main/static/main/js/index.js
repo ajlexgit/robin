@@ -28,7 +28,7 @@
         });
     });
 
-    // Slider
+
     $(document).ready(function() {
 
         // slider
@@ -38,36 +38,35 @@
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
             slideItems: 2
-        }).attachPlugin(
-            new SliderSideAnimation({
-                speed: 800,
-                slideMarginPercent: 5
-            })
-        ).attachPlugin(
-            new SliderSideShortestAnimation({
-                speed: 800,
-                slideMarginPercent: 5
-            })
-        ).attachPlugin(
-            new SliderFadeAnimation()
-        ).attachPlugin(
-            new SliderControlsPlugin({
-                animationName: 'side-shortest'
-            })
-        ).attachPlugin(
-            new SliderNavigationPlugin({
-                animationName: 'side'
-            })
-        ).attachPlugin(
-            new SliderDragPlugin({
-                slideMarginPercent: 5
-            })
-        ).attachPlugin(
-            new SliderAutoscrollPlugin({
-                animationName: 'fade',
-                direction: 'random',
-                interval: 3000
-            })
+        }).attachPlugins(
+            [
+                new SliderSideAnimation({
+                    speed: 800,
+                    slideMarginPercent: 5
+                }),
+                new SliderSideShortestAnimation({
+                    speed: 800,
+                    slideMarginPercent: 5
+                }),
+                new SliderFadeAnimation({
+                    speed: 800
+                }),
+                new SliderControlsPlugin({
+                    animationName: 'side-shortest'
+                }),
+                new SliderNavigationPlugin({
+                    animationName: 'side'
+                }),
+                new SliderDragPlugin({
+                    speed: 800,
+                    slideMarginPercent: 5
+                }),
+                new SliderAutoscrollPlugin({
+                    animationName: 'fade',
+                    direction: 'random',
+                    interval: 3000
+                })
+            ]
         );
 
         // inlines

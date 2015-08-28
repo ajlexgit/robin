@@ -16,38 +16,39 @@
             </div>
 
         JS пример:
-            var slider = new Slider('#slider', {
-                loop: true,
+            var slider = new Slider($elem, {
+                loop: false,
                 adaptiveHeight: true,
                 adaptiveHeightTransition: 800,
-                slideItems: 1
-            }).attachPlugin(
+                slideItems: 2
+            }).attachPlugins([
                 new SliderSideAnimation({
                     speed: 800,
                     slideMarginPercent: 5
-                })
-            ).attachPlugin(
+                }),
                 new SliderSideShortestAnimation({
                     speed: 800,
                     slideMarginPercent: 5
-                })
-            ).attachPlugin(
-                new SliderFadeAnimation()
-            ).attachPlugin(
+                }),
+                new SliderFadeAnimation({
+                    speed: 800
+                }),
                 new SliderControlsPlugin({
                     animationName: 'side-shortest'
-                })
-            ).attachPlugin(
+                }),
                 new SliderNavigationPlugin({
                     animationName: 'side'
-                })
-            ).attachPlugin(
+                }),
+                new SliderDragPlugin({
+                    speed: 800,
+                    slideMarginPercent: 5
+                }),
                 new SliderAutoscrollPlugin({
                     animationName: 'fade',
                     direction: 'random',
                     interval: 3000
                 })
-            );
+            ]);
     */
 
     var sliders = [];
@@ -170,7 +171,6 @@
 
         /*
             Добавление текущего объекта к массиву аргументов.
-
          */
         Slider.prototype._argsWithThis = function(args) {
             var final_args = args || [];
@@ -180,20 +180,19 @@
         };
 
         /*
-            Подключение плагина.
-
-            Пример:
-                var slider = new Slider($mylist, {
-                    adaptiveHeight: false
-                }).attachPlugin(
-                    new ControlsPlugin()
-                ).attachPlugin(
-                    new SideAnimation()
-                );
+            Подключение плагинов
          */
-        Slider.prototype.attachPlugin = function(plugin) {
-            this._plugins.push(plugin);
-            plugin.onAttach(this);
+        Slider.prototype.attachPlugins = function(plugins) {
+            if ($.isArray(plugins)) {
+                for (var i = 0; i< plugins.length; i++) {
+                    var plugin = plugins[i];
+                    this._plugins.push(plugin);
+                    plugin.onAttach(this);
+                }
+            } else {
+                this._plugins.push(plugins);
+                plugins.onAttach(this);
+            }
             return this;
         };
 
