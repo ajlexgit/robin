@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Parallax: jumps in IE 11
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 
 # multilanguage on same site
