@@ -41,21 +41,6 @@
 
             this.createControls(slider);
             this.checkAllowed(slider);
-
-            var that = this;
-            slider.slideNext = function() {
-                var $next = this.getNextSlide(this.$currentSlide);
-                if ($next.length) {
-                    this.slideTo($next, that.opts.animationName, that.opts.animatedHeight);
-                }
-            };
-
-            slider.slidePrevious = function() {
-                var $prev = this.getPreviousSlide(this.$currentSlide);
-                if ($prev.length) {
-                    this.slideTo($prev, that.opts.animationName, that.opts.animatedHeight);
-                }
-            };
         };
 
 
@@ -95,7 +80,7 @@
                         return false
                     }
 
-                    slider.slidePrevious();
+                    slider.slidePrevious(that.opts.animationName, that.opts.animatedHeight);
                 });
 
             this.$right = $('<div>')
@@ -106,7 +91,7 @@
                         return false
                     }
 
-                    slider.slideNext();
+                    slider.slideNext(that.opts.animationName, that.opts.animatedHeight);
                 });
 
             this.$container.append(this.$left, this.$right);

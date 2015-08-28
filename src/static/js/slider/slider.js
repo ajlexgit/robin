@@ -543,6 +543,16 @@
             this.$list.trigger('afterSlide.slider', arguments);
         };
 
+        Slider.prototype.slideNext = function(animationName, animatedHeight) {
+            var $next = this.getNextSlide();
+            this.slideTo($next, animationName, animatedHeight);
+        };
+
+        Slider.prototype.slidePrevious = function(animationName, animatedHeight) {
+            var $prev = this.getPreviousSlide();
+            this.slideTo($prev, animationName, animatedHeight);
+        };
+
         return Slider;
     })();
 

@@ -36,11 +36,21 @@
             parent.prototype.onAttach.call(this, slider);
 
             if (this.opts.direction == 'prev') {
-                this._timerHandler = $.proxy(this.slideToPrev, this, slider);
+                this._timerHandler = $.proxy(
+                    slider.slidePrevious,
+                    slider,
+                    this.opts.animationName,
+                    this.opts.animatedHeight
+                );
             } else if (this.opts.direction == 'random') {
                 this._timerHandler = $.proxy(this.slideToRandom, this, slider);
             } else {
-                this._timerHandler = $.proxy(this.slideToNext, this, slider);
+                this._timerHandler = $.proxy(
+                    slider.slideNext,
+                    slider,
+                    this.opts.animationName,
+                    this.opts.animatedHeight
+                );
             }
 
             this.startTimer(slider);
@@ -88,26 +98,6 @@
             if (this._timer) {
                 clearInterval(this._timer);
                 this._timer = null;
-            }
-        };
-
-        /*
-            Скролл вперед
-         */
-        AutoscrollPlugin.prototype.slideToNext = function(slider) {
-            var $next = slider.getNextSlide(slider.$currentSlide);
-            if ($next.length) {
-                slider.slideTo($next, this.opts.animationName, this.opts.animatedHeight);
-            }
-        };
-
-        /*
-            Скролл назад
-         */
-        AutoscrollPlugin.prototype.slideToPrev = function(slider) {
-            var $prev = slider.getPreviousSlide(slider.$currentSlide);
-            if ($prev.length) {
-                slider.slideTo($prev, this.opts.animationName, this.opts.animatedHeight);
             }
         };
 
