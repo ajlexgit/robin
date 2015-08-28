@@ -23,6 +23,7 @@
                 slideThreshold: 50,
 
                 speed: 800,
+                dragOneSlide: false,
                 easing: 'easeOutCubic',
                 animatedHeight: true,
                 slideMarginPercent: 0
@@ -48,6 +49,12 @@
                 onDrag: function(evt) {
                     if (slider._animated) {
                         // если идет анимация - игнорируем
+                        this.startPoint = evt.point;
+                        return
+                    }
+
+                    if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
+                        // если один слайд - игнорируем
                         this.startPoint = evt.point;
                         return
                     }
