@@ -10,41 +10,39 @@
   height: 100%;
   z-index: 10;
   cursor: pointer;
+  @include opacity(0.5);
   @include unselectable;
+  @include transition(background-color 0.5s, opacity 0.5s);
+
   &:hover {
+    background-color: rgba(#000000, 0.15);
+    @include opacity(1);
+
     &:before {
-      background-position-y: -40px;
-      @include transform(translate3d(-50%, -50%, 0) scale(1.2));
+      background-position: right -40px;
     }
   }
 
   &.slider-arrow-left {
     left: 0;
-
-    &:before {
-      background-position: left 0;
-    }
+    @include transform(rotate(180deg));
   }
 
   &.slider-arrow-right {
     right: 0;
-
-    &:before {
-      background-position: right 0;
-    }
   }
 
   &.slider-arrow-disabled {
     cursor: default;
-    &:hover {
-      &:before {
-        background-position-y: 0;
-        @include transform(translate3d(-50%, -50%, 0) scale(1));
-      }
-    }
+    @include opacity(0.2);
 
-    &:before {
+    &:hover {
+      background-color: transparent;
       @include opacity(0.2);
+
+      &:before {
+        background-position: right 0;
+      }
     }
   }
 
@@ -55,12 +53,8 @@
     top: 50%;
     width: 40px;
     height: 40px;
-    background: url(../arrows.png) no-repeat;
+    background: url(../arrows.png) no-repeat right 0;
     background-size: 200%;
-    @include transform(translate3d(-50%, -50%, 0) scale(1));
-    @include transition-property(-webkit-transform, transform);
-    @include transition-duration(0.3s);
-    @include transition-timing-function(linear);
-    @include transform-origin(0, 0);
+    @include transform(translate3d(-50%, -50%, 0));
   }
 }
