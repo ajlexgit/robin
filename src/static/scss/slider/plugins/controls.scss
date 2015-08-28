@@ -12,10 +12,9 @@
   cursor: pointer;
   @include opacity(0.5);
   @include unselectable;
-  @include transition(background-color 0.5s, opacity 0.5s);
+  @include transition(opacity 0.5s);
 
   &:hover {
-    background-color: rgba(#000000, 0.15);
     @include opacity(1);
 
     &:before {
@@ -37,9 +36,6 @@
     @include opacity(0.2);
 
     &:hover {
-      background-color: transparent;
-      @include opacity(0.2);
-
       &:before {
         background-position: right 0;
       }
