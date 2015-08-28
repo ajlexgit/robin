@@ -11,7 +11,6 @@ $dot_active_color: rgba(#3B91CA, 1);
 
 // Navigation
 .slider-navigation {
-  margin-top: 20px;
   text-align: center;
   @include valign_after;
   @include unselectable;
@@ -60,6 +59,8 @@ $dot_active_color: rgba(#3B91CA, 1);
   }
 
   &.slider-navigation-disabled {
-    display: none;
+    .slider-navigation-item {
+      display: none;
+    }
   }
 }
