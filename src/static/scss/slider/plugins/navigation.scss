@@ -9,59 +9,57 @@ $dot_hover_color: rgba(#3B91CA, 0.5);
 $dot_active_scale: $dot_hover_scale;
 $dot_active_color: rgba(#3B91CA, 1);
 
-.slider-root {
+// Navigation
+.slider-navigation {
+  margin-top: 20px;
+  text-align: center;
+  @include valign_after;
+  @include unselectable;
 
-  // Navigation
-  .slider-navigation {
-    margin-top: 20px;
+  .slider-navigation-item {
+    display: inline-block;
+    position: relative;
+    width: $item_size;
+    height: $item_size;
+    margin-right: $item_gap;
     text-align: center;
-    @include unselectable;
+    cursor: pointer;
+    z-index: 1;
+    @include no_fontsize;
+    @include valign_after;
+    &:nth-last-of-type(1) {
+      margin-right: 0;
+    }
 
-    .slider-navigation-item {
+    // dot
+    &:before {
+      content: '';
       display: inline-block;
-      position: relative;
-      width: $item_size;
-      height: $item_size;
-      margin-right: $item_gap;
-      text-align: center;
-      cursor: pointer;
-      z-index: 1;
-      @include no_fontsize;
-      @include valign_after;
-      &:nth-last-of-type(1) {
-        margin-right: 0;
-      }
+      width: $dot_size;
+      height: $dot_size;
+      vertical-align: middle;
+      background-color: $dot_color;
+      @include border_radius(50%);
+      @include transition-property(-webkit-transform, transform, color);
+      @include transition-duration(0.3s);
+    }
 
-      // dot
+    &:hover {
       &:before {
-        content: '';
-        display: inline-block;
-        width: $dot_size;
-        height: $dot_size;
-        vertical-align: middle;
-        background-color: $dot_color;
-        @include border_radius(50%);
-        @include transition-property(-webkit-transform, transform, color);
-        @include transition-duration(0.3s);
-      }
-
-      &:hover {
-        &:before {
-          background-color: $dot_hover_color;
-          @include transform(scale($dot_hover_scale));
-        }
-      }
-
-      &.active {
-        &:before {
-          background-color: $dot_active_color;
-          @include transform(scale($dot_active_scale));
-        }
+        background-color: $dot_hover_color;
+        @include transform(scale($dot_hover_scale));
       }
     }
 
-    &.slider-navigation-disabled {
-      display: none;
+    &.active {
+      &:before {
+        background-color: $dot_active_color;
+        @include transform(scale($dot_active_scale));
+      }
     }
+  }
+
+  &.slider-navigation-disabled {
+    display: none;
   }
 }
