@@ -76,8 +76,8 @@
             // Запоминаем слайд, с которого начали перетаскивание
             this.$startSlide = slider.$currentSlide;
 
-            this._oldDx = 0;
-            this._oldMovedSlides = $();
+            this._dx = 0;
+            this._movedSlides = [];
         };
 
 
@@ -97,11 +97,11 @@
             }
 
             // очищаем позицию слайдов, которые перемещались ранее
-            this._oldMovedSlides.css({
+            $(this._movedSlides.filter(Boolean)).css({
                 left: ''
             });
 
-            // находим пару слайдов, которые видимы в данный момент
+            // находим видимый слайд, ближайший к точке начала движения
             var passSlideCount = Math.floor(absDxPercents / slide_left);
             if (passSlideCount > 0) {
                 var $nearSlide = this._getSideSlide(this.$startSlide, passSlideCount - 1);
@@ -112,30 +112,45 @@
                 $nearSlide = this.$startSlide;
             }
 
-            var $farSlide = this._getSideSlide($nearSlide);
-            if ($farSlide.get(0) == $nearSlide.get(0)) {
-                $farSlide = $();
-            }
-
             // нормализация процента смещения
             absDxPercents = absDxPercents % slide_left;
 
             // определяем активный слайд
             var listWidth = slider.$list.outerWidth();
             var absPixels = Math.abs(evt.dx) % listWidth;
-            var farDirection = (evt.dx > 0) == (evt.dx > this._oldDx);
+            var farDirection = (evt.dx > 0) == (evt.dx > this._dx);
             if (farDirection) {
                 var chooseFar = (absPixels > this.opts.slideThreshold);
             } else {
                 chooseFar = ((listWidth - absPixels) < this.opts.slideThreshold);
             }
 
-            var $newCurrentSlide;
-            if (chooseFar && $farSlide.length) {
-                $newCurrentSlide = $farSlide;
-            } else {
-                $newCurrentSlide = $nearSlide;
+
+            // перемещаем ближний слайд
+            var nearSlidePosition = evt.dx > 0 ? absDxPercents : -absDxPercents;
+            $nearSlide.css({
+                left: nearSlidePosition + '%'
+            });
+
+            // Находим второй видимый слайд
+            var $farSlide = this._getSideSlide($nearSlide);
+            if ($farSlide.get(0) == $nearSlide.get(0)) {
+                $farSlide = $();
             }
+
+            var $newCurrentSlide = $nearSlide;
+            if ($farSlide.length) {
+                if (chooseFar) {
+                    $newCurrentSlide = $farSlide;
+                }
+
+                // перемещаем дальний слайд
+                var farSlidePosition = evt.dx > 0 ? absDxPercents - slide_left : -absDxPercents + slide_left;
+                $farSlide.css({
+                    left: farSlidePosition + '%'
+                });
+            }
+
 
             // выделяем активный слайд
             if (slider.$currentSlide.get(0) != $newCurrentSlide.get(0)) {
@@ -145,38 +160,26 @@
                 slider.updateListHeight(this.opts.animatedHeight);
             }
 
-            // перемещение текущих слайдов
-            var nearSlidePosition = evt.dx > 0 ? absDxPercents : -absDxPercents;
-            $nearSlide.css({
-                left: nearSlidePosition + '%'
-            });
 
-            if ($farSlide.length) {
-                var farSlidePosition = evt.dx > 0 ? absDxPercents - slide_left : -absDxPercents + slide_left;
-                $farSlide.css({
-                    left: farSlidePosition + '%'
-                });
-            }
-
-            this._oldDx = evt.dx;
-            this._oldMovedSlides = $nearSlide.add($farSlide);
+            this._dx = evt.dx;
+            this._movedSlides = evt.dx > 0 ? [
+                $farSlide.get(0), $nearSlide.get(0)
+            ] : [
+                $nearSlide.get(0), $farSlide.get(0)
+            ];
         };
 
         /*
             Завершение перетаскивания слайдов мышью или тачпадом
          */
         DragPlugin.prototype.onStopDrag = function(slider, evt) {
+            if (!this._movedSlides || (this._movedSlides.length != 2)) {
+                return
+            }
+
+            var leftSlide = this._movedSlides[0];
+            var rightSlide = this._movedSlides[1];
             var $currSlide = slider.$currentSlide;
-
-            var $nextSlide = slider.getNextSlide($currSlide);
-            if ($nextSlide.get(0) == $currSlide.get(0)) {
-                $nextSlide = $()
-            }
-
-            var $prevSlide = slider.getPreviousSlide($currSlide);
-            if ($prevSlide.get(0) == $currSlide.get(0)) {
-                $prevSlide = $()
-            }
 
             var slide_left = 100 + this.opts.slideMarginPercent;
             var currSlidePosition = parseFloat($currSlide.get(0).style.left);
@@ -188,20 +191,25 @@
             slider.beforeSlide($currSlide);
             slider._animation = $.animate({
                 duration: Math.max(200, duration),
-                delay: 40,
                 easing: this.opts.easing,
                 init: function() {
                     this.curr_pos = currSlidePosition;
                     this.curr_diff = -currSlidePosition;
 
-                    if ($nextSlide.length) {
-                        this.next_pos = parseFloat($nextSlide.get(0).style.left);
-                        this.next_diff = slide_left - this.next_pos;
-                    }
-
-                    if ($prevSlide.length) {
-                        this.prev_pos = parseFloat($prevSlide.get(0).style.left);
-                        this.prev_diff = -slide_left - this.prev_pos;
+                    if ($currSlide.get(0) == leftSlide) {
+                        // второй слайд - правый
+                        this.$otherSlide = $(rightSlide);
+                        if (rightSlide) {
+                            this.other_pos = parseFloat(rightSlide.style.left);
+                            this.other_diff = slide_left - this.other_pos;
+                        }
+                    } else {
+                        // второй слайд - левый
+                        this.$otherSlide = $(leftSlide);
+                        if (leftSlide) {
+                            this.other_pos = parseFloat(leftSlide.style.left);
+                            this.other_diff = -slide_left - this.other_pos;
+                        }
                     }
                 },
                 step: function(eProgress) {
@@ -209,13 +217,11 @@
                         left: this.curr_pos + this.curr_diff * eProgress + '%'
                     });
 
-                    $nextSlide.css({
-                        left: this.next_pos + this.next_diff * eProgress + '%'
-                    });
-
-                    $prevSlide.css({
-                        left: this.prev_pos + this.prev_diff * eProgress + '%'
-                    });
+                    if (this.$otherSlide.length) {
+                        this.$otherSlide.css({
+                            left: this.other_pos + this.other_diff * eProgress + '%'
+                        });
+                    }
                 },
                 complete: function() {
                     slider.$slides.css({
