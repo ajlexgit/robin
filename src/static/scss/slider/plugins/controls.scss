@@ -1,73 +1,70 @@
 @import "mixins";
 
 
-.slider-root {
+.slider-list-wrapper {
+  padding: 0 60px;
+}
 
-  .slider-list-wrapper {
-    padding: 0 60px;
+// Controls
+.slider-arrow {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  z-index: 10;
+  cursor: pointer;
+  @include unselectable;
+  &:hover {
+    &:before {
+      background-position-y: -40px;
+      @include transform(translate3d(-50%, -50%, 0) scale(1.2));
+    }
   }
 
-  // Controls
-  .slider-arrow {
-    position: absolute;
-    overflow: hidden;
-    top: 0;
-    width: 60px;
-    height: 100%;
-    z-index: 10;
-    cursor: pointer;
-    @include unselectable;
+  &.slider-arrow-left {
+    left: 0;
+
+    &:before {
+      background-position: left 0;
+    }
+  }
+
+  &.slider-arrow-right {
+    right: 0;
+
+    &:before {
+      background-position: right 0;
+    }
+  }
+
+  &.slider-arrow-disabled {
+    cursor: default;
     &:hover {
       &:before {
-        background-position-y: -40px;
-        @include transform(translate3d(-50%, -50%, 0) scale(1.2));
-      }
-    }
-
-    &.slider-arrow-left {
-      left: 0;
-
-      &:before {
-        background-position: left 0;
-      }
-    }
-
-    &.slider-arrow-right {
-      right: 0;
-
-      &:before {
-        background-position: right 0;
-      }
-    }
-
-    &.slider-arrow-disabled {
-      cursor: default;
-      &:hover {
-        &:before {
-          background-position-y: 0;
-          @include transform(translate3d(-50%, -50%, 0) scale(1));
-        }
-      }
-
-      &:before {
-        @include opacity(0.2);
+        background-position-y: 0;
+        @include transform(translate3d(-50%, -50%, 0) scale(1));
       }
     }
 
     &:before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 40px;
-      height: 40px;
-      background: url(../arrows.png) no-repeat;
-      background-size: 200%;
-      @include transform(translate3d(-50%, -50%, 0) scale(1));
-      @include transition-property(-webkit-transform, transform);
-      @include transition-duration(0.3s);
-      @include transition-timing-function(linear);
-      @include transform-origin(0, 0);
+      @include opacity(0.2);
     }
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 40px;
+    height: 40px;
+    background: url(../arrows.png) no-repeat;
+    background-size: 200%;
+    @include transform(translate3d(-50%, -50%, 0) scale(1));
+    @include transition-property(-webkit-transform, transform);
+    @include transition-duration(0.3s);
+    @include transition-timing-function(linear);
+    @include transform-origin(0, 0);
   }
 }

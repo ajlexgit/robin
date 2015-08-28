@@ -4,29 +4,29 @@
 .slider-root {
   position: relative;
   @include no_fontsize;
+}
 
-  .slider-list-wrapper {
-    position: relative;
-  }
+.slider-list-wrapper {
+  position: relative;
+}
 
-  .slider-list {
-    position: relative;
-    overflow: hidden;
-  }
+.slider-list {
+  position: relative;
+  overflow: hidden;
+}
 
-  .slider-slide {
-    position: absolute;
-    top: 0;
-    left: -200%;
-    width: 100%;
-    max-width: 100%;
-    text-align: center;
-    z-index: 2;
+.slider-slide {
+  position: absolute;
+  top: 0;
+  left: -200%;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  z-index: 2;
 
-    img {
-      width: 50%;
-      height: auto;
-      @include unselectable;
-    }
+  img {
+    width: 50%;
+    height: auto;
+    @include unselectable;
   }
 }
