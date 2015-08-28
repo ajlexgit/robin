@@ -123,13 +123,13 @@
             absDxPercents = absDxPercents % slide_left;
 
             // определяем активный слайд
-            var listWidth = slider.$list.outerWidth();
-            var absPixels = Math.abs(evt.dx) % listWidth;
+            var slide_width = slider.$list.outerWidth() * slide_left / 100;
+            var absPixels = Math.abs(evt.dx) % slide_width;
             var farDirection = (evt.dx > 0) == (evt.dx > this._dx);
             if (farDirection) {
                 var chooseFar = (absPixels > this.opts.slideThreshold);
             } else {
-                chooseFar = ((listWidth - absPixels) < this.opts.slideThreshold);
+                chooseFar = ((slide_width - absPixels) < this.opts.slideThreshold);
             }
 
 

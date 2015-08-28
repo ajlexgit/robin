@@ -138,7 +138,9 @@
                 slideItems: 1,
                 loop: true,
                 adaptiveHeight: true,
-                adaptiveHeightTransition: 800
+                adaptiveHeightTransition: 800,
+
+                onResize: $.noop
             };
         };
 
@@ -622,6 +624,8 @@
         });
     }).on('resize.slider', $.rared(function() {
         $.each(sliders, function(i, slider) {
+            slider.opts.onResize.call(slider);
+
             slider.updateListHeight()
         });
     }, 100));
