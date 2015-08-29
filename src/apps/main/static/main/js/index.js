@@ -34,7 +34,6 @@
         // slider
         var $elem = $('.slider');
         window.slider = new Slider($elem, {
-            loop: false,
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
             slideItems: 2
@@ -60,12 +59,12 @@
                 new SliderDragPlugin({
                     speed: 800,
                     slideMarginPercent: 5
-                }),
+                })/*,
                 new SliderAutoscrollPlugin({
                     animationName: 'fade',
                     direction: 'random',
                     interval: 3000
-                })
+                })*/
             ]
         );
 

@@ -14,14 +14,6 @@
   @include unselectable;
   @include transition(opacity 0.5s);
 
-  &:hover {
-    @include opacity(1);
-
-    &:before {
-      background-position: right -40px;
-    }
-  }
-
   &.slider-arrow-left {
     left: 0;
     @include transform(rotate(180deg));
@@ -34,12 +26,10 @@
   &.slider-arrow-disabled {
     cursor: default;
     @include opacity(0.2);
+  }
 
-    &:hover {
-      &:before {
-        background-position: right 0;
-      }
-    }
+  &:hover {
+    @include opacity(1);
   }
 
   &:before {
@@ -49,7 +39,7 @@
     top: 50%;
     width: 40px;
     height: 40px;
-    background: url(../arrows.png) no-repeat right 0;
+    background: url(../../../img/arrows.png) no-repeat right 0;
     background-size: 200%;
     @include transform(translate3d(-50%, -50%, 0));
   }
