@@ -15,7 +15,7 @@
 
     // Parallax
     $(document).ready(function() {
-        $('#parallax_sample').parallax();
+        window.parallax = new Parallax('#parallax_sample');
     });
 
     // Appear - блоки
