@@ -62,7 +62,12 @@
             Включение параллакса
          */
         Parallax.prototype.enable = function() {
-            this.enabled = true;
+            if (this.enabled) {
+                return
+            } else{
+                this.enabled = true;
+            }
+
             this.$block.css({
                 overflow: 'hidden'
             });
@@ -77,7 +82,12 @@
             Отключение параллакса
          */
         Parallax.prototype.disable = function() {
-            this.enabled = false;
+            if (!this.enabled) {
+                return
+            } else {
+                this.enabled = false;
+            }
+
             this.$block.css({
                 overflow: ''
             });
@@ -138,7 +148,16 @@
         });
     };
 
-    $(window).on('scroll.parallax', $.rared(applyParallaxes, 20));
-    $(window).on('load.parallax', applyParallaxes);
+    $window.on('scroll.parallax', applyParallaxes);
+    $window.on('load.parallax', applyParallaxes);
+    $window.on('resize.parallax', $.rared(function() {
+        $.each(parallaxes, function() {
+            if (window.innerWidth < this.opts.minEnableWidth) {
+                this.disable()
+            } else {
+                this.enable()
+            }
+        });
+    }, 100));
 
 })(jQuery);
