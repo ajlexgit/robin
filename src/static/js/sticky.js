@@ -2,6 +2,7 @@
 
     /*
         Плагин, перемещающий блок в пределах его родителя во время скролла страницы.
+        Для фикса margin-top родительскому элементу нужно задать overflow: auto.
 
         Требует:
             jquery.utils.js
@@ -71,12 +72,10 @@
             })
         };
 
-        Sticky.prototype.process = function() {
+        Sticky.prototype.process = function(win_scroll) {
             if (!this.enabled) {
                 return
             }
-
-            var win_scroll = $window.scrollTop();
 
             var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
             var block_height = this.$block.outerHeight();
@@ -114,8 +113,10 @@
     })();
 
     var applyStickies = function() {
+        var win_scroll = $window.scrollTop();
+
         $.each(stickies, function() {
-            this.process();
+            this.process(win_scroll);
         });
     };
 

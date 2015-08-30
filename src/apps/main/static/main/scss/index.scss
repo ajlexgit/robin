@@ -49,8 +49,8 @@
   background: black;
 
   .gc-full {
+    overflow: auto;     // fix margin
     height: 800px;
-    padding-top: 1px;
   }
 
   .yellow {
