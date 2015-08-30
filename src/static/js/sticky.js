@@ -2,169 +2,133 @@
 
     /*
         Плагин, перемещающий блок в пределах его родителя во время скролла страницы.
-        Родительский элемент должен иметь position, отличный от static.
 
         Требует:
             jquery.utils.js
 
         Параметры:
-            windowTopOffset         - расстояние от верха окна до ползающего блока
-            containerBottomOffset   - расстояние от низа родительского блока
-                                      до ползающего блока
+            topOffset         - расстояние от верха окна до ползающего блока
+            bottomOffset      - расстояние от низа родительского блока
+                                до ползающего блока
      */
 
-    var userAgent = window.navigator.userAgent.toLowerCase(),
-        ios = /iphone|ipod|ipad/.test(userAgent);
-
-    var enabled = false;
-    var stickies = [];
     var $window = $(window);
+    var stickies = [];
 
-    $.sticky = {
-        min_width: 768
-    };
-
-    var winOffset = function() {
-        // Значение вертикальной прокрутки страницы
-        return window.pageYOffset || document.documentElement.scrollTop;
-    };
-
-    var resetWidth = function($element) {
-        // Фиксируем ширину элемента
-        var old_style = $element.get(0).style.cssText;
-
-        $element.css({
-            position: 'static',
-            width: ''
-        });
-
-        var elem_width = $element.outerWidth();
-        $element.css(old_style);
-        $element.outerWidth(elem_width);
-    };
-
-    var processSticky = function(sticky) {
-        if (!enabled) return;
-
-        // Проверка состояния прокрутки и установка стилей ползающему блоку
-        var $block = sticky.$block;
-        var $container = $block.parent();
-
-        // верхняя граница смещения страницы
-        var winTopY = $container.offset().top - sticky.windowTopOffset;
-
-        // Нижняя граница смещения страницы
-        var winBottomY = winTopY + $container.outerHeight() - $block.height() - sticky.containerBottomOffset;
-
-        // Текущее смещение страницы
-        var winCurrent = winOffset();
-
-        winBottomY = Math.max(winTopY, winBottomY);
-
-        if (winCurrent < winTopY) {
-            // Элемент в наивысшей позиции
-            if (sticky.state != 'top') {
-                resetWidth($block);
-                sticky.state = 'top';
+    window.Sticky = (function() {
+        var Sticky = function(block, options) {
+            this.$block = $.findFirstElement(block);
+            if (!this.$block.length) {
+                console.error('Sticky can\'t find block');
+                return
             }
 
-            $block.css({
-                position: 'relative',
-                top: 0,
-                bottom: 'auto'
-            });
-        } else if (winCurrent > winBottomY) {
-            // Элемент в наинизшей позиции
-            if (sticky.state != 'bottom') {
-                resetWidth($block);
-                sticky.state = 'bottom';
-            }
+            this.$container = this.$block.parent();
 
-            $block.css({
-                position: 'absolute',
-                top: 'auto',
-                bottom: sticky.containerBottomOffset
-            });
-        } else {
-            // Элемент ползает
-            if (sticky.state != 'middle') {
-                resetWidth($block);
-                sticky.state = 'middle';
-            }
+            // настройки
+            this.opts = $.extend(true, this.getDefaultOpts(), options);
 
-            if (ios) {
-                $block.css({
-                    position: 'absolute',
-                    top: winCurrent - winTopY,
-                    bottom: 'auto'
-                });
+            // включение
+            this.enable();
+
+            // Сохраняем объект в массив для использования в событиях
+            stickies.push(this);
+        };
+
+        Sticky.prototype.getDefaultOpts = function() {
+            return {
+                topOffset: 50,
+                bottomOffset: 50,
+                minEnableWidth: 768
+            }
+        };
+
+        /*
+            Включение ползания
+         */
+        Sticky.prototype.enable = function() {
+            if (this.enabled) {
+                return
             } else {
-                $block.css({
-                    position: 'fixed',
-                    top: sticky.windowTopOffset,
-                    bottom: 'auto'
+                this.enabled = true;
+            }
+
+            this.process();
+        };
+
+        /*
+            Выключение ползания
+         */
+        Sticky.prototype.disable = function() {
+            if (!this.enabled) {
+                return
+            } else {
+                this.enabled = false;
+            }
+
+            this.$block.css({
+                marginTop: ''
+            })
+        };
+
+        Sticky.prototype.process = function() {
+            if (!this.enabled) {
+                return
+            }
+
+            var win_scroll = $window.scrollTop();
+
+            var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
+            var block_height = this.$block.outerHeight();
+            var container_height = this.$container.height();
+            var scrollFrom = container_top - this.opts.topOffset;
+            var scrollTo = scrollFrom + container_height - block_height - this.opts.bottomOffset;
+
+            if (win_scroll < scrollFrom) {
+                if (this._state != 'top') {
+                    this._state = 'top';
+                    this.$block.css({
+                        marginTop: ''
+                    });
+                }
+            } else if (win_scroll > scrollTo) {
+                if (this._state != 'bottom') {
+                    this._state = 'bottom';
+                    this.$block.css({
+                        marginTop: scrollTo - scrollFrom
+                    });
+                }
+            } else {
+                if (this._state != 'middle') {
+                    this._state = 'middle';
+                }
+
+                var offset = win_scroll - scrollFrom;
+                this.$block.css({
+                    marginTop: offset
                 });
             }
-        }
+        };
+
+        return Sticky;
+    })();
+
+    var applyStickies = function() {
+        $.each(stickies, function() {
+            this.process();
+        });
     };
 
-    var scrollHandler = function() {
-        for (var i = 0, l = stickies.length; i < l; i++) {
-            processSticky(stickies[i]);
-        }
-    };
-
-    var _scrollHandler = ios ?
-        $.animation_frame(scrollHandler) :
-        $.rared(scrollHandler, 30);
-
-    // Подключение событий
-    enabled = window.innerWidth >= $.sticky.min_width;
-    if (enabled) {
-        $(document).on('scroll.sticky', _scrollHandler);
-        $window.on('load.sticky', scrollHandler);
-    }
-
-    $window.on('resize.sticky', $.rared(function() {
-        $.each(stickies, function(index, sticky) {
-            resetWidth(sticky.$block);
-            processSticky(sticky);
+    $window.on('scroll.parallax', $.animation_frame(applyStickies));
+    $window.on('load.parallax', applyStickies);
+    $window.on('resize.parallax', $.rared(function() {
+        $.each(stickies, function() {
+            if (window.innerWidth < this.opts.minEnableWidth) {
+                this.disable()
+            } else {
+                this.enable()
+            }
         });
-
-        // Отключаем на мобилах
-        if (enabled && (window.innerWidth < $.sticky.min_width)) {
-            enabled = false;
-            $(document).off('.sticky');
-            $window.off('load.sticky');
-
-            $.each(stickies, function(index, sticky) {
-                sticky.$block.css({
-                    position: 'static',
-                    width: ''
-                });
-            });
-        } else if (!enabled && (window.innerWidth >= $.sticky.min_width)) {
-            enabled = true;
-            $(document).on('scroll.sticky', _scrollHandler);
-            $window.on('load.sticky', scrollHandler);
-        }
-    }, 50));
-
-    $.fn.sticky = function(options) {
-        var settings = $.extend({
-            windowTopOffset: 0,
-            containerBottomOffset: 0
-        }, options);
-
-        return this.each(function() {
-            var sticky = {
-                $block: $(this).addClass('pix-sticky'),
-                windowTopOffset: settings.windowTopOffset,
-                containerBottomOffset: settings.containerBottomOffset
-            };
-            processSticky(sticky);
-            stickies.push(sticky);
-        });
-    }
+    }, 100));
 
 })(jQuery);

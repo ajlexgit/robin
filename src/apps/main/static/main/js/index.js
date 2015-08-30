@@ -13,9 +13,15 @@
         $('#video').addClass('video-loaded');
     });
 
+
+    // Sticky
+    $(document).ready(function() {
+        new Sticky('#sticky_example .yellow');
+    });
+
     // Parallax
     $(document).ready(function() {
-        window.parallax = new Parallax('#parallax_sample');
+        new Parallax('#parallax_sample');
     });
 
     // Appear - блоки

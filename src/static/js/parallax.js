@@ -9,16 +9,12 @@
 
         Пример:
             <div id="block">
-            <div class="parallax" style="background-image: url(../img/bg.jpg)"></div>
-
-            ...
+                <div class="parallax" style="background-image: url(../img/bg.jpg)"></div>
+                ...
             </div>
 
             $(document).ready(function() {
-                $('#block').parallax({
-                    enlarge: 400,
-                    intensity: 0.5
-                });
+                new Parallax('#block');
             });
      */
 
