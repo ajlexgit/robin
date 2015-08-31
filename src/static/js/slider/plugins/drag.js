@@ -59,7 +59,17 @@
                         return
                     }
 
+                    // блокируем скролл, если движение по Y больше
+                    if (Math.abs(evt.dy) > Math.abs(evt.dx) * 3) {
+                        return
+                    }
+
                     that.onDrag(slider, evt);
+
+                    // блокируем перемещение страницы, если передвижение по X больше
+                    if (Math.abs(evt.dx) > Math.abs(evt.dy) * 3) {
+                        return false
+                    }
                 },
                 onStopDrag: function(evt) {
                     that.onStopDrag(slider, evt);
