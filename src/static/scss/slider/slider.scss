@@ -23,6 +23,7 @@
   max-width: 100%;
   text-align: center;
   z-index: 2;
+  @include transform(translateZ(0));
 
   img {
     width: 50%;
