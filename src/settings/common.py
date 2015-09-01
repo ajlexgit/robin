@@ -157,7 +157,6 @@ PIPELINE_CSS = {
             'scss/slider/plugins/navigation.scss',
             'scss/inlines.scss',
             'scss/parallax.scss',
-            'scss/video_bg.scss',
             'gallery/scss/gallery.scss',
             'comments/scss/comments.scss',
             'social_buttons/scss/social_buttons.scss',

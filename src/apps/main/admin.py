@@ -31,16 +31,23 @@ class MainBlockSecondAdmin(admin.ModelAdmin):
 @admin.register(MainPageConfig)
 class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
-        (None, {
-            'classes': ('suit-tab', 'suit-tab-header'),
+        (_('Header'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'header_title', 'preview', 'preview2', 'text', 'description',
-                'color', 'color2' ,'price', 'gallery'),
+                'header_title', 'header_background', 'header_video',
+            ),
+        }),
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'preview', 'preview2', 'text', 'description',
+                'color', 'color2' ,'price', 'gallery'
+            ),
         }),
     )
     inlines = (InlineSampleAdmin, MyPageBlockRefInline)
     suit_form_tabs = (
-        ('header', _('Header')),
+        ('general', _('General')),
         ('comments', _('Comments')),
         ('blocks', _('Blocks')),
         ('seo', _('SEO')),

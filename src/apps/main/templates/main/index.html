@@ -21,13 +21,18 @@
 
 
 {% block content %}
-  <div id="video" class="section video-bg-container" style="background-image: url({% static 'main/img/river.jpg' %})">
-    <video class="video-bg" autoplay="" loop="" preload="auto" muted="">
-      <source src="{% static 'main/img/river.mp4' %}">
-      <source src="{% static 'main/img/river.ogv' %}">
-    </video>
-
-    <div class="inner">
+  <div id="video" class="section">
+    <img src="{{ config.header_background.desktop.url }}" class="section-image"
+         srcset="{{ config.header_background.desktop.srcset }}, {{ config.header_background.mobile.srcset }}"
+         sizes="100vw">
+    
+    {% if config.header_video %}
+      <video class="section-video" autoplay="" loop="" preload="auto" muted="">
+        <source src="{{ config.header_video.url }}">
+      </video>
+    {% endif %}
+    
+    <div class="section-inner">
       <div class="grid">
         <div class="gray gc-wide-6 gc-6 gc-alone gc-center" style="height: 200px">
           <h1 class="title title-h1">{{ config.header_title }}</h1>

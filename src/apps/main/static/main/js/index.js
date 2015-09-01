@@ -3,8 +3,7 @@
     // Видео на фоне
     $(document).ready(function() {
         var $video = $('#video').winHeight();
-
-        $video.find('.video-bg').on('loadeddata', function() {
+        $video.find('.section-video').on('loadeddata', function() {
             $video.addClass('video-loaded');
         });
     });

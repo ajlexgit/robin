@@ -27,15 +27,6 @@
 
 
 #video {
-  background-color: red;
-
-  @at-root .js & .video-bg {
-    visibility: hidden;
-  }
-  @at-root .js &.video-loaded .video-bg {
-    visibility: visible;
-  }
-
   .title {
     position: relative;
     color: #FFFFFF;
@@ -116,7 +107,7 @@
 
   img {
     display: none;
-    width: 100%;
+    width: 50%;
     height: auto;
     &:nth-of-type(1) {
       display: inline-block;

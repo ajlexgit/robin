@@ -65,6 +65,7 @@ p {
 // Полноэкранный блок
 .section {
   position: relative;
+  overflow: hidden;
   display: table;
   width: 100%;
   height: 768px; // for old
@@ -74,7 +75,37 @@ p {
   background: no-repeat center #000000;
   background-size: cover;
 
-  .inner {
+  .section-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: 2;
+    @include transform(translate3d(-50%, -50%, 0));
+  }
+  
+  .section-video {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: 3;
+    @include transform(translate3d(-50%, -50%, 0));
+
+    &::-webkit-media-controls {
+      display: none;
+    }
+  }
+  @at-root .js & .section-video {
+    visibility: hidden;
+  }
+  @at-root .js &.video-loaded .section-video {
+    visibility: visible;
+  }
+  
+  .section-inner {
     position: relative;
     display: table-cell;
     padding-top: 150px;

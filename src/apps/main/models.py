@@ -40,6 +40,29 @@ class MainGallery(GalleryBase):
 
 class MainPageConfig(SingletonModel):
     header_title = models.CharField('title', max_length=255)
+    header_background = StdImageField(_('background'),
+        storage=MediaStorage('main/header'),
+        min_dimensions=(1024, 500),
+        admin_variation='admin',
+        crop_area=True,
+        variations=dict(
+            desktop=dict(
+                size=(1024, 0),
+                crop=False,
+                stretch=False
+            ),
+            mobile=dict(
+                size=(640, 0),
+                crop=False,
+                stretch=False
+            ),
+            admin=dict(
+                size=(360, 270),
+            ),
+        ),
+    )
+    header_video = models.FileField(_('video'), blank=True, storage=MediaStorage('main/header'))
+    
     preview = StdImageField(_('preview'),
         storage=MediaStorage('main/preview'),
         min_dimensions=(400, 300),
