@@ -20,9 +20,10 @@ class VariationField(ImageFile):
     """
         Класс вариации у поля экземпляра модели.
     """
-    def __init__(self, name, storage=None):
+    def __init__(self, name, storage=None, variation_size=(0, 0)):
         super().__init__(None, name)
         self.storage = storage or default_storage
+        self.variation_size = variation_size
 
     @property
     def file(self):
@@ -86,6 +87,10 @@ class VariationField(ImageFile):
             return self.storage.url(self.name) + '?_=%d' % self.storage.modified_time(self.name).timestamp()
         else:
             return self.storage.url(self.name)
+
+    @property
+    def srcset(self):
+        return '{url} {width}w'.format(url=self.url, width=self.variation_size[0])
 
     @property
     def size(self):
@@ -293,7 +298,7 @@ class VariationImageField(ImageField):
 
         for name, variation in field_file.variations.items():
             variation_filename = self._build_variation_name(variation, field_file.name)
-            variation_field = VariationField(variation_filename, storage=self.storage)
+            variation_field = VariationField(variation_filename, storage=self.storage, variation_size=variation['size'])
             setattr(field_file, name, variation_field)
 
     @staticmethod
