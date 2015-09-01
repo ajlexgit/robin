@@ -14,16 +14,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AttachableBlock',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('block_type', models.CharField(editable=False, max_length=255, verbose_name='block type')),
-                ('label', models.CharField(help_text='For inner use', max_length=128, verbose_name='label')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('block_type', models.CharField(editable=False, verbose_name='block type', max_length=255)),
+                ('label', models.CharField(help_text='For inner use', verbose_name='label', max_length=128)),
                 ('visible', models.BooleanField(default=False, verbose_name='visible')),
                 ('created', models.DateTimeField(editable=False, verbose_name='create date')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
+                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
             ],
             options={
-                'verbose_name_plural': 'Attachable blocks',
                 'ordering': ('label',),
+                'verbose_name_plural': 'Attachable blocks',
                 'verbose_name': 'Attachable block',
             },
             bases=(models.Model,),
@@ -31,17 +31,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AttachableBlockRef',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('block_type', models.CharField(max_length=255, verbose_name='block type')),
+                ('block_type', models.CharField(verbose_name='block type', max_length=255)),
                 ('frame', models.PositiveSmallIntegerField(default=0, verbose_name='frame')),
                 ('order', models.PositiveIntegerField(default=0, verbose_name='order')),
                 ('block', models.ForeignKey(to='attachable_blocks.AttachableBlock', verbose_name='block')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
             options={
-                'verbose_name_plural': 'Block references',
                 'ordering': ('frame', 'order'),
+                'verbose_name_plural': 'Block references',
                 'verbose_name': 'Block reference',
             },
             bases=(models.Model,),
