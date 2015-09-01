@@ -66,10 +66,9 @@ p {
 .section {
   position: relative;
   overflow: hidden;
-  display: table;
-  width: 100%;
   color: #FFFFFF;
   text-align: center;
+  @include valign_after;
 
   &.section-full-height {
     height: 768px; // for old
@@ -108,7 +107,8 @@ p {
   
   .section-inner {
     position: relative;
-    display: table-cell;
+    display: inline-block;
+    width: 100%;
     z-index: 5;
     vertical-align: middle;
     @include border-box;
