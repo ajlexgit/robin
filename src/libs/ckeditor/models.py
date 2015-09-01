@@ -1,7 +1,7 @@
 import os
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from libs.stdimage import StdImageField, ACTION_INSCRIBE
+from libs.stdimage import StdImageField
 from libs.media_storage import MediaStorage
 from . import options
 
@@ -76,8 +76,9 @@ class SimplePhoto(models.Model):
         max_source_dimensions = options.SIMPLE_PHOTOS_MAX_SIZE,
         variations = dict(
             admin_thumbnail=dict(
-                action=ACTION_INSCRIBE,
                 size=options.ADMIN_SIZE,
+                crop=False,
+                stretch=False,
             ),
         )
     )

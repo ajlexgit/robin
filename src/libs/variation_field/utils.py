@@ -4,43 +4,22 @@ from PIL import Image, ImageOps, ImageEnhance
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 
-# Действия при несовпадении размера
-ACTION_CROP = 1
-ACTION_CROP_ANYWAY = 2
-ACTION_INSCRIBE = 3
-ACTION_INSCRIBE_BY_WIDTH = 4
-ACTIONS = (ACTION_CROP, ACTION_CROP_ANYWAY, ACTION_INSCRIBE, ACTION_INSCRIBE_BY_WIDTH)
-
-
 DEFAULT_VARIATION = dict(
     # Размер
     size=(),
 
-    # Тактика при несовпадении размера:
-    #   ACTION_CROP:
-    #       а) Картинка больше - пропорционально уменьшить до нужного размера и обрезать
-    #       б) Картинка меньше - сохранить оригинал
-    #   ACTION_CROP_ANYWAY:
-    #       а) Картинка больше - уменьшить до нужного размера по одной из сторон и обрезать излишки
-    #       б) Картинка меньше - растянуть и обрезать
-    #   ACTION_INSCRIBE:
-    #       а) Картинка больше - уменьшить до нужного размера по одной из сторон
-    #       б) Картинка меньше - берем оригинал
-    #       Создается фон нужного размера, в центр которого вписывается результат
-    #   ACTION_INSCRIBE_BY_WIDTH:
-    #       а) Картинка шире   - пропорционально уменьшить до нужного размера по ширине
-    #       б) Картинка уже    - пропорционально растянуть до нужного размера по ширине
-    #
-    #       Если высота в параметре size больше нуля, то производится дополнительная проверка:
-    #       в) если высота результата получилась больше, то исходная картинка вписывается
-    #          в холст точно как при ACTION_INSCRIBE
-    action=ACTION_CROP,
+    stretch=False,
+    crop=True,
+
+    # Максимальные размеры результата.
+    # Используется только при crop=False
+    max_width = 0,
+    max_height = 0,
 
     # Положение картинки относительно фона, если производится наложение.
-    # offset - отношение разницы размеров по горизонтали и вертикати.
-    # center - относительное положение центра накладываемой картинкию
+    # offset - отношение разницы размеров по горизонтали и вертикали.
+    # center - относительное положение центра накладываемой картинки.
     # Можно указать только один из параметров offset/center.
-    # Учитывается только для ACTION_INSCRIBE и ACTION_INSCRIBE_BY_WIDTH.
     offset=(0.5, 0.5),
     center=None,
 
@@ -119,23 +98,39 @@ def check_variations(variations, obj):
         if 'size' not in params:
             errors.append(checks.Error('variation %r requires \'size\' value' % name, obj=obj))
         if not is_size(params['size']):
-            errors.append(checks.Error('size of variation %r should be a tuple of 2 non-negative numbers' % name, obj=obj))
+            errors.append(checks.Error('"size" in variation %r should be a tuple of 2 non-negative numbers' % name, obj=obj))
+        if not any(d for d in params['size']):
+            errors.append(checks.Error('"size" in variation %r can\'t be zero-filled' % name, obj=obj))
 
-        # action
-        if 'action' not in params:
-            errors.append(checks.Error('variation %r requires \'action\' value' % name, obj=obj))
-        if params['action'] not in ACTIONS:
-            errors.append(checks.Error('unknown action of variation %r' % name, obj=obj))
+        # crop
+        if not isinstance(params['crop'], bool):
+            errors.append(checks.Error('"crop" in variation %r must be a boolean' % name, obj=obj))
+
+        # stretch
+        if not isinstance(params['stretch'], bool):
+            errors.append(checks.Error('"stretch" in variation %r must be a boolean' % name, obj=obj))
+
+        # crop and size
+        if params['crop'] and not all(d > 0 for d in params['size']):
+            errors.append(checks.Error('size of variation %r should be positive when crop=True' % name, obj=obj))
+
+        # max_width and max_height
+        if not isinstance(params['max_width'], int) or params['max_width'] < 0:
+            errors.append(checks.Error('"max_width" in variation %r must be a non-negative integer' % name, obj=obj))
+        if not isinstance(params['max_height'], int) or params['max_height'] < 0:
+            errors.append(checks.Error('"max_height" in variation %r must be a non-negative integer' % name, obj=obj))
+        if params['crop'] and (params['max_width'] or params['max_height']):
+            errors.append(checks.Error('"max_width" and "max_height" allowed only when crop=False in variation %r' % name, obj=obj))
 
         # offset
         if 'offset' in params:
             if params['offset'] and not isinstance(params['offset'], (list, tuple)):
-                errors.append(checks.Error('offset of variation %r should be a tuple or list' % name, obj=obj))
+                errors.append(checks.Error('"offset" in variation %r should be a tuple or list' % name, obj=obj))
 
         # center
         if 'center' in params:
             if params['center'] and not isinstance(params['center'], (list, tuple)):
-                errors.append(checks.Error('center of variation %r should be a tuple or list' % name, obj=obj))
+                errors.append(checks.Error('"center" in variation %r should be a tuple or list' % name, obj=obj))
 
         # format
         if params['format']:
@@ -250,10 +245,15 @@ def format_aspects(value, variations):
         try:
             aspect = float(aspect)
         except (TypeError, ValueError):
-            if aspect in variations:
-                aspect = operator.truediv(*variations[aspect]['size'])
+            if aspect not in variations:
+                continue
+
+            size = variations[aspect]['size']
+            if all(d > 0 for d in size):
+                aspect = operator.truediv(*size)
             else:
                 continue
+
         result.append(str(round(aspect, 4)))
     return tuple(result)
 
@@ -327,7 +327,7 @@ def variation_crop(image, crop=None):
 
 def variation_resize(image, variation, target_format):
     """
-        Изменение размера в соответствии с variation[action] и variation[size]
+        Изменение размера
     """
     bg_options = {
         'color': variation['background'],
@@ -340,56 +340,89 @@ def variation_resize(image, variation, target_format):
     if not isinstance(target_size, (list, tuple)) or len(target_size) != 2:
         raise ValueError('Invalid image size: %r' % target_size)
 
-    # Отношение площадей исходника и вариации
-    relation = min(itertools.starmap(operator.truediv, zip(image.size, target_size)))
-    relation /= 4
-    if relation > 1:
-        middle_size = tuple(int(p/relation) for p in image.size)
-        image = image.resize(middle_size, Image.NEAREST)
+    # Режим изображения
+    mode = image.mode
+    crop = bool(variation['crop'])
+    stretch = bool(variation['stretch'])
 
-    # Действие при несовпадении размера
-    target_action = variation['action']
-    if target_action == ACTION_CROP:
-        if image.size[0] < target_size[0] and image.size[1] < target_size[1]:
-            # Если картинка меньше - оставляем её как есть
-            pass
-        elif image.size[0] < target_size[0] or image.size[1] < target_size[1]:
-            # Если она меньше по одной стороне - отрезаем излишки у другой
-            image.thumbnail(target_size, resample=Image.ANTIALIAS)
-        else:
+    source_size = image.size
+    source_aspect = operator.truediv(*source_size)
+
+    if crop:
+        # Быстрое уменьшение картинки, если целевой размер намного меньше
+        image.draft(None, target_size)
+        source_size = image.size
+
+        if stretch:
+            # OLD: CROP_ANYWAY
             image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
+        else:
+            # OLD: CROP
+            new_width = min(source_size[0], target_size[0])
+            new_height = min(source_size[1], target_size[1])
+            if new_width == source_size[0] and new_height == source_size[1]:
+                # Если целевой размер больше - оставляем картинку без изменений
+                pass
+            else:
+                image = ImageOps.fit(image, (new_width, new_height), method=Image.ANTIALIAS)
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if image.mode == 'RGBA' and target_format == 'JPEG':
+        if mode == 'RGBA' and target_format == 'JPEG':
             image = put_on_bg(image, image.size, masked=True, **bg_options)
-    elif target_action == ACTION_CROP_ANYWAY:
-        image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
+    else:
+        max_width = variation['max_width']
+        max_height = variation['max_height']
 
-        # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if image.mode == 'RGBA' and target_format == 'JPEG':
-            image = put_on_bg(image, image.size, masked=True, **bg_options)
-    elif target_action == ACTION_INSCRIBE:
-        image.thumbnail(target_size, resample=Image.ANTIALIAS)
+        # Авторасчет размеров картинки
+        if target_size[0] == 0:
+            # автоматическая ширина
+            new_height = target_size[1]
+            new_width = target_size[1] * source_aspect
+            if max_width and new_width > max_width:
+                new_width = max_width
 
-        # TODO: image.mode == 'RGBA' and target_format != 'PNG'
-        masked = image.mode == 'RGBA'
-        image = put_on_bg(image, target_size, masked=masked, **bg_options)
-    elif target_action == ACTION_INSCRIBE_BY_WIDTH:
-        img_aspect = operator.truediv(*image.size)
-        final_size = (target_size[0], round(target_size[0] / img_aspect))
+            if not stretch:
+                new_width = min(new_width, source_size[0])
 
-        if (target_size[1] > 0) and (final_size[1] > target_size[1]):
+            target_size = (int(new_width), int(new_height))
+        elif target_size[1] == 0:
+            # автоматическая высота
+            new_width = target_size[0]
+            new_height = target_size[0] / source_aspect
+            if max_height and new_height > max_height:
+                new_height = max_height
+
+            if not stretch:
+                new_height = min(new_height, source_size[1])
+
+            target_size = (int(new_width), int(new_height))
+
+        if stretch:
+            target_aspect = operator.truediv(*target_size)
+            if source_aspect > target_aspect:
+                # исходник более широкий, чем цель
+                factor = target_size[0] / source_size[0]
+                new_size = (
+                    target_size[0],
+                    round(source_size[1] * factor),
+                )
+            else:
+                # исходник более высокий, чем цель
+                factor = target_size[1] / source_size[1]
+                new_size = (
+                    round(source_size[0] * factor),
+                    target_size[1]
+                )
+
+            # Быстрое уменьшение картинки, если целевой размер намного меньше
+            image.draft(None, new_size)
+            image = image.resize(new_size, resample=Image.ANTIALIAS)
+        else:
+            # OLD: INSRIBE
             image.thumbnail(target_size, resample=Image.ANTIALIAS)
 
-            # TODO: image.mode == 'RGBA' and target_format != 'PNG'
-            masked = image.mode == 'RGBA'
-            image = put_on_bg(image, target_size, masked=masked, **bg_options)
-        else:
-            image = ImageOps.fit(image, final_size, method=Image.ANTIALIAS)
-
-            # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-            if image.mode == 'RGBA' and target_format == 'JPEG':
-                image = put_on_bg(image, final_size, masked=True, **bg_options)
+        masked = mode == 'RGBA'
+        image = put_on_bg(image, target_size, masked=masked, **bg_options)
 
     return image
 

@@ -208,6 +208,10 @@ class GalleryImageItem(GalleryItemBase):
                         errors.append(
                             cls.check_error('invalid variation aspect: %r' % aspect)
                         )
+                    elif not all(d > 0 for d in cls.VARIATIONS[aspect]['size']):
+                        errors.append(
+                            cls.check_error('aspect should point to full-filled size: %r' % aspect)
+                        )
 
         if cls.SHOW_VARIATION and cls.SHOW_VARIATION not in cls.VARIATIONS:
             errors.append(

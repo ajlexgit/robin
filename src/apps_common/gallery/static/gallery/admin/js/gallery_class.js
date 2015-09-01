@@ -201,10 +201,12 @@
                                         background: 'none'
                                     });
 
-                                    var final_canvas = $.cropToCanvas({
+                                    var final_canvas = $.previewCanvas({
                                         source: canvas,
                                         width: $preview.width(),
-                                        height: $preview.height()
+                                        height: $preview.height(),
+                                        crop: true,
+                                        stretch: false
                                     });
                                     $image.attr('src', final_canvas.toDataURL());
                                 });

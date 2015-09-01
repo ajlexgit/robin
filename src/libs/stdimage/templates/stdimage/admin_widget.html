@@ -3,8 +3,11 @@
 
 <div class="stdimage">
   <div class="item-preview {% if not value %}hide{% endif %}"
-       data-action="{{ admin_variation.action|default:1 }}"
        data-size="{{ admin_variation.size|join:'x' }}"
+       data-crop="{{ admin_variation.crop|yesno:"1,0,1" }}"
+       data-stretch="{{ admin_variation.stretch|yesno:"1,0,0" }}"
+       data-max_width="{{ admin_variation.max_width }}"
+       data-max_height="{{ admin_variation.max_height }}"
        data-offset="{{ admin_variation.offset|default:''|join:'x' }}"
        data-center="{{ admin_variation.center|default:''|join:'x' }}"
        data-background="{{ admin_variation.background|join:',' }}"

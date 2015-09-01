@@ -1,6 +1,3 @@
-from .fields import StdImageField, ACTION_CROP, ACTION_CROP_ANYWAY, ACTION_INSCRIBE_BY_WIDTH, ACTION_INSCRIBE
-
-
 """
     Настройки:
         STDIMAGE_MAX_SIZE_DEFAULT = 12*1024*1024
@@ -36,3 +33,5 @@ from .fields import StdImageField, ACTION_CROP, ACTION_CROP_ANYWAY, ACTION_INSCR
         )
 
 """
+
+from .fields import StdImageField

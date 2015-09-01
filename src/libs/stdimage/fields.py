@@ -95,6 +95,10 @@ class StdImageField(FieldChecksMixin, VariationImageField):
                         errors.append(
                             self.check_error('invalid variation aspect: %r' % aspect)
                         )
+                    elif not all(d > 0 for d in self._variations[aspect]['size']):
+                        errors.append(
+                            self.check_error('aspect should point to full-filled size: %r' % aspect)
+                        )
         if not self.admin_variation:
             errors.append(
                 self.check_error('admin_variation required')

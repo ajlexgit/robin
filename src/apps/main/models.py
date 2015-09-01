@@ -10,7 +10,7 @@ from libs.ckeditor import CKEditorUploadField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.media_storage import MediaStorage
-from libs.stdimage import StdImageField, ACTION_INSCRIBE
+from libs.stdimage import StdImageField
 
 
 class MainGalleryImageItem(GalleryImageItem):
@@ -63,8 +63,7 @@ class MainPageConfig(SingletonModel):
         aspects=('normal',),
         variations=dict(
             normal=dict(
-                size=(140, 140),
-                action=ACTION_INSCRIBE,
+                size=(200, 200),
             ),
         ),
     )

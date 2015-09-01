@@ -2,7 +2,6 @@
 
     var positionImage = function($preview, source, coords) {
         var $image = $preview.find('img');
-        var action_id = parseInt($preview.data('action')) || 1;
 
         // target
         var target_size = $preview.data('size') || '';
@@ -40,50 +39,25 @@
             return parseInt(item);
         }).filter($.isNumeric).slice(0, 4);
 
-        var canvas;
-        if (action_id == 1) {
-            // crop
-            canvas = $.cropToCanvas({
-                source: source,
-                width: target_size[0],
-                height: target_size[1],
-                coords: coords
-            });
-            $image.attr('src', canvas.toDataURL());
-        } else if (action_id == 2) {
-            // crop anyway
-            canvas = $.cropAnywayToCanvas({
-                source: source,
-                width: target_size[0],
-                height: target_size[1],
-                coords: coords
-            });
-            $image.attr('src', canvas.toDataURL());
-        } else if (action_id == 3) {
-            // inscribe
-            canvas = $.inscribeToCanvas({
-                source: source,
-                width: target_size[0],
-                height: target_size[1],
-                coords: coords,
-                offset: offset,
-                center: center,
-                background: background
-            });
-            $image.attr('src', canvas.toDataURL());
-        } else if (action_id == 4) {
-            // inscribe by width
-            canvas = $.inscribeByWidthToCanvas({
-                source: source,
-                width: target_size[0],
-                height: target_size[1],
-                coords: coords,
-                offset: offset,
-                center: center,
-                background: background
-            });
-            $image.attr('src', canvas.toDataURL());
-        }
+        var crop = parseInt($preview.data('crop'));
+        var stretch = parseInt($preview.data('stretch'));
+        var max_width = parseInt($preview.data('max_width'));
+        var max_height = parseInt($preview.data('max_height'));
+
+        var canvas = $.previewCanvas({
+            source: source,
+            width: target_size[0],
+            height: target_size[1],
+            crop: crop,
+            stretch: stretch,
+            max_width: max_width,
+            max_height: max_height,
+            coords: coords,
+            offset: offset,
+            center: center,
+            background: background
+        });
+        $image.attr('src', canvas.toDataURL());
     };
 
     $(document).on('change', '.stdimage .uploader', function() {
