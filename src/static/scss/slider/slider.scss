@@ -26,8 +26,6 @@
   @include transform(translateZ(0));
 
   img {
-    width: 50%;
-    height: auto;
     @include unselectable;
   }
 }

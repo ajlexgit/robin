@@ -116,6 +116,8 @@
 
   img {
     display: none;
+    width: 100%;
+    height: auto;
     &:nth-of-type(1) {
       display: inline-block;
     }
