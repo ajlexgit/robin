@@ -1,10 +1,10 @@
 <div class="langs">
-  <div class="current flag {{ current_code }}"></div>
-  <ul>
-    {% for lang in langs %}
-      <li>
-        <a href="{% url 'multilanguage:set_language' code=lang.code %}" class="flag {{ lang.code }}"></a>
-      </li>
-    {% endfor %}
-  </ul>
+  {% for lang in langs %}
+    {% if lang.code == current_code %}
+      <span class="lang lang-{{ lang.code }} active">{{ lang.short_code }}</span>
+    {% else %}
+      <a href="{% url 'multilanguage:set_language' code=lang.code %}"
+         class="lang lang-{{ lang.code }}">{{ lang.short_code }}</a>
+    {% endif %}
+  {% endfor %}
 </div>

@@ -3,6 +3,7 @@
 
 @include media_interval($media1024, 0) {
   #main-menu {
+    display: inline-block;
     height: auto !important;
     font-weight: bold;
     color: #FFFFFF;
@@ -51,6 +52,7 @@
   cursor: pointer;
   text-align: left;
   z-index: 105;
+  vertical-align: middle;
   @include unselectable;
   @include media_interval(0, $media1024) {
     display: inline-block;

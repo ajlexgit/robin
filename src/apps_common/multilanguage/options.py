@@ -1,10 +1,12 @@
 LANGUAGES = (
     {
         'code': 'en-US',
+        'short_code': 'en',
         'url': '//en.local.ru/',
     },
     {
         'code': 'ru-RU',
+        'short_code': 'ru',
         'url': '//ru.local.ru/',
         'iso': ('RU', 'UA'),
     },
@@ -12,7 +14,7 @@ LANGUAGES = (
 LANGUAGES_DICT = {
     item['code']: item
     for item in LANGUAGES
-}
+    }
 LANGUAGE_CODES = tuple(item['code'] for item in LANGUAGES)
 
 

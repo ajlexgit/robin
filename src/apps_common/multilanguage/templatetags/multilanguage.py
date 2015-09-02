@@ -15,9 +15,7 @@ def select_language(context, current_code=None):
     if not current_code or not current_code in options.LANGUAGE_CODES:
         current_code = settings.LANGUAGE_CODE
 
-    other_langs = tuple(item for item in options.LANGUAGES if item['code'] != current_code)
-
     return loader.render_to_string('multilanguage/allowed_languages.html', RequestContext(request, {
         'current_code': current_code,
-        'langs': other_langs,
+        'langs': options.LANGUAGES,
     }))
