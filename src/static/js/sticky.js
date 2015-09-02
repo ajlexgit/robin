@@ -115,14 +115,16 @@
     var applyStickies = function() {
         var win_scroll = $window.scrollTop();
 
-        $.each(stickies, function() {
-            this.process(win_scroll);
+        $.each(stickies, function(i, obj) {
+            $.animation_frame(function() {
+                obj.process(win_scroll);
+            })(obj.$block.get(0));
         });
     };
 
-    $window.on('scroll.parallax', $.animation_frame(applyStickies));
-    $window.on('load.parallax', applyStickies);
-    $window.on('resize.parallax', $.rared(function() {
+    $window.on('scroll.sticky', applyStickies);
+    $window.on('load.sticky', applyStickies);
+    $window.on('resize.sticky', $.rared(function() {
         $.each(stickies, function() {
             if (window.innerWidth < this.opts.minEnableWidth) {
                 this.disable()

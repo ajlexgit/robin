@@ -114,21 +114,11 @@
 
             var scrollLength = scrollTo - scrollFrom;
             var scrollPosition = (win_scroll - scrollFrom) / scrollLength;
-            this._applyPosition(scrollPosition);
-        };
-
-        /*
-            Применение смещения картинки по значению position [0, 1]
-         */
-        Parallax.prototype._applyPosition = function(position) {
-            var backgroundOffset = position * this.opts.backgroundExtraHeight;
-
-            var that = this;
-            $.animation_frame(function() {
-                that.$bg.css({
-                    top: -that.opts.backgroundExtraHeight + backgroundOffset + '%'
-                });
-            }, this.$bg.get(0))();
+            
+            var backgroundOffset = scrollPosition * this.opts.backgroundExtraHeight;
+            this.$bg.css({
+                top: -this.opts.backgroundExtraHeight + backgroundOffset + '%'
+            });
         };
 
         return Parallax;
@@ -139,8 +129,10 @@
         var win_scroll = $window.scrollTop();
         var win_height = $window.height();
 
-        $.each(parallaxes, function() {
-            this.process(win_scroll, win_height);
+        $.each(parallaxes, function(i, obj) {
+            $.animation_frame(function() {
+                obj.process(win_scroll, win_height);
+            })(obj.$bg.get(0));
         });
     };
 

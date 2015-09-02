@@ -5,4 +5,5 @@
   background: no-repeat center top;
   background-size: cover;
   @include overlay;
+  @include backface-visibility(hidden);
 }
