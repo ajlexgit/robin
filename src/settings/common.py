@@ -192,7 +192,6 @@ PIPELINE_JS = {
             'js/jquery.utils.js',
             'js/appear.js',
             'js/text_styles.js',
-            'js/win_height.js',
             'menu/js/menu.js',
             'seo/js/block.js',
         ),
