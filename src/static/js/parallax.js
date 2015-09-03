@@ -40,7 +40,9 @@
             }
 
             // включение
-            this.enable();
+            if (window.innerWidth >= this.opts.minEnableWidth) {
+                this.enable()
+            }
 
             // Сохраняем объект в массив для использования в событиях
             parallaxes.push(this);

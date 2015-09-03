@@ -30,7 +30,9 @@
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
             // включение
-            this.enable();
+            if (window.innerWidth >= this.opts.minEnableWidth) {
+                this.enable()
+            }
 
             // Сохраняем объект в массив для использования в событиях
             stickies.push(this);
