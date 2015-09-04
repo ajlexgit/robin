@@ -1,6 +1,8 @@
+import math
 import requests
 from hashlib import md5
 from django.core.cache import caches
+from libs.associative_request import associative
 
 # Документация
 # http://docs.yandexdelivery.apiary.io/
@@ -38,7 +40,6 @@ WAREHOUSE_ID = 454
 REQUISITE_ID = 418
 API_URL = 'https://delivery.yandex.ru/api/1.0/'
 
-
 CACHE = caches['default']
 CACHE_TIME = 3 * 3600
 AUTOCOMPLETE_CITY = 'locality'
@@ -52,23 +53,32 @@ def _cache_key(*args):
     values.extend(args)
     return ':'.join(str(item) for item in values)
 
+
+def _format_value(value):
+    if isinstance(value, str):
+        return value
+    elif isinstance(value, bytes):
+        return value.decode()
+    elif isinstance(value, list):
+        return ''.join(_format_value(item) for item in value)
+    elif isinstance(value, dict):
+        sorted_keys = sorted(value.keys())
+        return ''.join(_format_value(value[key]) for key in sorted_keys)
+    else:
+        return str(value)
+
+
 def _make_secret(method, data):
     """ Получение секретного ключа для запроса """
-    result = []
     hasher = md5()
-    keys = sorted(data.keys())
-    for key in keys:
-        result.append(str(data[key]))
-
-    method_key = METHOD_KEYS.get(method)
-    result.append(method_key)
-    hasher.update(''.join(result).encode())
+    hasher.update(_format_value(data).encode() + METHOD_KEYS.get(method).encode())
     return hasher.hexdigest()
+
 
 def _request(method, data):
     data['secret_key'] = _make_secret(method, data)
     url = '%s%s' % (API_URL, method)
-    response = requests.post(url, data=data)
+    response = requests.post(url, data=associative(data))
     if response.status_code == 200:
         return response.json()
     else:
@@ -81,7 +91,6 @@ def getPaymentMethods():
         'client_id': CLIENT_ID,
         'sender_id': SENDER_ID,
     }
-
     return _request('getPaymentMethods', data)
 
 
@@ -151,7 +160,8 @@ def searchDeliveryList(city_from, city_to, weight, height, width, length, **kwar
     return _request('searchDeliveryList', data)
 
 
-def promoDeliveryList(city_to, default_weight=None, default_width=None, default_height=None, default_length=None, **kwargs):
+def promoDeliveryList(city_to, default_weight=None, default_width=None, default_height=None, default_length=None,
+        **kwargs):
     """ Получение доступных вариантов доставки для среднего заказа """
     warehouse = getWarehouseInfo()
 
@@ -231,3 +241,82 @@ def getDeliveries():
     result = _request('getDeliveries', data)
     CACHE.set(cache_key, result, CACHE_TIME)
     return result
+
+
+def createOrder(
+        first_name='', last_name='', phone='', email='', comment='',
+        order_weight=1, order_length=None, order_width=None, order_height=None,
+        order_num=None, payment_method=None, products_cost=None, delivery_cost=None,
+        city=None, street=None, house=None,
+        delivery_id=None, order_items=()
+):
+    """
+        Создание заказа со статусом черновика.
+
+        order_items:
+        {
+            'orderitem_article': 'AB1',
+            'orderitem_name': 'Товар',
+            'orderitem_quantity': '3',
+            'orderitem_cost': '1'
+        }
+    """
+    data = {
+        'client_id': CLIENT_ID,
+        'sender_id': SENDER_ID,
+    }
+
+    if first_name:
+        data['recipient_first_name'] = str(first_name)
+    if last_name:
+        data['recipient_last_name'] = str(last_name)
+    if phone:
+        data['recipient_phone'] = str(phone)
+    if email:
+        data['recipient_email'] = str(email)
+    if comment:
+        data['recipient_comment'] = str(comment)
+
+    # определяем умолчания
+    if not all((order_weight, order_width, order_height, order_length)):
+        requisite = getRequisiteInfo()
+        promo = requisite['data']['promoRequest']
+        order_weight = order_weight or promo['weight']
+        order_width = order_width or promo['width']
+        order_height = order_height or promo['height']
+        order_length = order_length or promo['length']
+
+    data['order_weight'] = str(math.ceil(order_weight))
+    data['order_width'] = str(order_width)
+    data['order_height'] = str(order_height)
+    data['order_length'] = str(order_length)
+
+    if order_num:
+        data['order_num'] = int(order_num)
+
+    data['order_requisite'] = REQUISITE_ID
+    data['order_warehouse'] = WAREHOUSE_ID
+
+    if payment_method:
+        data['order_payment_method'] = int(payment_method)
+    if products_cost:
+        data['order_assessed_value'] = int(products_cost)
+    if delivery_cost:
+        data['order_delivery_cost'] = int(delivery_cost)
+
+    if city:
+        data['deliverypoint_city'] = str(city)
+    if street:
+        data['deliverypoint_street'] = str(street)
+    if house:
+        data['deliverypoint_house'] = str(house)
+
+    if delivery_id:
+        data['delivery_delivery'] = int(delivery_id)
+
+    if order_items:
+        for item in order_items:
+            item['orderitem_cost'] = math.ceil(item['orderitem_cost'])
+        data['order_items'] = order_items
+
+    return _request('createOrder', data)
