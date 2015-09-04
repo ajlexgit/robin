@@ -249,7 +249,7 @@ def createOrder(
         order_num=None, payment_method=None, products_cost=None, delivery_cost=None,
         city=None, street=None, house=None,
         delivery_id=None, order_items=()
-):
+    ):
     """
         Создание заказа со статусом черновика.
 
