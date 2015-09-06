@@ -1,9 +1,13 @@
 @import "mixins";
 
 .parallax {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: auto;
+  min-width: 100%;
+  min-height: 100%;
   z-index: 1;
-  background: no-repeat center top;
-  background-size: cover;
-  @include overlay;
+  @include transform(translateX(-50%));
   @include backface-visibility(hidden);
 }

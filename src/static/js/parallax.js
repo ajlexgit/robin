@@ -9,12 +9,14 @@
 
         Пример:
             <div id="block">
-                <div class="parallax" style="background-image: url(../img/bg.jpg)"></div>
+                <img class="parallax" src="/img/bg.jpg">
                 ...
             </div>
 
             $(document).ready(function() {
                 new Parallax('#block');
+                // или
+                $('#block').parallax();
             });
      */
 
@@ -33,7 +35,11 @@
             // настройки
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
-            this.$bg = this.$block.find(this.opts.backgroundSelector);
+            this.$block.css({
+                overflow: 'hidden'
+            });
+
+            this.$bg = this.$block.find(this.opts.selector);
             if (!this.$bg.length) {
                 console.error('Parallax can\'t find background');
                 return
@@ -50,8 +56,8 @@
 
         Parallax.prototype.getDefaultOpts = function() {
             return {
-                backgroundSelector: '.parallax',
-                backgroundExtraHeight: 100,
+                selector: '.parallax',
+                extraHeight: 100,
                 minEnableWidth: 768
             }
         };
@@ -66,11 +72,8 @@
                 this.enabled = true;
             }
 
-            this.$block.css({
-                overflow: 'hidden'
-            });
             this.$bg.css({
-                height: (100 + this.opts.backgroundExtraHeight) + '%'
+                minHeight: (100 + this.opts.extraHeight) + '%'
             });
 
             this.process();
@@ -86,11 +89,8 @@
                 this.enabled = false;
             }
 
-            this.$block.css({
-                overflow: ''
-            });
             this.$bg.css({
-                height: '100%',
+                minHeight: '100%',
                 top: ''
             });
         };
@@ -116,10 +116,10 @@
 
             var scrollLength = scrollTo - scrollFrom;
             var scrollPosition = (win_scroll - scrollFrom) / scrollLength;
-            
-            var backgroundOffset = scrollPosition * this.opts.backgroundExtraHeight;
+
+            var backgroundOffset = scrollPosition * this.opts.extraHeight;
             this.$bg.css({
-                top: -this.opts.backgroundExtraHeight + backgroundOffset + '%'
+                top: -this.opts.extraHeight + backgroundOffset + '%'
             });
         };
 
@@ -149,5 +149,11 @@
             }
         });
     }, 100));
+
+    $.fn.parallax = function(options) {
+        this.each(function() {
+            new Paralax(this, options);
+        })
+    }
 
 })(jQuery);
