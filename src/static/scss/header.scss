@@ -1,7 +1,9 @@
 @import 'mixins';
 
 header {
+  position: absolute;
   padding: 45px 0;
+  width: 100%;
   z-index: 100;
   background: rgba(green, 0.8);
   @include media_interval(0, $media768) {
@@ -21,7 +23,7 @@ header {
 
   .menu-wrapper {
     text-align: center;
-    @include clearfix;
+    @include valign_after;
   }
 
   .langs {
@@ -32,28 +34,6 @@ header {
       margin-right: 20px;
     }
   }
-
-  //.langs-wrapper {
-  //  float: right;
-  //  height: 27px;
-  //  @include valign_after;
-  //  @include no_fontsize;
-  //  @include media_interval(0, $media1024) {
-  //    float: none;
-  //    height: auto;
-  //    display: inline-block;
-  //    vertical-align: middle;
-  //  }
-  //
-  //  .langs {
-  //    margin-left: 20px;
-  //    vertical-align: middle;
-  //    @include media_interval(0, $media1024) {
-  //      margin-left: 0;
-  //      margin-right: 20px;
-  //    }
-  //  }
-  //}
 }
 
 #logo {

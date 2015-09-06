@@ -50,7 +50,7 @@ class MainPageConfig(SingletonModel):
                 size=(1024, 0),
             ),
             mobile=dict(
-                size=(640, 0),
+                size=(768, 0),
             ),
             admin=dict(
                 size=(360, 270),
