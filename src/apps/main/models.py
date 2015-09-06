@@ -48,13 +48,9 @@ class MainPageConfig(SingletonModel):
         variations=dict(
             desktop=dict(
                 size=(1024, 0),
-                crop=False,
-                stretch=False
             ),
             mobile=dict(
                 size=(640, 0),
-                crop=False,
-                stretch=False
             ),
             admin=dict(
                 size=(360, 270),

@@ -21,7 +21,7 @@ DEFAULT_VARIATION = dict(
     # center - относительное положение центра накладываемой картинки.
     # Можно указать только один из параметров offset/center.
     offset=(0.5, 0.5),
-    center=None,
+    center=(0.5, 0.5),
 
     # Цвет фона, на который накладывается изображение, когда оно не может сохранить прозрачность
     background=(255, 255, 255, 0),
@@ -356,7 +356,7 @@ def variation_resize(image, variation, target_format):
 
         if stretch:
             # OLD: CROP_ANYWAY
-            image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS)
+            image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS, centering=bg_options['center'])
         else:
             # OLD: CROP
             new_width = min(source_size[0], target_size[0])
@@ -365,7 +365,7 @@ def variation_resize(image, variation, target_format):
                 # Если целевой размер больше - оставляем картинку без изменений
                 pass
             else:
-                image = ImageOps.fit(image, (new_width, new_height), method=Image.ANTIALIAS)
+                image = ImageOps.fit(image, (new_width, new_height), method=Image.ANTIALIAS, centering=bg_options['center'])
 
         # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
         if mode == 'RGBA' and target_format == 'JPEG':

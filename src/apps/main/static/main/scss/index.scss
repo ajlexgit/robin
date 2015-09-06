@@ -31,6 +31,12 @@
     padding: 100px 0;
   }
 
+  .section-video {
+    @include media_interval(0, $media1024) {
+      display: none;
+    }
+  }
+  
   .title {
     position: relative;
     color: #FFFFFF;

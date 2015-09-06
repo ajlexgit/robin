@@ -27,7 +27,7 @@
          sizes="100vw">
     
     {% if config.header_video %}
-      <video class="section-video" autoplay="" loop="" preload="auto" muted="">
+      <video class="section-video" loop="loop" preload="none" muted="">
         <source src="{{ config.header_video.url }}">
       </video>
     {% endif %}
