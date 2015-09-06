@@ -291,20 +291,15 @@
             return d.reject();
         }
 
-        var image = $image.get(0);
-        if (!image.complete) {
-            return d.reject();
-        }
-
-        if (typeof image.naturalWidth !== "undefined" && image.naturalWidth === 0) {
-            return d.reject();
-        }
-
         $image.on('load', function() {
             d.resolve();
         }).on('error', function() {
             d.reject();
         });
+
+        if ($image.get(0).complete) {
+            return d.resolve();
+        }
 
         return d;
     };
