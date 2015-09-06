@@ -20,7 +20,7 @@
 
     // Parallax
     $(document).ready(function() {
-        new Parallax('#parallax_sample');
+        $('#parallax_sample').parallax();
     });
 
     // Appear - блоки

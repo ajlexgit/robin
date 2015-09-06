@@ -152,7 +152,7 @@
 
     $.fn.parallax = function(options) {
         this.each(function() {
-            new Paralax(this, options);
+            new Parallax(this, options);
         })
     }
 
