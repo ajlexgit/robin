@@ -110,10 +110,6 @@ def check_variations(variations, obj):
         if not isinstance(params['stretch'], bool):
             errors.append(checks.Error('"stretch" in variation %r must be a boolean' % name, obj=obj))
 
-        # crop and size
-        if params['crop'] and not all(d > 0 for d in params['size']):
-            errors.append(checks.Error('size of variation %r should be positive when crop=True' % name, obj=obj))
-
         # max_width and max_height
         if not isinstance(params['max_width'], int) or params['max_width'] < 0:
             errors.append(checks.Error('"max_width" in variation %r must be a non-negative integer' % name, obj=obj))
@@ -350,6 +346,11 @@ def variation_resize(image, variation, target_format):
 
     if crop:
         # Быстрое уменьшение картинки, если целевой размер намного меньше
+        if not target_size[0]:
+            target_size = (source_size[0], target_size[1])
+        elif not target_size[1]:
+            target_size = (target_size[0], source_size[1])
+
         image.draft(None, target_size)
         source_size = image.size
 

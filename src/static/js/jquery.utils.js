@@ -213,7 +213,7 @@
         }
     };
 
-    
+
     /*
 
         Плагин, устанавливающий высоту элемента равной высоте окна,
@@ -268,6 +268,16 @@
 
             $.winHeight($block, multiplier);
         });
+    };
+
+
+    /*
+        Получение ссылки на картинку
+     */
+    $.getSrc = function(image) {
+        var $image = $.findFirstElement(image);
+        if (!$image.length) return;
+        return $image.prop('currentSrc') || $image.prop('src');
     };
 
     // ======================================================================================
