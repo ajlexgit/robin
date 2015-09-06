@@ -84,8 +84,10 @@ class GalleryImageField(VariationImageField):
         finally:
             field_file.close()
 
-        source_info['quality'] = self.get_source_quality(instance)
-        self._save_source_file(instance, source_img, source_format, draft_size=draft_size, **source_info)
+        self._save_source_file(
+            instance, source_img, source_format,
+            draft_size=draft_size, **source_info
+        )
 
         # Обрабатываем вариации
         self.build_variation_images(instance, source_img, source_format)

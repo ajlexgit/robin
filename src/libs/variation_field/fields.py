@@ -11,10 +11,6 @@ from django.db.models.fields.files import ImageField, ImageFieldFile
 from .utils import (put_on_bg, variation_crop, variation_resize, variation_watermark,
                     variation_overlay, variation_mask)
 
-DEFAULT_SOURCE_QUALITY = 95
-DEFAUL_VARIATION_QUALITY = 90
-
-
 class VariationField(ImageFile):
     _file = None
 
@@ -380,6 +376,7 @@ class VariationImageField(ImageField):
         else:
             ct = ContentFile(b'')
 
+            kwargs['quality'] = self.get_source_quality(instance)
             try:
                 source_img.save(ct, source_format, optimize=1, **kwargs)
             except IOError:
@@ -476,11 +473,11 @@ class VariationImageField(ImageField):
 
     def get_source_quality(self, instance):
         """ Возвращает качество исходника, если он сохраняется через PIL """
-        return DEFAULT_SOURCE_QUALITY
+        raise NotImplementedError()
 
     def get_variation_quality(self, instance, variation):
         """ Возвращает качество картинок вариаций по умолчанию """
-        return variation.get('quality') or DEFAUL_VARIATION_QUALITY
+        raise NotImplementedError()
 
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
