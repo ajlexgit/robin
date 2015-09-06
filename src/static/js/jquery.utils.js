@@ -274,10 +274,39 @@
     /*
         Получение ссылки на картинку
      */
-    $.getSrc = function(image) {
-        var $image = $.findFirstElement(image);
+    $.getSrc = function(image_expr) {
+        var $image = $.findFirstElement(image_expr);
         if (!$image.length) return;
         return $image.prop('currentSrc') || $image.prop('src');
+    };
+
+    /*
+        Возвращает Deferred-объект, сигнализирубщий окончание загрузки картинки
+     */
+    $.imageDeferred = function(image_expr) {
+        var d = $.Deferred();
+        var $image = $.findFirstElement(image_expr);
+        if (!$image.length) {
+            console.error('$.imageDeferred can\'t find image "' + image_expr + '"');
+            return d.reject();
+        }
+
+        var image = $image.get(0);
+        if (!image.complete) {
+            return d.reject();
+        }
+
+        if (typeof image.naturalWidth !== "undefined" && image.naturalWidth === 0) {
+            return d.reject();
+        }
+
+        $image.on('load', function() {
+            d.resolve();
+        }).on('error', function() {
+            d.reject();
+        });
+
+        return d;
     };
 
     // ======================================================================================
