@@ -1,6 +1,7 @@
 import os
 from django.db.models import signals
 from django.utils.image import Image
+from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
@@ -333,7 +334,7 @@ class VariationImageField(ImageField):
         # Параметры сохранения
         save_params = dict(
             format = target_format,
-            quality = variation['quality'] or self.get_default_quality(instance),
+            quality = self.get_variation_quality(instance, variation),
         )
 
         # Изображение с режимом "P" нельзя сохранять в JPEG,
@@ -364,6 +365,35 @@ class VariationImageField(ImageField):
         # Очищаем закэшированные размеры картинки, т.к. они могли измениться
         variation_field = getattr(field_file, variation['name'])
         variation_field.clear_dimensions()
+
+    def _save_source_file(self, instance, source_img, source_format, draft_size=None, **kwargs):
+        field_file = getattr(instance, self.name)
+
+        out_name = self.build_source_name(instance, source_format)
+        source_path = self.generate_filename(instance, out_name)
+        source_path = self.storage.get_available_name(source_path)
+
+        if draft_size is None:
+            # Если картинка не менялась - копируем файл
+            with self.storage.open(field_file.name) as source:
+                self.storage.save(source_path, source)
+        else:
+            ct = ContentFile(b'')
+
+            try:
+                source_img.save(ct, source_format, optimize=1, **kwargs)
+            except IOError:
+                source_img.save(ct, source_format, **kwargs)
+
+            self.storage.save(source_path, ct)
+
+            # Удаляем загруженный исходник
+        self.storage.delete(field_file.name)
+
+        # Записываем путь к исходнику
+        setattr(instance, self.attname, source_path)
+        instance.save()
+
 
     def get_prep_value(self, value):
         if value and value.exists():
@@ -448,9 +478,9 @@ class VariationImageField(ImageField):
         """ Возвращает качество исходника, если он сохраняется через PIL """
         return DEFAULT_SOURCE_QUALITY
 
-    def get_default_quality(self, instance):
+    def get_variation_quality(self, instance, variation):
         """ Возвращает качество картинок вариаций по умолчанию """
-        return DEFAUL_VARIATION_QUALITY
+        return variation.get('quality') or DEFAUL_VARIATION_QUALITY
 
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """

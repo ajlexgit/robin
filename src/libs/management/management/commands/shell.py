@@ -3,26 +3,18 @@
     Добавлена автозагрузка модулей при старте
 """
 from optparse import make_option
-import os
-import importlib
-from django.apps import apps
-from django.utils.termcolors import colorize
 from django.core.management.base import NoArgsCommand
 
 
 SHELL_IMPORTS = [
     ('os', ()),
-    ('pprint', ('pprint', )),
     ('django.apps', ('apps', )),
     ('django.conf', ('settings', )),
-    ('django.shortcuts', ('resolve_url', )),
-    ('django.core.cache', ('caches', )),
-    ('django.db.models', ('Avg', 'Count', 'F', 'Max', 'Min', 'Sum', 'Q', )),
 ]
 
 
 class Command(NoArgsCommand):
-    shells = ['ipython', 'bpython']
+    shells = ['ipython']
 
     option_list = NoArgsCommand.option_list + (
         make_option('--plain', action='store_true', dest='plain',
@@ -37,46 +29,25 @@ class Command(NoArgsCommand):
     help = "Runs a Python interactive interpreter. Tries to use IPython or bpython, if one of them is available."
     requires_system_checks = False
 
-    def _ipython_pre_011(self):
-        """Start IPython pre-0.11"""
-        from IPython.Shell import IPShell
-        imported_objects = self.import_objects()
-        shell = IPShell(argv=['--no-banner', '--no-confirm-exit'], user_ns=imported_objects)
-        shell.mainloop()
-
-    def _ipython_pre_100(self):
-        """Start IPython pre-1.0.0"""
-        from IPython.frontend.terminal.ipapp import TerminalIPythonApp
-        app = TerminalIPythonApp.instance()
-        imported_objects = self.import_objects()
-        app.initialize(argv=['--no-banner', '--no-confirm-exit'], user_ns=imported_objects)
-        app.start()
-
-    def _ipython(self):
-        """Start IPython >= 1.0"""
-        from IPython import start_ipython
-        imported_objects = self.import_objects()
-        start_ipython(argv=['--no-banner', '--no-confirm-exit'], user_ns=imported_objects)
-
     def ipython(self):
         """Start any version of IPython"""
-        for ip in (self._ipython, self._ipython_pre_100, self._ipython_pre_011):
-            try:
-                ip()
-            except ImportError:
-                pass
-            else:
-                return
+        try:
+            from IPython import start_ipython
+        except ImportError:
+            pass
+        else:
+            imported_objects = self.import_objects()
+            start_ipython(argv=['--no-banner', '--no-confirm-exit'], user_ns=imported_objects)
+            return
         # no IPython, raise ImportError
         raise ImportError("No IPython")
 
-    def bpython(self):
-        import bpython
-        imported_objects = self.import_objects()
-        bpython.embed(imported_objects)
-
     @staticmethod
     def import_objects():
+        import importlib
+        from django.apps import apps
+        from django.utils.termcolors import colorize
+
         imported_objects = {}
         imports = SHELL_IMPORTS.copy()
 
@@ -115,6 +86,8 @@ class Command(NoArgsCommand):
         raise ImportError
 
     def handle_noargs(self, **options):
+        import os
+
         use_plain = options.get('plain', False)
         no_startup = options.get('no_startup', False)
         interface = options.get('interface', None)

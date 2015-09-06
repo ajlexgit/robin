@@ -66,8 +66,10 @@ p {
 .section {
   position: relative;
   overflow: hidden;
+  display: block;
   color: #FFFFFF;
   text-align: center;
+  @include no_fontsize;
   @include valign_after;
 
   &.section-full-height {

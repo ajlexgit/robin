@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models import signals
 from django.utils.image import Image
-from django.core.files.base import ContentFile
 from libs.variation_field import *
 from .formfields import GalleryFormField
 
@@ -27,9 +26,9 @@ class GalleryImageField(VariationImageField):
         """ Возвращает качество исходника, если он сохраняется через PIL """
         return instance.SOURCE_QUALITY
 
-    def get_default_quality(self, instance):
+    def get_variation_quality(self, instance, variation):
         """ Возвращает качество картинок вариаций по умолчанию """
-        return instance.DEFAULT_QUALITY
+        return variation.get('quality') or instance.DEFAULT_QUALITY
 
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
@@ -85,33 +84,8 @@ class GalleryImageField(VariationImageField):
         finally:
             field_file.close()
 
-        # Путь к исходнику
-        out_name = self.build_source_name(instance, source_format)
-        source_path = self.generate_filename(instance, out_name)
-        source_path = self.storage.get_available_name(source_path)
-
-        # Сохраняем исходник
-        if draft_size is None:
-            # Если картинка не менялась - копируем файл
-            with self.storage.open(field_file.name) as source:
-                self.storage.save(source_path, source)
-        else:
-            ct = ContentFile(b'')
-
-            source_info['quality'] = self.get_source_quality(instance)
-            try:
-                source_img.save(ct, source_format, optimize=1, **source_info)
-            except IOError:
-                source_img.save(ct, source_format, **source_info)
-
-            self.storage.save(source_path, ct)
-
-        # Удаляем загруженный исходник
-        self.storage.delete(field_file.name)
-
-        # Записываем путь к исходнику в БД
-        setattr(instance, self.attname, source_path)
-        instance.save()
+        source_info['quality'] = self.get_source_quality(instance)
+        self._save_source_file(instance, source_img, source_format, draft_size=draft_size, **source_info)
 
         # Обрабатываем вариации
         self.build_variation_images(instance, source_img, source_format)

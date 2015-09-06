@@ -1,6 +1,5 @@
 from django.utils.image import Image
 from django.conf import settings
-from django.core.files.base import ContentFile
 from libs.variation_field import *
 from libs.checks import FieldChecksMixin
 from .formfields import StdImageFormField
@@ -214,10 +213,6 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         finally:
             field_file.close()
 
-        # Путь к исходнику
-        out_name = self.build_source_name(instance, source_format)
-        source_path = self.generate_filename(instance, out_name)
-        source_path = self.storage.get_available_name(source_path)
 
         # Устанавливаем значение кропа в поле
         if cropsize and self.crop_field:
@@ -228,27 +223,8 @@ class StdImageField(FieldChecksMixin, VariationImageField):
 
         # Сохраняем исходник
         if new_file_uploaded:
-            if draft_size is None:
-                # Если картинка не менялась - копируем файл
-                with self.storage.open(field_file.name) as source:
-                    self.storage.save(source_path, source)
-            else:
-                ct = ContentFile(b'')
-
-                source_info['quality'] = self.get_source_quality(instance)
-                try:
-                    source_img.save(ct, source_format, optimize=1, **source_info)
-                except IOError:
-                    source_img.save(ct, source_format, **source_info)
-
-                self.storage.save(source_path, ct)
-
-            # Удаляем загруженный исходник
-            self.storage.delete(field_file.name)
-
-            # Записываем путь к исходнику
-            setattr(instance, self.attname, source_path)
-            instance.save()
+            source_info['quality'] = self.get_source_quality(instance)
+            self._save_source_file(instance, source_img, source_format, draft_size=draft_size, **source_info)
 
         # Обрабатываем вариации
         self.build_variation_images(instance, source_img, source_format, crop=cropsize)
