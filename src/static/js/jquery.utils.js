@@ -283,22 +283,22 @@
     /*
         Возвращает Deferred-объект, сигнализирубщий окончание загрузки картинки
      */
-    $.imageDeferred = function(image_expr) {
+    $.imgDeferred = function(image_expr) {
         var d = $.Deferred();
         var $image = $.findFirstElement(image_expr);
         if (!$image.length) {
             console.error('$.imageDeferred can\'t find image "' + image_expr + '"');
-            return d.reject();
+            return d.reject($());
         }
 
-        $image.on('load', function() {
-            d.resolve();
-        }).on('error', function() {
-            d.reject();
+        $image.one('load', function() {
+            d.resolve($image);
+        }).one('error', function() {
+            d.reject($image);
         });
 
         if ($image.get(0).complete) {
-            return d.resolve();
+            return d.resolve($image);
         }
 
         return d;
