@@ -5,16 +5,12 @@
     // Обновление аватарок на странице
     var change_avatar = function(response) {
         // Загрузка превью в блоке авторизации
-        $.imageDeferred(
-            response.small_avatar
-        ).done(function(img) {
+        $.loadImageDeferred(response.small_avatar).done(function(img) {
             $('#auth-block').find('.avatar').attr('src', img.src);
         });
 
         // Обновление кнопок
-        $.imageDeferred(
-            response.normal_avatar
-        ).done(function() {
+        $.loadImageDeferred(response.normal_avatar).done(function() {
             uploader.destroy();
             $('#profile-avatar').replaceWith(response.profile_avatar_html);
             initUploader();

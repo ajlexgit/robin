@@ -81,9 +81,7 @@
 
         // Инициализация окна
         this.init = function($element, image_url) {
-            $.imageDeferred(
-                image_url
-            ).always(function() {
+            $.loadImageDeferred(image_url).always(function() {
                 dialog.$container.removeClass('preloader');
             }).done(function(img) {
                 that.load($element, img);

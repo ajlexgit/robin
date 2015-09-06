@@ -110,9 +110,7 @@
         // Инициализация окна
         this.init = function($element, image_url) {
             setTimeout(function() {
-                $.imageDeferred(
-                    image_url
-                ).always(function() {
+                $.loadImageDeferred(image_url).always(function() {
                     dialog.removeClass('preload');
                 }).done(function(img) {
                     that.load($element, img);

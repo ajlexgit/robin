@@ -151,9 +151,7 @@
                             .find('.item-id').val(response.id);
 
                         // Загрузка реального превью
-                        $.imageDeferred(
-                            response.preview_url
-                        ).done(function(img) {
+                        $.loadImageDeferred(response.preview_url).done(function(img) {
                             $gallery_item.find('.item-show').show();
                             $gallery_item.find('img').attr('src', img.src);
                             $gallery_item.find('.item-preloader').remove();
@@ -190,7 +188,7 @@
 
                         // Ошибка показывается на фоне превью
                         $.fileReaderDeferred(err.file.getNative()).done(function(src) {
-                            $.imageDeferred(src).done(function(img) {
+                            $.loadImageDeferred(src).done(function(img) {
                                 src = null;
                                 $.imageToCanvasDeferred(img, 600, 600).done(function(canvas) {
                                     img = null;

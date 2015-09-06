@@ -77,7 +77,7 @@
     /*
         Создает Deferred-объект, который загружает картинку.
     */
-    $.imageDeferred = function(src) {
+    $.loadImageDeferred = function(src) {
         var df = $.Deferred();
         var img = new Image();
         img.onload = function() {
@@ -99,7 +99,7 @@
 
         Пример:
             $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
-                $.imageDeferred(src).done(function(img) {
+                $.loadImageDeferred(src).done(function(img) {
                     var canvas = $.imageToCanvas(img, 360, 360);
                     $('#test').after(canvas);
                 });
@@ -131,7 +131,7 @@
 
         Пример:
             $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
-                $.imageDeferred(src).done(function(img) {
+                $.loadImageDeferred(src).done(function(img) {
                     $.imageToCanvasDeferred(img, 360, 360).done(function(canvas) {
                         $('#test').after(canvas);
                     });

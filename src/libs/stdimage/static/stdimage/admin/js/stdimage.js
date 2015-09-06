@@ -68,7 +68,7 @@
             $crop_btn_wrapper = $block.find('.crop-btn-wrapper');
 
         $.fileReaderDeferred($input.prop('files').item(0)).done(function(src) {
-            $.imageDeferred(src).done(function(img) {
+            $.loadImageDeferred(src).done(function(img) {
                 var $image = $('<img/>');
                 $crop_btn_wrapper.removeClass('hide').find('button').removeData('crop');
                 $preview.empty().removeClass('hide preloader').css({
@@ -146,7 +146,7 @@
             if (source_url.substr(0, 4) != 'data') {
                 source_url += '?_=' + Math.random().toString().substr(2);
             }
-            $.imageDeferred(source_url).done(function(img) {
+            $.loadImageDeferred(source_url).done(function(img) {
                 $image.attr('src', img.src);
                 positionImage($preview, img, coords);
             });

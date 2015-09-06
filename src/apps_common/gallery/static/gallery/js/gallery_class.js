@@ -122,9 +122,7 @@
         // Переключение на указанный слайд-картинку
         Gallery.prototype._gotoImageItem = function($item) {
             var that = this;
-            $.imageDeferred(
-                $item.data('big')
-            ).done(function(img) {
+            $.loadImageDeferred($item.data('big')).done(function(img) {
                 var $main_img = $('<img>').addClass(MAIN_IMAGE).prop('src', img.src);
                 that.popup.update({
                     classes: that.settings.popupClass,
