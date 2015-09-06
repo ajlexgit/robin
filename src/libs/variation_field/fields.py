@@ -87,7 +87,8 @@ class VariationField(ImageFile):
 
     @property
     def srcset(self):
-        return '{url} {width}w'.format(url=self.url, width=self.variation_size[0])
+        width = self.variation_size[0] or self.dimensions[0]
+        return '{url} {width}w'.format(url=self.url, width=width)
 
     @property
     def size(self):
