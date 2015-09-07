@@ -86,6 +86,7 @@ p {
     min-height: 100%;
     z-index: 2;
     @include transform(translate3d(-50%, -50%, 0));
+    @include backface-visibility(hidden);
   }
   
   .section-video {
@@ -96,6 +97,7 @@ p {
     min-width: 100%;
     min-height: 100%;
     z-index: 3;
+    @include backface-visibility(hidden);
     @include transform(translate3d(-50%, -50%, 0));
 
     &::-webkit-media-controls {

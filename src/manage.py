@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Создание дампов в админке
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 
 # multilanguage on same site
