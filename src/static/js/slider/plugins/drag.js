@@ -20,7 +20,8 @@
                 touch: true,
                 ignoreDistance: 10,
 
-                slideThreshold: 50,
+                slideThreshold: 10,
+                maxSlideThreshold: 50,
 
                 speed: 800,
                 dragOneSlide: false,
@@ -38,9 +39,9 @@
 
             var that = this;
             this.drager = new Drager(slider.$listWrapper, {
-                mouse: this.opts.mouse,
-                touch: this.opts.touch,
-                ignoreDistance: this.opts.ignoreDistance,
+                mouse: that.opts.mouse,
+                touch: that.opts.touch,
+                ignoreDistance: that.opts.ignoreDistance,
                 momentum: false,
 
                 onStartDrag: function(evt) {
@@ -133,13 +134,15 @@
             absDxPercents = absDxPercents % slide_left;
 
             // определяем активный слайд
-            var slide_width = slider.$list.outerWidth() * slide_left / 100;
+            var sliderListWidth = slider.$list.outerWidth();
+            var slide_width = sliderListWidth * slide_left / 100;
             var absPixels = Math.abs(evt.dx) % slide_width;
             var farDirection = (evt.dx > 0) == (evt.dx > this._dx);
+            var threshold = Math.min(this.opts.maxSlideThreshold, sliderListWidth * this.opts.slideThreshold / 100);
             if (farDirection) {
-                var chooseFar = (absPixels > this.opts.slideThreshold);
+                var chooseFar = (absPixels > threshold);
             } else {
-                chooseFar = ((slide_width - absPixels) < this.opts.slideThreshold);
+                chooseFar = ((slide_width - absPixels) < threshold);
             }
 
 
