@@ -39,10 +39,9 @@
             stop: $.noop                            - callback остановки анимации
             complete: $.noop                        - callback полного завершения анимации
 
-            Методы:
+        Методы:
             start()     - запуск анимации
             stop()      - приостановить анимацию
-            reset()     - сбросить прогресс анимации
      */
     var Animation = (function() {
         var Animation = function(settings) {
@@ -59,8 +58,12 @@
                 complete: $.noop
             }, settings);
 
-            this.reset();
-            this.paused = true;
+            this._progress = 0;
+            this._paused = true;
+            this._duration = Math.max(this.opts.duration || 0, 20);
+            this._deferred = $.Deferred();
+            this._deferred.promise(this);
+
             this.opts.init.call(this);
 
             if (!this.opts.paused) {
@@ -68,23 +71,14 @@
             }
         };
 
-        // Сброс анимации
-        Animation.prototype.reset = function() {
-            this.progress = 0;
-            if (!this.paused) {
-                this._startTime = $.now();
-            }
-            this._duration = Math.max(this.opts.duration || 0, 20);
-            return this
-        };
 
         // Запуск анимации
         Animation.prototype.start = function() {
-            if (this.paused && (this.progress < 1)) {
-                this.paused = false;
+            if (this._paused && (this._progress < 1)) {
+                this._paused = false;
 
-                if (this.progress) {
-                    this._startTime = $.now() - (this.progress * this._duration);
+                if (this._progress) {
+                    this._startTime = $.now() - (this._progress * this._duration);
                 } else {
                     this._startTime = $.now();
                 }
@@ -99,13 +93,15 @@
 
         // Остановка анимации
         Animation.prototype.stop = function(jumpToEnd) {
-            if (!this.paused) {
-                this.paused = true;
+            if (!this._paused) {
+                this._paused = true;
                 clearInterval(this._timer);
 
                 if (jumpToEnd) {
-                    this.progress = 1;
+                    this._progress = 1;
                     this._applyProgress();
+                    this.opts.complete.call(this);
+                    this._deferred.resolve();
                 } else {
                     this.opts.stop.call(this);
                 }
@@ -113,30 +109,24 @@
             return this
         };
 
-        // Применение шага анимации с вычислением that.progress
+        // Применение шага анимации с вычислением that._progress
         Animation.prototype._timerHandle = function() {
-            if (this.paused) {
+            if (this._paused) {
                 return
             }
 
-            this.progress = ($.now() - this._startTime) / this._duration;
-            if (this.progress >= 1) {
-                this.progress = 1;
-                clearInterval(this._timer);
+            this._progress = ($.now() - this._startTime) / this._duration;
+            if (this._progress >= 1) {
+                this.stop(true);
+            } else {
+                this._applyProgress();
             }
-
-            this._applyProgress();
         };
 
-        // Применение шага анимации (для уже установленного that.progress)
+        // Применение шага анимации (для уже установленного that._progress)
         Animation.prototype._applyProgress = function() {
-            var easeProgress = $.easing[this.opts.easing](this.progress);
+            var easeProgress = $.easing[this.opts.easing](this._progress);
             this.opts.step.call(this, easeProgress);
-
-            if (this.progress === 1) {
-                this.stop();
-                this.opts.complete.call(this);
-            }
         };
 
         return Animation;
