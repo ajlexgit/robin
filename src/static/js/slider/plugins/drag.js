@@ -68,8 +68,6 @@
                         // по X движение больше
                         that.onDrag(slider, evt);
                         return false
-                    } else {
-                        this.stopCurrent(evt);
                     }
                 },
                 onStopDrag: function(evt) {

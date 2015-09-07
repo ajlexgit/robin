@@ -424,7 +424,7 @@
                     this.wasDragged = true;
                     this.settings.onStartDrag.call(this, evt);
                 } else {
-                    return false;
+                    return;
                 }
             }
 
@@ -482,14 +482,16 @@
             // === Touch Events ===
             // ====================
             if (this.settings.touch) {
-                this.$element.on('touchstart.drager' + this.id, function(event) {
+                var ns = 'drager' + this.id;
+                
+                this.$element.on('touchstart.' + ns + ' pointerdown.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.mouseDownHandler.call(that, event);
                 });
-                $(document).on('touchmove.drager' + this.id, function(event) {
+                $(document).on('touchmove.' + ns + ' pointermove.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.dragHandler.call(that, event);
-                }).on('touchend.drager' + this.id, function(event) {
+                }).on('touchend.' + ns + ' touchend.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.mouseUpHandler.call(that, event);
                 });
