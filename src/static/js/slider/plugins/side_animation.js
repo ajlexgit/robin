@@ -103,7 +103,7 @@
 
             slider.setCurrentSlide($toSlide);
 
-            this._animation = $.animate({
+            slider._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
@@ -177,7 +177,7 @@
 
             slider.setCurrentSlide($toSlide);
 
-            this._animation = $.animate({
+            slider._animation = $.animate({
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
