@@ -13,7 +13,8 @@
             preventDefaultDrag: true/false    - предотвратить событие drag по-умолчанию
             mouse: true                       - разрешить перетаскивание мышью
             touch: true                       - разрешить перетаскивание тачпадом
-            ignoreDistance: 10                - игнорировать краткие движения
+            ignoreDistanceX: 18               - игнорировать краткие движения по оси X
+            ignoreDistanceY: 18               - игнорировать краткие движения по оси Y
             momentum: true                    - добавлять движение по инерции
             momentumLightness: 500            - "легкость" инерции (0 - нет инерции)
             momentumEasing: 'easeOutCubic'    - функция сглаживания иенрционного движения
@@ -257,7 +258,8 @@
 
                 mouse: true,
                 touch: true,
-                ignoreDistance: 10,
+                ignoreDistanceX: 18,
+                ignoreDistanceY: 18,
                 momentum: true,
                 momentumLightness: 500,
                 momentumEasing: 'easeOutCubic',
@@ -278,9 +280,6 @@
 
             // Был ли перемещен элемент (для обработки случаев клика и ignoreDistance)
             this.wasDragged = false;
-
-            // Находимся ли мы в зоне ignoreDistance от начальной точки перетаскивания
-            this._inPreventArea = true;
 
             // Защита от дублирования событий
             this._dragging_allowed = false;
@@ -407,7 +406,6 @@
         Drager.prototype.mouseDownHandler = function(event) {
             var evt = new MouseDownDragerEvent(event, this);
             this.wasDragged = false;
-            this._inPreventArea = this.settings.ignoreDistance > 0;
             this._dragging_allowed = true;
             this._momentumPoints = [];
             this._addMomentumPoint(evt);
@@ -421,17 +419,13 @@
 
             var evt = new MouseMoveDragerEvent(event, this);
 
-            if (this._inPreventArea) {
-                if (Math.max(evt.abs_dx, evt.abs_dy) >= this.settings.ignoreDistance) {
-                    this._inPreventArea = false;
-                    this.setStartPoint(evt);
-                }
-                return
-            }
-
             if (!this.wasDragged) {
-                this.wasDragged = true;
-                this.settings.onStartDrag.call(this, evt);
+                if ((evt.abs_dx > this.settings.ignoreDistanceX) || (evt.abs_dy > this.settings.ignoreDistanceY)) {
+                    this.wasDragged = true;
+                    this.settings.onStartDrag.call(this, evt);
+                } else {
+                    return false;
+                }
             }
 
             this._addMomentumPoint(evt);

@@ -18,8 +18,8 @@
             return {
                 mouse: true,
                 touch: true,
-                ignoreDistance: 10,         // px
-                ignoreTime: 500,            // ms
+                ignoreDistanceX: 18,        // px
+                ignoreDistanceY: 18,        // px
 
                 slideThreshold: 10,         // %
                 maxSlideThreshold: 50,      // px
@@ -42,7 +42,8 @@
             this.drager = new Drager(slider.$listWrapper, {
                 mouse: that.opts.mouse,
                 touch: that.opts.touch,
-                ignoreDistance: that.opts.ignoreDistance,
+                ignoreDistanceX: that.opts.ignoreDistanceX,
+                ignoreDistanceY: that.opts.ignoreDistanceY,
                 momentum: false,
 
                 onStartDrag: function(evt) {
@@ -63,16 +64,12 @@
                         }
                     }
 
-                    if (evt.abs_dy > evt.abs_dx * 3) {
-                        // по Y движение больше
-                        return
-                    }
-
-                    that.onDrag(slider, evt);
-
-                    if (evt.abs_dx > evt.abs_dy * 3) {
+                    if (evt.abs_dx > evt.abs_dy) {
                         // по X движение больше
+                        that.onDrag(slider, evt);
                         return false
+                    } else {
+                        this.stopCurrent(evt);
                     }
                 },
                 onStopDrag: function(evt) {
