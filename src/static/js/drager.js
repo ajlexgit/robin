@@ -40,8 +40,8 @@
                 onStartDrag: function(evt) {
                     var $element = $(evt.target);
 
-                    console.log('Diff X =', Math.abs(evt.dx));
-                    console.log('Diff Y =', Math.abs(evt.dy));
+                    console.log('Diff X =', evt.abs_dx);
+                    console.log('Diff Y =', evt.abs_dy);
                     console.log('current point =', evt.point);
                 },
                 onDrag: function(evt) {
@@ -193,6 +193,8 @@
 
             this.dx = 0;
             this.dy = 0;
+            this.abs_dx = 0;
+            this.abs_dy = 0;
         };
 
         var _ = function() { this.constructor = MouseDownDragerEvent; };
@@ -208,6 +210,8 @@
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
+            this.abs_dx = Math.abs(this.dx);
+            this.abs_dy = Math.abs(this.dy);
         };
 
         var _ = function() { this.constructor = MouseMoveDragerEvent; };
@@ -223,6 +227,8 @@
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
+            this.abs_dx = Math.abs(this.dx);
+            this.abs_dy = Math.abs(this.dy);
         };
 
         var _ = function() { this.constructor = MouseUpDragerEvent; };
@@ -416,7 +422,7 @@
             var evt = new MouseMoveDragerEvent(event, this);
 
             if (this._inPreventArea) {
-                if (Math.max(Math.abs(evt.dx), Math.abs(evt.dy)) >= this.settings.ignoreDistance) {
+                if (Math.max(evt.abs_dx, evt.abs_dy) >= this.settings.ignoreDistance) {
                     this._inPreventArea = false;
                     this.setStartPoint(evt);
                 }
