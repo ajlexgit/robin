@@ -50,8 +50,10 @@
                 onDrag: function(evt) {
                     if (slider._animated) {
                         // если идет анимация - прекращаем её
-                        slider._animation.stop(true);
-                        slider._animation = null;
+                        if (slider._animation) {
+                            slider._animation.stop(true);
+                            slider._animation = null;
+                        }
                     }
 
                     if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
