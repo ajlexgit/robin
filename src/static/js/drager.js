@@ -355,53 +355,16 @@
             }
         };
 
-        // ================
-        // === Handlers ===
-        // ================
-
-        Drager.prototype.mouseDownHandler = function(event) {
-            var evt = new MouseDownDragerEvent(event, this);
-            this.wasDragged = false;
-            this._inPreventArea = this.settings.ignoreDistance > 0;
-            this._dragging_allowed = true;
-            this._momentumPoints = [];
-            this._addMomentumPoint(evt);
-
+        // Сброс начала отсчета передвижения
+        Drager.prototype.setStartPoint = function(evt) {
             this.startPoint = evt.point;
-
-            return this.settings.onMouseDown.call(this, evt);
         };
-
-        Drager.prototype.dragHandler = function(event) {
-            if (!this._dragging_allowed) return;
-
-            var evt = new MouseMoveDragerEvent(event, this);
-
-            if (this._inPreventArea) {
-                if (Math.max(Math.abs(evt.dx), Math.abs(evt.dy)) >= this.settings.ignoreDistance) {
-                    this._inPreventArea = false;
-                    this.startPoint = evt.point;
-                }
-                return
-            }
-
-            if (!this.wasDragged) {
-                this.wasDragged = true;
-                this.settings.onStartDrag.call(this, evt);
-            }
-
-            this._addMomentumPoint(evt);
-
-            return this.settings.onDrag.call(this, evt);
-        };
-
-        Drager.prototype.mouseUpHandler = function(event) {
-            if (!this._dragging_allowed) return;
-            this._dragging_allowed = false;
-
+        
+        // Прекращения отслеживания текущего сеанса перемещения
+        Drager.prototype.stopCurrent = function(evt) {
             var momentum;
-            var evt = new MouseUpDragerEvent(event, this);
-
+            this._dragging_allowed = false;
+            
             if (this.wasDragged) {
                 this.wasDragged = false;
 
@@ -429,6 +392,52 @@
             }
 
             return result;
+        };
+        
+        // ================
+        // === Handlers ===
+        // ================
+
+        Drager.prototype.mouseDownHandler = function(event) {
+            var evt = new MouseDownDragerEvent(event, this);
+            this.wasDragged = false;
+            this._inPreventArea = this.settings.ignoreDistance > 0;
+            this._dragging_allowed = true;
+            this._momentumPoints = [];
+            this._addMomentumPoint(evt);
+
+            this.setStartPoint(evt);
+            return this.settings.onMouseDown.call(this, evt);
+        };
+
+        Drager.prototype.dragHandler = function(event) {
+            if (!this._dragging_allowed) return;
+
+            var evt = new MouseMoveDragerEvent(event, this);
+
+            if (this._inPreventArea) {
+                if (Math.max(Math.abs(evt.dx), Math.abs(evt.dy)) >= this.settings.ignoreDistance) {
+                    this._inPreventArea = false;
+                    this.setStartPoint(evt);
+                }
+                return
+            }
+
+            if (!this.wasDragged) {
+                this.wasDragged = true;
+                this.settings.onStartDrag.call(this, evt);
+            }
+
+            this._addMomentumPoint(evt);
+
+            return this.settings.onDrag.call(this, evt);
+        };
+
+        Drager.prototype.mouseUpHandler = function(event) {
+            if (!this._dragging_allowed) return;
+            
+            var evt = new MouseUpDragerEvent(event, this);
+            return this.stopCurrent(evt);
         };
 
         // ================
