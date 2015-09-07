@@ -179,11 +179,8 @@
                 that.scroll2deg = Math.round($wrapper.outerWidth() / 180);
             },
             onDrag: function(evt) {
-                var absDx = Math.abs(evt.dx);
-                var absDy = Math.abs(evt.dy);
-
                 // Блокировка вертикального скролла
-                if ((absDy < (absDx * 3)) && (evt.origEvent.cancelable)) {
+                if ((evt.abs_dx < (evt.abs_dx * 3)) && (evt.origEvent.cancelable)) {
                     evt.origEvent.preventDefault();
                 }
 
