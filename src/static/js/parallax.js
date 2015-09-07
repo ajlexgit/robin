@@ -57,7 +57,7 @@
         Parallax.prototype.getDefaultOpts = function() {
             return {
                 selector: '.parallax',
-                extraHeight: 100,
+                extraHeight: 75,
                 minEnableWidth: 768
             }
         };

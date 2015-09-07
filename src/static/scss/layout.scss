@@ -69,6 +69,7 @@ p {
   display: block;
   color: #FFFFFF;
   text-align: center;
+  @include border-box;
   @include no_fontsize;
   @include valign_after;
 
@@ -118,6 +119,5 @@ p {
     z-index: 5;
     vertical-align: middle;
     @include border-box;
-    @include no_fontsize;
   }
 }
