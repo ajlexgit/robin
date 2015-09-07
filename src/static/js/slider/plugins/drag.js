@@ -18,10 +18,11 @@
             return {
                 mouse: true,
                 touch: true,
-                ignoreDistance: 10,
+                ignoreDistance: 10,         // px
+                ignoreTime: 500,            // ms
 
-                slideThreshold: 10,
-                maxSlideThreshold: 50,
+                slideThreshold: 10,         // %
+                maxSlideThreshold: 50,      // px
 
                 speed: 800,
                 dragOneSlide: false,
@@ -48,6 +49,12 @@
                     that.onStartDrag(slider, evt);
                 },
                 onDrag: function(evt) {
+                    if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
+                        // если один слайд - выходим
+                        this.setStartPoint(evt);
+                        return
+                    }
+
                     if (slider._animated) {
                         // если идет анимация - прекращаем её
                         if (slider._animation) {
@@ -56,21 +63,15 @@
                         }
                     }
 
-                    if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
-                        // если один слайд - игнорируем
-                        this.startPoint = evt.point;
-                        return
-                    }
-
-                    // блокируем скролл, если движение по Y больше
-                    if (Math.abs(evt.dy) > Math.abs(evt.dx) * 3) {
+                    if (evt.abs_dy > evt.abs_dx * 3) {
+                        // по Y движение больше
                         return
                     }
 
                     that.onDrag(slider, evt);
 
-                    // блокируем перемещение страницы, если передвижение по X больше
-                    if (Math.abs(evt.dx) > Math.abs(evt.dy) * 3) {
+                    if (evt.abs_dx > evt.abs_dy * 3) {
+                        // по X движение больше
                         return false
                     }
                 },
@@ -138,7 +139,7 @@
             // определяем активный слайд
             var sliderListWidth = slider.$list.outerWidth();
             var slide_width = sliderListWidth * slide_left / 100;
-            var absPixels = Math.abs(evt.dx) % slide_width;
+            var absPixels = evt.abs_dx % slide_width;
             var farDirection = (evt.dx > 0) == (evt.dx > this._dx);
             var threshold = Math.min(this.opts.maxSlideThreshold, sliderListWidth * this.opts.slideThreshold / 100);
             if (farDirection) {
