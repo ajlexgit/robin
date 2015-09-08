@@ -57,7 +57,8 @@
         Parallax.prototype.getDefaultOpts = function() {
             return {
                 selector: '.parallax',
-                extraHeight: 75,
+                easing: 'easeInOutQuad',
+                extraHeight: 50,
                 minEnableWidth: 768
             }
         };
@@ -117,9 +118,11 @@
             var scrollLength = scrollTo - scrollFrom;
             var scrollPosition = (win_scroll - scrollFrom) / scrollLength;
 
-            var backgroundOffset = scrollPosition * this.opts.extraHeight;
+            var eProgress = $.easing[this.opts.easing](scrollPosition);
+            var backgroundOffset = eProgress * this.opts.extraHeight;
+
             this.$bg.css({
-                top: -this.opts.extraHeight + backgroundOffset + '%'
+                top: -backgroundOffset + '%'
             });
         };
 
