@@ -1,8 +1,6 @@
 from django import forms
 from django.db import models
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.templatetags.admin_static import static
 from suit.widgets import AutosizedTextarea
 from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
 
