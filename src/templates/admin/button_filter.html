@@ -1,8 +1,8 @@
 {% load i18n %}
 
-<div id="btn-filter-{{ field_name }}" style="display: inline-block; vertical-align: bottom;">
+<div id="btn-filter-{{ field_name }}" style="display: inline-block; vertical-align: bottom; margin-right: 20px;">
   <span>{{ title|capfirst }}:</span>
-  <div class="btn-group" style="margin-left: 20px">
+  <div class="btn-group" style="margin-left: 10px">
     {% for choice in choices %}
       <label class="btn {{ choice.selected|yesno:"active," }}" for="btn-filter-{{ field_name }}-{{ choice.val }}">
         <input type="radio" name="{{ field_name }}" id="btn-filter-{{ field_name }}-{{ choice.val }}"
