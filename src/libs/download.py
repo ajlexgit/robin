@@ -8,7 +8,6 @@ def AttachmentResponse(request, file_path, original_filename=None):
     """
         Response, заставляющий браузер скачать файл.
 
-
         Пример:
             # views.py
             def download(request, file_id):

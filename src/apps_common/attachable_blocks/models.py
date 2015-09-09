@@ -1,9 +1,9 @@
 from django.db import models
 from django.core import checks
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.utils.translation import ugettext_lazy as _
-from libs.now import now
 from .register import get_block_choices
 from .utils import get_block_type, get_block_view
 

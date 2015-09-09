@@ -1,5 +1,5 @@
+from django.utils.timezone import now
 from django.contrib.auth.backends import ModelBackend
-from libs.now import now
 from . import options
 from .models import Comment
 from .voted_cache import get_voted

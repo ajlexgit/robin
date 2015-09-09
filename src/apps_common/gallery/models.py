@@ -1,13 +1,13 @@
 import os
 from django.db import models
 from django.conf import settings
+from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from model_utils.managers import InheritanceQuerySetMixin
-from libs.now import now
 from libs.variation_field import *
 from libs.checks import ModelChecksMixin
 from libs.media_storage import MediaStorage
