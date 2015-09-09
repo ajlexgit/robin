@@ -4,6 +4,7 @@ import sys
 # Очередь анимаций JS
 # Создание дампов в админке
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
+# Youtube video field
 
 # multilanguage on same site
 
