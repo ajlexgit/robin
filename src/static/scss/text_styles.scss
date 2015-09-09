@@ -58,32 +58,6 @@
     }
   }
 
-  blockquote {
-    position: relative;
-    padding: 3em 0;
-    margin: 3em 0 2.8em;
-    color: #FFFFFF;
-
-    p {
-      position: relative;
-      z-index: 5;
-
-      &:nth-last-of-type(1) {
-        margin-bottom: 0;
-      }
-    }
-
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -450%;
-      height: 100%;
-      width: 1000%;
-      background-color: #000000;
-    }
-  }
-
   ul {
     padding-left: 1.8em;
     margin: 1.1em 0;
