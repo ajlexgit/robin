@@ -19,7 +19,7 @@
         var $comment = $(this).closest('.comment'),
             object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
 
-        object.replyForm($comment).done(function($reply_form) {
+        object.replyForm($comment).done(function() {
             $comment.addClass('inner-form inner-form-reply');
         });
 
@@ -29,7 +29,7 @@
         var $comment = $(this).closest('.comment'),
             object = $comment.closest('.comments-wrapper').data(window.COMMENTS_DATA_NAME);
 
-        object.editForm($comment).done(function($edit_form) {
+        object.editForm($comment).done(function() {
             $comment.addClass('inner-form inner-form-edit');
         }).fail(function(reason) {
             alert(reason);

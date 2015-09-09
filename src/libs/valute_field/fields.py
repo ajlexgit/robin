@@ -5,7 +5,7 @@ DEFAULT_MAX_DIGITS = 18
 DEFAULT_DECIMAL_PLACES = 2
 
 
-class ValuteDescriptor():
+class ValuteDescriptor:
     def __init__(self, field):
         self.field = field
 

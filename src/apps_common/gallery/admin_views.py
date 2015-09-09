@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse, Http404, HttpResponse
-from libs.upload_chunked_file import upload_chunked_file, FileMissingError, NotLastChunk
+from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
 from . import options
 
 

@@ -47,7 +47,7 @@
         /*
             Деактивируем стрелки на границах сладера
          */
-        ControlsPlugin.prototype.afterSetCurrentSlide = function(slider, $slide) {
+        ControlsPlugin.prototype.afterSetCurrentSlide = function(slider) {
             this.checkAllowed(slider);
         };
 

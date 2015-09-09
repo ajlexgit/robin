@@ -3,6 +3,8 @@ from django.core import paginator
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.utils.functional import cached_property
 
+__all__ = ['Paginator', 'EmptyPage']
+
 
 class Paginator(paginator.Paginator):
     parameter_name = 'page'

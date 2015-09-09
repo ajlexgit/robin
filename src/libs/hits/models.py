@@ -11,36 +11,36 @@ class Hits(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
 
-    type = models.CharField(_('type'), max_length=64, default='undefined')
+    name = models.CharField(_('type'), max_length=64, default='undefined')
     hits = models.PositiveIntegerField(_('hits'), default=0)
     date = models.DateField(_('date'))
 
     class Meta:
-        unique_together = ('content_type', 'object_id', 'type', 'date')
+        unique_together = ('content_type', 'object_id', 'name', 'date')
 
     def __str__(self):
-        return '{0}: {1.hits} hits of {1.type!r}'.format(self.date.strftime('%d-%m-%Y'), self)
+        return '{0}: {1.hits} hits of {1.name!r}'.format(self.date.strftime('%d-%m-%Y'), self)
 
     @classmethod
-    def increment(cls, obj, type='undefined', *, amount=1):
+    def increment(cls, obj, name='undefined', *, amount=1):
         """ Увеличение значения счетчика """
         ct = ContentType.objects.get_for_model(obj)
         record, created = cls.objects.get_or_create(
-            content_type = ct,
-            object_id = obj.pk,
-            type = type,
-            date = datetime.today(),
+            content_type=ct,
+            object_id=obj.pk,
+            name=name,
+            date=datetime.today(),
         )
         cls.objects.filter(pk=record.pk).update(hits=models.F('hits') + amount)
 
     @classmethod
-    def get(cls, obj, type='undefined', *, since=None, to=None):
+    def get(cls, obj, name='undefined', *, since=None, to=None):
         """ Получение суммы значений счетчика за указанный период """
         ct = ContentType.objects.get_for_model(obj)
         query = models.Q(
-            content_type = ct,
-            object_id = obj.pk,
-            type = type,
+            content_type=ct,
+            object_id=obj.pk,
+            name=name,
         )
 
         if since is None:
@@ -61,11 +61,11 @@ class Hits(models.Model):
         return result or 0
 
     @classmethod
-    def clear(cls, obj, type='undefined'):
+    def clear(cls, obj, name='undefined'):
         """ Очистка счетчика """
         ct = ContentType.objects.get_for_model(obj)
         cls.objects.filter(
-            content_type = ct,
-            object_id = obj.pk,
-            type = type,
+            content_type=ct,
+            object_id=obj.pk,
+            name=name,
         ).delete()

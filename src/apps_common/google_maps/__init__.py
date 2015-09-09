@@ -1,8 +1,3 @@
-from .api import geocode
-from .models import geocode_cached
-from .fields import Coords, GoogleCoordsField
-from .widgets import GoogleCoordsFieldWidget
-
 """
     Необходимо подключить:
         google_maps/js/google_maps.js
@@ -64,3 +59,8 @@ from .widgets import GoogleCoordsFieldWidget
             <!-- Интерактивная карта -->
             {% google_map_interactive address='Тольятти, Мира 6' zoom=14 height=300 %}
 """
+
+from .api import geocode
+from .models import geocode_cached
+from .fields import GoogleCoordsField
+from .widgets import GoogleCoordsFieldWidget

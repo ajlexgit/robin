@@ -1,9 +1,10 @@
 import os
 import hashlib
+import requests
 import tempfile
 from django.core.files.uploadedfile import UploadedFile, TemporaryUploadedFile, InMemoryUploadedFile
 
-__all__ = ('upload_chunked_file', 'NotLastChunk', 'FileMissingError')
+__all__ = ('upload_file', 'upload_chunked_file', 'NotLastChunk', 'FileMissingError')
 
 
 class NotLastChunk(Exception):
@@ -30,6 +31,59 @@ class TempUploadedFile(UploadedFile):
         self.close()
 
 
+def upload_file(url, timeout=5):
+    """
+        Загрузка файла по урлу во временный файл.
+
+        Пример:
+            from libs.upload import upload_file
+            ...
+            
+            try:
+                uploaded_file = upload_file('http://host.ru/image.jpg')
+            except ConnectionError as e:
+                return JsonResponse({
+                    'message': str(e),
+                }, status=400)
+
+            request.user.avatar.save(uploaded_file.name, uploaded_file, save=False)
+            uploaded_file.close()
+            
+            try:
+                request.user.avatar.field.clean(request.user.avatar, request.user)
+            except ValidationError as e:
+                request.user.avatar.delete(save=False)
+                return JsonResponse({
+                    'message': ', '.join(e.messages),
+                }, status=400)
+
+            request.user.avatar.clean()
+            request.user.avatar.save()
+    """
+    request = requests.get(url, stream=True, timeout=timeout, headers={
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    })
+    if not request.ok:
+        raise ConnectionError('Wrong upload status: %s' % request.status_code)
+
+    file_name = url.split('/')[-1]
+    content_type = request.headers.get('content-type')
+    file_size = request.headers.get('content-length')
+    charset = (request.encoding or 'utf-8').lower()
+
+    tmp = TemporaryUploadedFile(
+        file_name, content_type, file_size,
+        charset, {}
+    )
+    for block in request.iter_content(8 * 1024):
+        if not block:
+            break
+        tmp.write(block)
+    tmp.seek(0)
+    tmp.flush()
+    return tmp
+
+
 def upload_chunked_file(request, param_name, allow_memory=True):
     """
         Загрузчик файлов, переданных от форм.
@@ -41,7 +95,7 @@ def upload_chunked_file(request, param_name, allow_memory=True):
         будут принудительно сохранены во временные файлы на диске.
 
         Пример:
-            from libs.upload_chunked_file import upload_chunked_file, NotLastChunk, FileMissingError
+            from libs.upload import upload_chunked_file, NotLastChunk, FileMissingError
             ...
 
             try:

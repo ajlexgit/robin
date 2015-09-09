@@ -9,12 +9,10 @@
     box-sizing: border-box;
 }
 
-.url {
-    a {
-        word-break: break-word;
-        line-height: 1.4;
-        display: inline-block;
-    }
+.url a {
+    word-break : break-word;
+    line-height: 1.4;
+    display: inline-block;
 }
 
 /* Admin table */

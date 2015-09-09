@@ -20,14 +20,14 @@ def _get_view_by_url(url):
 @register.simple_tag
 def async_block(url_name, **kwargs):
     """
-    Асинхронный блок.
-    Все параметры, кроме имеющих значение None, передаются через GET.
+        Асинхронный блок.
+        Все параметры, кроме имеющих значение None, передаются через GET.
 
-    Пример:
-        {% async_block 'news:block' id=new.id count=5 %}
+        Пример:
+            {% async_block 'news:block' id=new.id count=5 %}
     """
     params = filter(lambda x: x[1] is not None, kwargs.items())
-    return loader.render_to_string('async_block.html', {
+    return loader.render_to_string('async_block/async_block.html', {
         'id': url_name.replace(':', '-'),
         'url': reverse(url_name) + '?' + urlencode(tuple(params)),
     })
@@ -36,16 +36,16 @@ def async_block(url_name, **kwargs):
 @register.simple_tag(takes_context=True)
 def sync_block(context, url_name, **kwargs):
     """
-    Синхронный блок.
-    Используется для организации вывода блока синхронно.
-    Все параметры, кроме имеющих значение None, передаются через kwargs.
+        Синхронный блок.
+        Используется для организации вывода блока синхронно.
+        Все параметры, кроме имеющих значение None, передаются через kwargs.
 
-    Пример:
-        {% if request.is_ajax %}
-            {% sync_block 'news:block' id=new.id count=5 %}
-        {% else %}
-            {% async_block 'news:block' id=new.id count=5 %}
-        {% endif %}
+        Пример:
+            {% if request.is_ajax %}
+                {% sync_block 'news:block' id=new.id count=5 %}
+            {% else %}
+                {% async_block 'news:block' id=new.id count=5 %}
+            {% endif %}
     """
     params = filter(lambda x: x[1] is not None, kwargs.items())
     view = _get_view_by_url(reverse(url_name))

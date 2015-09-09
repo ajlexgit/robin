@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.http import JsonResponse, Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
-from libs.upload_chunked_file import upload_chunked_file, FileMissingError, NotLastChunk
+from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
 from .models import PagePhoto, SimplePhoto, generate_tag
 
 

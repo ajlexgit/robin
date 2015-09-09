@@ -94,7 +94,7 @@
         /*
             Остановка таймера
          */
-        AutoscrollPlugin.prototype.stopTimer = function(slider) {
+        AutoscrollPlugin.prototype.stopTimer = function() {
             if (this._timer) {
                 clearInterval(this._timer);
                 this._timer = null;

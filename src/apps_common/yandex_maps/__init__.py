@@ -1,8 +1,3 @@
-from .api import geocode
-from .models import geocode_cached
-from .fields import Coords, YandexCoordsField
-from .widgets import YandexCoordsFieldWidget
-
 """
     Необходимо подключить:
         yandex_maps/js/yandex_maps.js
@@ -65,3 +60,8 @@ from .widgets import YandexCoordsFieldWidget
             <!-- Интерактивная карта -->
             {% yandex_map_interactive address='Тольятти, Мира 6' zoom=14 height=300 %}
 """
+
+from .api import geocode
+from .models import geocode_cached
+from .fields import YandexCoordsField
+from .widgets import YandexCoordsFieldWidget

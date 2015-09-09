@@ -6,14 +6,14 @@
         $video.find('.section-video').on('loadeddata', function() {
             $video.addClass('video-loaded');
         });
-        
+
         // autoplay video
         if (window.innerWidth >= 1024) {
             $video.find('.section-video').attr({
                 autoplay: true,
                 preload: 'auto'
             });
-        };
+        }
     });
 
     $(window).on('load', function() {

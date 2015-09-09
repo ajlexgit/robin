@@ -88,7 +88,7 @@
         /*
             Начало перетаскивания слайдов мышью или тачпадом
          */
-        DragPlugin.prototype.onStartDrag = function(slider, evt) {
+        DragPlugin.prototype.onStartDrag = function(slider) {
             // Запоминаем слайд, с которого начали перетаскивание
             this.$startSlide = slider.$currentSlide;
 

@@ -1,5 +1,3 @@
-from .paginator import Paginator, EmptyPage
-
 """
     Обертка над постраничной навигацией.
 
@@ -78,3 +76,5 @@ from .paginator import Paginator, EmptyPage
     свойство Paginator.pages, возвращающее кортеж объектов Paginator.Page.
 
 """
+
+from .paginator import Paginator, EmptyPage

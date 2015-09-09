@@ -14,7 +14,7 @@ class PageFileForm(forms.ModelForm):
         }
 
 
-class PageFileInlineMixin():
+class PageFileInlineMixin:
     model = PageFile
     form = PageFileForm
     extra = 0
