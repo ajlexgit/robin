@@ -41,7 +41,7 @@ header {
   width: 117px;
   height: 60px;
   vertical-align: middle;
-  background: url(../img/logo.png) no-repeat center;
+  background: url(../../img/logo.png) no-repeat center;
 
   &:hover {
     @include opacity(0.8);

@@ -2,6 +2,8 @@
 {% load js_storage %}
 {% load pipeline %}
 {% load opengraph %}
+{% load header %}
+{% load footer %}
 {% load seo %}
 
 <!DOCTYPE html>
@@ -35,7 +37,7 @@
 <div id="wrapper">
   <div class="header-wrapper">
     {% block header %}
-      {% include 'header.html' %}
+      {% header %}
     {% endblock header %}
   </div>
 
@@ -45,7 +47,7 @@
 
   <div class="footer-wrapper">
     {% block footer %}
-      {% include 'footer.html' %}
+      {% footer %}
     {% endblock footer %}
   </div>
 </div>
