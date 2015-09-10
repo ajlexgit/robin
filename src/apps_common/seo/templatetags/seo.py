@@ -10,7 +10,7 @@ def seo_block(context, template='seo/block.html'):
     if not request:
         return ''
 
-    if not request.seo or not request.seo.instance:
+    if not request.seo or not request.seo.instance or not request.seo.instance.text:
         return ''
 
     return loader.render_to_string(template, {

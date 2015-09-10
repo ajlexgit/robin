@@ -1,5 +1,16 @@
 @import "mixins";
 
 .seo-text {
-  background-color: $gray_color;
+  padding: 54px 0;
+  background-color: #F7F7F7;
+  @include media_interval(0, $media640) {
+    padding: 30px 0;
+  }
+
+  .title {
+    margin-bottom: 14px;
+    @include media_interval(0, $media640) {
+      margin-bottom: 8px;
+    }
+  }
 }
