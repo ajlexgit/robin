@@ -1,10 +1,16 @@
 import os
+import logging
 import hashlib
-import requests
 import tempfile
+import contextlib
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 from django.core.files.uploadedfile import UploadedFile, TemporaryUploadedFile, InMemoryUploadedFile
 
-__all__ = ('upload_file', 'upload_chunked_file', 'NotLastChunk', 'FileMissingError')
+__all__ = ('upload_file', 'upload_chunked_file', 'NotLastChunk', 'FileMissingError',
+           'HTTPError', 'URLError')
+
+logger = logging.getLogger(__name__)
 
 
 class NotLastChunk(Exception):
@@ -36,19 +42,19 @@ def upload_file(url, timeout=5):
         Загрузка файла по урлу во временный файл.
 
         Пример:
-            from libs.upload import upload_file
+            from libs.upload import *
             ...
-            
+
             try:
                 uploaded_file = upload_file('http://host.ru/image.jpg')
-            except ConnectionError as e:
+            except URLError as e:
                 return JsonResponse({
-                    'message': str(e),
-                }, status=400)
+                    'message': str(e.msg),
+                }, status=e.code)
 
             request.user.avatar.save(uploaded_file.name, uploaded_file, save=False)
             uploaded_file.close()
-            
+
             try:
                 request.user.avatar.field.clean(request.user.avatar, request.user)
             except ValidationError as e:
@@ -60,25 +66,25 @@ def upload_file(url, timeout=5):
             request.user.avatar.clean()
             request.user.avatar.save()
     """
-    request = requests.get(url, stream=True, timeout=timeout, headers={
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-    })
-    if not request.ok:
-        raise ConnectionError('Wrong upload status: %s' % request.status_code)
+    logger.debug('Uploading %s...', url)
+    with contextlib.closing(urlopen(url, timeout=timeout)) as fp:
+        headers = fp.info()
 
-    file_name = url.split('/')[-1]
-    content_type = request.headers.get('content-type')
-    file_size = request.headers.get('content-length')
-    charset = (request.encoding or 'utf-8').lower()
+        file_name = url.split('/')[-1]
+        content_type = headers.get('content-type')
+        file_size = headers.get('content-length')
+        charset = 'utf-8'
 
-    tmp = TemporaryUploadedFile(
-        file_name, content_type, file_size,
-        charset, {}
-    )
-    for block in request.iter_content(8 * 1024):
-        if not block:
-            break
-        tmp.write(block)
+        tmp = TemporaryUploadedFile(file_name, content_type, file_size, charset, {})
+
+        while True:
+            block = fp.read(8 * 1024)
+            if not block:
+                break
+            tmp.write(block)
+
+        logger.debug('Uploaded %s to file %s', url, tmp.file.name)
+
     tmp.seek(0)
     tmp.flush()
     return tmp
