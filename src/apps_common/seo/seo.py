@@ -18,6 +18,7 @@ class Seo:
 
     @property
     def title(self):
+        """ Возвращает заголовок страницы, объединенный TITLE_JOIN_WITH """
         if not self.title_deque:
             return ''
         elif TITLE_JOIN_WITH:
@@ -58,7 +59,7 @@ class Seo:
         if description:
             self._description = str(description)
 
-    def set_instance(self, instance, auto_apply=True):
+    def set_instance(self, instance, auto=True):
         """ Установка объекта SeoData, привязанного к экземпляру """
         content_type = ContentType.objects.get_for_model(type(instance))
         try:
@@ -69,7 +70,7 @@ class Seo:
         except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
             return
         else:
-            if auto_apply:
+            if auto:
                 self.apply_instance()
 
     def apply_instance(self):

@@ -73,7 +73,7 @@
             request.seo.set_instance(entity)
 
             # Изменение данных перед привязкой:
-            request.seo.set_instance(entity, auto_apply=False)
+            request.seo.set_instance(entity, auto=False)
             if request.seo.instance:
                 request.seo.instance.title = 'New title'
                 request.seo.apply_instance()
