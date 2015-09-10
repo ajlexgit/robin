@@ -36,7 +36,7 @@
                 suit_seo_tab = 'seo'
             ...
 
-    Счетчики:
+    Использование в шаблоне:
         {% load seo %}
         <head>
             ...
@@ -44,6 +44,10 @@
         </head>
         <body>
             {% seo_counters 'body_top' %}
+            ...
+
+            {% seo_block %}
+            
             ...
             {% seo_counters 'body_bottom' %}
         </body>
