@@ -1,41 +1,5 @@
 @import "mixins";
 
 .seo-text {
-  .text-wrapper {
-    position: relative;
-    overflow: hidden;
-
-    &.animated {
-      .text {
-        cursor: pointer;
-      }
-    }
-  }
-
-  .text {
-    display: block;
-    margin: 0;
-    overflow: hidden;
-    line-height: 17px;
-    color: rgba(#FFFFFF, 0.5);
-    text-align: justify;
-    @include font-size(11px);
-  }
-
-  .short-text {
-    &:after {
-      content: '>';
-      font-family: Tahoma, sans-serif;
-      line-height: 1;
-      color: rgba(255, 255, 255, 0.8);
-      @include font-size(8px);
-    }
-  }
-
-  .hidden-text {
-    display: block;
-    position: absolute;
-    width: 100%;
-    left: -10000px;
-  }
+  background-color: $gray_color;
 }

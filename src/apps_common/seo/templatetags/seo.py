@@ -1,5 +1,4 @@
 from django.template import loader, Library
-from libs.description import description
 from ..models import Counter
 
 register = Library()
@@ -14,18 +13,8 @@ def seo_block(context, template='seo/block.html'):
     if not request.seo or not request.seo.instance:
         return ''
 
-    seo_instance = request.seo.instance
-    full = seo_instance.text.strip()
-    if not full:
-        return ''
-
-    short = description(seo_instance.text, 500, 800)
-
     return loader.render_to_string(template, {
-        'instance': seo_instance,
-        'full_text': full,
-        'short_text': short,
-        'animated': len(full) > len(short),
+        'instance': request.seo.instance,
     })
 
 

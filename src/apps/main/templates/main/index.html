@@ -8,6 +8,7 @@
 {% load gallery %}
 {% load away %}
 {% load text %}
+{% load seo %}
 
 {% block static_head %}
   {{ block.super }}
@@ -208,4 +209,6 @@
 
   {% render_attached_blocks config %}
 
+  {% seo_block %}
+  
 {% endblock content %}

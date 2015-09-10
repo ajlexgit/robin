@@ -193,7 +193,6 @@ PIPELINE_JS = {
             'js/appear.js',
             'js/text_styles.js',
             'menu/js/menu.js',
-            'seo/js/block.js',
         ),
         'output_filename': 'js/core.js',
     },

@@ -1,21 +1,12 @@
 {% load text %}
 
-<div class="seo-text grid">
-  <div class="gc-full gc-alone">
-    <div class="text-wrapper {% if animated %}animated{% endif %}">
-      {% if animated %}
-        <p class="text short-text">
-          {{ short_text|typograf|safe }}
-        </p>
-
-        <p class="text full-text hidden-text">
-          {{ full_text|typograf|safe }}
-        </p>
-      {% else %}
-        <p class="text full-text">
-          {{ full_text|typograf|safe }}
-        </p>
-      {% endif %}
+<div class="seo-text">
+  <div class="grid">
+    <div class="gc">
+      <div class="title title-h2">{{ instance.header }}</div>
+      <div class="text text-styles">
+        {{ instance.text|paragraphs|typograf|safe }}
+      </div>
     </div>
   </div>
 </div>
