@@ -12,6 +12,11 @@
   perspective: $args;
 }
 
+@mixin perspective-origin($args...) {
+  -webkit-perspective-origin: $args;
+  perspective-origin: $args;
+}
+
 @mixin backface-visibility($args...) {
   -webkit-backface-visibility: $args;
   backface-visibility: $args;
