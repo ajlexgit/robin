@@ -19,7 +19,7 @@ class VideoLink:
                 except ValueError:
                     pass
             else:
-                raise ValueError('Bad video URL: %s' % link)
+                raise ValueError('Invalid video URL: %s' % link)
         else:
             # video_key
             self._provider, self._key = link.split('#', 1)
