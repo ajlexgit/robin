@@ -176,8 +176,8 @@
 
         // Добавлен элемент галереи
         setDefaultEvent(this, 'item-add.gallery', function(event, $item, response) {
-            if (response.browse_url) {
-                $item.find('.item-show').attr('href', response.browse_url);
+            if (response.show_url) {
+                $item.find('.item-show').attr('href', response.show_url);
             }
             $item.find('.check-box').val(response.id);
         });

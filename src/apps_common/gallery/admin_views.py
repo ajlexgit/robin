@@ -1,4 +1,3 @@
-import re
 from django.apps import apps
 from django.contrib import admin
 from django.template.loader import render_to_string
@@ -7,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse, Http404, HttpResponse
 from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
-from . import options
 
 
 def _get_gallery(request):
@@ -50,7 +48,6 @@ def create(request):
 
     context = {
         'gallery': gallery,
-        'options': options,
         'name': request.POST.get('field_name'),
     }
     return JsonResponse({
@@ -118,7 +115,7 @@ def upload(request):
     response = {
         'id': item.pk,
         'preview_url': getattr(item.image, item.ADMIN_VARIATION).url,
-        'browse_url': item.browse_url,
+        'show_url': item.show_url,
         'source_url': item.image.url_nocache,
         'source_size': ','.join(map(str, item.image.dimensions)),
     }
@@ -132,41 +129,26 @@ def upload_video(request):
 
     link = request.POST.get('link', '')
 
-    for provider_id, provider in options.PROVIDERS.items():
-        for pattern in provider['link_patterns']:
-            match = re.match(pattern, link)
-            if not match:
-                continue
-
-            video_key = match.group(1)
-
-            try:
-                video_preview = provider['preview_url'](video_key)
-            except ConnectionError as e:
-                return JsonResponse({
-                    'message': ', '.join(e.args),
-                }, status=400)
-
-            # Создание экземпляра элемента галереи
-            item = gallery.VIDEO_LINK_MODEL(
-                gallery=gallery,
-                video_provider=provider_id,
-                video_key=video_key,
-                video_preview=video_preview,
-            )
-            item.clean()
-            item.save()
-
-            response = {
-                'id': item.pk,
-                'preview_url': item.video_preview,
-                'browse_url': item.browse_url,
-            }
-            return JsonResponse(response)
+    # Создание экземпляра элемента галереи
+    try:
+        item = gallery.VIDEO_LINK_MODEL(
+            gallery=gallery,
+            video=link
+        )
+    except ValueError:
+        return JsonResponse({
+            'message': _('Invalid video URL'),
+        }, status=400)
+    else:
+        item.video_preview = item.video.info.get('preview_url', '')
+        item.clean()
+        item.save()
 
     return JsonResponse({
-        'message': _('Invalid link'),
-    }, status=400)
+        'id': item.pk,
+        'preview_url': item.video_preview,
+        'show_url': item.show_url,
+    })
 
 
 @admin.site.admin_view

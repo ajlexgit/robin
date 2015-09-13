@@ -179,7 +179,7 @@
             });
 
             var provider = $item.data('provider');
-            if (provider == 1) {
+            if (provider == 'youtube') {
                 // Youtube
                 $.youtube($frame, {
                     videoId: $item.data('key'),
@@ -195,7 +195,7 @@
                         that.popup.off('.gallery');
                     });
                 })
-            } else if (provider == 2) {
+            } else if (provider == 'vimeo') {
                 // Vimeo
                 $.vimeo($frame, {
                     videoId: $item.data('key')

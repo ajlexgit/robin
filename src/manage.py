@@ -1,7 +1,8 @@
 import os
 import sys
 
-# Video field для галереи
+# Gallery: video preview SdtImage
+# Gallery: make IMAGE_MODEL not required
 # Проверить вставку видео в текст с Vimeo и т.п.
 # Очередь анимаций JS
 # Создание дампов в админке

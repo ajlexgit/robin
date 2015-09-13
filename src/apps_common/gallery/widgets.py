@@ -3,7 +3,6 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 from libs.variation_field import *
-from . import options
 
 
 class GalleryWidget(forms.Widget):
@@ -46,7 +45,6 @@ class GalleryWidget(forms.Widget):
             gallery_model = gallery_model,
             app_label = gallery_model._meta.app_label,
             model_name = gallery_model._meta.model_name,
-            options = options,
 
             aspects = aspects,
             admin_variation = gallery_model.IMAGE_MODEL.get_admin_variation(),

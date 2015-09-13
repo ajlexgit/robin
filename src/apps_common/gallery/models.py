@@ -9,10 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from model_utils.managers import InheritanceQuerySetMixin
 from libs.variation_field import *
+from libs.videolink_field import VideoLinkField
 from libs.checks import ModelChecksMixin
 from libs.media_storage import MediaStorage
 from libs.aliased_queryset import AliasedQuerySetMixin
-from . import options
 from .fields import GalleryImageField
 
 __all__ = ('GalleryBase', 'GalleryItemBase', 'GalleryImageItem', 'GalleryVideoLinkItem')
@@ -250,7 +250,7 @@ class GalleryImageItem(GalleryItemBase):
         return variations[cls.ADMIN_VARIATION]
 
     @property
-    def browse_url(self):
+    def show_url(self):
         if self.SHOW_VARIATION is False:
             return ''
         elif self.SHOW_VARIATION is None:
@@ -300,10 +300,9 @@ class GalleryImageItem(GalleryItemBase):
 
 class GalleryVideoLinkItem(GalleryItemBase):
     """ Элемент-видео с сервисов галереи """
-    COPY_FIELDS = GalleryItemBase.COPY_FIELDS | {'video_provider', 'video_key', 'video_preview'}
+    COPY_FIELDS = GalleryItemBase.COPY_FIELDS | {'video', 'video_preview'}
 
-    video_provider = models.PositiveSmallIntegerField(_('provider'), default=0)
-    video_key = models.CharField(_('key'), max_length=32, blank=True)
+    video = VideoLinkField(_('video'))
     video_preview = models.CharField(_('preview image'), max_length=128, blank=True)
 
     class Meta:
@@ -312,14 +311,14 @@ class GalleryVideoLinkItem(GalleryItemBase):
         abstract = True
 
     def __str__(self):
-        return _('Video item %(pk)s (%(path)s)') % {'pk': self.pk or 'None', 'path': self.video_key}
+        return _('Video item %(pk)s (%(path)s)') % {
+            'pk': self.pk or 'None',
+            'path': self.video.db_value
+        }
 
     @property
-    def browse_url(self):
-        provider_opts = options.PROVIDERS.get(self.video_provider)
-        if provider_opts:
-            return provider_opts['browse_url'].format(video_key=self.video_key)
-        return ''
+    def show_url(self):
+        return self.video.url
 
     def copy_for(self, dest_gallery, **kwargs):
         """ Создание копии текущего элемента для другой галереи """
@@ -362,7 +361,7 @@ class GalleryBase(ModelChecksMixin, models.Model):
     def custom_check(cls):
         """ Проверка модели """
         errors = []
-        if cls.IMAGE_MODEL and not issubclass(cls.IMAGE_MODEL, GalleryImageItem):
+        if not cls.IMAGE_MODEL or not issubclass(cls.IMAGE_MODEL, GalleryImageItem):
             errors.append(
                 cls.check_error('IMAGE_MODEL should be a subclass of GalleryImageItem')
             )
