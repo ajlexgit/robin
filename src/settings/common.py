@@ -192,6 +192,8 @@ PIPELINE_JS = {
             'js/jquery.popups.js',
             'js/jquery.scrollTo.js',
             'js/jquery.utils.js',
+            'js/jquery.youtube.js',
+            'js/jquery.vimeo.js',
             'js/appear.js',
             'js/text_styles.js',
             'menu/js/menu.js',

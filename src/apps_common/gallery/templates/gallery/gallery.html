@@ -5,7 +5,7 @@
         <img src="{{ item.image.small.url }}" alt="">
       </div>
     {% elif item.is_video_link %}
-      <div class="gallery-item gallery-item-video-link" data-provider="{{ item.provider.name }}"
+      <div class="gallery-item gallery-item-video-link" data-provider="{{ item.video.provider.name }}"
            data-key="{{ item.video.key }}">
         <div class="inner">
           <img src="{{ item.video_preview }}" alt="">
