@@ -9,6 +9,7 @@ from attachable_blocks import AttachableBlock, register_block
 from libs.ckeditor import CKEditorUploadField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
+from libs.videolink_field import VideoLinkField
 from libs.media_storage import MediaStorage
 from libs.stdimage import StdImageField
 
@@ -58,7 +59,7 @@ class MainPageConfig(SingletonModel):
         ),
     )
     header_video = models.FileField(_('video'), blank=True, storage=MediaStorage('main/header'))
-    
+
     preview = StdImageField(_('preview'),
         storage=MediaStorage('main/preview'),
         min_dimensions=(400, 300),
@@ -94,6 +95,7 @@ class MainPageConfig(SingletonModel):
         validators=[MinValueValidator(0)]
     )
     gallery = GalleryField(MainGallery, verbose_name=_('gallery'), blank=True, null=True)
+    video = VideoLinkField(_('video'), blank=True)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 

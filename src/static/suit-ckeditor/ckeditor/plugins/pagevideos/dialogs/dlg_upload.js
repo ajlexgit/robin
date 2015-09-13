@@ -82,6 +82,7 @@
                 }
 
                 $container.oembed(url, {
+                    embedMethod: 'editor',
                     onEmbed: function(e) {
                         if (typeof e.code === 'string') {
                             $container.html(e.code);
@@ -115,31 +116,33 @@
                             // Youtube size
                             if (provider.name == 'youtube') {
                                 var key = provider.templateRegex.exec(url)[1];
+                                var apikey = editor.config.YOUTUBE_APIKEY;
                                 $.ajax({
-                                    url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg&part=player',
+                                    url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=' + apikey + '&part=player',
                                     dataType: "jsonp",
                                     success: function (data) {
-                                        if (data.items && data.items.length) {
-                                            var item = data.items[0];
-                                            var code = item.player && item.player.embedHtml;
-                                            if (code) {
-                                                var width = /width="(\d+)"/i.exec(code);
-                                                var height = /height="(\d+)"/i.exec(code);
-
-                                                if (width && height) {
-                                                    width = parseInt(width[1]);
-                                                    height = parseInt(height[1]);
-
-                                                    height = Math.ceil((height / width) * 425) + 25;
-                                                    width = 425;
-
-                                                    $(container.$).find('iframe').attr({
-                                                        width: width,
-                                                        height: height
-                                                    });
-                                                }
-                                            }
+                                        if (!data.items || !data.items.length) {
+                                            return
                                         }
+
+                                        var item = data.items[0];
+                                        var code = item.player && item.player.embedHtml;
+                                        if (!code) {
+                                            return
+                                        }
+
+                                        var width = /width="(\d+)"/i.exec(code);
+                                        var height = /height="(\d+)"/i.exec(code);
+                                        if (!width || !height) {
+                                            return
+                                        }
+
+                                        width = parseInt(width[1]);
+                                        height = parseInt(height[1]);
+                                        $(container.$).find('iframe').attr({
+                                            width: 425,
+                                            height: Math.ceil((height / width) * 425) + 25
+                                        });
                                     }
                                 });
                             }
@@ -152,15 +155,7 @@
                         if (dialog) {
                             dialog.hide();
                         }
-					},
-					onError: function(externalUrl) {
-						if (externalUrl.indexOf("vimeo.com") > 0) {
-							alert(gettext('You can not share this video'))
-						} else {
-							alert(gettext('Video not found. Trying other mirror'))
-						}
-					},
-					embedMethod: 'editor'
+					}
 				})
 			}
         }

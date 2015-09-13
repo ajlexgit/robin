@@ -40,7 +40,7 @@ class ModelChecksMixin:
             Проверка модели.
             Должен вернуть список ошибок в виде экземпляров checks.Error
         """
-        raise NotImplementedError
+        return []
 
     @classmethod
     def check_error(cls, message, obj=None, **kwargs):

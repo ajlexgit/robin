@@ -74,6 +74,10 @@ class CKEditorUploadWidget(CKEditorWidget):
             static('ckeditor/css/ckupload_fix.css'),
         )
 
+        # Youtube APIKEY
+        youtube_key = getattr(settings, 'YOUTUBE_APIKEY', 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
+        self.editor_options['YOUTUBE_APIKEY'] = youtube_key
+
         page_photos = []
         simple_photos = []
         if isinstance(value, (tuple, list)):

@@ -41,7 +41,7 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'preview', 'preview2', 'text', 'description',
-                'color', 'color2' ,'price', 'gallery'
+                'color', 'color2' ,'price', 'gallery', 'video'
             ),
         }),
     )

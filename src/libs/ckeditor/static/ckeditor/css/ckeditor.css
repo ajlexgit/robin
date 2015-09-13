@@ -6,6 +6,10 @@ p img {
     max-width: 100%;
 }
 
+p iframe {
+    max-width: 100%;
+}
+
 .page-images, .page-video {
     font-size: 14px;
     color: #404040;

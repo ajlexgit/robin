@@ -1,10 +1,11 @@
 import os
 import sys
 
+# Video field для галереи
+# Проверить вставку видео в текст с Vimeo и т.п.
 # Очередь анимаций JS
 # Создание дампов в админке
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
-# Youtube video field
 
 # multilanguage on same site
 
