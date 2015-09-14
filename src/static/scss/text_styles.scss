@@ -106,7 +106,7 @@
 
     .fluid-width-video-wrapper {
       display: inline-block;
-      margin: 0 0 2px;
+      @include backface-visibility(hidden);
     }
 
     &.instagram {
