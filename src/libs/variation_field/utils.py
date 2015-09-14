@@ -76,24 +76,6 @@ def is_size(value):
         return False
 
 
-def nearest_variation(variations, size):
-    """ Получение имени вариации, ближайщей по размеру """
-    nearest_area = 0
-    nearest_variation_name = ''
-
-    for name, params in variations.items():
-        var_size = params['size']
-        if var_size[0] < size[0] or var_size[1] < size[1]:
-            continue
-
-        var_area = operator.mul(*var_size)
-        if not nearest_area or (var_area < nearest_area):
-            nearest_area = var_area
-            nearest_variation_name = name
-
-    return nearest_variation_name
-
-
 def check_variations(variations, obj):
     from django.core import checks
     errors = []

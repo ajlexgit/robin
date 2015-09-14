@@ -138,9 +138,6 @@ class GalleryImageItem(GalleryItemBase):
     # Имя вариации, которая используется для полноэкранного просмотра картинки в админке
     SHOW_VARIATION = None
 
-    # Имя вариации, которая показывается в админке
-    ADMIN_VARIATION = None
-
     # Аспекты, используемые плагином Jcrop в админке.
     # Вещественное число или кортеж вещественных чисел.
     ASPECTS = ()
@@ -217,14 +214,6 @@ class GalleryImageItem(GalleryItemBase):
             errors.append(
                 cls.check_error('SHOW_VARIATION %r not found in VARIATIONS' % cls.SHOW_VARIATION)
             )
-        if not cls.ADMIN_VARIATION:
-            errors.append(
-                cls.check_error('ADMIN_VARIATION required')
-            )
-        if cls.ADMIN_VARIATION not in cls.VARIATIONS:
-            errors.append(
-                cls.check_error('ADMIN_VARIATION %r not found in VARIATIONS' % cls.ADMIN_VARIATION)
-            )
         return errors
 
     def generate_filename(self, filename):
@@ -243,6 +232,26 @@ class GalleryImageItem(GalleryItemBase):
         variations = format_variations(cls.VARIATIONS)
         cls._cache[key] = variations
         return variations
+
+    @cached_property
+    def admin_variation(self):
+        """ Получение имени вариации, ближайщей по размеру """
+        target_size = self.gallery.ADMIN_ITEM_SIZE
+        variations = self.variations()
+
+        nearest_area = 0
+        nearest_variation_name = ''
+        for name, variation in variations.items():
+            var_size = variation['size']
+            if var_size[0] < target_size[0] or var_size[1] < target_size[1]:
+                continue
+
+            var_area = var_size[0] * var_size[1]
+            if not nearest_area or (var_area < nearest_area):
+                nearest_area = var_area
+                nearest_variation_name = name
+
+        return getattr(self.image, nearest_variation_name)
 
     @property
     def show_url(self):

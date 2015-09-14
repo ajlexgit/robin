@@ -29,32 +29,18 @@ class GalleryWidget(forms.Widget):
             )
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.context = {}
+
     def render(self, name, value, attrs=None):
         if value:
             value = self.queryset.get(pk=value)
 
         gallery_model = self.queryset.model
 
-        # Форматируем аспекты
-        aspects = format_aspects(gallery_model.IMAGE_MODEL.ASPECTS, gallery_model.IMAGE_MODEL.VARIATIONS)
-        aspects = '|'.join(aspects)
-
-        context = dict(
-            name = name,
-            gallery = value,
-            gallery_model = gallery_model,
-            app_label = gallery_model._meta.app_label,
-            model_name = gallery_model._meta.model_name,
-
-            admin_item_size = gallery_model.ADMIN_ITEM_SIZE,
-            aspects = aspects,
-            min_dimensions = gallery_model.IMAGE_MODEL.MIN_DIMENSIONS,
-            max_dimensions = gallery_model.IMAGE_MODEL.MAX_DIMENSIONS,
-            max_size = gallery_model.IMAGE_MODEL.MAX_SIZE,
-        )
-
-        # Ресайз на клиентской стороне
-        if gallery_model.IMAGE_MODEL.ADMIN_CLIENT_RESIZE:
-            context['max_source'] = gallery_model.IMAGE_MODEL.MAX_SOURCE_DIMENSIONS
-
+        context = dict(self.context, **{
+            'name': name,
+            'gallery': value,
+        })
         return mark_safe(render_to_string(gallery_model.ADMIN_TEMPLATE, context))

@@ -106,6 +106,7 @@ class GalleryField(models.OneToOneField):
     def formfield(self, **kwargs):
         defaults = {
             'form_class': GalleryFormField,
+            'related_model': self.rel.to,
         }
         defaults.update(kwargs)
         return super().formfield(**defaults)

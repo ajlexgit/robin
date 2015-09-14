@@ -114,7 +114,7 @@ def upload(request):
 
     response = {
         'id': item.pk,
-        'preview_url': getattr(item.image, item.ADMIN_VARIATION).url,
+        'preview_url': item.admin_variation.url,
         'show_url': item.show_url,
         'source_url': item.image.url_nocache,
         'source_size': ','.join(map(str, item.image.dimensions)),
@@ -178,7 +178,7 @@ def rotate_item(request):
         item.image.rotate(90)
 
     return JsonResponse({
-        'preview_url': getattr(item.image, item.ADMIN_VARIATION).url_nocache
+        'preview_url': item.admin_variation.url_nocache
     })
 
 
@@ -206,7 +206,7 @@ def crop_item(request):
     item.save()
 
     return JsonResponse({
-        'preview_url': getattr(item.image, item.ADMIN_VARIATION).url_nocache
+        'preview_url': item.admin_variation.url_nocache
     })
 
 

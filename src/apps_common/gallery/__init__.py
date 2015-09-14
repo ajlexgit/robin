@@ -23,7 +23,6 @@ from .fields import GalleryField
                 ADMIN_CLIENT_RESIZE = True
 
                 SHOW_VARIATION = 'normal'
-                ADMIN_VARIATION = 'micro'
                 ASPECTS = 'normal'
                 VARIATIONS = dict(
                     normal=dict(

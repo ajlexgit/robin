@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load variation_field %}
 
 <h4>
   {% blocktrans with image_count=gallery.image_items.count video_count=gallery.video_link_items.count count counter=image_count %}
@@ -23,11 +22,7 @@
         <input type="hidden" class="item-id" value="{{ item.id }}"/>
 
         <a {% if item.show_url %}href="{{ item.show_url }}"{% endif %} target="_blank" class="item-show">
-          {% with variation_field=item.image|variation_field:item.ADMIN_VARIATION %}
-            {% if variation_field %}
-              <img src="{{ variation_field.url }}">
-            {% endif %}
-          {% endwith %}
+          <img src="{{ item.admin_variation.url }}">
         </a>
 
         <span class="item-controls">

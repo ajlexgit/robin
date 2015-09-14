@@ -12,7 +12,7 @@
        data-center="{{ admin_variation.center|default:''|join:'x' }}"
        data-background="{{ admin_variation.background|join:',' }}"
        data-source="{{ value.url_nocache }}">
-    {% with variation_field=value|variation_field:admin_variation.name %}
+    {% with variation_field=value|get_variation:admin_variation.name %}
       <img src="{{ variation_field.url_nocache }}">
     {% endwith %}
   </div>

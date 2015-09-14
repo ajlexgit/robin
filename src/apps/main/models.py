@@ -20,16 +20,12 @@ class MainGalleryImageItem(GalleryImageItem):
     ADMIN_CLIENT_RESIZE = True
 
     SHOW_VARIATION = 'normal'
-    ADMIN_VARIATION = 'admin'
     ASPECTS = 'normal'
     VARIATIONS = dict(
         normal=dict(
             size=(768, 576),
         ),
         small=dict(
-            size=(160, 120),
-        ),
-        admin=dict(
             size=(160, 120),
         ),
     )
