@@ -244,11 +244,6 @@ class GalleryImageItem(GalleryItemBase):
         cls._cache[key] = variations
         return variations
 
-    @classmethod
-    def get_admin_variation(cls):
-        variations = cls.variations()
-        return variations[cls.ADMIN_VARIATION]
-
     @property
     def show_url(self):
         if self.SHOW_VARIATION is False:
@@ -343,6 +338,9 @@ class GalleryBase(ModelChecksMixin, models.Model):
     IMAGE_MODEL = None
     VIDEO_LINK_MODEL = None
 
+    # Размер элемента галереи в админке
+    ADMIN_ITEM_SIZE = (160, 120)
+
     # Шаблоны поля галереи для админки
     ADMIN_TEMPLATE = 'gallery/admin/gallery.html'
     ADMIN_TEMPLATE_EMPTY = 'gallery/admin/gallery_empty.html'
@@ -368,6 +366,10 @@ class GalleryBase(ModelChecksMixin, models.Model):
         if cls.VIDEO_LINK_MODEL and not issubclass(cls.VIDEO_LINK_MODEL, GalleryVideoLinkItem):
             errors.append(
                 cls.check_error('VIDEO_LINK_MODEL should be a subclass of GalleryVideoLinkItem')
+            )
+        if not is_size(cls.ADMIN_ITEM_SIZE):
+            errors.append(
+                cls.check_error('ADMIN_ITEM_SIZE should be a tuple of 2 non-negative numbers')
             )
         return errors
 

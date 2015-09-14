@@ -46,8 +46,8 @@ class GalleryWidget(forms.Widget):
             app_label = gallery_model._meta.app_label,
             model_name = gallery_model._meta.model_name,
 
+            admin_item_size = gallery_model.ADMIN_ITEM_SIZE,
             aspects = aspects,
-            admin_variation = gallery_model.IMAGE_MODEL.get_admin_variation(),
             min_dimensions = gallery_model.IMAGE_MODEL.MIN_DIMENSIONS,
             max_dimensions = gallery_model.IMAGE_MODEL.MAX_DIMENSIONS,
             max_size = gallery_model.IMAGE_MODEL.MAX_SIZE,

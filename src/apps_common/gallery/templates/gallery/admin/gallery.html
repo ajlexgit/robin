@@ -6,8 +6,8 @@
   }
 
   #gallery-{{ name }} .gallery-item {
-    width: {{ admin_variation.size.0 }}px;
-    height: {{ admin_variation.size.1 }}px;
+    width: {{ admin_item_size.0 }}px;
+    height: {{ admin_item_size.1 }}px;
   }
 </style>
 
@@ -26,8 +26,11 @@
 
 {% block gallery %}
   <div class="gallery gallery-standart" id="gallery-{{ name }}"
-       data-max_source="{{ max_source|join:'x' }}" data-min_dimensions="{{ min_dimensions|join:'x' }}"
-       data-max_dimensions="{{ max_dimensions|join:'x' }}" data-max_size="{{ max_size }}" data-aspects="{{ aspects }}">
+       data-max_source="{{ max_source|join:'x' }}"
+       data-min_dimensions="{{ min_dimensions|join:'x' }}"
+       data-max_dimensions="{{ max_dimensions|join:'x' }}"
+       data-max_size="{{ max_size }}"
+       data-aspects="{{ aspects }}">
     {% block content %}
       <input type="hidden" class="app_label" name="app_label" value="{{ app_label }}"/>
       <input type="hidden" class="model_name" name="model_name" value="{{ model_name }}"/>
@@ -44,7 +47,7 @@
       {% block templates %}
         <script id="{{ name }}_image_template" type="text/template">
           <div class="gallery-item gallery-item-image"
-               style="width:{{ admin_variation.size.0 }}px; height:{{ admin_variation.size.1 }}px;">
+               style="width:{{ admin_item_size.0 }}px; height:{{ admin_item_size.1 }}px;">
             <input type="hidden" class="item-id" value=""/>
             <a target="_blank" class="item-show" style="display:none;">
               <img/>
@@ -69,6 +72,7 @@
             </span>
           </div>
         </script>
+
         <script id="{{ name }}_video_link_template" type="text/template">
           <div class="gallery-item gallery-item-video-link">
             <input type="hidden" class="item-id" value=""/>
