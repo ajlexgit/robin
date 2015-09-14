@@ -2,7 +2,6 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
-from libs.variation_field import *
 
 
 class GalleryWidget(forms.Widget):

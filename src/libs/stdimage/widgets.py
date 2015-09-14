@@ -20,30 +20,19 @@ class StdImageWidget(forms.FileInput):
         }
 
     def __init__(self, *args, **kwargs):
-        self.variations = kwargs.pop('variations')
-        self.admin_variation = kwargs.pop('admin_variation')
-        self.crop_area = kwargs.pop('crop_area')
-        self.crop_field = kwargs.pop('crop_field')
-        self.min_dimensions = kwargs.pop('min_dimensions')
-        self.max_dimensions = kwargs.pop('max_dimensions')
-        self.aspects = kwargs.pop('aspects')
         super().__init__(*args, **kwargs)
+        self.context = {}
 
     def render(self, name, value, attrs=None):
         input_tag = super().render(name, value, dict(attrs, **{
             'class': 'uploader',
         }))
 
-        context = dict(
-            name = name,
-            input = input_tag,
-            admin_variation = self.variations[self.admin_variation],
-            crop_area = self.crop_area,
-            crop_field = self.crop_field,
-            min_dimensions = self.min_dimensions,
-            max_dimensions = self.max_dimensions,
-            aspects = '|'.join(self.aspects),
-        )
+        context = dict(self.context, **{
+            'name': name,
+            'input': input_tag,
+        })
+
         if value and hasattr(value, 'field'):
             context['value'] = value
 
