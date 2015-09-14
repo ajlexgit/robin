@@ -35,18 +35,21 @@
         $(document).on('click.gallery', '.' + LEFT_ARROW, function() {
             var gallery = getActiveGallery();
             if (gallery) {
-                gallery.gotoNext();
+                gallery.gotoPrev();
             }
+            return false;
         }).on('click.gallery', '.' + RIGHT_ARROW, function() {
             var gallery = getActiveGallery();
             if (gallery) {
-                gallery.gotoPrev();
+                gallery.gotoNext();
             }
+            return false;
         }).on('click.gallery', '.' + MAIN_IMAGE, function() {
             var gallery = getActiveGallery();
             if (gallery) {
                 gallery.gotoNext();
             }
+            return false;
         });
 
         // Обновление размеров окна
