@@ -64,7 +64,7 @@
 
         that._init_uploader = function() {
             // Клиентский ресайз
-            var resize = $container.data('max_source') || '';
+            var resize = $container.find('.max_source').val();
             if (resize) {
                 resize = String(resize).split('x').map(function(e) {
                     return parseInt(e)
@@ -74,7 +74,7 @@
                 resize = {};
             }
             // Максимальный вес
-            var max_size = $container.data('max_size') || '';
+            var max_size = $container.find('.max_size').val();
             max_size = Number(max_size) || 0;
 
             that.uploader = new plupload.Uploader({

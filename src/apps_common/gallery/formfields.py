@@ -22,12 +22,16 @@ class GalleryFormField(forms.ModelChoiceField):
                 related_model.IMAGE_MODEL.ASPECTS,
                 related_model.IMAGE_MODEL.VARIATIONS
             )
-            self.widget.context['aspects'] = '|'.join(aspects)
-            self.widget.context['min_dimensions'] = related_model.IMAGE_MODEL.MIN_DIMENSIONS
-            self.widget.context['max_dimensions'] = related_model.IMAGE_MODEL.MAX_DIMENSIONS
-            self.widget.context['max_size'] = related_model.IMAGE_MODEL.MAX_SIZE
+            self.widget.context['image_aspects'] = '|'.join(aspects)
+            self.widget.context['image_min_dimensions'] = 'x'.join(
+                str(item) for item in related_model.IMAGE_MODEL.MIN_DIMENSIONS
+            )
+            self.widget.context['image_max_dimensions'] = 'x'.join(
+                str(item) for item in related_model.IMAGE_MODEL.MAX_DIMENSIONS
+            )
+            self.widget.context['image_max_size'] = related_model.IMAGE_MODEL.MAX_SIZE
             if related_model.IMAGE_MODEL.ADMIN_CLIENT_RESIZE:
-                self.widget.context['max_source'] = related_model.IMAGE_MODEL.MAX_SOURCE_DIMENSIONS
+                self.widget.context['image_max_source'] = related_model.IMAGE_MODEL.MAX_SOURCE_DIMENSIONS
 
     def _set_queryset(self, queryset):
         self.widget.queryset = queryset

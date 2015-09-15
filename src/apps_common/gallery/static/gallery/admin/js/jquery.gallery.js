@@ -78,13 +78,13 @@
                     return $element.closest('.gallery-item').data('source_url');
                 },
                 min_size: function() {
-                    return $container.data('min_dimensions');
+                    return $container.find('.min_dimensions').val();
                 },
                 max_size: function() {
-                    return $container.data('max_dimensions');
+                    return $container.find('.max_dimensions').val();
                 },
                 aspect: function() {
-                    return $container.data('aspects');
+                    return $container.find('.aspects').val();
                 },
                 crop_position: function($element) {
                     return $element.data('crop');

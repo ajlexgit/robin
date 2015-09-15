@@ -25,16 +25,19 @@
 </script>
 
 {% block gallery %}
-  <div class="gallery gallery-standart" id="gallery-{{ name }}"
-       data-max_source="{{ max_source|join:'x' }}"
-       data-min_dimensions="{{ min_dimensions|join:'x' }}"
-       data-max_dimensions="{{ max_dimensions|join:'x' }}"
-       data-max_size="{{ max_size }}"
-       data-aspects="{{ aspects }}">
+  <div class="gallery gallery-standart" id="gallery-{{ name }}">
     {% block content %}
       <input type="hidden" class="app_label" name="app_label" value="{{ app_label }}"/>
       <input type="hidden" class="model_name" name="model_name" value="{{ model_name }}"/>
       <input type="hidden" class="gallery_id" name="{{ name }}" id="id_{{ name }}" value="{{ gallery.pk|default:"" }}"/>
+
+      {% if gallery.IMAGE_MODEL %}
+        <input type="hidden" class="aspects" name="aspects" value="{{ image_aspects }}">
+        <input type="hidden" class="min_dimensions" name="min_dimensions" value="{{ image_min_dimensions }}">
+        <input type="hidden" class="max_dimensions" name="max_dimensions" value="{{ image_max_dimensions }}">
+        <input type="hidden" class="max_size" name="max_size" value="{{ image_max_size }}">
+        <input type="hidden" class="max_source" name="max_source" value="{{ image_max_source }}">
+      {% endif %}
 
       <div class="gallery-wrapper">
         {% if gallery %}
