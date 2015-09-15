@@ -1,5 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load admin_static %}
+{% load humanize %}
 {% load i18n %}
 
 
@@ -36,28 +37,39 @@
   <table class="admin-table">
     <thead>
     <tr>
-      <th>{% trans 'Path' %}</th>
+      <th>{% trans 'File' %}</th>
+      <th>{% trans 'Size' %}</th>
       <th>{% trans 'Download' %}</th>
       <th>{% trans 'Delete' %}</th>
     </tr>
     </thead>
+
     <tbody>
-
-    <tr>
-      <th>
-        <span>/cygdrive/d/www/dl/backups/backup_02_04_15.zip</span>
-      </th>
-      <th>
-        <button class="btn btn-success">{% trans 'Download' %}</button>
-      </th>
-      <th>
-        <button class="btn btn-danger btn-small">{% trans 'Delete' %}</button>
-      </th>
-    </tr>
-
+      {% for file in files %}
+        <tr>
+          <th>
+            <span>{{ file.0 }}</span>
+          </th>
+          <th>
+            <span>{{ file.1|filesizeformat }}</span>
+          </th>
+          <th>
+            <a href="{% url 'admin_dump:download' file.0 %}" class="btn btn-success">
+              {% trans 'Download' %}
+            </a>
+          </th>
+          <th>
+            <a href="{% url 'admin_dump:delete' file.0 %}" class="btn btn-danger btn-small"
+                onclick="return confirm('{% trans 'Are you shure?' %}')">
+              {% trans 'Delete' %}
+            </a>
+          </th>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
 
-  <button class="btn btn-info">{% trans 'Create' %}</button>
+  <a href="{% url 'admin_dump:create' %}" class="btn btn-info"
+      style="margin-top: 20px;">{% trans 'Create' %}</a>
 
 {% endblock %}

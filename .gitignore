@@ -9,6 +9,7 @@ Vagrantfile
 
 #Development configuration
 dev.py
+/backup
 /media
 /static
 /venv
