@@ -25,15 +25,6 @@ header {
     text-align: center;
     @include valign_after;
   }
-
-  .langs {
-    float: right;
-    margin-top: 3px;
-    @include media_interval(0, $media1024) {
-      margin-top: 4px;
-      margin-right: 20px;
-    }
-  }
 }
 
 #logo {

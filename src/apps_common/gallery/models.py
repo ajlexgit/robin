@@ -368,7 +368,7 @@ class GalleryBase(ModelChecksMixin, models.Model):
     def custom_check(cls):
         """ Проверка модели """
         errors = []
-        if not cls.IMAGE_MODEL or not issubclass(cls.IMAGE_MODEL, GalleryImageItem):
+        if cls.IMAGE_MODEL and not issubclass(cls.IMAGE_MODEL, GalleryImageItem):
             errors.append(
                 cls.check_error('IMAGE_MODEL should be a subclass of GalleryImageItem')
             )

@@ -59,7 +59,6 @@ INSTALLED_APPS = (
     'gallery',
     'header',
     'menu',
-    'multilanguage',
     'paginator',
     'seo',
     'social_buttons',
@@ -148,7 +147,6 @@ PIPELINE_CSS = {
             'footer/scss/footer.scss',
             'menu/scss/menu.scss',
             'seo/scss/block.scss',
-            'multilanguage/scss/multilanguage.scss',
         ),
         'output_filename': 'css/head_core.css',
     },
@@ -249,7 +247,6 @@ MIDDLEWARE_CLASSES = (
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
 
-    'multilanguage.middleware.LanguageRedirectMiddleware',
     'breadcrumbs.middleware.BreadcrumbsMiddleware',
     'seo.middleware.SeoMiddleware',
 )

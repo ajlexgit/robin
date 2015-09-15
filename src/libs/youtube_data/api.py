@@ -5,8 +5,6 @@ import requests
 
 API_URL = 'https://www.googleapis.com/youtube/v3/'
 API_KEY = 'AIzaSyDUyHc1otYjl7Hprm-mL5UxwygSivJNfaE'
-CHANNEL_ID = 'UChQJPNUnC1zeWqk6v4lPWsg'
-PLAYLIST_ID = 'PLTOwwDVdFdOxqCcJkYJMf-KpzA70ERjIB'
 
 
 def _get(resource, data):
@@ -22,7 +20,7 @@ def _get(resource, data):
         raise ValueError('API response: %s' % response.status_code)
 
 
-def get_channel_playlists(channel_id=CHANNEL_ID):
+def get_channel_playlists(channel_id):
     """ Список плейлистов канала """
     result = _get('playlists', {
         'part': 'id,snippet,contentDetails',
@@ -36,7 +34,8 @@ def get_channel_playlists(channel_id=CHANNEL_ID):
         'itemCount': item['contentDetails']['itemCount'],
     } for item in result['items'])
 
-def get_playlist_videos(playlist_id=PLAYLIST_ID):
+
+def get_playlist_videos(playlist_id):
     """ Список видео плейлиста """
     result = _get('playlistItems', {
         'part': 'id,snippet',
