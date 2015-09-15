@@ -31,7 +31,9 @@ class GalleryFormField(forms.ModelChoiceField):
             )
             self.widget.context['image_max_size'] = related_model.IMAGE_MODEL.MAX_SIZE
             if related_model.IMAGE_MODEL.ADMIN_CLIENT_RESIZE:
-                self.widget.context['image_max_source'] = related_model.IMAGE_MODEL.MAX_SOURCE_DIMENSIONS
+                self.widget.context['image_max_source'] = 'x'.join(
+                    str(item) for item in related_model.IMAGE_MODEL.MAX_SOURCE_DIMENSIONS
+                )
 
     def _set_queryset(self, queryset):
         self.widget.queryset = queryset
