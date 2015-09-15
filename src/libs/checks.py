@@ -62,7 +62,7 @@ class FieldChecksMixin:
             Проверка поля.
             Должен вернуть список ошибок в виде экземпляров checks.Error
         """
-        raise NotImplementedError
+        raise []
 
     def check_error(self, message, obj=None, **kwargs):
         return checks.Error(

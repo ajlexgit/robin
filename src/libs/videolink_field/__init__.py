@@ -10,5 +10,5 @@
         video = VideoLinkField(_('video'))
 """
 
-from .videolink import VideoLink
+from .videolink import VideoLink, BadVideoURL, NotAllowedProvider
 from .fields import VideoLinkField

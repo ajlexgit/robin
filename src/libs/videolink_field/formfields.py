@@ -4,9 +4,13 @@ from .videolink import VideoLink
 
 
 class VideoLinkFormField(forms.CharField):
+    def __init__(self, *args, providers=set(), **kwargs):
+        super().__init__(*args, **kwargs)
+        self._providers = set(providers)
+
     def validate(self, value):
         super().validate(value)
         try:
-            VideoLink(value)
+            VideoLink(value, self._providers)
         except ValueError as e:
             raise ValidationError(*e.args)
