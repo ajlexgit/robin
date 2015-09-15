@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
-from django.db.models.fields.files import ImageField, ImageFieldFile
+from django.db.models.fields.files import ImageField, ImageFieldFile, FieldFile
 from .utils import (put_on_bg, variation_crop, variation_resize, variation_watermark,
                     variation_overlay, variation_mask)
 
@@ -256,6 +256,11 @@ class VariationImageFieldFile(ImageFieldFile):
         # Освобожение ресурсов
         source_img.close()
 
+    def save(self, name, content, save=True):
+        newfile_attrname = '_{}_new_file'.format(self.field.name)
+        setattr(self.instance, newfile_attrname, True)
+        super().save(name, content, save)
+
     def delete(self, save=True):
         """ Удаление картинки """
         self.field._create_variation_fields(self.instance)
@@ -268,6 +273,7 @@ class VariationImageFieldFile(ImageFieldFile):
 
 
 class VariationImageField(ImageField):
+    attr_class = VariationImageFieldFile
 
     default_error_messages = dict(
         ImageField.default_error_messages,
@@ -390,81 +396,96 @@ class VariationImageField(ImageField):
 
         # Записываем путь к исходнику
         setattr(instance, self.attname, source_path)
-        instance.save()
+        if not instance.pk:
+            raise ValueError('saving image to not saved instance')
+        query = instance._meta.model.objects.filter(pk=instance.pk)
+        query.update(**{
+            self.attname: source_path
+        })
 
 
     def get_prep_value(self, value):
-        if value and value.exists():
-            return super().get_prep_value(value)
-        else:
+        if isinstance(value, FieldFile) and not value.exists():
             return ''
+
+        return super().get_prep_value(value)
 
     def contribute_to_class(self, cls, name):
         super().contribute_to_class(cls, name)
-        signals.post_save.connect(self.post_save, sender=cls)
+        signals.post_save.connect(self._post_save, sender=cls)
         signals.post_init.connect(self._set_field_variations, sender=cls)
         signals.post_delete.connect(self.post_delete, sender=cls)
 
+    def validate_type(self, value, model_instance):
+        """ Валидация типа файла """
+        try:
+            Image.open(value).verify()
+        except Exception:
+            raise ValidationError(
+                self.error_messages['not_image'],
+                code='not_image',
+            )
+
+    def validate_dimensions(self, value, model_instance):
+        """ Валидация размеров картинки """
+        img_width, img_height = value.dimensions
+        if value.cropsize:
+            img_width = min(value.cropsize[2], img_width)
+            img_height = min(value.cropsize[3], img_height)
+
+        min_width, min_height = self.get_min_dimensions(model_instance)
+        if min_width and img_width < min_width:
+            raise ValidationError(
+                self.error_messages['not_enough_width'] % {
+                    'current': img_width,
+                    'limit': min_width,
+                },
+                code='not_enough_width',
+            )
+        if min_height and img_height < min_height:
+            raise ValidationError(
+                self.error_messages['not_enough_height'] % {
+                    'current': img_height,
+                    'limit': min_height,
+                },
+                code='not_enough_height',
+            )
+
+        max_width, max_height = self.get_max_dimensions(model_instance)
+        if max_width and img_width > max_width:
+            raise ValidationError(
+                self.error_messages['too_much_width'] % {
+                    'current': img_width,
+                    'limit': max_width,
+                },
+                code='too_much_width',
+            )
+        if max_height and img_height > max_height:
+            raise ValidationError(
+                self.error_messages['too_much_height'] % {
+                    'current': img_height,
+                    'limit': max_height,
+                },
+                code='too_much_height',
+            )
+
+    def validate_size(self, value, model_instance):
+        """ Валидация веса картинки """
+        max_size = self.get_max_size(model_instance)
+        if max_size and value.size > max_size:
+            raise ValidationError(
+                self.error_messages['too_big'] % {
+                    'current': filesizeformat(value.size),
+                    'limit': filesizeformat(max_size),
+                },
+                code='too_big',
+            )
+
     def validate(self, value, model_instance):
         if value:
-            try:
-                Image.open(value).verify()
-            except Exception:
-                raise ValidationError(
-                    self.error_messages['not_image'],
-                    code='not_image',
-                )
-
-            img_width, img_height = value.dimensions
-            if value.cropsize:
-                img_width = min(value.cropsize[2], img_width)
-                img_height = min(value.cropsize[3], img_height)
-
-            min_width, min_height = self.get_min_dimensions(model_instance)
-            if min_width and img_width < min_width:
-                raise ValidationError(
-                    self.error_messages['not_enough_width'] % {
-                        'current': img_width,
-                        'limit': min_width,
-                    },
-                    code='not_enough_width',
-                )
-            if min_height and img_height < min_height:
-                raise ValidationError(
-                    self.error_messages['not_enough_height'] % {
-                        'current': img_height,
-                        'limit': min_height,
-                    },
-                    code='not_enough_height',
-                )
-
-            max_width, max_height = self.get_max_dimensions(model_instance)
-            if max_width and img_width > max_width:
-                raise ValidationError(
-                    self.error_messages['too_much_width'] % {
-                        'current': img_width,
-                        'limit': max_width,
-                    },
-                    code='too_much_width',
-                )
-            if max_height and img_height > max_height:
-                raise ValidationError(
-                    self.error_messages['too_much_height'] % {
-                        'current': img_height,
-                        'limit': max_height,
-                    },
-                    code='too_much_height',
-                )
-
-            max_size = self.get_max_size(model_instance)
-            if max_size and value.size > max_size:
-                raise ValidationError(
-                    self.error_messages['too_big'] % {
-                        'current': filesizeformat(value.size),
-                        'limit': filesizeformat(max_size),
-                    },
-                    code='too_big',
-                )
+            self.validate_type(value, model_instance)
+            self.validate_dimensions(value, model_instance)
+            self.validate_size(value, model_instance)
 
         super().validate(value, model_instance)
 
@@ -486,6 +507,10 @@ class VariationImageField(ImageField):
 
     def get_max_dimensions(self, instance):
         """ Возвращает максимальные размеры картинки для загрузки """
+        raise NotImplementedError()
+
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
         raise NotImplementedError()
 
     def get_max_size(self, instance):
@@ -513,9 +538,19 @@ class VariationImageField(ImageField):
             else:
                 self._resize_image(instance, variation, target_format, current_image)
 
+    def _post_save(self, instance, **kwargs):
+        """ Обертка над реальным обработчиком """
+        # Флаг, что загружен новый файл
+        new_file_attrname = '_{}_new_file'.format(self.name)
+        new_file_uploaded = getattr(instance, new_file_attrname, False)
+        if hasattr(instance, new_file_attrname):
+            delattr(instance, new_file_attrname)
+
+        self.post_save(instance, is_uploaded=new_file_uploaded, **kwargs)
+
     def post_save(self, instance, **kwargs):
         """ Обработчик сигнала сохранения экземпляра модели """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def post_delete(self, instance=None, **kwargs):
         """ Обработчик сигнала удаления экземпляра модели """

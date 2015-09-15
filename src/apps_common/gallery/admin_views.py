@@ -140,13 +140,12 @@ def upload_video(request):
             'message': _('Invalid video URL'),
         }, status=400)
     else:
-        item.video_preview = item.video.info.get('preview_url', '')
         item.clean()
         item.save()
 
     return JsonResponse({
         'id': item.pk,
-        'preview_url': item.video_preview,
+        'preview_url': item.admin_variation.url,
         'show_url': item.show_url,
     })
 

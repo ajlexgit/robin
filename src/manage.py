@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Gallery: video preview SdtImage
 # Очередь анимаций JS
 # Предзагрузка картинки stdimage, чтобы не сбрасывалось при обновлении страницы
 # Вставка Rutube в текст не работает

@@ -13,7 +13,8 @@ from libs.videolink_field import VideoLinkField
 from libs.checks import ModelChecksMixin
 from libs.media_storage import MediaStorage
 from libs.aliased_queryset import AliasedQuerySetMixin
-from .fields import GalleryImageField
+from libs.upload import upload_file, URLError
+from .fields import GalleryImageField, GalleryVideoLinkPreviewField
 
 __all__ = ('GalleryBase', 'GalleryItemBase', 'GalleryImageItem', 'GalleryVideoLinkItem')
 
@@ -147,7 +148,10 @@ class GalleryImageItem(GalleryItemBase):
 
     # =============================================================================
 
-    image = GalleryImageField(_('image'), storage=MediaStorage(), upload_to=generate_filepath, blank=True, null=True)
+    image = GalleryImageField(_('image'),
+        storage=MediaStorage(),
+        upload_to=generate_filepath
+    )
     crop = models.CharField(_('image crop coordinates'), max_length=32, blank=False)
 
     class Meta:
@@ -282,6 +286,7 @@ class GalleryImageItem(GalleryItemBase):
                 value = getattr(self, field.name)
                 setattr(new_item, field.name, value)
 
+        # image
         with self.image:
             new_item.image.save(self.image.name, self.image, save=False)
 
@@ -304,21 +309,131 @@ class GalleryImageItem(GalleryItemBase):
 
 class GalleryVideoLinkItem(GalleryItemBase):
     """ Элемент-видео с сервисов галереи """
-    COPY_FIELDS = GalleryItemBase.COPY_FIELDS | {'video', 'video_preview'}
+    _cache = {}
+
+    COPY_FIELDS = GalleryItemBase.COPY_FIELDS | {'video', }
+
+    # Корневая папка (storage)
+    STORAGE_LOCATION = None
+
+    # Качество исходника в случае, когда он сохраняется через PIL
+    SOURCE_QUALITY = 90
+
+    # Качество картинок вариаций по умолчанию
+    DEFAULT_QUALITY = 85
+
+    # Вариации, на которые нарезаются картинки.
+    VARIATIONS = dict(
+        normal=dict(
+            size=(640, 360),
+        ),
+        medium=dict(
+            size=(480, 270),
+        ),
+        small=dict(
+            size=(320, 180),
+        ),
+        micro=dict(
+            size=(160, 90),
+        ),
+    )
+
+    # =============================================================================
 
     video = VideoLinkField(_('video'))
-    video_preview = models.CharField(_('preview image'), max_length=128, blank=True)
+    video_preview = GalleryVideoLinkPreviewField(_('preview'),
+        storage=MediaStorage(),
+        upload_to=generate_filepath,
+    )
+
 
     class Meta:
         verbose_name = _('video item')
         verbose_name_plural = _('video items')
         abstract = True
 
+    def __init__(self, *args, **kwargs):
+        field = self._meta.get_field('video_preview')
+        if self.STORAGE_LOCATION:
+            field.storage.set_directory(self.STORAGE_LOCATION)
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
         return _('Video item %(pk)s (%(path)s)') % {
             'pk': self.pk or 'None',
             'path': self.video.db_value
         }
+
+    def save(self, *args, **kwargs):
+        if self.video and self.video.info:
+            preview_url = self.video.info['preview_url']
+            try:
+                uploaded_file = upload_file(preview_url)
+            except ConnectionError:
+                pass
+            except URLError:
+                pass
+            else:
+                self.video_preview.save(uploaded_file.name, uploaded_file, save=False)
+                uploaded_file.close()
+
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def custom_check(cls):
+        """ Проверка модели """
+        errors = super().custom_check()
+        if not cls.STORAGE_LOCATION:
+            errors.append(
+                cls.check_error('STORAGE_LOCATION required')
+            )
+        if not cls.VARIATIONS:
+            errors.append(
+                cls.check_error('VARIATIONS required')
+            )
+        if not isinstance(cls.VARIATIONS, dict):
+            errors.append(
+                cls.check_error('VARIATIONS should be a dict')
+            )
+        errors.extend(check_variations(cls.VARIATIONS, cls))
+        return errors
+
+    def generate_filename(self, filename):
+        if self.pk:
+            return 'video_%04d/%s' % ((self.pk // 1000), filename)
+        else:
+            return filename
+
+    @classmethod
+    def variations(cls):
+        key = 'variations.%s.%s' % (cls.__module__, cls.__qualname__)
+        variations = cls._cache.get(key)
+        if variations is not None:
+            return variations
+
+        variations = format_variations(cls.VARIATIONS)
+        cls._cache[key] = variations
+        return variations
+
+    @cached_property
+    def admin_variation(self):
+        """ Получение имени вариации, ближайщей по размеру """
+        target_size = self.gallery.ADMIN_ITEM_SIZE
+        variations = self.variations()
+
+        nearest_area = 0
+        nearest_variation_name = ''
+        for name, variation in variations.items():
+            var_size = variation['size']
+            if var_size[0] < target_size[0] or var_size[1] < target_size[1]:
+                continue
+
+            var_area = var_size[0] * var_size[1]
+            if not nearest_area or (var_area < nearest_area):
+                nearest_area = var_area
+                nearest_variation_name = name
+
+        return getattr(self.video_preview, nearest_variation_name)
 
     @property
     def show_url(self):
@@ -336,6 +451,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
             if field.name in copy_fields:
                 value = getattr(self, field.name)
                 setattr(new_item, field.name, value)
+
         return new_item, errors
 
 
@@ -406,7 +522,7 @@ class GalleryBase(ModelChecksMixin, models.Model):
                 items - последовательность экземпляров GalleryItemBase или ID элементов
                         галереи-источника. Если не указан - копирует все элементы.
 
-            Также можно передавать дополнительные именованые агрументы, принимаемые
+            Также можно передавать дополнительные именованые аргументы, принимаемые
             методами copy_for элементов галереи. Например:
                 crop_images - если истинен, при копировании картинок будут скопированы их области
                               обрезки и проведена перенарезка.

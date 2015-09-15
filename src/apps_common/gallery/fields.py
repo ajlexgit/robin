@@ -5,15 +5,7 @@ from libs.variation_field import *
 from .formfields import GalleryFormField
 
 
-class GalleryImageFieldFile(VariationImageFieldFile):
-
-    def save(self, name, content, save=True):
-        setattr(self.instance, '_{}_new_file'.format(self.field.name), True)
-        super().save(name, content, save)
-
-
 class GalleryImageField(VariationImageField):
-    attr_class = GalleryImageFieldFile
 
     def get_variations(self, instance):
         """ Возвращает настройки вариаций для их передачи в FieldFile """
@@ -38,6 +30,10 @@ class GalleryImageField(VariationImageField):
         """ Возвращает максимальные размеры картинки для загрузки """
         return instance.MAX_DIMENSIONS
 
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
+        return instance.MAX_SOURCE_DIMENSIONS
+
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
         return instance.MAX_SIZE
@@ -47,24 +43,14 @@ class GalleryImageField(VariationImageField):
         """ Построение имени файла исходника """
         return '%04d.%s' % (instance.pk, ext.lower())
 
-    def post_save(self, instance, **kwargs):
+    def post_save(self, instance, is_uploaded=False, **kwargs):
         """ Обработчик сигнала сохранения экземпляра модели """
+        if not is_uploaded:
+            return
+
         field_file = getattr(instance, self.name)
         if not field_file or not field_file.exists():
             return
-
-        new_file_attrname = '_{}_new_file'.format(self.name)
-
-        # Флаг, что загружен новый файл
-        new_file_uploaded = getattr(instance, new_file_attrname, False)
-
-        # Если не загрузили новый файл - выходим
-        if not new_file_uploaded:
-            return
-
-        # Удаляем временные атрибуты
-        if hasattr(instance, new_file_attrname):
-            delattr(instance, new_file_attrname)
 
         draft_size = None
         try:
@@ -73,8 +59,8 @@ class GalleryImageField(VariationImageField):
             source_format = source_img.format
             source_info = source_img.info
 
-            if new_file_uploaded:
-                draft_size = limited_size(source_img.size, instance.MAX_SOURCE_DIMENSIONS)
+            if is_uploaded:
+                draft_size = limited_size(source_img.size, self.get_max_source_dimensions(instance))
                 if draft_size is not None:
                     draft = source_img.draft(None, draft_size)
                     if draft is None:
@@ -88,6 +74,58 @@ class GalleryImageField(VariationImageField):
             instance, source_img, source_format,
             draft_size=draft_size, **source_info
         )
+
+        # Обрабатываем вариации
+        self.build_variation_images(instance, source_img, source_format)
+
+
+class GalleryVideoLinkPreviewField(VariationImageField):
+
+    def validate(self, value, model_instance):
+        if value:
+            self.validate_type(value, model_instance)
+
+        super(VariationImageField, self).validate(value, model_instance)
+
+    def get_variations(self, instance):
+        """ Возвращает настройки вариаций для их передачи в FieldFile """
+        if not instance.content_type_id:
+            # fix для loaddata
+            return {}
+        return instance.variations()
+
+    def get_source_quality(self, instance):
+        """ Возвращает качество исходника, если он сохраняется через PIL """
+        return instance.SOURCE_QUALITY
+
+    def get_variation_quality(self, instance, variation):
+        """ Возвращает качество картинок вариаций по умолчанию """
+        return variation.get('quality') or instance.DEFAULT_QUALITY
+
+    @staticmethod
+    def build_source_name(instance, ext):
+        """ Построение имени файла исходника """
+        return '%04d.%s' % (instance.pk, ext.lower())
+
+    def post_save(self, instance, is_uploaded=False, **kwargs):
+        """ Обработчик сигнала сохранения экземпляра модели """
+        if not is_uploaded:
+            return
+
+        field_file = getattr(instance, self.name)
+        if not field_file or not field_file.exists():
+            return
+
+        try:
+            field_file.open()
+            source_img = Image.open(field_file)
+            source_format = source_img.format
+            source_info = source_img.info
+            source_img.load()
+        finally:
+            field_file.close()
+
+        self._save_source_file(instance, source_img, source_format, **source_info)
 
         # Обрабатываем вариации
         self.build_variation_images(instance, source_img, source_format)

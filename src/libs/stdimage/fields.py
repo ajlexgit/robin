@@ -14,10 +14,6 @@ MAX_SOURCE_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MAX_SOURCE_DIMENSIO
 
 class StdImageFieldFile(VariationImageFieldFile):
 
-    def save(self, name, *args, **kwargs):
-        setattr(self.instance, '_{}_new_file'.format(self.field.name), True)
-        super().save(name, *args, **kwargs)
-
     def recut(self, *args, **kwargs):
         super().recut(*args, **kwargs)
 
@@ -166,6 +162,10 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         """ Возвращает максимальные размеры картинки для загрузки """
         return self.max_dimensions
 
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
+        return self.max_source_dimensions
+
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
         return self.max_size
@@ -174,30 +174,21 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         """ Построение имени файла исходника """
         return '%s_%s.%s' % (self.name, instance.pk, ext.lower())
 
-    def post_save(self, instance, **kwargs):
+    def post_save(self, instance, is_uploaded=False, **kwargs):
         """ Обработчик сигнала сохранения экземпляра модели """
+        # Координаты обрезки
+        cropsize_attrname = '_{}_cropsize'.format(self.name)
+        cropsize = getattr(instance, cropsize_attrname, None)
+        if hasattr(instance, cropsize_attrname):
+            delattr(instance, cropsize_attrname)
+
+        # Если не загрузили новый файл и не обрезали старый исходник - выходим
+        if not is_uploaded and not cropsize:
+            return
+
         field_file = getattr(instance, self.name)
         if not field_file or not field_file.exists():
             return
-
-        new_file_attrname = '_{}_new_file'.format(self.name)
-        cropsize_attrname = '_{}_cropsize'.format(self.name)
-
-        # Флаг, что загружен новый файл
-        new_file_uploaded = getattr(instance, new_file_attrname, False)
-
-        # Координаты обрезки
-        cropsize = getattr(instance, cropsize_attrname, None)
-
-        # Если не загрузили новый файл и не обрезали старый исходник - выходим
-        if not new_file_uploaded and not cropsize:
-            return
-
-        # Удаляем временные атрибуты
-        if hasattr(instance, new_file_attrname):
-            delattr(instance, new_file_attrname)
-        if hasattr(instance, cropsize_attrname):
-            delattr(instance, cropsize_attrname)
 
         draft_size = None
         try:
@@ -206,8 +197,8 @@ class StdImageField(FieldChecksMixin, VariationImageField):
             source_format = source_img.format
             source_info = source_img.info
 
-            if new_file_uploaded:
-                draft_size = limited_size(source_img.size, self.max_source_dimensions)
+            if is_uploaded:
+                draft_size = limited_size(source_img.size, self.get_max_source_dimensions(instance))
                 if draft_size is not None:
                     old_width = source_img.size[0]
                     draft = source_img.draft(None, draft_size)
@@ -229,11 +220,11 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         if cropsize and self.crop_field:
             field_file.cropsize = cropsize
             setattr(instance, self.crop_field, ':'.join(str(x) for x in field_file.cropsize))
-            if not new_file_uploaded:
+            if not is_uploaded:
                 instance.save()
 
         # Сохраняем исходник
-        if new_file_uploaded:
+        if is_uploaded:
             self._save_source_file(
                 instance, source_img, source_format,
                 draft_size=draft_size, **source_info

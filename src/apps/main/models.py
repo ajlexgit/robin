@@ -31,7 +31,7 @@ class MainGalleryImageItem(GalleryImageItem):
     )
 
 class MainGalleryVideoLinkItem(GalleryVideoLinkItem):
-    pass
+    STORAGE_LOCATION = 'main/gallery'
 
 
 class MainGallery(GalleryBase):
