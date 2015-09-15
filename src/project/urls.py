@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^dladmin/comments/', include('comments.admin_urls', namespace='admin_comments')),
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
+    url(r'^dladmin/dump/', include('admin_dump.admin_urls', namespace='admin_dump')),
     url(r'^dladmin/', include(admin.site.urls)),
 
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),

@@ -1,0 +1,63 @@
+{% extends "admin/base_site.html" %}
+{% load admin_static %}
+{% load i18n %}
+
+
+{% block title %}
+  {% trans 'Backups' %}
+  {{ block.super }}
+{% endblock title %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/admin_fixes.css" %}"/>
+{% endblock extrahead %}
+
+
+{% if not is_popup %}
+  {% block breadcrumbs %}
+    {% trans 'Backups' as header %}
+
+    <ul class="breadcrumb">
+      <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        <span class="divider">&raquo;</span></li>
+      <li>
+        <a href="{% url 'admin_dump:index' %}">{{ header|capfirst }}</a>
+        <span class="divider">&raquo;</span></li>
+      <li class="active">{{ header|capfirst }}</li>
+    </ul>
+  {% endblock %}
+{% endif %}
+
+
+{% block content %}
+  <h2 class="content-title">Backups</h2>
+
+  <table class="admin-table">
+    <thead>
+    <tr>
+      <th>{% trans 'Path' %}</th>
+      <th>{% trans 'Download' %}</th>
+      <th>{% trans 'Delete' %}</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+      <th>
+        <span>/cygdrive/d/www/dl/backups/backup_02_04_15.zip</span>
+      </th>
+      <th>
+        <button class="btn btn-success">{% trans 'Download' %}</button>
+      </th>
+      <th>
+        <button class="btn btn-danger btn-small">{% trans 'Delete' %}</button>
+      </th>
+    </tr>
+
+    </tbody>
+  </table>
+
+  <button class="btn btn-info">{% trans 'Create' %}</button>
+
+{% endblock %}

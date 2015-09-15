@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'users',
 
     # Apps common
+    'admin_dump',
     'admin_log',
     'attachable_blocks',
     'breadcrumbs',
@@ -111,7 +112,6 @@ SUIT_CONFIG = {
         },
         '-',
         '-',
-        'sites',
         'admin',
         {
             'app': 'auth',
@@ -121,6 +121,12 @@ SUIT_CONFIG = {
                 'users.customuser',
             )
         },
+        {
+            'icon': 'icon-hdd',
+            'label': 'backups',
+            'url': 'admin_dump:index',
+        },
+        'sites',
         {
             'app': 'seo',
             'icon': 'icon-tasks',
