@@ -9,5 +9,14 @@
                 'admin_dump',
                 ...
             )
+
+            SUIT_CONFIG = {
+                ...
+                {
+                    'icon': 'icon-hdd',
+                    'label': 'backups',
+                    'url': 'admin_dump:index',
+                },
+                ...
 """
 default_app_config = 'admin_dump.apps.Config'

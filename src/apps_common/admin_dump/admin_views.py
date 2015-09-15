@@ -14,12 +14,14 @@ if not os.path.isdir(BACKUP_ROOT):
 
 
 def _filesize(file):
+    """ Получение размера файла """
     stat = os.stat(file)
     return stat.st_size
 
 
 @admin.site.admin_view
 def index(request):
+    """ Список бэкапов """
     zip_archives = []
     for file in os.listdir(BACKUP_ROOT):
         absfile = os.path.abspath(os.path.join(BACKUP_ROOT, file))
@@ -35,6 +37,7 @@ def index(request):
 
 @admin.site.admin_view
 def create(request):
+    """ Создание бэкапа """
     date = datetime.now().date()
     backup_name = '{}.zip'.format(date.strftime('%d_%m_%Y'))
 
@@ -57,6 +60,7 @@ def create(request):
 
 @admin.site.admin_view
 def delete(request, filename):
+    """ Удаление бэкапа """
     file = '{}.zip'.format(os.path.basename(filename))
     file = os.path.abspath(os.path.join(BACKUP_ROOT, file))
 
@@ -68,6 +72,7 @@ def delete(request, filename):
 
 @admin.site.admin_view
 def download(request, filename):
+    """ Скачаивание бэкапа """
     file = '{}.zip'.format(os.path.basename(filename))
     file = os.path.abspath(os.path.join(BACKUP_ROOT, file))
 
