@@ -10,6 +10,7 @@ import sys
 # пагинация AJAX с предзагрузкой
 # AJAX hit
 
+# Logging
 # Написание тестов
 
 if __name__ == "__main__":
