@@ -323,6 +323,9 @@ ADMIN_HONEYPOT_EMAIL_ADMINS = False
 # Autocomplete
 AUTOCOMPLETE_CACHE_BACKEND = 'default'
 
+# Admin Dump
+BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
+
 # SEO
 SEO_TITLE_JOIN_WITH = ' | '
 

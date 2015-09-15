@@ -8,9 +8,6 @@ from django.core.management import call_command
 from django.shortcuts import render, redirect
 from libs.download import AttachmentResponse
 
-BACKUP_ROOT = os.path.abspath(os.path.join(settings.BASE_DIR, '..', 'backup'))
-if not os.path.isdir(BACKUP_ROOT):
-    os.mkdir(BACKUP_ROOT, mode=0o644)
 
 
 def _filesize(file):
@@ -23,8 +20,8 @@ def _filesize(file):
 def index(request):
     """ Список бэкапов """
     zip_archives = []
-    for file in os.listdir(BACKUP_ROOT):
-        absfile = os.path.abspath(os.path.join(BACKUP_ROOT, file))
+    for file in os.listdir(settings.BACKUP_ROOT):
+        absfile = os.path.abspath(os.path.join(settings.BACKUP_ROOT, file))
         if os.path.isfile(absfile) and absfile.endswith('.zip'):
             zip_archives.append((
                 os.path.splitext(file)[0], _filesize(absfile)
@@ -41,7 +38,7 @@ def create(request):
     date = datetime.now().date()
     backup_name = '{}.zip'.format(date.strftime('%d_%m_%Y'))
 
-    with zipfile.ZipFile(os.path.join(BACKUP_ROOT, backup_name), 'w') as ziph:
+    with zipfile.ZipFile(os.path.join(settings.BACKUP_ROOT, backup_name), 'w') as ziph:
         for root, dirs, files in os.walk(settings.MEDIA_ROOT):
             for file in files:
                 abspath = os.path.abspath(os.path.join(root, file))
@@ -62,7 +59,7 @@ def create(request):
 def delete(request, filename):
     """ Удаление бэкапа """
     file = '{}.zip'.format(os.path.basename(filename))
-    file = os.path.abspath(os.path.join(BACKUP_ROOT, file))
+    file = os.path.abspath(os.path.join(settings.BACKUP_ROOT, file))
 
     if os.path.isfile(file) and file.endswith('.zip'):
         os.unlink(file)
@@ -74,7 +71,7 @@ def delete(request, filename):
 def download(request, filename):
     """ Скачаивание бэкапа """
     file = '{}.zip'.format(os.path.basename(filename))
-    file = os.path.abspath(os.path.join(BACKUP_ROOT, file))
+    file = os.path.abspath(os.path.join(settings.BACKUP_ROOT, file))
 
     if os.path.isfile(file) and file.endswith('.zip'):
         return AttachmentResponse(request, file)
