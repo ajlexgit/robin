@@ -26,3 +26,5 @@
 """
 
 from .views import AsyncBlockView
+
+__all__ = ['AsyncBlockView']

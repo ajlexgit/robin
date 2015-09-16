@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from attachable_blocks import AttachableBlock, register_block
-from gallery import GalleryBase, GalleryImageItem, GalleryField, GalleryVideoLinkItem
+from gallery import *
 from ckeditor import CKEditorUploadField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField

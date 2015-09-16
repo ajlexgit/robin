@@ -89,3 +89,6 @@
 from .register import register_block
 from .models import AttachableBlock, AttachableBlockRef
 from .admin import AttachableBlockRefTabularInline, AttachableBlockRefStackedInline
+
+__all__ = ['register_block', 'AttachableBlock', 'AttachableBlockRef', 'AttachableBlockRefTabularInline',
+           'AttachableBlockRefStackedInline']

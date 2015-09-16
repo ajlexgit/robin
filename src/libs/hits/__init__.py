@@ -17,3 +17,7 @@
         # Удалить все значения счетчика click
         Hits.clear(entry, name='click')
 """
+
+from .models import Hits
+
+__all__ = ['Hits']

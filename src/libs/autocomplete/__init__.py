@@ -29,3 +29,5 @@
 """
 
 from .forms import AutocompleteField, AutocompleteMultipleField
+
+__all__ = ['AutocompleteField', 'AutocompleteMultipleField']

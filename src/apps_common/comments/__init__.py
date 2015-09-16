@@ -55,3 +55,7 @@
 """
 
 from .models import Comment, CommentVote
+
+__all__ = ['Comment', 'CommentVote']
+
+default_app_config = 'comments.apps.Config'

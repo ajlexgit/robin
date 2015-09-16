@@ -8,3 +8,5 @@
 
 from .color import Color
 from .fields import ColorField, ColorOpacityField
+
+__all__ = ['Color', 'ColorField', 'ColorOpacityField']

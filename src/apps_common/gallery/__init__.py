@@ -21,7 +21,7 @@
 
     Пример:
         models.py:
-            from gallery import GalleryBase, GalleryImageItem, GalleryField
+            from gallery import *
 
             class PostGalleryImageItem(GalleryImageItem):
                 STORAGE_LOCATION = 'module/gallery'
@@ -74,5 +74,7 @@
         source_gallery.copy_items_to(dest_gallery, items=source_gallery.image_items, crop_images=True)
 """
 
-from .models import *
+from .models import GalleryBase, GalleryImageItem, GalleryVideoLinkItem
 from .fields import GalleryField
+
+__all__ = ['GalleryField', 'GalleryBase', 'GalleryImageItem', 'GalleryVideoLinkItem']

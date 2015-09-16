@@ -39,3 +39,5 @@
 """
 
 from .fields import SpriteImageField
+
+__all__ = ['SpriteImageField']

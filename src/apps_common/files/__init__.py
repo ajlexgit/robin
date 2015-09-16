@@ -26,3 +26,5 @@
 """
 
 from .models import PageFile
+
+__all__ = ['PageFile']

@@ -8,7 +8,7 @@
         settings.py:
             INSTALLED_APPS = (
                 ...,
-                'yandex_money',
+                'yandex_kassa',
                 ...
             )
 
@@ -24,13 +24,13 @@
             ...
             url(r'^fail-payment/$', ...),
             url(r'^success-payment/$', ...),
-            url(r'^yandex-money/', include('yandex_money.urls')),
+            url(r'^yandex-money/', include('yandex_kassa.urls')),
             ...
 
     Использование:
         Модуль работает со своим классом счетов, представленным моделью Payment.
         Если на сайте своя модель счета, то в неё необходимо добавить ссылку на Payment:
-            from yandex_money.models import Payment
+            from yandex_kassa import Payment
 
             class MyOrder(models.Model):
                 ...
@@ -43,7 +43,7 @@
 
         Пример создания заказа собственного класса:
             from uuid import uuid4
-            from yandex_money.models import Payment
+            from yandex_kassa import Payment
 
             myorder = MyOrder()
             myorder.hash = str(uuid4()).replace('-', '')
@@ -61,7 +61,7 @@
 
         Для вывода платежной кнопки нужно создать форму PaymentForm:
             views.py:
-                from yandex_money.forms import PaymentForm
+                from yandex_kassa import PaymentForm
                 payment_form = PaymentForm(instance=myorder.payment)
 
             template.html:
@@ -81,3 +81,8 @@
                 </form>
 
 """
+
+from .models import Payment
+from .forms import PaymentForm
+
+__all__ = ['Payment', 'PaymentForm']
