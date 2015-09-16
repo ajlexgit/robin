@@ -1,5 +1,3 @@
-from django.core import checks
-
 """
     Набор миксин, упрощающих проверки моделей и полей.
 
@@ -26,6 +24,8 @@ from django.core import checks
                     )
                 return errors
 """
+from django.core import checks
+
 
 class ModelChecksMixin:
     @classmethod

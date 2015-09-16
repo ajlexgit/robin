@@ -1,4 +1,8 @@
 """
+    Зависит от:
+        libs.checks
+        libs.variation_field
+
     Настройки:
         STDIMAGE_MAX_SIZE_DEFAULT = 12*1024*1024
         STDIMAGE_MIN_DIMENSIONS_DEFAULT = (0, 0)
@@ -6,26 +10,18 @@
         STDIMAGE_MAX_SOURCE_DIMENSIONS_DEFAULT = (2048, 2048)
 
     Пример:
-        PREVIEW_PATH = 'preview'
-        PREVIEW_NORMAL = (800, 600)
-        PREVIEW_SQUARE = (280, 280)
-
         preview = StdImageField('превью',
-            upload_to=PREVIEW_PATH,
             blank=True,
+            storage=MediaStorage('main/header'),
             admin_variation='square',
-            min_dimensions=(100, 100),
-            max_dimensions=(6000, 6000),
-            max_source_dimensions=(2048, 2048),
-            max_size=20*1024*1024,
             crop_area=True,
-            aspects=('normal', 'square', 1.5),
+            aspects=('normal', ),
             variations=dict(
                 normal=dict(
-                    size=PREVIEW_NORMAL,
+                    size=(800, 600),
                 ),
                 square=dict(
-                    size=PREVIEW_SQUARE,
+                    size=(280, 280),
                     mask='module/img/square_mask.png',
                     overlay='module/img/square_overlay.png',
                 ),

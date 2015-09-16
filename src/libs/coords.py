@@ -1,3 +1,9 @@
+"""
+    Класс, описывающий пару координат.
+    Используется в yandex_maps и google_maps.
+"""
+
+
 class Coords:
     _lat = None
     _lng = None

@@ -1,10 +1,9 @@
 import re
-import json
 import logging
 from xml.dom import minidom
-from urllib import request, error, parse
-from django.conf import settings
+from urllib import request, error
 from django.utils.html import strip_tags
+from libs.youtube_data import api as youtube_api
 
 PROVIDERS = {}
 
@@ -56,37 +55,21 @@ class YoutubeProvider(BaseProvider):
 
     @classmethod
     def get_info(cls, video_key):
-        youtube_apikey = getattr(settings, 'YOUTUBE_APIKEY', 'AIzaSyDUyHc1otYjl7Hprm-mL5UxwygSivJNfaE')
-        params = parse.urlencode({
-            'id': video_key,
-            'part': 'snippet,player',
-            'key': youtube_apikey,
-        })
-        req = request.Request('https://www.googleapis.com/youtube/v3/videos?{}'.format(params), method='GET')
-        try:
-            logger.debug('{0.method} {0.full_url}'.format(req))
-            response = request.urlopen(req, timeout=3)
-        except error.URLError:
-            return None
+        data = youtube_api.get_video_info(video_key)
+        if not data:
+            return {}
 
-        data = json.loads(response.read().decode())
-        snippet = data['items'][0]['snippet']
-        result = {
-            'title': snippet['title'],
-            'description': snippet['description'],
-            'embed': data['items'][0]['player']['embedHtml'],
-        }
-
-        thumbnails = snippet['thumbnails']
+        thumbnails = data['thumbnails']
         if 'maxres' in thumbnails:
-            result['preview_url'] = thumbnails['maxres']['url']
+            data['preview_url'] = thumbnails['maxres']['url']
         elif 'standard' in thumbnails:
-            result['preview_url'] = thumbnails['standard']['url']
+            data['preview_url'] = thumbnails['standard']['url']
         elif 'high' in thumbnails:
-            result['preview_url'] = thumbnails['high']['url']
+            data['preview_url'] = thumbnails['high']['url']
         else:
-            result['preview_url'] = thumbnails['medium']['url']
-        return result
+            data['preview_url'] = thumbnails['medium']['url']
+
+        return data
 
 
 class VimeoProvider(BaseProvider):

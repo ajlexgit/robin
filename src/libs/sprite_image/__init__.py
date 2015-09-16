@@ -1,8 +1,10 @@
 """
     Поле для выбора иконки из спрайта.
 
-    Пример:
+    Зависит от:
+        libs.checks
 
+    Пример:
         models.py:
             class MyModel(models.Model):
                 ICONS = (

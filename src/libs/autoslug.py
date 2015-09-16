@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 ALIAS_REGEXP = '[-a-zA-Z0-9_]+'
 DEFAULT_HELP = _('Leave it blank to auto generate it')
 
+
 class AutoSlugField(models.SlugField):
 
     SLUG_SPLITTERS = '-_'

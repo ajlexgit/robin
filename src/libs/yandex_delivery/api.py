@@ -4,9 +4,6 @@ from hashlib import md5
 from django.core.cache import caches
 from libs.associative_request import associative
 
-# Документация
-# http://docs.yandexdelivery.apiary.io/
-
 
 METHOD_KEYS = {
     'getPaymentMethods': 'b925c7c8dbc471e0a7724670804db66fb2f3752ed0b8f5dab9442c554c896f93',

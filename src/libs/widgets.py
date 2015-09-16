@@ -24,7 +24,7 @@ class LinkWidget(forms.Widget):
 
 
 class URLWidget(forms.URLInput):
-    """ Виджет УРЛА """
+    """ Виджет URL """
 
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vURLField'}

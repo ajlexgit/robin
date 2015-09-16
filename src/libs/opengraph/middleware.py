@@ -1,4 +1,4 @@
-from.opengraph import Opengraph
+from .opengraph import Opengraph
 from . import OPENGRAPH
 
 

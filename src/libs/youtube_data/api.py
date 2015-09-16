@@ -1,8 +1,5 @@
 import requests
 
-# Документация
-# https://developers.google.com/youtube/v3/getting-started
-
 API_URL = 'https://www.googleapis.com/youtube/v3/'
 API_KEY = 'AIzaSyDUyHc1otYjl7Hprm-mL5UxwygSivJNfaE'
 
@@ -13,7 +10,8 @@ def _get(resource, data):
     }
     default.update(data)
 
-    response = requests.get('%s%s' % (API_URL, resource), params=default)
+    url = '%s%s' % (API_URL, resource)
+    response = requests.get(url, params=default)
     if response.status_code == 200:
         return response.json()
     else:
@@ -48,3 +46,19 @@ def get_playlist_videos(playlist_id):
         'title': item['snippet']['title'],
         'description': item['snippet']['description'],
     } for item in result['items'] if item['snippet']['resourceId']['kind'] == 'youtube#video')
+
+
+def get_video_info(video_id):
+    """ Информация о видео """
+    result = _get('videos', {
+        'id': video_id,
+        'part': 'snippet,player',
+        'fields': 'items(snippet/title,snippet/description,snippet/thumbnails,player/embedHtml)',
+    })
+    return tuple({
+        'id': video_id,
+        'title': item['snippet']['title'],
+        'description': item['snippet']['description'],
+        'thumbnails': item['snippet']['thumbnails'],
+        'embed': item['player']['embedHtml'],
+    } for item in result['items'])

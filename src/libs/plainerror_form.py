@@ -1,3 +1,8 @@
+"""
+    Миксина для форм, добавляющая форматированные списки ошибок
+    form.error_list и form_error_list_full
+"""
+
 from django.forms.utils import ErrorList
 from django.utils.html import format_html
 from django.core.exceptions import ValidationError

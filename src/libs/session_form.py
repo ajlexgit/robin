@@ -22,6 +22,7 @@
             form.save_to_session(request)
             ...
 """
+
 import time
 import hashlib
 from django.views.generic.edit import FormView

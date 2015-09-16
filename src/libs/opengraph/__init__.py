@@ -1,5 +1,3 @@
-OPENGRAPH = {}
-
 """
     Тэги Opengraph.
 
@@ -48,3 +46,5 @@ OPENGRAPH = {}
             {% opengraph %}
 
 """
+
+OPENGRAPH = {}
