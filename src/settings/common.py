@@ -99,7 +99,7 @@ SUIT_CONFIG = {
         },
         {
             'icon': 'icon-file',
-            'label': 'Blocks',
+            'label': _('Blocks'),
             'models': (
                 'main.mainblockfirst',
                 'main.mainblocksecond',
@@ -122,7 +122,7 @@ SUIT_CONFIG = {
         },
         {
             'icon': 'icon-hdd',
-            'label': 'backups',
+            'label': _('Backups'),
             'url': 'admin_dump:index',
         },
         'sites',
