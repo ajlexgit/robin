@@ -4,6 +4,7 @@ from ..services import SERVICES
 
 register = Library()
 
+
 @register.simple_tag(takes_context=True)
 def social_share(context, service_name, **kwargs):
     request = context.get('request')

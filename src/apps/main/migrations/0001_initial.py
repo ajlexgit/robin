@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import libs.checks
 import libs.valute_field.fields
-import libs.ckeditor.fields
+import ckeditor.fields
 import libs.stdimage.fields
 import django.core.validators
 import django.db.models.deletion
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
                 ('header_video', models.FileField(upload_to='', verbose_name='video', storage=libs.media_storage.MediaStorage('main/header'), blank=True)),
                 ('preview', libs.stdimage.fields.StdImageField(upload_to='', min_dimensions=(400, 300), variations={'normal': {'size': (800, 600)}, 'admin': {'size': (360, 270)}}, verbose_name='preview', storage=libs.media_storage.MediaStorage('main/preview'), aspects=('normal',))),
                 ('preview2', libs.stdimage.fields.StdImageField(upload_to='', min_dimensions=(100, 100), variations={'normal': {'size': (200, 200)}}, verbose_name='preview', storage=libs.media_storage.MediaStorage('main/preview2'), aspects=('normal',))),
-                ('text', libs.ckeditor.fields.CKEditorUploadField(verbose_name='text')),
+                ('text', ckeditor.fields.CKEditorUploadField(verbose_name='text')),
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('color', libs.color_field.fields.ColorField(verbose_name='color', blank=True)),
                 ('color2', libs.color_field.fields.ColorOpacityField(verbose_name='color2', blank=True)),

@@ -1,5 +1,6 @@
 from django import forms
 
+
 class YandexCoordsFieldWidget(forms.TextInput):
     attrs = None
 

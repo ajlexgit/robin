@@ -10,6 +10,7 @@ GEOCODE_URL = 'http://maps.googleapis.com/maps/api/geocode/xml?'
 # Координаты, возвращаемые в случае, если настоящие координаты не определены
 DEFAULT = (49.418785, 53.510171)
 
+
 def _format_point(longitude, latitude):
     return '%0.7f,%0.7f' % (float(latitude), float(longitude),)
 

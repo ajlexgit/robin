@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
+
 def lj_description(**kwargs):
     url = kwargs.get('url')
     title = kwargs.get('title')

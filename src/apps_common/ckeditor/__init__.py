@@ -14,8 +14,8 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
+                'ckeditor',
                 'suit_ckeditor',
-                'libs.ckeditor',
                 ...
             )
 
@@ -58,13 +58,13 @@
 
         urls.py:
             ...
-            url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
+            url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
             ...
 
 
         Пример использования:
             models.py:
-                from libs.ckeditor import CKEditorUploadField
+                from ckeditor import CKEditorUploadField
 
                 class MyModel(models.Model):
                     ...

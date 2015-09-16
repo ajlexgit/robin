@@ -1,5 +1,3 @@
-from .menu import Menu
-
 """
     Меню сайта.
 
@@ -48,3 +46,5 @@ from .menu import Menu
         )
         menu.render(template='menu/menu.html')
 """
+
+from .menu import Menu

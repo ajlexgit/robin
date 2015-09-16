@@ -1,7 +1,8 @@
-from .models import PageFile
-
 """
     Модуль файлов на страницу.
+
+    Зависит от:
+        libs.media_storage
 
     Пример:
         models.py:
@@ -23,3 +24,5 @@ from .models import PageFile
             class ModuleFileInline(PageFileInlineMixin, SortableStackedInline):
                 model = ModuleFile
 """
+
+from .models import PageFile

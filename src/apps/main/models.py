@@ -4,9 +4,9 @@ from django.shortcuts import resolve_url
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
-from gallery import GalleryBase, GalleryImageItem, GalleryField, GalleryVideoLinkItem
 from attachable_blocks import AttachableBlock, register_block
-from libs.ckeditor import CKEditorUploadField
+from gallery import GalleryBase, GalleryImageItem, GalleryField, GalleryVideoLinkItem
+from ckeditor import CKEditorUploadField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.videolink_field import VideoLinkField

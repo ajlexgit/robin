@@ -1,7 +1,13 @@
-from .models import *
-from .fields import GalleryField
-
 """
+    Зависит от:
+        libs.aliased_queryset
+        libs.checks
+        libs.media_storage
+        libs.upload
+        libs.variation_field
+        libs.videolink_field
+        libs.youtube_data
+
     Настройки:
         GALLERY_MAX_SIZE_DEFAULT = 12*1024*1024
         GALLERY_MIN_DIMENSIONS_DEFAULT = (0, 0)
@@ -67,3 +73,6 @@ from .fields import GalleryField
         source_gallery.copy_items_to(dest_gallery, items=(23, 45, 34), crop_images=True)
         source_gallery.copy_items_to(dest_gallery, items=source_gallery.image_items, crop_images=True)
 """
+
+from .models import *
+from .fields import GalleryField

@@ -24,7 +24,7 @@ urlpatterns = patterns('',
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),
     url(r'^away/$', 'libs.away.views.away', name='away'),
     url(r'^autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
-    url(r'^ckeditor/', include('libs.ckeditor.urls', namespace='ckeditor')),
+    url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
 
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps}),
 )

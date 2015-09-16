@@ -1,7 +1,13 @@
-from .models import Comment, CommentVote
-
 """
     Модуль комментариев.
+
+    Зависит от:
+        apps.users
+        libs.aliased_queryset
+        libs.plainerror_form
+        libs.protected_form
+        libs.views
+        libs.widgets
 
     Требуется подключить:
         js/autosize.js
@@ -47,3 +53,5 @@ from .models import Comment, CommentVote
             suit_comments_tab = 'comments'
             ...
 """
+
+from .models import Comment, CommentVote

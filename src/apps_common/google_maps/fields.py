@@ -3,6 +3,7 @@ from django.conf import settings
 from libs.coords import Coords
 from .widgets import GoogleCoordsFieldWidget
 
+
 class CoordsDescriptor(object):
     def __init__(self, field):
         self.field = field

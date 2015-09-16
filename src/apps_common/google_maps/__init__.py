@@ -1,4 +1,7 @@
 """
+    Зависит от:
+        libs.coords
+
     Необходимо подключить:
         google_maps/js/google_maps.js
 

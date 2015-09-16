@@ -1,4 +1,7 @@
 """
+    Зависит от:
+        libs.coords
+
     Необходимо подключить:
         yandex_maps/js/yandex_maps.js
 

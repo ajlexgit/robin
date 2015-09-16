@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'admin_log',
     'attachable_blocks',
     'breadcrumbs',
+    'ckeditor',
     'comments',
     'files',
     'footer',
@@ -67,7 +68,6 @@ INSTALLED_APPS = (
     # Libs
     'libs.autocomplete',
     'libs.away',
-    'libs.ckeditor',
     'libs.color_field',
     'libs.description',
     'libs.js_storage',

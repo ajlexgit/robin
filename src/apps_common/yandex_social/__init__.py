@@ -1,7 +1,5 @@
-from .social import social_buttons
-
 """
-    Плагин соцкнопок Яндекс.Поделиться
+    Плагин соцкнопок Яндекс.Поделиться.
 
     Установка:
         settings.py:
@@ -61,3 +59,5 @@ from .social import social_buttons
             image: 'http://example.com/1.jpg'
         })
 """
+
+from .social import social_buttons
