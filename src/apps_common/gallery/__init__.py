@@ -6,7 +6,7 @@
         libs.upload
         libs.variation_field
         libs.videolink_field
-        libs.youtube_data
+        libs.youtube
 
     Настройки:
         GALLERY_MAX_SIZE_DEFAULT = 12*1024*1024

@@ -4,7 +4,7 @@
     Зависит от:
         libs.checks
         libs.widgets
-        libs.youtube_data
+        libs.youtube
 
     Пример:
         video = VideoLinkField(_('video'))

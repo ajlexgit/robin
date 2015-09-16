@@ -335,7 +335,7 @@ RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
 RECAPTCHA_DEFAULT_THEME = 'dark'
 
 # Youtube Data API
-# для ckeditor, videolink_field
+# для ckeditor, videolink_field, youtube
 YOUTUBE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
 
 # ==================================================================

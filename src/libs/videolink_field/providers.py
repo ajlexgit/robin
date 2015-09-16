@@ -3,7 +3,7 @@ import logging
 from xml.dom import minidom
 from urllib import request, error
 from django.utils.html import strip_tags
-from libs.youtube_data import api as youtube_api
+from libs.youtube import api as youtube_api
 
 PROVIDERS = {}
 
