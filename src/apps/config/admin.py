@@ -9,6 +9,6 @@ from .models import Config
 class ConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
         (_('Footer'), {
-            'fields': ('email', 'phone', 'social_facebook'),
+            'fields': ('email', 'phone',),
         }),
     )
