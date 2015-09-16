@@ -8,7 +8,7 @@
         libs.upload
 
     Можно поставить на крон удаление картинок, которые не привязаны к сущности:
-        pm clean_page_photos
+        pm clean_pagephotos
 
     Установка:
         settings.py:
