@@ -11,7 +11,6 @@ urlpatterns = patterns('',
     url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^comments/', include('comments.urls', namespace='comments')),
-    url(r'^langs/', include('multilanguage.urls', namespace='multilanguage')),
 
     url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
 

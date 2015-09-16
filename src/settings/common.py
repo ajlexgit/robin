@@ -69,7 +69,6 @@ INSTALLED_APPS = (
     'libs.autocomplete',
     'libs.away',
     'libs.color_field',
-    'libs.description',
     'libs.js_storage',
     'libs.management',
     'libs.opengraph',
