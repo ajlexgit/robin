@@ -9,8 +9,8 @@
         HTML input:
             <div id="slider-wrapper">
                 <div id="slider">
-                    <img>
-                    <img>
+                    <img class="slide">
+                    <img class="slide">
                     ...
                 </div>
             </div>
@@ -134,7 +134,7 @@
                 setSlideItemsAnimationName: 'instant',
                 setSlideItemsAnimatedHeight: false,
 
-                itemSelector: 'img',
+                itemSelector: '.slide',
                 slideItems: 1,
                 loop: true,
                 adaptiveHeight: true,

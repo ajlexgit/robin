@@ -3,27 +3,38 @@
 
 .slider-root {
   position: relative;
+  z-index: 1;
   @include no_fontsize;
 }
 
 .slider-list-wrapper {
   position: relative;
+  z-index: 1;
 }
 
 .slider-list {
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 .slider-slide {
   position: absolute;
+  max-width: 100%;
   top: 0;
   left: -200%;
   width: 100%;
-  max-width: 100%;
-  text-align: center;
   z-index: 2;
+  text-align: center;
   @include transform(translateZ(0));
+
+  // Скрытие всех слайдов, кроме первого
+  & ~ .slider-slide {
+    display: none;
+  }
+  @at-root .slider-root & ~ .slider-slide {
+    display: block;
+  }
 
   img {
     @include unselectable;

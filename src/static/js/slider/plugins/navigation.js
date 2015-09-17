@@ -78,7 +78,7 @@
          */
         NavigationPlugin.prototype.getContainer = function(slider) {
             if (this.opts.container) {
-                var $container = $(this.opts.container);
+                var $container = $.findFirstElement(this.opts.container);
             } else {
                 $container = slider.$root
             }
