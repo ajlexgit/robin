@@ -251,14 +251,12 @@ class GalleryImageItem(GalleryItemBase):
     @cached_property
     def admin_variation(self):
         """ Получение имени вариации для админки """
-        return getattr(self, self.ADMIN_VARIATION, self)
+        return getattr(self.image, self.ADMIN_VARIATION, self.image)
 
     @property
     def show_url(self):
-        if self.SHOW_VARIATION is False:
+        if self.SHOW_VARIATION is None:
             return ''
-        elif self.SHOW_VARIATION is None:
-            return self.image.url
         else:
             show_variation = getattr(self.image, self.SHOW_VARIATION, None)
             if show_variation:
@@ -425,7 +423,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
     @cached_property
     def admin_variation(self):
         """ Получение имени вариации для админки """
-        return getattr(self, self.ADMIN_VARIATION, self)
+        return getattr(self.video_preview, self.ADMIN_VARIATION, self.video_preview)
 
     @property
     def show_url(self):
