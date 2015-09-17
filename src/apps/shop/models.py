@@ -194,10 +194,6 @@ class Order(models.Model):
     def total_cost(self):
         return self.products_cost
 
-    @property
-    def status_text(self):
-        return dict(self.STATUS).get(self.status)
-
     def mark_payed(self, save=False):
         if self.status == self.STATUS_NOT_PAID:
             self.status = self.STATUS_PAID

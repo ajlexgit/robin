@@ -58,11 +58,13 @@ class ModelAdminMixin(ModelAdminInlineMixin):
                 'admin/js/jquery-ui.min.js',
                 'admin/js/jquery.cookie.js',
                 'admin/js/ajax_csrf.js',
+                'admin/js/button_filter.js',
             ),
             css = {
                 'all': (
                     'admin/css/jquery-ui/jquery-ui.min.css',
                     'admin/css/admin_fixes.css',
+                    'admin/css/button_filter.css',
                 )
             }
         )

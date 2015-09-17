@@ -123,6 +123,23 @@ class MainBlockSecond(AttachableBlock):
         verbose_name_plural = _("Second blocks")
 
 
+class ListItem(models.Model):
+    STATUS_PAID = 1
+    STATUS_NOT_PAID = 2
+    STATUS_DELETED = 3
+    STATUSES = (
+        (STATUS_PAID, _('Paid')),
+        (STATUS_NOT_PAID, _('Not paid')),
+        (STATUS_DELETED, _('Deleted')),
+    )
+
+    title = models.CharField(_('title'), max_length=64)
+    status = models.PositiveSmallIntegerField(choices=STATUSES, default=STATUS_NOT_PAID)
+
+    def get_absolute_url(self):
+        return resolve_url('index')
+
+
 class InlineSample(models.Model):
     config = models.ForeignKey(MainPageConfig, verbose_name=_('config'))
 

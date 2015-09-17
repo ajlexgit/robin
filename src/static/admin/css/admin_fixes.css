@@ -10,9 +10,13 @@
 }
 
 .url a {
-    word-break : break-word;
+    word-wrap: break-word;
     line-height: 1.4;
     display: inline-block;
+}
+
+.view-column {
+    width: 33px;
 }
 
 /* Admin table */

@@ -14,24 +14,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AttachableBlock',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('block_type', models.CharField(editable=False, verbose_name='block type', max_length=255)),
-                ('label', models.CharField(help_text='For inner use', verbose_name='label', max_length=128)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('block_type', models.CharField(verbose_name='block type', editable=False, max_length=255)),
+                ('label', models.CharField(verbose_name='label', max_length=128, help_text='For inner use')),
                 ('visible', models.BooleanField(default=False, verbose_name='visible')),
-                ('created', models.DateTimeField(editable=False, verbose_name='create date')),
+                ('created', models.DateTimeField(verbose_name='create date', editable=False)),
                 ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
             ],
             options={
                 'ordering': ('label',),
-                'verbose_name_plural': 'Attachable blocks',
                 'verbose_name': 'Attachable block',
+                'verbose_name_plural': 'Attachable blocks',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='AttachableBlockRef',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('object_id', models.PositiveIntegerField()),
                 ('block_type', models.CharField(verbose_name='block type', max_length=255)),
                 ('frame', models.PositiveSmallIntegerField(default=0, verbose_name='frame')),
@@ -41,8 +41,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ('frame', 'order'),
-                'verbose_name_plural': 'Block references',
                 'verbose_name': 'Block reference',
+                'verbose_name_plural': 'Block references',
             },
             bases=(models.Model,),
         ),

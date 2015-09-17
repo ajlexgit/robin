@@ -1,21 +1,17 @@
-<div id="btn-filter-{{ field_name }}" style="display: inline-block; vertical-align: bottom; margin-right: 10px;">
+<div class="button-filter">
   <div class="btn-group">
+
     {% for choice in choices %}
-      <label class="btn {{ choice.selected|yesno:"active," }}" for="btn-filter-{{ field_name }}-{{ choice.val }}">
-        <input type="radio" name="{{ field_name }}" id="btn-filter-{{ field_name }}-{{ choice.val }}"
-               value="{{ choice.val }}" style="display: none;"
-            {% if choice.selected %}checked="checked"{% endif %}>
+      <label class="btn {{ choice.selected|yesno:"active," }}"
+             for="btn-filter-{{ field_name }}-{{ forloop.counter }}">
+        <input type="radio"
+               name="{{ field_name }}"
+               id="btn-filter-{{ field_name }}-{{ forloop.counter }}"
+               value="{{ choice.val }}"
+               {% if choice.selected %}checked="checked"{% endif %}>
         {{ choice.display }}
       </label>
     {% endfor %}
+
   </div>
 </div>
-<script>
-  (function($) {
-
-    $('#btn-filter-{{ field_name }}').on('change', 'input', function() {
-      $(this).closest('.btn').addClass('active').siblings('.active').removeClass('active');
-    })
-
-  })(jQuery);
-</script>

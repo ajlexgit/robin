@@ -5,13 +5,13 @@ from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
 from comments.admin import CommentsModelAdminMixin
 from attachable_blocks import AttachableBlockRefTabularInline
-from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample
+from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem
 
 
 class InlineSampleAdmin(admin.TabularInline):
     model = InlineSample
     extra = 0
-    suit_classes = 'suit-tab suit-tab-header'
+    suit_classes = 'suit-tab suit-tab-general'
 
 
 class MyPageBlockRefInline(AttachableBlockRefTabularInline):
@@ -55,3 +55,29 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
     suit_seo_tab = 'seo'
     suit_comments_position = 'bottom'
     suit_comments_tab = 'comments'
+
+
+class StatusListItemFilter(admin.SimpleListFilter):
+    title = 'Status'
+    parameter_name = 'status'
+    template = 'admin/button_filter.html'
+
+    def value(self):
+        value = super().value()
+        return value or None
+
+    def lookups(self, request, model_admin):
+        return ListItem.STATUSES
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            queryset = queryset.filter(status__in=value)
+        return queryset
+
+
+@admin.register(ListItem)
+class ListItemAdmin(ModelAdminMixin, admin.ModelAdmin):
+    list_display = ('view', 'title', 'status')
+    list_display_links = ('title', )
+    list_filter = (StatusListItemFilter, )

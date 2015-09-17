@@ -154,7 +154,7 @@ $minimize_product: $media600;
         position: relative;
         padding-right: 36px;
         margin-bottom: 0;
-        word-break: break-word;
+        word-wrap: break-word;
         @include font-size(18px);
 
         &:after {

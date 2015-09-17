@@ -1,0 +1,25 @@
+.button-filter {
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 10px;
+}
+
+.button-filter input {
+    display: none;
+}
+
+.button-filter .active {
+    color: black;
+
+    background-color: #72e472;
+    background-image: -moz-linear-gradient(top, #62c462, #72e472);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#72e472));
+    background-image: -webkit-linear-gradient(top, #62c462, #72e472);
+    background-image: -o-linear-gradient(top, #62c462, #72e472);
+    background-image: linear-gradient(to bottom, #62c462, #72e472);
+    background-position: 0 -10px;
+
+    -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
+}

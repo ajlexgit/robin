@@ -119,7 +119,7 @@ class OrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         'fmt_products_cost', 'fmt_total_cost', 'date', 'pay_date',
     )
     list_display = (
-        '__str__', 'status_text', 'fmt_total_cost', 'date', 'pay_date',
+        '__str__', 'status', 'fmt_total_cost', 'date', 'pay_date',
     )
     list_filter = (StatusOrderFilter, 'date')
     suit_form_tabs = (
@@ -138,11 +138,6 @@ class OrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     def fmt_total_cost(self, obj):
         return obj.total_cost.alternate
     fmt_total_cost.short_description = _('Total cost')
-
-    def status_text(self, obj):
-        return obj.status_text
-    status_text.short_description = _('Status')
-    status_text.admin_order_field = 'status'
 
     def has_add_permission(self, request):
         return False

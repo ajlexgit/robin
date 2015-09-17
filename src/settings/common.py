@@ -94,6 +94,7 @@ SUIT_CONFIG = {
             'app': 'main',
             'icon': 'icon-file',
             'models': (
+                'listitem',
                 'mainpageconfig',
             )
         },
