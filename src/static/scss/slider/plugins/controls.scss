@@ -32,15 +32,19 @@
     @include opacity(1);
   }
 
-  &:before {
-    content: '';
+  span {
     position: absolute;
     left: 50%;
     top: 50%;
     width: 40px;
-    height: 40px;
-    background: url(../../../img/arrows.png) no-repeat right 0;
-    background-size: 200%;
     @include transform(translate3d(-50%, -50%, 0));
+
+    &:before {
+      content: '';
+      display: block;
+      height: 0;
+      padding-bottom: 100%;
+      background: url(../../../img/arrows.png) no-repeat 100% 0;
+    }
   }
 }

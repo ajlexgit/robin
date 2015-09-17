@@ -56,7 +56,7 @@
          */
         ControlsPlugin.prototype.createControls = function(slider) {
             if (this.opts.container) {
-                this.$container = $.findFirstElement(this.opts.container);
+                this.$container = $.findFirstElement(this.opts.container, slider);
             } else {
                 this.$container = slider.$listWrapper;
             }
@@ -75,6 +75,7 @@
             this.$left = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowLeftClass)
+                .append('<span>')
                 .on('click.slider.controls', function() {
                     if ($(this).hasClass(that.opts.arrowDisabledClass)) {
                         return false
@@ -86,6 +87,7 @@
             this.$right = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowRightClass)
+                .append('<span>')
                 .on('click.slider.controls', function() {
                     if ($(this).hasClass(that.opts.arrowDisabledClass)) {
                         return false
