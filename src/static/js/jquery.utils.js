@@ -4,23 +4,22 @@
     //      ANIMATION MAGIC
     // ======================================================================================
 
-    var emptyHandler = $.noop;
     if (document.addEventListener) {
         if ('onwheel' in document) {
             // IE9+, FF17+, Ch31+
-            document.addEventListener("wheel", emptyHandler);
+            document.addEventListener("wheel", $.noop);
         } else if ('onmousewheel' in document) {
             // устаревший вариант события
-            document.addEventListener("mousewheel", emptyHandler);
+            document.addEventListener("mousewheel", $.noop);
         } else {
             // Firefox < 17
-            document.addEventListener("MozMousePixelScroll", emptyHandler);
+            document.addEventListener("MozMousePixelScroll", $.noop);
         }
-    } else { 
+    } else {
         // IE8-
-        document.attachEvent("onmousewheel", emptyHandler);
+        document.attachEvent("onmousewheel", $.noop);
     }
-    
+
     // ======================================================================================
     //      ANIMATION UTILS
     // ======================================================================================
