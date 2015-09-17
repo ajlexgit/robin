@@ -1,0 +1,186 @@
+@import "mixins";
+
+$vertical_product: $media768;
+$minimize_product: $media600;
+
+#product {
+  margin-bottom: 60px * 2 - 10px;
+  @include no_fontsize;
+  @include media_interval($media768, $media1200) {
+    margin-bottom: 60px;
+  }
+  @include media_interval(0, $media768) {
+    margin-bottom: 30px;
+  }
+
+  .photo-wrapper, .data-wrapper {
+    @include media_interval(0, $vertical_product) {
+      float: none;
+      clear: both;
+      width: auto;
+      margin-right: 0;
+    }
+  }
+
+  .photo-wrapper {
+    position: relative;
+    text-align: right;
+    z-index: 1;
+    @include media_interval($minimize_product, $vertical_product) {
+      text-align: left;
+    }
+    @include media_interval(0, $minimize_product) {
+      text-align: center;
+    }
+
+    .product-photo {
+      position: relative;
+      height: auto;
+      max-width: 100%;
+      z-index: 3;
+      @include media_interval($minimize_product, $vertical_product) {
+        max-width: 300px;
+      }
+      @include media_interval(0, $minimize_product) {
+        max-width: 250px;
+      }
+    }
+
+    .product-photo-shadow {
+      position: absolute;
+      left: 55%;
+      top: 0;
+      z-index: 2;
+      max-width: 100%;
+      max-height: 100%;
+      @include transform(translate3d(-50%, 10%, 0));
+    }
+  }
+
+  .title {
+    position: relative;
+    padding-top: 60px;
+    margin-bottom: 60px - 5px;
+    color: $green;
+    line-height: 1.1;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    @include media_interval($media1200, 0) {
+      @include font-size(55px);
+    }
+    @include media_interval(0, $minimize_product) {
+      padding-top: 24px;
+      margin-bottom: 16px;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      max-width: 15%;
+      height: 2px;
+      background-color: $green;
+      @include media_interval(0, $vertical_product) {
+        display: none;
+      }
+    }
+  }
+
+  .price-wrapper {
+    line-height: 1;
+    @include clearfix;
+
+    .price {
+      float: left;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      @include font-size(24px);
+    }
+
+    .info {
+      float: left;
+      margin-left: 40px;
+      @include font-size(24px);
+    }
+  }
+
+  .note {
+    margin-top: 50px - 5px;
+    @include default_fontsize;
+    @include media_interval(0, $minimize_product) {
+      margin-top: 18px;
+    }
+  }
+
+  .order-wrapper {
+    margin-top: 50px - 5px;
+    @include clearfix;
+    @include media_interval(0, $minimize_product) {
+      margin-top: 27px;
+    }
+
+    .order-count-wrapper {
+      float: left;
+      margin-right: 30px;
+      @include media_interval(0, $media600) {
+        margin-right: 10px;
+      }
+    }
+
+    .add-cart {
+      width: 240px;
+    }
+  }
+
+  .hints {
+    margin-top: 45px;
+    @include media_interval(0, $minimize_product) {
+      margin-top: 35px;
+    }
+
+    .hint {
+      padding: 15px 0 14px;
+      cursor: pointer;
+      border-top: 1px solid $gray;
+
+      &:nth-last-of-type(1) {
+        border-bottom: 1px solid $gray;
+      }
+
+      .hint-title {
+        position: relative;
+        padding-right: 36px;
+        margin-bottom: 0;
+        word-break: break-word;
+        @include font-size(18px);
+
+        &:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: 10px;
+          width: 16px;
+          height: 16px;
+          background: url(../../img/sprite.svg) no-repeat -310px -230px;
+          @include transform(translateY(-50%));
+          @include transition(background 0.3s);
+        }
+      }
+
+      .hint-note {
+        display: none;
+        margin-top: 16px;
+        @include default_fontsize;
+      }
+
+      &.opened {
+        .hint-title:after {
+          background-position: -326px -230px;
+        }
+      }
+    }
+  }
+}

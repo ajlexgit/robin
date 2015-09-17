@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% load pipeline %}
+
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'shop_category' %}
+{% endblock static_head %}
+
+{% block static_js %}
+  {{ block.super }}
+  {% javascript 'shop_category' %}
+{% endblock static_js %}
+
+
+{% block content %}
+
+
+
+{% endblock content %}
