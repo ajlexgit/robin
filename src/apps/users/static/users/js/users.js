@@ -2,7 +2,7 @@
     /*
         Открытие окна регистрации
     */
-    $(document).on('click', '.register', function() {
+    $(document).on('click', '.register-popup', function() {
         $.popup.force({
             classes: 'preloader',
             ui: false,
@@ -68,7 +68,7 @@
     /*
         Открытие окна авторизации
     */
-    $(document).on('click', '.login', function() {
+    $(document).on('click', '.login-popup', function() {
         $.popup.force({
             classes: 'preloader',
             ui: false,
@@ -154,7 +154,7 @@
     /*
         Открытие окна сброса пароля
     */
-    $(document).on('click', '.reset-password', function() {
+    $(document).on('click', '.reset-password-popup', function() {
         $.popup.force({
             classes: 'preloader',
             ui: false,

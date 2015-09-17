@@ -1,4 +1,4 @@
-<div id="btn-filter-{{ field_name }}" style="display: inline-block; vertical-align: bottom; margin-right: 20px;">
+<div id="btn-filter-{{ field_name }}" style="display: inline-block; vertical-align: bottom; margin-right: 10px;">
   <div class="btn-group">
     {% for choice in choices %}
       <label class="btn {{ choice.selected|yesno:"active," }}" for="btn-filter-{{ field_name }}-{{ choice.val }}">

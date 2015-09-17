@@ -15,6 +15,6 @@
       <button class="logout">{% trans 'Logout' %}</button>
     </form>
   {% else %}
-    <a href="{% url 'users:login' %}?next={{ request.path }}" class="login btn">{% trans 'Sign in' %}</a>
+    <a href="{% url 'users:login' %}?next={{ request.path }}" class="login-popup btn">{% trans 'Sign in' %}</a>
   {% endif %}
 </div>

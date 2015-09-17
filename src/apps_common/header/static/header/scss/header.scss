@@ -38,3 +38,10 @@ header {
     @include opacity(0.8);
   }
 }
+
+#mobile-menu {
+  display: none;
+  @include media_interval(0, $media1024) {
+    display: inline-block;
+  }
+}

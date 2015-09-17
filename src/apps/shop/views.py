@@ -1,6 +1,5 @@
 ﻿from django.dispatch import receiver
 from django.http.response import Http404
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from libs.views import TemplateExView
 from .models import ShopConfig, Category, Product, Order
