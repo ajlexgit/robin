@@ -111,7 +111,8 @@ $menu_line_gap: 5px;
 
     ul {
       position: relative;
-      @include valign_transform;
+      top: 50%;
+      @include transform(translate3d(0, -50%, 0));
     }
 
     li {

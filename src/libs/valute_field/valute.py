@@ -1,78 +1,18 @@
-from decimal import Decimal, getcontext, ROUND_CEILING
-from django.conf import settings
-
-
-class DollarFormatter:
-    max_digits = 18
-    decimal_places = 2
-    separator = ','
-    trail_zero_frac = True
-    widget_attrs = {
-        'prepend': '$'
-    }
-    utf_format = '${}'
-    alternate_format = '${}'
-
-    @classmethod
-    def canonical(cls, value, rounding=ROUND_CEILING):
-        context = getcontext().copy()
-        context.prec = cls.max_digits
-        context.rounding = rounding
-        result = value.quantize(Decimal('.1') ** cls.decimal_places, context=context)
-        return Valute(result)
-
-    @classmethod
-    def to_string(cls, value):
-        str_value = '{0:f}'.format(value)
-        dec_int, dec_frac = str_value.split('.')
-        if cls.trail_zero_frac:
-            trailed_frac = dec_frac.rstrip('0')
-            if not trailed_frac:
-                dec_frac = ''
-
-        if dec_frac:
-            return cls.separator.join((dec_int, dec_frac))
-
-        return dec_int
-
-    @classmethod
-    def utf(cls, value):
-        str_value = cls.to_string(cls.canonical(value))
-        return cls.utf_format.format(str_value)
-
-    @classmethod
-    def alternate(cls, value):
-        str_value = cls.to_string(cls.canonical(value))
-        return cls.alternate_format.format(str_value)
-
-
-class RoubleFormatter(DollarFormatter):
-    separator = '.'
-    widget_attrs = {
-        'append': 'руб.'
-    }
-    utf_format = '{}\u20bd'
-    alternate_format = '{} руб.'
-
-
-FORMATTERS = {
-    'en': DollarFormatter,
-    'ru': RoubleFormatter,
-}
-FORMATTER = FORMATTERS[settings.SHORT_LANGUAGE_CODE]
+from decimal import Decimal, ROUND_CEILING
+from .formatters import get_formatter
 
 
 class Valute(Decimal):
     def canonical(self, rounding=ROUND_CEILING):
-        return FORMATTER.canonical(self, rounding=rounding)
+        return get_formatter().canonical(self, rounding=rounding)
 
     @property
     def utf(self):
-        return FORMATTER.utf(self)
+        return get_formatter().utf(self)
 
     @property
     def alternate(self):
-        return FORMATTER.alternate(self)
+        return get_formatter().alternate(self)
 
     def __repr__(self):
         return "Valute('%s')" % str(self)

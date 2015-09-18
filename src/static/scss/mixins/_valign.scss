@@ -1,9 +1,9 @@
 // Вертикальное центрирование
 
-// Требует position, отличный от static
-@mixin valign_transform() {
-  top: 50%;
-  transform: translate3d(0, -50%, 0);
+@mixin valign_flex() {
+  @include flexbox;
+  @include align-items(center);
+  @include justify-content(center);
 }
 
 // Применяется к родителю

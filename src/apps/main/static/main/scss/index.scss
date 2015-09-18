@@ -39,10 +39,11 @@
   
   .title {
     position: relative;
+    top: 50%;
     color: #FFFFFF;
     text-align: center;
     text-transform: uppercase;
-    @include valign_transform;
+    @include transform(translate3d(0, -50%, 0));
   }
 }
 
@@ -67,11 +68,12 @@
 
   .appear-block {
     position: relative;
+    top: 50%;
     padding-top: 20px;
     padding-bottom: 20px;
     background: blue;
     z-index: 3;
-    @include valign_transform;
+    @include transform(translate3d(0, -50%, 0));
 
     > div {
       height: 150px;

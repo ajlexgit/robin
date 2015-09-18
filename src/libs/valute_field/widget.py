@@ -1,10 +1,10 @@
 from suit.widgets import EnclosedInput
-from .valute import FORMATTER
+from .formatters import get_formatter
 
 
 class ValuteWidget(EnclosedInput):
     input_type = 'number'
 
     def __init__(self, *args, **kwargs):
-        attrs = dict(kwargs, **FORMATTER.widget_attrs)
+        attrs = dict(kwargs, **get_formatter().widget_attrs)
         super().__init__(*args, **attrs)
