@@ -7,6 +7,9 @@ class DollarFormatter:
     decimal_places = 2
     separator = ','
     trail_zero_frac = True
+    widget_attrs = {
+        'prepend': '$'
+    }
     utf_format = '${}'
     alternate_format = '${}'
 
@@ -45,6 +48,9 @@ class DollarFormatter:
 
 class RoubleFormatter(DollarFormatter):
     separator = '.'
+    widget_attrs = {
+        'append': 'руб.'
+    }
     utf_format = '{}\u20bd'
     alternate_format = '{} руб.'
 

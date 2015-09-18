@@ -1,4 +1,5 @@
 from django.db import models
+from .formfields import ValuteFormField
 from .valute import Valute
 
 DEFAULT_MAX_DIGITS = 18
@@ -46,6 +47,13 @@ class ValuteField(models.DecimalField):
         if kwargs['decimal_places'] == DEFAULT_DECIMAL_PLACES:
             del kwargs['decimal_places']
         return name, path, args, kwargs
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': ValuteFormField,
+        }
+        defaults.update(kwargs)
+        return super().formfield(**defaults)
 
     def contribute_to_class(self, cls, *args, **kwargs):
         super().contribute_to_class(cls, *args, **kwargs)
