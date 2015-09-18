@@ -6,6 +6,9 @@ class Valute(Decimal):
     def canonical(self, rounding=ROUND_CEILING):
         return get_formatter().canonical(self, rounding=rounding)
 
+    def __str__(self):
+        return get_formatter().to_string(self)
+
     @property
     def utf(self):
         return get_formatter().utf(self)

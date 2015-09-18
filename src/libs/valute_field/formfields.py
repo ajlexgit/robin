@@ -8,6 +8,6 @@ class ValuteFormField(forms.DecimalField):
     def widget_attrs(self, widget):
         attrs = super().widget_attrs(widget)
         attrs.update({
-            'class': 'input-small'
+            'class': 'input-small',
         })
         return attrs

@@ -10,6 +10,7 @@ class DollarFormatter:
     max_digits = 18
     decimal_places = 2
     separator = ','
+    decimal_mark = ','
     trail_zero_frac = True
     widget_attrs = {
         'prepend': '$'
@@ -33,6 +34,9 @@ class DollarFormatter:
             if not trailed_frac:
                 dec_frac = ''
 
+        if cls.decimal_mark:
+            dec_int = split_price(dec_int, cls.decimal_mark)
+
         if dec_frac:
             return cls.separator.join((dec_int, dec_frac))
 
@@ -41,19 +45,18 @@ class DollarFormatter:
     @classmethod
     def utf(cls, value):
         str_value = cls.to_string(cls.canonical(value))
-        str_value = split_price(str_value, join=',')
         return '${}'.format(str_value)
 
     @classmethod
     def alternate(cls, value):
         str_value = cls.to_string(cls.canonical(value))
-        str_value = split_price(str_value, join=',')
         return '${}'.format(str_value)
 
 
 class RoubleFormatter(DollarFormatter):
     langs = ('ru',)
     separator = '.'
+    decimal_mark = ' '
     widget_attrs = {
         'append': 'руб.'
     }
@@ -61,13 +64,11 @@ class RoubleFormatter(DollarFormatter):
     @classmethod
     def utf(cls, value):
         str_value = cls.to_string(cls.canonical(value))
-        str_value = split_price(str_value, join=' ')
         return '{}\u20bd'.format(str_value)
 
     @classmethod
     def alternate(cls, value):
         str_value = cls.to_string(cls.canonical(value))
-        str_value = split_price(str_value, join=' ')
         return '{} руб.'.format(str_value)
 
 
