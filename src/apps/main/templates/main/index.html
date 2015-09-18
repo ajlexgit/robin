@@ -26,13 +26,13 @@
     <img src="{{ config.header_background.desktop.url }}" class="section-image"
          srcset="{{ config.header_background.desktop.srcset }}, {{ config.header_background.mobile.srcset }}"
          sizes="100vw">
-    
+
     {% if config.header_video %}
       <video class="section-video" loop="loop" preload="none" muted="">
         <source src="{{ config.header_video.url }}">
       </video>
     {% endif %}
-    
+
     <div class="section-inner">
       <div class="grid">
         <div class="gray gc-wide-6 gc-6 gc-alone gc-center" style="height: 200px">
@@ -73,7 +73,7 @@
       <div class="orange gc-wide-2 gc-2 gc-tablet-4"></div>
     </div>
   </div>
-  
+
   <div id="social_buttons">
     <div class="grid">
       <div class="gc-full gc-alone">
@@ -207,8 +207,11 @@
     </form>
   </div>
 
-  {% render_attached_blocks config %}
+  <p>First blocks:</p>
+  {% render_attached_blocks config set_name='first' %}
+  <p>Second blocks:</p>
+  {% render_attached_blocks config set_name='second' %}
 
   {% seo_block %}
-  
+
 {% endblock content %}

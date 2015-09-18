@@ -1,7 +1,8 @@
+from django.db import models
 from django.template import Library
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
-from ..models import AttachableBlock, AttachableBlockRef
+from ..models import AttachableBlock, AttachableReference
 from ..register import get_block_subclass
 from ..utils import get_block_view
 
@@ -9,18 +10,16 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def render_attached_blocks(context, entity, frame=0):
+def render_attached_blocks(context, entity, set_name=None):
     request = context.get('request')
     if not request:
         return ''
 
     ct = ContentType.objects.get_for_model(entity)
-    block_refs = AttachableBlockRef.objects.filter(
-        block__visible=True,
-        content_type=ct,
-        object_id=entity.pk,
-        frame=frame
-    )
+    query = models.Q(block__visible=True, content_type=ct, object_id=entity.pk)
+    if set_name:
+        query &= models.Q(set_name=set_name)
+    block_refs = AttachableReference.objects.filter(query)
 
     output = []
     for block_ref in block_refs:
@@ -41,7 +40,7 @@ def render_attached_blocks(context, entity, frame=0):
 
 
 @register.simple_tag(takes_context=True)
-def render_attachable_block(context, block):
+def render_attachable_block(context, block, **kwargs):
     request = context.get('request')
     if not request:
         return ''
@@ -56,4 +55,4 @@ def render_attachable_block(context, block):
     if not block_view:
         return ''
 
-    return block_view(request, block)
+    return block_view(request, block, **kwargs)

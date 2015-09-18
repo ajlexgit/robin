@@ -9,10 +9,15 @@
     1. Для каждого блока должна быть создана модель, зарегистрированная в админке.
     2. Для каждого блока должна быть создана функция рендеринга.
     3. Добавить inline в админскую модель страницы, к которой нужно присоединять блоки
+    4. В тех случаях, когда к одной модели необходимо подключить несколько наборов блоков,
+       каждая inline-модель блоков адмики должна иметь уникальное значение текстового атрибута
+       set_name. Значение set_name по умолчанию равно 'default'.
+
+    Параметр "name" у декоратора register_block позволяет задать имя типа блока,
+    отображаемое в выпадающем списке в админке. По умолчанию оно равно verbose_name.
 
     Пример:
-        # blocks/models.py
-
+        # blocks/models.py:
             from attachable_blocks import AttachableBlock, register_block
 
             @register_block(name='My super blocks')
@@ -49,46 +54,57 @@
                 )
 
 
-        # blocks/views.py
-
+        # blocks/views.py:
             def my_block_render(request, block):
+                # Функция рендера блока
                 context = RequestContext(request, {
                     'block': block,
                 })
                 return loader.render_to_string('block.html', context_instance=context)
 
-        # page/admin.py
+        # page/admin.py:
+            from attachable_blocks import AttachableReferenceTabularInline
 
-            from attachable_blocks import AttachableBlockRefTabularInline
+            class FirstBlocksInline(AttachableReferenceTabularInline):
+                # Первый набор блоков (set_name = 'default')
+                suit_classes = 'suit-tab suit-tab-blocks_1'
 
-            class MyPageBlockRefInline(AttachableBlockRefTabularInline):
-                suit_classes = 'suit-tab suit-tab-blocks'
+            class SecondBlocksInline(AttachableReferenceTabularInline):
+                # Второй набор блоков
+                set_name = 'second'
+                suit_classes = 'suit-tab suit-tab-blocks_2'
 
             @admin.register(MyPage)
             class MyPageAdmin(admin.ModelAdmin):
                 ...
-                inlines = (MyPageBlockRefInline, ...)
+                inlines = (FirstBlocksInline, SecondBlocksInline, ...)
                 ...
                 suit_form_tabs = (
                     ...
-                    ('blocks', _('Blocks')),
+                    ('blocks_1', _('First blocks')),
+                    ('blocks_2', _('Second blocks')),
                     ...
                 )
 
-        # template.html
-
+        # template.html:
             {% load attached_blocks %}
 
             ...
+            <!-- вывод конкретного блока -->
+            {% render_attachable_block block %}
 
+            <!-- вывод блоков первого набора (set_name = 'default') -->
             {% render_attached_blocks page_object %}
-            {% render_attached_blocks page_object frame=1 %}
+
+            <!-- вывод блоков второго набора (set_name = 'second') -->
+            {% render_attached_blocks page_object set_name='second' %}
 
 """
 
 from .register import register_block
-from .models import AttachableBlock, AttachableBlockRef
-from .admin import AttachableBlockRefTabularInline, AttachableBlockRefStackedInline
+from .models import AttachableBlock, AttachableReference
+from .admin import AttachableReferenceTabularInline, AttachableReferenceStackedInline
 
-__all__ = ['register_block', 'AttachableBlock', 'AttachableBlockRef', 'AttachableBlockRefTabularInline',
-           'AttachableBlockRefStackedInline']
+__all__ = ['register_block', 'AttachableBlock', 'AttachableBlockRef',
+           'AttachableReferenceTabularInline',
+           'AttachableReferenceStackedInline']

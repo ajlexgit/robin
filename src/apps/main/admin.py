@@ -4,7 +4,7 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
 from comments.admin import CommentsModelAdminMixin
-from attachable_blocks import AttachableBlockRefTabularInline
+from attachable_blocks import AttachableReferenceTabularInline
 from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem
 
 
@@ -14,8 +14,14 @@ class InlineSampleAdmin(admin.TabularInline):
     suit_classes = 'suit-tab suit-tab-general'
 
 
-class MyPageBlockRefInline(AttachableBlockRefTabularInline):
-    suit_classes = 'suit-tab suit-tab-blocks'
+class MyPageFirstBlocksInline(AttachableReferenceTabularInline):
+    set_name = 'first'
+    suit_classes = 'suit-tab suit-tab-blocks_1'
+
+
+class MyPageSecondBlocksInline(AttachableReferenceTabularInline):
+    set_name = 'second'
+    suit_classes = 'suit-tab suit-tab-blocks_2'
 
 
 @admin.register(MainBlockFirst)
@@ -45,11 +51,12 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
             ),
         }),
     )
-    inlines = (InlineSampleAdmin, MyPageBlockRefInline)
+    inlines = (InlineSampleAdmin, MyPageFirstBlocksInline, MyPageSecondBlocksInline)
     suit_form_tabs = (
         ('general', _('General')),
         ('comments', _('Comments')),
-        ('blocks', _('Blocks')),
+        ('blocks_1', _('Blocks 1')),
+        ('blocks_2', _('Blocks 2')),
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'

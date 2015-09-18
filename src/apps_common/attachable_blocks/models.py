@@ -63,18 +63,19 @@ class AttachableBlock(models.Model):
         return errors
 
 
-class AttachableBlockRef(models.Model):
+class AttachableReference(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     entity = GenericForeignKey('content_type', 'object_id')
 
     block_type = models.CharField(_('block type'), max_length=255, choices=get_block_choices())
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'))
-    frame = models.PositiveSmallIntegerField(_('frame'), default=0)
+    set_name = models.CharField(_('set name'), max_length=32, default='default')
     order = models.PositiveIntegerField(_('order'), default=0)
 
     class Meta:
-        verbose_name = _('Block reference')
-        verbose_name_plural = _('Block references')
-        ordering = ('frame', 'order')
-        unique_together = ('content_type', 'object_id', 'block_type', 'block')
+        verbose_name = _('Attached block')
+        verbose_name_plural = _('Attached blocks')
+        ordering = ('set_name', 'order')
+        unique_together = ('content_type', 'object_id', 'block_type', 'block', 'set_name')
+        index_together = (('content_type', 'object_id', 'set_name'), )
