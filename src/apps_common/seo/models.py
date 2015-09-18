@@ -49,9 +49,9 @@ class SeoData(models.Model):
 
 class Counter(models.Model):
     POSITION = (
-        ('head', 'Head'),
-        ('body_top', 'Body Top'),
-        ('body_bottom', 'Body Bottom'),
+        ('head', _('Inside <head>')),
+        ('body_top', _('Start of <body>')),
+        ('body_bottom', _('End of <body>')),
     )
 
     title = models.CharField(_('title'), max_length=128)

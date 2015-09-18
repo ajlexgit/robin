@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 13:02+0400\n"
+"POT-Creation-Date: 2015-09-18 19:11+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,14 +20,12 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: admin.py:33
-#| msgid "SEO data"
-msgid "SEO Page"
-msgstr "SEO-данные"
+msgid "SEO common"
+msgstr "Общие SEO-настройки"
 
 #: admin.py:36
-#| msgid "SEO data"
-msgid "SEO Text"
-msgstr "SEO-данные"
+msgid "SEO text"
+msgstr "SEO-текст"
 
 #: apps.py:7
 msgid "SEO"
@@ -35,15 +33,15 @@ msgstr "SEO"
 
 #: models.py:19
 msgid "site title"
-msgstr "Название сайта"
+msgstr "название сайта"
 
 #: models.py:20
 msgid "site keywords"
-msgstr "Ключевые слова"
+msgstr "ключевые слова"
 
 #: models.py:21
 msgid "site description"
-msgstr "Описание сайта"
+msgstr "описание сайта"
 
 #: models.py:24
 msgid "Site config"
@@ -51,7 +49,7 @@ msgstr "Настройки сайта"
 
 #: models.py:32 models.py:57
 msgid "title"
-msgstr "загловок"
+msgstr "заголовок"
 
 #: models.py:33
 msgid "keywords"
@@ -63,7 +61,7 @@ msgstr "описание"
 
 #: models.py:36
 msgid "header"
-msgstr "заголовк"
+msgstr "заголовок"
 
 #: models.py:37
 msgid "text"
@@ -72,6 +70,18 @@ msgstr "текст"
 #: models.py:42 models.py:43
 msgid "SEO data"
 msgstr "SEO-данные"
+
+#: models.py:52
+msgid "Inside <head>"
+msgstr "Внутри <head>"
+
+#: models.py:53
+msgid "Start of <body>"
+msgstr "В начале <body>"
+
+#: models.py:54
+msgid "End of <body>"
+msgstr "В конце <body>"
 
 #: models.py:58
 msgid "position"

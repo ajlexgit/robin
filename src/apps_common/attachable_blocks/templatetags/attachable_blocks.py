@@ -49,6 +49,9 @@ def render_attachable_block(context, block):
     if not isinstance(block, AttachableBlock):
         return ''
 
+    if not block.visible:
+        return ''
+
     block_view = get_block_view(block)
     if not block_view:
         return ''

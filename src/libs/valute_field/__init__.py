@@ -6,11 +6,15 @@
         price = ValuteField(_('цена'))
 
         ru:
-            >>> obj.price = '3.56'
-            >>> print(obj.price.utf)
-            3.56₽
-            >>> print(obj.price.alternate)
-            3.56 руб.
+            >>> v = Valute('1234.56')
+            >>> print(v)
+            1234.56
+            >>> print(v.plain)
+            1 234.56
+            >>> print(v.utf)
+            1 234.56₽
+            >>> print(v.alternate)
+            1 234.56 руб.
 """
 
 from .fields import ValuteField

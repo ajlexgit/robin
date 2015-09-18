@@ -9,7 +9,7 @@ class DollarFormatter:
     langs = ('en', )
     max_digits = 18
     decimal_places = 2
-    separator = ','
+    separator = '.'
     decimal_mark = ','
     trail_zero_frac = True
     widget_attrs = {

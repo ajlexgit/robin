@@ -30,10 +30,10 @@ class CounterAdmin(ModelAdminMixin, admin.ModelAdmin):
 class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
     model = SeoData
     fieldsets = (
-        (_('SEO Page'), {
+        (_('SEO common'), {
             'fields': ('title', 'keywords', 'description', ),
         }),
-        (_('SEO Text'), {
+        (_('SEO text'), {
             'fields': ('header', 'text',),
         }),
     )
