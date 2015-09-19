@@ -54,7 +54,7 @@
                     }
 
                     that.onStartDrag(slider, evt);
-                    
+
                     if (slider._animated) {
                         // если идет анимация - прекращаем её
                         if (slider._animation) {
@@ -64,6 +64,10 @@
                     }
                 },
                 onDrag: function(evt) {
+                    if (evt.dx == that._dx) {
+                        return false;
+                    }
+
                     if (evt.abs_dx > evt.abs_dy) {
                         // по X движение больше
                         that.onDrag(slider, evt);
