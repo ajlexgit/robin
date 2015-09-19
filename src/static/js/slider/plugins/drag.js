@@ -47,15 +47,14 @@
                 momentum: false,
 
                 onStartDrag: function(evt) {
-                    that.onStartDrag(slider, evt);
-                },
-                onDrag: function(evt) {
                     if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
                         // если один слайд - выходим
                         this.setStartPoint(evt);
-                        return
+                        return false;
                     }
 
+                    that.onStartDrag(slider, evt);
+                    
                     if (slider._animated) {
                         // если идет анимация - прекращаем её
                         if (slider._animation) {
@@ -63,7 +62,8 @@
                             slider._animation = null;
                         }
                     }
-
+                },
+                onDrag: function(evt) {
                     if (evt.abs_dx > evt.abs_dy) {
                         // по X движение больше
                         that.onDrag(slider, evt);
@@ -135,7 +135,7 @@
             var slider_width = slider.$list.outerWidth();
             var slide_width = slider_width * slide_left / 100;
             var absPixels = evt.abs_dx % slide_width;
-            var farDirection = (evt.dx > 0) == (evt.dx > this._dx);
+            var farDirection = (evt.dx > 0) == (evt.dx >= this._dx);
             var threshold = Math.min(this.opts.maxSlideThreshold, slider_width * this.opts.slideThreshold / 100);
             if (farDirection) {
                 var chooseFar = (absPixels > threshold);
