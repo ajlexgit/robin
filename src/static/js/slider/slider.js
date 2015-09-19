@@ -441,7 +441,7 @@
                 var that = this;
                 this._adaptive_animation = $.animate({
                     duration: this.opts.adaptiveHeightTransition,
-                    delay: 60,
+                    delay: 40,
                     easing: 'easeOutCubic',
                     init: function() {
                         this.initial = current_height;

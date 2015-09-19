@@ -20,7 +20,7 @@
             momentumEasing: 'easeOutCubic'    - функция сглаживания иенрционного движения
 
             onMouseDown(event)                - нажатие мышью или тачпадом
-            onStartDrag(event)                - начало перемещения
+            onStartDrag(event)                - начало перемещения. Если вернет false, перемещение не начнется
             onDrag(event)                     - процесс перемещения
             onSetMomentum(event, momentum)    - для модификации параметров инерции
             onStopDrag(event)                 - конец перемещения
@@ -44,6 +44,9 @@
                     console.log('Diff X =', evt.abs_dx);
                     console.log('Diff Y =', evt.abs_dy);
                     console.log('current point =', evt.point);
+
+                    // отмена перемещения
+                    return false
                 },
                 onDrag: function(evt) {
                     // тоже что в onStartDrag
@@ -364,12 +367,12 @@
         Drager.prototype.setStartPoint = function(evt) {
             this.startPoint = evt.point;
         };
-        
+
         // Прекращения отслеживания текущего сеанса перемещения
         Drager.prototype.stopCurrent = function(evt) {
             var momentum;
             this._dragging_allowed = false;
-            
+
             if (this.wasDragged) {
                 this.wasDragged = false;
 
@@ -398,7 +401,7 @@
 
             return result;
         };
-        
+
         // ================
         // === Handlers ===
         // ================
@@ -418,24 +421,26 @@
             if (!this._dragging_allowed) return;
 
             var evt = new MouseMoveDragerEvent(event, this);
+            this._addMomentumPoint(evt);
 
             if (!this.wasDragged) {
                 if ((evt.abs_dx > this.settings.ignoreDistanceX) || (evt.abs_dy > this.settings.ignoreDistanceY)) {
+                    var allowed = this.settings.onStartDrag.call(this, evt);
+                    if (allowed === false) {
+                        return
+                    }
                     this.wasDragged = true;
-                    this.settings.onStartDrag.call(this, evt);
                 } else {
                     return;
                 }
             }
-
-            this._addMomentumPoint(evt);
 
             return this.settings.onDrag.call(this, evt);
         };
 
         Drager.prototype.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
-            
+
             var evt = new MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
         };
@@ -483,7 +488,7 @@
             // ====================
             if (this.settings.touch) {
                 var ns = 'drager' + this.id;
-                
+
                 this.$element.on('touchstart.' + ns + ' pointerdown.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.mouseDownHandler.call(that, event);
