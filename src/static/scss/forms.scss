@@ -1,9 +1,11 @@
 @import 'mixins';
 
 input:not([type="radio"]):not([type="checkbox"]), select, textarea {
-  padding: 5px 6px;
   width: 170px;
+  padding: 5px 6px;
+  border: 1px solid #808080;
   @include default_font;
+  @include border_radius(4px);
 }
 
 fieldset {
@@ -11,4 +13,8 @@ fieldset {
   &:nth-last-of-type(1) {
     margin-bottom: 0;
   }
+}
+
+.error {
+  color: #CA0000;
 }
