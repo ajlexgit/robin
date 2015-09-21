@@ -1,6 +1,9 @@
 import re
+import logging
 from django.conf import settings
 
+logger = logging.getLogger(__name__)
+PREVENT_CACHING = getattr(settings, 'SCC_PREVENT_CACHING', False)
 MAX_AGE_PUBLIC = getattr(settings, 'SCC_MAX_AGE_PUBLIC', 86400)
 MAX_AGE_PRIVATE = getattr(settings, 'SCC_MAX_AGE_PRIVATE', 0)
 ENABLED = getattr(settings, 'SCC_ENABLED', True)
@@ -20,7 +23,7 @@ class SCCMiddleware:
         if not ENABLED:
             return response
 
-        # Если заголовок уже установлен - выходим
+        # Если заголовок уже установлен - не меняем его
         if 'cache-control' not in response:
             if request.user.is_authenticated():
                 response['Cache-Control'] = 'private, must-revalidate, max-age={}'.format(
@@ -36,5 +39,13 @@ class SCCMiddleware:
                 if url[0].match(request.path_info):
                     response['Cache-Control'] = '{}, must-revalidate, max-age={}'.format(*url[1:])
                     break
+
+        if PREVENT_CACHING:
+            if 'last-modified' in response:
+                logger.debug('Last-modified: %s', response['last-modified'])
+                del response['last-modified']
+            if 'etag' in response:
+                logger.debug('ETag: %s', response['etag'])
+                del response['etag']
 
         return response
