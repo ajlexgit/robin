@@ -6,7 +6,7 @@ class DevServerMiddleware(object):
     @staticmethod
     def should_process(request):
         for path in settings.DEVSERVER_IGNORED_PREFIXES:
-            if request.path.startswith(path):
+            if request.path_info.startswith(path):
                 return False
 
         return True

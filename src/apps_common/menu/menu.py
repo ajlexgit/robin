@@ -100,7 +100,7 @@ class MenuItem(MenuListMixin):
 
     def is_active(self, request):
         """ Является ли пункт активным """
-        return request.path.startswith(self.link)
+        return request.path_info.startswith(self.link)
 
     def active_branch(self, value):
         """ Распростронение активности вверх по ветке """

@@ -25,7 +25,7 @@ def make_key(func, params=(), additions=()):
     return '.'.join(final_params)
 
 
-def cached(cache_time, key_params=(), key_addition=(), backend='default'):
+def cached(key=(), key_const=(), time=5*60, backend='default'):
     """
         Декоратор кэширования функций и методов,
         использующий для составления ключа значения параметров функции.
@@ -35,14 +35,14 @@ def cached(cache_time, key_params=(), key_addition=(), backend='default'):
 
         Параметры:
             cache_time      - время кэширования в секундах
-            key_params      - список/кортеж имен параметров функции, которые
+            key             - список/кортеж имен параметров функции, которые
                               будут использованы для составления ключа кэша
-            key_addition    - список/кортеж дополнительных значений, которые будут использованы
+            key_const       - список/кортеж дополнительных значений, которые будут использованы
                               для составления ключа кэша
             backend         - идентификатор используемого бэкенда кэширования
 
         Пример использования:
-            @cached(600, ['title', 'address.street', 'addition.key'], [settings.CACHE_VERSION])
+            @cached(['title', 'address.street', 'addition.key'], [settings.CACHE_VERSION], time=3600)
             def MyFunc(title, address, addition={'key': 1})
                 ...
                 return ...
@@ -61,7 +61,7 @@ def cached(cache_time, key_params=(), key_addition=(), backend='default'):
 
             # Получение значений параметров функции
             real_params = []
-            for name in (key_params or varnames):
+            for name in (key or varnames):
                 properties = name.split('.')
                 value = func_args.get(properties.pop(0), None)
                 for prop in properties:
@@ -78,17 +78,17 @@ def cached(cache_time, key_params=(), key_addition=(), backend='default'):
 
                 real_params.append(value)
 
-            key = make_key(func, real_params, key_addition)
-            if key in cache:
-                return cache.get(key)
+            cache_key = make_key(func, real_params, key_const)
+            if cache_key in cache:
+                return cache.get(cache_key)
             else:
                 result = func(*args, **kwargs)
                 if not result is None:
                     # Размазываем по времени (±10%), чтобы избежать
                     # обновления множества кэшированных данных одновременно.
-                    amplitude = round(cache_time * 0.1)
-                    final_time = max(20, cache_time + randint(-amplitude, amplitude))
-                    cache.set(key, result, final_time)
+                    amplitude = round(time * 0.1)
+                    final_time = max(20, time + randint(-amplitude, amplitude))
+                    cache.set(cache_key, result, final_time)
 
                 return result
         return wrapper

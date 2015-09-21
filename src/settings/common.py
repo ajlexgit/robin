@@ -253,6 +253,7 @@ MIDDLEWARE_CLASSES = (
 
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
+    'libs.cache.middleware.SCCMiddleware',
 
     'breadcrumbs.middleware.BreadcrumbsMiddleware',
     'seo.middleware.SeoMiddleware',
@@ -338,6 +339,11 @@ RECAPTCHA_DEFAULT_THEME = 'dark'
 # Youtube Data API
 # для ckeditor, videolink_field, youtube
 YOUTUBE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
+
+# Smart Cache-Control
+SCC_ENABLED = True
+SCC_MAX_AGE_PRIVATE = 0
+SCC_MAX_AGE_PUBLIC = 21600
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

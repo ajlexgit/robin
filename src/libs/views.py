@@ -1,5 +1,8 @@
+from django.http.response import Http404
+from django.views.decorators.http import condition
 from django.template import loader, Context, RequestContext
 from django.views.generic.base import TemplateResponseMixin, View
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
 class RenderToStringMixin(TemplateResponseMixin):
@@ -20,7 +23,54 @@ class TemplateExView(RenderToStringMixin, View):
         Расширенная версия TemplateView:
         1) Позволяет переопределить шаблон в методе render_to_response
         2) Позволяет рендерить шаблон в строку
+        3) Позволяет задать метод get_object, который должен вернуть экземпляр объекта,
+           который будет сохранен в self.object. Если вернет None - будет возвращена 404.
+           Этот метод создан для оптимизации запросов при применении last_modified и etag.
+        4) Позволяет установить кэширование в браузере для GET-страницы
+           путем задания методов last_modified и/или etag.
+
+        Пример:
+            class IndexView(TemplateExView):
+                template_name = 'contacts/index.html'
+
+                @staticmethod
+                def get_object(request):
+                    return ContactsConfig.get_solo()
+
+                def last_modified(self, request):
+                    return self.object.updated
+
+                def get(self, request):
+                    return self.render_to_response({
+                        'config': self.object,
+                    })
     """
+    object = None
+
+    def dispatch(self, request, *args, **kwargs):
+        method = request.method.lower()
+        if method in self.http_method_names:
+            handler = getattr(self, method, self.http_method_not_allowed)
+
+            # Декорирование GET-метода
+            if method == 'get' and hasattr(self, method):
+                get_object = getattr(self, 'get_object', None)
+                if get_object is not None:
+                    try:
+                        self.object = get_object(request, *args, **kwargs)
+                    except (ObjectDoesNotExist, MultipleObjectsReturned):
+                        raise Http404
+                    else:
+                        if self.object is None:
+                            raise Http404
+
+                last_mod = getattr(self, 'last_modified', None)
+                etag = getattr(self, 'etag', None)
+                handler = condition(last_modified_func=last_mod, etag_func=etag)(handler)
+        else:
+            handler = self.http_method_not_allowed
+        return handler(request, *args, **kwargs)
+
     def render_to_response(self, context=None, template=None, dirs=None, **response_kwargs):
         template = template or self.template_name
         template = loader.get_template(template, dirs=dirs)
