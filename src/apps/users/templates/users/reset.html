@@ -5,7 +5,8 @@
   <h1 class="title-h1">{% trans 'Reset password' %}</h1>
 
   {{ form.media }}
-  <form method="post" action="" id="reset-password-form" autocomplete="off">
+  <form method="post" action="" id="reset-password-form"
+        class="users-reset-password-form users-form" autocomplete="off">
     {% csrf_token %}
 
     {{ form.non_field_errors.as_ul }}

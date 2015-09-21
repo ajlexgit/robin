@@ -32,7 +32,6 @@ class LoginView(RenderToStringMixin, FormView):
         auth_login(self.request, user)
         return JsonResponse({
             'user': user_to_dict(user),
-            'auth_block': self.render_to_string(template='users/auth_block.html'),
         })
 
     def form_invalid(self, form):
@@ -48,7 +47,7 @@ class LogoutView(TemplateExView):
     def post(self, request):
         auth_logout(request)
         return JsonResponse({
-            'auth_block': self.render_to_string(template='users/auth_block.html'),
+
         })
 
 
@@ -66,7 +65,6 @@ class RegisterView(RenderToStringMixin, FormView):
         auth_login(self.request, user)
         return JsonResponse({
             'user': user_to_dict(user),
-            'auth_block': self.render_to_string(template='users/auth_block.html'),
         })
 
     def form_invalid(self, form):

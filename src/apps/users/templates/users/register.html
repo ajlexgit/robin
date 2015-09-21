@@ -5,7 +5,8 @@
   <h1 class="title-h1">{% trans 'Registration' %}</h1>
 
   {{ form.media }}
-  <form method="post" action="" id="register-form" autocomplete="off">
+  <form method="post" action="" id="register-form"
+        class="users-register-form users-form" autocomplete="off">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ request.GET.next }}">
 
@@ -35,5 +36,9 @@
       <button type="submit" class="btn">{% trans 'Register' %}</button>
     </fieldset>
   </form>
+
+  <script>
+    $('#register-form').find('input:visible:first').focus();
+  </script>
 
 {% endblock content %}

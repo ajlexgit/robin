@@ -4,17 +4,14 @@
 
     // Обновление аватарок на странице
     var change_avatar = function(response) {
-        // Загрузка превью в блоке авторизации
-        $.loadImageDeferred(response.small_avatar).done(function(img) {
-            $('#auth-block').find('.avatar').attr('src', img.src);
-        });
-
         // Обновление кнопок
         $.loadImageDeferred(response.normal_avatar).done(function() {
             uploader.destroy();
             $('#profile-avatar').replaceWith(response.profile_avatar_html);
             initUploader();
         });
+
+        $(document).trigger('change_avatar.users', response);
     };
 
     // Загрузчик аватарки

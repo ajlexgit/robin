@@ -3,7 +3,8 @@
 <p class="title">{% trans 'Reset password' %}</p>
 
 {{ form.media }}
-<form method="post" action="" id="ajax-reset-password-form" autocomplete="off">
+<form method="post" action="" id="ajax-reset-password-form"
+      class="users-reset-password-form users-popup-form users-form" autocomplete="off">
   {% csrf_token %}
 
   {{ form.non_field_errors.as_ul }}

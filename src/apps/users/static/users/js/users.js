@@ -14,11 +14,12 @@
             type: 'GET',
             success: function(response) {
                 $.popup({
-                    classes: 'popup-auth',
+                    classes: 'users-popup',
                     content: response
-                });
+                }).show();
             },
             error: function() {
+                alert(gettext('Connection error'));
                 $.popup().hide();
             }
         });
@@ -43,22 +44,18 @@
             success: function(response) {
                 if (response.errors) {
                     $.popup({
-                        classes: 'popup-auth',
+                        classes: 'users-popup',
                         content: response.errors
-                    });
+                    }).show();
                 } else {
-                    $(document).trigger('register.auth', response);
-                    $(document).trigger('login.auth', response);
+                    $(document).trigger('register.auth.users', response);
+                    $(document).trigger('login.auth.users', response);
                     $.popup().hide();
                 }
             },
             error: function() {
                 alert(gettext('Connection error'));
-            },
-            complete: function() {
-                $.popup().update({
-                    classes: 'popup-auth'
-                });
+                $.popup().hide();
             }
         });
         return false;
@@ -79,11 +76,12 @@
             type: 'GET',
             success: function(response) {
                 $.popup({
-                    classes: 'popup-auth',
+                    classes: 'users-popup',
                     content: response
-                });
+                }).show();
             },
             error: function() {
+                alert(gettext('Connection error'));
                 $.popup().hide();
             }
         });
@@ -109,21 +107,17 @@
             success: function(response) {
                 if (response.errors) {
                     $.popup({
-                        classes: 'popup-auth',
+                        classes: 'users-popup',
                         content: response.errors
-                    });
+                    }).show();
                 } else {
-                    $(document).trigger('login.auth', response);
+                    $(document).trigger('login.auth.users', response);
                     $.popup().hide();
                 }
             },
             error: function() {
                 alert(gettext('Connection error'));
-            },
-            complete: function() {
-                $.popup().update({
-                    classes: 'popup-auth'
-                });
+                $.popup().hide();
             }
         });
         return false;
@@ -141,10 +135,11 @@
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                $(document).trigger('logout.auth', response);
+                $(document).trigger('logout.auth.users', response);
             },
             error: function() {
                 alert(gettext('Connection error'));
+                $.popup().hide();
             }
         });
         return false;
@@ -165,11 +160,12 @@
             type: 'GET',
             success: function(response) {
                 $.popup({
-                    classes: 'popup-auth',
+                    classes: 'users-popup',
                     content: response
-                });
+                }).show();
             },
             error: function() {
+                alert(gettext('Connection error'));
                 $.popup().hide();
             }
         });
@@ -195,41 +191,23 @@
             success: function(response) {
                 if (response.errors) {
                     $.popup({
-                        classes: 'popup-auth',
+                        classes: 'users-popup',
                         content: response.errors
-                    });
+                    }).show();
                 } else {
-                    $(document).trigger('reset.auth');
+                    $(document).trigger('reset-password.auth.users');
                     $.popup({
-                        classes: 'popup-auth',
+                        classes: 'users-popup',
                         content: response.done
                     });
                 }
             },
             error: function() {
                 alert(gettext('Connection error'));
-            },
-            complete: function() {
-                $.popup().update({
-                    classes: 'popup-auth'
-                });
+                $.popup().hide();
             }
         });
         return false;
-    });
-
-
-    /*
-        События
-    */
-    $(document).on('register.auth', function(e, response) {
-        $('#auth-block').replaceWith(response.auth_block);
-    }).on('reset.auth', function(e) {
-
-    }).on('login.auth', function(e, response) {
-        $('#auth-block').replaceWith(response.auth_block);
-    }).on('logout.auth', function(e, response) {
-        $('#auth-block').replaceWith(response.auth_block);
     });
 
 })(jQuery);

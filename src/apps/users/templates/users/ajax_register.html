@@ -3,7 +3,8 @@
 <p class="title">{% trans 'Registration' %}</p>
 
 {{ form.media }}
-<form method="post" action="{% url 'users:register' %}" id="ajax-register-form" autocomplete="off">
+<form method="post" action="{% url 'users:register' %}" id="ajax-register-form"
+      class="users-register-form users-popup-form users-form" autocomplete="off">
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ request.GET.next }}">
 

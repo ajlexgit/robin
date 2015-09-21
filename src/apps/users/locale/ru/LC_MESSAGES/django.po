@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-23 11:56+0300\n"
+"POT-Creation-Date: 2015-09-21 11:39+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,32 +19,32 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:50
+#: admin.py:47
 msgid "Personal info"
 msgstr "Персональная информация"
 
-#: admin.py:53
+#: admin.py:50
 msgid "Permissions"
 msgstr "Права доступа"
 
-#: admin.py:56
+#: admin.py:53
 msgid "Important dates"
 msgstr "Важные даты"
 
-#: admin.py:64
+#: admin.py:61
 msgid "username"
 msgstr "имя пользователя"
 
-#: admin.py:70
+#: admin.py:67
 #, python-format
 msgid "Login as %(username)s"
 msgstr "Войти как %(username)s"
 
-#: admin.py:72
+#: admin.py:69
 msgid "Login as"
 msgstr "Войти как"
 
-#: apps.py:6
+#: apps.py:7
 msgid "Users"
 msgstr "Пользователи"
 
@@ -110,33 +110,31 @@ msgstr "область обрезки аватара"
 msgid "Sign In or Register"
 msgstr "Войдите или зарегистрируйтесь"
 
-#: templates/users/ajax_login.html:22 templates/users/auth_block.html:18
-#: templates/users/login.html:25
+#: templates/users/ajax_login.html:23 templates/users/login.html:25
 msgid "Sign in"
 msgstr "Войти"
 
-#: templates/users/ajax_login.html:23
+#: templates/users/ajax_login.html:24
 msgid "Forgot your password?"
 msgstr "Забыли пароль?"
 
-#: templates/users/ajax_login.html:24 templates/users/ajax_register.html:3
-#: templates/users/register.html:5 views.py:65
+#: templates/users/ajax_login.html:25 templates/users/ajax_register.html:3
+#: templates/users/register.html:5 views.py:57
 msgid "Registration"
 msgstr "Регистрация"
 
-#: templates/users/ajax_register.html:33 templates/users/register.html:35
+#: templates/users/ajax_register.html:34 templates/users/register.html:36
 msgid "Register"
 msgstr "Зарегистрироваться"
 
 #: templates/users/ajax_reset.html:3 templates/users/reset.html:5
 #: templates/users/reset_complete.html:5 templates/users/reset_confirm.html:5
-#: templates/users/reset_done.html:5 views.py:98 views.py:115 views.py:132
-#: views.py:153 views.py:175 views.py:190 views.py:206 views.py:221
-#: views.py:232
+#: templates/users/reset_done.html:5 views.py:79 views.py:93 views.py:115
+#: views.py:134 views.py:162 views.py:193
 msgid "Reset password"
 msgstr "Сброс пароля"
 
-#: templates/users/ajax_reset.html:17 templates/users/reset.html:19
+#: templates/users/ajax_reset.html:18 templates/users/reset.html:20
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -149,40 +147,38 @@ msgstr "Готово"
 msgid "We've sent password reset instructions to your email <b>%(email)s</b>."
 msgstr "Инструкции по сбросу пароля отправлены на адрес <b>%(email)s</b>."
 
-#: templates/users/auth_block.html:15
-msgid "Logout"
-msgstr "Выйти"
-
 #: templates/users/login.html:5 views.py:34
 msgid "Authorization"
 msgstr "Авторизация"
 
-#: templates/users/profile.html:18 views.py:254
+#: templates/users/profile.html:22
 #, python-format
-msgid "Profile of «%(username)s»"
+msgid ""
+"Profile of «%(username)s»\n"
+"        "
 msgstr "Профиль пользователя «%(username)s»"
 
-#: templates/users/profile.html:25
+#: templates/users/profile.html:29
 msgid "Name"
 msgstr "Имя"
 
-#: templates/users/profile.html:33
+#: templates/users/profile.html:37
 msgid "Last login"
 msgstr "Последний вход"
 
-#: templates/users/profile.html:35
+#: templates/users/profile.html:39
 msgid "Change password"
 msgstr "Поменять пароль"
 
-#: templates/users/profile_avatar.html:9
+#: templates/users/profile_avatar.html:10
 msgid "Delete avatar"
 msgstr "Сбросить аватар"
 
-#: templates/users/profile_avatar.html:11
+#: templates/users/profile_avatar.html:12
 msgid "Upload avatar"
 msgstr "Загрузить аватар"
 
-#: templates/users/profile_avatar.html:16
+#: templates/users/profile_avatar.html:17
 msgid "Change thumbnail"
 msgstr "Изменить миниатюру"
 
@@ -194,7 +190,7 @@ msgstr ""
 "Новый пароль успешно сохранен. Вы будете автоматически перенаправлены через "
 "5 секунд "
 
-#: templates/users/reset_confirm.html:24
+#: templates/users/reset_confirm.html:25
 msgid "Save"
 msgstr "Сохранить"
 
@@ -219,3 +215,8 @@ msgstr "Для смены пароля пройдите по ссылке:"
 #, python-format
 msgid "Password reset on %(site_name)s"
 msgstr "Сброс пароля на %(site_name)s"
+
+#: views.py:225
+#, python-format
+msgid "Profile of «%(username)s»"
+msgstr "Профиль пользователя «%(username)s»"

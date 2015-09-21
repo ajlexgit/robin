@@ -1,69 +1,46 @@
 @import "mixins";
 
-/* Блок авторизации */
-#auth-block {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 140px;
-  height: 50px;
-  text-align: right;
 
-  .avatar {
-    float: left;
-    margin-right: 10px;
-  }
-  .username {
-    text-align: left;
-    line-height: 1.2;
-    max-height: 2.4em;
-  }
-
-  .logout-form {
-    position: absolute;
-    bottom: 0;
-    left: 60px;
-
-    .logout {
-      padding: 0;
-      border: 0;
-      cursor: pointer;
-      background: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
+.users-form {
+  @include default_fontsize;
 }
 
-#login-form, #ajax-login-form {
+
+.users-login-form {
   label {
-    min-width: 80px;
+    width: 80px;
+    word-wrap: break-word;
   }
 
   .reset-password {
     margin-left: 12px;
   }
+
   .register {
     margin-left: 10px;
   }
 }
 
-#register-form, #ajax-register-form {
+
+.users-register-form {
   label {
-    min-width: 130px;
+    width: 130px;
+    word-wrap: break-word;
   }
 }
 
-#reset-password-form, #ajax-reset-password-form {
+
+.users-reset-password-form {
   label {
-    min-width: 60px;
+    width: 60px;
+    word-wrap: break-word;
   }
 }
 
-#reset-confirm-form {
+
+.users-reset-confirm-form {
   label {
-    min-width: 140px;
+    width: 140px;
+    word-wrap: break-word;
   }
 }
