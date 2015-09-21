@@ -32,6 +32,9 @@ class SCCMiddleware:
         if 'text/html' not in response['content-type']:
             return response
 
+        # Если нет юзера - выходим
+        if not hasattr(request, 'user'):
+            return response
 
         # Если заголовок уже установлен - не меняем его
         if 'cache-control' not in response:
