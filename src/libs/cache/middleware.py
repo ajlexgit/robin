@@ -17,6 +17,10 @@ for url_settings in getattr(settings, 'SCC_CUSTOM_CACHE_CONTROLS', []):
         url_settings[2],
     ))
 
+DISABLED_URLS = []
+for url_settings in getattr(settings, 'SCC_DISABLED_URLS', []):
+    DISABLED_URLS.append(re.compile(url_settings))
+
 
 class SCCMiddleware:
     @staticmethod
@@ -35,6 +39,11 @@ class SCCMiddleware:
         # Если нет юзера - выходим
         if not hasattr(request, 'user'):
             return response
+
+        # Запрещенные адреса
+        for url in DISABLED_URLS:
+            if url.match(request.path_info):
+                return response
 
         # Если заголовок уже установлен - не меняем его
         if 'cache-control' not in response:

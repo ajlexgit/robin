@@ -344,6 +344,10 @@ YOUTUBE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
 SCC_ENABLED = True
 SCC_MAX_AGE_PRIVATE = 0
 SCC_MAX_AGE_PUBLIC = 21600
+SCC_DISABLED_URLS = [
+    r'/admin/',
+    r'/dladmin/',
+]
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
