@@ -5,3 +5,10 @@ input:not([type="radio"]):not([type="checkbox"]), select, textarea {
   width: 170px;
   @include default_font;
 }
+
+fieldset {
+  margin-bottom: 10px;
+  &:nth-last-of-type(1) {
+    margin-bottom: 0;
+  }
+}
