@@ -1,6 +1,7 @@
 import re
 import logging
 from django.conf import settings
+from django.utils.cache import patch_vary_headers
 
 logger = logging.getLogger(__name__)
 PREVENT_CACHING = getattr(settings, 'SCC_PREVENT_CACHING', settings.DEBUG)
@@ -57,5 +58,8 @@ class SCCMiddleware:
             if 'etag' in response:
                 logger.debug('Prevented "ETag": %s', response['etag'])
                 del response['etag']
+
+        # Кэш должен различаться для разных кук
+        patch_vary_headers(response, ('Cookie',))
 
         return response
