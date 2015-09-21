@@ -33,6 +33,3 @@ PIPELINE_ENABLED = True
 
 # Devserver
 DEVSERVER_SQL_MIN_DURATION = 100
-
-# Smart Cache-Control
-SCC_PREVENT_CACHING = True

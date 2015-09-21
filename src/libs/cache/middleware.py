@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
-PREVENT_CACHING = getattr(settings, 'SCC_PREVENT_CACHING', False)
+PREVENT_CACHING = getattr(settings, 'SCC_PREVENT_CACHING', settings.DEBUG)
 MAX_AGE_PUBLIC = getattr(settings, 'SCC_MAX_AGE_PUBLIC', 86400)
 MAX_AGE_PRIVATE = getattr(settings, 'SCC_MAX_AGE_PRIVATE', 0)
 ENABLED = getattr(settings, 'SCC_ENABLED', True)
@@ -23,6 +23,15 @@ class SCCMiddleware:
         if not ENABLED:
             return response
 
+        # Если не указан content-type - выходим
+        if 'content-type' not in response:
+            return response
+
+        # Если не HTML-страница - выходим
+        if 'text/html' not in response['content-type']:
+            return response
+
+
         # Если заголовок уже установлен - не меняем его
         if 'cache-control' not in response:
             if request.user.is_authenticated():
@@ -40,12 +49,13 @@ class SCCMiddleware:
                     response['Cache-Control'] = '{}, must-revalidate, max-age={}'.format(*url[1:])
                     break
 
+        # Игнорирование кэширования (при разработке)
         if PREVENT_CACHING:
             if 'last-modified' in response:
-                logger.debug('Last-modified: %s', response['last-modified'])
+                logger.debug('Prevented "Last-modified": %s', response['last-modified'])
                 del response['last-modified']
             if 'etag' in response:
-                logger.debug('ETag: %s', response['etag'])
+                logger.debug('Prevented "ETag": %s', response['etag'])
                 del response['etag']
 
         return response
