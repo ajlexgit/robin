@@ -67,11 +67,15 @@
 
             class FirstBlocksInline(AttachableReferenceTabularInline):
                 # Первый набор блоков (set_name = 'default')
+                verbose_name = 'My first block'
+                verbose_name_plural = 'My first blocks'
                 suit_classes = 'suit-tab suit-tab-blocks_1'
 
             class SecondBlocksInline(AttachableReferenceTabularInline):
                 # Второй набор блоков
                 set_name = 'second'
+                verbose_name = 'My second block'
+                verbose_name_plural = 'My second blocks'
                 suit_classes = 'suit-tab suit-tab-blocks_2'
 
             @admin.register(MyPage)

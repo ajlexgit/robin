@@ -16,12 +16,16 @@ class InlineSampleAdmin(admin.TabularInline):
 
 class MyPageFirstBlocksInline(AttachableReferenceTabularInline):
     set_name = 'first'
-    suit_classes = 'suit-tab suit-tab-blocks_1'
+    verbose_name = 'My first block'
+    verbose_name_plural = 'My first blocks'
+    suit_classes = 'suit-tab suit-tab-blocks'
 
 
 class MyPageSecondBlocksInline(AttachableReferenceTabularInline):
     set_name = 'second'
-    suit_classes = 'suit-tab suit-tab-blocks_2'
+    verbose_name = 'My second block'
+    verbose_name_plural = 'My second blocks'
+    suit_classes = 'suit-tab suit-tab-blocks'
 
 
 @admin.register(MainBlockFirst)
@@ -55,8 +59,7 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
     suit_form_tabs = (
         ('general', _('General')),
         ('comments', _('Comments')),
-        ('blocks_1', _('Blocks 1')),
-        ('blocks_2', _('Blocks 2')),
+        ('blocks', _('Blocks')),
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
