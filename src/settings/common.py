@@ -147,6 +147,7 @@ PIPELINE_CSS = {
         'source_filenames': (
             'scss/grid.scss',
             'scss/layout.scss',
+            'scss/forms.scss',
             'scss/text_styles.scss',
             'scss/popups/popups.scss',
             'header/scss/header.scss',

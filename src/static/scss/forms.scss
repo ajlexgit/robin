@@ -1,0 +1,7 @@
+@import 'mixins';
+
+input:not([type="radio"]):not([type="checkbox"]), select, textarea {
+  padding: 5px 6px;
+  width: 170px;
+  @include default_font;
+}
