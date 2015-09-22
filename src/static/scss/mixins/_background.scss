@@ -9,3 +9,13 @@
     @content;
   }
 }
+
+@function rel-background-size($img_w, $img_h, $sprite_w, $sprite_h) {
+  $list: "#{100 * $sprite_w / $img_w}% #{100 * $sprite_h / $img_h}%";
+  @return #{$list}
+}
+
+@function rel-background-position($img_w, $img_h, $sprite_w, $sprite_h, $offset_x, $offset_y) {
+  $list: "#{100 * $offset_x / ($img_w - $sprite_w)}% #{100 * $offset_y / ($img_h - $sprite_h)}%";
+  @return #{$list}
+}

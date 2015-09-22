@@ -5,6 +5,7 @@
             this.$root = $root;
             this.$input = $root.find('input:first');
             this.$dropdown = $root.find('.sprite-icon-dropdown');
+            this.$preview = $root.find('.sprite-icon-preview');
 
             // Events
             var that = this;
@@ -22,7 +23,7 @@
 
         SpriteImage.prototype.selectItem = function($item) {
             $item.addClass('active').siblings('.active').removeClass('active');
-            this.$root.find('.sprite-icon-preview').css({
+            this.$preview.css({
                 backgroundPosition: $item.css('background-position')
             });
             this.$input.val($item.data('key'));
@@ -31,8 +32,9 @@
         // Dropdown
         SpriteImage.prototype.openDropdown = function() {
             var that = this;
+            var margin = parseInt(this.$preview.width()) + 18;
             that.$root.addClass('opened');
-            that.$dropdown.stop().slideDown(200);
+            that.$dropdown.css('margin-left', margin).stop().slideDown(200);
             $(document).off('.sprite-image').on('click.sprite-image', function(event) {
                 var $target = $(event.target);
                 if (!$target.closest(that.$dropdown.children('.sprite-icon-list')).length) {

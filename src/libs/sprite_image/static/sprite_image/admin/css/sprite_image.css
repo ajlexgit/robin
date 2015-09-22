@@ -13,8 +13,19 @@
 /* Wrapper */
 .sprite-icon-field .wrapper {
     position: relative;
-    padding: 1px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
+
+.sprite-icon-field .wrapper:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
 
 /* Preview */
 .sprite-icon-preview, .sprite-icon-item {
@@ -30,6 +41,7 @@
 
 .sprite-icon-preview {
     float: left;
+    margin: 8px;
     box-shadow: 0 0 8px #888;
 }
 
@@ -45,11 +57,9 @@
 .sprite-icon-list {
     display: inline-block;
     overflow: hidden;
-    margin-left: 20px;
-    padding: 4px;
+    padding: 3px;
     cursor: default;
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: #fafad0;
 
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
