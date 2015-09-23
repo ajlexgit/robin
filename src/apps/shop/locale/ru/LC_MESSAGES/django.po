@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 16:23+0400\n"
+"POT-Creation-Date: 2015-09-18 10:26+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,35 +19,35 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:18 admin.py:37 admin.py:57
-msgid "SEO"
-msgstr "SEO"
-
-#: admin.py:36 admin.py:56 admin.py:108
+#: admin.py:20 admin.py:40 admin.py:74 admin.py:126
 msgid "General"
 msgstr "Общие"
 
-#: admin.py:66
+#: admin.py:21 admin.py:41 admin.py:75
+msgid "SEO"
+msgstr "SEO"
+
+#: admin.py:84
 msgid "Categories"
 msgstr "Категории"
 
-#: admin.py:71 admin.py:92 admin.py:126
+#: admin.py:89 admin.py:110
 msgid "Status"
 msgstr "Статус"
 
-#: admin.py:88 templates/shop/admin/products.html:10
+#: admin.py:106 templates/shop/admin/products.html:10
 msgid "Cost"
 msgstr "Цена"
 
-#: admin.py:109
+#: admin.py:127
 msgid "Products"
 msgstr "Товары"
 
-#: admin.py:117
+#: admin.py:135
 msgid "Products cost"
 msgstr "Цена товаров"
 
-#: admin.py:122 templates/shop/admin/products.html:12
+#: admin.py:140 templates/shop/admin/products.html:12
 msgid "Total cost"
 msgstr "Итого"
 
@@ -107,11 +107,11 @@ msgstr "описание"
 msgid "price"
 msgstr "цена"
 
-#: models.py:119 models.py:212 models.py:217
+#: models.py:119 models.py:208 models.py:213
 msgid "product"
 msgstr "товар"
 
-#: models.py:120 models.py:218
+#: models.py:120 models.py:214
 msgid "products"
 msgstr "товары"
 
@@ -147,7 +147,7 @@ msgstr "сессия"
 msgid "create date"
 msgstr "дата создания"
 
-#: models.py:174 models.py:211
+#: models.py:174 models.py:207
 msgid "order"
 msgstr "заказ"
 
@@ -155,11 +155,11 @@ msgstr "заказ"
 msgid "orders"
 msgstr "заказы"
 
-#: models.py:213
+#: models.py:209
 msgid "price per item"
 msgstr "цена за единицу"
 
-#: models.py:214
+#: models.py:210
 msgid "count"
 msgstr "количество"
 

@@ -23,9 +23,10 @@ class TemplateExView(RenderToStringMixin, View):
         Расширенная версия TemplateView:
         1) Позволяет переопределить шаблон в методе render_to_response
         2) Позволяет рендерить шаблон в строку
-        3) Позволяет задать метод get_object, который должен вернуть экземпляр объекта,
-           который будет сохранен в self.object. Если вернет None - будет возвращена 404.
-           Этот метод создан для оптимизации запросов при применении last_modified и etag.
+        3) Позволяет задать метод get_objects, который может установить атрибуты объекту
+           self. Метод автоматически перехватывает исключения ObjectDoesNotExist
+           и MultipleObjectsReturned. Этот метод создан для оптимизации запросов
+           при применении last_modified и etag.
         4) Позволяет установить кэширование в браузере для GET-страницы
            путем задания методов last_modified и/или etag.
 
@@ -33,9 +34,8 @@ class TemplateExView(RenderToStringMixin, View):
             class IndexView(TemplateExView):
                 template_name = 'contacts/index.html'
 
-                @staticmethod
-                def get_object(request):
-                    return ContactsConfig.get_solo()
+                def get_objects(self, request):
+                    self.object =  ContactsConfig.get_solo()
 
                 def last_modified(self, request):
                     return self.object.updated
@@ -45,7 +45,9 @@ class TemplateExView(RenderToStringMixin, View):
                         'config': self.object,
                     })
     """
-    object = None
+
+    def get_objects(self, request, *args, **kwargs):
+        pass
 
     def dispatch(self, request, *args, **kwargs):
         method = request.method.lower()
@@ -54,15 +56,10 @@ class TemplateExView(RenderToStringMixin, View):
 
             # Декорирование GET-метода
             if method == 'get' and hasattr(self, method):
-                get_object = getattr(self, 'get_object', None)
-                if get_object is not None:
-                    try:
-                        self.object = get_object(request, *args, **kwargs)
-                    except (ObjectDoesNotExist, MultipleObjectsReturned):
-                        raise Http404
-                    else:
-                        if self.object is None:
-                            raise Http404
+                try:
+                    self.get_objects(request, *args, **kwargs)
+                except (ObjectDoesNotExist, MultipleObjectsReturned):
+                    raise Http404
 
                 last_mod = getattr(self, 'last_modified', None)
                 etag = getattr(self, 'etag', None)
