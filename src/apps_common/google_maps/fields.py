@@ -18,8 +18,7 @@ class CoordsDescriptor(object):
 
         if isinstance(value, str):
             value = value.split(',')
-
-        instance.__dict__[self.field.name] = self.field.attr_class(*value)
+            instance.__dict__[self.field.name] = self.field.attr_class(*value)
 
         return instance.__dict__[self.field.name]
 
