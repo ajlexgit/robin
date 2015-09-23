@@ -47,7 +47,13 @@ class TemplateExView(RenderToStringMixin, View):
     """
 
     def get_objects(self, request, *args, **kwargs):
-        pass
+        return None
+
+    def last_modified(self):
+        return None
+
+    def etag(self):
+        return None
 
     def dispatch(self, request, *args, **kwargs):
         method = request.method.lower()
@@ -61,9 +67,10 @@ class TemplateExView(RenderToStringMixin, View):
                 except (ObjectDoesNotExist, MultipleObjectsReturned):
                     raise Http404
 
-                last_mod = getattr(self, 'last_modified', None)
-                etag = getattr(self, 'etag', None)
-                handler = condition(last_modified_func=last_mod, etag_func=etag)(handler)
+                handler = condition(
+                    last_modified_func=self.last_modified,
+                    etag_func=self.etag,
+                )(handler)
         else:
             handler = self.http_method_not_allowed
         return handler(request, *args, **kwargs)
