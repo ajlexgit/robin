@@ -34,10 +34,10 @@ class TemplateExView(RenderToStringMixin, View):
             class IndexView(TemplateExView):
                 template_name = 'contacts/index.html'
 
-                def get_objects(self, request):
+                def get_objects(self, request, *args, **kwargs):
                     self.object =  ContactsConfig.get_solo()
 
-                def last_modified(self, request):
+                def last_modified(self, *args, **kwargs):
                     return self.object.updated
 
                 def get(self, request):
@@ -49,10 +49,10 @@ class TemplateExView(RenderToStringMixin, View):
     def get_objects(self, request, *args, **kwargs):
         return None
 
-    def last_modified(self):
+    def last_modified(self, *args, **kwargs):
         return None
 
-    def etag(self):
+    def etag(self, *args, **kwargs):
         return None
 
     def dispatch(self, request, *args, **kwargs):
