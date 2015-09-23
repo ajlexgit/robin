@@ -107,7 +107,7 @@
         }
 
         // Создание контейнера для карты
-        var $map = $('<div>');
+        var $map = $('<div>').addClass('yandex-map');
         if (field_data.width) {
             $map.width(field_data.width)
         }
@@ -132,16 +132,16 @@
         // Инициализация карт после добавления инлайна с картой
         if (window.Suit) {
             Suit.after_inline.register('yandex_map_inline', function(inline_prefix, row) {
-                row.find('.yandex-map').each(init_map_field);
+                row.find('.yandex-map-field').each(init_map_field);
             })
         }
     }).on('yandex-maps-ready', function() {
         // Инициализация всех карт на странице
-        $('.yandex-map').each(init_map_field);
-    }).on('change', '.yandex-map', function() {
+        $('.yandex-map-field').each(init_map_field);
+    }).on('change', '.yandex-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var $map = $field.next('div');
+        var $map = $field.next('.yandex-map');
         var map_object = $map.data('map');
 
         var coords = text2coords($field.val());

@@ -6,12 +6,12 @@ class YandexCoordsFieldWidget(forms.TextInput):
 
     class Media:
         js = (
-            'yandex_maps/admin/js/init.js',
+            'yandex_maps/admin/js/yandex_maps.js',
         )
 
     def __init__(self, attrs=None):
         defaults = {
-            'class': 'yandex-map',
+            'class': 'yandex-map-field',
         }
         if attrs:
             defaults.update(attrs)

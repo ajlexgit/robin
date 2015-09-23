@@ -99,7 +99,7 @@
         }
 
         // Создание контейнера для карты
-        var $map = $('<div>');
+        var $map = $('<div>').addClass('google-map');
         if (field_data.width) {
             $map.width(field_data.width)
         }
@@ -124,16 +124,16 @@
         // Инициализация карт после добавления инлайна с картой
         if (window.Suit) {
             Suit.after_inline.register('google_map_inline', function(inline_prefix, row) {
-                row.find('.google-map').each(init_map_field);
+                row.find('.google-map-field').each(init_map_field);
             })
         }
     }).on('google-maps-ready', function() {
         // Инициализация всех карт на странице
-        $('.google-map').each(init_map_field);
-    }).on('change', '.google-map', function() {
+        $('.google-map-field').each(init_map_field);
+    }).on('change', '.google-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var $map = $field.next('div');
+        var $map = $field.next('.google-map');
         var map_object = $map.data('map');
 
         var coords = text2coords($field.val());

@@ -43,6 +43,7 @@
                 dataType: 'json'
             }, options, {
                 beforeSend: function() {
+                    this.$form = $form;
                     $form.data('ajaxform_blocked', true);
                     if (options.beforeSend && $.isFunction(options.beforeSend)) {
                         options.beforeSend.apply(this, arguments);

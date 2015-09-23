@@ -44,6 +44,14 @@
             address = models.CharField(_('address'), max_length=255, blank=True)
             coords = YandexCoordsField(_('coordinates'), null=True, blank=True)
 
+        page.js:
+            $(document).on('google-maps-ready', function() {
+                var ymap = new YandexMap('.yandex-map', {
+                    lng: $contact.data('lng'),
+                    lat: $contact.data('lat')
+                });
+            });
+
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {

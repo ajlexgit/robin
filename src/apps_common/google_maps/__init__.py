@@ -43,6 +43,19 @@
             address = models.CharField(_('address'), max_length=255, blank=True)
             coords = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
+        page.js:
+            $(document).on('google-maps-ready', function() {
+                var gmap = new GoogleMap('.google-map', {
+                    lng: $contact.data('lng'),
+                    lat: $contact.data('lat'),
+                    onResize: function() {
+                        if (gmap_marker) {
+                            this.setCenter(gmap_marker.getPosition());
+                        }
+                    }
+                });
+            });
+
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {

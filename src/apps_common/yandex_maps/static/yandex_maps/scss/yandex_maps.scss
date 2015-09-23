@@ -1,7 +1,12 @@
 @import "mixins";
 
-.yandex-map {
-  > ymaps {
-    width: 100% !important;
+.ymaps-map {
+  .ymaps-b-balloon__content {
+    @include font-size(14px);
+
+    > ymaps {
+      padding: 0 10px;
+      @include border-box;
+    }
   }
 }
