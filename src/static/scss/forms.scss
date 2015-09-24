@@ -4,10 +4,6 @@ form {
   @include border-box;
 }
 
-label {
-  @include default_fontsize;
-}
-
 input:not([type="radio"]):not([type="checkbox"]), select, textarea {
   width: 170px;
   padding: 5px 6px;
@@ -22,4 +18,21 @@ fieldset {
   &:nth-last-of-type(1) {
     margin-bottom: 0;
   }
+  
+  label {
+    display: block;
+    margin-bottom: 4px;
+    @include default_fontsize;
+  }
+  
+  &.errors {
+    input:not([type="radio"]):not([type="checkbox"]), select, textarea {
+      border: 2px solid red;
+      padding: 3px 4px;
+    }
+  }
+}
+
+.errorlist {
+  display: none;
 }
