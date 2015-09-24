@@ -23,6 +23,7 @@ $media1024: 1024px;
 $media768: 768px;
 $media640: 640px;
 $media600: 600px;
+$media480: 480px;
 
 @mixin media_interval($from, $to) {
   $line: "";
