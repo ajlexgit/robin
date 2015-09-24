@@ -1,8 +1,7 @@
 import os
 import sys
 
-# Shop: mptt categories
-# Кнопка добавления через Popup
+# Shop: caegories filter
 # CKeditorUpload: валидация пустого текста
 # интеллектуальная проркутка слайдов мышью, чтоб не дергалась
 # Очередь анимаций JS

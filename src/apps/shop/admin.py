@@ -87,6 +87,7 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     )
     form = ProductForm
     actions = ('make_hidden', 'make_visible')
+    list_filter = ('categories', )
     list_display = ('view', '__str__', 'serial', 'categories_list', 'price_alternate', 'is_visible')
     list_display_links = ('__str__', )
     prepopulated_fields = {'alias': ('title', )}
