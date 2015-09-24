@@ -119,7 +119,7 @@ class Product(models.Model):
     photo = StdImageField(_('photo'),
         storage=MediaStorage('shop'),
         min_dimensions=(200, 0),
-        admin_variation='normal',
+        admin_variation='small',
         variations=dict(
             normal=dict(
                 size=(450, 450),
@@ -127,7 +127,7 @@ class Product(models.Model):
                 stretch=False,
             ),
             small=dict(
-                size=(100, 100),
+                size=(140, 140),
                 crop=False,
                 stretch=False,
             ),

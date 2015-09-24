@@ -8,7 +8,7 @@ class AutocompleteMixin:
                  dependencies=(),
                  expressions='title__icontains',
                  placeholder=_('Search element'),
-                 stringify_method='__str__',
+                 item2dict_func=None,
                  minimum_input_length=2,
                  can_add_related=True,
                  close_on_select=True,
@@ -31,9 +31,9 @@ class AutocompleteMixin:
             placeholder: str
                 Заполнитель пустого значения
 
-            stringify_method: str (default: __str__)
-                Имя метода, возвращающего строковое представление объекта
-                для селектбокса
+            item2dict_func: func (default: None)
+                Функция, возвращающая представление объекта для селектбокса.
+                Должна вернуть словарь, который обязан включать ключи "id" и "text"
 
             minimum_input_length: int
                 Минимальное количество введенных символов для запуска
@@ -54,7 +54,11 @@ class AutocompleteMixin:
         self.minimum_input_length = int(minimum_input_length)
         self.close_on_select = int(bool(close_on_select))
         super().__init__(*args, **kwargs)
-        self.widget.stringify_method = stringify_method
+
+        if item2dict_func is not None:
+            self.widget.item2dict_module = item2dict_func.__module__
+            self.widget.item2dict_method = item2dict_func.__qualname__
+
         self.widget.dependencies = dependencies
         self.widget.can_add_related = int(bool(can_add_related))
 

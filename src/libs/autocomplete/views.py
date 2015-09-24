@@ -1,5 +1,6 @@
 import math
 import pickle
+import importlib
 from django.apps import apps
 from django.db.models import Q
 from django.conf import settings
@@ -8,6 +9,13 @@ from django.http import Http404, JsonResponse
 
 CACHE_BACKEND = getattr(settings,  'AUTOCOMPLETE_CACHE_BACKEND', 'default')
 cache = caches[CACHE_BACKEND]
+
+
+def default_item2dict_func(obj):
+    return {
+        'id': obj.pk,
+        'text': str(obj),
+    }
 
 
 def autocomplete_widget(request, application, model_name, name):
@@ -69,10 +77,28 @@ def autocomplete_widget(request, application, model_name, name):
         offset = (real_page - 1) * page_limit
         queryset = queryset[offset:offset+page_limit]
 
+    # Метод
+    item2dict = default_item2dict_func
+    try:
+        module = importlib.import_module(redis_data['item2dict_module'])
+    except ImportError:
+        pass
+    else:
+        current_obj = module
+        for part in redis_data['item2dict_method'].split('.'):
+            try:
+                current_obj = getattr(current_obj, part)
+            except AttributeError:
+                break
+        else:
+            item2dict = current_obj
+
     for item in queryset.iterator():
-        data['result'].append({
-            'id': item.pk,
-            'text': getattr(item, redis_data['stringify_method'])(),
-        })
+        item_dict = item2dict(item)
+        if not isinstance(item_dict, dict):
+            raise ValueError('autocomplete item2dict_method should return dict')
+        if ('id' not in item_dict) or ('text' not in item_dict):
+            raise ValueError('autocomplete item2dict_method should contain "id" and "text"')
+        data['result'].append(item_dict)
 
     return JsonResponse(data)

@@ -17,7 +17,8 @@ cache = caches[CACHE_BACKEND]
 
 class AutocompleteWidgetMixin:
     template = 'autocomplete/autocomplete.html'
-    stringify_method = '__str__'
+    item2dict_module = None
+    item2dict_method = None
     can_add_related = True
     dependencies = ()
 
@@ -49,7 +50,8 @@ class AutocompleteWidgetMixin:
         # Сохраняем данные в Redis
         cache.set('.'.join((application, model_name, real_name)), pickle.dumps({
             'query': queryset.query,
-            'stringify_method': self.stringify_method,
+            'item2dict_module': self.item2dict_module,
+            'item2dict_method': self.item2dict_method,
             'dependencies': self.dependencies,
         }), timeout=1800)
 
