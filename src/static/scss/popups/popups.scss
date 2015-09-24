@@ -53,6 +53,9 @@
   text-align: initial;
   background-color: #0B0;
   @include border-box;
+  @include media_interval($media480, $media768) {
+    padding: 36px;
+  }
   @include media_interval(0, $media480) {
     padding: 20px 20px 36px;
     min-height: 100px;
