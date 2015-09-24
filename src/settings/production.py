@@ -23,6 +23,7 @@ TEMPLATE_DEBUG = False
 # настройки статики
 STATIC_ROOT = '/home/webapp/%s/static/' % VZ_DIRECTORY
 MEDIA_ROOT = '/home/webapp/%s/media/' % VZ_DIRECTORY
+BACKUP_ROOT = '/home/webapp/%s/backup/' % VZ_DIRECTORY
 
 DATABASES = {
     'default': {
