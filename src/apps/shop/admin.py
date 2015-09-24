@@ -90,7 +90,10 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     list_filter = ('categories', )
     list_display = ('view', '__str__', 'serial', 'categories_list', 'price_alternate', 'is_visible')
     list_display_links = ('__str__', )
-    prepopulated_fields = {'alias': ('title', )}
+    prepopulated_fields = {
+        'alias': ('title', ),
+        'serial': ('title', ),
+    }
     sortable = 'sort_order'
     suit_form_tabs = (
         ('general', _('General')),
