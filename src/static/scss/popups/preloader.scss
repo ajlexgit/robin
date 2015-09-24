@@ -3,6 +3,7 @@
 .preloader {
 
   #popup-content {
+    padding: 0;
     text-align: center;
     @include valign_after;
   }
@@ -12,5 +13,9 @@
     height: 80px;
     fill: #FFF;
     vertical-align: middle;
+    @include media_interval(0, $media480) {
+      width: 64px;
+      height: 64px;
+    }
   }
 }
