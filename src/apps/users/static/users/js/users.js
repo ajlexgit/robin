@@ -3,11 +3,7 @@
         Открытие окна регистрации
     */
     $(document).on('click', '.register-popup', function() {
-        $.popup.force({
-            classes: 'preloader',
-            ui: false,
-            outClick: false
-        });
+        $.preloader();
 
         $.ajax({
             url: window.js_storage.ajax_register,
@@ -31,21 +27,18 @@
     */
     $(document).on('submit', '#ajax-register-form', function() {
         var form = $(this);
-        $.popup.force({
-            classes: 'preloader',
-            ui: false,
-            outClick: false
-        });
+        $.preloader();
+
         $.ajax({
             url: window.js_storage.ajax_register,
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                if (response.form) {
                     $.popup({
                         classes: 'users-popup',
-                        content: response.errors
+                        content: response.form
                     }).show();
                 } else {
                     $(document).trigger('register.auth.users', response);
@@ -66,11 +59,8 @@
         Открытие окна авторизации
     */
     $(document).on('click', '.login-popup', function() {
-        $.popup.force({
-            classes: 'preloader',
-            ui: false,
-            outClick: false
-        });
+        $.preloader();
+
         $.ajax({
             url: window.js_storage.ajax_login,
             type: 'GET',
@@ -94,21 +84,18 @@
     */
     $(document).on('submit', '#ajax-login-form', function() {
         var form = $(this);
-        $.popup.force({
-            classes: 'preloader',
-            ui: false,
-            outClick: false
-        });
+        $.preloader();
+
         $.ajax({
             url: window.js_storage.ajax_login,
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                if (response.form) {
                     $.popup({
                         classes: 'users-popup',
-                        content: response.errors
+                        content: response.form
                     }).show();
                 } else {
                     $(document).trigger('login.auth.users', response);
@@ -150,11 +137,8 @@
         Открытие окна сброса пароля
     */
     $(document).on('click', '.reset-password-popup', function() {
-        $.popup.force({
-            classes: 'preloader',
-            ui: false,
-            outClick: false
-        });
+        $.preloader();
+
         $.ajax({
             url: window.js_storage.ajax_reset,
             type: 'GET',
@@ -178,21 +162,18 @@
     */
     $(document).on('submit', '#ajax-reset-password-form', function() {
         var form = $(this);
-        $.popup.force({
-            classes: 'preloader',
-            ui: false,
-            outClick: false
-        });
+        $.preloader();
+
         $.ajax({
             url: window.js_storage.ajax_reset,
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                if (response.form) {
                     $.popup({
                         classes: 'users-popup',
-                        content: response.errors
+                        content: response.form
                     }).show();
                 } else {
                     $(document).trigger('reset-password.auth.users');

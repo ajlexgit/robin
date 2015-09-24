@@ -2,33 +2,40 @@
 {% load i18n %}
 
 {% block content %}
-  <h1 class="title-h1">{% trans 'Authorization' %}</h1>
 
-  {{ form.media }}
-  <form method="post" action="" id="login-form"
-        class="users-login-form users-form" autocomplete="off">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
+  <div class="grid">
+    <div class="gc gc-alone">
+      <h1 class="title-h1">{% trans 'Authorization' %}</h1>
+    </div>
 
-    {{ form.non_field_errors.as_ul }}
-    <fieldset class="{{ form.username.errors.classes }}">
-      {{ form.username.label_tag }}
-      {{ form.username }}
-      {{ form.username.errors }}
-    </fieldset>
-    <fieldset class="{{ form.password.errors.classes }}">
-      {{ form.password.label_tag }}
-      {{ form.password }}
-      {{ form.password.errors }}
-    </fieldset>
+    <div class="gc gc-alone">
+      {{ form.media }}
+      <form method="post" action="" id="login-form"
+            class="users-login-form users-form" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
 
-    <fieldset>
-      <button type="submit" class="btn">{% trans 'Sign in' %}</button>
-    </fieldset>
-  </form>
+        {{ form.non_field_errors.as_ul }}
+        <fieldset class="{{ form.username.errors.classes }}">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+          {{ form.username.errors }}
+        </fieldset>
+        <fieldset class="{{ form.password.errors.classes }}">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+          {{ form.password.errors }}
+        </fieldset>
 
-  <script>
-    $('#login-form').find('input:visible:first').focus();
-  </script>
+        <fieldset>
+          <button type="submit" class="btn">{% trans 'Sign in' %}</button>
+        </fieldset>
+      </form>
+
+      <script>
+        $('#login-form').find('input:visible:first').focus();
+      </script>
+    </div>
+  </div>
 
 {% endblock content %}

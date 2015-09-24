@@ -48,7 +48,7 @@ class PlainErrorFormMixin:
                 code=code,
                 params=params
             ))
-        elif code in self.error_messages:
+        elif hasattr(self, 'error_messages') and code in self.error_messages:
             self.add_error(fieldname, ValidationError(
                 self.error_messages[code],
                 code=code,
@@ -66,3 +66,26 @@ class PlainErrorFormMixin:
     def error_list_full(self):
         """ Список всех ошибок """
         return tuple(self.errors.items())
+
+    @property
+    def error_dict(self):
+        """ Список словарей ошибок полей """
+        result = []
+        for key in self.fields:
+            if key in self.errors:
+                err_list = self.errors.get(key)
+                result.append({
+                    'field': key,
+                    'errors': err_list,
+                    'classes': err_list.classes
+                })
+        return tuple(result)
+
+    @property
+    def error_dict_full(self):
+        """ Список словарей всех ошибок """
+        return tuple({
+            'field': key,
+            'errors': err_list,
+            'classes': err_list.classes
+        } for key, err_list in self.errors.items())

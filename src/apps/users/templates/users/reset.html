@@ -2,27 +2,34 @@
 {% load i18n %}
 
 {% block content %}
-  <h1 class="title-h1">{% trans 'Reset password' %}</h1>
 
-  {{ form.media }}
-  <form method="post" action="" id="reset-password-form"
-        class="users-reset-password-form users-form" autocomplete="off">
-    {% csrf_token %}
+  <div class="grid">
+    <div class="gc gc-alone">
+      <h1 class="title-h1">{% trans 'Reset password' %}</h1>
+    </div>
 
-    {{ form.non_field_errors.as_ul }}
-    <fieldset class="{{ form.email.errors.classes }}">
-      {{ form.email.label_tag }}
-      {{ form.email }}
-      {{ form.email.errors }}
-    </fieldset>
+    <div class="gc gc-alone">
+      {{ form.media }}
+      <form method="post" action="" id="reset-password-form"
+            class="users-reset-password-form users-form" autocomplete="off">
+        {% csrf_token %}
 
-    <fieldset>
-      <button type="submit" class="btn">{% trans 'Continue' %}</button>
-    </fieldset>
-  </form>
+        {{ form.non_field_errors.as_ul }}
+        <fieldset class="{{ form.email.errors.classes }}">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {{ form.email.errors }}
+        </fieldset>
 
-  <script>
-    $('#reset-password-form').find('input:visible:first').focus();
-  </script>
+        <fieldset>
+          <button type="submit" class="btn">{% trans 'Continue' %}</button>
+        </fieldset>
+      </form>
+
+      <script>
+        $('#reset-password-form').find('input:visible:first').focus();
+      </script>
+    </div>
+  </div>
 
 {% endblock content %}

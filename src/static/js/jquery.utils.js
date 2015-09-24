@@ -4,20 +4,21 @@
     //      ANIMATION MAGIC
     // ======================================================================================
 
+    var emptyHandler = $.noop;
     if (document.addEventListener) {
         if ('onwheel' in document) {
             // IE9+, FF17+, Ch31+
-            document.addEventListener("wheel", $.noop);
+            document.addEventListener("wheel", emptyHandler);
         } else if ('onmousewheel' in document) {
             // устаревший вариант события
-            document.addEventListener("mousewheel", $.noop);
+            document.addEventListener("mousewheel", emptyHandler);
         } else {
             // Firefox < 17
-            document.addEventListener("MozMousePixelScroll", $.noop);
+            document.addEventListener("MozMousePixelScroll", emptyHandler);
         }
     } else {
         // IE8-
-        document.attachEvent("onmousewheel", $.noop);
+        document.attachEvent("onmousewheel", emptyHandler);
     }
 
     // ======================================================================================
@@ -388,6 +389,31 @@
             df.reject('can not read');
         };
         reader.readAsDataURL(file);
+        return df.promise();
+    };
+
+
+    /*
+        Создает Deferred-объект, который читает файл по URL.
+     */
+    $.urlReader = function(url) {
+        var df = $.Deferred();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        // Hack to pass bytes through unprocessed.
+        xhr.overrideMimeType('text/plain; charset=x-user-defined');
+
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                df.resolve(this.responseText);
+            }
+        };
+        xhr.onerror = function() {
+            df.reject('can not read');
+        };
+        xhr.send();
         return df.promise();
     };
 

@@ -36,7 +36,8 @@ class LoginView(RenderToStringMixin, FormView):
 
     def form_invalid(self, form):
         return JsonResponse({
-            'errors': self.render_to_string({
+            'errors': form.error_list,
+            'form': self.render_to_string({
                 'form': form,
             }),
         })
@@ -69,7 +70,8 @@ class RegisterView(RenderToStringMixin, FormView):
 
     def form_invalid(self, form):
         return JsonResponse({
-            'errors': self.render_to_string({
+            'errors': form.error_list,
+            'form': self.render_to_string({
                 'form': form,
             }),
         })
@@ -104,7 +106,8 @@ class PasswordResetView(RenderToStringMixin, FormView):
 
     def form_invalid(self, form):
         return JsonResponse({
-            'errors': self.render_to_string({
+            'errors': form.error_list,
+            'form': self.render_to_string({
                 'form': form,
             }),
         })
