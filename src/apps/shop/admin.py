@@ -87,7 +87,7 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     )
     form = ProductForm
     actions = ('make_hidden', 'make_visible')
-    list_display = ('view', '__str__', 'serial', 'categories_list', 'price', 'is_visible')
+    list_display = ('view', '__str__', 'serial', 'categories_list', 'price_alternate', 'is_visible')
     list_display_links = ('__str__', )
     prepopulated_fields = {'alias': ('title', )}
     sortable = 'sort_order'
@@ -103,6 +103,11 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
             for item in obj.categories.all()
         )
     categories_list.short_description = _('Categories')
+
+    def price_alternate(self, obj):
+        return obj.price.alternate
+    price_alternate.short_description = _('Price')
+    price_alternate.admin_order_field = 'price'
 
     def make_hidden(modeladmin, request, queryset):
         queryset.update(visible=False)
