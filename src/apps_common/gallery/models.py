@@ -56,7 +56,7 @@ class GalleryItemBase(ModelChecksMixin, models.Model):
     gallery = generic.GenericForeignKey(for_concrete_model=False)
     description = models.TextField(_('description'), blank=True)
 
-    order = models.PositiveIntegerField(_('order'), default=0)
+    sort_order = models.PositiveIntegerField(_('sort order'), default=0)
     created = models.DateTimeField(_('created on'))
     changed = models.DateTimeField(_('changed on'), auto_now=True)
 
@@ -65,7 +65,7 @@ class GalleryItemBase(ModelChecksMixin, models.Model):
     class Meta:
         verbose_name = _('gallery item')
         verbose_name_plural = _('gallery items')
-        ordering = ('object_id', 'order', 'created', )
+        ordering = ('object_id', 'sort_order', 'created', )
         index_together = (('content_type', 'object_id'), )
 
     def save(self, *args, **kwargs):

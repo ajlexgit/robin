@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attachableblock',
             name='block_type',
-            field=models.CharField(verbose_name='block type', max_length=255, choices=[('main.mainblockfirst', 'First block type'), ('main.mainblocksecond', 'Second block type')], editable=False),
+            field=models.CharField(editable=False, verbose_name='block type', max_length=255),
             preserve_default=True,
         ),
         migrations.AlterField(
-            model_name='attachableblockref',
+            model_name='attachablereference',
             name='block_type',
-            field=models.CharField(verbose_name='block type', max_length=255, choices=[('main.mainblockfirst', 'First block type'), ('main.mainblocksecond', 'Second block type')]),
+            field=models.CharField(verbose_name='block type', max_length=255),
             preserve_default=True,
         ),
     ]

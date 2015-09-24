@@ -52,6 +52,7 @@ class BaseAttachableReferenceMixin(ModelAdminInlineMixin, SortableTabularInlineB
     fields = ('block_type', 'block', 'set_name')
     readonly_fields = ('set_name',)
     extra = 0
+    sortable = 'sort_order'
     set_name = 'default'
 
     @classmethod

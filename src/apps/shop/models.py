@@ -7,6 +7,9 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
+from mptt.managers import TreeManager
 from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.stdimage.fields import StdImageField
 from libs.media_storage import MediaStorage
@@ -35,9 +38,29 @@ class CategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
             qs &= models.Q(is_visible=False)
         return qs
 
+    def only(self, *fields):
+        """ Fix for MPTT """
+        mptt_meta = self.model._mptt_meta
+        mptt_fields = tuple(
+            getattr(mptt_meta, key)
+            for key in ('left_attr', 'right_attr', 'tree_id_attr', 'level_attr')
+        )
+        final_fields = set(mptt_fields + fields + tuple(mptt_meta.order_insertion_by))
+        return super().only(*final_fields)
 
-class Category(models.Model):
+
+class CategoryTreeManager(TreeManager):
+    _queryset_class = CategoryQuerySet
+
+
+class Category(MPTTModel):
     """ Категория товаров """
+    parent = TreeForeignKey('self',
+        blank=True,
+        null=True,
+        verbose_name=_('parent category'),
+        related_name='children'
+    )
     title = models.CharField(_('title'), max_length=128)
     alias = AutoSlugField(_('alias'),
         populate_from=('title',),
@@ -45,20 +68,26 @@ class Category(models.Model):
         help_text=_('Leave it blank to auto generate it')
     )
     is_visible = models.BooleanField(_('visible'), default=False)
-    sort_order = models.PositiveIntegerField()
+    sort_order = models.PositiveIntegerField(_('sort order'))
 
-    objects = CategoryQuerySet.as_manager()
+    objects = CategoryTreeManager()
 
     class Meta:
         verbose_name = _('category')
         verbose_name_plural = _('categories')
-        ordering = ('is_visible', 'sort_order', )
+
+    class MPTTMeta:
+        order_insertion_by = ('sort_order', )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        Category.objects.partial_rebuild(self.tree_id)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return resolve_url('shop:category')
+        return resolve_url('shop:category', category_alias=self.alias)
 
 
 class ProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
@@ -111,7 +140,7 @@ class Product(models.Model):
     price = ValuteField(_('price'), validators=[MinValueValidator(0)])
     is_visible = models.BooleanField(_('visible'), default=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
-    sort_order = models.PositiveIntegerField()
+    sort_order = models.PositiveIntegerField(_('sort order'))
 
     objects = ProductQuerySet.as_manager()
 

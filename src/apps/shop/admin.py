@@ -5,9 +5,10 @@ from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
 from suit.admin import SortableModelAdmin
-from libs.autocomplete.forms import AutocompleteMultipleField
 from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
+from mptt.admin import MPTTModelAdmin
+from libs.autocomplete.forms import AutocompleteMultipleField
 from .models import ShopConfig, Category, Product, Order
 
 
@@ -24,8 +25,15 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
+class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, SortableModelAdmin):
     fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'parent',
+            ),
+        }),
+
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
@@ -33,13 +41,24 @@ class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
             ),
         }),
     )
+    actions = ('make_hidden', 'make_visible')
     list_display = ('view', 'title', 'is_visible')
     list_display_links = ('title',)
+    prepopulated_fields = {'alias': ('title',)}
     sortable = 'sort_order'
     suit_form_tabs = (
         ('general', _('General')),
         ('seo', _('SEO')),
     )
+    suit_seo_tab = 'seo'
+
+    def make_hidden(modeladmin, request, queryset):
+        queryset.update(visible=False)
+    make_hidden.short_description = _('Make hidden')
+
+    def make_visible(modeladmin, request, queryset):
+        queryset.update(visible=True)
+    make_visible.short_description = _('Make visible')
 
 
 class ProductForm(forms.ModelForm):
@@ -66,6 +85,7 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
         }),
     )
     form = ProductForm
+    actions = ('make_hidden', 'make_visible')
     list_display = ('view', '__str__', 'serial', 'categories_list', 'price', 'is_visible')
     list_display_links = ('__str__', )
     prepopulated_fields = {'alias': ('title', )}
@@ -82,6 +102,14 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
             for item in obj.categories.all()
         )
     categories_list.short_description = _('Categories')
+
+    def make_hidden(modeladmin, request, queryset):
+        queryset.update(visible=False)
+    make_hidden.short_description = _('Make hidden')
+
+    def make_visible(modeladmin, request, queryset):
+        queryset.update(visible=True)
+    make_visible.short_description = _('Make visible')
 
 
 class StatusOrderFilter(SimpleListFilter):

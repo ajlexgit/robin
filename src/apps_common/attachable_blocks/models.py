@@ -69,13 +69,13 @@ class AttachableReference(models.Model):
     entity = GenericForeignKey('content_type', 'object_id')
 
     block_type = models.CharField(_('block type'), max_length=255, choices=get_block_choices())
-    block = models.ForeignKey(AttachableBlock, verbose_name=_('block'))
+    block = models.ForeignKey(AttachableBlock, verbose_name=_('block'), related_name='references')
     set_name = models.CharField(_('set name'), max_length=32, default='default')
-    order = models.PositiveIntegerField(_('order'), default=0)
+    sort_order = models.PositiveIntegerField(_('sort order'), default=0)
 
     class Meta:
         verbose_name = _('Attached block')
         verbose_name_plural = _('Attached blocks')
-        ordering = ('set_name', 'order')
+        ordering = ('set_name', 'sort_order')
         unique_together = ('content_type', 'object_id', 'block_type', 'block', 'set_name')
         index_together = (('content_type', 'object_id', 'set_name'), )

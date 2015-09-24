@@ -17,5 +17,5 @@ class PageFileForm(forms.ModelForm):
 class PageFileInlineMixin:
     model = PageFile
     form = PageFileForm
+    sortable = 'sort_order'
     extra = 0
-    sortable = 'order'

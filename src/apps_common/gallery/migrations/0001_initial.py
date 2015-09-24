@@ -15,19 +15,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GalleryItemBase',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('order', models.PositiveIntegerField(default=0, verbose_name='order')),
                 ('created', models.DateTimeField(verbose_name='created on')),
                 ('changed', models.DateTimeField(verbose_name='changed on', auto_now=True)),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('self_type', models.ForeignKey(editable=False, to='contenttypes.ContentType', related_name='+', help_text='Для выборки элементов определенного типа')),
+                ('self_type', models.ForeignKey(related_name='+', help_text='Для выборки элементов определенного типа', to='contenttypes.ContentType', editable=False)),
             ],
             options={
                 'ordering': ('object_id', 'order', 'created'),
-                'verbose_name': 'gallery item',
                 'verbose_name_plural': 'gallery items',
+                'verbose_name': 'gallery item',
             },
             bases=(libs.checks.ModelChecksMixin, models.Model),
         ),

@@ -17,11 +17,11 @@ class PageFile(models.Model):
     file = RemovableFileField(storage=MediaStorage(), upload_to=generate_filepath, max_length=150, verbose_name=_('file'))
     displayed_name = models.CharField(max_length=150, verbose_name=_('display name'), blank=True,
                                       help_text=_('If you leave it empty the file name will be used'))
-    order = models.PositiveIntegerField(verbose_name=_('order'), blank=True, default=0)
+    sort_order = models.PositiveIntegerField(verbose_name=_('sort order'), blank=True, default=0)
 
     class Meta:
         abstract = True
-        ordering = ('order', )
+        ordering = ('sort_order', )
         verbose_name = _('file')
         verbose_name_plural = _('files')
 
