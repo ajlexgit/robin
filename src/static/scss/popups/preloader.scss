@@ -4,11 +4,13 @@
 
   #popup-content {
     text-align: center;
+    @include valign_after;
   }
 
   svg {
     width: 80px;
     height: 80px;
     fill: #000;
+    vertical-align: middle;
   }
 }

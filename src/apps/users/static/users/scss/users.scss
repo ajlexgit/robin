@@ -5,42 +5,12 @@
   @include default_fontsize;
 }
 
-
-.users-login-form {
-  label {
-    width: 80px;
-    word-wrap: break-word;
-  }
-
+#ajax-login-form {
   .reset-password-popup {
     margin-left: 12px;
   }
 
   .register-popup {
     margin-left: 10px;
-  }
-}
-
-
-.users-register-form {
-  label {
-    width: 100px;
-    word-wrap: break-word;
-  }
-}
-
-
-.users-reset-password-form {
-  label {
-    width: 60px;
-    word-wrap: break-word;
-  }
-}
-
-
-.users-reset-confirm-form {
-  label {
-    width: 140px;
-    word-wrap: break-word;
   }
 }
