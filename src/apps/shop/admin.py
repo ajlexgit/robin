@@ -41,6 +41,7 @@ class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sortabl
             ),
         }),
     )
+    mptt_level_indent = 20
     actions = ('make_hidden', 'make_visible')
     list_display = ('view', 'title', 'is_visible')
     list_display_links = ('title',)
