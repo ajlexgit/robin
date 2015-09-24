@@ -117,19 +117,21 @@ class Product(models.Model):
     )
     categories = models.ManyToManyField(Category, verbose_name=_('categories'), related_name='products')
     photo = StdImageField(_('photo'),
-        storage=MediaStorage('shop'),
-        min_dimensions=(200, 0),
-        admin_variation='small',
+        storage=MediaStorage('shop/product'),
+        min_dimensions=(180, 180),
+        admin_variation='admin',
+        crop_area=True,
         variations=dict(
             normal=dict(
-                size=(450, 450),
+                size=(300, 300),
                 crop=False,
-                stretch=False,
             ),
             small=dict(
-                size=(140, 140),
+                size=(120, 120),
+            ),
+            admin=dict(
+                size=(200, 200),
                 crop=False,
-                stretch=False,
             ),
         ),
     )
