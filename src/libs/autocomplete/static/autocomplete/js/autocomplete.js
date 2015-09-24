@@ -21,6 +21,7 @@
                 });
             });
 
+            var that = this;
             self.select2({
                 minimumInputLength: self_data.minimum_input_length,
                 closeOnSelect: parseInt(self_data.close_on_select) || 0,
@@ -30,7 +31,7 @@
                 ajax: {
                     url: self_data.url,
                     type: 'POST',
-                    quietMillis: 100,
+                    quietMillis: 1,
                     dataType: 'json',
                     data: function(term, page, page_limit) {
                         var data = {
@@ -47,7 +48,21 @@
                         }
                         return data;
                     },
+                    transport: function(params) {
+                        var page = parseInt(params.data.page);
+                        if (that._cache && that._cache[page]) {
+                            params.success(that._cache[page]);
+                        } else {
+                            return $.ajax(params);
+                        }
+                    },
                     results: function(data, page) {
+                        // Сохранение в кэш
+                        if (!that._cache) {
+                            that._cache = {}
+                        }
+
+                        that._cache[page] = data;
                         return {
                             results: data.result,
                             more: (page * 30) < data.total
