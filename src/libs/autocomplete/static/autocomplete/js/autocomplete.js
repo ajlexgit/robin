@@ -48,21 +48,7 @@
                         }
                         return data;
                     },
-                    transport: function(params) {
-                        var page = parseInt(params.data.page);
-                        if (that._cache && that._cache[page]) {
-                            params.success(that._cache[page]);
-                        } else {
-                            return $.ajax(params);
-                        }
-                    },
                     results: function(data, page) {
-                        // Сохранение в кэш
-                        if (!that._cache) {
-                            that._cache = {}
-                        }
-
-                        that._cache[page] = data;
                         return {
                             results: data.result,
                             more: (page * 30) < data.total

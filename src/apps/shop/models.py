@@ -81,7 +81,7 @@ class Category(MPTTModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        Category.objects.partial_rebuild(self.tree_id)
+        Category.objects.rebuild()
 
     def __str__(self):
         return self.title
@@ -118,7 +118,7 @@ class Product(models.Model):
     categories = models.ManyToManyField(Category, verbose_name=_('categories'), related_name='products')
     photo = StdImageField(_('photo'),
         storage=MediaStorage('shop/product'),
-        min_dimensions=(180, 180),
+        min_dimensions=(180, 60),
         admin_variation='admin',
         crop_area=True,
         variations=dict(
@@ -128,6 +128,7 @@ class Product(models.Model):
             ),
             small=dict(
                 size=(120, 120),
+                crop=False,
             ),
             admin=dict(
                 size=(200, 200),

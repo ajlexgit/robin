@@ -80,8 +80,8 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'title', 'alias', 'serial', 'categories', 'photo',
-                'description', 'price', 'is_visible',
+                'categories', 'title', 'alias', 'serial', 'photo', 'price', 'is_visible',
+                'description',
             ),
         }),
     )

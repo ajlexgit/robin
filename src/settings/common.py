@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'libs.autocomplete',
     'libs.away',
     'libs.color_field',
+    'libs.geocity',
     'libs.js_storage',
     'libs.management',
     'libs.opengraph',

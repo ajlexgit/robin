@@ -43,7 +43,7 @@
 
             ...
                 <div>
-                    {% allowed_languages %}
+                    {% select_language %}
                 </div>
             ...
 """
