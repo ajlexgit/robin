@@ -1,7 +1,7 @@
-from django.utils.image import Image
+from django.core import checks
 from django.conf import settings
+from django.utils.image import Image
 from libs.variation_field import *
-from libs.checks import FieldChecksMixin
 from .formfields import StdImageFormField
 
 DEFAULT_SOURCE_QUALITY = 95
@@ -12,7 +12,7 @@ MAX_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MAX_DIMENSIONS_DEFAULT', (
 MAX_SOURCE_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MAX_SOURCE_DIMENSIONS_DEFAULT', (2048, 2048))
 
 
-class StdImageField(FieldChecksMixin, VariationImageField):
+class StdImageField(VariationImageField):
 
     def __init__(self, verbose_name=None, name=None, variations=None, **kwargs):
         self.admin_variation = kwargs.pop('admin_variation', None)
@@ -28,55 +28,117 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         self._variations = variations
         self.variations = format_variations(variations)
 
-        # Аспекты кропа. По умолчанию будет использоваться первый. Остальные можно использовать с помощью JS
+        # Аспекты кропа. По умолчанию будет использоваться первый.
+        # Остальные можно использовать с помощью JS
         self._aspects = kwargs.pop('aspects', ())
         self.aspects = format_aspects(self._aspects, self._variations)
 
         super().__init__(verbose_name, name, **kwargs)
 
-    def custom_check(self):
-        errors = []
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_min_dimensions_attribute(**kwargs))
+        errors.extend(self._check_max_dimensions_attribute(**kwargs))
+        errors.extend(self._check_max_source_dimensions_attribute(**kwargs))
+        errors.extend(self._check_variations_attribute(**kwargs))
+        errors.extend(self._check_admin_variation_attribute(**kwargs))
+        errors.extend(self._check_aspects_attribute(**kwargs))
+        return errors
+
+    def _check_min_dimensions_attribute(self, **kwargs):
         if not is_size(self.min_dimensions):
-            errors.append(
-                self.check_error('min_dimensions should be a tuple of 2 non-negative numbers')
-            )
+            return [
+                checks.Error(
+                    "min_dimensions should be a tuple of 2 non-negative numbers",
+                    obj=self
+                )
+            ]
+        else:
+            return []
+
+    def _check_max_dimensions_attribute(self, **kwargs):
         if not is_size(self.max_dimensions):
-            errors.append(
-                self.check_error('max_dimensions should be a tuple of 2 non-negative numbers')
-            )
+            return [
+                checks.Error(
+                    "max_dimensions should be a tuple of 2 non-negative numbers",
+                    obj=self
+                )
+            ]
+        else:
+            return []
+
+    def _check_max_source_dimensions_attribute(self, **kwargs):
         if not is_size(self.max_source_dimensions):
-            errors.append(
-                self.check_error('max_source_dimensions should be a tuple of 2 non-negative numbers')
-            )
+            return [
+                checks.Error(
+                    "max_source_dimensions should be a tuple of 2 non-negative numbers",
+                    obj=self
+                )
+            ]
+        else:
+            return []
 
+    def _check_variations_attribute(self, **kwargs):
         if not self._variations:
-            errors.append(
-                self.check_error('variations required')
-            )
-        if not isinstance(self._variations, dict):
-            errors.append(
-                self.check_error('variations should be a dict')
-            )
-        errors.extend(check_variations(self._variations, self))
+            return [
+                checks.Error(
+                    "variations required",
+                    obj=self
+                )
+            ]
+        elif not isinstance(self._variations, dict):
+            return [
+                checks.Error(
+                    'variations should be a dict',
+                    obj=self
+                )
+            ]
 
-        if self._aspects:
-            aspects = self._aspects if isinstance(self._aspects, tuple) else (self._aspects, )
-            for aspect in aspects:
-                try:
-                    float(aspect)
-                except (TypeError, ValueError):
-                    if not isinstance(aspect, str) or aspect not in self._variations:
-                        errors.append(
-                            self.check_error('invalid variation aspect: %r' % aspect)
-                        )
-                    elif not all(d > 0 for d in self._variations[aspect]['size']):
-                        errors.append(
-                            self.check_error('aspect should point to full-filled size: %r' % aspect)
-                        )
+        errors = []
+        errors.extend(check_variations(self._variations, self))
+        return errors
+
+    def _check_admin_variation_attribute(self, **kwargs):
         if not self.admin_variation:
-            errors.append(
-                self.check_error('admin_variation required')
-            )
+            return [
+                checks.Error(
+                    'admin_variation required',
+                    obj=self
+                )
+            ]
+        elif self.admin_variation not in self._variations:
+            return [
+                checks.Error(
+                    'admin_variation "%s" not found in variations' % self.admin_variation,
+                    obj=self
+                )
+            ]
+        else:
+            return []
+
+    def _check_aspects_attribute(self, **kwargs):
+        if self._aspects:
+            return []
+
+        errors = []
+        aspects = self._aspects if isinstance(self._aspects, tuple) else (self._aspects,)
+        for aspect in aspects:
+            try:
+                float(aspect)
+            except (TypeError, ValueError):
+                if not isinstance(aspect, str) or aspect not in self._variations:
+                    errors.append(
+                        checks.Error(
+                            'invalid variation aspect: %r' % aspect
+                        )
+                    )
+                elif not all(d > 0 for d in self._variations[aspect]['size']):
+                    errors.append(
+                        checks.Error(
+                            'aspect should point to full-filled size: %r' % aspect
+                        )
+                    )
+
         return errors
 
     def deconstruct(self):

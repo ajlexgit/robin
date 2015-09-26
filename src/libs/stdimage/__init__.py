@@ -1,6 +1,5 @@
 """
     Зависит от:
-        libs.checks
         libs.variation_field
 
     Настройки:
