@@ -1,12 +1,12 @@
 from django.db import models
+from django.core import checks
 from libs.widgets import URLWidget
-from libs.checks import FieldChecksMixin
 from .videolink import VideoLink
 from .formfields import VideoLinkFormField
 from .providers import PROVIDERS
 
 
-class VideoLinkField(FieldChecksMixin, models.Field, metaclass=models.SubfieldBase):
+class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
     def __init__(self, *args, providers=set(), **kwargs):
         kwargs['max_length'] = 64
         self._providers = set(providers)
@@ -17,6 +17,34 @@ class VideoLinkField(FieldChecksMixin, models.Field, metaclass=models.SubfieldBa
         del kwargs['max_length']
         kwargs['providers'] = self._providers
         return name, path, args, kwargs
+
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_providers(**kwargs))
+        return errors
+
+    def _check_providers(self, **kwargs):
+        if not self._providers:
+            return []
+
+        if not isinstance(self._providers, (set, list, tuple)):
+            return [
+                checks.Error(
+                    'providers must be set, list or tuple',
+                    obj=self
+                )
+            ]
+
+        errors = []
+        for provider in self._providers:
+            if provider not in PROVIDERS:
+                errors.append(
+                    checks.Error(
+                        'provider unknown: %s' % provider,
+                        obj=self
+                    )
+                )
+        return errors
 
     def get_internal_type(self):
         return "CharField"
@@ -51,12 +79,3 @@ class VideoLinkField(FieldChecksMixin, models.Field, metaclass=models.SubfieldBa
             }),
         })
         return super().formfield(**kwargs)
-
-    def custom_check(self):
-        errors = []
-        if self._providers and not all(provider in PROVIDERS for provider in self._providers):
-            errors.append(
-                self.check_error('allowed providers must be in set: %s' % set(PROVIDERS))
-            )
-
-        return errors

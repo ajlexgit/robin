@@ -6,14 +6,17 @@
         price = ValuteField(_('цена'))
 
         ru:
-            >>> v = Valute('1234.56')
-            >>> print(v)
+            $ v = Valute('1234.56')
+            $ print(v)
             1234.56
-            >>> print(v.plain)
+
+            $ print(v.plain)
             1 234.56
-            >>> print(v.utf)
+
+            $ print(v.utf)
             1 234.56₽
-            >>> print(v.alternate)
+
+            $ print(v.alternate)
             1 234.56 руб.
 """
 

@@ -2,7 +2,6 @@
     Поля для хранения ссылки на видео.
 
     Зависит от:
-        libs.checks
         libs.widgets
         libs.youtube
 
