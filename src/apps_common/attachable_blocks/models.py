@@ -37,30 +37,32 @@ class AttachableBlock(models.Model):
         return self.label
 
     @classmethod
-    def _check_views(cls):
-        errors = []
-        if cls == AttachableBlock:
-            return errors
-
-        if not cls.BLOCK_VIEW:
-            errors.append(
-                checks.Error(
-                    "attachable block '%s' has no BLOCK_VIEW" % cls.__name__,
-                )
-            )
-        elif not get_block_view(cls):
-            errors.append(
-                checks.Error(
-                    "Invalid BLOCK_VIEW for block '%s': '%s'" % (cls.__name__, cls.BLOCK_VIEW),
-                )
-            )
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_views(**kwargs))
         return errors
 
     @classmethod
-    def check(cls, **kwargs):
-        errors = super().check(**kwargs)
-        errors.extend(cls._check_views())
-        return errors
+    def _check_views(cls, **kwargs):
+        if cls == AttachableBlock:
+            return []
+
+        if not cls.BLOCK_VIEW:
+            return [
+                checks.Error(
+                    'BLOCK_VIEW is required',
+                    obj=cls
+                )
+            ]
+        elif not get_block_view(cls):
+            return [
+                checks.Error(
+                    'BLOCK_VIEW not found',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
 
 class AttachableReference(models.Model):

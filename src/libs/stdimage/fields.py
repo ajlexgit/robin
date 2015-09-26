@@ -49,7 +49,7 @@ class StdImageField(VariationImageField):
         if not is_size(self.min_dimensions):
             return [
                 checks.Error(
-                    "min_dimensions should be a tuple of 2 non-negative numbers",
+                    'min_dimensions should be a tuple of 2 non-negative numbers',
                     obj=self
                 )
             ]
@@ -60,7 +60,7 @@ class StdImageField(VariationImageField):
         if not is_size(self.max_dimensions):
             return [
                 checks.Error(
-                    "max_dimensions should be a tuple of 2 non-negative numbers",
+                    'max_dimensions should be a tuple of 2 non-negative numbers',
                     obj=self
                 )
             ]
@@ -71,7 +71,7 @@ class StdImageField(VariationImageField):
         if not is_size(self.max_source_dimensions):
             return [
                 checks.Error(
-                    "max_source_dimensions should be a tuple of 2 non-negative numbers",
+                    'max_source_dimensions should be a tuple of 2 non-negative numbers',
                     obj=self
                 )
             ]
@@ -82,7 +82,7 @@ class StdImageField(VariationImageField):
         if not self._variations:
             return [
                 checks.Error(
-                    "variations required",
+                    'variations is required',
                     obj=self
                 )
             ]
@@ -102,7 +102,7 @@ class StdImageField(VariationImageField):
         if not self.admin_variation:
             return [
                 checks.Error(
-                    'admin_variation required',
+                    'admin_variation is required',
                     obj=self
                 )
             ]
@@ -126,19 +126,27 @@ class StdImageField(VariationImageField):
             try:
                 float(aspect)
             except (TypeError, ValueError):
-                if not isinstance(aspect, str) or aspect not in self._variations:
+                if not isinstance(aspect, str):
                     errors.append(
                         checks.Error(
-                            'invalid variation aspect: %r' % aspect
+                            'aspect can be only float or str instance',
+                            obj=self
+                        )
+                    )
+                elif aspect not in self._variations:
+                    errors.append(
+                        checks.Error(
+                            'aspect variation not found: %r' % aspect,
+                            obj=self
                         )
                     )
                 elif not all(d > 0 for d in self._variations[aspect]['size']):
                     errors.append(
                         checks.Error(
-                            'aspect should point to full-filled size: %r' % aspect
+                            'aspect should point to full-filled size: %r' % aspect,
+                            obj=self
                         )
                     )
-
         return errors
 
     def deconstruct(self):

@@ -56,13 +56,22 @@ class BaseAttachableReferenceMixin(ModelAdminInlineMixin, SortableTabularInlineB
     set_name = 'default'
 
     @classmethod
-    def check(cls, model, **kwargs):
-        errors = super().check(model, **kwargs)
-        if not cls.set_name:
-            errors.append(
-                checks.Error('attribute "set_name" can not be empty', obj=cls)
-            )
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_set_name(**kwargs))
         return errors
+
+    @classmethod
+    def _check_set_name(cls, **kwargs):
+        if not cls.set_name:
+            return [
+                checks.Error(
+                    'set_name can\'t be empty',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
     def get_formset(self, request, obj=None, **kwargs):
         FormSet = super().get_formset(request, obj, **kwargs)

@@ -59,7 +59,7 @@ class SpriteImageField(models.CharField):
         if not self.sprite:
             return [
                 checks.Error(
-                    "sprite file path required",
+                    'sprite file path required',
                     obj=self
                 )
             ]
@@ -71,7 +71,7 @@ class SpriteImageField(models.CharField):
             else:
                 return [
                     checks.Error(
-                        "sprite file not found: %s" % self.sprite,
+                        'sprite file not found: %s' % self.sprite,
                         obj=self
                     )
                 ]
@@ -80,14 +80,14 @@ class SpriteImageField(models.CharField):
         if not self.size:
             return [
                 checks.Error(
-                    "size required",
+                    'size required',
                     obj=self
                 )
             ]
         elif not isinstance(self.size, (list, tuple)) or len(self.size) != 2:
             return [
                 checks.Error(
-                    "size should be a two-element list or tuple",
+                    'size should be a two-element list or tuple',
                     obj=self
                 )
             ]

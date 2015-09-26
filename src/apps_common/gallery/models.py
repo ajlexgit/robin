@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.core import checks
 from django.conf import settings
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
@@ -10,7 +11,6 @@ from django.contrib.contenttypes.models import ContentType
 from model_utils.managers import InheritanceQuerySetMixin
 from libs.variation_field import *
 from libs.videolink_field import VideoLinkField
-from libs.checks import ModelChecksMixin
 from libs.media_storage import MediaStorage
 from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.upload import upload_file, URLError
@@ -41,7 +41,7 @@ class GalleryItemQuerySet(InheritanceQuerySetMixin, AliasedQuerySetMixin, models
         return super()._filter_or_exclude(*args, **kwargs).select_subclasses()
 
 
-class GalleryItemBase(ModelChecksMixin, models.Model):
+class GalleryItemBase(models.Model):
     """ Базовый класс элемента галереи """
     _cache = {}
 
@@ -80,14 +80,22 @@ class GalleryItemBase(ModelChecksMixin, models.Model):
         super().save(*args, **kwargs)
 
     @classmethod
-    def custom_check(cls):
-        """ Проверка модели """
-        errors = []
-        if not isinstance(cls.COPY_FIELDS, set):
-            errors.append(
-                cls.check_error('COPY_FIELDS should be an instance of set')
-            )
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_copy_fields(**kwargs))
         return errors
+
+    @classmethod
+    def _check_copy_fields(cls, **kwargs):
+        if not isinstance(cls.COPY_FIELDS, set):
+            return [
+                checks.Error(
+                    'COPY_FIELDS should be an instance of set',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
     @property
     def is_image(self):
@@ -179,64 +187,179 @@ class GalleryImageItem(GalleryItemBase):
         return _('Image item %(pk)s (%(path)s)') % {'pk': self.pk or 'None', 'path': self.image}
 
     @classmethod
-    def custom_check(cls):
-        """ Проверка модели """
-        errors = super().custom_check()
-        if not cls.STORAGE_LOCATION:
-            errors.append(
-                cls.check_error('STORAGE_LOCATION required')
-            )
-        if not is_size(cls.MIN_DIMENSIONS):
-            errors.append(
-                cls.check_error('MIN_DIMENSIONS should be a tuple of 2 non-negative numbers')
-            )
-        if not is_size(cls.MAX_DIMENSIONS):
-            errors.append(
-                cls.check_error('MAX_DIMENSIONS should be a tuple of 2 non-negative numbers')
-            )
-        if not is_size(cls.MAX_SOURCE_DIMENSIONS):
-            errors.append(
-                cls.check_error('MAX_SOURCE_DIMENSIONS should be a tuple of 2 non-negative numbers')
-            )
-
-        if not cls.VARIATIONS:
-            errors.append(
-                cls.check_error('VARIATIONS required')
-            )
-        if not isinstance(cls.VARIATIONS, dict):
-            errors.append(
-                cls.check_error('VARIATIONS should be a dict')
-            )
-        errors.extend(check_variations(cls.VARIATIONS, cls))
-
-        if cls.ASPECTS:
-            aspects = cls.ASPECTS if isinstance(cls.ASPECTS, tuple) else (cls.ASPECTS, )
-            for aspect in aspects:
-                try:
-                    float(aspect)
-                except (TypeError, ValueError):
-                    if not isinstance(aspect, str) or aspect not in cls.VARIATIONS:
-                        errors.append(
-                            cls.check_error('invalid variation aspect: %r' % aspect)
-                        )
-                    elif not all(d > 0 for d in cls.VARIATIONS[aspect]['size']):
-                        errors.append(
-                            cls.check_error('aspect should point to full-filled size: %r' % aspect)
-                        )
-
-        if cls.SHOW_VARIATION and cls.SHOW_VARIATION not in cls.VARIATIONS:
-            errors.append(
-                cls.check_error('SHOW_VARIATION %r not found in VARIATIONS' % cls.SHOW_VARIATION)
-            )
-        if not cls.ADMIN_VARIATION:
-            errors.append(
-                cls.check_error('ADMIN_VARIATION required')
-            )
-        if cls.ADMIN_VARIATION not in cls.VARIATIONS:
-            errors.append(
-                cls.check_error('ADMIN_VARIATION %r not found in VARIATIONS' % cls.ADMIN_VARIATION)
-            )
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_storage_location(**kwargs))
+        errors.extend(cls._check_min_dimensions(**kwargs))
+        errors.extend(cls._check_max_dimensions(**kwargs))
+        errors.extend(cls._check_max_source_dimensions(**kwargs))
+        errors.extend(cls._check_variations(**kwargs))
+        errors.extend(cls._check_aspects(**kwargs))
+        errors.extend(cls._check_show_variation(**kwargs))
+        errors.extend(cls._check_admin_variation(**kwargs))
         return errors
+
+    @classmethod
+    def _check_storage_location(cls, **kwargs):
+        if not cls.STORAGE_LOCATION:
+            return [
+                checks.Error(
+                    'STORAGE_LOCATION is required',
+                    obj=cls
+                )
+            ]
+        elif not isinstance(cls.STORAGE_LOCATION, str):
+            return [
+                checks.Error(
+                    'STORAGE_LOCATION must be an instance of str',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_min_dimensions(cls, **kwargs):
+        if not cls.MIN_DIMENSIONS:
+            return [
+                checks.Error(
+                    'MIN_DIMENSIONS is required',
+                    obj=cls
+                )
+            ]
+        elif not is_size(cls.MIN_DIMENSIONS):
+            return [
+                checks.Error(
+                    'MIN_DIMENSIONS must be a tuple of 2 non-negative numbers',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_max_dimensions(cls, **kwargs):
+        if not cls.MAX_DIMENSIONS:
+            return [
+                checks.Error(
+                    'MAX_DIMENSIONS is required',
+                    obj=cls
+                )
+            ]
+        elif not is_size(cls.MAX_DIMENSIONS):
+            return [
+                checks.Error(
+                    'MAX_DIMENSIONS must be a tuple of 2 non-negative numbers',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_max_source_dimensions(cls, **kwargs):
+        if not cls.MAX_SOURCE_DIMENSIONS:
+            return [
+                checks.Error(
+                    'MAX_SOURCE_DIMENSIONS is required',
+                    obj=cls
+                )
+            ]
+        elif not is_size(cls.MAX_SOURCE_DIMENSIONS):
+            return [
+                checks.Error(
+                    'MAX_SOURCE_DIMENSIONS must be a tuple of 2 non-negative numbers',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_variations(cls, **kwargs):
+        if not cls.VARIATIONS:
+            return [
+                checks.Error(
+                    'VARIATIONS is required',
+                    obj=cls
+                )
+            ]
+        elif not isinstance(cls.VARIATIONS, dict):
+            return [
+                checks.Error(
+                    'VARIATIONS must be an instance of dict',
+                    obj=cls
+                )
+            ]
+
+        errors = []
+        errors.extend(check_variations(cls.VARIATIONS, cls))
+        return errors
+
+    @classmethod
+    def _check_aspects(cls, **kwargs):
+        if not cls.ASPECTS:
+            return []
+
+        errors = []
+        aspects = cls.ASPECTS if isinstance(cls.ASPECTS, tuple) else (cls.ASPECTS,)
+        for aspect in aspects:
+            try:
+                float(aspect)
+            except (TypeError, ValueError):
+                if not isinstance(aspect, str):
+                    errors.append(
+                        checks.Error(
+                            'aspect can be only float or str instance',
+                            obj=cls
+                        )
+                    )
+                elif aspect not in cls.VARIATIONS:
+                    errors.append(
+                        checks.Error(
+                            'aspect variation not found: %r' % aspect,
+                            obj=cls
+                        )
+                    )
+                elif not all(d > 0 for d in cls.VARIATIONS[aspect]['size']):
+                    errors.append(
+                        checks.Error(
+                            'aspect should point to full-filled size: %r' % aspect,
+                            obj=cls
+                        )
+                    )
+        return errors
+
+    @classmethod
+    def _check_show_variation(cls, **kwargs):
+        if cls.SHOW_VARIATION and cls.SHOW_VARIATION not in cls.VARIATIONS:
+            return [
+                checks.Error(
+                    'SHOW_VARIATION not found in variations',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_admin_variation(cls, **kwargs):
+        if not cls.ADMIN_VARIATION:
+            return [
+                checks.Error(
+                    'ADMIN_VARIATION is required',
+                    obj=cls
+                )
+            ]
+        elif cls.ADMIN_VARIATION not in cls.VARIATIONS:
+            return [
+                checks.Error(
+                    'ADMIN_VARIATION "%s" not found in variations' % cls.admin_variation,
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
     def generate_filename(self, filename):
         if self.pk:
@@ -379,31 +502,71 @@ class GalleryVideoLinkItem(GalleryItemBase):
         super().save(*args, **kwargs)
 
     @classmethod
-    def custom_check(cls):
-        """ Проверка модели """
-        errors = super().custom_check()
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_storage_location(**kwargs))
+        errors.extend(cls._check_variations(**kwargs))
+        errors.extend(cls._check_admin_variation(**kwargs))
+        return errors
+
+    @classmethod
+    def _check_storage_location(cls, **kwargs):
         if not cls.STORAGE_LOCATION:
-            errors.append(
-                cls.check_error('STORAGE_LOCATION required')
-            )
+            return [
+                checks.Error(
+                    'STORAGE_LOCATION is required',
+                    obj=cls
+                )
+            ]
+        elif not isinstance(cls.STORAGE_LOCATION, str):
+            return [
+                checks.Error(
+                    'STORAGE_LOCATION must be an instance of str',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_variations(cls, **kwargs):
         if not cls.VARIATIONS:
-            errors.append(
-                cls.check_error('VARIATIONS required')
-            )
-        if not isinstance(cls.VARIATIONS, dict):
-            errors.append(
-                cls.check_error('VARIATIONS should be a dict')
-            )
-        if not cls.ADMIN_VARIATION:
-            errors.append(
-                cls.check_error('ADMIN_VARIATION required')
-            )
-        if cls.ADMIN_VARIATION not in cls.VARIATIONS:
-            errors.append(
-                cls.check_error('ADMIN_VARIATION %r not found in VARIATIONS' % cls.ADMIN_VARIATION)
-            )
+            return [
+                checks.Error(
+                    'VARIATIONS is required',
+                    obj=cls
+                )
+            ]
+        elif not isinstance(cls.VARIATIONS, dict):
+            return [
+                checks.Error(
+                    'VARIATIONS must be an instance of dict',
+                    obj=cls
+                )
+            ]
+
+        errors = []
         errors.extend(check_variations(cls.VARIATIONS, cls))
         return errors
+
+    @classmethod
+    def _check_admin_variation(cls, **kwargs):
+        if not cls.ADMIN_VARIATION:
+            return [
+                checks.Error(
+                    'ADMIN_VARIATION is required',
+                    obj=cls
+                )
+            ]
+        elif cls.ADMIN_VARIATION not in cls.VARIATIONS:
+            return [
+                checks.Error(
+                    'ADMIN_VARIATION "%s" not found in variations' % cls.admin_variation,
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
     def generate_filename(self, filename):
         if self.pk:
@@ -447,7 +610,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
         return new_item, errors
 
 
-class GalleryBase(ModelChecksMixin, models.Model):
+class GalleryBase(models.Model):
     """
         Базовая модель галереи.
     """
@@ -473,22 +636,55 @@ class GalleryBase(ModelChecksMixin, models.Model):
         abstract = True
 
     @classmethod
-    def custom_check(cls):
-        """ Проверка модели """
-        errors = []
-        if cls.IMAGE_MODEL and not issubclass(cls.IMAGE_MODEL, GalleryImageItem):
-            errors.append(
-                cls.check_error('IMAGE_MODEL should be a subclass of GalleryImageItem')
-            )
-        if cls.VIDEO_LINK_MODEL and not issubclass(cls.VIDEO_LINK_MODEL, GalleryVideoLinkItem):
-            errors.append(
-                cls.check_error('VIDEO_LINK_MODEL should be a subclass of GalleryVideoLinkItem')
-            )
-        if not is_size(cls.ADMIN_ITEM_SIZE):
-            errors.append(
-                cls.check_error('ADMIN_ITEM_SIZE should be a tuple of 2 non-negative numbers')
-            )
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_image_model(**kwargs))
+        errors.extend(cls._check_videolink_model(**kwargs))
+        errors.extend(cls._check_admin_item_size(**kwargs))
         return errors
+
+    @classmethod
+    def _check_image_model(cls, **kwargs):
+        if cls.IMAGE_MODEL and not issubclass(cls.IMAGE_MODEL, GalleryImageItem):
+            return [
+                checks.Error(
+                    'IMAGE_MODEL should be a subclass of GalleryImageItem',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_videolink_model(cls, **kwargs):
+        if cls.VIDEO_LINK_MODEL and not issubclass(cls.VIDEO_LINK_MODEL, GalleryVideoLinkItem):
+            return [
+                checks.Error(
+                    'VIDEO_LINK_MODEL should be a subclass of GalleryVideoLinkItem',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_admin_item_size(cls, **kwargs):
+        if not cls.ADMIN_ITEM_SIZE:
+            return [
+                checks.Error(
+                    'ADMIN_ITEM_SIZE is required',
+                    obj=cls
+                )
+            ]
+        elif not is_size(cls.ADMIN_ITEM_SIZE):
+            return [
+                checks.Error(
+                    'ADMIN_ITEM_SIZE should be a tuple of 2 non-negative numbers',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
     def __str__(self):
         return _('Gallery %(pk)s') % {'pk': self.pk}
