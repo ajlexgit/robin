@@ -1,6 +1,7 @@
 import os
 import sys
 
+# comments: sort_order
 # Gallery: проверить copy_for, особенно кроп
 # Shop: caegories filter
 # CKeditorUpload: валидация пустого текста

@@ -156,6 +156,12 @@ class GalleryImageItem(GalleryItemBase):
     image = GalleryImageField(_('image'),
         storage=MediaStorage(),
         upload_to=generate_filepath,
+        crop_field='image_crop',
+    )
+    image_crop = models.CharField(_('stored_crop'),
+        max_length=32,
+        blank=True,
+        editable=False,
     )
 
     class Meta:

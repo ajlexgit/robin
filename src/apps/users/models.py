@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
         admin_variation = 'normal',
         min_dimensions = options.AVATAR_NORMAL,
         crop_area = True,
+        crop_field = 'avatar_crop',
         aspects = 'normal',
         variations = dict(
             normal=dict(
@@ -26,6 +27,11 @@ class CustomUser(AbstractUser):
                 size=options.AVATAR_MICRO,
             ),
         ),
+    )
+    avatar_crop = models.CharField(_('stored_crop'),
+        max_length=32,
+        blank=True,
+        editable=False,
     )
 
     @property

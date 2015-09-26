@@ -13,9 +13,6 @@ from .croparea import CropArea
 from .utils import (put_on_bg, variation_crop, variation_resize, variation_watermark,
                     variation_overlay, variation_mask)
 
-def crop_field_name(name):
-    return name + '_crop'
-
 
 class VariationField(ImageFile):
     _file = None
@@ -162,6 +159,11 @@ class VariationImageFieldFile(ImageFieldFile):
         else:
             self._croparea = CropArea(value)
 
+    def set_crop_field(self, instance, croparea=None):
+        self.croparea = croparea
+        if self.field.crop_field and hasattr(instance, self.field.crop_field):
+            setattr(instance, self.field.crop_field, self.croparea)
+
     @property
     def variation_files(self):
         """
@@ -214,12 +216,10 @@ class VariationImageFieldFile(ImageFieldFile):
         # Освобожение ресурсов
         source_img.close()
 
-        if self.field.save_crop:
-            crop_field = crop_field_name(self.field.name)
-            self.croparea = croparea    # fix reseting
-            setattr(self.instance, crop_field, str(self.croparea))
+        if self.field.crop_field:
+            self.set_crop_field(self.instance, croparea)
             self.field.update_instance(self.instance, **{
-                crop_field: self.croparea
+                self.field.crop_field: self.croparea
             })
 
     def rotate(self, angle=90, quality=None):
@@ -268,7 +268,8 @@ class VariationImageFieldFile(ImageFieldFile):
     def save(self, name, content, save=True):
         newfile_attrname = '_{}_new_file'.format(self.field.name)
         setattr(self.instance, newfile_attrname, True)
-        setattr(self.instance, crop_field_name(self.field.name), '')
+        if self.field.crop_field:
+            self.set_crop_field(self.instance, '')
         super().save(name, content, save)
 
     def delete(self, save=True):
@@ -278,7 +279,8 @@ class VariationImageFieldFile(ImageFieldFile):
             variation_field = getattr(self, name, None)
             if variation_field:
                 variation_field.delete()
-        setattr(self.instance, crop_field_name(self.field.name), '')
+        if self.field.crop_field:
+            self.set_crop_field(self.instance, '')
         super().delete(save)
 
 
@@ -287,8 +289,8 @@ class VariationImageFileDescriptor(ImageFileDescriptor):
         value = super().__get__(instance, owner)
 
         # Добавляем значение области обрезки
-        if self.field.save_crop:
-            croparea = getattr(instance, crop_field_name(self.field.name))
+        if self.field.crop_field:
+            croparea = getattr(instance, self.field.crop_field)
             try:
                 value.croparea = CropArea(croparea)
             except ValueError:
@@ -298,9 +300,8 @@ class VariationImageFileDescriptor(ImageFileDescriptor):
 
     def __set__(self, instance, value):
         if isinstance(value, VariationImageFieldFile):
-            if self.field.save_crop:
-                croparea = str(value.croparea)
-                setattr(instance, crop_field_name(self.field.name), croparea)
+            if self.field.crop_field:
+                value.set_crop_field(instance)
 
         super().__set__(instance, value)
 
@@ -320,7 +321,7 @@ class VariationImageField(models.ImageField):
     )
 
     def __init__(self, *args, **kwargs):
-        self.save_crop = kwargs.pop('save_crop', True)
+        self.crop_field = kwargs.pop('crop_field', None)
         super().__init__(*args, **kwargs)
 
     def _create_variation_fields(self, instance, field_file=None):
@@ -454,14 +455,6 @@ class VariationImageField(models.ImageField):
         return super().get_prep_value(value)
 
     def contribute_to_class(self, cls, name):
-        if self.save_crop:
-            crop_field = models.CharField(_('stored_crop'),
-                max_length=32,
-                blank=True,
-                editable=False,
-            )
-            cls.add_to_class(crop_field_name(name), crop_field)
-
         super().contribute_to_class(cls, name)
         signals.post_save.connect(self._post_save, sender=cls)
         signals.post_init.connect(self._set_field_variations, sender=cls)

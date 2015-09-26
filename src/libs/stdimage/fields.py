@@ -185,8 +185,8 @@ class StdImageField(FieldChecksMixin, VariationImageField):
             )
             update_fields[self.attname] = source_path
 
-        if croparea and self.save_crop:
-            update_fields[crop_field_name(self.attname)] = croparea
+        if croparea and self.crop_field:
+            update_fields[self.crop_field] = croparea
 
         self.update_instance(instance, **update_fields)
 
