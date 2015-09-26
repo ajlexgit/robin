@@ -1,4 +1,5 @@
 import os
+from django.db import models
 from django.db.models import signals
 from django.utils.image import Image
 from django.core.files.base import ContentFile
@@ -7,9 +8,14 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
-from django.db.models.fields.files import ImageField, ImageFieldFile, FieldFile
+from django.db.models.fields.files import ImageFieldFile, FieldFile, ImageFileDescriptor
+from .croparea import CropArea
 from .utils import (put_on_bg, variation_crop, variation_resize, variation_watermark,
                     variation_overlay, variation_mask)
+
+def crop_field_name(name):
+    return name + '_crop'
+
 
 class VariationField(ImageFile):
     _file = None
@@ -108,7 +114,7 @@ class VariationField(ImageFile):
 
 
 class VariationImageFieldFile(ImageFieldFile):
-    _cropsize = ()
+    _croparea = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -138,24 +144,23 @@ class VariationImageFieldFile(ImageFieldFile):
         return self.storage.url(self.name) + '?_=%d' % mt
 
     @property
-    def cropsize(self):
-        return self._cropsize
+    def croparea(self):
+        return self._croparea
 
-    @cropsize.setter
-    def cropsize(self, value):
+    @croparea.setter
+    def croparea(self, value):
         """ Форматирование области обрезки картинки """
-        if isinstance(value, str):
-            value = value.split(':')
+        if value is None:
+            return
 
-        try:
-            cropsize = tuple(int(coord) for coord in value)
-        except (ValueError, TypeError):
-            self._cropsize = ()
+        if not value:
+            self._croparea = ''
+        elif isinstance(value, (list, tuple)):
+            self._croparea = CropArea(*value)
+        elif isinstance(value, CropArea):
+            self._croparea = value
         else:
-            if len(cropsize) == 4:
-                self._cropsize = cropsize
-            else:
-                self._cropsize = ()
+            self._croparea = CropArea(value)
 
     @property
     def variation_files(self):
@@ -174,20 +179,16 @@ class VariationImageFieldFile(ImageFieldFile):
 
         return tuple(files_list)
 
-    def recut(self, *args, crop=None):
+    def recut(self, *args, croparea=None):
         """
             Перенарезка вариаций.
 
-            Потеряется кроп из админки, т.к. выбранная область не сохраняется.
-            Можно передать параметры обрезки вручну в параметре crop, в формате
-            [left, top, width, height].
-
             Пример:
                 company.logo.recut('on_list', 'on_news')
-                company.logo.recut('on_list', crop=[0, 12, 310, 177])
+                company.logo.recut('on_list', croparea=[0, 12, 310, 177])
         """
         # Форматирование параметров обрезки
-        self.cropsize = crop
+        self.croparea = croparea
 
         with self as field_file:
             field_file.open()
@@ -196,10 +197,10 @@ class VariationImageFieldFile(ImageFieldFile):
             source_img.load()
 
         # Обрезаем по рамке
-        temp_img = variation_crop(source_img, self.cropsize)
+        temp_img = variation_crop(source_img, self.croparea)
 
         # Обрабатываем вариации
-        self.field._create_variation_fields(self.instance)
+        self.field._create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
             if args and name not in args:
                 continue
@@ -212,6 +213,14 @@ class VariationImageFieldFile(ImageFieldFile):
 
         # Освобожение ресурсов
         source_img.close()
+
+        if self.field.save_crop:
+            crop_field = crop_field_name(self.field.name)
+            self.croparea = croparea    # fix reseting
+            setattr(self.instance, crop_field, str(self.croparea))
+            self.field.update_instance(self.instance, **{
+                crop_field: self.croparea
+            })
 
     def rotate(self, angle=90, quality=None):
         """
@@ -248,7 +257,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.clear_dimensions()
 
         # Обрабатываем вариации
-        self.field._create_variation_fields(self.instance)
+        self.field._create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
             target_format = variation['format'] or source_format
             self.field._resize_image(self.instance, variation, target_format, source_img)
@@ -259,24 +268,49 @@ class VariationImageFieldFile(ImageFieldFile):
     def save(self, name, content, save=True):
         newfile_attrname = '_{}_new_file'.format(self.field.name)
         setattr(self.instance, newfile_attrname, True)
+        setattr(self.instance, crop_field_name(self.field.name), '')
         super().save(name, content, save)
 
     def delete(self, save=True):
         """ Удаление картинки """
-        self.field._create_variation_fields(self.instance)
+        self.field._create_variation_fields(self.instance, field_file=self)
         for name in self.variations:
             variation_field = getattr(self, name, None)
             if variation_field:
                 variation_field.delete()
-
+        setattr(self.instance, crop_field_name(self.field.name), '')
         super().delete(save)
 
 
-class VariationImageField(ImageField):
+class VariationImageFileDescriptor(ImageFileDescriptor):
+    def __get__(self, instance=None, owner=None):
+        value = super().__get__(instance, owner)
+
+        # Добавляем значение области обрезки
+        if self.field.save_crop:
+            croparea = getattr(instance, crop_field_name(self.field.name))
+            try:
+                value.croparea = CropArea(croparea)
+            except ValueError:
+                pass
+
+        return value
+
+    def __set__(self, instance, value):
+        if isinstance(value, VariationImageFieldFile):
+            if self.field.save_crop:
+                croparea = str(value.croparea)
+                setattr(instance, crop_field_name(self.field.name), croparea)
+
+        super().__set__(instance, value)
+
+
+class VariationImageField(models.ImageField):
     attr_class = VariationImageFieldFile
+    descriptor_class = VariationImageFileDescriptor
 
     default_error_messages = dict(
-        ImageField.default_error_messages,
+        models.ImageField.default_error_messages,
         not_image=_("Image invalid or corrupted"),
         not_enough_width=_('Image width should not be less than %(limit)s pixels'),
         not_enough_height=_('Image height should not be less than %(limit)s pixels'),
@@ -285,9 +319,14 @@ class VariationImageField(ImageField):
         too_big=_('Image width should not be greater than %(limit)s'),
     )
 
-    def _create_variation_fields(self, instance):
+    def __init__(self, *args, **kwargs):
+        self.save_crop = kwargs.pop('save_crop', True)
+        super().__init__(*args, **kwargs)
+
+    def _create_variation_fields(self, instance, field_file=None):
         """ Создание полей вариаций, если их нет """
-        field_file = getattr(instance, self.name)
+        if field_file is None:
+            field_file = getattr(instance, self.name)
         if not field_file.variations:
             self._set_field_variations(instance)
 
@@ -396,13 +435,17 @@ class VariationImageField(ImageField):
 
         # Записываем путь к исходнику
         setattr(instance, self.attname, source_path)
+
+        return source_path
+
+    @staticmethod
+    def update_instance(instance, **kwargs):
+        if not kwargs:
+            return
         if not instance.pk:
             raise ValueError('saving image to not saved instance')
-        query = instance._meta.model.objects.filter(pk=instance.pk)
-        query.update(**{
-            self.attname: source_path
-        })
-
+        queryset = instance._meta.model.objects.filter(pk=instance.pk)
+        queryset.update(**kwargs)
 
     def get_prep_value(self, value):
         if isinstance(value, FieldFile) and not value.exists():
@@ -411,10 +454,39 @@ class VariationImageField(ImageField):
         return super().get_prep_value(value)
 
     def contribute_to_class(self, cls, name):
+        if self.save_crop:
+            crop_field = models.CharField(_('stored_crop'),
+                max_length=32,
+                blank=True,
+                editable=False,
+            )
+            cls.add_to_class(crop_field_name(name), crop_field)
+
         super().contribute_to_class(cls, name)
         signals.post_save.connect(self._post_save, sender=cls)
         signals.post_init.connect(self._set_field_variations, sender=cls)
         signals.post_delete.connect(self.post_delete, sender=cls)
+
+    def save_form_data(self, instance, data):
+        croparea = None
+        if isinstance(data, (list, tuple)):
+            data, croparea = data
+
+        # Important: None means "no change", other false value means "clear"
+        # This subtle distinction (rather than a more explicit marker) is
+        # needed because we need to consume values that are also sane for a
+        # regular (non Model-) Form to find in its cleaned_data dictionary.
+        if data is not None:
+            # This value will be converted to unicode and stored in the
+            # database, so leaving False as-is is not acceptable.
+            if not data:
+                data = ''
+                self.post_delete(instance)
+
+            setattr(instance, self.name, data)
+
+            if data and croparea is not None:
+                setattr(instance, '_{}_croparea'.format(self.name), croparea)
 
     def validate_type(self, value, model_instance):
         """ Валидация типа файла """
@@ -429,9 +501,10 @@ class VariationImageField(ImageField):
     def validate_dimensions(self, value, model_instance):
         """ Валидация размеров картинки """
         img_width, img_height = value.dimensions
-        if value.cropsize:
-            img_width = min(value.cropsize[2], img_width)
-            img_height = min(value.cropsize[3], img_height)
+        croparea = value.croparea
+        if croparea:
+            img_width = min(croparea.width, img_width)
+            img_height = min(croparea.height, img_height)
 
         min_width, min_height = self.get_min_dimensions(model_instance)
         if min_width and img_width < min_width:
@@ -517,18 +590,13 @@ class VariationImageField(ImageField):
         """ Возвращает максимальный вес картинки для загрузки """
         raise NotImplementedError()
 
-    def build_variation_images(self, instance, source_image, source_format, crop=None):
+    def build_variation_images(self, instance, source_image, source_format, croparea=None):
         """
             Обрезает картинку source_image по заданным координатам
             и создает из результата файлы вариаций.
         """
         field_file = getattr(instance, self.name)
-
-        if crop:
-            field_file.cropsize = crop
-            current_image = variation_crop(source_image, field_file.cropsize)
-        else:
-            current_image = source_image
+        current_image = variation_crop(source_image, croparea)
 
         self._create_variation_fields(instance)
         for name, variation in field_file.variations.items():
@@ -546,7 +614,13 @@ class VariationImageField(ImageField):
         if hasattr(instance, new_file_attrname):
             delattr(instance, new_file_attrname)
 
-        self.post_save(instance, is_uploaded=new_file_uploaded, **kwargs)
+        # Координаты обрезки
+        croparea_attrname = '_{}_croparea'.format(self.name)
+        croparea = getattr(instance, croparea_attrname, None)
+        if hasattr(instance, croparea_attrname):
+            delattr(instance, croparea_attrname)
+
+        self.post_save(instance, is_uploaded=new_file_uploaded, croparea=croparea, **kwargs)
 
     def post_save(self, instance, **kwargs):
         """ Обработчик сигнала сохранения экземпляра модели """

@@ -298,27 +298,23 @@ def limited_size(size, limit_size):
     return width, height
 
 
-def variation_crop(image, crop=None):
+def variation_crop(image, croparea=None):
     """ Обрезка по координатам """
-    if not crop:
+    if not croparea:
         return image
 
-    left, top, width, height = crop
-    if left < 0:
-        left = 0
-    if left + width > image.size[0]:
-        width = image.size[0] - left
+    if croparea.x2 > image.size[0]:
+        croparea.width = image.size[0] - croparea.x
 
-    if top < 0:
-        top = 0
-    if top + height > image.size[1]:
-        height = image.size[1] - top
+    if croparea.y2 > image.size[1]:
+        croparea.hight = image.size[1] - croparea.y
 
     return image.crop((
-        left,
-        top,
-        left + width,
-        top + height))
+        croparea.x,
+        croparea.y,
+        croparea.x2,
+        croparea.y2
+    ))
 
 
 def variation_resize(image, variation, target_format):

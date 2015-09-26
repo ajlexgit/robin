@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 19:07+0300\n"
+"POT-Creation-Date: 2015-09-17 12:57+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,27 +19,31 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: fields.py:235
+#: libs/variation_field/fields.py:280
+msgid "Image invalid or corrupted"
+msgstr ""
+
+#: libs/variation_field/fields.py:281
 #, python-format
 msgid "Image width should not be less than %(limit)s pixels"
 msgstr "Ширина картинки не должна быть меньше %(limit)s пикселей"
 
-#: fields.py:236
+#: libs/variation_field/fields.py:282
 #, python-format
 msgid "Image height should not be less than %(limit)s pixels"
 msgstr "Высота картинки не должна быть меньше %(limit)s пикселей"
 
-#: fields.py:237
+#: libs/variation_field/fields.py:283
 #, python-format
 msgid "Image width should not be greater than %(limit)s pixels"
 msgstr "Ширина картинки не должна быть больше %(limit)s пикселей"
 
-#: fields.py:238
+#: libs/variation_field/fields.py:284
 #, python-format
 msgid "Image height should not be greater than %(limit)s pixels"
 msgstr "Высота картинки не должна быть больше %(limit)s пикселей"
 
-#: fields.py:239
+#: libs/variation_field/fields.py:285
 #, python-format
 msgid "Image width should not be greater than %(limit)s"
 msgstr "Вес картинки не должен быть больше %(limit)s"

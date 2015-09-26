@@ -12,30 +12,7 @@ MAX_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MAX_DIMENSIONS_DEFAULT', (
 MAX_SOURCE_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MAX_SOURCE_DIMENSIONS_DEFAULT', (2048, 2048))
 
 
-class StdImageFieldFile(VariationImageFieldFile):
-
-    def recut(self, *args, **kwargs):
-        super().recut(*args, **kwargs)
-
-        # Устанавливаем значение кропа в поле
-        if self.field.crop_field:
-            setattr(self.instance, self.field.crop_field, ':'.join(str(x) for x in self.cropsize))
-            self.instance.save()
-
-    def delete(self, *args, **kwargs):
-        """ Удаление картинки """
-        if not self:
-            return
-
-        # Сброс значения кропа в поле
-        if self.field.crop_field:
-            setattr(self.instance, self.field.crop_field, '')
-
-        super().delete(*args, **kwargs)
-
-
 class StdImageField(FieldChecksMixin, VariationImageField):
-    attr_class = StdImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, variations=None, **kwargs):
         self.admin_variation = kwargs.pop('admin_variation', None)
@@ -46,7 +23,6 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         self.max_size = kwargs.pop('max_size', MAX_SIZE_DEFAULT)
 
         self.crop_area = kwargs.pop('crop_area', False)
-        self.crop_field = kwargs.pop('crop_field', None)
 
         # Форматируем вариации
         self._variations = variations
@@ -123,24 +99,12 @@ class StdImageField(FieldChecksMixin, VariationImageField):
             'variations': self.variations,
             'admin_variation': self.admin_variation,
             'crop_area': self.crop_area,
-            'crop_field': self.crop_field,
             'min_dimensions': self.min_dimensions,
             'max_dimensions': self.max_dimensions,
             'aspects': self.aspects,
         }
         defaults.update(kwargs)
         return super().formfield(**defaults)
-
-    def save_form_data(self, instance, data):
-        final_data, delete, cropsize = data
-        if delete:
-            final_data = ''
-            self.post_delete(instance)
-
-        setattr(instance, '_{}_new_file'.format(self.name), final_data != getattr(instance, self.name, ''))
-        setattr(instance, '_{}_cropsize'.format(self.name), cropsize)
-
-        super().save_form_data(instance, final_data)
 
     def get_variations(self, instance):
         """ Возвращает настройки вариаций """
@@ -174,21 +138,17 @@ class StdImageField(FieldChecksMixin, VariationImageField):
         """ Построение имени файла исходника """
         return '%s_%s.%s' % (self.name, instance.pk, ext.lower())
 
-    def post_save(self, instance, is_uploaded=False, **kwargs):
+    def post_save(self, instance, is_uploaded=False, croparea=None, **kwargs):
         """ Обработчик сигнала сохранения экземпляра модели """
-        # Координаты обрезки
-        cropsize_attrname = '_{}_cropsize'.format(self.name)
-        cropsize = getattr(instance, cropsize_attrname, None)
-        if hasattr(instance, cropsize_attrname):
-            delattr(instance, cropsize_attrname)
-
         # Если не загрузили новый файл и не обрезали старый исходник - выходим
-        if not is_uploaded and not cropsize:
+        if not is_uploaded and not croparea:
             return
 
         field_file = getattr(instance, self.name)
         if not field_file or not field_file.exists():
             return
+
+        field_file.croparea = croparea
 
         draft_size = None
         try:
@@ -206,29 +166,29 @@ class StdImageField(FieldChecksMixin, VariationImageField):
                         source_img = source_img.resize(draft_size, Image.LINEAR)
 
                     # Учитываем изменение размера исходника на области обрезки
-                    field_file.cropsize = cropsize
-                    if field_file.cropsize:
-                        decr_realation = old_width / source_img.size[0]
-                        cropsize = tuple(round(coord / decr_realation) for coord in field_file.cropsize)
+                    if field_file.croparea:
+                        decr_relation = old_width / source_img.size[0]
+                        croparea = tuple(round(coord / decr_relation) for coord in field_file.croparea)
+                        field_file.croparea = croparea
 
             source_img.load()
         finally:
             field_file.close()
 
-
-        # Устанавливаем значение кропа в поле
-        if cropsize and self.crop_field:
-            field_file.cropsize = cropsize
-            setattr(instance, self.crop_field, ':'.join(str(x) for x in field_file.cropsize))
-            if not is_uploaded:
-                instance.save()
+        update_fields = {}
 
         # Сохраняем исходник
         if is_uploaded:
-            self._save_source_file(
+            source_path = self._save_source_file(
                 instance, source_img, source_format,
                 draft_size=draft_size, **source_info
             )
+            update_fields[self.attname] = source_path
+
+        if croparea and self.save_crop:
+            update_fields[crop_field_name(self.attname)] = croparea
+
+        self.update_instance(instance, **update_fields)
 
         # Обрабатываем вариации
-        self.build_variation_images(instance, source_img, source_format, crop=cropsize)
+        self.build_variation_images(instance, source_img, source_format, croparea=field_file.croparea)

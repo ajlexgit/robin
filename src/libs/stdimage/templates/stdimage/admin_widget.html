@@ -26,7 +26,7 @@
   {% if crop_area %}
     <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">
       <button class="btn"
-              data-crop_field="{{ crop_field|default:'' }}"
+              data-crop="{{ value.croparea|default:'' }}"
               data-aspects="{{ aspects }}"
               data-min_dimensions="{{ min_dimensions|join:'x' }}"
               data-max_dimensions="{{ max_dimensions|join:'x' }}">
