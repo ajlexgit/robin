@@ -143,7 +143,7 @@ class Product(models.Model):
                 crop=False,
             ),
             admin_micro=dict(
-                size=(50, 50),
+                size=(60, 60),
                 crop=False,
                 background=(255,255,255,255),
             )

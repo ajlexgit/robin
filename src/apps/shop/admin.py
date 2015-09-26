@@ -112,7 +112,7 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     def micropreview(self, obj):
         if not obj.photo:
             return '-//-'
-        return '<img src="{}" width="50">'.format(obj.photo.admin_micro.url)
+        return '<img src="{}">'.format(obj.photo.admin_micro.url)
     micropreview.short_description = _('Preview')
     micropreview.allow_tags = True
 
