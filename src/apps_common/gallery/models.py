@@ -74,8 +74,8 @@ class GalleryItemBase(models.Model):
             self.self_type = ContentType.objects.get_for_model(type(self), for_concrete_model=False)
             self.created = now()
 
-            order = self.gallery.items.aggregate(max=models.Max('order')).get('max', 0)
-            self.order = 0 if order is None else order + 1
+            sort_order = self.gallery.items.aggregate(max=models.Max('sort_order')).get('max', 0)
+            self.sort_order = 0 if sort_order is None else sort_order + 1
 
         super().save(*args, **kwargs)
 

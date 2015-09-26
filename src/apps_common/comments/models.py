@@ -70,7 +70,7 @@ class Comment(MPTTModel):
     deleted_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, editable=False,
                                    related_name='+', verbose_name=_('deleted by'))
     visible = models.BooleanField(_('visible'), default=True, editable=False)
-    order = models.PositiveIntegerField(_('order'), default=0, editable=False)
+    sort_order = models.PositiveIntegerField(_('sort order'), default=0, editable=False)
 
     objects = CommentTreeManager()
 
@@ -86,7 +86,7 @@ class Comment(MPTTModel):
         )
 
     class MPTTMeta:
-        order_insertion_by = ['order']
+        order_insertion_by = ['sort_order']
 
     def __str__(self):
         return 'Comment(%r)' % self.short_text
@@ -104,10 +104,10 @@ class Comment(MPTTModel):
         if is_add:
             self.created = now()
 
-            order = self.get_siblings().aggregate(
-                max=models.Max('order')
+            sort_order = self.get_siblings().aggregate(
+                max=models.Max('sort_order')
             ).get('max')
-            self.order = 0 if order is None else order + 1
+            self.sort_order = 0 if sort_order is None else sort_order + 1
         else:
             # Обновляем видимость
             visible_descendants = self.get_descendants().filter(deleted=False)

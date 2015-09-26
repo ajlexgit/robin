@@ -75,7 +75,7 @@ def sort(request):
         except gallery.items.model.DoesNotExist:
             raise Http404
         else:
-            item.order = order
+            item.sort_order = order
             item.save()
     return HttpResponse()
 
