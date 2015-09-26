@@ -70,10 +70,14 @@ class GalleryImageField(VariationImageField):
         finally:
             field_file.close()
 
-        self._save_source_file(
+        source_path = self._save_source_file(
             instance, source_img, source_format,
             draft_size=draft_size, **source_info
         )
+
+        self.update_instance(instance, **{
+            self.attname: source_path,
+        })
 
         # Обрабатываем вариации
         self.build_variation_images(instance, source_img, source_format)

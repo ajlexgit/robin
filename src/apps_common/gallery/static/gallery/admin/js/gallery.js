@@ -58,7 +58,7 @@
             gallery = self.closest('.gallery').gallery('object');
 
         gallery.rotateItem($item, 'left').done(function() {
-            $item.find('.item-crop').removeData('crop');
+            $item.find('.item-crop').removeData('crop').removeAttr('data-crop');
         });
         return false;
     }).on('click.gallery', '.item-rotate-right', function() {
@@ -68,7 +68,7 @@
             gallery = self.closest('.gallery').gallery('object');
 
         gallery.rotateItem($item, 'right').done(function() {
-            $item.find('.item-crop').removeData('crop');
+            $item.find('.item-crop').removeData('crop').removeAttr('data-crop');
         });
         return false;
     }).on('click.gallery', '.item-description', function() {

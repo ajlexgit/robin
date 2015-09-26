@@ -189,19 +189,12 @@ def crop_item(request):
     if not item.is_image or not item.image.exists():
         raise Http404
 
-    coords = request.POST.get('coords', '').split(':')
     try:
-        coords = tuple(map(int, coords))
-    except (TypeError, ValueError):
+        item.image.croparea = request.POST.get('coords', '')
+    except ValueError:
         raise Http404
 
-    if len(coords) < 4:
-        raise Http404
-    else:
-        coords = coords[:4]
-
-    item.image.recut(crop=coords)
-    item.crop = ':'.join(map(str, coords))
+    item.image.recut()
     item.save()
 
     return JsonResponse({

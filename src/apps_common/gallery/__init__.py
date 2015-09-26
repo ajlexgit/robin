@@ -61,7 +61,7 @@
 
     Перенарезка всех картинок галереи:
         1) for item in gallery.image_items:
-               item.image.recut(crop=item.crop)
+               item.image.recut()
 
         2) for error_code, msg in gallery.recut_generator():
                print(msg)
@@ -70,8 +70,8 @@
 
     Копирование элементов в другую галерею:
         source_gallery.copy_items_to(dest_gallery)
-        source_gallery.copy_items_to(dest_gallery, items=(23, 45, 34), crop_images=True)
-        source_gallery.copy_items_to(dest_gallery, items=source_gallery.image_items, crop_images=True)
+        source_gallery.copy_items_to(dest_gallery, items=(23, 45, 34))
+        source_gallery.copy_items_to(dest_gallery, items=source_gallery.image_items)
 """
 
 from .models import GalleryBase, GalleryImageItem, GalleryVideoLinkItem

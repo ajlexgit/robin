@@ -114,6 +114,8 @@ class GalleryImageItem(GalleryItemBase):
     """ Элемент-картинка галереи """
     _cache = {}
 
+    COPY_FIELDS = GalleryItemBase.COPY_FIELDS | {'image_crop', }
+
     # Корневая папка (storage)
     STORAGE_LOCATION = None
 
@@ -153,9 +155,8 @@ class GalleryImageItem(GalleryItemBase):
 
     image = GalleryImageField(_('image'),
         storage=MediaStorage(),
-        upload_to=generate_filepath
+        upload_to=generate_filepath,
     )
-    crop = models.CharField(_('image crop coordinates'), max_length=32, blank=False)
 
     class Meta:
         verbose_name = _('image item')
@@ -265,12 +266,7 @@ class GalleryImageItem(GalleryItemBase):
     def copy_for(self, dest_gallery, **kwargs):
         """ Создание копии текущего элемента для другой галереи """
         errors = []
-        copy_fields = self.COPY_FIELDS.copy()
-
-        # Если указан параметр crop_images - копируем кроп картинки
-        crop_images = kwargs.get('crop_images', False)
-        if crop_images:
-            copy_fields.add('crop')
+        copy_fields = self.COPY_FIELDS
 
         new_item = dest_gallery.IMAGE_MODEL(
             gallery = dest_gallery
@@ -297,8 +293,8 @@ class GalleryImageItem(GalleryItemBase):
             Постобработка скопированного элемента.
             Параметр self - это уже новый элемент.
         """
-        if self.crop:
-            self.image.recut(crop=self.crop)
+        if self.image_crop:
+            self.image.recut()
 
 
 class GalleryVideoLinkItem(GalleryItemBase):
@@ -512,10 +508,8 @@ class GalleryBase(ModelChecksMixin, models.Model):
                 items - последовательность экземпляров GalleryItemBase или ID элементов
                         галереи-источника. Если не указан - копирует все элементы.
 
-            Также можно передавать дополнительные именованые аргументы, принимаемые
-            методами copy_for элементов галереи. Например:
-                crop_images - если истинен, при копировании картинок будут скопированы их области
-                              обрезки и проведена перенарезка.
+            Можно передавать дополнительные именованые аргументы, принимаемые
+            методами copy_for элементов галереи.
 
             Возвращает кортеж двух словарей:
                 словарь ID(старый ID -> новый ID)
@@ -566,5 +560,5 @@ class GalleryBase(ModelChecksMixin, models.Model):
                 yield 2, 'Error (ID %d): Not found %r' % (item.pk, item.image.url)
                 continue
 
-            item.image.recut(crop=item.crop)
+            item.image.recut()
             yield 0, item.image.url

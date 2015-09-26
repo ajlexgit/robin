@@ -8,14 +8,6 @@ from project.admin import ModelAdminMixin
 from .models import CustomUser
 
 
-class CustomUserForm(UserChangeForm):
-    class Meta:
-        model = CustomUser
-        widgets = {
-            'avatar_crop': forms.HiddenInput,
-        }
-
-
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
@@ -38,14 +30,13 @@ class CustomUserCreationForm(UserCreationForm):
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdminMixin, UserAdmin):
     model = CustomUser
-    form = CustomUserForm
     add_form = CustomUserCreationForm
     fieldsets = (
         (None, {
             'fields': ('username', 'password'),
         }),
         (_('Personal info'), {
-            'fields': ('first_name', 'last_name', 'email', 'avatar', 'avatar_crop'),
+            'fields': ('first_name', 'last_name', 'email', 'avatar'),
         }),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),

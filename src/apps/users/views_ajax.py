@@ -140,7 +140,6 @@ class AvatarUploadView(TemplateExView):
                 'message': ', '.join(e.messages),
             }, status=400)
 
-        request.user.avatar_crop = ''
         request.user.clean()
         request.user.save()
 
@@ -162,22 +161,15 @@ class AvatarCropView(TemplateExView):
         if not request.user.is_authenticated():
             raise Http404
 
-        coords = request.POST.get('coords', '').split(':')
-        try:
-            coords = tuple(map(int, coords))
-        except (TypeError, ValueError):
-            raise Http404
-
-        if len(coords) < 4:
-            raise Http404
-        else:
-            coords = coords[:4]
-
         if not request.user.avatar:
             raise Http404
 
-        request.user.avatar.recut(crop=coords)
-        request.user.avatar_crop = ':'.join(map(str, coords))
+        try:
+            request.user.avatar.croparea = request.POST.get('coords', '')
+        except ValueError:
+            raise Http404
+
+        request.user.avatar.recut()
         request.user.save()
 
         return JsonResponse({
