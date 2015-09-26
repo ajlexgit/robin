@@ -15,6 +15,7 @@
             storage=MediaStorage('main/header'),
             admin_variation='square',
             crop_area=True,
+            crop_field='preview_crop'
             aspects=('normal', ),
             variations=dict(
                 normal=dict(
@@ -26,6 +27,11 @@
                     overlay='module/img/square_overlay.png',
                 ),
             ),
+        )
+        preview_crop = models.CharField(_('stored_crop'),
+            max_length=32,
+            blank=True,
+            editable=False,
         )
 
 """

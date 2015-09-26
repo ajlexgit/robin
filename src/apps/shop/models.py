@@ -128,6 +128,7 @@ class Product(models.Model):
         min_dimensions=(180, 60),
         admin_variation='admin',
         crop_area=True,
+        crop_field='photo_crop',
         variations=dict(
             normal=dict(
                 size=(300, 300),
@@ -147,6 +148,11 @@ class Product(models.Model):
                 background=(255,255,255,255),
             )
         ),
+    )
+    photo_crop = models.CharField(_('stored_crop'),
+        max_length=32,
+        blank=True,
+        editable=False,
     )
     description = CKEditorField(_('description'),
         editor_options=settings.CKEDITOR_CONFIG_MEDIUM,
