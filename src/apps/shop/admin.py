@@ -54,12 +54,12 @@ class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sortabl
     suit_seo_tab = 'seo'
 
     def make_hidden(modeladmin, request, queryset):
-        queryset.update(visible=False)
-    make_hidden.short_description = _('Make hidden')
+        queryset.update(is_visible=False)
+    make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def make_visible(modeladmin, request, queryset):
-        queryset.update(visible=True)
-    make_visible.short_description = _('Make visible')
+        queryset.update(is_visible=True)
+    make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
 class ProductForm(forms.ModelForm):
@@ -67,6 +67,7 @@ class ProductForm(forms.ModelForm):
         label=Product._meta.get_field('categories').verbose_name.capitalize(),
         queryset=Category.objects.all(),
         expressions="title__icontains",
+        item2dict_func=Category.autocomplete_item,
         minimum_input_length=0,
     )
 
@@ -87,9 +88,9 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     )
     form = ProductForm
     actions = ('make_hidden', 'make_visible')
+    list_display = ('view', 'micropreview', '__str__', 'serial', 'categories_list', 'price_alternate', 'is_visible')
+    list_display_links = ('micropreview', '__str__', )
     list_filter = ('categories', )
-    list_display = ('view', '__str__', 'serial', 'categories_list', 'price_alternate', 'is_visible')
-    list_display_links = ('__str__', )
     prepopulated_fields = {
         'alias': ('title', ),
         'serial': ('title', ),
@@ -108,18 +109,25 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
         )
     categories_list.short_description = _('Categories')
 
+    def micropreview(self, obj):
+        if not obj.photo:
+            return '-//-'
+        return '<img src="{}" width="50">'.format(obj.photo.admin_micro.url)
+    micropreview.short_description = _('Preview')
+    micropreview.allow_tags = True
+
     def price_alternate(self, obj):
         return obj.price.alternate
     price_alternate.short_description = _('Price')
     price_alternate.admin_order_field = 'price'
 
     def make_hidden(modeladmin, request, queryset):
-        queryset.update(visible=False)
-    make_hidden.short_description = _('Make hidden')
+        queryset.update(is_visible=False)
+    make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def make_visible(modeladmin, request, queryset):
-        queryset.update(visible=True)
-    make_visible.short_description = _('Make visible')
+        queryset.update(is_visible=True)
+    make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
 class StatusOrderFilter(SimpleListFilter):

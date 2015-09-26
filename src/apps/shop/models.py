@@ -86,6 +86,13 @@ class Category(MPTTModel):
     def __str__(self):
         return self.title
 
+    @staticmethod
+    def autocomplete_item(obj):
+        return {
+            'id': obj.pk,
+            'text': '–' * obj.level + obj.title,
+        }
+
     def get_absolute_url(self):
         return resolve_url('shop:category', category_alias=self.alias)
 
@@ -134,6 +141,11 @@ class Product(models.Model):
                 size=(200, 200),
                 crop=False,
             ),
+            admin_micro=dict(
+                size=(50, 50),
+                crop=False,
+                background=(255,255,255,255),
+            )
         ),
     )
     description = CKEditorField(_('description'),
