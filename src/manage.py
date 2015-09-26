@@ -1,7 +1,6 @@
 import os
 import sys
 
-# comments: sort_order
 # Gallery: проверить copy_for, особенно кроп
 # Shop: caegories filter
 # CKeditorUpload: валидация пустого текста
@@ -14,8 +13,7 @@ import sys
 # пагинация AJAX с предзагрузкой
 # AJAX hit
 
-# Logging
-# Написание тестов
+# Logging, checks, tests
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings.dev")
