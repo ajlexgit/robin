@@ -1,26 +1,10 @@
 from django.db import models
-from django.core import exceptions
+from django.core import exceptions, checks
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.contrib.staticfiles.finders import get_finders
-from libs.checks import FieldChecksMixin
 from .forms import SpriteImageFormField
 from .widgets import SpriteImageWidget
-
-
-class Icon:
-    def __init__(self, url='', name='', position=()):
-        self.url = url
-        self._name = name
-        self._position = position
-
-    def __getitem__(self, item):
-        return self._position[item]
-
-    def __bool__(self):
-        return bool(self._name and self._position)
-
-    def __str__(self):
-        return self._name
+from .icon import Icon
 
 
 class SpriteImageDescriptor:
@@ -46,7 +30,7 @@ class SpriteImageDescriptor:
         instance.__dict__[self.field.name] = value
 
 
-class SpriteImageField(FieldChecksMixin, models.CharField):
+class SpriteImageField(models.CharField):
     descriptor_class = SpriteImageDescriptor
     attr_class = Icon
 
@@ -57,34 +41,6 @@ class SpriteImageField(FieldChecksMixin, models.CharField):
         self.sprite_url = staticfiles_storage.url(self.sprite)
         self.size = size
 
-    def custom_check(self):
-        errors = []
-
-        if not self.sprite:
-            errors.append(
-                self.check_error('sprite required')
-            )
-        else:
-            for finder in get_finders():
-                result = finder.find(self.sprite, all=all)
-                if result:
-                    break
-            else:
-                errors.append(
-                    self.check_error('sprite %s not found' % self.sprite)
-                )
-
-        if not self.size:
-            errors.append(
-                self.check_error('size required')
-            )
-        elif not isinstance(self.size, (list, tuple)) or len(self.size) != 2:
-            errors.append(
-                self.check_error('size should be a two-element list or tuple')
-            )
-
-        return errors
-
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
         kwargs['sprite'] = self.sprite
@@ -92,6 +48,51 @@ class SpriteImageField(FieldChecksMixin, models.CharField):
         if kwargs['max_length'] == 100:
             del kwargs['max_length']
         return name, path, args, kwargs
+
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_sprite_attribute(**kwargs))
+        errors.extend(self._check_size_attribute(**kwargs))
+        return errors
+
+    def _check_sprite_attribute(self, **kwargs):
+        if not self.sprite:
+            return [
+                checks.Error(
+                    "sprite file path required",
+                    obj=self
+                )
+            ]
+        else:
+            for finder in get_finders():
+                result = finder.find(self.sprite, all=all)
+                if result:
+                    return []
+            else:
+                return [
+                    checks.Error(
+                        "sprite file not found: %s" % self.sprite,
+                        obj=self
+                    )
+                ]
+
+    def _check_size_attribute(self, **kwargs):
+        if not self.size:
+            return [
+                checks.Error(
+                    "size required",
+                    obj=self
+                )
+            ]
+        elif not isinstance(self.size, (list, tuple)) or len(self.size) != 2:
+            return [
+                checks.Error(
+                    "size should be a two-element list or tuple",
+                    obj=self
+                )
+            ]
+        else:
+            return []
 
     def contribute_to_class(self, cls, *args, **kwargs):
         super().contribute_to_class(cls, *args, **kwargs)

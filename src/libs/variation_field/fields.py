@@ -176,7 +176,7 @@ class VariationImageFieldFile(ImageFieldFile):
         if self.name:
             variations = self.field.get_variations(self.instance)
             for name, variation in variations.items():
-                path = self.field._build_variation_name(variation, self.name)
+                path = self.field.build_variation_name(variation, self.name)
                 files_list.append(path)
 
         return tuple(files_list)
@@ -202,16 +202,16 @@ class VariationImageFieldFile(ImageFieldFile):
         temp_img = variation_crop(source_img, self.croparea)
 
         # Обрабатываем вариации
-        self.field._create_variation_fields(self.instance, field_file=self)
+        self.field.create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
             if args and name not in args:
                 continue
 
             target_format = variation['format'] or source_format
             if variation['use_source']:
-                self.field._resize_image(self.instance, variation, target_format, source_img)
+                self.field.resize_image(self.instance, variation, target_format, source_img)
             else:
-                self.field._resize_image(self.instance, variation, target_format, temp_img)
+                self.field.resize_image(self.instance, variation, target_format, temp_img)
 
         # Освобожение ресурсов
         source_img.close()
@@ -257,10 +257,10 @@ class VariationImageFieldFile(ImageFieldFile):
         self.clear_dimensions()
 
         # Обрабатываем вариации
-        self.field._create_variation_fields(self.instance, field_file=self)
+        self.field.create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
             target_format = variation['format'] or source_format
-            self.field._resize_image(self.instance, variation, target_format, source_img)
+            self.field.resize_image(self.instance, variation, target_format, source_img)
 
         # Освобожение ресурсов
         source_img.close()
@@ -274,7 +274,7 @@ class VariationImageFieldFile(ImageFieldFile):
 
     def delete(self, save=True):
         """ Удаление картинки """
-        self.field._create_variation_fields(self.instance, field_file=self)
+        self.field.create_variation_fields(self.instance, field_file=self)
         for name in self.variations:
             variation_field = getattr(self, name, None)
             if variation_field:
@@ -324,7 +324,7 @@ class VariationImageField(models.ImageField):
         self.crop_field = kwargs.pop('crop_field', None)
         super().__init__(*args, **kwargs)
 
-    def _create_variation_fields(self, instance, field_file=None):
+    def create_variation_fields(self, instance, field_file=None):
         """ Создание полей вариаций, если их нет """
         if field_file is None:
             field_file = getattr(instance, self.name)
@@ -341,12 +341,12 @@ class VariationImageField(models.ImageField):
             return
 
         for name, variation in field_file.variations.items():
-            variation_filename = self._build_variation_name(variation, field_file.name)
+            variation_filename = self.build_variation_name(variation, field_file.name)
             variation_field = VariationField(variation_filename, storage=self.storage, variation_size=variation['size'])
             setattr(field_file, name, variation_field)
 
     @staticmethod
-    def _build_variation_name(variation, source_filename):
+    def build_variation_name(variation, source_filename):
         """ Возвращает имя файла вариации """
         basename, ext = os.path.splitext(source_filename)
         image_format = variation['format']
@@ -363,7 +363,7 @@ class VariationImageField(models.ImageField):
         image = variation_mask(image, variation)
         return image
 
-    def _resize_image(self, instance, variation, target_format, source_image):
+    def resize_image(self, instance, variation, target_format, source_image):
         """ Обработка и сохранение одной вариации """
         field_file = getattr(instance, self.name)
         if not field_file or not field_file.exists():
@@ -398,7 +398,7 @@ class VariationImageField(models.ImageField):
         variation_image = self._process_variation(variation_image, variation, target_format)
 
         # Сохранение
-        variation_filename = self._build_variation_name(variation, field_file.name)
+        variation_filename = self.build_variation_name(variation, field_file.name)
         with self.storage.open(variation_filename, 'wb') as destination:
             try:
                 variation_image.save(destination, optimize=1, **save_params)
@@ -591,13 +591,13 @@ class VariationImageField(models.ImageField):
         field_file = getattr(instance, self.name)
         current_image = variation_crop(source_image, croparea)
 
-        self._create_variation_fields(instance)
+        self.create_variation_fields(instance)
         for name, variation in field_file.variations.items():
             target_format = variation['format'] or source_format
             if variation.get('use_source'):
-                self._resize_image(instance, variation, target_format, source_image)
+                self.resize_image(instance, variation, target_format, source_image)
             else:
-                self._resize_image(instance, variation, target_format, current_image)
+                self.resize_image(instance, variation, target_format, current_image)
 
     def _post_save(self, instance, **kwargs):
         """ Обертка над реальным обработчиком """
