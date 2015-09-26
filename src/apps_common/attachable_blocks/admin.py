@@ -56,13 +56,13 @@ class BaseAttachableReferenceMixin(ModelAdminInlineMixin, SortableTabularInlineB
     set_name = 'default'
 
     @classmethod
-    def check(cls, **kwargs):
-        errors = super().check(**kwargs)
-        errors.extend(cls._check_set_name(**kwargs))
+    def check(cls, model, **kwargs):
+        errors = super().check(model, **kwargs)
+        errors.extend(cls._check_set_name(model, **kwargs))
         return errors
 
     @classmethod
-    def _check_set_name(cls, **kwargs):
+    def _check_set_name(cls, model, **kwargs):
         if not cls.set_name:
             return [
                 checks.Error(
