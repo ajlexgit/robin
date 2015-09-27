@@ -190,12 +190,11 @@ def crop_item(request):
         raise Http404
 
     try:
-        item.image.croparea = request.POST.get('coords', '')
+        croparea = request.POST.get('coords', '')
     except ValueError:
         raise Http404
 
-    item.image.recut()
-    item.save()
+    item.image.recut(croparea=croparea)
 
     return JsonResponse({
         'preview_url': item.admin_variation.url_nocache

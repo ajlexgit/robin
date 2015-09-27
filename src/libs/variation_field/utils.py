@@ -2,6 +2,7 @@ import operator
 import itertools
 from PIL import Image, ImageOps, ImageEnhance
 from django.contrib.staticfiles.storage import staticfiles_storage
+from .croparea import CropArea
 
 
 DEFAULT_VARIATION = dict(
@@ -303,18 +304,23 @@ def variation_crop(image, croparea=None):
     if not croparea:
         return image
 
+    if not isinstance(croparea, CropArea):
+        croparea = CropArea(croparea)
+
     if croparea.x2 > image.size[0]:
         croparea.width = image.size[0] - croparea.x
 
     if croparea.y2 > image.size[1]:
         croparea.hight = image.size[1] - croparea.y
 
-    return image.crop((
+    cropped = image.crop((
         croparea.x,
         croparea.y,
         croparea.x2,
         croparea.y2
     ))
+    cropped.format = image.format
+    return cropped
 
 
 def variation_resize(image, variation, target_format):
@@ -334,6 +340,7 @@ def variation_resize(image, variation, target_format):
 
     # Режим изображения
     mode = image.mode
+    image_format = image.format
     crop = bool(variation['crop'])
     stretch = bool(variation['stretch'])
 
@@ -421,6 +428,7 @@ def variation_resize(image, variation, target_format):
         masked = mode == 'RGBA'
         image = put_on_bg(image, target_size, masked=masked, **bg_options)
 
+    image.format = image_format
     return image
 
 

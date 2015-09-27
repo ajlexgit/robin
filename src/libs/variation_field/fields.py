@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.db.models.fields.files import ImageFieldFile, FieldFile, ImageFileDescriptor
 from .croparea import CropArea
-from .utils import (put_on_bg, variation_crop, variation_resize, variation_watermark,
-                    variation_overlay, variation_mask)
+from .utils import (put_on_bg, limited_size, variation_crop, variation_resize,
+                    variation_watermark, variation_overlay, variation_mask)
 
 
 class VariationField(ImageFile):
@@ -194,12 +194,12 @@ class VariationImageFieldFile(ImageFieldFile):
 
         with self as field_file:
             field_file.open()
-            source_img = Image.open(field_file)
-            source_format = source_img.format
-            source_img.load()
+            source_image = Image.open(field_file)
+            source_format = source_image.format
+            source_image.load()
 
         # Обрезаем по рамке
-        temp_img = variation_crop(source_img, self.croparea)
+        temp_image = variation_crop(source_image, self.croparea)
 
         # Обрабатываем вариации
         self.field.create_variation_fields(self.instance, field_file=self)
@@ -209,12 +209,22 @@ class VariationImageFieldFile(ImageFieldFile):
 
             target_format = variation['format'] or source_format
             if variation['use_source']:
-                self.field.resize_image(self.instance, variation, target_format, source_img)
+                self.field.resize_image(
+                    self.instance,
+                    variation,
+                    target_format,
+                    source_image
+                )
             else:
-                self.field.resize_image(self.instance, variation, target_format, temp_img)
+                self.field.resize_image(
+                    self.instance,
+                    variation,
+                    target_format,
+                    temp_image
+                )
 
         # Освобожение ресурсов
-        source_img.close()
+        source_image.close()
 
         if self.field.crop_field:
             self.set_crop_field(self.instance, croparea)
@@ -238,20 +248,21 @@ class VariationImageFieldFile(ImageFieldFile):
 
         with self as field_file:
             field_file.open()
-            source_img = Image.open(field_file)
-            source_format = source_img.format
-            source_img.load()
+            source_image = Image.open(field_file)
+            source_format = source_image.format
+            source_image.load()
 
-        info = dict(source_img.info,
+        info = dict(source_image.info,
             quality=quality,
         )
 
-        source_img = source_img.rotate(-angle)
+        source_image = source_image.rotate(-angle)
+        source_image.format = source_format
         with self.storage.open(self.name, 'wb') as destination:
             try:
-                source_img.save(destination, source_format, optimize=1, **info)
+                source_image.save(destination, source_format, optimize=1, **info)
             except IOError:
-                source_img.save(destination, source_format, **info)
+                source_image.save(destination, source_format, **info)
 
         # Сброс закэшированных размеров
         self.clear_dimensions()
@@ -260,10 +271,15 @@ class VariationImageFieldFile(ImageFieldFile):
         self.field.create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
             target_format = variation['format'] or source_format
-            self.field.resize_image(self.instance, variation, target_format, source_img)
+            self.field.resize_image(
+                self.instance,
+                variation,
+                target_format,
+                source_image
+            )
 
         # Освобожение ресурсов
-        source_img.close()
+        source_image.close()
 
     def save(self, name, content, save=True):
         newfile_attrname = '_{}_new_file'.format(self.field.name)
@@ -342,111 +358,12 @@ class VariationImageField(models.ImageField):
 
         for name, variation in field_file.variations.items():
             variation_filename = self.build_variation_name(variation, field_file.name)
-            variation_field = VariationField(variation_filename, storage=self.storage, variation_size=variation['size'])
+            variation_field = VariationField(
+                variation_filename,
+                storage=self.storage,
+                variation_size=variation['size']
+            )
             setattr(field_file, name, variation_field)
-
-    @staticmethod
-    def build_variation_name(variation, source_filename):
-        """ Возвращает имя файла вариации """
-        basename, ext = os.path.splitext(source_filename)
-        image_format = variation['format']
-        if image_format:
-            ext = '.%s' % image_format.lower()
-        return ''.join((basename, '.%s' % variation['name'], ext))
-
-    @staticmethod
-    def _process_variation(image, variation, target_format):
-        """ Обработка картинки для сохранения в качестве вариации """
-        image = variation_resize(image, variation, target_format)
-        image = variation_watermark(image, variation)
-        image = variation_overlay(image, variation)
-        image = variation_mask(image, variation)
-        return image
-
-    def resize_image(self, instance, variation, target_format, source_image):
-        """ Обработка и сохранение одной вариации """
-        field_file = getattr(instance, self.name)
-        if not field_file or not field_file.exists():
-            return
-
-        variation_image = source_image.copy()
-
-        # Целевой формат
-        target_format = target_format.upper()
-
-        # Параметры сохранения
-        save_params = dict(
-            format = target_format,
-            quality = self.get_variation_quality(instance, variation),
-        )
-
-        # Изображение с режимом "P" нельзя сохранять в JPEG,
-        # а в GIF - фон становится черным
-        if variation_image.mode == 'P' and target_format in ('JPEG', 'GIF'):
-            variation_image = variation_image.convert('RGBA')
-
-        # При сохранении в GIF проблематично указать прозрачность. Кроме того,
-        # Уменьшенный в размере прозрачный GIF ужасен по качеству. Пока накладываем на фон
-        if target_format == 'GIF':
-            masked = variation_image.mode == 'RGBA'
-            variation_image = put_on_bg(variation_image, variation_image.size,
-                                        color=variation['background'][:3],
-                                        offset=variation['offset'],
-                                        masked=masked)
-
-        # Основная обработка картинок
-        variation_image = self._process_variation(variation_image, variation, target_format)
-
-        # Сохранение
-        variation_filename = self.build_variation_name(variation, field_file.name)
-        with self.storage.open(variation_filename, 'wb') as destination:
-            try:
-                variation_image.save(destination, optimize=1, **save_params)
-            except IOError:
-                variation_image.save(destination, **save_params)
-
-        # Очищаем закэшированные размеры картинки, т.к. они могли измениться
-        variation_field = getattr(field_file, variation['name'])
-        variation_field.clear_dimensions()
-
-    def _save_source_file(self, instance, source_img, source_format, draft_size=None, **kwargs):
-        field_file = getattr(instance, self.name)
-
-        out_name = self.build_source_name(instance, source_format)
-        source_path = self.generate_filename(instance, out_name)
-        source_path = self.storage.get_available_name(source_path)
-
-        if draft_size is None:
-            # Если картинка не менялась - копируем файл
-            with self.storage.open(field_file.name) as source:
-                self.storage.save(source_path, source)
-        else:
-            ct = ContentFile(b'')
-
-            kwargs['quality'] = self.get_source_quality(instance)
-            try:
-                source_img.save(ct, source_format, optimize=1, **kwargs)
-            except IOError:
-                source_img.save(ct, source_format, **kwargs)
-
-            self.storage.save(source_path, ct)
-
-            # Удаляем загруженный исходник
-        self.storage.delete(field_file.name)
-
-        # Записываем путь к исходнику
-        setattr(instance, self.attname, source_path)
-
-        return source_path
-
-    @staticmethod
-    def update_instance(instance, **kwargs):
-        if not kwargs:
-            return
-        if not instance.pk:
-            raise ValueError('saving image to not saved instance')
-        queryset = instance._meta.model.objects.filter(pk=instance.pk)
-        queryset.update(**kwargs)
 
     def get_prep_value(self, value):
         if isinstance(value, FieldFile) and not value.exists():
@@ -567,6 +484,10 @@ class VariationImageField(models.ImageField):
         """ Возвращает качество картинок вариаций по умолчанию """
         raise NotImplementedError()
 
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
+        raise NotImplementedError()
+
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
         raise NotImplementedError()
@@ -575,15 +496,122 @@ class VariationImageField(models.ImageField):
         """ Возвращает максимальные размеры картинки для загрузки """
         raise NotImplementedError()
 
-    def get_max_source_dimensions(self, instance):
-        """ Возвращает максимальные размеры исходника картинки """
-        raise NotImplementedError()
-
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
         raise NotImplementedError()
 
-    def build_variation_images(self, instance, source_image, source_format, croparea=None):
+    def build_source_name(self, instance, ext):
+        raise NotImplementedError()
+
+    def save_source_file(self, instance, source_image, draft_size=None, **kwargs):
+        """ Сохранение исходника """
+        field_file = getattr(instance, self.name)
+
+        if source_image.format is None:
+            print('Warning: Image format is None (_save_source_file)')
+
+        out_name = self.build_source_name(instance, source_image.format)
+        source_path = self.generate_filename(instance, out_name)
+        source_path = self.storage.get_available_name(source_path)
+
+        if draft_size is None:
+            # Если картинка не менялась - копируем файл
+            with self.storage.open(field_file.name) as source:
+                self.storage.save(source_path, source)
+        else:
+            ct = ContentFile(b'')
+            params = source_image.info or {}
+            params['quality'] = self.get_source_quality(instance)
+            params.update(**kwargs)
+            try:
+                source_image.save(ct, source_image.format, optimize=1, **params)
+            except IOError:
+                source_image.save(ct, source_image.format, **params)
+
+            self.storage.save(source_path, ct)
+
+            # Удаляем загруженный исходник
+        self.storage.delete(field_file.name)
+
+        # Записываем путь к исходнику
+        setattr(instance, self.attname, source_path)
+
+        return source_path
+
+    @staticmethod
+    def update_instance(instance, **kwargs):
+        if not kwargs:
+            return
+        if not instance.pk:
+            raise ValueError('saving image to not saved instance')
+        queryset = instance._meta.model.objects.filter(pk=instance.pk)
+        queryset.update(**kwargs)
+
+    @staticmethod
+    def build_variation_name(variation, source_filename):
+        """ Возвращает имя файла вариации """
+        basename, ext = os.path.splitext(source_filename)
+        image_format = variation['format']
+        if image_format:
+            ext = '.%s' % image_format.lower()
+        return ''.join((basename, '.%s' % variation['name'], ext))
+
+    @staticmethod
+    def _process_variation(image, variation, target_format):
+        """ Обработка картинки для сохранения в качестве вариации """
+        image = variation_resize(image, variation, target_format)
+        image = variation_watermark(image, variation)
+        image = variation_overlay(image, variation)
+        image = variation_mask(image, variation)
+        return image
+
+    def resize_image(self, instance, variation, target_format, source_image):
+        """ Обработка и сохранение одной вариации """
+        field_file = getattr(instance, self.name)
+        if not field_file or not field_file.exists():
+            return
+
+        variation_image = source_image.copy()
+
+        # Целевой формат
+        target_format = target_format.upper()
+
+        # Параметры сохранения
+        save_params = dict(
+            format=target_format,
+            quality=self.get_variation_quality(instance, variation),
+        )
+
+        # Изображение с режимом "P" нельзя сохранять в JPEG,
+        # а в GIF - фон становится черным
+        if variation_image.mode == 'P' and target_format in ('JPEG', 'GIF'):
+            variation_image = variation_image.convert('RGBA')
+
+        # При сохранении в GIF проблематично указать прозрачность. Кроме того,
+        # Уменьшенный в размере прозрачный GIF ужасен по качеству. Пока накладываем на фон
+        if target_format == 'GIF':
+            masked = variation_image.mode == 'RGBA'
+            variation_image = put_on_bg(variation_image, variation_image.size,
+                color=variation['background'][:3],
+                offset=variation['offset'],
+                masked=masked)
+
+        # Основная обработка картинок
+        variation_image = self._process_variation(variation_image, variation, target_format)
+
+        # Сохранение
+        variation_filename = self.build_variation_name(variation, field_file.name)
+        with self.storage.open(variation_filename, 'wb') as destination:
+            try:
+                variation_image.save(destination, optimize=1, **save_params)
+            except IOError:
+                variation_image.save(destination, **save_params)
+
+        # Очищаем закэшированные размеры картинки, т.к. они могли измениться
+        variation_field = getattr(field_file, variation['name'])
+        variation_field.clear_dimensions()
+
+    def build_variation_images(self, instance, source_image, croparea=None):
         """
             Обрезает картинку source_image по заданным координатам
             и создает из результата файлы вариаций.
@@ -591,9 +619,12 @@ class VariationImageField(models.ImageField):
         field_file = getattr(instance, self.name)
         current_image = variation_crop(source_image, croparea)
 
+        if source_image.format is None:
+            print('Warning: Image format is None (build_variation_imagesImage)')
+
         self.create_variation_fields(instance)
         for name, variation in field_file.variations.items():
-            target_format = variation['format'] or source_format
+            target_format = variation['format'] or source_image.format
             if variation.get('use_source'):
                 self.resize_image(instance, variation, target_format, source_image)
             else:
@@ -615,9 +646,64 @@ class VariationImageField(models.ImageField):
 
         self.post_save(instance, is_uploaded=new_file_uploaded, croparea=croparea, **kwargs)
 
-    def post_save(self, instance, **kwargs):
+    def post_save(self, instance, is_uploaded=None, croparea=None, **kwargs):
         """ Обработчик сигнала сохранения экземпляра модели """
-        raise NotImplementedError
+        # Если не загрузили новый файл и не обрезали старый исходник - выходим
+        if not is_uploaded and not croparea:
+            return
+
+        field_file = getattr(instance, self.name)
+        if not field_file or not field_file.exists():
+            return
+
+        field_file.croparea = croparea
+
+        draft_size = None
+        try:
+            field_file.open()
+            source_image = Image.open(field_file)
+            source_format = source_image.format
+
+            if is_uploaded:
+                draft_size = limited_size(
+                    source_image.size,
+                    self.get_max_source_dimensions(instance)
+                )
+                if draft_size is not None:
+                    old_width = source_image.size[0]
+                    draft = source_image.draft(None, draft_size)
+                    if draft is None:
+                        source_image = source_image.resize(draft_size, Image.LINEAR)
+
+                    # Учитываем изменение размера исходника на области обрезки
+                    if field_file.croparea:
+                        decr_relation = old_width / source_image.size[0]
+                        croparea = tuple(
+                            round(coord / decr_relation)
+                            for coord in field_file.croparea
+                        )
+                        field_file.croparea = croparea
+
+            source_image.format = source_format
+            source_image.load()
+        finally:
+            field_file.close()
+
+        update_fields = {}
+
+        # Сохраняем исходник
+        if is_uploaded:
+            source_path = self.save_source_file(instance, source_image, draft_size=draft_size)
+            update_fields[self.attname] = source_path
+
+        # Сохраняем область обрезки в поле, если оно указано
+        if croparea and self.crop_field:
+            update_fields[self.crop_field] = croparea
+
+        self.update_instance(instance, **update_fields)
+
+        # Обрабатываем вариации
+        self.build_variation_images(instance, source_image, croparea=field_file.croparea)
 
     def post_delete(self, instance=None, **kwargs):
         """ Обработчик сигнала удаления экземпляра модели """

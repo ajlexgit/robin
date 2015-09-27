@@ -95,7 +95,11 @@ class MainPageConfig(SingletonModel):
     price = ValuteField(_('price'),
         validators=[MinValueValidator(0)]
     )
-    gallery = GalleryField(MainGallery, verbose_name=_('gallery'), blank=True, null=True)
+    gallery = GalleryField(MainGallery,
+        verbose_name=_('gallery'),
+        blank=True,
+        null=True,
+    )
     video = VideoLinkField(_('video'), blank=True)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)

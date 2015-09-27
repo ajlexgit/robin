@@ -55,10 +55,16 @@ def get_video_info(video_id):
         'part': 'snippet,player',
         'fields': 'items(snippet/title,snippet/description,snippet/thumbnails,player/embedHtml)',
     })
-    return tuple({
+
+    try:
+        item = result['items'][0]
+    except KeyError:
+        return {}
+
+    return {
         'id': video_id,
         'title': item['snippet']['title'],
         'description': item['snippet']['description'],
         'thumbnails': item['snippet']['thumbnails'],
         'embed': item['player']['embedHtml'],
-    } for item in result['items'])
+    }

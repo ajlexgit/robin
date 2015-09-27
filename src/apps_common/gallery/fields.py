@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models import signals
-from django.utils.image import Image
 from libs.variation_field import *
 from .formfields import GalleryFormField
 
@@ -22,6 +21,10 @@ class GalleryImageField(VariationImageField):
         """ Возвращает качество картинок вариаций по умолчанию """
         return variation.get('quality') or instance.DEFAULT_QUALITY
 
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
+        return instance.MAX_SOURCE_DIMENSIONS
+
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
         return instance.MIN_DIMENSIONS
@@ -30,57 +33,13 @@ class GalleryImageField(VariationImageField):
         """ Возвращает максимальные размеры картинки для загрузки """
         return instance.MAX_DIMENSIONS
 
-    def get_max_source_dimensions(self, instance):
-        """ Возвращает максимальные размеры исходника картинки """
-        return instance.MAX_SOURCE_DIMENSIONS
-
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
         return instance.MAX_SIZE
 
-    @staticmethod
-    def build_source_name(instance, ext):
+    def build_source_name(self, instance, ext):
         """ Построение имени файла исходника """
         return '%04d.%s' % (instance.pk, ext.lower())
-
-    def post_save(self, instance, is_uploaded=False, **kwargs):
-        """ Обработчик сигнала сохранения экземпляра модели """
-        if not is_uploaded:
-            return
-
-        field_file = getattr(instance, self.name)
-        if not field_file or not field_file.exists():
-            return
-
-        draft_size = None
-        try:
-            field_file.open()
-            source_img = Image.open(field_file)
-            source_format = source_img.format
-            source_info = source_img.info
-
-            if is_uploaded:
-                draft_size = limited_size(source_img.size, self.get_max_source_dimensions(instance))
-                if draft_size is not None:
-                    draft = source_img.draft(None, draft_size)
-                    if draft is None:
-                        source_img = source_img.resize(draft_size, Image.LINEAR)
-
-            source_img.load()
-        finally:
-            field_file.close()
-
-        source_path = self._save_source_file(
-            instance, source_img, source_format,
-            draft_size=draft_size, **source_info
-        )
-
-        self.update_instance(instance, **{
-            self.attname: source_path,
-        })
-
-        # Обрабатываем вариации
-        self.build_variation_images(instance, source_img, source_format)
 
 
 class GalleryVideoLinkPreviewField(VariationImageField):
@@ -106,33 +65,13 @@ class GalleryVideoLinkPreviewField(VariationImageField):
         """ Возвращает качество картинок вариаций по умолчанию """
         return variation.get('quality') or instance.DEFAULT_QUALITY
 
-    @staticmethod
-    def build_source_name(instance, ext):
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
+        return instance.MAX_SOURCE_DIMENSIONS
+
+    def build_source_name(self, instance, ext):
         """ Построение имени файла исходника """
         return '%04d.%s' % (instance.pk, ext.lower())
-
-    def post_save(self, instance, is_uploaded=False, **kwargs):
-        """ Обработчик сигнала сохранения экземпляра модели """
-        if not is_uploaded:
-            return
-
-        field_file = getattr(instance, self.name)
-        if not field_file or not field_file.exists():
-            return
-
-        try:
-            field_file.open()
-            source_img = Image.open(field_file)
-            source_format = source_img.format
-            source_info = source_img.info
-            source_img.load()
-        finally:
-            field_file.close()
-
-        self._save_source_file(instance, source_img, source_format, **source_info)
-
-        # Обрабатываем вариации
-        self.build_variation_images(instance, source_img, source_format)
 
 
 class GalleryField(models.OneToOneField):

@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Gallery: проверить copy_for, особенно кроп
 # Shop: caegories filter
 # CKeditorUpload: валидация пустого текста
 # интеллектуальная проркутка слайдов мышью, чтоб не дергалась

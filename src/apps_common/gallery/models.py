@@ -400,10 +400,6 @@ class GalleryImageItem(GalleryItemBase):
         new_item = dest_gallery.IMAGE_MODEL(
             gallery = dest_gallery
         )
-        for field in self._meta.concrete_fields:
-            if field.name in copy_fields:
-                value = getattr(self, field.name)
-                setattr(new_item, field.name, value)
 
         # image
         with self.image:
@@ -415,6 +411,11 @@ class GalleryImageItem(GalleryItemBase):
             new_item.image.delete()
             errors.extend(e.messages)
 
+        for field in self._meta.concrete_fields:
+            if field.name in copy_fields:
+                value = getattr(self, field.name)
+                setattr(new_item, field.name, value)
+
         return new_item, errors
 
     def after_copy(self, **kwargs):
@@ -423,7 +424,7 @@ class GalleryImageItem(GalleryItemBase):
             Параметр self - это уже новый элемент.
         """
         if self.image_crop:
-            self.image.recut()
+            self.image.recut(croparea=self.image_crop)
 
 
 class GalleryVideoLinkItem(GalleryItemBase):
@@ -434,6 +435,9 @@ class GalleryVideoLinkItem(GalleryItemBase):
 
     # Корневая папка (storage)
     STORAGE_LOCATION = None
+
+    # Приблизительный размер, к которому приводятся исходники картинок
+    MAX_SOURCE_DIMENSIONS = MAX_SOURCE_DIMENSIONS_DEFAULT
 
     # Качество исходника в случае, когда он сохраняется через PIL
     SOURCE_QUALITY = 90
@@ -505,6 +509,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
     def check(cls, **kwargs):
         errors = super().check(**kwargs)
         errors.extend(cls._check_storage_location(**kwargs))
+        errors.extend(cls._check_max_source_dimensions(**kwargs))
         errors.extend(cls._check_variations(**kwargs))
         errors.extend(cls._check_admin_variation(**kwargs))
         return errors
@@ -522,6 +527,25 @@ class GalleryVideoLinkItem(GalleryItemBase):
             return [
                 checks.Error(
                     'STORAGE_LOCATION must be an instance of str',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+    @classmethod
+    def _check_max_source_dimensions(cls, **kwargs):
+        if not cls.MAX_SOURCE_DIMENSIONS:
+            return [
+                checks.Error(
+                    'MAX_SOURCE_DIMENSIONS is required',
+                    obj=cls
+                )
+            ]
+        elif not is_size(cls.MAX_SOURCE_DIMENSIONS):
+            return [
+                checks.Error(
+                    'MAX_SOURCE_DIMENSIONS must be a tuple of 2 non-negative numbers',
                     obj=cls
                 )
             ]

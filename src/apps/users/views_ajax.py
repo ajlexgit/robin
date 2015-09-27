@@ -165,12 +165,11 @@ class AvatarCropView(TemplateExView):
             raise Http404
 
         try:
-            request.user.avatar.croparea = request.POST.get('coords', '')
+            croparea = request.POST.get('coords', '')
         except ValueError:
             raise Http404
 
-        request.user.avatar.recut()
-        request.user.save()
+        request.user.avatar.recut(croparea=croparea)
 
         return JsonResponse({
             'micro_avatar': request.user.micro_avatar,

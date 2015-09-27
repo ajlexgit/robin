@@ -188,6 +188,10 @@ class StdImageField(VariationImageField):
         """ Возвращает качество картинок вариаций по умолчанию """
         return variation.get('quality') or DEFAULT_VARIATION_QUALITY
 
+    def get_max_source_dimensions(self, instance):
+        """ Возвращает максимальные размеры исходника картинки """
+        return self.max_source_dimensions
+
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
         return self.min_dimensions
@@ -196,10 +200,6 @@ class StdImageField(VariationImageField):
         """ Возвращает максимальные размеры картинки для загрузки """
         return self.max_dimensions
 
-    def get_max_source_dimensions(self, instance):
-        """ Возвращает максимальные размеры исходника картинки """
-        return self.max_source_dimensions
-
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
         return self.max_size
@@ -207,58 +207,3 @@ class StdImageField(VariationImageField):
     def build_source_name(self, instance, ext):
         """ Построение имени файла исходника """
         return '%s_%s.%s' % (self.name, instance.pk, ext.lower())
-
-    def post_save(self, instance, is_uploaded=False, croparea=None, **kwargs):
-        """ Обработчик сигнала сохранения экземпляра модели """
-        # Если не загрузили новый файл и не обрезали старый исходник - выходим
-        if not is_uploaded and not croparea:
-            return
-
-        field_file = getattr(instance, self.name)
-        if not field_file or not field_file.exists():
-            return
-
-        field_file.croparea = croparea
-
-        draft_size = None
-        try:
-            field_file.open()
-            source_img = Image.open(field_file)
-            source_format = source_img.format
-            source_info = source_img.info
-
-            if is_uploaded:
-                draft_size = limited_size(source_img.size, self.get_max_source_dimensions(instance))
-                if draft_size is not None:
-                    old_width = source_img.size[0]
-                    draft = source_img.draft(None, draft_size)
-                    if draft is None:
-                        source_img = source_img.resize(draft_size, Image.LINEAR)
-
-                    # Учитываем изменение размера исходника на области обрезки
-                    if field_file.croparea:
-                        decr_relation = old_width / source_img.size[0]
-                        croparea = tuple(round(coord / decr_relation) for coord in field_file.croparea)
-                        field_file.croparea = croparea
-
-            source_img.load()
-        finally:
-            field_file.close()
-
-        update_fields = {}
-
-        # Сохраняем исходник
-        if is_uploaded:
-            source_path = self._save_source_file(
-                instance, source_img, source_format,
-                draft_size=draft_size, **source_info
-            )
-            update_fields[self.attname] = source_path
-
-        if croparea and self.crop_field:
-            update_fields[self.crop_field] = croparea
-
-        self.update_instance(instance, **update_fields)
-
-        # Обрабатываем вариации
-        self.build_variation_images(instance, source_img, source_format, croparea=field_file.croparea)
