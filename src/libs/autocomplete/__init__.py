@@ -26,6 +26,28 @@
                 minimum_input_length=0,
             )
 
+    Пример кастомизации выводимых пунктов:
+        models.py:
+            class ShopCategory(models.Model):
+                ...
+
+                @staticmethod
+                def autocomplete_item(obj):
+                    text = '–' * obj.level + obj.title
+                    return {
+                        'id': obj.pk,
+                        'text': '<span style="color: red;">%s</span>' % text,
+                        'selected_text': '<span style="color: green;">%s</span>' % text,
+                    }
+
+        admin.py:
+            class ProductAdminForm(forms.ModelForm):
+                category = AutocompleteField(
+                    queryset = ShopCategory.objects.all(),
+                    expressions = "title__icontains",
+                    item2dict_func = ShopCategory.autocomplete_item,
+                )
+
 """
 
 from .forms import AutocompleteField, AutocompleteMultipleField

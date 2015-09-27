@@ -1,5 +1,19 @@
 (function($) {
 
+    var formatResult = function(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        return state.text;
+    };
+
+    var formatSelection = function(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        return state.selected_text || state.text;
+    };
+
     var bind_autocomplete_widget = function(elements) {
         elements.each(function() {
             var self = $(this),
@@ -21,13 +35,14 @@
                 });
             });
 
-            var that = this;
             self.select2({
                 minimumInputLength: self_data.minimum_input_length,
                 closeOnSelect: parseInt(self_data.close_on_select) || 0,
                 multiple: self_data.multiple,
+                dropdownCssClass: "bigdrop",
+                formatResult: formatResult,
+                formatSelection: formatSelection,
                 allowClear: true,
-                width: 280,
                 ajax: {
                     url: self_data.url,
                     type: 'POST',
@@ -85,7 +100,6 @@
                         })
                     }
                 },
-                dropdownCssClass: "bigdrop",
                 escapeMarkup: function(m) {
                     return m;
                 }

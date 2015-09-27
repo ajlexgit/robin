@@ -5,6 +5,7 @@ from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
 
 class AutocompleteMixin:
     def __init__(self, *args,
+                 width='50%',
                  dependencies=(),
                  expressions='title__icontains',
                  placeholder=_('Search element'),
@@ -49,6 +50,7 @@ class AutocompleteMixin:
         if isinstance(expressions, (list, tuple)):
             expressions = ','.join(expressions)
 
+        self.width = width
         self.expressions = expressions
         self.placeholder = placeholder
         self.minimum_input_length = int(minimum_input_length)
@@ -64,6 +66,7 @@ class AutocompleteMixin:
 
     def widget_attrs(self, widget):
         return {
+            'style': 'width: %s' % self.width,
             'data-placeholder': self.placeholder,
             'data-minimum_input_length': self.minimum_input_length,
             'data-close_on_select': self.close_on_select,
