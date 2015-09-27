@@ -1,7 +1,15 @@
 (function($) {
 
     /*
+        Корзина продуктов, хранящаюся в localStorage и
+        отправляющая запросы на сохранение заказа в сессии.
 
+        Пример:
+            cart = new Cart();
+
+            cart.addItem('polovnik', 2).done(function() {
+                console.log('saved to session')
+            })
      */
 
     window.Cart = (function() {
@@ -36,7 +44,7 @@
         };
 
         // Отправка localStorage на сервер для сохранения в сессии
-        Cart.prototype.sendStorage = function(storage, callback) {
+        Cart.prototype.sendStorage = function(storage) {
             var that = this;
 
             if (this._sendQuery) {
@@ -54,7 +62,6 @@
                         alert(response.error);
                     } else {
                         that.opts.onSaveToSession.call(that, response);
-                        callback(response);
                     }
                 },
                 error: function(xhr, status, error) {

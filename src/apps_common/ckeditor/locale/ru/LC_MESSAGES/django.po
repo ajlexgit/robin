@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 18:36+0300\n"
+"POT-Creation-Date: 2015-09-27 19:44+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,27 +19,27 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: models.py:32
+#: models.py:32 models.py:68
 msgid "application"
 msgstr "приложение"
 
-#: models.py:33
+#: models.py:33 models.py:69
 msgid "model"
 msgstr "модель"
 
-#: models.py:34
+#: models.py:34 models.py:70
 msgid "entry id"
 msgstr "id объекта"
 
-#: models.py:35 models.py:54
+#: models.py:35 models.py:54 models.py:71 models.py:87
 msgid "image"
 msgstr "изображение"
 
-#: models.py:55
+#: models.py:55 models.py:88
 msgid "images"
 msgstr "изображения"
 
-#: models.py:58
+#: models.py:58 models.py:91
 #, python-format
 msgid "Image #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s"
 msgstr "Изображение #%(pk)s для объекта %(app)s.%(model)s #%(entry_id)s"
