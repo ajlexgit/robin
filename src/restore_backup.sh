@@ -9,7 +9,6 @@ then
     directory=..
 fi
 
-rm -rf $directory/media
 unzip -o $archive media/* -d $directory/
 unzip $archive dump.json
 python3 manage.py loaddata dump.json
