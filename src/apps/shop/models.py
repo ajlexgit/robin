@@ -122,7 +122,10 @@ class Product(models.Model):
         unique=True,
         help_text=_('Unique identifier of the product')
     )
-    categories = models.ManyToManyField(Category, verbose_name=_('categories'), related_name='products')
+    categories = models.ManyToManyField(Category,
+        verbose_name=_('categories'),
+        related_name='products'
+    )
     photo = StdImageField(_('photo'),
         storage=MediaStorage('shop/product'),
         min_dimensions=(180, 60),
@@ -174,7 +177,10 @@ class Product(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return resolve_url('shop:detail', category_alias=self.main_category.alias, alias=self.alias)
+        return resolve_url('shop:detail',
+            category_alias=self.main_category.alias,
+            alias=self.alias
+        )
 
     @property
     def main_category(self):
@@ -202,12 +208,17 @@ class Order(models.Model):
         (STATUS_PAID, _('Paid')),
     )
 
-    status = models.PositiveSmallIntegerField(_('status'), default=STATUS_NOT_PAID, choices=STATUS)
-
-    pay_date = models.DateTimeField(_('pay date'), null=True, editable=False)
+    status = models.PositiveSmallIntegerField(_('status'),
+        default=STATUS_NOT_PAID,
+        choices=STATUS,
+    )
+    pay_date = models.DateTimeField(_('pay date'),
+        null=True,
+        editable=False,
+    )
     products_cost = ValuteField(_('products cost'),
         validators=[MinValueValidator(0)],
-        editable=False
+        editable=False,
     )
     hash = models.CharField(_('hash'),
         max_length=32,
@@ -236,6 +247,7 @@ class Order(models.Model):
         super().save(*args, **kwargs)
 
     def make_hash(self):
+        """ Создание уникального хэша заказа """
         if not self.hash:
             self.hash = str(uuid4()).replace('-', '')
         return self.hash

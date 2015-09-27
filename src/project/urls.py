@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
+    url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^comments/', include('comments.urls', namespace='comments')),
 

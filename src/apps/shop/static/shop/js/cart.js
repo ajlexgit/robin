@@ -1,5 +1,9 @@
 (function($) {
 
+    /*
+
+     */
+
     window.Cart = (function() {
         var Cart = function(initial, options) {
             this.settings = $.extend({
@@ -61,7 +65,12 @@
             });
         };
 
-        // Добавление товара в корзину
+        /*
+            Добавление товара в корзину.
+
+            Возвращает Deferred-объект, представляющий AJAX-запрос,
+            сохраняющий весь заказ в сессию.
+         */
         Cart.prototype.addItem = function(sn, count) {
             var storage = this.getStorage();
             var oldValue = parseInt(storage[sn]) || 0;
@@ -71,10 +80,8 @@
             }
             storage[sn] = finalCount;
 
-            var that = this;
-            return this.sendStorage(storage, function() {
-                that.saveStorage(storage);
-            });
+            this.saveStorage(storage);
+            return this.sendStorage(storage);
         };
 
         return Cart;

@@ -9,7 +9,7 @@ class CKEditorField(models.Field):
     """ Текстовое поле с WISYWIG редактором """
     def __init__(self, *args, editor_options=None, **kwargs):
         self.editor_options = editor_options or {}
-        super(CKEditorField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return "TextField"
@@ -35,7 +35,7 @@ class CKEditorUploadField(models.Field):
         self.editor_options = editor_options or {}
         self.upload_pagephoto_url = upload_pagephoto_url or '/ckeditor/upload_pagephoto/'
         self.upload_simplephoto_url = upload_simplephoto_url or '/ckeditor/upload_simplephoto/'
-        super(CKEditorUploadField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return "TextField"
@@ -55,7 +55,7 @@ class CKEditorUploadField(models.Field):
             'model': self.model,
         }
         defaults.update(kwargs)
-        return super(CKEditorUploadField, self).formfield(**defaults)
+        return super().formfield(**defaults)
 
     @staticmethod
     def pre_delete(instance=None, **kwargs):
@@ -102,6 +102,6 @@ class CKEditorUploadField(models.Field):
                 photo.save()
 
     def contribute_to_class(self, cls, name, virtual_only=False):
-        super(CKEditorUploadField, self).contribute_to_class(cls, name, virtual_only)
+        super().contribute_to_class(cls, name, virtual_only)
         signals.post_save.connect(self.post_save, sender=cls)
         signals.pre_delete.connect(self.pre_delete, sender=cls)

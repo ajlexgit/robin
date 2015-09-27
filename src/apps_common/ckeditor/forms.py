@@ -30,3 +30,7 @@ class CKEditorUploadFormField(forms.Field):
         if isinstance(value, list):
             value[0] = smart_text(value[0])
         return value
+
+    def clean(self, value):
+        text, page_photos, simple_photos = value
+        return super().clean(text)

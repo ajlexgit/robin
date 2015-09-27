@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     # Apps
     'config',
     'main',
+    'shop',
     'users',
 
     # Apps common
@@ -97,6 +98,16 @@ SUIT_CONFIG = {
             'models': (
                 'listitem',
                 'mainpageconfig',
+            )
+        },
+        {
+            'app': 'shop',
+            'icon': 'icon-shopping-cart',
+            'models': (
+                'order',
+                'product',
+                'category',
+                'shopconfig',
             )
         },
         {
