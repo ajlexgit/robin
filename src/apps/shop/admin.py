@@ -8,8 +8,8 @@ from suit.admin import SortableModelAdmin
 from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
 from mptt.admin import MPTTModelAdmin
-from libs.autocomplete.forms import AutocompleteMultipleField
-from .models import ShopConfig, Category, Product, Order
+from libs.autocomplete.forms import AutocompleteField
+from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 
 
 @admin.register(ShopConfig)
@@ -24,8 +24,8 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     suit_seo_tab = 'seo'
 
 
-@admin.register(Category)
-class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, SortableModelAdmin):
+@admin.register(ShopCategory)
+class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, SortableModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -62,35 +62,38 @@ class CategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sortabl
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
-class ProductForm(forms.ModelForm):
-    categories = AutocompleteMultipleField(
-        label=Product._meta.get_field('categories').verbose_name.capitalize(),
-        queryset=Category.objects.all(),
+class ShopProductForm(forms.ModelForm):
+    category = AutocompleteField(
+        label=ShopProduct._meta.get_field('category').verbose_name.capitalize(),
+        queryset=ShopCategory.objects.all(),
         expressions="title__icontains",
-        item2dict_func=Category.autocomplete_item,
+        item2dict_func=ShopCategory.autocomplete_item,
         minimum_input_length=0,
     )
 
     class Meta:
-        model = Product
+        model = ShopProduct
 
 
-@admin.register(Product)
-class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
+@admin.register(ShopProduct)
+class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'categories', 'title', 'alias', 'serial', 'photo', 'price', 'is_visible',
-                'description',
+                'category', 'title', 'alias', 'serial', 'photo', 'price',
+                'is_visible', 'description',
             ),
         }),
     )
-    form = ProductForm
+    form = ShopProductForm
     actions = ('make_hidden', 'make_visible')
-    list_display = ('view', 'micropreview', '__str__', 'serial', 'categories_list', 'price_alternate', 'is_visible')
+    list_display = (
+        'view', 'micropreview', '__str__', 'serial', 'category',
+        'price_alternate', 'is_visible',
+    )
     list_display_links = ('micropreview', '__str__', )
-    list_filter = ('categories', )
+    list_filter = ('category', )
     prepopulated_fields = {
         'alias': ('title', ),
         'serial': ('title', ),
@@ -101,13 +104,6 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
-
-    def categories_list(self, obj):
-        return ', '.join(
-            item.title
-            for item in obj.categories.all()
-        )
-    categories_list.short_description = _('Categories')
 
     def micropreview(self, obj):
         if not obj.photo:
@@ -130,14 +126,14 @@ class ProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
-class StatusOrderFilter(SimpleListFilter):
+class StatusShopOrderFilter(SimpleListFilter):
     """ Фильтр по статусу """
     title = _('Status')
     parameter_name = 'status'
     template = 'admin/button_filter.html'
 
     def lookups(self, request, model_admin):
-        return Order.STATUS
+        return ShopOrder.STATUS
 
     def queryset(self, request, queryset):
         value = self.value()
@@ -146,8 +142,8 @@ class StatusOrderFilter(SimpleListFilter):
         return queryset
 
 
-@admin.register(Order)
-class OrderAdmin(ModelAdminMixin, admin.ModelAdmin):
+@admin.register(ShopOrder)
+class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (_('Cost'), {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -167,7 +163,7 @@ class OrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display = (
         '__str__', 'status', 'fmt_total_cost', 'date', 'pay_date',
     )
-    list_filter = (StatusOrderFilter, 'date')
+    list_filter = (StatusShopOrderFilter, 'date')
     suit_form_tabs = (
         ('general', _('General')),
         ('products', _('Products')),

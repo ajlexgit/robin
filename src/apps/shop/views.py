@@ -1,7 +1,7 @@
 ﻿from django.dispatch import receiver
 from django.http.response import Http404
 from libs.views import TemplateExView
-from .models import ShopConfig, Category, Product, Order
+from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import order_payed
 
 
@@ -12,7 +12,7 @@ class IndexView(TemplateExView):
         self.config = ShopConfig.get_solo()
 
     def get(self, request):
-        categories = Category.objects.filter(visible=True).distinct()
+        categories = ShopCategory.objects.filter(visible=True).distinct()
         if not categories:
             raise Http404
 
@@ -30,7 +30,7 @@ class CategoryView(TemplateExView):
 
     def get_objects(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-        self.category = Category.objects.get(alias=kwargs['alias'])
+        self.category = ShopCategory.objects.get(alias=kwargs['alias'])
 
     def get(self, request, *args, **kwargs):
         # SEO
@@ -47,8 +47,8 @@ class DetailView(TemplateExView):
 
     def get_objects(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-        self.category = Category.objects.get(alias=kwargs['category_alias'])
-        self.product = Product.objects.get(alias=kwargs['alias'])
+        self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
+        self.product = ShopProduct.objects.get(alias=kwargs['alias'])
 
     def get(self, request, *args, **kwargs):
         # SEO
@@ -61,11 +61,11 @@ class DetailView(TemplateExView):
         })
 
 
-@receiver(order_payed, sender=Order)
+@receiver(order_payed, sender=ShopOrder)
 def order_payed(sender, **kwargs):
     """ Обработчик сигнала оплаты заказа """
     order = kwargs.get('order')
-    if not order or not isinstance(order, Order):
+    if not order or not isinstance(order, ShopOrder):
         return
 
     order.mark_payed()

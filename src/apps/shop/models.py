@@ -1,9 +1,8 @@
-from uuid import uuid4
 from django.db import models
 from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.timezone import now
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
@@ -27,7 +26,7 @@ class ShopConfig(SingletonModel):
         return resolve_url('shop:index')
 
 
-class CategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
+class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         visible = kwargs.pop('visible', None)
         if visible is None:
@@ -49,11 +48,11 @@ class CategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
         return super().only(*final_fields)
 
 
-class CategoryTreeManager(TreeManager):
-    _queryset_class = CategoryQuerySet
+class ShopCategoryTreeManager(TreeManager):
+    _queryset_class = ShopCategoryQuerySet
 
 
-class Category(MPTTModel):
+class ShopCategory(MPTTModel):
     """ Категория товаров """
     parent = TreeForeignKey('self',
         blank=True,
@@ -70,7 +69,7 @@ class Category(MPTTModel):
     is_visible = models.BooleanField(_('visible'), default=False)
     sort_order = models.PositiveIntegerField(_('sort order'))
 
-    objects = CategoryTreeManager()
+    objects = ShopCategoryTreeManager()
 
     class Meta:
         verbose_name = _('category')
@@ -81,23 +80,24 @@ class Category(MPTTModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        Category.objects.rebuild()
+        ShopCategory.objects.rebuild()
 
     def __str__(self):
         return self.title
 
     @staticmethod
     def autocomplete_item(obj):
+        text = '–' * obj.level + obj.title
         return {
             'id': obj.pk,
-            'text': '–' * obj.level + obj.title,
+            'text': text,
         }
 
     def get_absolute_url(self):
         return resolve_url('shop:category', category_alias=self.alias)
 
 
-class ProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
+class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         visible = kwargs.pop('visible', None)
         if visible is None:
@@ -109,7 +109,7 @@ class ProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
         return qs
 
 
-class Product(models.Model):
+class ShopProduct(models.Model):
     """ Товар """
     title = models.CharField(_('title'), max_length=128)
     alias = AutoSlugField(_('alias'),
@@ -122,8 +122,8 @@ class Product(models.Model):
         unique=True,
         help_text=_('Unique identifier of the product')
     )
-    categories = models.ManyToManyField(Category,
-        verbose_name=_('categories'),
+    category = models.ForeignKey(ShopCategory,
+        verbose_name=_('category'),
         related_name='products'
     )
     photo = StdImageField(_('photo'),
@@ -166,7 +166,7 @@ class Product(models.Model):
     updated = models.DateTimeField(_('change date'), auto_now=True)
     sort_order = models.PositiveIntegerField(_('sort order'))
 
-    objects = ProductQuerySet.as_manager()
+    objects = ShopProductQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('product')
@@ -178,28 +178,24 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return resolve_url('shop:detail',
-            category_alias=self.main_category.alias,
+            category_alias=self.category.alias,
             alias=self.alias
         )
 
-    @property
-    def main_category(self):
-        return self.categories.first()
 
-
-class OrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
+class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         payed = kwargs.pop('payed', None)
         if payed is None:
             pass
         elif payed:
-            qs &= models.Q(status=Order.STATUS_PAID)
+            qs &= models.Q(status=ShopOrder.STATUS_PAID)
         else:
-            qs &= models.Q(status=Order.STATUS_NOT_PAID)
+            qs &= models.Q(status=ShopOrder.STATUS_NOT_PAID)
         return qs
 
 
-class Order(models.Model):
+class ShopOrder(models.Model):
     """ Заказ """
     STATUS_NOT_PAID = 1
     STATUS_PAID = 2
@@ -220,16 +216,10 @@ class Order(models.Model):
         validators=[MinValueValidator(0)],
         editable=False,
     )
-    hash = models.CharField(_('hash'),
-        max_length=32,
-        unique=True,
-        validators=[RegexValidator('^[0-9a-f]{32}$')],
-        editable=False,
-    )
     session = models.CharField(_('session'), max_length=64, editable=False)
     date = models.DateTimeField(_('create date'), editable=False)
 
-    objects = OrderQuerySet.as_manager()
+    objects = ShopOrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('order')
@@ -246,12 +236,6 @@ class Order(models.Model):
         self.make_hash()
         super().save(*args, **kwargs)
 
-    def make_hash(self):
-        """ Создание уникального хэша заказа """
-        if not self.hash:
-            self.hash = str(uuid4()).replace('-', '')
-        return self.hash
-
     @property
     def total_cost(self):
         return self.products_cost
@@ -266,8 +250,8 @@ class Order(models.Model):
 
 class OrderProduct(models.Model):
     """ Продукты заказа """
-    order = models.ForeignKey(Order, verbose_name=_('order'), related_name='order_products')
-    product = models.ForeignKey(Product, verbose_name=_('product'))
+    order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='order_products')
+    product = models.ForeignKey(ShopProduct, verbose_name=_('product'))
     order_price = ValuteField(_('price per item'), validators=[MinValueValidator(0)])
     count = models.PositiveSmallIntegerField(_('count'))
 

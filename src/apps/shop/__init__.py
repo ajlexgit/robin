@@ -15,9 +15,9 @@
                     'app': 'shop',
                     'icon': 'icon-shopping-cart',
                     'models': (
-                        'order',
-                        'product',
-                        'category',
+                        'shoporder',
+                        'shopproduct',
+                        'shopcategory',
                         'shopconfig',
                     )
                 },

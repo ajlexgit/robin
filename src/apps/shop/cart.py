@@ -2,7 +2,7 @@ import re
 from django.http.response import JsonResponse
 from django.views.decorators.http import require_POST
 from libs.valute_field import Valute
-from .models import Product
+from .models import ShopProduct
 from . import options
 
 
@@ -34,7 +34,7 @@ class CartProducts:
             Превращает неформатированный словарь self._unformatted вида {SN: count}
             в кортеж self._products вида {Product, count, price*count}
         """
-        products = Product.objects.filter(serial__in=self._unformatted)
+        products = ShopProduct.objects.filter(serial__in=self._unformatted)
 
         result = []
         for product in products:
