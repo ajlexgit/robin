@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-24 15:03+0400\n"
+"POT-Creation-Date: 2015-09-27 21:48+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,45 +19,49 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:21 admin.py:50 admin.py:94 admin.py:154
+#: admin.py:21 admin.py:51 admin.py:103 admin.py:169
 msgid "General"
 msgstr "Общие"
 
-#: admin.py:22 admin.py:51 admin.py:95
+#: admin.py:22 admin.py:52 admin.py:104
 msgid "SEO"
 msgstr "SEO"
 
-#: admin.py:57 admin.py:108
+#: admin.py:58 admin.py:123
 #, python-format
 msgid "Hide selected %(verbose_name_plural)s"
 msgstr "Скрыть выбранные %(verbose_name_plural)s"
 
-#: admin.py:61 admin.py:112
+#: admin.py:62 admin.py:127
 #, python-format
 msgid "Show selected %(verbose_name_plural)s"
 msgstr "Показать выбранные %(verbose_name_plural)s"
 
-#: admin.py:104
-msgid "Categories"
-msgstr "Категории"
+#: admin.py:112
+msgid "Preview"
+msgstr "Превью"
 
-#: admin.py:117 admin.py:138
+#: admin.py:118
+msgid "Price"
+msgstr "Цена"
+
+#: admin.py:132 admin.py:153
 msgid "Status"
 msgstr "Статус"
 
-#: admin.py:134 templates/shop/admin/products.html:10
+#: admin.py:149 templates/shop/admin/products.html:10
 msgid "Cost"
 msgstr "Цена"
 
-#: admin.py:155
+#: admin.py:170
 msgid "Products"
 msgstr "Товары"
 
-#: admin.py:163
+#: admin.py:178
 msgid "Products cost"
 msgstr "Цена товаров"
 
-#: admin.py:168 templates/shop/admin/products.html:12
+#: admin.py:183 templates/shop/admin/products.html:12
 msgid "Total cost"
 msgstr "Итого"
 
@@ -65,119 +69,119 @@ msgstr "Итого"
 msgid "Shop"
 msgstr "Магазин"
 
-#: models.py:21 models.py:142
+#: models.py:20 models.py:166
 msgid "change date"
 msgstr "дата изменения"
 
-#: models.py:24
+#: models.py:23
 msgid "Settings"
 msgstr "Настройки"
 
-#: models.py:61
+#: models.py:60
 msgid "parent category"
 msgstr "родительская категория"
 
-#: models.py:64 models.py:107
+#: models.py:63 models.py:114
 msgid "title"
 msgstr "название"
 
-#: models.py:65 models.py:108
+#: models.py:64 models.py:115
 msgid "alias"
 msgstr "алиас"
 
-#: models.py:68 models.py:111
+#: models.py:67 models.py:118
 msgid "Leave it blank to auto generate it"
 msgstr "Оставьте пустым для автогенерации"
 
-#: models.py:70 models.py:141
+#: models.py:69 models.py:165
 msgid "visible"
 msgstr "видимость"
 
-#: models.py:71 models.py:143
+#: models.py:70 models.py:167
 msgid "sort order"
 msgstr "порядок"
 
-#: models.py:76
+#: models.py:75 models.py:126
 msgid "category"
 msgstr "категория"
 
-#: models.py:77 models.py:118
+#: models.py:76
 msgid "categories"
 msgstr "категории"
 
-#: models.py:113
+#: models.py:120
 msgid "S/N"
 msgstr "серийный номер"
 
-#: models.py:116
+#: models.py:123
 msgid "Unique identifier of the product"
 msgstr "Уникальный идентификатор товара"
 
-#: models.py:119
+#: models.py:129
 msgid "photo"
 msgstr "фото"
 
-#: models.py:136
+#: models.py:155
+msgid "stored_crop"
+msgstr ""
+
+#: models.py:160
 msgid "description"
 msgstr "описание"
 
-#: models.py:140
+#: models.py:164
 msgid "price"
 msgstr "цена"
 
-#: models.py:148 models.py:237 models.py:242
+#: models.py:172 models.py:254 models.py:259
 msgid "product"
 msgstr "товар"
 
-#: models.py:149 models.py:243
+#: models.py:173 models.py:260
 msgid "products"
 msgstr "товары"
 
-#: models.py:180
+#: models.py:203
 msgid "Not paid"
 msgstr "Не оплачен"
 
-#: models.py:181
+#: models.py:204
 msgid "Paid"
 msgstr "Оплачен"
 
-#: models.py:184
+#: models.py:207
 msgid "status"
 msgstr "статус"
 
-#: models.py:186
+#: models.py:211
 msgid "pay date"
 msgstr "дата оплаты"
 
-#: models.py:187
+#: models.py:215
 msgid "products cost"
 msgstr "цена продуктов"
 
-#: models.py:191
-msgid "hash"
-msgstr "хэш"
-
-#: models.py:197
+#: models.py:219
 msgid "session"
 msgstr "сессия"
 
-#: models.py:198
+#: models.py:220
 msgid "create date"
 msgstr "дата создания"
 
-#: models.py:203 models.py:236
+#: models.py:225 models.py:253
 msgid "order"
 msgstr "заказ"
 
-#: models.py:204
+#: models.py:226
 msgid "orders"
 msgstr "заказы"
 
-#: models.py:238
+#: models.py:255
 msgid "price per item"
 msgstr "цена за единицу"
 
-#: models.py:239
+#: models.py:256
 msgid "count"
 msgstr "количество"
 
@@ -208,8 +212,3 @@ msgstr "Итого"
 #: templates/shop/admin/products.html:59
 msgid "You should create instance first"
 msgstr "Сначала вы должны создать объект"
-
-#: templates/shop/shop_items.html:43 templates/shop/shop_items.html.py:88
-#: templates/shop/shop_items.html:128
-msgid "Add to cart"
-msgstr "В корзину"

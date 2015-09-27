@@ -113,7 +113,8 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     micropreview.allow_tags = True
 
     def price_alternate(self, obj):
-        return obj.price.alternate
+        return '<nobr>%s</nobr>' % obj.price.alternate
+    price_alternate.allow_tags = True
     price_alternate.short_description = _('Price')
     price_alternate.admin_order_field = 'price'
 
