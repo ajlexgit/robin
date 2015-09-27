@@ -2,31 +2,31 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import gallery.fields
-import libs.stdimage.fields
 import libs.color_field.fields
-import django.db.models.deletion
 import libs.videolink_field.fields
-import ckeditor.fields
-import django.core.validators
 import libs.valute_field.fields
-import libs.media_storage
 import gallery.models
+import django.core.validators
+import libs.media_storage
+import libs.stdimage.fields
+import gallery.fields
+import django.db.models.deletion
+import ckeditor.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('gallery', '__first__'),
-        ('attachable_blocks', '0002_auto_20150927_0732'),
+        ('attachable_blocks', '__first__'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='ClientFormModel',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('title', models.CharField(blank=True, verbose_name='title', max_length=128, default='Example')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('title', models.CharField(max_length=128, default='Example', blank=True, verbose_name='title')),
             ],
             options={
             },
@@ -35,8 +35,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ClientInlineFormModel',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('name', models.CharField(verbose_name='name', max_length=128, default='Test')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('name', models.CharField(max_length=128, default='Test', verbose_name='name')),
                 ('form', models.ForeignKey(to='main.ClientFormModel')),
             ],
             options={
@@ -46,20 +46,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='InlineSample',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('color', libs.color_field.fields.ColorOpacityField(verbose_name='color')),
             ],
             options={
-                'verbose_name': 'Inline sample',
                 'verbose_name_plural': 'Inline samples',
+                'verbose_name': 'Inline sample',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='ListItem',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('title', models.CharField(verbose_name='title', max_length=64)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('title', models.CharField(max_length=64, verbose_name='title')),
                 ('status', models.PositiveSmallIntegerField(choices=[(1, 'Paid'), (2, 'Not paid'), (3, 'Deleted')], default=2)),
             ],
             options={
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MainBlockFirst',
             fields=[
-                ('attachableblock_ptr', models.OneToOneField(serialize=False, auto_created=True, to='attachable_blocks.AttachableBlock', primary_key=True, parent_link=True)),
+                ('attachableblock_ptr', models.OneToOneField(auto_created=True, primary_key=True, serialize=False, parent_link=True, to='attachable_blocks.AttachableBlock')),
             ],
             options={
                 'verbose_name_plural': 'First blocks',
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MainBlockSecond',
             fields=[
-                ('attachableblock_ptr', models.OneToOneField(serialize=False, auto_created=True, to='attachable_blocks.AttachableBlock', primary_key=True, parent_link=True)),
+                ('attachableblock_ptr', models.OneToOneField(auto_created=True, primary_key=True, serialize=False, parent_link=True, to='attachable_blocks.AttachableBlock')),
             ],
             options={
                 'verbose_name_plural': 'Second blocks',
@@ -89,60 +89,61 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MainGallery',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
             ],
             options={
-                'verbose_name': 'gallery',
                 'verbose_name_plural': 'galleries',
                 'abstract': False,
+                'verbose_name': 'gallery',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='MainGalleryImageItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(serialize=False, auto_created=True, to='gallery.GalleryItemBase', primary_key=True, parent_link=True)),
-                ('image', gallery.fields.GalleryImageField(upload_to=gallery.models.generate_filepath, verbose_name='image', storage=libs.media_storage.MediaStorage())),
-                ('image_crop', models.CharField(blank=True, verbose_name='stored_crop', max_length=32, editable=False)),
+                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, primary_key=True, serialize=False, parent_link=True, to='gallery.GalleryItemBase')),
+                ('image', gallery.fields.GalleryImageField(storage=libs.media_storage.MediaStorage(), upload_to=gallery.models.generate_filepath, verbose_name='image')),
+                ('image_crop', models.CharField(max_length=32, editable=False, verbose_name='stored_crop', blank=True)),
             ],
             options={
-                'verbose_name': 'image item',
                 'verbose_name_plural': 'image items',
                 'abstract': False,
+                'verbose_name': 'image item',
             },
             bases=('gallery.galleryitembase',),
         ),
         migrations.CreateModel(
             name='MainGalleryVideoLinkItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(serialize=False, auto_created=True, to='gallery.GalleryItemBase', primary_key=True, parent_link=True)),
-                ('video', libs.videolink_field.fields.VideoLinkField(verbose_name='video', providers=set([]))),
-                ('video_preview', gallery.fields.GalleryVideoLinkPreviewField(upload_to=gallery.models.generate_filepath, verbose_name='preview', storage=libs.media_storage.MediaStorage())),
+                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, primary_key=True, serialize=False, parent_link=True, to='gallery.GalleryItemBase')),
+                ('video', libs.videolink_field.fields.VideoLinkField(providers=set([]), verbose_name='video')),
+                ('video_preview', gallery.fields.GalleryVideoLinkPreviewField(storage=libs.media_storage.MediaStorage(), upload_to=gallery.models.generate_filepath, verbose_name='preview')),
             ],
             options={
-                'verbose_name': 'video item',
                 'verbose_name_plural': 'video items',
                 'abstract': False,
+                'verbose_name': 'video item',
             },
             bases=('gallery.galleryitembase',),
         ),
         migrations.CreateModel(
             name='MainPageConfig',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('header_title', models.CharField(verbose_name='title', max_length=255)),
-                ('header_background', libs.stdimage.fields.StdImageField(verbose_name='background', min_dimensions=(1024, 500), aspects=(), variations={'admin': {'size': (360, 270)}, 'desktop': {'size': (1024, 0)}, 'mobile': {'size': (768, 0)}}, upload_to='', storage=libs.media_storage.MediaStorage('main/header'))),
-                ('header_video', models.FileField(blank=True, verbose_name='video', upload_to='', storage=libs.media_storage.MediaStorage('main/header'))),
-                ('preview', libs.stdimage.fields.StdImageField(verbose_name='preview', min_dimensions=(400, 300), aspects=('normal',), variations={'admin': {'size': (360, 270)}, 'normal': {'size': (800, 600)}}, upload_to='', storage=libs.media_storage.MediaStorage('main/preview'))),
-                ('preview2', libs.stdimage.fields.StdImageField(verbose_name='preview', min_dimensions=(100, 100), aspects=('normal',), variations={'normal': {'size': (200, 200)}}, upload_to='', storage=libs.media_storage.MediaStorage('main/preview2'))),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('header_title', models.CharField(max_length=255, verbose_name='title')),
+                ('header_background', libs.stdimage.fields.StdImageField(storage=libs.media_storage.MediaStorage('main/header'), min_dimensions=(1024, 500), aspects=(), variations={'desktop': {'size': (1024, 0)}, 'mobile': {'size': (768, 0)}, 'admin': {'size': (360, 270)}}, upload_to='', verbose_name='background')),
+                ('header_video', models.FileField(storage=libs.media_storage.MediaStorage('main/header'), upload_to='', verbose_name='video', blank=True)),
+                ('preview', libs.stdimage.fields.StdImageField(storage=libs.media_storage.MediaStorage('main/preview'), min_dimensions=(400, 300), aspects=('normal',), variations={'admin': {'size': (360, 270)}, 'normal': {'size': (800, 600)}}, upload_to='', verbose_name='preview')),
+                ('preview2', libs.stdimage.fields.StdImageField(storage=libs.media_storage.MediaStorage('main/preview2'), min_dimensions=(100, 100), aspects=('normal',), variations={'normal': {'size': (200, 200)}}, upload_to='', verbose_name='preview')),
                 ('text', ckeditor.fields.CKEditorUploadField(verbose_name='text')),
-                ('description', models.TextField(blank=True, verbose_name='description')),
-                ('color', libs.color_field.fields.ColorField(blank=True, verbose_name='color')),
-                ('color2', libs.color_field.fields.ColorOpacityField(blank=True, verbose_name='color2')),
-                ('price', libs.valute_field.fields.ValuteField(verbose_name='price', validators=[django.core.validators.MinValueValidator(0)])),
-                ('video', libs.videolink_field.fields.VideoLinkField(blank=True, verbose_name='video', providers=set([]))),
-                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
-                ('gallery', gallery.fields.GalleryField(blank=True, verbose_name='gallery', on_delete=django.db.models.deletion.SET_NULL, to='main.MainGallery', null=True)),
+                ('text2', ckeditor.fields.CKEditorUploadField(verbose_name='text2')),
+                ('description', models.TextField(verbose_name='description', blank=True)),
+                ('color', libs.color_field.fields.ColorField(verbose_name='color', blank=True)),
+                ('color2', libs.color_field.fields.ColorOpacityField(verbose_name='color2', blank=True)),
+                ('price', libs.valute_field.fields.ValuteField(validators=[django.core.validators.MinValueValidator(0)], verbose_name='price')),
+                ('video', libs.videolink_field.fields.VideoLinkField(providers=set([]), verbose_name='video', blank=True)),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
+                ('gallery', gallery.fields.GalleryField(on_delete=django.db.models.deletion.SET_NULL, blank=True, null=True, verbose_name='gallery', to='main.MainGallery')),
             ],
             options={
                 'verbose_name': 'Settings',
