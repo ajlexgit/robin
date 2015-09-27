@@ -472,7 +472,6 @@ class GalleryVideoLinkItem(GalleryItemBase):
         upload_to=generate_filepath,
     )
 
-
     class Meta:
         verbose_name = _('video item')
         verbose_name_plural = _('video items')
