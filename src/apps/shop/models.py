@@ -53,9 +53,12 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
 class ShopCategoryTreeManager(TreeManager):
     _queryset_class = ShopCategoryQuerySet
 
-    def fix_visibility(self):
+    def fix_visibility(self, queryset=None):
         """ Скрытие всех подкатегорий скрытых категорий """
-        self.get_queryset_descendants(self.filter(is_visible=False)).filter(is_visible=True).update(
+        if queryset is None:
+            queryset = self.filter(is_visible=False)
+
+        self.get_queryset_descendants(queryset).filter(is_visible=True).update(
             is_visible=False
         )
 
