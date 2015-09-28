@@ -3,6 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
 
 
+def default_item2dict_func(obj):
+    return {
+        'id': obj.pk,
+        'text': str(obj),
+    }
+
+
 class AutocompleteMixin:
     def __init__(self, *args,
                  widget_width='250px',
@@ -57,9 +64,10 @@ class AutocompleteMixin:
         self.close_on_select = int(bool(close_on_select))
         super().__init__(*args, **kwargs)
 
-        if item2dict_func is not None:
-            self.widget.item2dict_module = item2dict_func.__module__
-            self.widget.item2dict_method = item2dict_func.__qualname__
+        if item2dict_func is None:
+            item2dict_func = default_item2dict_func
+        self.widget.item2dict_module = item2dict_func.__module__
+        self.widget.item2dict_method = item2dict_func.__qualname__
 
         self.widget.dependencies = dependencies
         self.widget.can_add_related = int(bool(can_add_related))

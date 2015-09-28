@@ -11,13 +11,6 @@ CACHE_BACKEND = getattr(settings,  'AUTOCOMPLETE_CACHE_BACKEND', 'default')
 cache = caches[CACHE_BACKEND]
 
 
-def default_item2dict_func(obj):
-    return {
-        'id': obj.pk,
-        'text': str(obj),
-    }
-
-
 def autocomplete_widget(request, application, model_name, name):
     if not request.is_ajax():
         raise Http404
@@ -78,20 +71,12 @@ def autocomplete_widget(request, application, model_name, name):
         queryset = queryset[offset:offset+page_limit]
 
     # Метод
-    item2dict = default_item2dict_func
-    try:
-        module = importlib.import_module(redis_data['item2dict_module'])
-    except ImportError:
-        pass
+    module = importlib.import_module(redis_data['item2dict_module'])
+    current_obj = module
+    for part in redis_data['item2dict_method'].split('.'):
+        current_obj = getattr(current_obj, part)
     else:
-        current_obj = module
-        for part in redis_data['item2dict_method'].split('.'):
-            try:
-                current_obj = getattr(current_obj, part)
-            except AttributeError:
-                break
-        else:
-            item2dict = current_obj
+        item2dict = current_obj
 
     for item in queryset.iterator():
         item_dict = item2dict(item)
