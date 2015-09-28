@@ -89,7 +89,6 @@ class MainPageConfig(SingletonModel):
         ),
     )
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
-    text2 = CKEditorUploadField(_('text2'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     description = models.TextField(_('description'), blank=True)
     color = ColorField(_('color'), blank=True)
     color2 = ColorOpacityField(_('color2'), blank=True)
