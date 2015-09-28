@@ -92,10 +92,10 @@ class PasswordResetView(RenderToStringMixin, FormView):
         opts = {
             'use_https': self.request.is_secure(),
             'token_generator': default_token_generator,
-            'email_template_name': 'users/reset_email.html',
-            'subject_template_name': 'users/reset_subject.txt',
+            'email_template_name': 'users/emails/reset_email.html',
+            'subject_template_name': 'users/emails/reset_subject.txt',
             'request': self.request,
-            'html_email_template_name': 'users/reset_email.html',
+            'html_email_template_name': 'users/emails/reset_email.html',
         }
         form.save(**opts)
         return JsonResponse({

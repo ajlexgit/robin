@@ -96,9 +96,9 @@ class PasswordResetView(View):
             template_name='users/reset.html',
             password_reset_form=PasswordResetForm,
             post_reset_redirect='users:reset_done',
-            email_template_name='users/reset_email.html',
-            html_email_template_name='users/reset_email.html',
-            subject_template_name='users/reset_subject.txt',
+            email_template_name='users/emails/reset_email.html',
+            html_email_template_name='users/emails/reset_email.html',
+            subject_template_name='users/emails/reset_subject.txt',
         )
 
 
