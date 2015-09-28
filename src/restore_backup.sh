@@ -11,5 +11,5 @@ fi
 
 unzip -o $archive media/* -d $directory/
 unzip $archive dump.json
-python3 manage.py loaddata dump.json
+python3 manage.py loaddata --ignorenonexistent dump.json
 rm dump.json
