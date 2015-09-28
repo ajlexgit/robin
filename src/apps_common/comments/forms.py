@@ -20,6 +20,7 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
 
     class Meta:
         model = Comment
+        fields = '__all__'
         widgets = {
             'content_type': forms.HiddenInput(),
             'object_id': forms.HiddenInput(),

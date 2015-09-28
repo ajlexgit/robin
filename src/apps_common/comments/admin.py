@@ -40,7 +40,7 @@ class CommentsModelAdminMixin:
                 comments = Comment.objects.filter(
                     content_type = content_type.pk,
                     object_id = object_id,
-                ).select_related('user__pk', 'user__username', 'user__avatar')
+                ).select_related('user__id', 'user__username', 'user__avatar')
 
                 extra_context = kwargs.setdefault('extra_context', {})
                 extra_context.update({

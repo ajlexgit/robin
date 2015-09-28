@@ -31,6 +31,7 @@ class LogEntryAdminForm(forms.ModelForm):
 
     class Meta:
         model = LogEntry
+        fields = '__all__'
         widgets = {
             'action_flag': forms.Select(choices=ACTION_CHOICES),
             'change_message': forms.Textarea(attrs={'class': 'input-block-level', 'rows': 4}),

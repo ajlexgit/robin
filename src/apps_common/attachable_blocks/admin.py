@@ -20,6 +20,7 @@ class AttachableReferenceForm(forms.ModelForm):
     )
 
     class Meta:
+        fields = '__all__'
         widgets = {
             'block_type': forms.Select(attrs={
                 'class': 'input-medium',

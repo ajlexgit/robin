@@ -8,6 +8,7 @@ class PageFileForm(forms.ModelForm):
 
     class Meta:
         model = PageFile
+        fields = '__all__'
         widgets = {
             'file': forms.ClearableFileInput(attrs={'class': 'file-on-page'}),
             'displayed_name': forms.TextInput(attrs={'class': 'file-on-page-name input-xlarge'}),

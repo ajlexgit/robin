@@ -5,11 +5,13 @@ from .models import ClientFormModel, ClientInlineFormModel
 class MainForm(forms.ModelForm):
     class Meta:
         model = ClientFormModel
+        fields = '__all__'
 
 
 class InlineForm(forms.ModelForm):
     class Meta:
         model = ClientInlineFormModel
+        fields = '__all__'
 
 
 InlineFormSet = forms.inlineformset_factory(

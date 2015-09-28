@@ -54,7 +54,7 @@ class Counter(models.Model):
         ('body_bottom', _('End of <body>')),
     )
 
-    title = models.CharField(_('title'), max_length=128)
+    label = models.CharField(_('label'), max_length=128)
     position = models.CharField(_('position'), max_length=12, choices=POSITION)
     content = models.TextField(_('content'))
 
@@ -63,4 +63,4 @@ class Counter(models.Model):
         verbose_name_plural = _('counters')
 
     def __str__(self):
-        return self.title
+        return self.label
