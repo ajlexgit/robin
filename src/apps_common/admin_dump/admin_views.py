@@ -1,7 +1,4 @@
-import io
 import os
-import zipfile
-from datetime import datetime
 from django.conf import settings
 from django.contrib import admin
 from django.core.management import call_command
@@ -35,23 +32,7 @@ def index(request):
 @admin.site.admin_view
 def create(request):
     """ Создание бэкапа """
-    date = datetime.now().date()
-    backup_name = '{}.zip'.format(date.strftime('%d_%m_%Y'))
-
-    with zipfile.ZipFile(os.path.join(settings.BACKUP_ROOT, backup_name), 'w') as ziph:
-        for root, dirs, files in os.walk(settings.MEDIA_ROOT):
-            for file in files:
-                abspath = os.path.abspath(os.path.join(root, file))
-                relpath = os.path.relpath(abspath, settings.MEDIA_ROOT)
-                ziph.write(abspath, os.path.join('media', relpath))
-
-        # db dump
-        buffer = io.StringIO()
-        call_command('dump', stdout=buffer)
-        buffer.seek(0)
-        ziph.writestr('dump.json', buffer.read())
-        buffer.close()
-
+    call_command('zipdata')
     return redirect('admin_dump:index')
 
 

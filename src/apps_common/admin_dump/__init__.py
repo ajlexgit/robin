@@ -24,11 +24,6 @@
             }
 
             BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
-            
-        urls.py:
-            ...
-            url(r'^dladmin/dump/', include('admin_dump.admin_urls', namespace='admin_dump')),
-            ...
 """
 
 default_app_config = 'admin_dump.apps.Config'
