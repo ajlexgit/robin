@@ -16,12 +16,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
-                ('description', models.TextField(verbose_name='description', blank=True)),
+                ('description', models.TextField(blank=True, verbose_name='description')),
                 ('sort_order', models.PositiveIntegerField(default=0, verbose_name='sort order')),
                 ('created', models.DateTimeField(verbose_name='created on')),
-                ('changed', models.DateTimeField(auto_now=True, verbose_name='changed on')),
+                ('changed', models.DateTimeField(verbose_name='changed on', auto_now=True)),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('self_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType', editable=False, help_text='Для выборки элементов определенного типа')),
+                ('self_type', models.ForeignKey(help_text='Для выборки элементов определенного типа', to='contenttypes.ContentType', editable=False, related_name='+')),
             ],
             options={
                 'verbose_name_plural': 'gallery items',
