@@ -1,6 +1,5 @@
 from django.core import checks
 from django.conf import settings
-from django.utils.image import Image
 from libs.variation_field import *
 from .formfields import StdImageFormField
 

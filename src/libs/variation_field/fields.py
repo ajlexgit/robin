@@ -1,7 +1,7 @@
 import os
+from PIL import Image
 from django.db import models
 from django.db.models import signals
-from django.utils.image import Image
 from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
 from django.core.exceptions import ValidationError
