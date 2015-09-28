@@ -115,15 +115,11 @@ class ShopCategory(MPTTModel):
             category__in=self.get_descendants(include_self=True).filter(visible=True)
         ).distinct()
 
-    @property
-    def tree_title(self):
-        return '–' * self.level + self.title
-
     @staticmethod
     def autocomplete_item(obj):
         return {
             'id': obj.pk,
-            'text': obj.tree_title,
+            'text': '–' * self.level + self.title,
         }
 
     def get_absolute_url(self):

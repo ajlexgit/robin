@@ -1,6 +1,8 @@
 ﻿from django import forms
+from django.db import models
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
@@ -76,10 +78,17 @@ class StatusShopProductCategoryFilter(SimpleListFilter):
     parameter_name = 'category'
 
     def lookups(self, request, model_admin):
-        return tuple(
-            (item.pk, item.tree_title)
-            for item in ShopCategory.objects.all()
-        )
+        return ShopCategory.objects.annotate(
+            text=Concat(
+                models.Func(
+                    models.Value('–'),
+                    models.F('level'),
+                    function='REPEAT',
+                    output_field=models.CharField()
+                ),
+                models.F('title'),
+            )
+        ).values_list('id', 'text')
 
     def queryset(self, request, queryset):
         value = self.value()
