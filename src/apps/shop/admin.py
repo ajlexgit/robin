@@ -104,7 +104,7 @@ class ShopProductForm(forms.ModelForm):
 
 
 @admin.register(ShopProduct)
-class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
+class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -127,7 +127,6 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
         'alias': ('title', ),
         'serial': ('title', ),
     }
-    sortable = 'sort_order'
     suit_form_tabs = (
         ('general', _('General')),
         ('seo', _('SEO')),

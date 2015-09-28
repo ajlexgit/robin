@@ -1,8 +1,11 @@
 ﻿from django.dispatch import receiver
-from django.http.response import Http404
 from libs.views import TemplateExView
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import order_payed
+
+
+def get_root_categories():
+    return ShopCategory.objects.root_nodes().filter(visible=True)
 
 
 class IndexView(TemplateExView):
@@ -10,17 +13,17 @@ class IndexView(TemplateExView):
 
     def get_objects(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-        self.root_categories = ShopCategory.objects.root_nodes().filter(visible=True)
-        if not self.root_categories:
-            raise Http404
 
     def get(self, request):
+        # Breadcrumbs
+        request.breadcrumbs.add(self.config.title)
+
         # SEO
         request.seo.set_instance(self.config)
 
         return self.render_to_response({
             'config': self.config,
-            'root_categories': self.root_categories,
+            'root_categories': get_root_categories(),
         })
 
 
@@ -32,12 +35,20 @@ class CategoryView(TemplateExView):
         self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
 
     def get(self, request, *args, **kwargs):
+        # Breadcrumbs
+        request.breadcrumbs.add(self.config.title, 'shop:index')
+        parent_categories = self.category.get_ancestors()
+        for category in parent_categories:
+            request.breadcrumbs.add(self.config.title, 'shop:category', category_alias=category.alias)
+        request.breadcrumbs.add(self.category.title)
+
         # SEO
         request.seo.set_instance(self.category)
 
         return self.render_to_response({
             'config': self.config,
             'current_category': self.category,
+            'root_categories': get_root_categories(),
         })
 
 
@@ -57,6 +68,7 @@ class DetailView(TemplateExView):
             'config': self.config,
             'current_category': self.category,
             'current_product': self.product,
+            'root_categories': get_root_categories(),
         })
 
 

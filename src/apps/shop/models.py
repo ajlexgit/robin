@@ -77,7 +77,7 @@ class ShopCategory(MPTTModel):
         unique=True,
         help_text=_('Leave it blank to auto generate it')
     )
-    is_visible = models.BooleanField(_('visible'), default=False)
+    is_visible = models.BooleanField(_('visible'), default=False, db_index=True)
     sort_order = models.PositiveIntegerField(_('sort order'))
 
     objects = ShopCategoryTreeManager()
@@ -187,14 +187,14 @@ class ShopProduct(models.Model):
     is_visible = models.BooleanField(_('visible'), default=False)
     created = models.DateTimeField(_('create date'), default=now, editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
-    sort_order = models.PositiveIntegerField(_('sort order'))
 
     objects = ShopProductQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('product')
         verbose_name_plural = _('products')
-        ordering = ('is_visible', 'category', 'sort_order',)
+        index_together = (('category', 'is_visible'),)
+        ordering = ('-created',)
 
     def __str__(self):
         return self.title
