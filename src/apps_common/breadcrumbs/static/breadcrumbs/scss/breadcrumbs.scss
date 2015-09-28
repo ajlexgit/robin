@@ -1,19 +1,21 @@
 @import 'mixins';
 
-// Хлебные крошки
-#wrapper .breadcrumbs {
-  padding: 0;
-  margin: 0 0 10px;
+.breadcrumbs {
+  @include font-size(14px);
 
   .breadcrumb-item {
     display: inline;
+    color: #C0C0C0;
+    &:nth-last-of-type(1) {
+      color: #404040;
+      &:after {
+        content: none;
+      }
+    }
 
-    &:before {
+    &:after {
       content: '/';
       margin: 0 5px;
-    }
-    &:first-child:before {
-      display: none;
     }
   }
 }

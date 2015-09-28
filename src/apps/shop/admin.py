@@ -1,8 +1,9 @@
 ﻿from django import forms
 from django.contrib import admin
-from django.contrib.admin.filters import SimpleListFilter
+from django.core.urlresolvers import reverse
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin.filters import SimpleListFilter
 from solo.admin import SingletonModelAdmin
 from suit.admin import SortableModelAdmin
 from project.admin import ModelAdminMixin
@@ -15,7 +16,12 @@ from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 @admin.register(ShopConfig)
 class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
-
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'title',
+            ),
+        }),
     )
     suit_form_tabs = (
         ('general', _('General')),
@@ -55,10 +61,12 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sor
 
     def make_hidden(modeladmin, request, queryset):
         queryset.update(is_visible=False)
+        ShopCategory.objects.fix_visibility()
     make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def make_visible(modeladmin, request, queryset):
         queryset.update(is_visible=True)
+        ShopCategory.objects.fix_visibility()
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
@@ -76,7 +84,9 @@ class StatusShopProductCategoryFilter(SimpleListFilter):
     def queryset(self, request, queryset):
         value = self.value()
         if value:
-            queryset = queryset.filter(category=value)
+            category = ShopCategory.objects.filter(pk=value)
+            categories = ShopCategory.objects.get_queryset_descendants(category, include_self=True)
+            queryset = queryset.filter(category__in=categories).distinct()
         return queryset
 
 
@@ -107,9 +117,10 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     form = ShopProductForm
     actions = ('make_hidden', 'make_visible')
     list_display = (
-        'view', 'micropreview', '__str__', 'serial', 'category',
+        'view', 'micropreview', '__str__', 'serial', 'category_link',
         'price_alternate', 'is_visible',
     )
+    search_fields = ('title', 'category__title')
     list_display_links = ('micropreview', '__str__', )
     list_filter = (StatusShopProductCategoryFilter, )
     prepopulated_fields = {
@@ -130,11 +141,16 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
     micropreview.short_description = _('Preview')
     micropreview.allow_tags = True
 
+    def category_link(self, obj):
+        url = reverse('admin:shop_shopcategory_change', args=(obj.pk, ))
+        return '<a href="{0}">{1}</a>'.format(url, obj.category)
+    category_link.short_description = _('Category')
+    category_link.allow_tags = True
+
     def price_alternate(self, obj):
         return '<nobr>%s</nobr>' % obj.price.alternate
     price_alternate.allow_tags = True
     price_alternate.short_description = _('Price')
-    price_alternate.admin_order_field = 'price'
 
     def make_hidden(modeladmin, request, queryset):
         queryset.update(is_visible=False)

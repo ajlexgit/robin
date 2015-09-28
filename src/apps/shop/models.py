@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.shortcuts import resolve_url
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -17,6 +18,7 @@ from libs.autoslug import AutoSlugField
 
 
 class ShopConfig(SingletonModel):
+    title = models.CharField(_('title'), max_length=128)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
@@ -51,6 +53,12 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
 class ShopCategoryTreeManager(TreeManager):
     _queryset_class = ShopCategoryQuerySet
 
+    def fix_visibility(self):
+        """ Скрытие всех подкатегорий скрытых категорий """
+        self.get_queryset_descendants(self.filter(is_visible=False)).filter(is_visible=True).update(
+            is_visible=False
+        )
+
 
 class ShopCategory(MPTTModel):
     """ Категория товаров """
@@ -80,10 +88,18 @@ class ShopCategory(MPTTModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        ShopCategory.objects.rebuild()
+        ShopCategory.objects.fix_visibility()
 
     def __str__(self):
         return self.title
+
+    @cached_property
+    def descendant_products(self):
+        """ Продукты категории и её подкатегорий """
+        return ShopProduct.objects.filter(
+            visible=True,
+            category__in=self.get_descendants(include_self=True).filter(visible=True)
+        ).distinct()
 
     @property
     def tree_title(self):

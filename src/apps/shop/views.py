@@ -10,18 +10,17 @@ class IndexView(TemplateExView):
 
     def get_objects(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-
-    def get(self, request):
-        categories = ShopCategory.objects.filter(visible=True).distinct()
-        if not categories:
+        self.root_categories = ShopCategory.objects.root_nodes().filter(visible=True)
+        if not self.root_categories:
             raise Http404
 
+    def get(self, request):
         # SEO
         request.seo.set_instance(self.config)
 
         return self.render_to_response({
             'config': self.config,
-            'categories': categories,
+            'root_categories': self.root_categories,
         })
 
 
@@ -30,7 +29,7 @@ class CategoryView(TemplateExView):
 
     def get_objects(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-        self.category = ShopCategory.objects.get(alias=kwargs['alias'])
+        self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
 
     def get(self, request, *args, **kwargs):
         # SEO
@@ -38,7 +37,7 @@ class CategoryView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
-            'category': self.category,
+            'current_category': self.category,
         })
 
 
@@ -56,8 +55,8 @@ class DetailView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
-            'category': self.category,
-            'product': self.product,
+            'current_category': self.category,
+            'current_product': self.product,
         })
 
 
