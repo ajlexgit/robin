@@ -492,8 +492,8 @@ CKEDITOR_CONFIG_MEDIUM = {
     'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
     'plugins': 'basicstyles,clipboard,undo,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
-               'format,htmlwriter,link,'
-               'removeformat,resize,'
+               'format,htmlwriter,link,list,'
+               'pastefromword,pastetext,removeformat,resize,'
                'showborders,sourcearea,tab,'
                'toolbar,wsc,wysiwygarea',
     'toolbar': [
@@ -514,6 +514,10 @@ CKEDITOR_CONFIG_MEDIUM = {
             'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
         },
         {
+            'name': 'paragraph',
+            'items': ['NumberedList', 'BulletedList']
+        },
+        {
             'name': 'styles',
             'items': ['Format']
         },
@@ -528,7 +532,7 @@ CKEDITOR_CONFIG_MINI = {
     'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
     'plugins': 'basicstyles,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
-               'htmlwriter,link,list,pastetext,'
+               'htmlwriter,link,pastefromword,pastetext,'
                'removeformat,resize,showborders,sourcearea,'
                'tab,toolbar,wsc,wysiwygarea',
     'removeButtons': 'Anchor,Strike,Superscript,Subscript,JustifyBlock',
@@ -544,10 +548,6 @@ CKEDITOR_CONFIG_MINI = {
         {
             'name': 'basicstyles',
             'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
-        },
-        {
-            'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList']
         },
     ]
 }
