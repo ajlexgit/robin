@@ -89,12 +89,6 @@ class AutocompleteField(AutocompleteMixin, forms.ModelChoiceField):
 class AutocompleteMultipleField(AutocompleteMixin, forms.ModelMultipleChoiceField):
     widget = AutocompleteMultipleWidget
 
-    def __init__(self, *args, **kwargs):
-        # TODO: удалить в Django 1.8
-        help_text = kwargs.get('help_text')
-        super().__init__(*args, **kwargs)
-        self.help_text = help_text
-
     def widget_attrs(self, widget):
         default = super().widget_attrs(widget)
         default.update({
