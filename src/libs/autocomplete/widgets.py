@@ -57,7 +57,6 @@ class AutocompleteWidgetMixin:
         }), timeout=1800)
 
         attrs.update({
-            'style': 'width: 50%',
             'data-depends': ','.join(item[1] for item in self.dependencies),
             'data-url': resolve_url('autocomplete:autocomplete_widget',
                 application=application,

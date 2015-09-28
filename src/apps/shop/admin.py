@@ -97,10 +97,12 @@ class ShopProductForm(forms.ModelForm):
         expressions="title__icontains",
         item2dict_func=ShopCategory.autocomplete_item,
         minimum_input_length=0,
+        widget_width='50%',
     )
 
     class Meta:
         model = ShopProduct
+        fields = '__all__'
 
 
 @admin.register(ShopProduct)
