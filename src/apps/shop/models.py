@@ -185,6 +185,7 @@ class ShopProduct(models.Model):
     )
     price = ValuteField(_('price'), validators=[MinValueValidator(0)])
     is_visible = models.BooleanField(_('visible'), default=False)
+    created = models.DateTimeField(_('create date'), default=now, editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
     sort_order = models.PositiveIntegerField(_('sort order'))
 
