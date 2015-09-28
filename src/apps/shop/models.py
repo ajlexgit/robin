@@ -85,12 +85,15 @@ class ShopCategory(MPTTModel):
     def __str__(self):
         return self.title
 
+    @property
+    def tree_title(self):
+        return '–' * self.level + self.title
+
     @staticmethod
     def autocomplete_item(obj):
-        text = '–' * obj.level + obj.title
         return {
             'id': obj.pk,
-            'text': text,
+            'text': obj.tree_title,
         }
 
     def get_absolute_url(self):
@@ -171,7 +174,7 @@ class ShopProduct(models.Model):
     class Meta:
         verbose_name = _('product')
         verbose_name_plural = _('products')
-        ordering = ('is_visible', 'sort_order',)
+        ordering = ('is_visible', 'category', 'sort_order',)
 
     def __str__(self):
         return self.title

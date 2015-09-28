@@ -62,6 +62,24 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sor
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
+class StatusShopProductCategoryFilter(SimpleListFilter):
+    """ Фильтр по категории """
+    title = _('Category')
+    parameter_name = 'category'
+
+    def lookups(self, request, model_admin):
+        return tuple(
+            (item.pk, item.tree_title)
+            for item in ShopCategory.objects.all()
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            queryset = queryset.filter(category=value)
+        return queryset
+
+
 class ShopProductForm(forms.ModelForm):
     category = AutocompleteField(
         label=ShopProduct._meta.get_field('category').verbose_name.capitalize(),
@@ -93,7 +111,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableModelAdmin):
         'price_alternate', 'is_visible',
     )
     list_display_links = ('micropreview', '__str__', )
-    list_filter = ('category', )
+    list_filter = (StatusShopProductCategoryFilter, )
     prepopulated_fields = {
         'alias': ('title', ),
         'serial': ('title', ),
