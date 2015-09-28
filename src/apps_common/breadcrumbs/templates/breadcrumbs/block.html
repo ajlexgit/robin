@@ -1,13 +1,22 @@
-<ul class="breadcrumbs">
+<ul class="breadcrumbs" itemscope itemtype="http://schema.org/BreadcrumbList">
   {% for crumb in breadcrumbs %}
-    <li class="breadcrumb-item" itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+    <li class="breadcrumb-item"
+        itemscope
+        itemprop="itemListElement"
+        itemtype="http://schema.org/ListItem">
+
       {% if crumb.url and not forloop.last %}
-        <a href="{{ crumb.url }}" class="breadcrumb-link" itemprop="url">
-          <span itemprop="title">{{ crumb.title }}</span>
+        <a href="{{ crumb.url }}" class="breadcrumb-link" itemprop="item">
+          <span itemprop="name">{{ crumb.title }}</span>
+          <meta itemprop="position" content="{{ forloop.counter }}"/>
         </a>
       {% else %}
-        <span class="breadcrumb-link" itemprop="title">{{ crumb.title }}</span>
+        <span class="breadcrumb-link" itemprop="item">
+          <span itemprop="name">{{ crumb.title }}</span>
+          <meta itemprop="position" content="{{ forloop.counter }}"/>
+        </span>
       {% endif %}
+
     </li>
   {% endfor %}
 </ul>
