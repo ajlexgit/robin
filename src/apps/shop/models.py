@@ -53,15 +53,26 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
 class ShopCategoryTreeManager(TreeManager):
     _queryset_class = ShopCategoryQuerySet
 
-    def fix_visibility(self, queryset=None):
-        """ Скрытие всех подкатегорий скрытых категорий """
-        if queryset is None:
-            queryset = self.filter(is_visible=False)
+    def correct_visibility(self, obj, visible_value=None):
+        if isinstance(obj, self.model):
+            queryset = self.model.filter(pk=obj.pk)
+        elif isinstance(obj, models.QuerySet):
+            queryset = obj
+        else:
+            raise TypeError('argument must be QuerySet or model instance')
 
-        self.get_queryset_descendants(queryset).filter(is_visible=True).update(
-            is_visible=False
-        )
-
+        if visible_value is True:
+            # объекты показаны - устанавливаем видимость их родителям
+            self.get_queryset_ancestors(queryset).filter(is_visible=False).update(
+                is_visible=True
+            )
+        elif visible_value is False:
+            # объекты скрыты - скрываем потомков
+            self.get_queryset_descendants(queryset).filter(is_visible=True).update(
+                is_visible=False
+            )
+        else:
+            raise ValueError('visible_value must be setted')
 
 class ShopCategory(MPTTModel):
     """ Категория товаров """
@@ -91,7 +102,7 @@ class ShopCategory(MPTTModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        ShopCategory.objects.fix_visibility()
+        ShopCategory.objects.correct_visibility(self, self.is_visible)
 
     def __str__(self):
         return self.title

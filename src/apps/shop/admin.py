@@ -61,12 +61,12 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sor
 
     def make_hidden(modeladmin, request, queryset):
         queryset.update(is_visible=False)
-        ShopCategory.objects.fix_visibility(queryset)
+        ShopCategory.objects.correct_visibility(queryset, visible_value=False)
     make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def make_visible(modeladmin, request, queryset):
         queryset.update(is_visible=True)
-        ShopCategory.objects.fix_visibility(queryset)
+        ShopCategory.objects.correct_visibility(queryset, visible_value=True)
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
