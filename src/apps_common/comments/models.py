@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.functions import Coalesce, Value
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from mptt.managers import TreeManager
@@ -170,7 +171,9 @@ class CommentVote(models.Model):
         return 'CommentVote(%+d for comment %d)' % (self.value, self.comment.pk)
 
     def update(self):
-        self.comment.rating = sum(item.value for item in self.comment.votes.all()) or 0
+        self.comment.rating = self.comment.votes.aggregate(
+            rating=Coalesce(models.Sum('value'), Value(0))
+        )['rating']
         self.comment.save()
 
     def save(self, *args, **kwargs):

@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db import models
+from django.db.models.functions import Coalesce, Value
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
@@ -57,8 +58,9 @@ class Hits(models.Model):
             # since != None, to != None
             query &= models.Q(date__gte=since, date__lte=to)
 
-        result = cls.objects.filter(query).aggregate(models.Sum('hits'))['hits__sum']
-        return result or 0
+        return cls.objects.filter(query).aggregate(
+            hits=Coalesce(models.Sum('hits'), Value(0))
+        )['hits']
 
     @classmethod
     def clear(cls, obj, name='undefined'):
