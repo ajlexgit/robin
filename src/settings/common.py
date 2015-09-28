@@ -308,15 +308,15 @@ DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@asskicker.ru'
 
 
 # Получатели писем о ошибках при DEBUG = False
-# ADMINS = (
-#     ('pix', 'pix666@ya.ru'),
-# )
+ADMINS = (
+    ('pix', 'pix666@ya.ru'),
+)
 
 # Получатели писем о битых ссылках при DEBUG=False
 # Требуется подключить django.middleware.common.BrokenLinkEmailsMiddleware
-# MANAGERS = (
-#     ('pix', 'pix666@ya.ru'),
-# )
+MANAGERS = (
+    ('pix', 'pix666@ya.ru'),
+)
 
 # Список скомпилированных регулярных выражений адресов страниц,
 # сообщения о 404 на которых не должны отправляться на почту (MANAGERS)
