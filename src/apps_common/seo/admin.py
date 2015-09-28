@@ -15,6 +15,9 @@ class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
 
 
 class CounterForm(forms.ModelForm):
+    class Meta:
+        model = Counter
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
