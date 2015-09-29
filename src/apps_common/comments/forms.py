@@ -12,7 +12,7 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
     hash = forms.CharField(
         widget = forms.HiddenInput,
         error_messages = {
-            'invalid': 'Токен некорректен',
+            'invalid': 'Invalid token',
         }
     )
 
@@ -31,18 +31,18 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
         }
         error_messages = {
             'content_type': {
-                'required': 'Тип сущности не указан',
-                'invalid_choice': 'Тип сущности не найден',
+                'required': 'content_type is required',
+                'invalid_choice': 'invalid content_type',
             },
             'object_id': {
-                'required': 'Cущность не указана',
+                'required': 'object_id is required',
             },
             'parent': {
-                'invalid_choice': 'Родительский комментарий удален',
-                'object_mismatch': 'Родительский комментарий находится на другой странице',
+                'invalid_choice': 'parent comment was deleted',
+                'object_mismatch': 'parent comment attached to another objetc',
             },
             'text': {
-                'required': 'Введите текст комментария',
+                'required': 'comment text is required',
             },
         }
 
@@ -78,22 +78,22 @@ class CommentValidationForm(PlainErrorFormMixin, forms.Form):
     content_type = forms.ModelChoiceField(
         queryset=ContentType.objects.all(),
         error_messages = {
-            'required': 'Тип сущности не указан',
-            'invalid_choice': 'Тип сущности не найден',
+            'required': 'content_type is required',
+            'invalid_choice': 'invalid content_type',
         }
     )
     object_id = forms.IntegerField(
         error_messages = {
-            'required': 'Cущность не указана',
-            'not_found': 'Cущность не найдена',
+            'required': 'object_id is required',
+            'not_found': 'object not found',
         }
     )
     comment = forms.ModelChoiceField(
         queryset=Comment.objects.all(),
         error_messages = {
-            'required': 'Комментарий не указан',
-            'invalid_choice': 'Комментарий удалён',
-            'object_mismatch': 'Комментарий не относится к этой сущности',
+            'required': 'comment is required',
+            'invalid_choice': 'comment was deleted',
+            'object_mismatch': 'comment attached to another object',
         }
     )
 
