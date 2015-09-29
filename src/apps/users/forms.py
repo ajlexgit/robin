@@ -21,14 +21,13 @@ class LoginForm(PlainErrorFormMixin, SessionStoredFormMixin, AuthenticationForm)
 
 class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm):
     error_messages = {
-        'duplicate_username': _('Login already registered'),
-        'duplicate_email': _('E-mail address already registered'),
-        'password_mismatch': _('Passwords do not match'),
+        'password_mismatch': _('The two passwords didn\'t match'),
     }
 
     username = forms.RegexField(label=_('Login'), min_length=3, max_length=30,
         regex=r'^[\w.@+-]+$',
         error_messages={
+            'unique': _('This login is already taken'),
             'invalid': _('Login must contain only letters, numbers ans sumbols @+-_'),
             'min_length': _('Login must be at least %(limit_value)s characters long'),
             'max_length': _('Login must be no more than %(limit_value)s characters'),
@@ -38,6 +37,7 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         label='E-mail',
         required=True,
         error_messages = {
+            'unique': _('This e-mail address is already taken'),
             'invalid': _('E-mail incorrect'),
         }
     )
@@ -58,7 +58,7 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
             UserModel._default_manager.get(username=username)
         except UserModel.DoesNotExist:
             return username
-        self.add_field_error('username', 'duplicate_username')
+        self.add_field_error('username', 'unique')
 
     def clean_email(self):
         UserModel = get_user_model()
@@ -67,7 +67,7 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
             UserModel._default_manager.get(email__iexact=email)
         except UserModel.DoesNotExist:
             return email
-        self.add_field_error('email', 'duplicate_email')
+        self.add_field_error('email', 'unique')
 
 
 class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
@@ -91,7 +91,7 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
 
 class SetPasswordForm(PlainErrorFormMixin, DefaultSetPasswordForm):
     error_messages = {
-        'password_mismatch': _('Passwords do not match'),
+        'password_mismatch': _('The two passwords didn\'t match'),
     }
 
     def __init__(self, *args, **kwargs):

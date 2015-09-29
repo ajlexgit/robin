@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.shortcuts import resolve_url
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from project.admin import ModelAdminMixin
 from .models import CustomUser
@@ -21,10 +21,8 @@ class CustomUserCreationForm(UserCreationForm):
             CustomUser._default_manager.get(username=username)
         except CustomUser.DoesNotExist:
             return username
-        raise forms.ValidationError(
-            self.error_messages['duplicate_username'],
-            code='duplicate_username',
-        )
+        else:
+            self.add_field_error('username', 'unique')
 
 
 @admin.register(CustomUser)
