@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'files',
     'footer',
     'gallery',
+    'google_maps',
     'header',
     'menu',
     'paginator',

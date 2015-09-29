@@ -9,8 +9,6 @@ class RemovableFileField(models.FileField):
         if field_file.name:
             self.storage.delete(field_file.name)
 
-    def contribute_to_class(self, cls, name):
-        super().contribute_to_class(cls, name)
+    def contribute_to_class(self, cls, name, **kwargs):
+        super().contribute_to_class(cls, name, **kwargs)
         signals.post_delete.connect(self.post_delete, sender=cls)
-
-

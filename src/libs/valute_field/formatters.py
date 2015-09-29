@@ -27,20 +27,9 @@ class DollarFormatter:
 
     @classmethod
     def to_string(cls, value):
-        str_value = '{0:f}'.format(value)
-        dec_int, dec_frac = str_value.split('.')
-        if cls.trail_zero_frac:
-            trailed_frac = dec_frac.rstrip('0')
-            if not trailed_frac:
-                dec_frac = ''
-
-        if cls.decimal_mark:
-            dec_int = split_price(dec_int, cls.decimal_mark)
-
-        if dec_frac:
-            return cls.separator.join((dec_int, dec_frac))
-
-        return dec_int
+        parts = list(str(value).rstrip('0').rstrip('.').rsplit('.', 1))
+        parts[0] = split_price(parts[0])
+        return cls.separator.join(parts)
 
     @classmethod
     def utf(cls, value):

@@ -5,8 +5,9 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from attachable_blocks import AttachableBlock, register_block
-from gallery import *
 from ckeditor import CKEditorUploadField
+from gallery import *
+from google_maps import GoogleCoordsField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
 from libs.videolink_field import VideoLinkField
@@ -95,6 +96,7 @@ class MainPageConfig(SingletonModel):
     price = ValuteField(_('price'),
         validators=[MinValueValidator(0)]
     )
+    coords = GoogleCoordsField(_('coords'), blank=True)
     gallery = GalleryField(MainGallery,
         verbose_name=_('gallery'),
         blank=True,

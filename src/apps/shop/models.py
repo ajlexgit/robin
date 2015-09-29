@@ -74,6 +74,7 @@ class ShopCategoryTreeManager(TreeManager):
         else:
             raise ValueError('visible_value must be setted')
 
+
 class ShopCategory(MPTTModel):
     """ Категория товаров """
     parent = TreeForeignKey('self',
