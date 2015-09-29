@@ -7,17 +7,17 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0001_initial'),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='AttachableBlock',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('block_type', models.CharField(verbose_name='block type', editable=False, max_length=255)),
-                ('label', models.CharField(help_text='For inner use', verbose_name='label', max_length=128)),
-                ('visible', models.BooleanField(default=False, verbose_name='visible')),
+                ('label', models.CharField(verbose_name='label', help_text='For inner use', max_length=128)),
+                ('visible', models.BooleanField(verbose_name='visible', default=False)),
                 ('created', models.DateTimeField(verbose_name='create date', editable=False)),
                 ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
             ],
@@ -26,17 +26,16 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Attachable block',
                 'ordering': ('label',),
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='AttachableReference',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
                 ('block_type', models.CharField(verbose_name='block type', max_length=255)),
-                ('set_name', models.CharField(default='default', verbose_name='set name', max_length=32)),
-                ('sort_order', models.PositiveIntegerField(default=0, verbose_name='sort order')),
-                ('block', models.ForeignKey(to='attachable_blocks.AttachableBlock', verbose_name='block', related_name='references')),
+                ('set_name', models.CharField(verbose_name='set name', default='default', max_length=32)),
+                ('sort_order', models.PositiveIntegerField(verbose_name='sort order', default=0)),
+                ('block', models.ForeignKey(verbose_name='block', related_name='references', to='attachable_blocks.AttachableBlock')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
             options={
@@ -44,7 +43,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Attached block',
                 'ordering': ('set_name', 'sort_order'),
             },
-            bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
             name='attachablereference',

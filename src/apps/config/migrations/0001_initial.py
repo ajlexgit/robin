@@ -13,13 +13,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Config',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
-                ('email', models.EmailField(blank=True, verbose_name='email', max_length=255)),
-                ('phone', models.CharField(blank=True, verbose_name='phone', max_length=32)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('email', models.EmailField(verbose_name='email', max_length=255, blank=True)),
+                ('phone', models.CharField(verbose_name='phone', max_length=32, blank=True)),
             ],
             options={
                 'verbose_name': 'Configuration',
             },
-            bases=(models.Model,),
         ),
     ]
