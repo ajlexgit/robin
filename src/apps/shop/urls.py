@@ -1,9 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from libs.autoslug import ALIAS_REGEXP
 from . import views, cart
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     # AJAX
     url(
         r'^save-cart/$',
@@ -25,4 +25,4 @@ urlpatterns = patterns('',
         views.DetailView.as_view(),
         name='detail'
     ),
-)
+]

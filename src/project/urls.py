@@ -1,11 +1,11 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from main.views import IndexView
 from .sitemaps import site_sitemaps
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
@@ -27,15 +27,15 @@ urlpatterns = patterns('',
     url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
 
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps}),
-)
+]
 
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
+    urlpatterns += [
         # Для доступа к MEDIA-файлам при разработке
         url(
             r'^media/(?P<path>.*)$',
             'django.views.static.serve',
             kwargs={'document_root': settings.MEDIA_ROOT}
         ),
-    )
+    ]

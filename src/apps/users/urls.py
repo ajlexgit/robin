@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from . import views, views_ajax
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^ajax/login/$', views_ajax.LoginView.as_view(), name='ajax_login'),
     url(r'^ajax/logout/$', views_ajax.LogoutView.as_view(), name='ajax_logout'),
     url(r'^ajax/register/$', views_ajax.RegisterView.as_view(), name='ajax_register'),
@@ -20,4 +20,4 @@ urlpatterns = patterns('',
     url(r'^reset_complete/$', views.ResetCompleteView.as_view(), name='reset_complete'),
     url(r'^reset_password/$', views.ResetConfirmView.as_view(), name='reset_password'),
     url(r'^profile/(?P<username>[\w.@+-]+)/$', views.ProfileView.as_view(), name='profile'),
-)
+]

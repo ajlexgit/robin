@@ -20,7 +20,10 @@ class Command(NoArgsCommand):
         for gallery_model in gallery_models:
             related_names = [
                 rel.get_accessor_name()
-                for rel in gallery_model._meta.get_all_related_objects()
+                for rel in (
+                    f for f in gallery_model._meta.get_fields()
+                    if (f.one_to_many or f.one_to_one) and f.auto_created
+                )
             ]
 
             all_galleries = gallery_model.objects.all()
