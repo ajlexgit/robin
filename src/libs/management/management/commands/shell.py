@@ -2,31 +2,21 @@
     Добавлены доп. параметры для iPython, заглушающие мусорные строки.
     Добавлена автозагрузка модулей при старте
 """
-from optparse import make_option
+from django.conf import settings
 from django.core.management.base import NoArgsCommand
 
 
 SHELL_IMPORTS = [
     ('os', ()),
+    ('django.db', ('models', )),
     ('django.apps', ('apps', )),
     ('django.conf', ('settings', )),
+    ('django.contrib.contenttypes.models', ('ContentType', )),
 ]
 
 
 class Command(NoArgsCommand):
-    shells = ['ipython']
-
-    option_list = NoArgsCommand.option_list + (
-        make_option('--plain', action='store_true', dest='plain',
-            help='Tells Django to use plain Python, not IPython or bpython.'),
-        make_option('--no-startup', action='store_true', dest='no_startup',
-            help='When using plain Python, ignore the PYTHONSTARTUP environment variable and ~/.pythonrc.py script.'),
-        make_option('-i', '--interface', action='store', type='choice', choices=shells,
-                    dest='interface',
-            help='Specify an interactive interpreter interface. Available options: "ipython" and "bpython"'),
-
-    )
-    help = "Runs a Python interactive interpreter. Tries to use IPython or bpython, if one of them is available."
+    help = "Runs a Python interactive interpreter. Tries to use IPython, if it is available."
     requires_system_checks = False
 
     def ipython(self):
@@ -42,8 +32,7 @@ class Command(NoArgsCommand):
         # no IPython, raise ImportError
         raise ImportError("No IPython")
 
-    @staticmethod
-    def import_objects():
+    def import_objects(self):
         import importlib
         from django.apps import apps
         from django.utils.termcolors import colorize
@@ -52,6 +41,9 @@ class Command(NoArgsCommand):
         imports = SHELL_IMPORTS.copy()
 
         for app in apps.get_apps():
+            if not app.__file__.startswith(settings.BASE_DIR):
+                continue
+
             app_models = apps.get_models(app)
             if not app_models:
                 continue
@@ -59,45 +51,47 @@ class Command(NoArgsCommand):
             app_models = [model.__name__ for model in app_models]
             imports.append((app.__name__, app_models))
 
-        print('\nAutoload modules:')
+        self.stdout.write('\nAutoload modules:')
         for module_name, parts in imports:
             module = importlib.import_module(module_name)
             if not parts:
                 imported_objects[module_name] = module
 
                 msg = '  import %s' % module_name
-                print(colorize(msg, fg='green'))
+                self.stdout.write(colorize(msg, fg='green'))
             else:
                 for part in parts:
                     imported_objects[part] = getattr(module, part)
                 msg = '  from %s import %s' % (module_name, ', '.join(parts))
-                print(colorize(msg, fg='green'))
+                self.stdout.write(colorize(msg, fg='green'))
 
         return imported_objects
 
-    def run_shell(self, shell=None):
-        available_shells = [shell] if shell else self.shells
+    def add_arguments(self, parser):
+        parser.add_argument('-p', '--plain',
+            action='store_true',
+            dest='plain',
+            help='Tells Django to use plain Python, not IPython or bpython.'
+        )
 
-        for shell in available_shells:
-            try:
-                return getattr(self, shell)()
-            except ImportError:
-                pass
-        raise ImportError
+        parser.add_argument('--no-startup',
+            action='store_true',
+            dest='no_startup',
+            help='When using plain Python, ignore the PYTHONSTARTUP environment variable and ~/.pythonrc.py script.'
+        )
 
     def handle_noargs(self, **options):
         import os
 
         use_plain = options.get('plain', False)
         no_startup = options.get('no_startup', False)
-        interface = options.get('interface', None)
 
         try:
             if use_plain:
                 # Don't bother loading IPython, because the user wants plain Python.
                 raise ImportError
 
-            self.run_shell(shell=interface)
+            self.ipython()
         except ImportError:
             import code
             # Set up a dictionary to serve as the environment for the shell, so
