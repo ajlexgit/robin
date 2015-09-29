@@ -1,11 +1,11 @@
 import os
 from zipfile import ZipFile
 from urllib import request, error
-from django.core.management.base import NoArgsCommand
+from django.core.management import BaseCommand
 from ... import options as geocity_options
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     """
         Обновление базы GeoCity
     """
@@ -23,7 +23,7 @@ class Command(NoArgsCommand):
         )
         self.stdout.write(line, ending='')
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         try:
             filename, headers = request.urlretrieve(geocity_options.DB_UPDATE_URL, reporthook=self.reporthook)
         except error.HTTPError as e:

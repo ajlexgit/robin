@@ -2,11 +2,11 @@ import os
 from django.db import models
 from django.apps import apps
 from django.conf import settings
-from django.core.management.base import NoArgsCommand
+from django.core.management import BaseCommand
 from libs.variation_field import VariationImageFieldFile
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     """
         Позволяет получить список файлов из папки MEDIA_ROOT, не упомянутых в БД, и/или удалить их.
         Работает со стандартными полями FileField / ImageField и с полями VariationImageField и
@@ -74,7 +74,7 @@ class Command(NoArgsCommand):
             help='Delete founded unused files'
         )
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         media_files = self.get_all_media_files()
         self.filter_db_files_list(media_files)
         if not media_files:

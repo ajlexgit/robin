@@ -3,7 +3,7 @@
     Добавлена автозагрузка модулей при старте
 """
 from django.conf import settings
-from django.core.management.base import NoArgsCommand
+from django.core.management import BaseCommand
 
 
 SHELL_IMPORTS = [
@@ -15,7 +15,7 @@ SHELL_IMPORTS = [
 ]
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Runs a Python interactive interpreter. Tries to use IPython, if it is available."
     requires_system_checks = False
 
@@ -80,7 +80,7 @@ class Command(NoArgsCommand):
             help='When using plain Python, ignore the PYTHONSTARTUP environment variable and ~/.pythonrc.py script.'
         )
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         import os
 
         use_plain = options.get('plain', False)

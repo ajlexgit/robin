@@ -1,16 +1,16 @@
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.management.base import NoArgsCommand
+from django.core.management import BaseCommand
 from ...models import GalleryBase
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     """
         Проверка всех галерей на объекты-зомби
     """
     help = 'Removes gallery zombie-objects'
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         gallery_models = (
             model
             for model in apps.get_models()
