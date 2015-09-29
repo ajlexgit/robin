@@ -1,13 +1,23 @@
 from django.core import management
-from optparse import make_option
 
-# pm dumpdata --natural-foreign --exclude=contenttypes --exclude=auth.Permission --exclude=admin.logentry
 
 class Command(management.BaseCommand):
+    """
+        Алиас для команды
+            pm dumpdata --natural-foreign
+                        --exclude=contenttypes
+                        --exclude=auth.Permission
+                        --exclude=admin.logentry
+    """
+    help = 'Dump database data'
 
-    option_list = management.BaseCommand.option_list + (
-        make_option('--database', action='store', dest='database', default='default', help='База данных'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument('--database',
+            action='store',
+            dest='database',
+            default='default',
+            help='Database alias (e.g. "default")'
+        )
 
     def handle(self, *args, **options):
         management.call_command('dumpdata',

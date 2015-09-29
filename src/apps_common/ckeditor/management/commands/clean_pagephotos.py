@@ -1,7 +1,7 @@
 import re
 from django.apps import apps
-from optparse import make_option
 from django.core.management import BaseCommand
+from django.core.management.base import CommandError
 from ...models import PagePhoto, SimplePhoto
 
 re_pagephoto = re.compile('/page_photos/\d+/photo_(\d+)')
@@ -12,50 +12,62 @@ class Command(BaseCommand):
     """
         Удаление фотографий, которые не привязаны к сущностям.
 
-        Для дополнительной проверки на привязанные, но не используемые фотки,
-        необходимо указать модель и поля этой модели, которые могут содержать ссылки на фотки:
-
-        pm clean_page_photos note text --model=app.modelname
+        pm clean_page_photos app.modelname note text
     """
+    help = 'Removes unused PagePhoto and SimplePhoto instances'
 
-    option_list = BaseCommand.option_list + (
-        make_option('--model', action='store', dest='model', type='string',
-            help='Model for check unused photos'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument('model', nargs=1, help='Path to checked model class')
+        parser.add_argument('--fields', nargs='*', help='list of fields in models where can be photos')
+
+    @staticmethod
+    def get_model(modelpath):
+        if isinstance(modelpath, str):
+            return apps.get_model(*modelpath.rsplit('.', 1))
 
     def handle(self, *args, **options):
-        page_photos = PagePhoto.objects.filter(instance_id=0)
-        print('Deleting %s page photos...' % page_photos.count(), end=' ')
-        page_photos.delete()
-        print('Done')
+        if not options['model'][0]:
+            raise CommandError('model required')
 
-        simple_photos = SimplePhoto.objects.filter(instance_id=0)
-        print('Deleting %s simple photos...' % simple_photos.count(), end=' ')
-        simple_photos.delete()
-        print('Done')
-
-        # Unused photos
-        modelpath = options.get('model')
-        fields = args
-        if not modelpath or not fields:
-            return
-
-        # Check model and fields
+        modelpath = options['model'][0]
         app, modelname = modelpath.rsplit('.', 1)
         model = apps.get_model(app, modelname)
-        for field in fields:
-            model._meta.get_field(field)
 
+        fields = options['fields']
+        if fields:
+            fields = tuple(
+                model._meta.get_field(item).name
+                for item in fields
+            )
+        else:
+            fields = tuple(
+                item.name
+                for item in model._meta.get_fields()
+                if not item.auto_created and item.get_internal_type() == 'TextField'
+            )
+
+        page_photos = PagePhoto.objects.filter(instance_id=0)
+        if page_photos.exists():
+            self.stdout.write('Deleting %s PagePhoto without instance' % page_photos.count())
+            page_photos.delete()
+
+        simple_photos = SimplePhoto.objects.filter(instance_id=0)
+        if simple_photos.exists():
+            self.stdout.write('Deleting %s SimplePhoto without instance' % simple_photos.count())
+            simple_photos.delete()
+
+        # Проверка загруженных, но отсутсвующих в тексте фотографий
+        self.stdout.write('Checking fields "%s":' % '", "'.join(fields))
         for instance in model.objects.all():
             used_pagephotos = []
-            for field in fields:
-                field_value = getattr(instance, field)
+            for fieldname in fields:
+                field_value = getattr(instance, fieldname)
                 matched_ids = re_pagephoto.findall(str(field_value))
                 used_pagephotos.extend(matched_ids)
 
             used_simplephotos = []
-            for field in fields:
-                field_value = getattr(instance, field)
+            for fieldname in fields:
+                field_value = getattr(instance, fieldname)
                 matched_ids = re_simplephotos.findall(str(field_value))
                 used_simplephotos.extend(matched_ids)
 
@@ -66,7 +78,7 @@ class Command(BaseCommand):
                 instance_id=instance.pk,
             ).exclude(pk__in=used_pagephotos)
             if attached_unused_pagephotos:
-                print('Deleted %s page photos attached to %s (#%s)' % (
+                self.stdout.write('Deleted %s PagePhoto attached to %s (#%s)' % (
                     attached_unused_pagephotos.count(),
                     modelpath,
                     instance.pk,
@@ -80,9 +92,11 @@ class Command(BaseCommand):
                 instance_id=instance.pk,
             ).exclude(pk__in=used_simplephotos)
             if attached_unused_simplephotos:
-                print('Deleted %s simple photos attached to %s (#%s)' % (
+                self.stdout.write('Deleted %s SimplePhoto attached to %s (#%s)' % (
                     attached_unused_simplephotos.count(),
                     modelpath,
                     instance.pk,
                 ))
                 attached_unused_simplephotos.delete()
+
+        self.stdout.write('Done')

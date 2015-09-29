@@ -3,40 +3,47 @@ import shutil
 from django.apps import apps
 from django.conf import settings
 from django.core.management import BaseCommand, call_command
+from django.core.management.base import CommandError
 
 
 class Command(BaseCommand):
 
-    def handle(self, *args, **options):
+    def add_arguments(self, parser):
+        parser.add_argument('app_label', nargs='*', help='Applications')
+
+    def get_resetable_apps(self, app_labels=()):
+        """ Список приложений, чьи миграции нужно сбросить """
         local_apps = {
-            app.__name__.rsplit('.', 1)[0] : os.path.dirname(app.__file__) for app in apps.get_apps()
+            app.__name__.rsplit('.', 1)[0]: os.path.dirname(app.__file__)
+            for app in apps.get_apps()
             if app.__file__.startswith(settings.BASE_DIR)
         }
 
-        if args:
-            ok = True
+        if app_labels:
             result_apps = {}
-            for arg in args:
-                if arg in local_apps:
-                    result_apps[arg] = local_apps[arg]
+            for app_label in app_labels:
+                if app_label in local_apps:
+                    result_apps[app_label] = local_apps[app_label]
                 else:
-                    ok = False
-                    print('"%s" app not found' % arg)
-
-            if not ok:
-                return
+                    raise CommandError('application %s not found' % app_label)
+            else:
+                return result_apps
         else:
-            result_apps = local_apps
+            return local_apps
+
+
+    def handle(self, *args, **options):
+        resetable_apps = self.get_resetable_apps(options['app_label'])
 
         # Удаление миграций
-        for name, path in result_apps.items():
+        for name, path in resetable_apps.items():
             migrations_dir = os.path.join(path, 'migrations')
             if os.path.isdir(migrations_dir):
                 shutil.rmtree(migrations_dir)
 
         # Создание новых миграций
-        for name, path in result_apps.items():
-            print('Create migrations for %s...' % name)
+        for name, path in resetable_apps.items():
+            self.stdout.write('Create migrations for %s...' % name)
             call_command('makemigrations', name.rsplit('.', 1)[-1], verbosity=0)
 
         call_command('migrate', verbosity=0)

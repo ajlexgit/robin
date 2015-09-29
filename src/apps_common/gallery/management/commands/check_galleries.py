@@ -1,12 +1,16 @@
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.management import BaseCommand
+from django.core.management.base import NoArgsCommand
 from ...models import GalleryBase
 
 
-class Command(BaseCommand):
-    """ Проверка всех галерей на объекты-зомби """
-    def handle(self, *args, **options):
+class Command(NoArgsCommand):
+    """
+        Проверка всех галерей на объекты-зомби
+    """
+    help = 'Removes gallery zombie-objects'
+
+    def handle_noargs(self, **options):
         gallery_models = (
             model
             for model in apps.get_models()
@@ -26,16 +30,29 @@ class Command(BaseCommand):
                     try:
                         getattr(gallery, related_name)
                     except ObjectDoesNotExist:
-                        print('{0.__class__.__name__} #{0.pk}: empty relation {1!r}'.format(gallery, related_name))
+                        self.stdout.write(
+                            '{0.__class__.__name__} #{0.pk}: ''empty relation {1!r}'.format(
+                                gallery, related_name
+                            )
+                        )
 
                 # Проверяем пустые галереи
                 if not gallery.items.count():
-                    print('{0.__class__.__name__} #{0.pk}: no items'.format(gallery))
+                    self.stdout.write('{0.__class__.__name__} #{0.pk}: no items'.format(gallery))
                 else:
                     # Проверяем битые картинки
                     for image_item in gallery.image_items:
                         if not image_item.image:
-                            print('{0.__class__.__name__} #{0.pk}, {1.__class__.__name__} #{1.pk}: have empty image item #{1.pk}'.format(gallery, image_item))
+                            self.stdout.write(
+                                '{0.__class__.__name__} #{0.pk}, {1.__class__.__name__} #{1.pk}: '
+                                'have empty image item #{1.pk}'.format(
+                                    gallery, image_item
+                                )
+                            )
                         elif not image_item.image.exists():
-                            print('{0.__class__.__name__} #{0.pk}, {1.__class__.__name__} #{1.pk}: file {1.image.name!r} not found'.format(gallery, image_item))
-
+                            self.stdout.write(
+                                '{0.__class__.__name__} #{0.pk}, {1.__class__.__name__} #{1.pk}: '
+                                'file {1.image.name!r} not found'.format(
+                                    gallery, image_item
+                                )
+                            )

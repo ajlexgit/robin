@@ -1,5 +1,5 @@
 """
-    TODO: Весь этот только код ради того, чтобы заменить WSGIRequestHandler
+    TODO: Весь этот код только ради того, чтобы заменить WSGIRequestHandler
     на SlimWSGIRequestHandler
 """
 import os
