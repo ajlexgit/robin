@@ -371,8 +371,8 @@ class VariationImageField(models.ImageField):
 
         return super().get_prep_value(value)
 
-    def contribute_to_class(self, cls, name):
-        super().contribute_to_class(cls, name)
+    def contribute_to_class(self, cls, name, **kwargs):
+        super().contribute_to_class(cls, name, **kwargs)
         signals.post_save.connect(self._post_save, sender=cls)
         signals.post_init.connect(self._set_field_variations, sender=cls)
         signals.post_delete.connect(self.post_delete, sender=cls)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 12:57+0400\n"
+"POT-Creation-Date: 2015-09-29 23:06+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,22 +19,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: apps_common/files/models.py:17 apps_common/files/models.py:25
+#: models.py:17 models.py:35
 msgid "file"
 msgstr "файл"
 
-#: apps_common/files/models.py:18
+#: models.py:22
 msgid "display name"
 msgstr "отображаемое имя"
 
-#: apps_common/files/models.py:19
+#: models.py:25
 msgid "If you leave it empty the file name will be used"
 msgstr "Если оставить пустым - будет взято имя файла"
 
-#: apps_common/files/models.py:20
-msgid "order"
+#: models.py:27
+msgid "sort order"
 msgstr "порядок"
 
-#: apps_common/files/models.py:26
+#: models.py:36
 msgid "files"
 msgstr "файлы"
