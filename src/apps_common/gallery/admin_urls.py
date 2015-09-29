@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from . import admin_views
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^create/$', admin_views.create, name='create'),
     url(r'^delete/$', admin_views.delete, name='delete'),
     url(r'^upload/$', admin_views.upload, name='upload'),
@@ -13,4 +13,4 @@ urlpatterns = patterns('',
     url(r'^crop_item/$', admin_views.crop_item, name='crop_item'),
     url(r'^get_description/$', admin_views.get_description, name='get_description'),
     url(r'^set_description/$', admin_views.set_description, name='set_description'),
-)
+]
