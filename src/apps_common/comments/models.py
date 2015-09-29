@@ -52,7 +52,7 @@ class CommentTreeManager(TreeManager):
         return self.filter(
             entity=entity,
             visible=visible,
-        ).select_related('user__pk', 'user__username', 'user__avatar')
+        ).select_related('user__id', 'user__username', 'user__avatar')
 
 
 class Comment(MPTTModel):
