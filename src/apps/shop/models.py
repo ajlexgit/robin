@@ -106,7 +106,7 @@ class ShopCategory(MPTTModel):
 
     def save(self, *args, **kwargs):
         is_add = self.pk is None
-        original = None if is_add else self.__class__.objects.get(pk=self.pk)
+        original = None if is_add else self.__class__.objects.select_related('parent').get(pk=self.pk)
 
         if self.is_visible and self.parent_id and not self.parent.is_visible:
             # корректировка для случая видимой подкатегории в невидимой
