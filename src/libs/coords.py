@@ -1,16 +1,7 @@
+from numbers import Number
 from decimal import Decimal, localcontext, ROUND_HALF_UP, InvalidOperation
 
-
-def format_decimal(value):
-    try:
-        value = Decimal(value)
-    except (InvalidOperation, TypeError):
-        return None
-    else:
-        with localcontext() as ctx:
-            ctx.prec = 14
-            ctx.rounding = ROUND_HALF_UP
-            return value + 0
+__all__ = ['Coords']
 
 
 class Coords:
@@ -20,38 +11,39 @@ class Coords:
     """
     __slots__ = ('_lat', '_lng')
 
-    def __init__(self, lng=None, lat=None):
-        self.lng = lng
-        self.lat = lat
+    def __new__(cls, lng=None, lat=None):
+        self = object.__new__(cls)
+        self._lng = self._format_number(lng)
+        self._lat = self._format_number(lat)
+        return self
 
-    @property
-    def lng(self):
-        return self._lng
+    @classmethod
+    def _format_number(cls, number):
+        if isinstance(number, (Number, str)):
+            try:
+                value = Decimal(number)
+            except InvalidOperation:
+                raise ValueError('Invalid coordinate format: %r' % number)
+            else:
+                with localcontext() as ctx:
+                    ctx.prec = 13
+                    ctx.rounding = ROUND_HALF_UP
+                    return value + 0
+        elif isinstance(number, Decimal):
+            return number
+        else:
+            raise TypeError('Invalid coordinates type: %r' % number)
 
     @property
     def lat(self):
         return self._lat
 
-    @lng.setter
-    def lng(self, value):
-        self._lng = format_decimal(value)
-
-    @lat.setter
-    def lat(self, value):
-        self._lat = format_decimal(value)
-
-    def __bool__(self):
-        return self.lng is not None and self.lat is not None
+    @property
+    def lng(self):
+        return self._lng
 
     def __iter__(self):
-        if self:
-            return iter((self.lng, self.lat))
-
-    def __len__(self):
-        return len(str(self))
+        return iter((self.lng, self.lat))
 
     def __repr__(self):
-        if self:
-            return '{0}, {1}'.format(self.lng, self.lat)
-        else:
-            return ''
+        return '{0}, {1}'.format(self.lng, self.lat)
