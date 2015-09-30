@@ -51,6 +51,12 @@ class GoogleCoordsField(models.Field):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
 
+    def get_db_prep_lookup(self, lookup_type, value, *args, **kwargs):
+        if lookup_type == 'exact':
+            return self.get_prep_value(value)
+        else:
+            raise TypeError('Lookup type %r not supported.' % lookup_type)
+
     def formfield(self, **kwargs):
         kwargs['widget'] = GoogleCoordsFieldWidget(attrs={
             'data-width': getattr(settings, 'ADMIN_GOOGLE_MAP_WIDTH', ''),
