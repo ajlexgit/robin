@@ -74,7 +74,7 @@ class ThreadedConsoleHandler(logging.StreamHandler):
 
 
 class ThreadedConsoleLogger(logging.Logger):
-    """ Логгер, накапливающий выводящий сообщения в буффер, а затем выводящий результат в консоль """
+    """ Логгер, накапливающий выводимые сообщения в буффер, а затем выводящий результат в консоль """
     def flush(self):
         for handler in self.handlers:
             handler.flush()

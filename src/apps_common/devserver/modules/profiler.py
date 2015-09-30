@@ -1,121 +1,208 @@
-import time
+import sys
+import sqlparse
+from decimal import Decimal
 from functools import wraps
-from contextlib import contextmanager
+from datetime import datetime
 from django.db import connections
 from django.utils.termcolors import colorize
 from django.utils.decorators import available_attrs
-from . import DevServerModule
-
-_profiler_data = {}
 
 
-def format_profile_info(name, data):
-    """ Форматированние записи профайлера """
-    calls = data['calls']
-    if not calls:
-        return
-
-    total_time = data['time'] * 1000.0
-    avg_time = total_time / calls
-
-    msg = ("{funcname}\n"
-           "    total time: {total_time} ({calls} calls)\n"
-           "    avg time: {avg_time}\n"
-           "    sql: {sql_time} ({sql} queries with {dupes} duplicates)")
-    params = dict(
-        funcname=colorize(name, fg='green', opts=('underscore',)),
-        calls=calls,
-        avg_time=colorize('%dms' % avg_time, fg='white'),
-        total_time=colorize('%dms' % total_time, fg='white'),
-
-        sql=data['sql'],
-        dupes=data['sql'] - len(data['sql_unique']),
-        sql_time=colorize('%dms' % data['sql_time'], fg='white'),
-    )
-    return msg.format(**params)
-
-
-@contextmanager
-def devprofile(name, summary=False):
+class Profile:
     """
-        Контекстный менеджер профилирования.
+        Контекстный менеджер для профилирования участков кода.
 
         Пример:
-            with devprofiler('entity fetch'):
-                e = Entity.objects.get(pk=1)
-            ...
+            from devserver import Profile
+
+            with Profile('FetchEntity', show_sql=True):
+                enities = Entity.objects.get(pk=1)
+                ...
+
     """
-    default = {
-        'calls': 0,
-        'time': 0,
-        'sql': 0,
-        'sql_unique': set(),
-        'sql_time': 0,
-        'sql_count': {},
-    }
+    indent_width = 2
 
-    if summary:
-        data = _profiler_data.setdefault(name, default)
-    else:
-        data = default
+    __slots__ = (
+        'name', 'exec_time', 'sqls', 'sql_time', 'sql_count', 'stdout',
+        '_colorize', '_show_sql', '_db_start_queries', '_start_time'
+    )
 
-    for dbname in connections:
-        data['sql_count'][dbname] = len(connections[dbname].queries)
+    def __init__(self, name='dev', stdout=None, show_sql=False):
+        self.name = name
+        if stdout:
+            self._colorize = False
+            self.stdout = stdout
+        else:
+            self._colorize = True
+            self.stdout = sys.stdout
+        self.exec_time = 0
+        self.sqls = {}
+        self.sql_time = 0
+        self.sql_count = 0
+        self._show_sql = show_sql
 
-    start = time.time()
-    yield
-    end = time.time()
+    def __enter__(self):
+        """ Запоминаем сколько запросов было совешено к каждой БД """
+        self._db_start_queries = {}
+        for dbname in connections:
+            self._db_start_queries[dbname] = len(connections[dbname].queries_log)
 
-    for dbname in connections:
-        queries = connections[dbname].queries[data['sql_count'][dbname]:]
+        self._start_time = datetime.now()
 
-        data['sql'] += len(queries)
-        data['sql_unique'].update(q['sql'] for q in queries)
-        data['sql_time'] += sum(float(c.get('time', 0)) for c in queries) * 1000
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        exec_time = datetime.now() - self._start_time
+        exec_time = (exec_time.seconds * 1000) + (exec_time.microseconds / 1000.0)
+        self.exec_time = exec_time
 
-    data['calls'] += 1
-    data['time'] += end - start
+        sql_count = 0
+        sql_time = Decimal()
+        for dbname in connections:
+            queries = connections[dbname].queries[self._db_start_queries[dbname]:]
+            if not queries:
+                continue
 
-    if not summary:
-        msg = format_profile_info(name, data)
-        print(msg)
+            self.sqls[dbname] = queries
+            sql_time += sum(Decimal(row['time']) for row in queries)
+            sql_count += len(queries)
+
+        self.sql_count = sql_count
+        self.sql_time = int(sql_time * 1000)
+
+        self.print_info()
+
+    def colorize(self, text, **kwargs):
+        if self._colorize:
+            return colorize(text, **kwargs)
+        else:
+            return text
+
+    def print_info(self):
+        """ Вывод собранной информации """
+        # вывод имени профилировщика
+        self.stdout.write(
+            '{profiler}\n'.format(
+                profiler = self.colorize(
+                    'Profile "{}":'.format(self.name),
+                    fg='white',
+                    opts=('bold',)
+                )
+            )
+        )
+
+        # Вывод SQL-запросов
+        if self._show_sql:
+            for dbname in connections:
+                queries = self.sqls[dbname]
+                if not queries:
+                    continue
+
+                for index, sql_data in enumerate(queries, start=1):
+                    sql_time = str(Decimal(sql_data['time']) * 1000)
+                    sql_time = sql_time.rstrip('0').rstrip('.')
+
+                    caption = '{index}) {sql_time}ms, database "{dbname}":'.format(
+                        indent=' ' * self.indent_width,
+                        index=index,
+                        dbname=dbname,
+                        sql_time=sql_time,
+                    )
+                    self.stdout.write(
+                        '{indent}{caption}\n'.format(
+                            indent=' ' * self.indent_width,
+                            caption=self.colorize(
+                                caption,
+                                fg='magenta',
+                                opts=('bold',)
+                            )
+                        )
+                    )
+
+                    sql_query = sqlparse.format(
+                        sql_data['sql'],
+                        reindent=True,
+                        keyword_case='upper'
+                    )
+                    indent = ' ' * self.indent_width * 3
+                    sql_query = ('\n' + indent).join(sql_query.split('\n'))
+                    self.stdout.write(
+                        '{indent}{sql_query}\n'.format(
+                            indent=indent,
+                            sql_query=self.colorize(
+                                sql_query,
+                                fg='yellow',
+                                opts=('bold',)
+                            )
+                        )
+                    )
+            self.stdout.write('\n')
+
+        # Общее время
+        self.stdout.write(
+            '{indent}{key} {value}\n'.format(
+                indent=' ' * self.indent_width,
+                key=self.colorize(
+                    '[time] '.format(self.name),
+                    fg='magenta',
+                    opts=('bold',)
+                ),
+                value=self.colorize(
+                    '{:.0f}ms'.format(self.exec_time),
+                    fg='green',
+                    opts=('bold',)
+                )
+            )
+        )
+
+        # Общее время SQL
+        self.stdout.write(
+            '{indent}{key} {value}\n'.format(
+                indent=' ' * self.indent_width,
+                key=self.colorize(
+                    '[sql time] '.format(self.name),
+                    fg='magenta',
+                    opts=('bold',)
+                ),
+                value=self.colorize(
+                    '{:.0f}ms'.format(self.sql_time),
+                    fg='green',
+                    opts=('bold',)
+                )
+            )
+        )
+
+        # Кол-во SQL-запросов
+        self.stdout.write(
+            '{indent}{key} {value}\n'.format(
+                indent=' ' * self.indent_width,
+                key=self.colorize(
+                    '[sql count] '.format(self.name),
+                    fg='magenta',
+                    opts=('bold',)
+                ),
+                value=self.colorize(
+                    '{:}'.format(self.sql_count),
+                    fg='green',
+                    opts=('bold',)
+                )
+            )
+        )
 
 
-def devprofile_func(func):
+def profile(simple=None, **params):
     """
         Декоратор для профилирования функций.
 
         Пример:
-            @devprofile
+            @profile(show_sql=True)
             def test(*args, **kwargs):
                 ...
     """
-    @wraps(func, assigned=available_attrs(func))
-    def inner(*args, **kwargs):
-        func_fullname = '%s.%s' % (func.__module__, func.__qualname__)
-        with devprofiler(func_fullname):
-            result = func(*args, **kwargs)
-        return result
-    return inner
-
-
-class ProfilerModule(DevServerModule):
-    """
-        Вывод результатов профилирования
-    """
-    logger_name = 'profiler'
-
-    def process_request(self, request):
-        global _profiler_data
-        _profiler_data = {}
-
-    def process_response(self, request, response):
-        global _profiler_data
-        for funcname, data in sorted(_profiler_data.items()):
-            msg = format_profile_info(funcname, data)
-            if msg is None:
-                continue
-
-            self.logger.info(msg, multiline_indent=False)
-        _profiler_data = {}
-
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(*args, **kwargs):
+            func_fullname = '%s.%s' % (func.__module__, func.__qualname__)
+            with Profile(func_fullname, **params):
+                result = func(*args, **kwargs)
+            return result
+        return inner
+    return decorator(simple) if simple else decorator

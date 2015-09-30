@@ -1,7 +1,6 @@
 from datetime import datetime
 from django.utils.termcolors import colorize
 from . import DevServerModule
-from ..utils.time import ms_from_timedelta
 
 
 class ProfileRenderModule(DevServerModule):
@@ -16,6 +15,10 @@ class ProfileRenderModule(DevServerModule):
 
     def process_response(self, request, response):
         duration = datetime.now() - self.start
-        duration_fmt = '%dms' % ms_from_timedelta(duration)
-        self.logger.info(colorize(duration_fmt, fg='white'))
-
+        duration = (duration.seconds * 1000) + (duration.microseconds / 1000.0)
+        self.logger.info(
+            colorize(
+                '{:.0f}ms'.format(duration),
+                fg='white'
+            )
+        )

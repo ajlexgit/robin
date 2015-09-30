@@ -42,4 +42,3 @@ class RequestModule(DevServerModule):
 
         self.logger.info(msg)
         self.logger.flush()
-

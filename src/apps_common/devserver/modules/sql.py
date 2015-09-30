@@ -1,30 +1,6 @@
 from django.db import connections
 from django.utils.termcolors import colorize
 from ..modules import DevServerModule
-from ..utils.cursor_wrapper import DevserverCursorWrapper
-
-
-class SQLRealTimeModule(DevServerModule):
-    """
-        Подмена курсоров баз данных
-    """
-    logger_name = 'sql'
-
-    def process_request(self, request):
-        for connection in connections.all():
-            if not hasattr(connection, '_devserver_cursor'):
-                connection._devserver_cursor = connection.cursor
-
-                def cursor():
-                    return DevserverCursorWrapper(connection._devserver_cursor(), connection, self.logger)
-
-                connection.cursor = cursor
-
-    def process_response(self, request, response):
-        for connection in connections.all():
-            if hasattr(connection, '_devserver_cursor'):
-                connection.cursor = connection._devserver_cursor
-                del connection._devserver_cursor
 
 
 class SQLSummaryModule(DevServerModule):

@@ -23,18 +23,18 @@
 
 
     Профилирование функций:
-        from devserver import devprofile_func
+        from devserver import profile
 
-        @devprofile_func
+        @profile(show_sql=True)
         def get(self, request, post_id):
             ...
 
     Профилирование участков кода:
-        from devserver import devprofile
+        from devserver import Profile
 
-        with devprofile('entity fetch', summary=True):
+        with Profile('FetchEntity', show_sql=True):
             e = Entity.objects.get(pk=1)
 """
-from .modules.profiler import devprofile, devprofile_func
+from .modules.profiler import Profile, profile
 
-__all__ = ('devprofile', 'devprofile_func')
+__all__ = ('Profile', 'profile')

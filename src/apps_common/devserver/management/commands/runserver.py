@@ -4,18 +4,20 @@
 """
 import os
 import sys
-import six
 import errno
 import socket
 import socketserver
 from datetime import datetime
+
+import six
 from django.conf import settings
 from django.core.servers.basehttp import WSGIServer
 from django.utils.encoding import get_system_encoding, force_text
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.commands.runserver import Command as BaseCommand
 from django.contrib.staticfiles.handlers import StaticFilesHandler
-from ...utils.http import SlimWSGIRequestHandler
+
+from .http import SlimWSGIRequestHandler
 
 
 def run(addr, port, wsgi_handler, ipv6=False, threading=False):
