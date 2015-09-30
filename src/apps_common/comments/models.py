@@ -5,14 +5,12 @@ from django.db.models.functions import Coalesce
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from mptt.fields import TreeForeignKey
-from mptt.models import MPTTModel
-from mptt.managers import TreeManager
 from libs.aliased_queryset import AliasedQuerySetMixin
+from libs.mptt import *
 from . import options
 
 
-class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
+class CommentQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
     def aliases(self, qs, kwargs):
         # entity
         entity = kwargs.pop('entity', None)
@@ -27,16 +25,6 @@ class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
         return qs
 
-    def only(self, *fields):
-        """ Fix for MPTT """
-        mptt_meta = self.model._mptt_meta
-        mptt_fields = tuple(
-            getattr(mptt_meta, key)
-            for key in ('left_attr', 'right_attr', 'tree_id_attr', 'level_attr')
-        )
-        final_fields = set(mptt_fields + fields + tuple(mptt_meta.order_insertion_by))
-        return super().only(*final_fields)
-
     def with_permissions(self, user):
         """ Генератор с полями прав на коммент """
         for comment in self:
@@ -44,7 +32,7 @@ class CommentQuerySet(AliasedQuerySetMixin, models.QuerySet):
             yield comment
 
 
-class CommentTreeManager(TreeManager):
+class CommentTreeManager(MPTTQuerySetManager):
     _queryset_class = CommentQuerySet
 
     def get_for(self, entity, visible=True):
