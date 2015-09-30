@@ -19,13 +19,19 @@ class Command(BaseCommand):
     requires_system_checks = False
 
     def add_arguments(self, parser):
+        parser.add_argument('-i', '--imports',
+            action='store_true',
+            dest='show_imports',
+            default=False,
+            help='Show imports'
+        )
         parser.add_argument('-p', '--plain',
             action='store_true',
             dest='plain',
             help='Tells Django to use plain Python, not IPython or bpython.'
         )
 
-    def import_objects(self):
+    def import_objects(self, verbose):
         import importlib
         from django.apps import apps
         from django.utils.termcolors import colorize
@@ -44,26 +50,32 @@ class Command(BaseCommand):
             app_models = [model.__name__ for model in app_models]
             imports.append((app.__name__, app_models))
 
-        self.stdout.write('\nAutoload modules:')
+        if verbose:
+            self.stdout.write('Autoload modules:\n')
+
         for module_name, parts in imports:
             module = importlib.import_module(module_name)
             if not parts:
                 imported_objects[module_name] = module
 
-                msg = '  import %s' % module_name
-                self.stdout.write(colorize(msg, fg='green'))
+                if verbose:
+                    msg = '  import %s\n' % module_name
+                    self.stdout.write(colorize(msg, fg='green'))
             else:
                 for part in parts:
                     imported_objects[part] = getattr(module, part)
-                msg = '  from %s import %s' % (module_name, ', '.join(parts))
-                self.stdout.write(colorize(msg, fg='green'))
+
+                if verbose:
+                    msg = '  from %s import %s\n' % (module_name, ', '.join(parts))
+                    self.stdout.write(colorize(msg, fg='green'))
 
         return imported_objects
 
     def handle(self, *args, **options):
         use_plain = options.get('plain', False)
+        show_imports = options.get('show_imports', True)
 
-        imported_objects = self.import_objects()
+        imported_objects = self.import_objects(show_imports)
 
         try:
             if use_plain:
