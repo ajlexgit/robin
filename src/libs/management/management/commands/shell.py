@@ -7,7 +7,6 @@ from django.core.management import BaseCommand
 
 
 SHELL_IMPORTS = [
-    ('os', ()),
     ('django.db', ('models', )),
     ('django.apps', ('apps', )),
     ('django.conf', ('settings', )),
@@ -19,18 +18,12 @@ class Command(BaseCommand):
     help = "Runs a Python interactive interpreter. Tries to use IPython, if it is available."
     requires_system_checks = False
 
-    def ipython(self):
-        """Start any version of IPython"""
-        try:
-            from IPython import start_ipython
-        except ImportError:
-            pass
-        else:
-            imported_objects = self.import_objects()
-            start_ipython(argv=['--no-banner', '--no-confirm-exit'], user_ns=imported_objects)
-            return
-        # no IPython, raise ImportError
-        raise ImportError("No IPython")
+    def add_arguments(self, parser):
+        parser.add_argument('-p', '--plain',
+            action='store_true',
+            dest='plain',
+            help='Tells Django to use plain Python, not IPython or bpython.'
+        )
 
     def import_objects(self):
         import importlib
@@ -67,37 +60,23 @@ class Command(BaseCommand):
 
         return imported_objects
 
-    def add_arguments(self, parser):
-        parser.add_argument('-p', '--plain',
-            action='store_true',
-            dest='plain',
-            help='Tells Django to use plain Python, not IPython or bpython.'
-        )
-
-        parser.add_argument('--no-startup',
-            action='store_true',
-            dest='no_startup',
-            help='When using plain Python, ignore the PYTHONSTARTUP environment variable and ~/.pythonrc.py script.'
-        )
-
     def handle(self, *args, **options):
-        import os
-
         use_plain = options.get('plain', False)
-        no_startup = options.get('no_startup', False)
+
+        imported_objects = self.import_objects()
 
         try:
             if use_plain:
                 # Don't bother loading IPython, because the user wants plain Python.
                 raise ImportError
 
-            self.ipython()
+            from IPython import start_ipython
         except ImportError:
+            # Plain
             import code
             # Set up a dictionary to serve as the environment for the shell, so
             # that tab completion works on objects that are imported at runtime.
             # See ticket 5082.
-            imported_objects = {}
             try:  # Try activating rlcompleter, because it's handy.
                 import readline
             except ImportError:
@@ -109,18 +88,7 @@ class Command(BaseCommand):
                 readline.set_completer(rlcompleter.Completer(imported_objects).complete)
                 readline.parse_and_bind("tab:complete")
 
-            # We want to honor both $PYTHONSTARTUP and .pythonrc.py, so follow system
-            # conventions and get $PYTHONSTARTUP first then .pythonrc.py.
-            if not no_startup:
-                for pythonrc in (os.environ.get("PYTHONSTARTUP"), '~/.pythonrc.py'):
-                    if not pythonrc:
-                        continue
-                    pythonrc = os.path.expanduser(pythonrc)
-                    if not os.path.isfile(pythonrc):
-                        continue
-                    try:
-                        with open(pythonrc) as handle:
-                            exec(compile(handle.read(), pythonrc, 'exec'), imported_objects)
-                    except NameError:
-                        pass
-            code.interact(local=imported_objects)
+            code.interact(banner='', local=imported_objects)
+        else:
+            # IPython
+            start_ipython(argv=['--no-banner', '--no-confirm-exit'], user_ns=imported_objects)
