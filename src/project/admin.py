@@ -1,7 +1,9 @@
 from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from mptt.admin import MPTTModelAdmin
 from suit.widgets import AutosizedTextarea
+from suit.admin import SortableModelAdmin, SortableChangeList
 from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
 
 
@@ -38,7 +40,6 @@ class ModelAdminInlineMixin:
 
 
 class ModelAdminMixin(ModelAdminInlineMixin):
-
     def view(self, obj):
         """ Ссылка просмотра на сайте для отображения в списке сущностей """
         if hasattr(obj, 'get_absolute_url'):
@@ -69,3 +70,18 @@ class ModelAdminMixin(ModelAdminInlineMixin):
                 )
             }
         )
+
+
+class SortableMPTTChangeList(SortableChangeList):
+    def get_ordering(self, request, queryset):
+        mptt_opts = self.model_admin.model._mptt_meta
+        return (mptt_opts.tree_id_attr, mptt_opts.left_attr,)
+
+
+class SortableMPTTModelAdmin(MPTTModelAdmin, SortableModelAdmin):
+    """
+        Класс для сортируемого MPTT-дерева.
+        Способ, описанный в доках Suit (MPTTModelAdmin, SortableModelAdmi) - косячный.
+    """
+    def get_changelist(self, request, **kwargs):
+        return SortableMPTTChangeList

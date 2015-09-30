@@ -6,11 +6,9 @@ from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
+from project.admin import SortableMPTTModelAdmin, ModelAdminMixin
 from solo.admin import SingletonModelAdmin
-from suit.admin import SortableModelAdmin
-from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
-from mptt.admin import MPTTModelAdmin
 from libs.autocomplete.forms import AutocompleteField
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 
@@ -33,7 +31,7 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
 
 
 @admin.register(ShopCategory)
-class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, SortableModelAdmin):
+class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -61,14 +59,22 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, MPTTModelAdmin, Sor
     )
     suit_seo_tab = 'seo'
 
-    def make_hidden(modeladmin, request, queryset):
+    def make_hidden(self, request, queryset):
         queryset.update(is_visible=False)
-        ShopCategory.objects.correct_visibility(queryset, visible_value=False)
+        self.model.objects.get_queryset_descendants(queryset).filter(
+            is_visible=True
+        ).update(
+            is_visible=False
+        )
     make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
 
-    def make_visible(modeladmin, request, queryset):
+    def make_visible(self, request, queryset):
         queryset.update(is_visible=True)
-        ShopCategory.objects.correct_visibility(queryset, visible_value=True)
+        self.model.objects.get_queryset_ancestors(queryset).filter(
+            is_visible=False
+        ).update(
+            is_visible=True
+        )
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 

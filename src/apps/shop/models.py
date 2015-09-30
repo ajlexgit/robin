@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.shortcuts import resolve_url
+from django.db.models.expressions import RawSQL
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.core.validators import MinValueValidator
@@ -49,30 +50,22 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
         final_fields = set(mptt_fields + fields + tuple(mptt_meta.order_insertion_by))
         return super().only(*final_fields)
 
+    def reset_immediate_products_count(self):
+        """
+            Установка корректного значения immediate_products_count
+        """
+        self.update(
+            immediate_product_count=RawSQL(
+                'SELECT COUNT(*) '
+                'FROM shop_shopproduct '
+                'WHERE shop_shopproduct.category_id = shop_shopcategory.id '
+                'AND shop_shopproduct.is_visible=TRUE', ()
+            )
+        )
+
 
 class ShopCategoryTreeManager(TreeManager):
     _queryset_class = ShopCategoryQuerySet
-
-    def correct_visibility(self, obj, visible_value=None):
-        if isinstance(obj, self.model):
-            queryset = self.model.filter(pk=obj.pk)
-        elif isinstance(obj, models.QuerySet):
-            queryset = obj
-        else:
-            raise TypeError('argument must be QuerySet or model instance')
-
-        if visible_value is True:
-            # объекты показаны - устанавливаем видимость их родителям
-            self.get_queryset_ancestors(queryset).filter(is_visible=False).update(
-                is_visible=True
-            )
-        elif visible_value is False:
-            # объекты скрыты - скрываем потомков
-            self.get_queryset_descendants(queryset).filter(is_visible=True).update(
-                is_visible=False
-            )
-        else:
-            raise ValueError('visible_value must be setted')
 
 
 class ShopCategory(MPTTModel):
@@ -90,6 +83,16 @@ class ShopCategory(MPTTModel):
         help_text=_('Leave it blank to auto generate it')
     )
     is_visible = models.BooleanField(_('visible'), default=False, db_index=True)
+    immediate_product_count = models.PositiveIntegerField(
+        default=0,
+        editable=False,
+        help_text=_('count of immediate visible products'),
+    )
+    product_count = models.PositiveIntegerField(
+        default=0,
+        editable=False,
+        help_text=_('count of visible products'),
+    )
     sort_order = models.PositiveIntegerField(_('sort order'))
 
     objects = ShopCategoryTreeManager()
@@ -102,8 +105,27 @@ class ShopCategory(MPTTModel):
         order_insertion_by = ('sort_order', )
 
     def save(self, *args, **kwargs):
+        is_add = self.pk is None
+        original = None if is_add else self.__class__.objects.get(pk=self.pk)
+
+        if self.is_visible and self.parent_id and not self.parent.is_visible:
+            # корректировка для случая видимой подкатегории в невидимой
+            if is_add:
+                # если добавление - скрываем текущую категорию
+                self.is_visible = False
+            elif self.parent.id != original.parent_id:
+                # если смена родителя - скрываем текущую категорию и её потомков
+                self.is_visible = False
+                self.get_descendants().filter(is_visible=True).update(is_visible=False)
+            else:
+                # если смена видимости - показываем предков
+                self.get_ancestors().filter(is_visible=False).update(is_visible=True)
+        elif not is_add and not self.is_visible:
+            # скрытие категории - скрываем потомков
+            self.get_descendants().filter(is_visible=True).update(is_visible=False)
+
         super().save(*args, **kwargs)
-        ShopCategory.objects.correct_visibility(self, self.is_visible)
+        # self.__class__.objects.rebuild()
 
     def __str__(self):
         return self.title
@@ -120,7 +142,7 @@ class ShopCategory(MPTTModel):
     def autocomplete_item(obj):
         return {
             'id': obj.pk,
-            'text': '–' * self.level + self.title,
+            'text': '–' * obj.level + obj.title,
         }
 
     def get_absolute_url(self):
@@ -168,7 +190,7 @@ class ShopProduct(models.Model):
                 crop=False,
             ),
             small=dict(
-                size=(120, 120),
+                size=(160, 160),
                 crop=False,
             ),
             admin=dict(
