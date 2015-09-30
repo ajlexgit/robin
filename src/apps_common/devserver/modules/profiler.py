@@ -9,8 +9,34 @@ from . import DevServerModule
 _profiler_data = {}
 
 
+def format_profile_info(name, data):
+    """ Форматированние записи профайлера """
+    calls = data['calls']
+    if not calls:
+        return
+
+    total_time = data['time'] * 1000.0
+    avg_time = total_time / calls
+
+    msg = ("{funcname}\n"
+           "    total time: {total_time} ({calls} calls)\n"
+           "    avg time: {avg_time}\n"
+           "    sql: {sql_time} ({sql} queries with {dupes} duplicates)")
+    params = dict(
+        funcname=colorize(name, fg='green', opts=('underscore',)),
+        calls=calls,
+        avg_time=colorize('%dms' % avg_time, fg='white'),
+        total_time=colorize('%dms' % total_time, fg='white'),
+
+        sql=data['sql'],
+        dupes=data['sql'] - len(data['sql_unique']),
+        sql_time=colorize('%dms' % data['sql_time'], fg='white'),
+    )
+    return msg.format(**params)
+
+
 @contextmanager
-def devprofiler(name):
+def devprofile(name, summary=False):
     """
         Контекстный менеджер профилирования.
 
@@ -19,14 +45,19 @@ def devprofiler(name):
                 e = Entity.objects.get(pk=1)
             ...
     """
-    data = _profiler_data.setdefault(name, {
+    default = {
         'calls': 0,
         'time': 0,
         'sql': 0,
         'sql_unique': set(),
         'sql_time': 0,
         'sql_count': {},
-    })
+    }
+
+    if summary:
+        data = _profiler_data.setdefault(name, default)
+    else:
+        data = default
 
     for dbname in connections:
         data['sql_count'][dbname] = len(connections[dbname].queries)
@@ -45,8 +76,12 @@ def devprofiler(name):
     data['calls'] += 1
     data['time'] += end - start
 
+    if not summary:
+        msg = format_profile_info(name, data)
+        print(msg)
 
-def devprofile(func):
+
+def devprofile_func(func):
     """
         Декоратор для профилирования функций.
 
@@ -77,29 +112,10 @@ class ProfilerModule(DevServerModule):
     def process_response(self, request, response):
         global _profiler_data
         for funcname, data in sorted(_profiler_data.items()):
-            calls = data['calls']
-            if not calls:
+            msg = format_profile_info(funcname, data)
+            if msg is None:
                 continue
 
-            total_time = data['time'] * 1000.0
-            avg_time = total_time / calls
-
-            msg = ("{funcname}\n"
-                   "    total time: {total_time} ({calls} calls)\n"
-                   "    avg time: {avg_time}\n"
-                   "    sql: {sql_time} ({sql} queries with {dupes} duplicates)")
-            params = dict(
-                funcname = colorize(funcname, fg='green', opts=('underscore', )),
-                calls = calls,
-                avg_time = colorize('%dms' % avg_time, fg='white'),
-                total_time = colorize('%dms' % total_time, fg='white'),
-
-                sql = data['sql'],
-                dupes = data['sql'] - len(data['sql_unique']),
-                sql_time = colorize('%dms' % data['sql_time'], fg='white'),
-            )
-
-            self.logger.info(msg.format(**params), multiline_indent=False)
-
+            self.logger.info(msg, multiline_indent=False)
         _profiler_data = {}
 

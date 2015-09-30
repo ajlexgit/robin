@@ -8,14 +8,12 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
-from mptt.fields import TreeForeignKey
-from mptt.models import MPTTModel
-from mptt.managers import TreeManager
 from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.stdimage.fields import StdImageField
 from libs.media_storage import MediaStorage
 from libs.valute_field import ValuteField
 from libs.autoslug import AutoSlugField
+from libs.mptt import *
 
 
 class ShopConfig(SingletonModel):
@@ -29,7 +27,7 @@ class ShopConfig(SingletonModel):
         return resolve_url('shop:index')
 
 
-class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
+class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
     def aliases(self, qs, kwargs):
         visible = kwargs.pop('visible', None)
         if visible is None:
@@ -40,32 +38,53 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, models.QuerySet):
             qs &= models.Q(is_visible=False)
         return qs
 
-    def only(self, *fields):
-        """ Fix for MPTT """
-        mptt_meta = self.model._mptt_meta
-        mptt_fields = tuple(
-            getattr(mptt_meta, key)
-            for key in ('left_attr', 'right_attr', 'tree_id_attr', 'level_attr')
-        )
-        final_fields = set(mptt_fields + fields + tuple(mptt_meta.order_insertion_by))
-        return super().only(*final_fields)
 
-    def reset_immediate_products_count(self):
+class ShopCategoryTreeManager(MPTTQuerySetManager):
+    _queryset_class = ShopCategoryQuerySet
+
+    def reset_product_count(self, leaf_queryset=None):
         """
-            Установка корректного значения immediate_products_count
+            Устанавливает корректное значение products_count всем категориям.
+            Значение immediate_products_count должно быть уже установлено и корректно.
         """
-        self.update(
-            immediate_product_count=RawSQL(
-                'SELECT COUNT(*) '
-                'FROM shop_shopproduct '
-                'WHERE shop_shopproduct.category_id = shop_shopcategory.id '
-                'AND shop_shopproduct.is_visible=TRUE', ()
+        if leaf_queryset is None:
+            tree_row = self.get_leafnodes()
+        else:
+            tree_row = leaf_queryset
+
+        tree_row.update(
+            product_count=RawSQL(
+                '(SELECT COUNT(*) '
+                'FROM shop_shopproduct AS ssp '
+                'WHERE ssp.category_id = shop_shopcategory.id '
+                'AND ssp.is_visible = TRUE)',
+                ()
             )
         )
 
+        while True:
+            parent_ids = tuple(tree_row.exclude(
+                parent=None
+            ).distinct().order_by('parent_id').values_list(
+                'parent_id',
+                flat=True
+            ))
+            if not parent_ids:
+                break
 
-class ShopCategoryTreeManager(TreeManager):
-    _queryset_class = ShopCategoryQuerySet
+            tree_row = self.filter(pk__in=parent_ids)
+            tree_row.update(
+                product_count=RawSQL(
+                    '(SELECT COUNT(*) '
+                    'FROM shop_shopproduct AS ssp '
+                    'WHERE ssp.category_id = shop_shopcategory.id '
+                    'AND ssp.is_visible = TRUE)'
+                    ' + '
+                    '(SELECT COALESCE(SUM(ssc.product_count), 0) '
+                    'FROM shop_shopcategory AS ssc '
+                    'WHERE ssc.parent_id = shop_shopcategory.id)', ()
+                )
+            )
 
 
 class ShopCategory(MPTTModel):
@@ -83,11 +102,6 @@ class ShopCategory(MPTTModel):
         help_text=_('Leave it blank to auto generate it')
     )
     is_visible = models.BooleanField(_('visible'), default=False, db_index=True)
-    immediate_product_count = models.PositiveIntegerField(
-        default=0,
-        editable=False,
-        help_text=_('count of immediate visible products'),
-    )
     product_count = models.PositiveIntegerField(
         default=0,
         editable=False,
@@ -107,7 +121,7 @@ class ShopCategory(MPTTModel):
     def save(self, *args, **kwargs):
         is_add = self.pk is None
         original = None if is_add else self.__class__.objects.select_related('parent').only(
-            'is_visible', 'parent__id', 'parent__is_visible'
+            'is_visible', 'parent'
         ).get(pk=self.pk)
 
         if self.is_visible and self.parent_id and not self.parent.is_visible:
@@ -236,6 +250,46 @@ class ShopProduct(models.Model):
             category_alias=self.category.alias,
             alias=self.alias
         )
+
+    def save(self, *args, **kwargs):
+        is_add = self.pk is None
+        original = None if is_add else self.__class__.objects.select_related('category').only(
+            'is_visible', 'category'
+        ).get(pk=self.pk)
+
+        if is_add:
+            # добавлен видимый продукт
+            if self.is_visible:
+                self.category.get_ancestors(include_self=True).update(
+                    immediate_product_count=models.F('immediate_product_count') + 1,
+                    product_count=models.F('product_count') + 1,
+                )
+        elif self.category != original.category:
+            # сменили категорию продукта
+            if original.is_visible:
+                original.category.get_ancestors(include_self=True).update(
+                    immediate_product_count=models.F('immediate_product_count') - 1,
+                    product_count=models.F('product_count') - 1,
+                )
+            if self.is_visible:
+                self.category.get_ancestors(include_self=True).update(
+                    immediate_product_count=models.F('immediate_product_count') + 1,
+                    product_count=models.F('product_count') + 1,
+                )
+        elif self.is_visible and not original.is_visible:
+            # продукт стал видимым
+            self.category.get_ancestors(include_self=True).update(
+                immediate_product_count=models.F('immediate_product_count') + 1,
+                product_count=models.F('product_count') + 1,
+            )
+        elif not self.is_visible and original.is_visible:
+            # продукт стал скрытым
+            self.category.get_ancestors(include_self=True).update(
+                immediate_product_count=models.F('immediate_product_count') - 1,
+                product_count=models.F('product_count') - 1,
+            )
+
+        super().save(*args, **kwargs)
 
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):

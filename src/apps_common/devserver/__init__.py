@@ -1,7 +1,3 @@
-from .modules.profiler import devprofile, devprofiler
-
-__all__ = ('devprofile', 'devprofiler')
-
 """
     Кастомный сервер для разработки.
 
@@ -27,15 +23,18 @@ __all__ = ('devprofile', 'devprofiler')
 
 
     Профилирование функций:
-        from devserver import devprofile
+        from devserver import devprofile_func
 
-        @devprofile
+        @devprofile_func
         def get(self, request, post_id):
             ...
 
     Профилирование участков кода:
-        from devserver import devprofiler
+        from devserver import devprofile
 
-        with devprofiler('entity fetch'):
+        with devprofile('entity fetch', summary=True):
             e = Entity.objects.get(pk=1)
 """
+from .modules.profiler import devprofile, devprofile_func
+
+__all__ = ('devprofile', 'devprofile_func')

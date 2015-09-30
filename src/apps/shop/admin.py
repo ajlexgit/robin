@@ -1,14 +1,16 @@
 ﻿from django import forms
 from django.db import models
 from django.contrib import admin
+from django.db.models import F, Func, Value
 from django.core.urlresolvers import reverse
 from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
-from project.admin import SortableMPTTModelAdmin, ModelAdminMixin
+from project.admin import ModelAdminMixin
 from solo.admin import SingletonModelAdmin
 from seo.admin import SeoModelAdminMixin
+from libs.mptt import *
 from libs.autocomplete.forms import AutocompleteField
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 
@@ -49,7 +51,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
     )
     mptt_level_indent = 20
     actions = ('make_hidden', 'make_visible')
-    list_display = ('view', 'title', 'is_visible')
+    list_display = ('view', 'title', 'is_visible', 'product_count')
     list_display_links = ('title',)
     prepopulated_fields = {'alias': ('title',)}
     sortable = 'sort_order'
@@ -86,13 +88,13 @@ class StatusShopProductCategoryFilter(SimpleListFilter):
     def lookups(self, request, model_admin):
         return ShopCategory.objects.annotate(
             text=Concat(
-                models.Func(
-                    models.Value('–'),
-                    models.F('level'),
+                Func(
+                    Value('–'),
+                    F('level'),
                     function='REPEAT',
                     output_field=models.CharField()
                 ),
-                models.F('title'),
+                F('title'),
             )
         ).values_list('id', 'text')
 
@@ -168,12 +170,25 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     price_alternate.allow_tags = True
     price_alternate.short_description = _('Price')
 
-    def make_hidden(modeladmin, request, queryset):
+    def make_hidden(self, request, queryset):
         queryset.update(is_visible=False)
+        categories = ShopCategory.objects.filter(
+            pk__in=queryset.values_list(
+                'category_id', flat=True
+            ).distinct().order_by('category_id')
+        )
+        ShopCategory.objects.reset_product_count(leaf_queryset=categories)
+
     make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
 
-    def make_visible(modeladmin, request, queryset):
+    def make_visible(self, request, queryset):
         queryset.update(is_visible=True)
+        categories = ShopCategory.objects.filter(
+            pk__in=queryset.values_list(
+                'category_id', flat=True
+            ).distinct().order_by('category_id')
+        )
+        ShopCategory.objects.reset_product_count(leaf_queryset=categories)
     make_visible.short_description = _('Show selected %(verbose_name_plural)s')
 
 
