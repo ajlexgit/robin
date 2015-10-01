@@ -56,7 +56,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         self.editor_options['PAGEPHOTOS_EDIT_URL'] = resolve_url('admin:ckeditor_pagephoto_change', 1)
 
         # Размер фото на странице
-        self.editor_options['PAGEPHOTOS_PHOTO_SIZE'] = options.PAGE_PHOTOS_SIZE
+        self.editor_options['PAGEPHOTOS_PHOTO_SIZE'] = options.PHOTOS_IN_TEXT_SIZE
         self.editor_options['SIMPLEPHOTOS_PHOTO_SIZE'] = options.SIMPLE_PHOTOS_MAX_SIZE
 
         # Максимальный размер файла

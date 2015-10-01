@@ -37,16 +37,16 @@ class PagePhoto(models.Model):
         upload_to = page_photo_filename,
         blank = True,
         admin_variation = 'admin_thumbnail',
-        min_dimensions = options.PAGE_PHOTOS_SIZE,
+        min_dimensions = options.PHOTOS_IN_TEXT_SIZE,
         crop_area = True,
         aspects = 'on_page',
         variations = dict(
             on_page=dict(
-                size=options.PAGE_PHOTOS_SIZE,
+                size=options.PHOTOS_IN_TEXT_SIZE,
                 format='JPEG',
             ),
             admin_thumbnail=dict(
-                size=options.ADMIN_SIZE,
+                size=options.PHOTOS_ADMIN_SIZE,
             ),
         ))
 
@@ -76,7 +76,7 @@ class SimplePhoto(models.Model):
         max_source_dimensions = options.SIMPLE_PHOTOS_MAX_SIZE,
         variations = dict(
             admin_thumbnail=dict(
-                size=options.ADMIN_SIZE,
+                size=options.PHOTOS_ADMIN_SIZE,
                 crop=False,
                 stretch=False,
             ),

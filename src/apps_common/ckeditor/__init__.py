@@ -14,8 +14,8 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'ckeditor',
                 'suit_ckeditor',
+                'ckeditor',
                 ...
             )
 
@@ -72,7 +72,8 @@
                     ...
 
 """
-
 from .fields import CKEditorField, CKEditorUploadField
 
 __all__ = ['CKEditorField', 'CKEditorUploadField']
+
+default_app_config = 'ckeditor.apps.Config'

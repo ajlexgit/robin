@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import signals
 from django.utils.encoding import smart_text
-from .models import PagePhoto, SimplePhoto
+from .signals.handlers import pre_delete, post_save
 from .forms import CKEditorFormField, CKEditorUploadFormField
 
 
@@ -57,14 +57,6 @@ class CKEditorUploadField(models.Field):
         defaults.update(kwargs)
         return super().formfield(**defaults)
 
-    @staticmethod
-    def pre_delete(instance=None, **kwargs):
-        """ Удаление картинок при удалении сущности """
-        photos = PagePhoto.objects.filter(app_name=instance._meta.app_label,
-                                          model_name=instance._meta.model_name,
-                                          instance_id=instance.id)
-        photos.delete()
-
     def pre_save(self, model_instance, add):
         """ Сохраняем текст в базу, а картинки - в экземпляр сущности """
         model_instance._page_photos = ()
@@ -78,30 +70,7 @@ class CKEditorUploadField(models.Field):
             return value[0]
         return value
 
-    @staticmethod
-    def post_save(instance=None, **kwargs):
-        """ Сохраняем в картинках ID сущности, к которой они привязываются """
-        page_photos = getattr(instance, '_page_photos', ())
-        for photo_id in page_photos:
-            try:
-                photo = PagePhoto.objects.get(id=photo_id)
-            except (PagePhoto.DoesNotExist, PagePhoto.MultipleObjectsReturned):
-                continue
-            else:
-                photo.instance_id = instance.id
-                photo.save()
-
-        simple_photos = getattr(instance, '_simple_photos', ())
-        for photo_id in simple_photos:
-            try:
-                photo = SimplePhoto.objects.get(id=photo_id)
-            except (SimplePhoto.DoesNotExist, SimplePhoto.MultipleObjectsReturned):
-                continue
-            else:
-                photo.instance_id = instance.id
-                photo.save()
-
     def contribute_to_class(self, cls, name, virtual_only=False):
         super().contribute_to_class(cls, name, virtual_only)
-        signals.post_save.connect(self.post_save, sender=cls)
-        signals.pre_delete.connect(self.pre_delete, sender=cls)
+        signals.post_save.connect(post_save, sender=cls)
+        signals.pre_delete.connect(pre_delete, sender=cls)
