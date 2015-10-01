@@ -68,7 +68,7 @@ class Command(BaseCommand):
         ]
 
     def add_arguments(self, parser):
-        parser.add_argument('--delete',
+        parser.add_argument('-d', '--delete',
             action='store_true',
             dest='delete',
             help='Delete founded unused files'
