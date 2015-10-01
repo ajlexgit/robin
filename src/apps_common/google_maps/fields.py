@@ -28,7 +28,7 @@ class GoogleCoordsField(models.Field):
 
     def get_prep_value(self, value):
         if not value:
-            return value
+            return ''
         elif isinstance(value, Coords):
             return str(value)
         else:

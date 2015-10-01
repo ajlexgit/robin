@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 15:34+0400\n"
+"POT-Creation-Date: 2015-10-01 16:15+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,8 +185,8 @@ msgstr "Инструкции по сбросу пароля отправлены
 
 #: templates/users/emails/reset_email.html:3
 #, python-format
-msgid "Hello, %(user.username)s!"
-msgstr "Здравствуйте, %(user.username)s!"
+msgid "Hello, %(username)s!"
+msgstr "Здравствуйте, %(username)s!"
 
 #: templates/users/emails/reset_email.html:5
 msgid "Someone (hopefully you) has requested to reset your password at"
