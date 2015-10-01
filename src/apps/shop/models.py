@@ -38,21 +38,9 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
             qs &= models.Q(is_visible=False)
         return qs
 
-
-class ShopCategoryTreeManager(MPTTQuerySetManager):
-    _queryset_class = ShopCategoryQuerySet
-
-    def reset_product_count(self, leaf_queryset=None):
-        """
-            Устанавливает корректное значение products_count всем категориям.
-            Значение immediate_products_count должно быть уже установлено и корректно.
-        """
-        if leaf_queryset is None:
-            tree_row = self.get_leafnodes()
-        else:
-            tree_row = leaf_queryset
-
-        tree_row.update(
+    def reset_product_count(self):
+        """ Перерасчет кол-ва видимых продуктов в каждой категории непосредственно """
+        self.update(
             product_count=RawSQL(
                 '(SELECT COUNT(*) '
                 'FROM shop_shopproduct AS ssp '
@@ -61,30 +49,11 @@ class ShopCategoryTreeManager(MPTTQuerySetManager):
                 ()
             )
         )
+        return self
 
-        while True:
-            parent_ids = tuple(tree_row.exclude(
-                parent=None
-            ).distinct().order_by('parent_id').values_list(
-                'parent_id',
-                flat=True
-            ))
-            if not parent_ids:
-                break
 
-            tree_row = self.filter(pk__in=parent_ids)
-            tree_row.update(
-                product_count=RawSQL(
-                    '(SELECT COUNT(*) '
-                    'FROM shop_shopproduct AS ssp '
-                    'WHERE ssp.category_id = shop_shopcategory.id '
-                    'AND ssp.is_visible = TRUE)'
-                    ' + '
-                    '(SELECT COALESCE(SUM(ssc.product_count), 0) '
-                    'FROM shop_shopcategory AS ssc '
-                    'WHERE ssc.parent_id = shop_shopcategory.id)', ()
-                )
-            )
+class ShopCategoryTreeManager(MPTTQuerySetManager):
+    _queryset_class = ShopCategoryQuerySet
 
 
 class ShopCategory(MPTTModel):
@@ -105,7 +74,7 @@ class ShopCategory(MPTTModel):
     product_count = models.PositiveIntegerField(
         default=0,
         editable=False,
-        help_text=_('count of visible products'),
+        help_text=_('count of immediate visible products'),
     )
     sort_order = models.PositiveIntegerField(_('sort order'))
 
@@ -124,12 +93,13 @@ class ShopCategory(MPTTModel):
             'is_visible', 'parent'
         ).get(pk=self.pk)
 
+        # Видимость
         if self.is_visible and self.parent_id and not self.parent.is_visible:
             # корректировка для случая видимой подкатегории в невидимой
             if is_add:
                 # если добавление - скрываем текущую категорию
                 self.is_visible = False
-            elif self.parent.id != original.parent_id:
+            elif self.parent_id != original.parent_id:
                 # если смена родителя - скрываем текущую категорию и её потомков
                 self.is_visible = False
                 self.get_descendants().filter(is_visible=True).update(is_visible=False)
@@ -141,13 +111,14 @@ class ShopCategory(MPTTModel):
             self.get_descendants().filter(is_visible=True).update(is_visible=False)
 
         super().save(*args, **kwargs)
+
         # self.__class__.objects.rebuild()
 
     def __str__(self):
         return self.title
 
     @cached_property
-    def descendant_products(self):
+    def products(self):
         """ Продукты категории и её подкатегорий """
         return ShopProduct.objects.filter(
             visible=True,
@@ -192,7 +163,7 @@ class ShopProduct(models.Model):
     )
     category = models.ForeignKey(ShopCategory,
         verbose_name=_('category'),
-        related_name='products'
+        related_name='immediate_products'
     )
     photo = StdImageField(_('photo'),
         storage=MediaStorage('shop/product'),
@@ -257,39 +228,11 @@ class ShopProduct(models.Model):
             'is_visible', 'category'
         ).get(pk=self.pk)
 
-        if is_add:
-            # добавлен видимый продукт
-            if self.is_visible:
-                self.category.get_ancestors(include_self=True).update(
-                    immediate_product_count=models.F('immediate_product_count') + 1,
-                    product_count=models.F('product_count') + 1,
-                )
-        elif self.category != original.category:
-            # сменили категорию продукта
-            if original.is_visible:
-                original.category.get_ancestors(include_self=True).update(
-                    immediate_product_count=models.F('immediate_product_count') - 1,
-                    product_count=models.F('product_count') - 1,
-                )
-            if self.is_visible:
-                self.category.get_ancestors(include_self=True).update(
-                    immediate_product_count=models.F('immediate_product_count') + 1,
-                    product_count=models.F('product_count') + 1,
-                )
-        elif self.is_visible and not original.is_visible:
-            # продукт стал видимым
-            self.category.get_ancestors(include_self=True).update(
-                immediate_product_count=models.F('immediate_product_count') + 1,
-                product_count=models.F('product_count') + 1,
-            )
-        elif not self.is_visible and original.is_visible:
-            # продукт стал скрытым
-            self.category.get_ancestors(include_self=True).update(
-                immediate_product_count=models.F('immediate_product_count') - 1,
-                product_count=models.F('product_count') - 1,
-            )
-
         super().save(*args, **kwargs)
+
+        if is_add or (self.category_id != original.category_id) or (self.is_visible != original.is_visible):
+            # добавление или смена категории или смена видимости
+            ShopCategory.objects.filter(pk__in=(self.category_id, original.category_id)).reset_product_count()
 
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):

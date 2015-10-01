@@ -50,7 +50,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
         }),
     )
     mptt_level_indent = 20
-    actions = ('make_hidden', 'make_visible')
+    actions = ('action_hide', 'action_show')
     list_display = ('view', 'title', 'is_visible', 'product_count')
     list_display_links = ('title',)
     prepopulated_fields = {'alias': ('title',)}
@@ -61,23 +61,23 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
     )
     suit_seo_tab = 'seo'
 
-    def make_hidden(self, request, queryset):
+    def action_hide(self, request, queryset):
         queryset.update(is_visible=False)
         self.model.objects.get_queryset_descendants(queryset).filter(
             is_visible=True
         ).update(
             is_visible=False
         )
-    make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
+    action_hide.short_description = _('Hide selected %(verbose_name_plural)s')
 
-    def make_visible(self, request, queryset):
+    def action_show(self, request, queryset):
         queryset.update(is_visible=True)
         self.model.objects.get_queryset_ancestors(queryset).filter(
             is_visible=False
         ).update(
             is_visible=True
         )
-    make_visible.short_description = _('Show selected %(verbose_name_plural)s')
+    action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 
 class StatusShopProductCategoryFilter(SimpleListFilter):
@@ -134,7 +134,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     form = ShopProductForm
-    actions = ('make_hidden', 'make_visible')
+    actions = ('action_hide', 'action_show')
     list_display = (
         'view', 'micropreview', '__str__', 'serial', 'category_link',
         'price_alternate', 'is_visible',
@@ -170,26 +170,23 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     price_alternate.allow_tags = True
     price_alternate.short_description = _('Price')
 
-    def make_hidden(self, request, queryset):
+    def action_hide(self, request, queryset):
         queryset.update(is_visible=False)
-        categories = ShopCategory.objects.filter(
+        ShopCategory.objects.filter(
             pk__in=queryset.values_list(
                 'category_id', flat=True
-            ).distinct().order_by('category_id')
-        )
-        ShopCategory.objects.reset_product_count(leaf_queryset=categories)
+            )
+        ).reset_product_count()
+    action_hide.short_description = _('Hide selected %(verbose_name_plural)s')
 
-    make_hidden.short_description = _('Hide selected %(verbose_name_plural)s')
-
-    def make_visible(self, request, queryset):
+    def action_show(self, request, queryset):
         queryset.update(is_visible=True)
-        categories = ShopCategory.objects.filter(
+        ShopCategory.objects.filter(
             pk__in=queryset.values_list(
                 'category_id', flat=True
-            ).distinct().order_by('category_id')
-        )
-        ShopCategory.objects.reset_product_count(leaf_queryset=categories)
-    make_visible.short_description = _('Show selected %(verbose_name_plural)s')
+            )
+        ).reset_product_count()
+    action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 
 class StatusShopOrderFilter(SimpleListFilter):
