@@ -1,9 +1,11 @@
 from django.db import models
 from django.conf import settings
+from django.dispatch import receiver
+from django.utils.timezone import now
 from django.shortcuts import resolve_url
 from django.db.models.expressions import RawSQL
+from django.db.models.signals import post_delete
 from django.utils.functional import cached_property
-from django.utils.timezone import now
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
@@ -230,9 +232,21 @@ class ShopProduct(models.Model):
 
         super().save(*args, **kwargs)
 
-        if is_add or (self.category_id != original.category_id) or (self.is_visible != original.is_visible):
-            # добавление или смена категории или смена видимости
+        if is_add:
+            # добавление
+            ShopCategory.objects.filter(pk=self.category_id).reset_product_count()
+        elif is_add or (self.category_id != original.category_id) or (self.is_visible != original.is_visible):
+            # смена категории или смена видимости
             ShopCategory.objects.filter(pk__in=(self.category_id, original.category_id)).reset_product_count()
+
+
+@receiver(post_delete, sender=ShopProduct)
+def delete_product(sender, **kwargs):
+    instance = kwargs.get('instance')
+    if instance:
+        ShopCategory.objects.filter(
+            pk=instance.category_id
+        ).reset_product_count()
 
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
