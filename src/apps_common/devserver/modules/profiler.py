@@ -7,6 +7,8 @@ from django.db import connections
 from django.utils.termcolors import colorize
 from django.utils.decorators import available_attrs
 
+key_color = 'blue'
+
 
 class Profile:
     """
@@ -31,7 +33,7 @@ class Profile:
         '_colorize', '_show_sql', '_db_start_queries', '_start_time', '_close_stdout'
     )
 
-    def __init__(self, name='dev', stdout=None, sql=False):
+    def __init__(self, name='dev', sql=False, stdout=None):
         self.name = name
         self.exec_time = 0
         self.sqls = {}
@@ -115,7 +117,6 @@ class Profile:
                     sql_time = sql_time.rstrip('0').rstrip('.')
 
                     caption = '{index}) {sql_time}ms, database "{dbname}":'.format(
-                        indent=' ' * self.indent_width,
                         index=index,
                         dbname=dbname,
                         sql_time=sql_time,
@@ -125,7 +126,7 @@ class Profile:
                             indent=' ' * self.indent_width,
                             caption=self.colorize(
                                 caption,
-                                fg='magenta',
+                                fg=key_color,
                                 opts=('bold',)
                             )
                         )
@@ -150,13 +151,30 @@ class Profile:
                     )
             self.stdout.write('\n')
 
-        # Общее время
+        # Текущее время
         self.stdout.write(
             '{indent}{key} {value}\n'.format(
                 indent=' ' * self.indent_width,
                 key=self.colorize(
-                    '[time] '.format(self.name),
-                    fg='magenta',
+                    '[date] ',
+                    fg=key_color,
+                    opts=('bold',)
+                ),
+                value=self.colorize(
+                    datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                    fg='cyan',
+                    opts=('bold',)
+                )
+            )
+        )
+
+        # Общее время выполнения
+        self.stdout.write(
+            '{indent}{key} {value}\n'.format(
+                indent=' ' * self.indent_width,
+                key=self.colorize(
+                    '[execute time] ',
+                    fg=key_color,
                     opts=('bold',)
                 ),
                 value=self.colorize(
@@ -172,8 +190,8 @@ class Profile:
             '{indent}{key} {value}\n'.format(
                 indent=' ' * self.indent_width,
                 key=self.colorize(
-                    '[sql time] '.format(self.name),
-                    fg='magenta',
+                    '[sql time] ',
+                    fg=key_color,
                     opts=('bold',)
                 ),
                 value=self.colorize(
@@ -189,8 +207,8 @@ class Profile:
             '{indent}{key} {value}\n'.format(
                 indent=' ' * self.indent_width,
                 key=self.colorize(
-                    '[sql count] '.format(self.name),
-                    fg='magenta',
+                    '[sql count] ',
+                    fg=key_color,
                     opts=('bold',)
                 ),
                 value=self.colorize(
