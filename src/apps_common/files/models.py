@@ -2,7 +2,6 @@ import os
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from libs.media_storage import MediaStorage
-from .fields import RemovableFileField
 
 
 def generate_filepath(instance, filename):
@@ -14,7 +13,7 @@ class PageFile(models.Model):
     """ Модель файла на страницу """
     STORAGE_LOCATION = None
 
-    file = RemovableFileField(_('file'),
+    file = models.FileField(_('file'),
         storage=MediaStorage(),
         upload_to=generate_filepath,
         max_length=150,
@@ -24,16 +23,13 @@ class PageFile(models.Model):
         blank=True,
         help_text=_('If you leave it empty the file name will be used')
     )
-    sort_order = models.PositiveIntegerField(_('sort order'),
-        blank=True,
-        default=0
-    )
+    sort_order = models.PositiveIntegerField(_('sort order'))
 
     class Meta:
-        abstract = True
-        ordering = ('sort_order', )
         verbose_name = _('file')
         verbose_name_plural = _('files')
+        ordering = ('sort_order', )
+        abstract = True
 
     def __init__(self, *args, **kwargs):
         field = self._meta.get_field('file')
@@ -49,11 +45,4 @@ class PageFile(models.Model):
         if not self.displayed_name:
             self.displayed_name = os.path.basename(self.file.path)
 
-        # Удаление старого файла
-        if self.pk is not None:
-            original = self._default_manager.get(pk=self.pk)
-            if original.file != self.file:
-                original.file.delete(save=False)
-
         super().save(*args, **kwargs)
-

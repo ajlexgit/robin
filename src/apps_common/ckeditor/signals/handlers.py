@@ -1,19 +1,25 @@
 from ..models import PagePhoto, SimplePhoto
 
 
-def pre_delete(sender, **kwargs):
+def delete_photos(sender, **kwargs):
     """
         Удаление картинок при удалении сущности
     """
     instance = kwargs.get('instance')
-    photos = PagePhoto.objects.filter(
+    pagephotos = PagePhoto.objects.filter(
         app_name=instance._meta.app_label,
         model_name=instance._meta.model_name,
         instance_id=instance.id)
-    photos.delete()
+    pagephotos.delete()
+
+    simplephotos = SimplePhoto.objects.filter(
+        app_name=instance._meta.app_label,
+        model_name=instance._meta.model_name,
+        instance_id=instance.id)
+    simplephotos.delete()
 
 
-def post_save(sender, **kwargs):
+def save_photos(sender, **kwargs):
     """
         Сохраняем в картинках ID сущности, к которой они привязываются
     """

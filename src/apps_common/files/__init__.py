@@ -4,6 +4,14 @@
     Зависит от:
         libs.media_storage
 
+    Установка:
+        settings.py:
+            INSTALLED_APPS = (
+                ...
+                'files',
+                ...
+            )
+
     Пример:
         models.py:
             from files import PageFile
@@ -28,3 +36,5 @@
 from .models import PageFile
 
 __all__ = ['PageFile']
+
+default_app_config = 'files.apps.Config'

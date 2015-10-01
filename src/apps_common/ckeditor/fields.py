@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import signals
 from django.utils.encoding import smart_text
-from .signals.handlers import pre_delete, post_save
+from .signals.handlers import delete_photos, save_photos
 from .forms import CKEditorFormField, CKEditorUploadFormField
 
 
@@ -72,5 +72,5 @@ class CKEditorUploadField(models.Field):
 
     def contribute_to_class(self, cls, name, virtual_only=False):
         super().contribute_to_class(cls, name, virtual_only)
-        signals.post_save.connect(post_save, sender=cls)
-        signals.pre_delete.connect(pre_delete, sender=cls)
+        signals.post_save.connect(save_photos, sender=cls)
+        signals.pre_delete.connect(delete_photos, sender=cls)
