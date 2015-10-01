@@ -5,7 +5,7 @@
 
 from django.forms.utils import ErrorList
 from django.utils.html import format_html
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 
 class PlainErrorList(ErrorList):
@@ -57,29 +57,37 @@ class PlainErrorFormMixin:
         else:
             raise ValueError('Unknown code %r' % code)
 
+    def _field_errors(self):
+        return tuple(
+            (key, self.errors[key])
+            for key in self.fields
+            if key in self.errors
+        )
+
+    def _form_errors(self):
+        if NON_FIELD_ERRORS in self.errors:
+            return (NON_FIELD_ERRORS, self.errors[NON_FIELD_ERRORS]),
+        else:
+            return ()
+
     @property
     def error_list(self):
         """ Список ошибок полей """
-        return tuple((key, self.errors.get(key)) for key in self.fields if key in self.errors)
+        return self._field_errors()
 
     @property
     def error_list_full(self):
         """ Список всех ошибок """
-        return tuple(self.errors.items())
+        return self._field_errors() + self._form_errors()
 
     @property
     def error_dict(self):
         """ Список словарей ошибок полей """
-        result = []
-        for key in self.fields:
-            if key in self.errors:
-                err_list = self.errors.get(key)
-                result.append({
-                    'field': key,
-                    'errors': err_list,
-                    'classes': err_list.classes
-                })
-        return tuple(result)
+        return tuple({
+            'field': key,
+            'errors': err_list,
+            'classes': err_list.classes
+        } for key, err_list in self._field_errors())
 
     @property
     def error_dict_full(self):
@@ -88,4 +96,4 @@ class PlainErrorFormMixin:
             'field': key,
             'errors': err_list,
             'classes': err_list.classes
-        } for key, err_list in self.errors.items())
+        } for key, err_list in self._field_errors() + self._form_errors())
