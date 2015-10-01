@@ -14,9 +14,20 @@ class LoginForm(PlainErrorFormMixin, SessionStoredFormMixin, AuthenticationForm)
         'inactive': _('Account blocked'),
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].label = _('Login')
+    username = forms.CharField(
+        label=_('Login'),
+        max_length=30,
+        error_messages={
+            'required': _('Please enter your login')
+        }
+    )
+    password = forms.CharField(
+        label=_("Password"),
+        widget=forms.PasswordInput,
+        error_messages={
+            'required': _('Please enter your password')
+        }
+    )
 
 
 class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm):
@@ -24,32 +35,41 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         'password_mismatch': _('The two passwords didn\'t match'),
     }
 
-    username = forms.RegexField(label=_('Login'), min_length=3, max_length=30,
+    username = forms.RegexField(
+        label=_('Login'),
+        min_length=3,
+        max_length=30,
         regex=r'^[\w.@+-]+$',
         error_messages={
+            'required': _('Please enter your login'),
             'unique': _('This login is already taken'),
             'invalid': _('Login must contain only letters, numbers ans sumbols @+-_'),
             'min_length': _('Login must be at least %(limit_value)s characters long'),
             'max_length': _('Login must be no more than %(limit_value)s characters'),
-        })
-
+        }
+    )
     email = forms.EmailField(
         label='E-mail',
         required=True,
         error_messages = {
+            'required': _('Please enter your email'),
             'unique': _('This e-mail address is already taken'),
             'invalid': _('E-mail incorrect'),
         }
+    )
+    password1 = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput
+    )
+    password2 = forms.CharField(
+        label=_('Password confirmation'),
+        widget=forms.PasswordInput,
+        help_text=_('Enter the same password as above, for verification.')
     )
 
     class Meta:
         model = get_user_model()
         fields = ('username', 'email')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].label = _('Login')
-        self.fields['password2'].label = _('Confirm password')
 
     def clean_username(self):
         UserModel = get_user_model()
@@ -96,4 +116,4 @@ class SetPasswordForm(PlainErrorFormMixin, DefaultSetPasswordForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['new_password2'].label = _('Confirm password')
+        self.fields['new_password2'].label = _('Password confirmation')

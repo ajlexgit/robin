@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-29 12:51+0400\n"
+"POT-Creation-Date: 2015-10-01 15:01+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,45 +56,65 @@ msgstr "Логин или пароль неверен"
 msgid "Account blocked"
 msgstr "Аккаунт заблокирован"
 
-#: forms.py:19 forms.py:27 forms.py:51
+#: forms.py:18 forms.py:39
 msgid "Login"
 msgstr "Логин"
 
-#: forms.py:24 forms.py:94
+#: forms.py:21 forms.py:44
+msgid "Please enter your login"
+msgstr "Введите логин"
+
+#: forms.py:25 forms.py:61
+msgid "Password"
+msgstr "Пароль"
+
+#: forms.py:28
+msgid "Please enter your password"
+msgstr "Введите пароль"
+
+#: forms.py:35 forms.py:114
 msgid "The two passwords didn't match"
 msgstr "Пароли не совпадают"
 
-#: forms.py:30
+#: forms.py:45
 msgid "This login is already taken"
 msgstr "Такой логин уже зарегистрирован"
 
-#: forms.py:31
+#: forms.py:46
 msgid "Login must contain only letters, numbers ans sumbols @+-_"
 msgstr "Логин может содержать только буквы, цифры и знаки @+-_"
 
-#: forms.py:32
+#: forms.py:47
 #, python-format
 msgid "Login must be at least %(limit_value)s characters long"
 msgstr "Логин должен содержать не менее %(limit_value)s символов"
 
-#: forms.py:33
+#: forms.py:48
 #, python-format
 msgid "Login must be no more than %(limit_value)s characters"
 msgstr "Логин должен содержать не более %(limit_value)s символов"
 
-#: forms.py:40
+#: forms.py:55
+msgid "Please enter your email"
+msgstr "Введите логин"
+
+#: forms.py:56
 msgid "This e-mail address is already taken"
 msgstr "Такой e-mail уже зарегистрирован"
 
-#: forms.py:41
+#: forms.py:57
 msgid "E-mail incorrect"
 msgstr "E-mail некорректен"
 
-#: forms.py:52 forms.py:99
-msgid "Confirm password"
-msgstr "Повторите пароль"
+#: forms.py:65 forms.py:119
+msgid "Password confirmation"
+msgstr "Подтверждение пароля"
 
-#: forms.py:75
+#: forms.py:67
+msgid "Enter the same password as above, for verification."
+msgstr "Введите подтверждение пароля"
+
+#: forms.py:95
 msgid "E-mail is not registered"
 msgstr "E-mail не зарегистрирован"
 
