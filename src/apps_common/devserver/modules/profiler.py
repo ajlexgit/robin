@@ -27,7 +27,7 @@ class Profile:
         '_colorize', '_show_sql', '_db_start_queries', '_start_time'
     )
 
-    def __init__(self, name='dev', stdout=None, show_sql=False):
+    def __init__(self, name='dev', stdout=None, sql=False):
         self.name = name
         if stdout:
             self._colorize = False
@@ -39,7 +39,7 @@ class Profile:
         self.sqls = {}
         self.sql_time = 0
         self.sql_count = 0
-        self._show_sql = show_sql
+        self._show_sql = sql
 
     def __enter__(self):
         """ Запоминаем сколько запросов было совешено к каждой БД """
