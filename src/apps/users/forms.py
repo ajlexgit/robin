@@ -106,6 +106,7 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
         max_length=254,
         error_messages={
             'required': _('Please enter your e-mail'),
+            'invalid': _('E-mail incorrect'),
         }
     )
 
@@ -124,6 +125,17 @@ class SetPasswordForm(PlainErrorFormMixin, DefaultSetPasswordForm):
         'password_mismatch': _('The two passwords didn\'t match'),
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['new_password2'].label = _('Password confirmation')
+    new_password1 = forms.CharField(
+        label=_("New password"),
+        widget=forms.PasswordInput,
+        error_messages={
+            'required': _('Please enter your password'),
+        }
+    )
+    new_password2 = forms.CharField(
+        label=_("New password confirmation"),
+        widget=forms.PasswordInput,
+        error_messages={
+            'required': _('Please enter password confirmation'),
+        }
+    )

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 15:29+0400\n"
+"POT-Creation-Date: 2015-10-01 15:34+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,11 +68,11 @@ msgstr "Введите логин"
 msgid "Password"
 msgstr "Пароль"
 
-#: forms.py:28 forms.py:64
+#: forms.py:28 forms.py:64 forms.py:132
 msgid "Please enter your password"
 msgstr "Введите пароль"
 
-#: forms.py:35 forms.py:124
+#: forms.py:35 forms.py:125
 msgid "The two passwords didn't match"
 msgstr "Пароли не совпадают"
 
@@ -102,11 +102,11 @@ msgstr "Введите ваш e-mail"
 msgid "This e-mail address is already taken"
 msgstr "Такой e-mail уже зарегистрирован"
 
-#: forms.py:57
+#: forms.py:57 forms.py:109
 msgid "E-mail incorrect"
 msgstr "E-mail некорректен"
 
-#: forms.py:68 forms.py:129
+#: forms.py:68
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
@@ -114,7 +114,7 @@ msgstr "Подтверждение пароля"
 msgid "Enter the same password as above, for verification."
 msgstr "Введите пароль ещё раз"
 
-#: forms.py:72
+#: forms.py:72 forms.py:139
 msgid "Please enter password confirmation"
 msgstr "Введите подтверждение пароля"
 
@@ -125,6 +125,14 @@ msgstr "E-mail не зарегистрирован"
 #: forms.py:105
 msgid "E-mail"
 msgstr "E-mail"
+
+#: forms.py:129
+msgid "New password"
+msgstr "Новый пароль"
+
+#: forms.py:136
+msgid "New password confirmation"
+msgstr "Подтверждение нового пароля"
 
 #: models.py:11
 msgid "avatar"
