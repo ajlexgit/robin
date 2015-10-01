@@ -19,27 +19,37 @@ class Profile:
                 enities = Entity.objects.get(pk=1)
                 ...
 
+            with Profile('LogToFile', stdout='/tmp/log.txt', show_sql=True):
+                enities = Entity.objects.get(pk=1)
+                ...
+
     """
     indent_width = 2
 
     __slots__ = (
         'name', 'exec_time', 'sqls', 'sql_time', 'sql_count', 'stdout',
-        '_colorize', '_show_sql', '_db_start_queries', '_start_time'
+        '_colorize', '_show_sql', '_db_start_queries', '_start_time', '_close_stdout'
     )
 
     def __init__(self, name='dev', stdout=None, sql=False):
         self.name = name
-        if stdout:
-            self._colorize = False
-            self.stdout = stdout
-        else:
-            self._colorize = True
-            self.stdout = sys.stdout
         self.exec_time = 0
         self.sqls = {}
         self.sql_time = 0
         self.sql_count = 0
         self._show_sql = sql
+        self._close_stdout = False
+
+        if stdout:
+            self._colorize = False
+            if isinstance(stdout, str):
+                self.stdout = open(stdout, 'a+')
+                self._close_stdout = True
+            else:
+                self.stdout = stdout
+        else:
+            self._colorize = True
+            self.stdout = sys.stdout
 
     def __enter__(self):
         """ Запоминаем сколько запросов было совешено к каждой БД """
@@ -69,6 +79,10 @@ class Profile:
         self.sql_time = int(sql_time * 1000)
 
         self.print_info()
+
+        self.stdout.flush()
+        if self._close_stdout:
+            self.stdout.close()
 
     def colorize(self, text, **kwargs):
         if self._colorize:

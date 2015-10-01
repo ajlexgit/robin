@@ -34,6 +34,9 @@
 
         with Profile('FetchEntity', show_sql=True):
             e = Entity.objects.get(pk=1)
+
+        with Profile('LogToFile', stdout='/tmp/log.txt', show_sql=True):
+            e = Entity.objects.get(pk=1)
 """
 from .modules.profiler import Profile, profile
 
