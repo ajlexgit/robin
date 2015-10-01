@@ -415,14 +415,15 @@
             if (this.opts.adaptiveHeight) {
                 final_height = this.$currentSlide.outerHeight();
             } else {
+                this.$slides.height('auto');
                 $.each(this.$slides, function(i, slide) {
                     var $slide = $(slide);
-                    $slide.height('');
                     var height = $slide.outerHeight();
                     if (height > final_height) {
                         final_height = height;
                     }
                 });
+                this.$slides.height('');
             }
 
             // прерываем анимация высоты, если она идёт
