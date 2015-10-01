@@ -38,6 +38,9 @@ class ModelAdminInlineMixin:
 
 
 class ModelAdminMixin(ModelAdminInlineMixin):
+    actions_on_top = True
+    actions_on_bottom = True
+
     def view(self, obj):
         """ Ссылка просмотра на сайте для отображения в списке сущностей """
         if hasattr(obj, 'get_absolute_url'):

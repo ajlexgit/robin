@@ -13,6 +13,7 @@ from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs.autocomplete.forms import AutocompleteField
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
+from .signals import visible_products_changed
 
 
 @admin.register(ShopConfig)
@@ -172,20 +173,18 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
 
     def action_hide(self, request, queryset):
         queryset.update(is_visible=False)
-        ShopCategory.objects.filter(
-            pk__in=queryset.values_list(
-                'category_id', flat=True
-            )
-        ).reset_product_count()
+        categories = queryset.values_list(
+            'category_id', flat=True
+        )
+        visible_products_changed.send(self.model, categories=categories)
     action_hide.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def action_show(self, request, queryset):
         queryset.update(is_visible=True)
-        ShopCategory.objects.filter(
-            pk__in=queryset.values_list(
-                'category_id', flat=True
-            )
-        ).reset_product_count()
+        categories = queryset.values_list(
+            'category_id', flat=True
+        )
+        visible_products_changed.send(self.model, categories=categories)
     action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 

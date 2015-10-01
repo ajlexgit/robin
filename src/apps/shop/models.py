@@ -1,10 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.dispatch import receiver
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
 from django.db.models.expressions import RawSQL
-from django.db.models.signals import post_delete
 from django.utils.functional import cached_property
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -16,6 +14,7 @@ from libs.media_storage import MediaStorage
 from libs.valute_field import ValuteField
 from libs.autoslug import AutoSlugField
 from libs.mptt import *
+from .signals import visible_products_changed
 
 
 class ShopConfig(SingletonModel):
@@ -226,27 +225,41 @@ class ShopProduct(models.Model):
 
     def save(self, *args, **kwargs):
         is_add = self.pk is None
-        original = None if is_add else self.__class__.objects.select_related('category').only(
-            'is_visible', 'category'
-        ).get(pk=self.pk)
+        if is_add:
+            original = None
+        else:
+            original = self.__class__.objects.only(
+                'is_visible', 'category_id'
+            ).get(pk=self.pk)
 
         super().save(*args, **kwargs)
 
         if is_add:
-            # добавление
-            ShopCategory.objects.filter(pk=self.category_id).reset_product_count()
-        elif is_add or (self.category_id != original.category_id) or (self.is_visible != original.is_visible):
-            # смена категории или смена видимости
-            ShopCategory.objects.filter(pk__in=(self.category_id, original.category_id)).reset_product_count()
+            # добавление видимого продукта
+            if self.is_visible:
+                visible_products_changed.send(
+                    self.__class__,
+                    categories=self.category_id
+                )
+        elif self.category_id != original.category_id:
+            # смена категории
+            categories = []
+            if original.is_visible:
+                categories.append(original.category_id)
+            if self.is_visible:
+                categories.append(self.category_id)
 
-
-@receiver(post_delete, sender=ShopProduct)
-def delete_product(sender, **kwargs):
-    instance = kwargs.get('instance')
-    if instance:
-        ShopCategory.objects.filter(
-            pk=instance.category_id
-        ).reset_product_count()
+            if categories:
+                visible_products_changed.send(
+                    self.__class__,
+                    categories=categories
+                )
+        elif self.is_visible != original.is_visible:
+            # смена видимости
+            visible_products_changed.send(
+                self.__class__,
+                categories=self.category_id
+            )
 
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
