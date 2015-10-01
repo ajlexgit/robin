@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 15:21+0400\n"
+"POT-Creation-Date: 2015-10-01 15:29+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,11 +68,11 @@ msgstr "Введите логин"
 msgid "Password"
 msgstr "Пароль"
 
-#: forms.py:28
+#: forms.py:28 forms.py:64
 msgid "Please enter your password"
 msgstr "Введите пароль"
 
-#: forms.py:35 forms.py:114
+#: forms.py:35 forms.py:124
 msgid "The two passwords didn't match"
 msgstr "Пароли не совпадают"
 
@@ -94,9 +94,9 @@ msgstr "Логин должен содержать не менее %(limit_value
 msgid "Login must be no more than %(limit_value)s characters"
 msgstr "Логин должен содержать не более %(limit_value)s символов"
 
-#: forms.py:55
-msgid "Please enter your email"
-msgstr "Введите e-mail"
+#: forms.py:55 forms.py:108
+msgid "Please enter your e-mail"
+msgstr "Введите ваш e-mail"
 
 #: forms.py:56
 msgid "This e-mail address is already taken"
@@ -106,17 +106,25 @@ msgstr "Такой e-mail уже зарегистрирован"
 msgid "E-mail incorrect"
 msgstr "E-mail некорректен"
 
-#: forms.py:65 forms.py:119
+#: forms.py:68 forms.py:129
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
-#: forms.py:67
+#: forms.py:70
 msgid "Enter the same password as above, for verification."
+msgstr "Введите пароль ещё раз"
+
+#: forms.py:72
+msgid "Please enter password confirmation"
 msgstr "Введите подтверждение пароля"
 
-#: forms.py:95
+#: forms.py:101
 msgid "E-mail is not registered"
 msgstr "E-mail не зарегистрирован"
+
+#: forms.py:105
+msgid "E-mail"
+msgstr "E-mail"
 
 #: models.py:11
 msgid "avatar"
@@ -130,20 +138,20 @@ msgstr "область обрезки"
 msgid "Sign In or Register"
 msgstr "Войдите или зарегистрируйтесь"
 
-#: templates/users/ajax_login.html:23 templates/users/login.html:31
+#: templates/users/ajax_login.html:22 templates/users/login.html:31
 msgid "Sign in"
 msgstr "Войти"
 
-#: templates/users/ajax_login.html:24
+#: templates/users/ajax_login.html:23
 msgid "Forgot your password?"
 msgstr "Забыли пароль?"
 
-#: templates/users/ajax_login.html:25 templates/users/ajax_register.html:3
+#: templates/users/ajax_login.html:24 templates/users/ajax_register.html:3
 #: templates/users/register.html:8 views.py:57
 msgid "Registration"
 msgstr "Регистрация"
 
-#: templates/users/ajax_register.html:34 templates/users/register.html:41
+#: templates/users/ajax_register.html:33 templates/users/register.html:41
 msgid "Register"
 msgstr "Зарегистрироваться"
 
@@ -154,7 +162,7 @@ msgstr "Зарегистрироваться"
 msgid "Reset password"
 msgstr "Сброс пароля"
 
-#: templates/users/ajax_reset.html:18 templates/users/reset.html:25
+#: templates/users/ajax_reset.html:17 templates/users/reset.html:25
 msgid "Continue"
 msgstr "Продолжить"
 

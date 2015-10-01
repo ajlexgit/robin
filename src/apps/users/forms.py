@@ -52,19 +52,25 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         label='E-mail',
         required=True,
         error_messages = {
-            'required': _('Please enter your email'),
+            'required': _('Please enter your e-mail'),
             'unique': _('This e-mail address is already taken'),
             'invalid': _('E-mail incorrect'),
         }
     )
     password1 = forms.CharField(
         label=_('Password'),
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput,
+        error_messages={
+            'required': _('Please enter your password'),
+        }
     )
     password2 = forms.CharField(
         label=_('Password confirmation'),
         widget=forms.PasswordInput,
-        help_text=_('Enter the same password as above, for verification.')
+        help_text=_('Enter the same password as above, for verification.'),
+        error_messages={
+            'required': _('Please enter password confirmation'),
+        }
     )
 
     class Meta:
@@ -95,9 +101,13 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
         'unregistered_email': _('E-mail is not registered'),
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['email'].label = 'E-mail'
+    email = forms.EmailField(
+        label=_("E-mail"),
+        max_length=254,
+        error_messages={
+            'required': _('Please enter your e-mail'),
+        }
+    )
 
     def clean_email(self):
         UserModel = get_user_model()
