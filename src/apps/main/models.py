@@ -141,6 +141,7 @@ class ListItem(models.Model):
 
     title = models.CharField(_('title'), max_length=64)
     status = models.PositiveSmallIntegerField(choices=STATUSES, default=STATUS_NOT_PAID)
+    text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
 
     def get_absolute_url(self):
         return resolve_url('index')

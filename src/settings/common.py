@@ -510,6 +510,7 @@ CKEDITOR_CONFIG_MEDIUM = {
             'name': 'links',
             'items': ['Link', 'Unlink']
         },
+        '/',
         {
             'name': 'basicstyles',
             'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
