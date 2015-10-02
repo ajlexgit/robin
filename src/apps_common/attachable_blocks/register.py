@@ -1,7 +1,8 @@
+from collections import OrderedDict
 from inspect import isclass
 from .utils import get_model, get_block_type
 
-_BLOCK_NAMES = {}
+_BLOCK_NAMES = OrderedDict()
 
 
 def register_block(name=None):
