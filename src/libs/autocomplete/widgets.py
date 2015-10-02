@@ -4,12 +4,8 @@ from django.forms import widgets
 from django.core.cache import caches
 from django.forms.utils import flatatt
 from django.shortcuts import resolve_url
-from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
-from django.contrib.admin.options import TO_FIELD_VAR
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.templatetags.admin_static import static
 
 CACHE_BACKEND = getattr(settings,  'AUTOCOMPLETE_CACHE_BACKEND', 'default')
 cache = caches[CACHE_BACKEND]
@@ -19,7 +15,6 @@ class AutocompleteWidgetMixin:
     template = 'autocomplete/autocomplete.html'
     item2dict_module = None
     item2dict_method = None
-    can_add_related = True
     dependencies = ()
 
     class Media:
@@ -77,22 +72,6 @@ class AutocompleteWidgetMixin:
             'value': value or '',
             'name': name,
         })]
-
-        # add button
-        if self.can_add_related:
-            try:
-                related_url = reverse(
-                    'admin:%s_%s_add' % (application, model_name),
-                )
-            except NoReverseMatch:
-                pass
-            else:
-                url_params = '?%s=%s' % (TO_FIELD_VAR, queryset.model._meta.pk.name)
-                output.append(
-                    '<a href="%s%s" class="add-another" id="add_id_%s" onclick="return showAddAnotherPopup(this);"> '
-                    % (related_url, url_params, name))
-                output.append('<img src="%s" width="10" height="10" alt="%s"/></a>'
-                              % (static('admin/img/icon_addlink.gif'), _('Add Another')))
 
         return mark_safe(''.join(output))
 

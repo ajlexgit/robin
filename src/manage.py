@@ -1,7 +1,7 @@
 import os
 import sys
 
-
+# AttachedBlocks: ограничение на список блоков, которые можно подключать массово
 # field.value_from_object вместо getattr
 # Fields: from_db_value, rm SubfieldBase
 # Comments: есть возможность написать коммент к удаленному комменту. Как быть?

@@ -23,8 +23,8 @@ class AttachableBlock(models.Model):
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
-        verbose_name = _('Attachable block')
-        verbose_name_plural = _('Attachable blocks')
+        verbose_name = _('attachable block')
+        verbose_name_plural = _('attachable blocks')
         ordering = ('label', )
 
     def save(self, *args, **kwargs):
@@ -76,8 +76,8 @@ class AttachableReference(models.Model):
     sort_order = models.PositiveIntegerField(_('sort order'), default=0)
 
     class Meta:
-        verbose_name = _('Attached block')
-        verbose_name_plural = _('Attached blocks')
+        verbose_name = _('attached block')
+        verbose_name_plural = _('attached blocks')
         ordering = ('set_name', 'sort_order')
         unique_together = ('content_type', 'object_id', 'block_type', 'block', 'set_name')
         index_together = (('content_type', 'object_id', 'set_name'), )

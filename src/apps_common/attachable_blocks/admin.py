@@ -10,7 +10,7 @@ from libs.autocomplete.forms import AutocompleteField
 from .models import AttachableBlock, AttachableReference
 
 
-class AttachableReferenceForm(forms.ModelForm):
+class AttachedBlocksForm(forms.ModelForm):
     block = AutocompleteField(
         label=_('Block'),
         queryset=AttachableBlock.objects.all(),
@@ -28,7 +28,7 @@ class AttachableReferenceForm(forms.ModelForm):
         }
 
 
-class AttachableReferenceFormset(BaseGenericInlineFormSet):
+class AttachedBlocksFormset(BaseGenericInlineFormSet):
     """ Формсет, устанавливающий объектам set_name """
     @property
     def empty_form(self):
@@ -45,10 +45,10 @@ class AttachableReferenceFormset(BaseGenericInlineFormSet):
         return super().save_existing(form, instance, commit)
 
 
-class BaseAttachableReferenceMixin(ModelAdminInlineMixin, SortableTabularInlineBase):
+class BaseAttachedBlocksMixin(ModelAdminInlineMixin, SortableTabularInlineBase):
     """ Базовый класс inline-моделей """
-    form = AttachableReferenceForm
-    formset = AttachableReferenceFormset
+    form = AttachedBlocksForm
+    formset = AttachedBlocksFormset
     model = AttachableReference
     fields = ('block_type', 'block', 'set_name')
     readonly_fields = ('set_name',)
@@ -84,11 +84,11 @@ class BaseAttachableReferenceMixin(ModelAdminInlineMixin, SortableTabularInlineB
         return queryset.filter(set_name=self.set_name)
 
 
-class AttachableReferenceTabularInline(BaseAttachableReferenceMixin, GenericTabularInline):
+class AttachedBlocksTabularInline(BaseAttachedBlocksMixin, GenericTabularInline):
     """ Родительская модель для tabular инлайнов """
     pass
 
 
-class AttachableReferenceStackedInline(BaseAttachableReferenceMixin, GenericStackedInline):
+class AttachedBlocksStackedInline(BaseAttachedBlocksMixin, GenericStackedInline):
     """ Родительская модель для stacked инлайнов """
     pass

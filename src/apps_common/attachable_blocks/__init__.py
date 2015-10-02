@@ -8,15 +8,17 @@
 
     1. Для каждого блока должна быть создана модель, зарегистрированная в админке.
     2. Для каждого блока должна быть создана функция рендеринга.
-    3. Добавить inline в админскую модель страницы, к которой нужно присоединять блоки
-    4. В тех случаях, когда к одной модели необходимо подключить несколько наборов блоков,
-       каждая inline-модель блоков адмики должна иметь уникальное значение текстового атрибута
-       set_name. Значение set_name по умолчанию равно 'default'.
+    3. Для массового вывода блоков нужно добавить inline в админскую модель страницы,
+       к которой нужно присоединять блоки.
+    4. В тех случаях, когда к одной модели необходимо подключить несколько наборов блоков
+       (например, когда последовательность выводимых блоков не является непрерывной),
+       каждая inline-модель блоков адмики должна иметь уникальное для модели-приемника значение
+       текстового атрибута set_name. Значение set_name по умолчанию равно 'default'.
 
     Параметр "name" у декоратора register_block позволяет задать имя типа блока,
     отображаемое в выпадающем списке в админке. По умолчанию оно равно verbose_name.
 
-    Пример:
+    Пример создания блока:
         # blocks/models.py:
             from attachable_blocks import AttachableBlock, register_block
 
@@ -62,40 +64,72 @@
                 })
                 return loader.render_to_string('block.html', context_instance=context)
 
-        # page/admin.py:
-            from attachable_blocks import AttachableReferenceTabularInline
 
-            class FirstBlocksInline(AttachableReferenceTabularInline):
+    Пример вывода конкретного блока любого типа на странице (никакой привязки к странице не требуется):
+        # page/views.py:
+            from blocks.models import MyBlock
+
+            def index(request, ...):
+                ...
+                block = MyBlock.objects.filter(visible=True).first()
+                context = RequestContext(request, {
+                    ...
+                    'block': block,
+                })
+                ...
+
+        # page/template.html:
+            {% load attached_blocks %}
+
+            <!-- вывод конкретного блока -->
+            {% render_attachable_block block %}
+
+
+    Пример связи блоков с конкретной страницей через модель:
+        # page/models.py:
+            from attachable_blocks import AttachableBlockField
+            from blocks.models import MyBlock
+
+            class MyPage(models.Model):
+                ...
+                my_block = AttachableBlockField(MyBlock, verbose_name=_('block instance'))
+
+        # page/template.html:
+            {% load attached_blocks %}
+
+            <!-- вывод блока, привязанного к модели -->
+            {% render_attachable_block page.my_block %}
+
+
+    Пример массового подключения блоков к странице:
+        # page/admin.py:
+            from attachable_blocks import AttachedBlocksTabularInline
+
+            class FirstBlocksInline(AttachedBlocksTabularInline):
                 # Первый набор блоков (set_name = 'default')
                 verbose_name = 'My first block'
                 verbose_name_plural = 'My first blocks'
-                suit_classes = 'suit-tab suit-tab-blocks_1'
+                suit_classes = 'suit-tab suit-tab-blocks'
 
-            class SecondBlocksInline(AttachableReferenceTabularInline):
+            class SecondBlocksInline(AttachedBlocksTabularInline):
                 # Второй набор блоков
                 set_name = 'second'
                 verbose_name = 'My second block'
                 verbose_name_plural = 'My second blocks'
-                suit_classes = 'suit-tab suit-tab-blocks_2'
+                suit_classes = 'suit-tab suit-tab-blocks'
 
-            @admin.register(MyPage)
             class MyPageAdmin(admin.ModelAdmin):
                 ...
                 inlines = (FirstBlocksInline, SecondBlocksInline, ...)
                 ...
                 suit_form_tabs = (
                     ...
-                    ('blocks_1', _('First blocks')),
-                    ('blocks_2', _('Second blocks')),
+                    ('blocks', _('Blocks')),
                     ...
                 )
 
         # template.html:
             {% load attached_blocks %}
-
-            ...
-            <!-- вывод конкретного блока -->
-            {% render_attachable_block block %}
 
             <!-- вывод блоков первого набора (set_name = 'default') -->
             {% render_attached_blocks page_object %}
@@ -107,8 +141,8 @@
 
 from .register import register_block
 from .models import AttachableBlock, AttachableReference
-from .admin import AttachableReferenceTabularInline, AttachableReferenceStackedInline
+from .fields import AttachableBlockField
+from .admin import AttachedBlocksTabularInline, AttachedBlocksStackedInline
 
-__all__ = ['register_block', 'AttachableBlock', 'AttachableBlockRef',
-           'AttachableReferenceTabularInline',
-           'AttachableReferenceStackedInline']
+__all__ = ['register_block', 'AttachableBlock', 'AttachableReference',
+           'AttachedBlocksTabularInline', 'AttachedBlocksStackedInline']

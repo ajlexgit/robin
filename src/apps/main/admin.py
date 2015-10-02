@@ -6,7 +6,7 @@ from seo.admin import SeoModelAdminMixin
 from suit.admin import SortableStackedInline
 from files.admin import PageFileInlineMixin
 from comments.admin import CommentsModelAdminMixin
-from attachable_blocks import AttachableReferenceTabularInline
+from attachable_blocks import AttachedBlocksTabularInline
 from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem, ListItemFile
 
 
@@ -16,14 +16,14 @@ class InlineSampleAdmin(admin.TabularInline):
     suit_classes = 'suit-tab suit-tab-general'
 
 
-class MyPageFirstBlocksInline(AttachableReferenceTabularInline):
+class MyPageFirstBlocksInline(AttachedBlocksTabularInline):
     set_name = 'first'
     verbose_name = 'My first block'
     verbose_name_plural = 'My first blocks'
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
-class MyPageSecondBlocksInline(AttachableReferenceTabularInline):
+class MyPageSecondBlocksInline(AttachedBlocksTabularInline):
     set_name = 'second'
     verbose_name = 'My second block'
     verbose_name_plural = 'My second blocks'
