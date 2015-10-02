@@ -11,7 +11,7 @@ from project.admin import ModelAdminMixin
 from solo.admin import SingletonModelAdmin
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
-from libs.autocomplete.forms import AutocompleteField
+from libs.autocomplete import AutocompleteWidget
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import visible_products_changed
 
@@ -109,18 +109,19 @@ class StatusShopProductCategoryFilter(SimpleListFilter):
 
 
 class ShopProductForm(forms.ModelForm):
-    category = AutocompleteField(
-        label=ShopProduct._meta.get_field('category').verbose_name.capitalize(),
-        queryset=ShopCategory.objects.all(),
-        expressions="title__icontains",
-        item2dict_func=ShopCategory.autocomplete_item,
-        minimum_input_length=0,
-        widget_width='50%',
-    )
 
     class Meta:
         model = ShopProduct
         fields = '__all__'
+        widgets = {
+            'category': AutocompleteWidget(
+                minimum_input_length=0,
+                item2dict_func=ShopCategory.autocomplete_item,
+                attrs={
+                    'style': 'width:50%',
+                }
+            )
+        }
 
 
 @admin.register(ShopProduct)
