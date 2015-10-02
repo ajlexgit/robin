@@ -9,22 +9,22 @@ class ModelAdminInlineMixin:
     formfield_overrides = {
         models.CharField: {
             'widget': forms.TextInput(attrs={
-                'class': 'input-xxlarge',
+                'class': 'full-width',
             })
         },
         models.EmailField: {
             'widget': forms.EmailInput(attrs={
-                'class': 'input-xxlarge',
+                'class': 'full-width',
             })
         },
         models.URLField: {
             'widget': URLWidget(attrs={
-                'class': 'input-xxlarge',
+                'class': 'full-width',
             })
         },
         models.TextField: {
             'widget': AutosizedTextarea(attrs={
-                'class': 'input-xxlarge',
+                'class': 'full-width',
                 'rows': 3,
             })
         },
