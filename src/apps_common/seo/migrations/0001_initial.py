@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Counter',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('label', models.CharField(verbose_name='label', max_length=128)),
-                ('position', models.CharField(verbose_name='position', choices=[('head', 'Inside <head>'), ('body_top', 'Start of <body>'), ('body_bottom', 'End of <body>')], max_length=12)),
+                ('position', models.CharField(choices=[('head', 'Inside <head>'), ('body_top', 'Start of <body>'), ('body_bottom', 'End of <body>')], max_length=12, verbose_name='position')),
                 ('content', models.TextField(verbose_name='content')),
             ],
             options={
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoConfig',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('title', models.CharField(verbose_name='site title', max_length=128)),
                 ('keywords', models.TextField(verbose_name='site keywords', blank=True, max_length=255)),
                 ('description', models.TextField(verbose_name='site description', blank=True, max_length=160)),
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoData',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
                 ('object_id', models.PositiveIntegerField()),
                 ('title', models.CharField(verbose_name='title', blank=True, max_length=128)),
                 ('keywords', models.TextField(verbose_name='keywords', blank=True, max_length=255)),

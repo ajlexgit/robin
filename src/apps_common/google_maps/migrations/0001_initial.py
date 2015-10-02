@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MapAndAddress',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('address', models.CharField(verbose_name='address', max_length=255, db_index=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('address', models.CharField(verbose_name='address', db_index=True, max_length=255)),
                 ('longitude', models.FloatField(verbose_name='longitude')),
                 ('latitude', models.FloatField(verbose_name='latitude')),
             ],
