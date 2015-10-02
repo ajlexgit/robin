@@ -3,9 +3,11 @@ from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
+from suit.admin import SortableStackedInline
+from files.admin import PageFileInlineMixin
 from comments.admin import CommentsModelAdminMixin
 from attachable_blocks import AttachableReferenceTabularInline
-from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem
+from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem, ListItemFile
 
 
 class InlineSampleAdmin(admin.TabularInline):
@@ -86,8 +88,27 @@ class StatusListItemFilter(admin.SimpleListFilter):
         return queryset
 
 
+class ListItemFileInline(PageFileInlineMixin, SortableStackedInline):
+    model = ListItemFile
+    suit_classes = 'suit-tab suit-tab-files'
+
+
 @admin.register(ListItem)
 class ListItemAdmin(ModelAdminMixin, admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'title', 'status', 'text',
+            ),
+        }),
+    )
+    inlines = (ListItemFileInline, )
     list_display = ('view', 'title', 'status')
     list_display_links = ('title', )
     list_filter = (StatusListItemFilter, )
+
+    suit_form_tabs = (
+        ('general', _('General')),
+        ('files', _('Files')),
+    )

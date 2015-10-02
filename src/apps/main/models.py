@@ -7,6 +7,7 @@ from solo.models import SingletonModel
 from attachable_blocks import AttachableBlock, register_block
 from ckeditor import CKEditorUploadField
 from gallery import *
+from files import PageFile
 from google_maps import GoogleCoordsField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
@@ -145,6 +146,12 @@ class ListItem(models.Model):
 
     def get_absolute_url(self):
         return resolve_url('index')
+
+
+class ListItemFile(PageFile):
+    STORAGE_LOCATION = 'list_files'
+
+    item = models.ForeignKey(ListItem)
 
 
 class InlineSample(models.Model):
