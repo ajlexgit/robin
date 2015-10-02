@@ -63,7 +63,7 @@ class CKEditorUploadField(models.Field):
         model_instance._simple_photos = ()
 
         value = getattr(model_instance, self.attname)
-        if isinstance(value, list):
+        if isinstance(value, (list, tuple)):
             if len(value) == 3:
                 model_instance._page_photos = value[1].split(',') if value[1] else ()
                 model_instance._simple_photos = value[2].split(',') if value[2] else ()

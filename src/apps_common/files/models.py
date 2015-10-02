@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.core import checks
 from django.utils.translation import ugettext_lazy as _
 from libs.media_storage import MediaStorage
 
@@ -11,7 +12,7 @@ def generate_filepath(instance, filename):
 
 class PageFile(models.Model):
     """ Модель файла на страницу """
-    STORAGE_LOCATION = None
+    STORAGE_LOCATION = 'files'
 
     file = models.FileField(_('file'),
         storage=MediaStorage(),
@@ -33,9 +34,33 @@ class PageFile(models.Model):
 
     def __init__(self, *args, **kwargs):
         field = self._meta.get_field('file')
-        if self.STORAGE_LOCATION:
-            field.storage.set_directory(self.STORAGE_LOCATION)
+        field.storage.set_directory(self.STORAGE_LOCATION)
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls.check_storage_location(**kwargs))
+        return errors
+
+    @classmethod
+    def check_storage_location(cls, **kwargs):
+        if not cls.STORAGE_LOCATION:
+            return [
+                checks.Error(
+                    'STORAGE_LOCATION is empty',
+                    obj=cls
+                )
+            ]
+        elif not isinstance(cls.STORAGE_LOCATION, str):
+            return [
+                checks.Error(
+                    'STORAGE_LOCATION must be a str object',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
 
     def __str__(self, *args, **kwargs):
         return self.displayed_name
@@ -46,3 +71,22 @@ class PageFile(models.Model):
             self.displayed_name = os.path.basename(self.file.path)
 
         super().save(*args, **kwargs)
+
+    def generate_filename(self, filename):
+        """
+            По умолчанию файл кладется в папку [FK_ID]/[FILENAME],
+            где FK_ID - ID в первом ForeignKey
+        """
+        foreign_fields = (
+            field
+            for field in self._meta.get_fields()
+            if field.concrete and
+               not field.auto_created and
+               field.many_to_one and
+               field.related_model is not None
+        )
+        try:
+            fk_field = next(foreign_fields)
+        except StopIteration:
+            raise TypeError('%s has no ForeignKey relation' % self.__class__.__name__)
+        return '%04d/%s' % (fk_field.value_from_object(self), filename)

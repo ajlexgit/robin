@@ -17,12 +17,9 @@
             from files import PageFile
 
             class ModuleFile(PageFile):
-                STORAGE_LOCATION = options.FILES_PATH
+                STORAGE_LOCATION = 'module/files'
 
-                module = models.ForeignKey(Module, related_name='files')
-
-                def generate_filename(self, filename):
-                    return '%d/%s' % (self.module.pk, filename)
+                module = models.ForeignKey(Module, related_name='files'
 
         admin.py:
             from suit.admin import SortableStackedInline
