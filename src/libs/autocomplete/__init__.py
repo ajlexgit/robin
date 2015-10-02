@@ -16,23 +16,13 @@
         AUTOCOMPLETE_CACHE_BACKEND = 'default'
 
     Пример:
-        class PostAdminForm(forms.ModelForm):
-            post_subtype = AutocompleteField(
-                queryset=Post.objects.all(),
-                dependencies=(
-                    ('sections', 'sections', True),
-                ),
-                expressions="title__icontains",
-                minimum_input_length=0,
-            )
-
-    Пример кастомизации выводимых пунктов:
-        models.py:
-            class ShopCategory(models.Model):
+        # page/models.py:
+            class SubType(models.Model):
                 ...
 
                 @staticmethod
                 def autocomplete_item(obj):
+                    # Свой формат пунктов списка
                     text = '–' * obj.level + obj.title
                     return {
                         'id': obj.pk,
@@ -40,16 +30,25 @@
                         'selected_text': '<span style="color: green;">%s</span>' % text,
                     }
 
-        admin.py:
-            class ProductAdminForm(forms.ModelForm):
-                category = AutocompleteField(
-                    queryset = ShopCategory.objects.all(),
-                    expressions = "title__icontains",
-                    item2dict_func = ShopCategory.autocomplete_item,
-                )
+        # page/admin.py:
+            class PostAdminForm(forms.ModelForm):
+
+                class Meta:
+                    widgets = {
+                        'post_subtype': AutocompleteWidget(
+                            dependencies = (
+                                ('sections', 'sections', True),
+                            ),
+                            attrs = {
+                                'style': 'width:50%',
+                            },
+                            minimum_input_length = 0,
+                            item2dict_func = SubType.autocomplete_item,
+                        )
+                    }
 
 """
 
-from .forms import AutocompleteField, AutocompleteMultipleField
+from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
 
-__all__ = ['AutocompleteField', 'AutocompleteMultipleField']
+__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget']

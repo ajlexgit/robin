@@ -3,25 +3,21 @@ from django.core import checks
 from django.contrib.contenttypes.admin import (
     GenericTabularInline, GenericStackedInline, BaseGenericInlineFormSet
 )
-from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableTabularInlineBase
 from project.admin import ModelAdminInlineMixin
-from libs.autocomplete.forms import AutocompleteField
-from .models import AttachableBlock, AttachableReference
+from libs.autocomplete import AutocompleteWidget
+from .models import AttachableReference
 
 
 class AttachedBlocksForm(forms.ModelForm):
-    block = AutocompleteField(
-        label=_('Block'),
-        queryset=AttachableBlock.objects.all(),
-        dependencies=(('block_type', '__prefix__-block_type', False), ),
-        expressions="label__icontains",
-        minimum_input_length=0,
-    )
-
     class Meta:
         fields = '__all__'
         widgets = {
+            'block': AutocompleteWidget(
+                dependencies=(('block_type', '__prefix__-block_type', False),),
+                expressions="label__icontains",
+                minimum_input_length=0,
+            ),
             'block_type': forms.Select(attrs={
                 'class': 'input-medium',
             })

@@ -70,7 +70,7 @@ def autocomplete_widget(request, application, model_name, name):
         offset = (real_page - 1) * page_limit
         queryset = queryset[offset:offset+page_limit]
 
-    # Метод
+    # Кастомное форматирование списка
     module = importlib.import_module(redis_data['item2dict_module'])
     current_obj = module
     for part in redis_data['item2dict_method'].split('.'):

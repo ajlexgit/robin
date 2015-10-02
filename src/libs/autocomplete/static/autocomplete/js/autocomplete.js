@@ -115,7 +115,9 @@
             }
         });
 
-        $.attachRelatedWidgetSupport('.autocomplete_widget');
+        if ($.attachRelatedWidgetSupport) {
+            $.attachRelatedWidgetSupport('.autocomplete_widget');
+        }
 
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
