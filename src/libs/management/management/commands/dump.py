@@ -12,6 +12,10 @@ class Command(management.BaseCommand):
     help = 'Dump database data'
 
     def add_arguments(self, parser):
+        parser.add_argument('app',
+            nargs='*',
+            help='Dumped applications'
+        )
         parser.add_argument('--database',
             action='store',
             dest='database',
@@ -20,9 +24,13 @@ class Command(management.BaseCommand):
         )
 
     def handle(self, *args, **options):
+        apps = options.pop('app')
+        database = options.pop('database')
+
         management.call_command('dumpdata',
-            *args,
+            *apps,
             use_natural_foreign_keys=True,
             exclude=('contenttypes', 'auth.Permission', 'admin.logentry'),
+            database=database,
             **options
         )
