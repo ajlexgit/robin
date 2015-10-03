@@ -13,7 +13,7 @@ from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs.autocomplete import AutocompleteWidget
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
-from .signals import visible_products_changed
+from .signals import products_changed, categories_changed
 
 
 @admin.register(ShopConfig)
@@ -52,7 +52,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
     )
     mptt_level_indent = 20
     actions = ('action_hide', 'action_show')
-    list_display = ('view', 'title', 'is_visible', 'product_count')
+    list_display = ('view', 'title', 'is_visible', 'product_count', 'total_product_count')
     list_display_links = ('title',)
     prepopulated_fields = {'alias': ('title',)}
     sortable = 'sort_order'
@@ -177,7 +177,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         categories = queryset.values_list(
             'category_id', flat=True
         )
-        visible_products_changed.send(self.model, categories=categories)
+        products_changed.send(self.model, categories=categories)
     action_hide.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def action_show(self, request, queryset):
@@ -185,7 +185,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         categories = queryset.values_list(
             'category_id', flat=True
         )
-        visible_products_changed.send(self.model, categories=categories)
+        products_changed.send(self.model, categories=categories)
     action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 

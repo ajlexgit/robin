@@ -108,7 +108,7 @@ class Profile:
         # Вывод SQL-запросов
         if self._show_sql:
             for dbname in connections:
-                queries = self.sqls[dbname]
+                queries = self.sqls.get(dbname)
                 if not queries:
                     continue
 

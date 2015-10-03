@@ -14,7 +14,7 @@ from libs.media_storage import MediaStorage
 from libs.valute_field import ValuteField
 from libs.autoslug import AutoSlugField
 from libs.mptt import *
-from .signals import visible_products_changed
+from .signals import products_changed
 
 
 class ShopConfig(SingletonModel):
@@ -76,6 +76,11 @@ class ShopCategory(MPTTModel):
         default=0,
         editable=False,
         help_text=_('count of immediate visible products'),
+    )
+    total_product_count = models.PositiveIntegerField(
+        default=0,
+        editable=False,
+        help_text=_('count of visible products'),
     )
     sort_order = models.PositiveIntegerField(_('sort order'))
 
@@ -237,7 +242,7 @@ class ShopProduct(models.Model):
         if is_add:
             # добавление видимого продукта
             if self.is_visible:
-                visible_products_changed.send(
+                products_changed.send(
                     self.__class__,
                     categories=self.category_id
                 )
@@ -250,13 +255,13 @@ class ShopProduct(models.Model):
                 categories.append(self.category_id)
 
             if categories:
-                visible_products_changed.send(
+                products_changed.send(
                     self.__class__,
                     categories=categories
                 )
         elif self.is_visible != original.is_visible:
             # смена видимости
-            visible_products_changed.send(
+            products_changed.send(
                 self.__class__,
                 categories=self.category_id
             )
