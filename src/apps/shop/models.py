@@ -40,19 +40,6 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
             qs &= ~models.Q(is_visible=True, total_product_count__gt=0)
         return qs
 
-    def reset_product_count(self):
-        """ Перерасчет кол-ва видимых продуктов в каждой категории непосредственно """
-        self.update(
-            product_count=RawSQL(
-                '(SELECT COUNT(*) '
-                'FROM shop_shopproduct AS ssp '
-                'WHERE ssp.category_id = shop_shopcategory.id '
-                'AND ssp.is_visible = TRUE)',
-                ()
-            )
-        )
-        return self
-
 
 class ShopCategoryTreeManager(MPTTQuerySetManager):
     _queryset_class = ShopCategoryQuerySet
