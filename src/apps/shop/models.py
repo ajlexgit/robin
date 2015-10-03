@@ -14,6 +14,7 @@ from libs.media_storage import MediaStorage
 from libs.valute_field import ValuteField
 from libs.autoslug import AutoSlugField
 from libs.mptt import *
+from shop.signals import categories_changed
 from .signals import products_changed
 
 
@@ -34,9 +35,9 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
         if visible is None:
             pass
         elif visible:
-            qs &= models.Q(is_visible=True)
+            qs &= models.Q(is_visible=True, total_product_count__gt=0)
         else:
-            qs &= models.Q(is_visible=False)
+            qs &= ~models.Q(is_visible=True, total_product_count__gt=0)
         return qs
 
     def reset_product_count(self):
@@ -117,6 +118,26 @@ class ShopCategory(MPTTModel):
             self.get_descendants().filter(is_visible=True).update(is_visible=False)
 
         super().save(*args, **kwargs)
+
+        # Кол-во продуктов
+        if is_add:
+            pass
+        elif self.parent_id != original.parent_id:
+            # смена родителя
+            categories = []
+            if self.parent_id:
+                categories.append(self.parent_id)
+            if original.parent_id:
+                categories.append(original.parent_id)
+            if categories:
+                categories_changed.send(self.__class__, categories=categories)
+        elif self.is_visible and not original.is_visible:
+            # категория показана
+            categories_changed.send(self.__class__, categories=self.pk)
+        elif not self.is_visible and original.is_visible:
+            # категория скрыта
+            self.get_descendants(include_self=True).update(total_product_count=0)
+            categories_changed.send(self.__class__, categories=self.pk, include_self=False)
 
         # self.__class__.objects.rebuild()
 

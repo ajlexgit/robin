@@ -42,7 +42,6 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
                 'parent',
             ),
         }),
-
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
@@ -63,21 +62,24 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
     suit_seo_tab = 'seo'
 
     def action_hide(self, request, queryset):
-        queryset.update(is_visible=False)
-        self.model.objects.get_queryset_descendants(queryset).filter(
+        descentants = queryset.get_descendants(include_self=True)
+        descentants.filter(
             is_visible=True
         ).update(
             is_visible=False
         )
+        descentants.update(total_product_count=0)
+        categories_changed.send(self.model, categories=queryset, include_self=False)
     action_hide.short_description = _('Hide selected %(verbose_name_plural)s')
 
     def action_show(self, request, queryset):
-        queryset.update(is_visible=True)
-        self.model.objects.get_queryset_ancestors(queryset).filter(
+        queryset.get_ancestors(include_self=True).filter(
             is_visible=False
         ).update(
             is_visible=True
         )
+
+        categories_changed.send(self.model, categories=queryset)
     action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 

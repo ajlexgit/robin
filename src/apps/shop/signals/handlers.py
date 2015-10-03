@@ -54,6 +54,7 @@ def recalculate_total_product_count(sender, **kwargs):
         привязанных к категории и её подкатегориям
     """
     categories = kwargs.get('categories')
+    include_self = kwargs.get('include_self', True)
     if isinstance(categories, ShopCategory):
         # экземпляр категории
         categories = ShopCategory.objects.filter(pk=categories.pk)
@@ -70,7 +71,9 @@ def recalculate_total_product_count(sender, **kwargs):
         raise TypeError('Invalid categories for signal "categories_changed"')
 
     ancestors = categories.get_ancestors(
-        include_self=True
+        include_self=include_self
+    ).filter(
+        is_visible=True
     ).order_by('tree_id', '-level').values_list('id', flat=True)
 
     with transaction.atomic():
