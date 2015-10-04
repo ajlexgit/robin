@@ -10,10 +10,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
-  <meta name="keywords" content="{{ seo.keywords }}"/>
-  <meta name="description" content="{{ seo.description }}"/>
+  <meta name="keywords" content="{{ request.seo.keywords }}"/>
+  <meta name="description" content="{{ request.seo.description }}"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{{ seo.title }}{% endblock %}</title>
+  <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
   <script>

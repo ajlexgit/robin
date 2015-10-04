@@ -5,16 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from solo.models import SingletonModel
 
 
-class SeoDataManager(models.Manager):
-    def get_for(self, obj):
-        ct = ContentType.objects.get_for_model(obj.__class__)
-        return self.model.objects.get(content_type=ct, object_id=obj.pk)
-
-    def get_or_create_for(self, obj):
-        ct = ContentType.objects.get_for_model(obj.__class__)
-        return self.model.objects.get_or_create(content_type=ct, object_id=obj.pk)
-
-
 class SeoConfig(SingletonModel):
     title = models.CharField(_('site title'), max_length=128)
     keywords = models.TextField(_('site keywords'), max_length=255, blank=True)
@@ -35,8 +25,6 @@ class SeoData(models.Model):
 
     header = models.CharField(_('header'), max_length=128, blank=True)
     text = models.TextField(_('text'), blank=True)
-
-    objects = SeoDataManager()
 
     class Meta:
         verbose_name = _('SEO data')

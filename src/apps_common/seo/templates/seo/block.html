@@ -4,12 +4,12 @@
   <div class="grid">
     <div class="gc">
 
-      {% if instance.header %}
-        <div class="title title-h2">{{ instance.header }}</div>
+      {% if data.header %}
+        <div class="title title-h2">{{ data.header }}</div>
       {% endif %}
 
       <div class="text text-styles">
-        {{ instance.text|paragraphs|typograf|safe }}
+        {{ data.text|paragraphs|typograf|safe }}
       </div>
     
     </div>

@@ -1,20 +1,26 @@
 from django.template import loader, Library
 from ..models import Counter
+from ..seo import Seo
 
 register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def seo_block(context, template='seo/block.html'):
+def seo_block(context, entity=None, template='seo/block.html'):
     request = context.get('request')
-    if not request:
+    if not request or not request.seo:
         return ''
 
-    if not request.seo or not request.seo.instance or not request.seo.instance.text:
+    if entity:
+        seodata = Seo.get_for(entity)
+    else:
+        seodata = getattr(request, 'seodata', None)
+
+    if not seodata or not seodata.text:
         return ''
 
     return loader.render_to_string(template, {
-        'instance': request.seo.instance,
+        'data': seodata,
     })
 
 

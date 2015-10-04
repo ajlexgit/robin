@@ -274,7 +274,6 @@ MIDDLEWARE_CLASSES = (
     'libs.cache.middleware.SCCMiddleware',
 
     'breadcrumbs.middleware.BreadcrumbsMiddleware',
-    'seo.middleware.SeoMiddleware',
 )
 
 ALLOWED_HOSTS = ()
@@ -388,7 +387,6 @@ TEMPLATE_DIRS = (
 )
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
-    'seo.context_processors.seo',
 )
 
 

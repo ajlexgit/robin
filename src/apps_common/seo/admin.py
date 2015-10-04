@@ -81,6 +81,9 @@ class SeoModelAdminMixin:
             if form.has_changed():
                 if form.is_valid():
                     new_object = model_admin.save_form(request, form, change=not add)
+                    new_object.title = new_object.title.strip()
+                    new_object.keywords = new_object.keywords.strip()
+                    new_object.description = new_object.description.strip()
                     new_object.entity = entity
                     model_admin.save_model(request, new_object, form, not add)
         else:

@@ -5,22 +5,13 @@
     моделей и для сайта в целом.
 
 
-    Установка:
-        settings.py:
-            MIDDLEWARE_CLASSES = (
-                ...
-                'seo.middleware.SeoMiddleware',
-                ...
-            )
-
-            TEMPLATE_CONTEXT_PROCESSORS = (
-                ...
-                'seo.context_processors.seo',
-                ...
-            )
+    Необязательные настройки:
+        # Если не пустая строка - она будет объединять части дэка заголовков.
+        # Если пустая строка - будет выведен только первый элемент дэка
+        SEO_TITLE_JOIN_WITH = ' | '
 
     Подключение к модели:
-        admin.py:
+        page/admin.py:
             ...
             class PageAdmin(SeoModelAdminMixin, admin.ModelAdmin):
                 fieldsets = (
@@ -36,7 +27,7 @@
                 suit_seo_tab = 'seo'
             ...
 
-    Использование в шаблоне:
+    Счетчики и SEO-текст:
         {% load seo %}
         <head>
             ...
@@ -46,58 +37,65 @@
             {% seo_counters 'body_top' %}
             ...
 
-            {% seo_block %}
+            {% seo_block entity %}
 
             ...
             {% seo_counters 'body_bottom' %}
         </body>
 
-    Настройки:
-        settings.py:
-            # Если не пуст - в качестве заголовка страницы будут все части дэка title,
-            # объединенные строкой SEO_TITLE_JOIN_WITH. В противном случае,
-            # заголовком будет первый элемент дэка title.
-            SEO_TITLE_JOIN_WITH = ''
-
-
-    Значения, введенные в объект SeoConfig являются значениями по-умолчанию для всех страниц сайта.
-
-    Поле title является особенным, т.к. оно является дэком, который накапливает все значения, которые
-    устанавливаются в качестве заголовка. Заголовком страницы становится первый (самый свежий) элемент дэка,
-    если SEO_TITLE_JOIN_WITH является пустым объектом. В противном случае, все элементы дэка объединяются
-    строкой SEO_TITLE_JOIN_WITH.
-
-    В представлениях интерфейс сео-данных находится в request.seo.
-
+        Если нет возможности указать entity для seo_block, можно указать
+        параметр seodata в request:
+            from seo import Seo
+            request.seodata = Seo.get_for(entity)
 
     Пример:
         views.py:
-            ...
-            # Привязка данных, введённых для конкретной сущности:
-            request.seo.set_instance(entity)
+            from seo import Seo
 
-            # Привязка данных с указанием значений по умолчанию:
-            request.seo.set_instance(entity, defaults={
-                'title': 'Default title',
-                'keywords': 'default keywords'
-            })
 
-            # Добавление пункта заголовка слева и перезапись ключевых слов:
-            request.seo.set(
-                title = 'Clients',
-                keywords = 'Sport, Box',
-            )
+            # Простейшая установка SEO-данных из объекта SeoData, привязанного к entity:
+                entity_data = Seo.get_data_from(entity, defaults={
+                    'title': entity.title,
+                })
+                seo = Seo()
+                seo.set(entity_data)
+                seo.save(request)
 
-            # Изменение крайнего правого элемента заголовка:
-            request.seo.title_deque[-1] = 'Other tail'
-            ...
+
+            # Установка цепочки заголовков:
+                shop_data = Seo.get_data_from(shop, defaults={
+                    'title': shop.title,
+                })
+                category_data = Seo.get_data_from(category, defaults={
+                    'title': category.title,
+                })
+                seo = Seo()
+                seo.set({
+                    'title': shop_data.get('title')
+                })
+                seo.set(category_data)
+                seo.save(request)
+
+            # Вышеприведенная ситуация случается часто, поэтому введены
+            # алиасы set_title и set_data для сокращения кода:
+                seo = Seo()
+                seo.set_title(shop, default=shop.title)
+                seo.set_data(category, defaults={
+                    'title': category.title,
+                })
+                seo.save(request)
 
         template.html:
             ...
-            <title>{{ seo.title }}</title>
-            <meta name="keywords" content="{{ seo.keywords }}" />
-            <meta name="description" content="{{ seo.description }}" />
+            <title>{{ request.seo.title }}</title>
+            <meta name="keywords" content="{{ request.seo.keywords }}" />
+            <meta name="description" content="{{ request.seo.description }}" />
             ...
 
 """
+
+from .seo import Seo
+
+__all__ = ['Seo']
+
 default_app_config = 'seo.apps.Config'

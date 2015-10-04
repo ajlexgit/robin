@@ -1,5 +1,6 @@
 ﻿from django.dispatch import receiver
 from libs.views import TemplateExView
+from seo import Seo
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import order_payed
 
@@ -15,7 +16,11 @@ class IndexView(TemplateExView):
         request.breadcrumbs.add(self.config.title)
 
         # SEO
-        request.seo.set_instance(self.config)
+        seo = Seo()
+        seo.set_data(self.config, defaults={
+            'title': self.config.title
+        })
+        seo.save(request)
 
         return self.render_to_response({
             'config': self.config,
@@ -39,7 +44,12 @@ class CategoryView(TemplateExView):
         request.breadcrumbs.add(self.category.title)
 
         # SEO
-        request.seo.set_instance(self.category)
+        seo = Seo()
+        seo.set_title(self.config, default=self.config.title)
+        seo.set_data(self.category, defaults={
+            'title': self.category.title
+        })
+        seo.save(request)
 
         return self.render_to_response({
             'config': self.config,
@@ -58,7 +68,13 @@ class DetailView(TemplateExView):
 
     def get(self, request, *args, **kwargs):
         # SEO
-        request.seo.set_instance(self.product)
+        seo = Seo()
+        seo.set_title(self.config, default=self.config.title)
+        seo.set_title(self.category, default=self.category.title)
+        seo.set_data(self.product, defaults={
+            'title': self.product.title,
+        })
+        seo.save(request)
 
         return self.render_to_response({
             'config': self.config,
