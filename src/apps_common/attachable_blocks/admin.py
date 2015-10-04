@@ -8,10 +8,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from suit.admin import SortableTabularInlineBase
 from project.admin import ModelAdminInlineMixin
+from libs.cache import cached
 from libs.autocomplete import AutocompleteWidget
 from .models import AttachableBlock, AttachableReference
 
 
+@cached(time=5*60)
 def get_block_types():
     """
         Возвращает список content_type_id всех блоков
@@ -21,7 +23,7 @@ def get_block_types():
         if issubclass(model, AttachableBlock) and model != AttachableBlock:
             ct = ContentType.objects.get_for_model(model)
             result.append((ct.pk, model._meta.verbose_name))
-    return tuple(result)
+    return tuple(sorted(result, key=lambda x: x[1]))
 
 
 class AttachedBlocksForm(forms.ModelForm):
