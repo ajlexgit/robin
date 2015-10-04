@@ -1,16 +1,17 @@
 from django.shortcuts import redirect
-from django.views.generic import TemplateView
 from seo import Seo
+from libs.views import TemplateExView
 from .models import MainPageConfig, ClientFormModel
 from .forms import MainForm, InlineFormSet
 
 
-class IndexView(TemplateView):
+class IndexView(TemplateExView):
     template_name = 'main/index.html'
 
-    def get(self, request, *args, **kwargs):
-        config = MainPageConfig.get_solo()
+    def get_objects(self, request, *args, **kwargs):
+        self.config = MainPageConfig.get_solo()
 
+    def get(self, request, *args, **kwargs):
         form_obj = ClientFormModel.objects.first()
         form = MainForm(instance=form_obj, prefix='main')
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
@@ -23,13 +24,13 @@ class IndexView(TemplateView):
         # Opengraph
         request.opengraph.update({
             'url': request.build_absolute_uri(),
-            'title': config.header_title,
+            'title': self.config.header_title,
             'image': 'http://cs307814.vk.me/v307814291/5255/5WStSQHmBpg.jpg',
-            'description': config.description,
+            'description': self.config.description,
         })
 
         return self.render_to_response({
-            'config': config,
+            'config': self.config,
             'form': form,
             'formset': formset,
         })

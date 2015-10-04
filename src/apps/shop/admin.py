@@ -12,8 +12,13 @@ from solo.admin import SingletonModelAdmin
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs.autocomplete import AutocompleteWidget
+from attachable_blocks import AttachedBlocksTabularInline
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import products_changed, categories_changed
+
+
+class ShopConfigBlocksInline(AttachedBlocksTabularInline):
+    suit_classes = 'suit-tab suit-tab-blocks'
 
 
 @admin.register(ShopConfig)
@@ -26,8 +31,10 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
             ),
         }),
     )
+    inlines = (ShopConfigBlocksInline, )
     suit_form_tabs = (
         ('general', _('General')),
+        ('blocks', _('Blocks')),
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'

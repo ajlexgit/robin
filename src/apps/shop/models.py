@@ -103,7 +103,7 @@ class ShopCategory(MPTTModel):
             else:
                 # если смена видимости - показываем предков
                 self.get_ancestors().filter(is_visible=False).update(is_visible=True)
-        elif not is_add and not self.is_visible:
+        elif not is_add and not self.is_visible and original.is_visible:
             # скрытие категории - скрываем потомков
             self.get_descendants().filter(is_visible=True).update(is_visible=False)
 
