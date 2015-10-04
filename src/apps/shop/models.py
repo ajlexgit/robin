@@ -44,6 +44,9 @@ class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
 class ShopCategoryTreeManager(MPTTQuerySetManager):
     _queryset_class = ShopCategoryQuerySet
 
+    def root_categories(self):
+        return self.root_nodes().filter(visible=True)
+
 
 class ShopCategory(MPTTModel):
     """ Категория товаров """

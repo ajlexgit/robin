@@ -4,10 +4,6 @@ from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import order_payed
 
 
-def get_root_categories():
-    return ShopCategory.objects.root_nodes().filter(visible=True)
-
-
 class IndexView(TemplateExView):
     template_name = 'shop/index.html'
 
@@ -23,7 +19,7 @@ class IndexView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
-            'root_categories': get_root_categories(),
+            'root_categories': ShopCategory.objects.root_categories(),
         })
 
 
@@ -48,7 +44,7 @@ class CategoryView(TemplateExView):
         return self.render_to_response({
             'config': self.config,
             'current_category': self.category,
-            'root_categories': get_root_categories(),
+            'root_categories': ShopCategory.objects.root_categories(),
         })
 
 
@@ -68,7 +64,6 @@ class DetailView(TemplateExView):
             'config': self.config,
             'current_category': self.category,
             'current_product': self.product,
-            'root_categories': get_root_categories(),
         })
 
 
