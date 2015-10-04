@@ -123,7 +123,7 @@ class ResetDoneView(TemplateView):
     """ Страница с сообщением о том, что инструкции для сброса пароля отправлены на почту """
     template_name = 'users/reset_done.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         email = request.session.get('reset_email')
         if not email:
             return redirect(resolve_url(settings.RESET_PASSWORD_REDIRECT_URL))
@@ -217,7 +217,7 @@ class ResetCompleteView(TemplateView):
     """ Страница с сообщением о успешной смене пароля """
     template_name = 'users/reset_complete.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         # Seo
         seo = Seo()
         seo.set({
