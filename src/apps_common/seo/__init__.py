@@ -47,7 +47,7 @@
             ...
 
             {% seo_block %}
-            
+
             ...
             {% seo_counters 'body_bottom' %}
         </body>
@@ -76,19 +76,19 @@
             # Привязка данных, введённых для конкретной сущности:
             request.seo.set_instance(entity)
 
-            # Изменение данных перед привязкой:
-            request.seo.set_instance(entity, auto=False)
-            if request.seo.instance:
-                request.seo.instance.title = 'New title'
-                request.seo.apply_instance()
+            # Привязка данных с указанием значений по умолчанию:
+            request.seo.set_instance(entity, defaults={
+                'title': 'Default title',
+                'keywords': 'default keywords'
+            })
 
-            # Добавление части заголовка и перезапись ключевых слов:
+            # Добавление пункта заголовка слева и перезапись ключевых слов:
             request.seo.set(
                 title = 'Clients',
                 keywords = 'Sport, Box',
             )
 
-            # Изменение последнего элемента заголовка:
+            # Изменение крайнего правого элемента заголовка:
             request.seo.title_deque[-1] = 'Other tail'
             ...
 

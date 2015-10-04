@@ -346,9 +346,6 @@ AUTOCOMPLETE_CACHE_BACKEND = 'default'
 # Admin Dump
 BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
 
-# SEO
-SEO_TITLE_JOIN_WITH = ' | '
-
 # Recaptcha
 RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
 RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'

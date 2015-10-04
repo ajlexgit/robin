@@ -1,20 +1,26 @@
 from collections import deque
 from django.conf import settings
+from django.forms.models import model_to_dict
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 from .models import SeoConfig, SeoData
 
-TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ''))
+TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
 
 
 class Seo:
+    _instance = None
+
     def __init__(self):
         super().__init__()
-        config = SeoConfig.get_solo()
-        self._title_deque = deque((config.title, )) if config.title else deque()
-        self._keywords = config.keywords
-        self._description = config.description
-        self._instance = None
+        self._global = SeoConfig.get_solo()
+        self._title_deque = deque((self._global.title, )) if self._global.title else deque()
+        self._keywords = self._global.keywords
+        self._description = self._global.description
+
+    @property
+    def title_deque(self):
+        return self._title_deque
 
     @property
     def title(self):
@@ -25,10 +31,6 @@ class Seo:
             return mark_safe(TITLE_JOIN_WITH.join(self.title_deque))
         else:
             return mark_safe(self.title_deque[0])
-
-    @property
-    def title_deque(self):
-        return self._title_deque
 
     @property
     def keywords(self):
@@ -42,42 +44,32 @@ class Seo:
     def instance(self):
         return self._instance
 
-    def set(self, _dict=None, **kwargs):
+    def set(self, **kwargs):
         """ Установка новых сео-данных """
-        data = _dict or {}
-        data.update(kwargs)
-
-        title = data.get('title')
+        title = kwargs.get('title')
         if title:
             self._title_deque.appendleft(str(title))
 
-        keywords = data.get('keywords')
+        keywords = kwargs.get('keywords')
         if keywords:
             self._keywords = str(keywords)
 
-        description = data.get('description')
+        description = kwargs.get('description')
         if description:
             self._description = str(description)
 
-    def set_instance(self, instance, auto=True):
+    def set_instance(self, entity, defaults=None):
         """ Установка объекта SeoData, привязанного к экземпляру """
-        content_type = ContentType.objects.get_for_model(type(instance))
+        defaults = dict(defaults) if defaults else {}
+        content_type = ContentType.objects.get_for_model(type(entity))
         try:
             self._instance = SeoData.objects.get(
                 content_type=content_type,
-                object_id=instance.pk,
+                object_id=entity.pk,
             )
         except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
-            return
+            pass
         else:
-            if auto:
-                self.apply_instance()
+            defaults.update(model_to_dict(self._instance))
 
-    def apply_instance(self):
-        """ Установка сео-данных из объекта SeoData, привязанного к экземпляру """
-        if self._instance:
-            self.set(
-                title=self._instance.title,
-                keywords=self._instance.keywords,
-                description=self._instance.description,
-            )
+        self.set(**defaults)
