@@ -124,4 +124,4 @@ class Seo:
         self.set(seodata)
 
         # сохраняем для передачи в request.seodata
-        self._seodata = seodata
+        self._seodata = self.get_for(entity)
