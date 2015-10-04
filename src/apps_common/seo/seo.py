@@ -10,6 +10,7 @@ TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
 
 
 class Seo:
+    _seodata = None
 
     def __init__(self, empty=False):
         super().__init__()
@@ -98,6 +99,9 @@ class Seo:
             'description': self.description,
         }
 
+        if self._seodata and not hasattr(request, 'seodata'):
+            request.seodata = self._seodata
+
     def set_title(self, entity, *args, default=None):
         """
             Алиас для упрощения добавления заголовков из родительских категорий.
@@ -118,3 +122,6 @@ class Seo:
         """
         seodata = self.get_data_from(entity, defaults)
         self.set(seodata)
+
+        # сохраняем для передачи в request.seodata
+        self._seodata = seodata

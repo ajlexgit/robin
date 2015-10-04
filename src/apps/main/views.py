@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from seo import Seo
 from .models import MainPageConfig, ClientFormModel
 from .forms import MainForm, InlineFormSet
 
@@ -15,7 +16,11 @@ class IndexView(TemplateView):
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
         # SEO
-        request.seo.set_instance(config)
+        seo = Seo()
+        seo.set_data(self.config, defaults={
+            'title': self.config.header_title,
+        })
+        seo.save(request)
 
         # Opengraph
         request.opengraph.update({

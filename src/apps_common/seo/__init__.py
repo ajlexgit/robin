@@ -48,6 +48,10 @@
             from seo import Seo
             request.seodata = Seo.get_for(entity)
 
+        P.S: Если в представлениях используется алиас set_data,
+        то ни entity ни request.seodata устанавливать не нужно.
+
+
     Пример:
         views.py:
             from seo import Seo
