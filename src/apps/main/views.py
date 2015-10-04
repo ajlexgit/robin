@@ -17,9 +17,7 @@ class IndexView(TemplateView):
 
         # SEO
         seo = Seo()
-        seo.set_data(self.config, defaults={
-            'title': self.config.header_title,
-        })
+        seo.set_data(self.config)
         seo.save(request)
 
         # Opengraph
