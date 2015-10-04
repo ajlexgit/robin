@@ -7,6 +7,7 @@ from django.shortcuts import redirect, resolve_url, get_object_or_404
 from django.views.generic import View, TemplateView
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.views import logout as default_logout, password_reset, password_reset_confirm
+from seo import Seo
 from libs.session_form import SessionFormView
 from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
 
@@ -31,7 +32,11 @@ class LoginView(SessionFormView):
             return redirect(get_redirect_url(request))
 
         # Seo
-        request.seo.set(title=_('Authorization'))
+        seo = Seo()
+        seo.set({
+            'title': _('Authorization')
+        })
+        seo.save(request)
 
         return super().get(request, *args, **kwargs)
 
@@ -54,7 +59,11 @@ class RegisterView(SessionFormView):
 
     def get(self, request, *args, **kwargs):
         # Seo
-        request.seo.set(title=_('Registration'))
+        seo = Seo()
+        seo.set({
+            'title': _('Registration')
+        })
+        seo.save(request)
 
         return super().get(request, *args, **kwargs)
 
@@ -76,7 +85,11 @@ class PasswordResetView(View):
             return redirect(resolve_url(settings.LOGIN_REDIRECT_URL))
 
         # Seo
-        request.seo.set(title=_('Reset password'))
+        seo = Seo()
+        seo.set({
+            'title': _('Reset password')
+        })
+        seo.save(request)
 
         return password_reset(request,
             template_name='users/reset.html',
@@ -90,7 +103,11 @@ class PasswordResetView(View):
         request.session['reset_email'] = email
 
         # Seo
-        request.seo.set(title=_('Reset password'))
+        seo = Seo()
+        seo.set({
+            'title': _('Reset password')
+        })
+        seo.save(request)
 
         return password_reset(request,
             template_name='users/reset.html',
@@ -112,7 +129,11 @@ class ResetDoneView(TemplateView):
             return redirect(resolve_url(settings.RESET_PASSWORD_REDIRECT_URL))
 
         # Seo
-        request.seo.set(title=_('Reset password'))
+        seo = Seo()
+        seo.set({
+            'title': _('Reset password')
+        })
+        seo.save(request)
 
         return self.render_to_response({
             'email': email,
@@ -131,7 +152,11 @@ class ResetConfirmView(TemplateView):
         UserModel = get_user_model()
 
         # Seo
-        request.seo.set(title=_('Reset password'))
+        seo = Seo()
+        seo.set({
+            'title': _('Reset password')
+        })
+        seo.save(request)
 
         if request.user.is_authenticated():
             # Смена своего пароля, если авторизованы
@@ -159,7 +184,11 @@ class ResetConfirmView(TemplateView):
 
     def post(self, request, uidb64=None, token=None):
         # Seo
-        request.seo.set(title=_('Reset password'))
+        seo = Seo()
+        seo.set({
+            'title': _('Reset password')
+        })
+        seo.save(request)
 
         if request.user.is_authenticated():
             # Смена своего пароля, если авторизованы
@@ -190,7 +219,11 @@ class ResetCompleteView(TemplateView):
 
     def get(self, request):
         # Seo
-        request.seo.set(title=_('Reset password'))
+        seo = Seo()
+        seo.set({
+            'title': _('Reset password')
+        })
+        seo.save(request)
 
         if request.user.is_authenticated():
             # Смена своего пароля, если авторизованы
@@ -222,7 +255,11 @@ class ProfileView(TemplateView):
         user = get_object_or_404(UserModel, username=username)
 
         # Seo
-        request.seo.set(title=_('Profile of «%(username)s»') % {'username': username})
+        seo = Seo()
+        seo.set({
+            'title': _('Profile of «%(username)s»') % {'username': username}
+        })
+        seo.save(request)
 
         return self.render_to_response({
             'profile_user': user,
