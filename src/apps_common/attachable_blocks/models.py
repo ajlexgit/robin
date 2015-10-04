@@ -4,23 +4,29 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from .register import get_block_choices
-from .utils import get_block_type, get_block_view
+from model_utils.managers import InheritanceQuerySetMixin
+from .utils import get_block, get_block_view
+
+
+class AttachableBlockQuerySet(InheritanceQuerySetMixin, models.QuerySet):
+    pass
 
 
 class AttachableBlock(models.Model):
     """ Базовый класс блоков """
     BLOCK_VIEW = ''
 
-    block_type = models.CharField(_('block type'),
-        max_length=255,
-        choices=get_block_choices(),
+    block_content_type = models.ForeignKey(ContentType,
+        null=True,
         editable=False,
+        related_name='+',
     )
     label = models.CharField(_('label'), max_length=128, help_text=_('For inner use'))
     visible = models.BooleanField(_('visible'), default=False)
     created = models.DateTimeField(_('create date'), editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
+
+    objects = AttachableBlockQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('attachable block')
@@ -28,10 +34,26 @@ class AttachableBlock(models.Model):
         ordering = ('label', )
 
     def save(self, *args, **kwargs):
-        self.block_type = get_block_type(self)
         if not self.created:
             self.created = now()
+
+        # content_type реальной модели блока
+        # при сохранении через реальную модель блока
+        if not self.block_content_type:
+            if self.__class__ != AttachableBlock:
+                self.block_content_type = ContentType.objects.get_for_model(self)
+
         super().save(*args, **kwargs)
+
+        # content_type реальной модели блока
+        # при сохранении через AttachableBlock
+        if not self.block_content_type:
+            block = get_block(self.pk)
+            if block:
+                AttachableBlock.objects.filter(pk=self.pk).update(
+                    block_content_type=ContentType.objects.get_for_model(block)
+                )
+
 
     def __str__(self):
         return self.label
@@ -66,11 +88,13 @@ class AttachableBlock(models.Model):
 
 
 class AttachableReference(models.Model):
-    content_type = models.ForeignKey(ContentType)
+    """
+        Связь экземпляра блока с экземпляром страницы
+    """
+    content_type = models.ForeignKey(ContentType, related_name='+')
     object_id = models.PositiveIntegerField()
     entity = GenericForeignKey('content_type', 'object_id')
 
-    block_type = models.CharField(_('block type'), max_length=255, choices=get_block_choices())
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'), related_name='references')
     set_name = models.CharField(_('set name'), max_length=32, default='default')
     sort_order = models.PositiveIntegerField(_('sort order'), default=0)
@@ -79,5 +103,5 @@ class AttachableReference(models.Model):
         verbose_name = _('attached block')
         verbose_name_plural = _('attached blocks')
         ordering = ('set_name', 'sort_order')
-        unique_together = ('content_type', 'object_id', 'block_type', 'block', 'set_name')
+        unique_together = ('content_type', 'object_id', 'block', 'set_name')
         index_together = (('content_type', 'object_id', 'set_name'), )

@@ -207,10 +207,12 @@
     </form>
   </div>
 
-  <p>First blocks:</p>
-  {% render_attached_blocks config set_name='first' %}
-  <p>Second blocks:</p>
-  {% render_attached_blocks config set_name='second' %}
+  <div class="text-styles">
+    <h2>First blocks:</h2>
+    {% render_attached_blocks config set_name='first' %}
+    <h2>Second blocks:</h2>
+    {% render_attached_blocks config set_name='second' %}
+  </div>
 
   {% seo_block %}
 

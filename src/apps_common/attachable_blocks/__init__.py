@@ -15,22 +15,18 @@
        каждая inline-модель блоков адмики должна иметь уникальное для модели-приемника значение
        текстового атрибута set_name. Значение set_name по умолчанию равно 'default'.
 
-    Параметр "name" у декоратора register_block позволяет задать имя типа блока,
-    отображаемое в выпадающем списке в админке. По умолчанию оно равно verbose_name.
-
     Пример создания блока:
         # blocks/models.py:
-            from attachable_blocks import AttachableBlock, register_block
+            from attachable_blocks import AttachableBlock
 
-            @register_block(name='My super blocks')
             class MyBlock(AttachableBlock):
                 BLOCK_VIEW = 'blocks.views.my_block_render'
 
                 title = models.CharField(_('title'), max_length=255, blank=True)
 
                 class Meta:
-                    verbose_name = _('Block')
-                    verbose_name_plural = _('Blocks')
+                    verbose_name = _('My block')
+                    verbose_name_plural = _('My blocks')
 
                 def __str__(self):
                     return '%s (Block)' % self.title
@@ -58,7 +54,6 @@
 
         # blocks/views.py:
             def my_block_render(request, block):
-                # Функция рендера блока
                 context = RequestContext(request, {
                     'block': block,
                 })
@@ -139,10 +134,11 @@
 
 """
 
-from .register import register_block
 from .models import AttachableBlock, AttachableReference
 from .fields import AttachableBlockField
 from .admin import AttachedBlocksTabularInline, AttachedBlocksStackedInline
 
-__all__ = ['register_block', 'AttachableBlock', 'AttachableReference',
+__all__ = ['AttachableBlock', 'AttachableReference', 'AttachableBlockField',
            'AttachedBlocksTabularInline', 'AttachedBlocksStackedInline']
+
+default_app_config = 'attachable_blocks.apps.Config'

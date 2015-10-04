@@ -1,27 +1,49 @@
 from django import forms
+from django.apps import apps
 from django.core import checks
 from django.contrib.contenttypes.admin import (
     GenericTabularInline, GenericStackedInline, BaseGenericInlineFormSet
 )
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 from suit.admin import SortableTabularInlineBase
 from project.admin import ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
-from .models import AttachableReference
+from .models import AttachableBlock, AttachableReference
+
+
+def get_block_types():
+    """
+        Возвращает список content_type_id всех блоков
+    """
+    result = []
+    for model in apps.get_models():
+        if issubclass(model, AttachableBlock) and model != AttachableBlock:
+            ct = ContentType.objects.get_for_model(model)
+            result.append((ct.pk, model._meta.verbose_name))
+    return tuple(result)
 
 
 class AttachedBlocksForm(forms.ModelForm):
+    block_type = forms.ChoiceField(
+        label=_('type'),
+        choices=get_block_types,
+    )
+
     class Meta:
-        fields = '__all__'
+        fields = ('block_type', 'block', 'set_name')
         widgets = {
             'block': AutocompleteWidget(
-                dependencies=(('block_type', '__prefix__-block_type', False),),
+                dependencies=(('block_content_type', '__prefix__-block_type', False),),
                 expressions="label__icontains",
                 minimum_input_length=0,
             ),
-            'block_type': forms.Select(attrs={
-                'class': 'input-medium',
-            })
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.initial['block_type'] = self.instance.block.block_content_type.pk
 
 
 class AttachedBlocksFormset(BaseGenericInlineFormSet):
@@ -46,7 +68,7 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin, SortableTabularInlineBase):
     form = AttachedBlocksForm
     formset = AttachedBlocksFormset
     model = AttachableReference
-    fields = ('block_type', 'block', 'set_name')
+    # fields = ('block_type', 'block', 'set_name')
     readonly_fields = ('set_name',)
     extra = 0
     sortable = 'sort_order'

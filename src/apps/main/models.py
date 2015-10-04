@@ -4,7 +4,7 @@ from django.shortcuts import resolve_url
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
-from attachable_blocks import AttachableBlock, register_block
+from attachable_blocks import AttachableBlock
 from ckeditor import CKEditorUploadField
 from gallery import *
 from files import PageFile
@@ -114,22 +114,6 @@ class MainPageConfig(SingletonModel):
         return resolve_url('index')
 
 
-@register_block(name='First block type')
-class MainBlockFirst(AttachableBlock):
-    BLOCK_VIEW = 'main.views.render_first_block'
-
-    class Meta:
-        verbose_name_plural = _("First blocks")
-
-
-@register_block(name='Second block type')
-class MainBlockSecond(AttachableBlock):
-    BLOCK_VIEW = 'main.views.render_second_block'
-
-    class Meta:
-        verbose_name_plural = _("Second blocks")
-
-
 class ListItem(models.Model):
     STATUS_PAID = 1
     STATUS_NOT_PAID = 2
@@ -163,6 +147,21 @@ class InlineSample(models.Model):
         verbose_name = _("Inline sample")
         verbose_name_plural = _('Inline samples')
 
+
+class MainBlockFirst(AttachableBlock):
+    BLOCK_VIEW = 'main.views.render_first_block'
+
+    class Meta:
+        verbose_name = _('First block')
+        verbose_name_plural = _("First blocks")
+
+
+class MainBlockSecond(AttachableBlock):
+    BLOCK_VIEW = 'main.views.render_second_block'
+
+    class Meta:
+        verbose_name = _('Second block')
+        verbose_name_plural = _("Second blocks")
 
 
 class ClientFormModel(models.Model):

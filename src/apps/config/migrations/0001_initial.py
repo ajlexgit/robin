@@ -13,9 +13,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Config',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('email', models.EmailField(blank=True, max_length=255, verbose_name='email')),
-                ('phone', models.CharField(blank=True, max_length=32, verbose_name='phone')),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('email', models.EmailField(blank=True, verbose_name='email', max_length=255)),
+                ('phone', models.CharField(blank=True, verbose_name='phone', max_length=32)),
             ],
             options={
                 'verbose_name': 'Configuration',

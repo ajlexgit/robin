@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-02 14:51+0400\n"
+"POT-Creation-Date: 2015-10-04 20:05+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,54 +19,58 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: models.py:15 models.py:73
-msgid "block type"
-msgstr "тип блока"
+#: admin.py:29
+msgid "type"
+msgstr "тип"
 
-#: models.py:20
+#: apps.py:7
+msgid "Attachable blocks"
+msgstr "Подключаемые блоки"
+
+#: models.py:24
 msgid "label"
 msgstr "метка"
 
-#: models.py:20
+#: models.py:24
 msgid "For inner use"
 msgstr "Для внутренних нужд"
 
-#: models.py:21
+#: models.py:25
 msgid "visible"
 msgstr "видимость"
 
-#: models.py:22
+#: models.py:26
 msgid "create date"
 msgstr "дата создания"
 
-#: models.py:23
+#: models.py:27
 msgid "change date"
 msgstr "дата изменения"
 
-#: models.py:26
+#: models.py:32
 msgid "attachable block"
 msgstr "подключаемый блок"
 
-#: models.py:27
+#: models.py:33
 msgid "attachable blocks"
 msgstr "подключаемые блоки"
 
-#: models.py:74
+#: models.py:98
 msgid "block"
 msgstr "блок"
 
-#: models.py:75
+#: models.py:99
 msgid "set name"
 msgstr "набор"
 
-#: models.py:76
+#: models.py:100
 msgid "sort order"
 msgstr "порядок"
 
-#: models.py:79
+#: models.py:103
 msgid "attached block"
 msgstr "подключенный блок"
 
-#: models.py:80
+#: models.py:104
 msgid "attached blocks"
 msgstr "подключенные блоки"

@@ -20,10 +20,6 @@ input[type=number] {
     width: 33px;
 }
 
-th.sorted {
-    width: 60px;
-}
-
 /* Admin table */
 .admin-table {
     position: relative;

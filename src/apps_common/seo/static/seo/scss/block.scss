@@ -3,9 +3,6 @@
 .seo-text {
   padding: 54px 0;
   background-color: #F7F7F7;
-  @include media_interval(0, $media640) {
-    padding: 30px 0;
-  }
 
   .title {
     margin-bottom: 14px;
