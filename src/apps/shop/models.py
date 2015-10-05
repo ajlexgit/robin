@@ -177,7 +177,7 @@ class ShopProduct(models.Model):
         unique=True,
         help_text=_('Leave it blank to auto generate it')
     )
-    serial = models.SlugField(_('S/N'),
+    serial = models.SlugField(_('serial number'),
         max_length=64,
         unique=True,
         help_text=_('Unique identifier of the product')
