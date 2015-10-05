@@ -1,0 +1,6 @@
+<input type="hidden" {{ attrs }} value="{{ value }}" name="{{ name }}"/>
+<div class="choices" style="display: none">
+  {% for choice in choices %}
+    <span class="choice">{{ choice }}</span>
+  {% endfor %}
+</div>

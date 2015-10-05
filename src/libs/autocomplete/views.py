@@ -71,19 +71,19 @@ def autocomplete_widget(request, application, model_name, name):
         queryset = queryset[offset:offset+page_limit]
 
     # Кастомное форматирование списка
-    module = importlib.import_module(redis_data['item2dict_module'])
+    module = importlib.import_module(redis_data['format_item_module'])
     current_obj = module
-    for part in redis_data['item2dict_method'].split('.'):
+    for part in redis_data['format_item_method'].split('.'):
         current_obj = getattr(current_obj, part)
     else:
-        item2dict = current_obj
+        format_item = current_obj
 
     for item in queryset.iterator():
-        item_dict = item2dict(item)
+        item_dict = format_item(item)
         if not isinstance(item_dict, dict):
-            raise ValueError('autocomplete item2dict_method should return dict')
+            raise ValueError('autocomplete format_item should return dict')
         if ('id' not in item_dict) or ('text' not in item_dict):
-            raise ValueError('autocomplete item2dict_method should contain "id" and "text"')
+            raise ValueError('autocomplete format_item should contain "id" and "text"')
         data['result'].append(item_dict)
 
     return JsonResponse(data)

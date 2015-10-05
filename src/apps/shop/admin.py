@@ -125,7 +125,7 @@ class ShopProductForm(forms.ModelForm):
         widgets = {
             'category': AutocompleteWidget(
                 minimum_input_length=0,
-                item2dict_func=ShopCategory.autocomplete_item,
+                format_item=ShopCategory.autocomplete_item,
                 attrs={
                     'style': 'width:50%',
                 }

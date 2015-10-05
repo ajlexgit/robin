@@ -43,12 +43,30 @@
                                 'style': 'width:50%',
                             },
                             minimum_input_length = 0,
-                            item2dict_func = SubType.autocomplete_item,
+                            format_item = SubType.autocomplete_item,
+                        )
+                    }
+
+
+    Пример текстового поля с автокомплитом:
+        # page/admin.py:
+            def get_object_choices():
+                return ('Pencil', 'Pen', 'Table', 'Chair')
+
+            class PostAdminForm(forms.ModelForm):
+
+                class Meta:
+                    widgets = {
+                        'producer': AutocompleteTextboxWidget(
+                            choices=get_object_choices,
+                            attrs={
+                                'style': 'width:50%',
+                            }
                         )
                     }
 
 """
 
-from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
+from .widgets import AutocompleteWidget, AutocompleteMultipleWidget, AutocompleteTextboxWidget
 
-__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget']
+__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget', 'AutocompleteTextboxWidget']

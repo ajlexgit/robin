@@ -4,7 +4,7 @@ from libs.autocomplete import AutocompleteWidget
 from .models import AttachableBlock
 
 
-def blocks_item2dict(obj):
+def blocks_format_item(obj):
     return {
         'id': obj.id,
         'text': obj.label
@@ -34,7 +34,7 @@ class AttachableBlockField(models.ForeignKey):
             'widget': AutocompleteWidget(
                 expressions='label__icontains',
                 minimum_input_length=0,
-                item2dict_func=blocks_item2dict,
+                format_item=blocks_format_item,
             )
         }
         defaults.update(kwargs)
