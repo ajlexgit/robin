@@ -1,4 +1,5 @@
 ﻿from django.dispatch import receiver
+from django.http.response import Http404
 from libs.views import TemplateExView
 from seo import Seo
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
@@ -36,6 +37,9 @@ class CategoryView(TemplateExView):
         self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
 
     def get(self, request, *args, **kwargs):
+        if not self.category.is_visible:
+            raise Http404
+
         # Breadcrumbs
         request.breadcrumbs.add(self.config.title, 'shop:index')
         parent_categories = self.category.get_ancestors()
@@ -67,6 +71,9 @@ class DetailView(TemplateExView):
         self.product = ShopProduct.objects.get(alias=kwargs['alias'])
 
     def get(self, request, *args, **kwargs):
+        if not self.category.is_visible or not self.product.is_visible:
+            raise Http404
+
         # SEO
         seo = Seo()
         seo.set_title(self.config, default=self.config.title)

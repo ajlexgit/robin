@@ -135,11 +135,12 @@ class ShopCategory(MPTTModel):
 
     @cached_property
     def subcategories(self):
+        """ Видимые дочерние подкатегории """
         return self.get_children().filter(visible=True)
 
     @cached_property
     def products(self):
-        """ Продукты категории и её подкатегорий """
+        """ Видимые продукты категории и её подкатегорий """
         return ShopProduct.objects.filter(
             visible=True,
             category__in=self.get_descendants(include_self=True).filter(visible=True)
