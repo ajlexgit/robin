@@ -44,7 +44,7 @@ class CategoryView(TemplateExView):
         request.breadcrumbs.add(self.config.title, 'shop:index')
         parent_categories = self.category.get_ancestors()
         for category in parent_categories:
-            request.breadcrumbs.add(self.config.title, 'shop:category', category_alias=category.alias)
+            request.breadcrumbs.add(category.title, 'shop:category', category_alias=category.alias)
         request.breadcrumbs.add(self.category.title)
 
         # SEO
@@ -73,6 +73,13 @@ class DetailView(TemplateExView):
     def get(self, request, *args, **kwargs):
         if not self.category.is_visible or not self.product.is_visible:
             raise Http404
+
+        # Breadcrumbs
+        request.breadcrumbs.add(self.config.title, 'shop:index')
+        parent_categories = self.category.get_ancestors(include_self=True)
+        for category in parent_categories:
+            request.breadcrumbs.add(category.title, 'shop:category', category_alias=category.alias)
+        request.breadcrumbs.add(self.product.title)
 
         # SEO
         seo = Seo()
