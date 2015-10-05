@@ -63,7 +63,7 @@
   }
 
   ul {
-    padding-left: 1.8em;
+    padding-left: 1.6em;
     margin: 1.1em 0;
 
     li {
@@ -73,8 +73,8 @@
         content: '●';
         position: absolute;
         left: -1.4em;
-        top: 1.4em;
-        font-size: 0.6em;
+        top: 0.7em;
+        font-size: 0.8em;
         @include transform(translateY(-50%));
       }
     }
@@ -82,7 +82,7 @@
 
   ol {
     list-style: decimal;
-    padding-left: 1.8em;
+    padding-left: 1.6em;
     margin: 1.1em 0;
   }
 
