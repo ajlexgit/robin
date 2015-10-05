@@ -50,6 +50,8 @@ class AttachedBlocksForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.initial['block_type'] = self.instance.block.block_content_type.pk
+        else:
+            self.initial['block_type'] = list(self.fields['block_type'].choices)[0][0]
 
 
 class AttachedBlocksFormset(BaseGenericInlineFormSet):
