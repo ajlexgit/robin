@@ -2,7 +2,6 @@ from django.db import models
 from django.conf import settings
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
-from django.db.models.expressions import RawSQL
 from django.utils.functional import cached_property
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -133,6 +132,10 @@ class ShopCategory(MPTTModel):
 
     def __str__(self):
         return self.title
+
+    @cached_property
+    def subcategories(self):
+        return self.get_children().filter(visible=True)
 
     @cached_property
     def products(self):
