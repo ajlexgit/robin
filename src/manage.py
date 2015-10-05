@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Select2: tagging
 # AttachedBlocks: ограничение на список блоков, которые можно подключать массово
 # field.value_from_object вместо getattr
 # Fields: from_db_value, rm SubfieldBase
