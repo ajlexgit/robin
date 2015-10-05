@@ -634,34 +634,32 @@
         } else {
             // --- нельзя обрезать ---
 
-            // авторасчет размера, если есть нули
-            var new_w, new_h;
+            var image_size = [
+                Math.min(settings.max_width || target_size[0], target_size[0] || settings.max_width),
+                Math.min(settings.max_height || target_size[1], target_size[1] || settings.max_height)
+            ];
+
+            // обработка случаев, когда size содержит нули, но заданы max_width/max_height
+            target_size[0] = target_size[0] || image_size[0];
+            target_size[1] = target_size[1] || image_size[1];
+
+            // нули и в max_width и в size
             if (target_size[0] == 0) {
-                new_h = target_size[1];
-                new_w = target_size[1] * coords_ratio;
-                if (settings.max_width && (new_w > settings.max_width)) {
-                    new_w = settings.max_width;
-                }
+                var new_w = target_size[1] * coords_ratio;
 
                 if (!settings.stretch) {
                     new_w = Math.min(new_w, settings.coords[2])
                 }
 
-                target_size[0] = Math.floor(new_w);
-                target_size[1] = Math.floor(new_h);
+                target_size[0] = image_size[0] = Math.floor(new_w);
             } else if (target_size[1] == 0) {
-                new_w = target_size[0];
-                new_h = target_size[0] / coords_ratio;
-                if (settings.max_height && (new_h > settings.max_height)) {
-                    new_h = settings.max_height;
-                }
+                var new_h = target_size[0] / coords_ratio;
 
                 if (!settings.stretch) {
                     new_h = Math.min(new_h, settings.coords[3])
                 }
 
-                target_size[0] = Math.floor(new_w);
-                target_size[1] = Math.floor(new_h);
+                target_size[1] = image_size[1] = Math.floor(new_h);
             }
 
             // Новый размер канвы
@@ -673,26 +671,26 @@
 
             if (settings.stretch) {
                 // можно растягивать
-                target_ratio = target_size[0] / target_size[1];
-                if (coords_ratio >= target_ratio) {
+                var image_ratio = image_size[0] / target_size[1];
+                if (coords_ratio >= image_ratio) {
                     // картинка более "широкая", чем надо
-                    final_w = target_size[0];
+                    final_w = image_size[0];
                     final_h = final_w / coords_ratio;
                 } else {
                     // картинка более "высокая", чем надо
-                    final_h = target_size[1];
+                    final_h = image_size[1];
                     final_w = final_h * coords_ratio;
                 }
             } else {
                 // нельзя растягивать
                 final_w = settings.coords[2];
                 final_h = settings.coords[3];
-                if (final_w > target_size[0]) {
-                    final_w = target_size[0];
+                if (final_w > image_size[0]) {
+                    final_w = image_size[0];
                     final_h = final_w / coords_ratio;
                 }
-                if (final_h > target_size[1]) {
-                    final_h = target_size[1];
+                if (final_h > image_size[1]) {
+                    final_h = image_size[1];
                     final_w = final_h * coords_ratio;
                 }
             }

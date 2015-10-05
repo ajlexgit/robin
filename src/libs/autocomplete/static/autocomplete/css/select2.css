@@ -102,7 +102,7 @@ html[dir="rtl"] .select2-container .select2-choice > .select2-chosen {
     text-decoration: none;
 
     border: 0;
-    background: url('select2.png') right top no-repeat;
+    background: url('select2.png') -47px -1px no-repeat;
     cursor: pointer;
     outline: 0;
 }
@@ -112,7 +112,7 @@ html[dir="rtl"] .select2-container .select2-choice > .select2-chosen {
 }
 
 .select2-container .select2-choice abbr:hover {
-    background-position: right -11px;
+    background-position: -47px -12px;
     cursor: pointer;
 }
 

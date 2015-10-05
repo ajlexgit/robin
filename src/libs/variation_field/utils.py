@@ -377,45 +377,46 @@ def variation_resize(image, variation, target_format):
         max_width = variation['max_width']
         max_height = variation['max_height']
 
-        # Авторасчет размеров картинки
-        if target_size[0] == 0:
-            # автоматическая ширина
-            new_height = target_size[1]
-            new_width = target_size[1] * source_aspect
-            if max_width and new_width > max_width:
-                new_width = max_width
+        image_size = [
+            min(max_width or target_size[0], target_size[0] or max_width),
+            min(max_height or target_size[1], target_size[1] or max_height),
+        ]
 
+        # обработка случаев, когда size содержит нули, но заданы max_width/max_height
+        target_size = list(target_size)
+        target_size[0] = target_size[0] or image_size[0]
+        target_size[1] = target_size[1] or image_size[1]
+
+        # нули и в max_width и в size
+        if target_size[0] == 0:
+            new_width = target_size[1] * source_aspect
             if not stretch:
                 new_width = min(new_width, source_size[0])
 
-            target_size = (int(new_width), int(new_height))
+            target_size[0] = image_size[0] = int(new_width)
         elif target_size[1] == 0:
-            # автоматическая высота
-            new_width = target_size[0]
             new_height = target_size[0] / source_aspect
-            if max_height and new_height > max_height:
-                new_height = max_height
-
             if not stretch:
                 new_height = min(new_height, source_size[1])
 
-            target_size = (int(new_width), int(new_height))
+            target_size[1] = image_size[1] = int(new_height)
+
 
         if stretch:
-            target_aspect = operator.truediv(*target_size)
-            if source_aspect > target_aspect:
+            image_aspect = operator.truediv(*image_size)
+            if source_aspect > image_aspect:
                 # исходник более широкий, чем цель
-                factor = target_size[0] / source_size[0]
+                factor = image_size[0] / source_size[0]
                 new_size = (
-                    target_size[0],
+                    image_size[0],
                     round(source_size[1] * factor),
                 )
             else:
                 # исходник более высокий, чем цель
-                factor = target_size[1] / source_size[1]
+                factor = image_size[1] / source_size[1]
                 new_size = (
                     round(source_size[0] * factor),
-                    target_size[1]
+                    image_size[1]
                 )
 
             # Быстрое уменьшение картинки, если целевой размер намного меньше
@@ -423,7 +424,7 @@ def variation_resize(image, variation, target_format):
             image = image.resize(new_size, resample=Image.ANTIALIAS)
         else:
             # OLD: INSRIBE
-            image.thumbnail(target_size, resample=Image.ANTIALIAS)
+            image.thumbnail(image_size, resample=Image.ANTIALIAS)
 
         masked = mode == 'RGBA'
         image = put_on_bg(image, target_size, masked=masked, **bg_options)
