@@ -107,5 +107,8 @@
   img {
     vertical-align: middle;
   }
+  picture {
+    display: inline-block;
+  }
   @include reset-html5;
 }
