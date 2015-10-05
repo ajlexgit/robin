@@ -4,7 +4,6 @@
 """
 
 from django.forms.utils import ErrorList
-from django.utils.html import format_html
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 
@@ -13,11 +12,7 @@ class PlainErrorList(ErrorList):
         if not self:
             return ''
 
-        return format_html(
-            '<span class="error">{}</span>'.format(
-                ', '.join(str(e) for e in self)
-            )
-        )
+        return ', '.join(str(e) for e in self)
 
     @property
     def classes(self):
