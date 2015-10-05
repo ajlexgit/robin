@@ -5,6 +5,7 @@ from django.contrib.contenttypes.admin import (
     GenericTabularInline, GenericStackedInline, BaseGenericInlineFormSet
 )
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 from suit.admin import SortableTabularInlineBase
 from project.admin import ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
@@ -15,6 +16,17 @@ def get_block_types():
     """
         Возвращает список content_type_id всех блоков из кэша
     """
+    if 'attachable_block_types' not in cache:
+        blocks = []
+        AttachableBlock = self.get_model('AttachableBlock')
+        for model in apps.get_models():
+            if issubclass(model, AttachableBlock) and model != AttachableBlock:
+                ct = ContentType.objects.get_for_model(model)
+                blocks.append((ct.pk, str(model._meta.verbose_name)))
+
+        blocks = tuple(sorted(blocks, key=lambda x: x[1]))
+        cache.set('attachable_block_types', blocks, timeout=10*60)
+
     return cache.get('attachable_block_types')
 
 
