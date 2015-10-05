@@ -1,4 +1,5 @@
 from django import forms
+from django.apps import apps
 from django.core import checks
 from django.core.cache import cache
 from django.contrib.contenttypes.admin import (
@@ -9,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from suit.admin import SortableTabularInlineBase
 from project.admin import ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
-from .models import AttachableReference
+from .models import AttachableBlock, AttachableReference
 
 
 def get_block_types():
@@ -18,7 +19,6 @@ def get_block_types():
     """
     if 'attachable_block_types' not in cache:
         blocks = []
-        AttachableBlock = self.get_model('AttachableBlock')
         for model in apps.get_models():
             if issubclass(model, AttachableBlock) and model != AttachableBlock:
                 ct = ContentType.objects.get_for_model(model)
