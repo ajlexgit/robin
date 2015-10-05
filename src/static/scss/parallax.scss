@@ -6,6 +6,7 @@
   top: 0;
   min-width: 100.1%;
   min-height: 100.1%;
+  max-width: none;
   z-index: 1;
   @include transform(translateX(-50%));
   @include backface-visibility(hidden);

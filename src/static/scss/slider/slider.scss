@@ -36,6 +36,7 @@
   }
 
   img {
+    max-width: none;
     @include unselectable;
   }
 }
