@@ -40,6 +40,21 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     suit_seo_tab = 'seo'
 
 
+class ShopCategoryForm(forms.ModelForm):
+    class Meta:
+        model = ShopCategory
+        fields = '__all__'
+        widgets = {
+            'parent': AutocompleteWidget(
+                minimum_input_length=0,
+                format_item=ShopCategory.autocomplete_item,
+                attrs={
+                    'style': 'width:50%',
+                }
+            )
+        }
+
+
 @admin.register(ShopCategory)
 class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAdmin):
     fieldsets = (
@@ -57,6 +72,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
         }),
     )
     mptt_level_indent = 20
+    form = ShopCategoryForm
     actions = ('action_hide', 'action_show')
     list_display = ('view', 'title', 'is_visible', 'product_count', 'total_product_count')
     list_display_links = ('title',)
@@ -118,7 +134,6 @@ class StatusShopProductCategoryFilter(SimpleListFilter):
 
 
 class ShopProductForm(forms.ModelForm):
-
     class Meta:
         model = ShopProduct
         fields = '__all__'
