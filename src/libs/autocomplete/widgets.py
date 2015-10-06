@@ -162,13 +162,10 @@ class AutocompleteTextboxWidget(widgets.Widget):
     class Media:
         js = (
             'autocomplete/js/autocomplete_textbox.js',
-            'autocomplete/js/select2.min.js',
-            'autocomplete/js/select2_locale_%s.js' % settings.SHORT_LANGUAGE_CODE,
         )
         css = {
             'all': (
-                'autocomplete/css/select2-bootstrap.css',
-                'autocomplete/css/select2.css',
+                'autocomplete/css/autocomplete_textbox.css',
             )
         }
 
@@ -186,10 +183,6 @@ class AutocompleteTextboxWidget(widgets.Widget):
     def render(self, name, value, attrs=None):
         # Аттрибуты
         attrs = self.build_attrs(attrs)
-
-        # Добавляем класс
-        classes = attrs.get('class', '')
-        attrs['class'] = classes + ' autocomplete_textbox_widget'
 
         if callable(self.choices):
             choices = self.choices()
