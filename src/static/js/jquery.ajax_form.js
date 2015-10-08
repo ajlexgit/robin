@@ -13,29 +13,18 @@
         который может его модифицировать.
      */
 
-    var re_split_name = /^([^\[\]]+)(\[.*])?$/;     // "x[][name][5]"  =>  [..., "x", "[][5]"]
-    var re_brackets = /\[.*?]/g;    // "[][name][5]"  => ["[]", "[name]", "[5]"]
-
+    // Получение данных формы в виде объекта
     var buildFormData = function($form) {
         var data_array = $form.serializeArray();
         var form_data = {};
-        for (var i = 0, l = data_array; i < l; i++) {
+        for (var i = 0, l = data_array.length; i < l; i++) {
             var form_field = data_array[i];
-
-            var arr = re_split_name.exec(form_field.name);
-            if (!arr) {
-                console.error('buildFormData: bad field name "' + form_field.name + '"');
-                continue
-            }
-
-            var name = arr[1];
-            var params = arr[2];
-
-            form_data[name] = form_field.value;
+            form_data[form_field.name] = form_field.value;
         }
+        return form_data;
     };
 
-
+    // Обработчик отправки форм
     var onSubmit = function(settings) {
         var $form = $(this);
         if ($form.data('ajaxform_blocked')) {
@@ -75,7 +64,6 @@
                 }
             }, options, {
                 beforeSend: function() {
-                    this.$form = $form;
                     $form.data('ajaxform_blocked', true);
                     if (options.beforeSend && $.isFunction(options.beforeSend)) {
                         options.beforeSend.apply(this, arguments);
