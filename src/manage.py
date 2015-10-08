@@ -1,6 +1,8 @@
 import os
 import sys
 
+# создать JS, сохраняющий CSS и восстанавливающий их
+# настроить logging для staging / production
 # AttachedBlocks: ограничение на список блоков, которые можно подключать массово
 # field.value_from_object вместо getattr
 # Fields: from_db_value, rm SubfieldBase

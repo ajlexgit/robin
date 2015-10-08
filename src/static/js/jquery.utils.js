@@ -130,6 +130,26 @@
             return this
         };
 
+        // Shortcut для инициализации изменения свойства
+        Animation.prototype.autoInit = function(name, from, to) {
+            this._info = this._info || {};
+
+            this._info[name] = {
+                from: from,
+                diff: to - from
+            }
+        };
+
+        // Shortcut для расчета нового значения свойства
+        Animation.prototype.autoCalc = function(name, eProgress) {
+            var info = this._info && this._info[name];
+            if (!info) {
+                return null
+            }
+
+            return info.from + info.diff * eProgress;
+        };
+        
         // Применение шага анимации с вычислением that._progress
         Animation.prototype._timerHandle = function() {
             if (this._paused) {

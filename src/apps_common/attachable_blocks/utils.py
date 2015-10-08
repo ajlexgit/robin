@@ -30,4 +30,3 @@ def get_block(block_id):
     """
     from .models import AttachableBlock
     return AttachableBlock.objects.filter(pk=block_id).select_subclasses().first()
-

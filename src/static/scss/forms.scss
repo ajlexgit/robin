@@ -4,7 +4,7 @@ form {
   @include border-box;
 }
 
-input:not([type="radio"]):not([type="checkbox"]), select, textarea {
+input:not([type="radio"]):not([type="checkbox"]):not([type="file"]), select, textarea {
   width: 170px;
   padding: 5px 6px;
   border: 1px solid #808080;
