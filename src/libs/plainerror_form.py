@@ -1,6 +1,7 @@
 """
-    Миксина для форм, добавляющая форматированные списки ошибок
-    form.error_list и form_error_list_full
+    Миксина для форм, добавляющая форматированные списки ошибок:
+        1) form.error_list / form.error_list_full
+        2) form.error_dict / form.error_dict_full
 """
 
 from django.forms.utils import ErrorList
@@ -25,9 +26,14 @@ class PlainErrorList(ErrorList):
 
 class PlainErrorFormMixin:
     """
-        Форматирует ошибки полей формы в виде:
-            <span class="error">...</span>
+        Форматирует ошибки полей формы. Добавляет методы для получения
+        ошибок в виде словаря или списка.
     """
+
+    # Добавлять к именам полей в error_dict и error_list префикс формы
+    prefixed_errors = False
+
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_class = PlainErrorList
@@ -52,9 +58,16 @@ class PlainErrorFormMixin:
         else:
             raise ValueError('Unknown code %r' % code)
 
+    def _prefixed_error_name(self, name):
+        """ Добавление префикса к имени """
+        if self.prefixed_errors and self.prefix:
+            return '%s-%s' % (self.prefix, name)
+        else:
+            return name
+
     def _field_errors(self):
         return tuple(
-            (key, self.errors[key])
+            (self._prefixed_error_name(key), self.errors[key])
             for key in self.fields
             if key in self.errors
         )
