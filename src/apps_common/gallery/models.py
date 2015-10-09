@@ -402,8 +402,9 @@ class GalleryImageItem(GalleryItemBase):
         )
 
         # image
-        with self.image:
-            new_item.image.save(self.image.name, self.image, save=False)
+        with self.image as img:
+            img.open()
+            new_item.image.save(self.image.name, img, save=False)
 
         try:
             new_item.image.field.clean(new_item.image, new_item)
@@ -413,8 +414,8 @@ class GalleryImageItem(GalleryItemBase):
 
         for field in self._meta.concrete_fields:
             if field.name in copy_fields:
-                value = getattr(self, field.name)
-                setattr(new_item, field.name, value)
+                value = field.value_from_object(self)
+                field.save_form_data(new_item, value)
 
         return new_item, errors
 
@@ -627,7 +628,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
         )
         for field in self._meta.concrete_fields:
             if field.name in copy_fields:
-                value = getattr(self, field.name)
+                value = field.value_from_object(self)
                 setattr(new_item, field.name, value)
 
         return new_item, errors

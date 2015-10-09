@@ -48,23 +48,35 @@ SESSION_REDIS_HOST = 'localhost'
 SESSION_REDIS_PORT = 6379
 SESSION_REDIS_PREFIX = 'session'
 
-#TODO configure LOGGING
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'null': {
             'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'file': {
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': '/home/webapp/django_debug.log',
         },
     },
     'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
         'django.request': {
-            'handlers': ['file'],
+            'handlers': ['null'],
             'level': 'DEBUG',
             'propagate': True,
         },
+        '': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+        }
     },
 }
 

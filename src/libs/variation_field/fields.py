@@ -343,7 +343,7 @@ class VariationImageField(models.ImageField):
     def create_variation_fields(self, instance, field_file=None):
         """ Создание полей вариаций, если их нет """
         if field_file is None:
-            field_file = getattr(instance, self.name)
+            field_file = self.value_from_object(instance)
         if not field_file.variations:
             self._set_field_variations(instance)
 
@@ -351,7 +351,7 @@ class VariationImageField(models.ImageField):
         """
             Создает в экземпляре класса VariationImageFieldFile поля вариаций
         """
-        field_file = getattr(instance, self.name)
+        field_file = self.value_from_object(instance)
         field_file.variations = self.get_variations(instance)
         if not field_file or not field_file.exists():
             return
@@ -505,7 +505,7 @@ class VariationImageField(models.ImageField):
 
     def save_source_file(self, instance, source_image, draft_size=None, **kwargs):
         """ Сохранение исходника """
-        field_file = getattr(instance, self.name)
+        field_file = self.value_from_object(instance)
 
         if source_image.format is None:
             print('Warning: Image format is None (_save_source_file)')
@@ -567,7 +567,7 @@ class VariationImageField(models.ImageField):
 
     def resize_image(self, instance, variation, target_format, source_image):
         """ Обработка и сохранение одной вариации """
-        field_file = getattr(instance, self.name)
+        field_file = self.value_from_object(instance)
         if not field_file or not field_file.exists():
             return
 
@@ -616,7 +616,7 @@ class VariationImageField(models.ImageField):
             Обрезает картинку source_image по заданным координатам
             и создает из результата файлы вариаций.
         """
-        field_file = getattr(instance, self.name)
+        field_file = self.value_from_object(instance)
         current_image = variation_crop(source_image, croparea)
 
         if source_image.format is None:
@@ -652,7 +652,7 @@ class VariationImageField(models.ImageField):
         if not is_uploaded and not croparea:
             return
 
-        field_file = getattr(instance, self.name)
+        field_file = self.value_from_object(instance)
         if not field_file or not field_file.exists():
             return
 
@@ -707,5 +707,5 @@ class VariationImageField(models.ImageField):
 
     def post_delete(self, instance=None, **kwargs):
         """ Обработчик сигнала удаления экземпляра модели """
-        field_file = getattr(instance, self.name)
+        field_file = self.value_from_object(instance)
         field_file.delete(save=False)

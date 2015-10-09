@@ -94,6 +94,6 @@ class GalleryField(models.OneToOneField):
 
     def pre_delete(self, instance=None, **kwargs):
         """ Удаление галереи при удалении сущности """
-        gallery = getattr(instance, self.name)
+        gallery = self.value_from_object(instance)
         if gallery:
             gallery.delete()
