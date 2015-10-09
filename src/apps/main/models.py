@@ -35,6 +35,15 @@ class MainGalleryImageItem(GalleryImageItem):
 
 class MainGalleryVideoLinkItem(GalleryVideoLinkItem):
     STORAGE_LOCATION = 'main/gallery'
+    ADMIN_VARIATION = 'small'
+    VARIATIONS = dict(
+        normal=dict(
+            size=(640, 360),
+        ),
+        small=dict(
+            size=(160, 120),
+        ),
+    )
 
 
 class MainGallery(GalleryBase):

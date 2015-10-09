@@ -447,23 +447,10 @@ class GalleryVideoLinkItem(GalleryItemBase):
     DEFAULT_QUALITY = 85
 
     # Имя вариации, которая показывается в админке
-    ADMIN_VARIATION = 'small'
+    ADMIN_VARIATION = ''
 
     # Вариации, на которые нарезаются картинки.
-    VARIATIONS = dict(
-        normal=dict(
-            size=(640, 360),
-        ),
-        medium=dict(
-            size=(480, 270),
-        ),
-        small=dict(
-            size=(320, 180),
-        ),
-        micro=dict(
-            size=(160, 90),
-        ),
-    )
+    VARIATIONS = {}
 
     # =============================================================================
 
