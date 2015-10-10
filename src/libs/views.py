@@ -1,40 +1,63 @@
-from django.http.response import Http404
 from django.views.decorators.http import condition
 from django.template import loader, Context, RequestContext
 from django.views.generic.base import TemplateResponseMixin, View
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
-class RenderToStringMixin(TemplateResponseMixin):
-    def _resolve_context(self, context, current_app=None):
-        if isinstance(context, Context):
-            return context
-        else:
-            return RequestContext(self.request, context, current_app=current_app)
+class DecoratableViewMixin:
+    """
+        Представление, добавляющее методы before_METHOD,
+        выполняющиеся пере вызовом обработчика.
 
-    def render_to_string(self, context=None, template=None, current_app=None, dirs=None):
-        template = template or self.template_name
-        context = self._resolve_context(context, current_app)
+        Эти методы могут устанавлисать данные, необходимые
+        для декораторов.
+    """
+    method = ''
+
+    def get_handler(self, request):
+        return getattr(self, self.method, None)
+
+    def dispatch(self, request, *args, **kwargs):
+        self.method = request.method.lower()
+        if not self.method in self.http_method_names:
+            return self.http_method_not_allowed(request, *args, **kwargs)
+
+        handler = self.get_handler(request)
+        if not callable(handler):
+            return self.http_method_not_allowed(request, *args, **kwargs)
+
+        # метод, вызываемый перед вызовом обработчика
+        before_handler = getattr(self, 'before_%s' % self.method, None)
+        if before_handler:
+            before_handler(request, *args, **kwargs)
+
+        return handler(request, *args, **kwargs)
+
+
+class StringRenderMixin:
+    """
+        Представление, добавляющее метод render_to_string для
+        рендеринга шаблона в строку
+    """
+    def render_to_string(self, template, context=None, current_app=None, dirs=None):
+        if not isinstance(context, Context):
+            context = RequestContext(self.request, context, current_app=current_app)
+
         return loader.get_template(template, dirs=dirs).render(context)
 
 
-class TemplateExView(RenderToStringMixin, View):
+class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMixin, View):
     """
         Расширенная версия TemplateView:
         1) Позволяет переопределить шаблон в методе render_to_response
         2) Позволяет рендерить шаблон в строку
-        3) Позволяет задать метод get_objects, который может установить атрибуты объекту
-           self. Метод автоматически перехватывает исключения ObjectDoesNotExist
-           и MultipleObjectsReturned. Этот метод создан для оптимизации запросов
-           при применении last_modified и etag.
-        4) Позволяет установить кэширование в браузере для GET-страницы
+        3) Позволяет установить кэширование в браузере для GET-страницы
            путем задания методов last_modified и/или etag.
 
         Пример:
             class IndexView(TemplateExView):
                 template_name = 'contacts/index.html'
 
-                def get_objects(self, request, *args, **kwargs):
+                def before_get(self, request, *args, **kwargs):
                     self.object =  ContactsConfig.get_solo()
 
                 def last_modified(self, *args, **kwargs):
@@ -46,34 +69,19 @@ class TemplateExView(RenderToStringMixin, View):
                     })
     """
 
-    def get_objects(self, request, *args, **kwargs):
-        return None
-
     def last_modified(self, *args, **kwargs):
         return None
 
     def etag(self, *args, **kwargs):
         return None
 
-    def dispatch(self, request, *args, **kwargs):
-        method = request.method.lower()
-        if method in self.http_method_names:
-            handler = getattr(self, method, self.http_method_not_allowed)
-
-            # Декорирование GET-метода
-            if method == 'get' and hasattr(self, method):
-                try:
-                    self.get_objects(request, *args, **kwargs)
-                except (ObjectDoesNotExist, MultipleObjectsReturned):
-                    raise Http404
-
-                handler = condition(
-                    last_modified_func=self.last_modified,
-                    etag_func=self.etag,
-                )(handler)
-        else:
-            handler = self.http_method_not_allowed
-        return handler(request, *args, **kwargs)
+    def get_handler(self, request):
+        handler = super().get_handler(request)
+        if handler and self.method == 'get':
+            return condition(
+                last_modified_func=self.last_modified,
+                etag_func=self.etag,
+            )(handler)
 
     def render_to_response(self, context=None, template=None, dirs=None, **response_kwargs):
         template = template or self.template_name

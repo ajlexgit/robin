@@ -15,7 +15,11 @@ def _get_gallery(request):
     if not gallery_model:
         raise Http404
 
-    gallery_id = request.POST.get('gallery_id', 0)
+    try:
+        gallery_id = request.POST.get('gallery_id')
+    except (TypeError, ValueError):
+        raise Http404
+
     try:
         gallery = gallery_model.objects.get(pk=gallery_id)
     except gallery_model.DoesNotExist:
@@ -25,7 +29,11 @@ def _get_gallery(request):
 
 
 def _get_gallery_item(request, gallery):
-    item_id = request.POST.get('item_id', 0)
+    try:
+        item_id = request.POST.get('item_id')
+    except (TypeError, ValueError):
+        raise Http404
+
     try:
         item = gallery.items.model.objects.get(pk=item_id)
     except gallery.items.model.DoesNotExist:
@@ -68,7 +76,13 @@ def delete(request):
 def sort(request):
     """ Сохранение сортировки галереи """
     gallery = _get_gallery(request)
-    item_ids = request.POST.get('item_ids', '').split(',')
+
+    try:
+        item_ids = request.POST.get('item_ids', '').split(',')
+        item_ids = map(int, item_ids)
+    except (TypeError, ValueError):
+        raise Http404
+
     for order, item_id in enumerate(item_ids, start=1):
         try:
             item = gallery.items.model.objects.get(pk=item_id)

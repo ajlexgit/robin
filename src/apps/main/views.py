@@ -6,12 +6,13 @@ from .forms import MainForm, InlineFormSet
 
 
 class IndexView(TemplateExView):
+    config = None
     template_name = 'main/index.html'
 
-    def get_objects(self, request, *args, **kwargs):
+    def before_get(self, request):
         self.config = MainPageConfig.get_solo()
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         form_obj = ClientFormModel.objects.first()
         form = MainForm(instance=form_obj, prefix='main')
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
@@ -35,7 +36,7 @@ class IndexView(TemplateExView):
             'formset': formset,
         })
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         form_obj = ClientFormModel.objects.first()
         form = MainForm(request.POST, request.FILES, instance=form_obj, prefix='main')
         formset = InlineFormSet(request.POST, request.FILES, instance=form_obj, prefix='inlines')

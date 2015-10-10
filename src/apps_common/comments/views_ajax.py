@@ -1,23 +1,27 @@
 from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
+from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, JsonResponse
 from libs.views import TemplateExView
+from libs.views_ajax import AjaxViewMixin
 from .models import Comment, CommentVote
 from .forms import CommentForm, CommentValidationForm
 from .voted_cache import update_voted_cache
 
 
-class RefreshView(TemplateExView):
+class RefreshView(AjaxViewMixin, View):
     """ Обновление всех комментариев """
     def get(self, request):
-        content_type_id = request.GET.get('content_type') or None
-        content_type = get_object_or_404(ContentType, pk=content_type_id)
-
-        object_id = request.GET.get('object_id') or None
         try:
+            content_type_id = int(request.GET.get('content_type'))
+            object_id = int(request.GET.get('object_id'))
+        except (ValueError, TypeError):
+            raise Http404
+
+        try:
+            content_type = ContentType.objects.get(pk=content_type_id)
             obj = content_type.get_object_for_this_type(pk=object_id)
         except ObjectDoesNotExist:
             raise Http404
@@ -30,15 +34,13 @@ class RefreshView(TemplateExView):
             }),
         }
         return JsonResponse({
-            'comments': self.render_to_string(context, template='comments/comments.html'),
-            'initial_form': self.render_to_string(context, template='comments/comments_form.html'),
+            'comments': self.render_to_string('comments/comments.html', context),
+            'initial_form': self.render_to_string('comments/comments_form.html', context),
         })
 
 
-class ChangeView(TemplateExView):
+class ChangeView(AjaxViewMixin, View):
     """ Редактирование комментария """
-    template_name = 'comments/comment.html'
-
     def get(self, request):
         if not request.user.is_authenticated():
             return JsonResponse({
@@ -69,7 +71,11 @@ class ChangeView(TemplateExView):
             })
 
         try:
-            comment_id = request.POST.get('comment') or None
+            comment_id = int(request.POST.get('comment'))
+        except (TypeError, ValueError):
+            raise Http404
+
+        try:
             comment = Comment.objects.get(pk=comment_id)
         except Comment.DoesNotExist:
             return JsonResponse({
@@ -91,7 +97,7 @@ class ChangeView(TemplateExView):
         comment.add_permissions(request.user)
 
         return JsonResponse({
-            'html': self.render_to_string({
+            'html': self.render_to_string('comments/comment.html', {
                 'comment': comment,
             }),
         })

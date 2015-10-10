@@ -1,15 +1,14 @@
-﻿from django.dispatch import receiver
-from django.http.response import Http404
-from libs.views import TemplateExView
+﻿from django.http.response import Http404
 from seo import Seo
-from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
-from .signals import order_payed
+from libs.views import TemplateExView
+from .models import ShopConfig, ShopCategory, ShopProduct
 
 
 class IndexView(TemplateExView):
+    config = None
     template_name = 'shop/index.html'
 
-    def get_objects(self, request, *args, **kwargs):
+    def before_get(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
 
     def get(self, request):
@@ -30,11 +29,17 @@ class IndexView(TemplateExView):
 
 
 class CategoryView(TemplateExView):
+    config = None
+    category = None
     template_name = 'shop/category.html'
 
-    def get_objects(self, request, *args, **kwargs):
+    def before_get(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-        self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
+
+        try:
+            self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
+        except (ShopCategory.DoesNotExist, ShopCategory.MultipleObjectsReturned):
+            raise Http404
 
     def get(self, request, *args, **kwargs):
         if not self.category.is_visible:
@@ -63,12 +68,23 @@ class CategoryView(TemplateExView):
 
 
 class DetailView(TemplateExView):
+    config = None
+    product = None
+    category = None
     template_name = 'shop/detail.html'
 
-    def get_objects(self, request, *args, **kwargs):
+    def before_get(self, request, *args, **kwargs):
         self.config = ShopConfig.get_solo()
-        self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
-        self.product = ShopProduct.objects.get(alias=kwargs['alias'])
+
+        try:
+            self.category = ShopCategory.objects.get(alias=kwargs['category_alias'])
+        except (ShopCategory.DoesNotExist, ShopCategory.MultipleObjectsReturned):
+            raise Http404
+
+        try:
+            self.product = ShopProduct.objects.get(alias=kwargs['alias'])
+        except (ShopProduct.DoesNotExist, ShopProduct.MultipleObjectsReturned):
+            raise Http404
 
     def get(self, request, *args, **kwargs):
         if not self.category.is_visible or not self.product.is_visible:
@@ -96,12 +112,3 @@ class DetailView(TemplateExView):
             'current_product': self.product,
         })
 
-
-@receiver(order_payed, sender=ShopOrder)
-def order_payed(sender, **kwargs):
-    """ Обработчик сигнала оплаты заказа """
-    order = kwargs.get('order')
-    if not order or not isinstance(order, ShopOrder):
-        return
-
-    order.mark_payed()

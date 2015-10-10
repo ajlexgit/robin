@@ -24,9 +24,7 @@ def user_passes_test(perm_func):
                 return view_func(request, *args, **kwargs)
             else:
                 raise PermissionDenied
-
         return _wrapped_view
-
     return decorator
 
 

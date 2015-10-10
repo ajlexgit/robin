@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.core import checks
 from libs.widgets import URLWidget
@@ -11,6 +12,9 @@ class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
         kwargs['max_length'] = 64
         self._providers = set(providers)
         super().__init__(*args, **kwargs)
+
+    def get_internal_type(self):
+        return "CharField"
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -46,25 +50,34 @@ class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
                 )
         return errors
 
-    def get_internal_type(self):
-        return "CharField"
-
-    def to_python(self, value):
-        if value is None or value == '':
-            return value
-        if isinstance(value, VideoLink):
-            return value
-        return VideoLink(value, self._providers)
+    def from_db_value(self, value, *args, **kwargs):
+        if not value:
+            return None
+        elif isinstance(value, str):
+            return VideoLink(value, self._providers)
+        else:
+            raise ValueError('Invalid video type: %r' % value)
 
     def get_prep_value(self, value):
-        if value is None or value == '':
-            return value
-        if not isinstance(value, VideoLink):
-            value = VideoLink(value, self._providers)
-        return value.db_value
+        if not value:
+            return ''
+        elif isinstance(value, VideoLink):
+            return repr(value)
+        else:
+            raise TypeError('Invalid video type: %r' % value)
 
-    def clean(self, value, model_instance):
-        return super().clean(value, model_instance)
+    def to_python(self, value):
+        if not value:
+            return None
+        elif isinstance(value, VideoLink):
+            return value
+        elif isinstance(value, str):
+            try:
+                return VideoLink(value, self._providers)
+            except (TypeError, ValueError) as e:
+                raise ValidationError(e)
+        else:
+            raise ValidationError('Invalid video type: %r' % value)
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)

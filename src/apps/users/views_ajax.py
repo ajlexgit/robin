@@ -1,10 +1,10 @@
 from django.forms import model_to_dict
-from django.views.generic.edit import FormView
+from django.views.generic import View, FormView
 from django.http import HttpResponse, Http404, JsonResponse
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
-from libs.views import TemplateExView, RenderToStringMixin
+from libs.views_ajax import AjaxViewMixin
 from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 
@@ -22,10 +22,10 @@ def user_to_dict(user):
     return user_dict
 
 
-class LoginView(RenderToStringMixin, FormView):
+class LoginView(AjaxViewMixin, FormView):
     """ AJAX login """
-    template_name = 'users/ajax_login.html'
     form_class = LoginForm
+    template_name = 'users/ajax_login.html'
 
     def form_valid(self, form):
         user = form.get_user()
@@ -37,13 +37,13 @@ class LoginView(RenderToStringMixin, FormView):
     def form_invalid(self, form):
         return JsonResponse({
             'errors': form.error_dict_full,
-            'form': self.render_to_string({
+            'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
         })
 
 
-class LogoutView(TemplateExView):
+class LogoutView(AjaxViewMixin, View):
     """ AJAX logout """
     def post(self, request):
         auth_logout(request)
@@ -52,10 +52,10 @@ class LogoutView(TemplateExView):
         })
 
 
-class RegisterView(RenderToStringMixin, FormView):
+class RegisterView(AjaxViewMixin, FormView):
     """ AJAX register """
-    template_name = 'users/ajax_register.html'
     form_class = RegisterForm
+    template_name = 'users/ajax_register.html'
 
     def form_valid(self, form):
         user = form.save()
@@ -71,17 +71,17 @@ class RegisterView(RenderToStringMixin, FormView):
     def form_invalid(self, form):
         return JsonResponse({
             'errors': form.error_dict_full,
-            'form': self.render_to_string({
+            'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
         })
 
 
-class PasswordResetView(RenderToStringMixin, FormView):
+class PasswordResetView(AjaxViewMixin, FormView):
     """ AJAX reset password """
-    template_name = 'users/ajax_reset.html'
-    form_class = PasswordResetForm
     email = ''
+    form_class = PasswordResetForm
+    template_name = 'users/ajax_reset.html'
 
     def post(self, request, *args, **kwargs):
         self.email = request.POST.get('email', '')
@@ -99,24 +99,22 @@ class PasswordResetView(RenderToStringMixin, FormView):
         }
         form.save(**opts)
         return JsonResponse({
-            'done': self.render_to_string({
+            'done': self.render_to_string('users/ajax_reset_done.html', {
                 'email': self.email,
-            }, template='users/ajax_reset_done.html'),
+            }),
         })
 
     def form_invalid(self, form):
         return JsonResponse({
             'errors': form.error_dict_full,
-            'form': self.render_to_string({
+            'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
         })
 
 
-class AvatarUploadView(TemplateExView):
+class AvatarUploadView(AjaxViewMixin, View):
     """ Загрузка аватара """
-    template_name = 'users/profile_avatar.html'
-
     def post(self, request):
         """ Загрузка автарки """
         if not request.user.is_authenticated():
@@ -147,16 +145,14 @@ class AvatarUploadView(TemplateExView):
             'micro_avatar': request.user.micro_avatar,
             'small_avatar': request.user.small_avatar,
             'normal_avatar': request.user.normal_avatar,
-            'profile_avatar_html': self.render_to_string({
+            'profile_avatar_html': self.render_to_string('users/profile_avatar.html', {
                 'profile_user': request.user,
             })
         })
 
 
-class AvatarCropView(TemplateExView):
+class AvatarCropView(AjaxViewMixin, View):
     """ Обрезка аватара """
-    template_name = 'users/profile_avatar.html'
-
     def post(self, request):
         if not request.user.is_authenticated():
             raise Http404
@@ -175,16 +171,14 @@ class AvatarCropView(TemplateExView):
             'micro_avatar': request.user.micro_avatar,
             'small_avatar': request.user.small_avatar,
             'normal_avatar': request.user.normal_avatar,
-            'profile_avatar_html': self.render_to_string({
+            'profile_avatar_html': self.render_to_string('users/profile_avatar.html', {
                 'profile_user': request.user,
             })
         })
 
 
-class AvatarRemoveView(TemplateExView):
+class AvatarRemoveView(AjaxViewMixin, View):
     """ Удаление аватара """
-    template_name = 'users/profile_avatar.html'
-
     def post(self, request):
         if not request.user.is_authenticated():
             raise Http404
@@ -195,7 +189,7 @@ class AvatarRemoveView(TemplateExView):
             'micro_avatar': request.user.micro_avatar,
             'small_avatar': request.user.small_avatar,
             'normal_avatar': request.user.normal_avatar,
-            'profile_avatar_html': self.render_to_string({
+            'profile_avatar_html': self.render_to_string('users/profile_avatar.html', {
                 'profile_user': request.user,
             })
         })

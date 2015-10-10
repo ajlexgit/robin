@@ -12,7 +12,6 @@ class NotAllowedProvider(Exception):
     pass
 
 
-
 class VideoLink:
     __slots__ = ('_provider', '_key', '_info', '_url')
 
@@ -61,9 +60,8 @@ class VideoLink:
             self._info = self.provider.get_info(self._key)
         return self._info
 
-    @property
-    def db_value(self):
-        return '{}#{}'.format(self._provider, self._key)
+    def __str__(self):
+        return self.url
 
     def __repr__(self):
-        return self.url
+        return '{}#{}'.format(self._provider, self._key)

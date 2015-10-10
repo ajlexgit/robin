@@ -4,8 +4,8 @@ from django.db.models import QuerySet, F
 from django.db.models.expressions import RawSQL
 from django.db.models.signals import post_delete
 from django.db.models.query import ValuesListQuerySet
-from ..models import ShopCategory, ShopProduct
-from . import products_changed, categories_changed
+from ..models import ShopCategory, ShopProduct, ShopOrder
+from . import products_changed, categories_changed, order_payed
 
 
 @receiver(products_changed, sender=ShopProduct)
@@ -99,3 +99,15 @@ def delete_product(sender, **kwargs):
     instance = kwargs.get('instance')
     if isinstance(instance, ShopProduct) and instance.is_visible:
         products_changed.send(sender, categories=instance.category_id)
+
+
+@receiver(order_payed, sender=ShopOrder)
+def order_payed(sender, **kwargs):
+    """
+        Обработчик сигнала оплаты заказа
+    """
+    order = kwargs.get('order')
+    if not order or not isinstance(order, ShopOrder):
+        return
+
+    order.mark_payed()

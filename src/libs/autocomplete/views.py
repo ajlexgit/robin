@@ -15,6 +15,12 @@ def autocomplete_widget(request, application, model_name, name):
     if not request.is_ajax():
         raise Http404
 
+    try:
+        page = int(request.POST.get('page', 1))
+        page_limit = int(request.POST.get('page_limit', 0))
+    except (TypeError, ValueError):
+        raise Http404
+
     # Получаем данные из Redis
     redis_data = pickle.loads(
         cache.get('.'.join((application, model_name, name)))
@@ -61,8 +67,6 @@ def autocomplete_widget(request, application, model_name, name):
     }
 
     # Постраничная навигация
-    page = int(request.POST.get('page', 1))
-    page_limit = int(request.POST.get('page_limit', 0))
     if page and page_limit:
         count = data['total'] = queryset.count()
         max_pages = math.ceil(count / page_limit)
