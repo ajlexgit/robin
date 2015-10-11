@@ -58,8 +58,11 @@ class GoogleCoordsField(models.Field):
             raise TypeError('Lookup type %r not supported.' % lookup_type)
 
     def formfield(self, **kwargs):
-        kwargs['widget'] = GoogleCoordsFieldWidget(attrs={
-            'data-width': getattr(settings, 'ADMIN_GOOGLE_MAP_WIDTH', ''),
-            'data-height': getattr(settings, 'ADMIN_GOOGLE_MAP_HEIGHT', ''),
-        })
-        return super().formfield(**kwargs)
+        defaults = {
+            'widget': GoogleCoordsFieldWidget(attrs={
+                'data-width': getattr(settings, 'ADMIN_GOOGLE_MAP_WIDTH', ''),
+                'data-height': getattr(settings, 'ADMIN_GOOGLE_MAP_HEIGHT', ''),
+            })
+        }
+        defaults.update(kwargs)
+        return super().formfield(**defaults)

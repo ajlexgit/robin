@@ -124,11 +124,12 @@ class SpriteImageField(models.CharField):
             raise exceptions.ValidationError(self.error_messages['blank'], code='blank')
 
     def formfield(self, **kwargs):
-        kwargs.update({
+        defaults = {
             'choices_form_class': SpriteImageFormField,
             'widget': SpriteImageWidget(
                 sprite=self.sprite_url,
                 size=self.size,
             ),
-        })
-        return super().formfield(**kwargs)
+        }
+        defaults.update(kwargs)
+        return super().formfield(**defaults)
