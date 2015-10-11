@@ -112,7 +112,7 @@ class MainPageConfig(SingletonModel):
         blank=True,
         null=True,
     )
-    video = VideoLinkField(_('video'), blank=True)
+    video = VideoLinkField(_('video'), blank=True, providers=('youtube', ))
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 

@@ -4,14 +4,6 @@ from .providers import PROVIDERS
 re_url = re.compile(r'(?:https?:)?//')
 
 
-class BadVideoURL(Exception):
-    pass
-
-
-class NotAllowedProvider(Exception):
-    pass
-
-
 class VideoLink:
     __slots__ = ('_provider', '_key', '_info', '_url')
 
@@ -27,14 +19,14 @@ class VideoLink:
                 except ValueError:
                     pass
             else:
-                raise BadVideoURL(link)
+                raise ValueError('Invalid video url')
         else:
             # video_key
             self._provider, self._key = link.split('#', 1)
 
         allowed = allowed_providers or set(PROVIDERS.keys())
         if self._provider not in allowed:
-            raise NotAllowedProvider(self._provider)
+            raise ValueError('Provider not allowed: %s' % self._provider)
 
         self._url = None
         self._info = None
@@ -60,8 +52,12 @@ class VideoLink:
             self._info = self.provider.get_info(self._key)
         return self._info
 
+    @property
+    def db_value(self):
+        return '{}#{}'.format(self._provider, self._key)
+
     def __str__(self):
         return self.url
 
     def __repr__(self):
-        return '{}#{}'.format(self._provider, self._key)
+        return '%s(%r)' % (self.__class__.__name__, self.url)

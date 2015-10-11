@@ -9,7 +9,7 @@
         video = VideoLinkField(_('video'))
 """
 
-from .videolink import VideoLink, BadVideoURL, NotAllowedProvider
+from .videolink import VideoLink
 from .fields import VideoLinkField
 
-__all__ = ['VideoLink', 'BadVideoURL', 'NotAllowedProvider', 'VideoLinkField']
+__all__ = ['VideoLink', 'VideoLinkField']

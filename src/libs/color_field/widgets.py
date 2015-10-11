@@ -46,8 +46,9 @@ class ColorWidget(widgets.MultiWidget):
         _color, color = super().value_from_datadict(data, files, name)
         if not color:
             return None
+
         color_obj = Color(color)
-        return color_obj.color
+        return color_obj.db_value
 
 
 class ColorOpacityWidget(widgets.MultiWidget):
@@ -102,5 +103,6 @@ class ColorOpacityWidget(widgets.MultiWidget):
         _color, color, opacity = super().value_from_datadict(data, files, name)
         if not color:
             return None
+
         color_obj = Color(color, opacity or '1')
-        return color_obj.to_string()
+        return color_obj.db_value

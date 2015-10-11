@@ -1,5 +1,7 @@
+import re
 from decimal import Decimal, getcontext
-from .utils import color_from_string
+
+re_hexcolor = re.compile('^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
 class Color:
@@ -8,7 +10,7 @@ class Color:
     def __new__(cls, color, opacity='1'):
         self = object.__new__(cls)
 
-        if ':' in color:
+        if isinstance(color, str) and ':' in color:
             color, opacity = color.split(':')
 
         self.color = color
@@ -22,7 +24,11 @@ class Color:
 
     @opacity.setter
     def opacity(self, value):
-        cleaned_opacity = Decimal(value)
+        try:
+            cleaned_opacity = Decimal(value)
+        except (TypeError, ValueError):
+            raise ValueError('Invalid opacity')
+
         if cleaned_opacity < 0:
             cleaned_opacity = Decimal()
         elif cleaned_opacity > 1:
@@ -37,15 +43,21 @@ class Color:
 
     @color.setter
     def color(self, value):
-        cleaned_color = color_from_string(value)
-        if not cleaned_color:
-            raise ValueError('Wrong color "%s"' % value)
+        color_match = re_hexcolor.match(str(value))
+        if not color_match:
+            raise ValueError('Invalid color value')
+
+        no_hash_color = color_match.group(1)
+        if len(no_hash_color) == 3:
+            cleaned_color = ''.join(letter * 2 for letter in no_hash_color).upper()
         else:
-            self._color = cleaned_color
-            self._int_color = tuple(
-                int(cleaned_color[i:i+2], 16)
-                for i in range(0, len(cleaned_color), 2)
-            )
+            cleaned_color = no_hash_color.upper()
+
+        self._color = cleaned_color
+        self._int_color = tuple(
+            int(cleaned_color[i:i+2], 16)
+            for i in range(0, len(cleaned_color), 2)
+        )
 
     @property
     def rgb(self):
@@ -55,11 +67,15 @@ class Color:
     def rgba(self):
         return 'rgba({1}, {2}, {3}, {0})'.format(self.opacity, *self._int_color)
 
-    def to_string(self):
+    @property
+    def db_value(self):
         return '{}:{}'.format(self._color, self._opacity)
 
-    def __repr__(self):
+    def __str__(self):
         if self._opacity == 1:
             return self.color
         else:
             return self.rgba
+
+    def __repr__(self):
+        return '%s(%r, %r)' % (self.__class__.__name__, self._color, self._opacity)

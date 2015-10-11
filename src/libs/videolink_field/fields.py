@@ -3,11 +3,10 @@ from django.db import models
 from django.core import checks
 from libs.widgets import URLWidget
 from .videolink import VideoLink
-from .formfields import VideoLinkFormField
 from .providers import PROVIDERS
 
 
-class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
+class VideoLinkField(models.Field):
     def __init__(self, *args, providers=set(), **kwargs):
         kwargs['max_length'] = 64
         self._providers = set(providers)
@@ -34,7 +33,7 @@ class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
         if not isinstance(self._providers, (set, list, tuple)):
             return [
                 checks.Error(
-                    'providers must be set, list or tuple',
+                    'providers must be a set, list or tuple',
                     obj=self
                 )
             ]
@@ -54,7 +53,10 @@ class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
         if not value:
             return None
         elif isinstance(value, str):
-            return VideoLink(value, self._providers)
+            try:
+                return VideoLink(value, self._providers)
+            except (ValueError, TypeError):
+                return None
         else:
             raise ValueError('Invalid video type: %r' % value)
 
@@ -62,7 +64,7 @@ class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
         if not value:
             return ''
         elif isinstance(value, VideoLink):
-            return repr(value)
+            return value.db_value
         else:
             raise TypeError('Invalid video type: %r' % value)
 
@@ -84,11 +86,10 @@ class VideoLinkField(models.Field, metaclass=models.SubfieldBase):
         return self.get_prep_value(value)
 
     def formfield(self, **kwargs):
-        kwargs.update({
-            'form_class': VideoLinkFormField,
-            'providers': self._providers,
+        defaults = {
             'widget': URLWidget(attrs={
-                'class': 'input-xxlarge',
+                'class': 'full-width',
             }),
-        })
-        return super().formfield(**kwargs)
+        }
+        defaults.update(kwargs)
+        return super().formfield(**defaults)
