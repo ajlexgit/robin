@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Counter',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('label', models.CharField(verbose_name='label', max_length=128)),
-                ('position', models.CharField(choices=[('head', 'Inside <head>'), ('body_top', 'Start of <body>'), ('body_bottom', 'End of <body>')], verbose_name='position', max_length=12)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('label', models.CharField(max_length=128, verbose_name='label')),
+                ('position', models.CharField(max_length=12, choices=[('head', 'Inside <head>'), ('body_top', 'Start of <body>'), ('body_bottom', 'End of <body>')], verbose_name='position')),
                 ('content', models.TextField(verbose_name='content')),
             ],
             options={
@@ -27,10 +27,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoConfig',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('title', models.CharField(verbose_name='site title', max_length=128)),
-                ('keywords', models.TextField(blank=True, verbose_name='site keywords', max_length=255)),
-                ('description', models.TextField(blank=True, verbose_name='site description', max_length=160)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=128, verbose_name='site title')),
+                ('keywords', models.TextField(max_length=255, blank=True, verbose_name='site keywords')),
+                ('description', models.TextField(max_length=160, blank=True, verbose_name='site description')),
             ],
             options={
                 'verbose_name': 'Site config',
@@ -39,13 +39,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoData',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('title', models.CharField(blank=True, verbose_name='title', max_length=128)),
-                ('keywords', models.TextField(blank=True, verbose_name='keywords', max_length=255)),
-                ('description', models.TextField(blank=True, verbose_name='description', max_length=160)),
-                ('header', models.CharField(blank=True, verbose_name='header', max_length=128)),
-                ('text', models.TextField(verbose_name='text', blank=True)),
+                ('title', models.CharField(max_length=128, blank=True, verbose_name='title')),
+                ('keywords', models.TextField(max_length=255, blank=True, verbose_name='keywords')),
+                ('description', models.TextField(max_length=160, blank=True, verbose_name='description')),
+                ('header', models.CharField(max_length=128, blank=True, verbose_name='header')),
+                ('text', models.TextField(blank=True, verbose_name='text')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
             options={
