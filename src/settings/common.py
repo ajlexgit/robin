@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 from django.utils.translation import ugettext_lazy as _
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
@@ -320,7 +321,11 @@ MANAGERS = (
 
 # Список скомпилированных регулярных выражений адресов страниц,
 # сообщения о 404 на которых не должны отправляться на почту (MANAGERS)
-IGNORABLE_404_URLS = ()
+IGNORABLE_404_URLS = (
+    re.compile(r'^/apple-touch-icon.*\.png$'),
+    re.compile(r'^/favicon\.ico$'),
+    re.compile(r'^/robots\.txt$'),
+)
 
 # Домен для куки CSRF (".example.com")
 CSRF_COOKIE_DOMAIN = None
