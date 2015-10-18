@@ -8,7 +8,7 @@ register = Library()
 @register.simple_tag(takes_context=True)
 def seo_block(context, entity=None, template='seo/block.html'):
     request = context.get('request')
-    if not request or not request.seo:
+    if not request or not hasattr(request, 'seo'):
         return ''
 
     if entity:
