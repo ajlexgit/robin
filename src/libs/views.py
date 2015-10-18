@@ -82,6 +82,8 @@ class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMi
                 last_modified_func=self.last_modified,
                 etag_func=self.etag,
             )(handler)
+        else:
+            return handler
 
     def render_to_response(self, context=None, template=None, dirs=None, **response_kwargs):
         template = template or self.template_name
