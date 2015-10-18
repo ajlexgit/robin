@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateResponseMixin, View
 class DecoratableViewMixin:
     """
         Представление, добавляющее методы before_METHOD,
-        выполняющиеся пере вызовом обработчика.
+        выполняющиеся перед вызовом обработчика.
 
         Эти методы могут устанавлисать данные, необходимые
         для декораторов.

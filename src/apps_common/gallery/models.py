@@ -616,7 +616,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
         for field in self._meta.concrete_fields:
             if field.name in copy_fields:
                 value = field.value_from_object(self)
-                setattr(new_item, field.name, value)
+                field.save_form_data(new_item, value)
 
         return new_item, errors
 

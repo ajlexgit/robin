@@ -48,12 +48,16 @@
                 duration: this.opts.speed,
                 delay: 50,
                 easing: this.opts.easing,
+                init: function() {
+                    this.autoInit('from_slide_opacity', 1, 0);
+                    this.autoInit('to_slide_opacity', 0, 1);
+                },
                 step: function(eProgress) {
                     $fromSlide.css({
-                        opacity: 1 - eProgress
+                        opacity: this.autoCalc('from_slide_opacity', eProgress)
                     });
                     $toSlide.css({
-                        opacity: eProgress
+                        opacity: this.autoCalc('to_slide_opacity', eProgress)
                     });
                 },
                 complete: function() {

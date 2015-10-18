@@ -109,15 +109,14 @@
                 init: function() {
                     for (var i = 0; i < animations.length; i++) {
                         var animation_data = animations[i];
-                        animation_data.diff = animation_data.to_left - animation_data.from_left;
+                        this.autoInit('slide_' + i, animation_data.from_left, animation_data.to_left);
                     }
                 },
                 step: function(eProgress) {
                     for (var i = 0; i < animations.length; i++) {
                         var animation_data = animations[i];
-                        var left = animation_data.from_left + animation_data.diff * eProgress;
                         animation_data.$animatedSlide.css({
-                            left: left + '%'
+                            left: this.autoCalc('slide_' + i, eProgress) + '%'
                         })
                     }
                 },
@@ -183,15 +182,14 @@
                 init: function() {
                     for (var i = 0; i < animations.length; i++) {
                         var animation_data = animations[i];
-                        animation_data.diff = animation_data.to_left - animation_data.from_left;
+                        this.autoInit('slide_' + i, animation_data.from_left, animation_data.to_left);
                     }
                 },
                 step: function(eProgress) {
                     for (var i = 0; i < animations.length; i++) {
                         var animation_data = animations[i];
-                        var left = animation_data.from_left + animation_data.diff * eProgress;
                         animation_data.$animatedSlide.css({
-                            left: left + '%'
+                            left: this.autoCalc('slide_' + i, eProgress) + '%'
                         })
                     }
                 },

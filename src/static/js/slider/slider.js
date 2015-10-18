@@ -445,11 +445,10 @@
                     delay: 40,
                     easing: 'easeOutCubic',
                     init: function() {
-                        this.initial = current_height;
-                        this.diff = final_height - this.initial;
+                        this.autoInit('height', current_height, final_height);
                     },
                     step: function(eProgress) {
-                        var height = this.initial + (this.diff * eProgress);
+                        var height = this.autoCalc('height', eProgress);
                         $.animation_frame(function() {
                             that.$list.outerHeight(height);
                         }, that.$list.get(0))();

@@ -336,14 +336,16 @@
         // Запуск инерционного движения
         Drager.prototype.startMomentum = function(evt, momentum) {
             var that = this;
-            var diffX = momentum.endX - momentum.startX;
-            var diffY = momentum.endY - momentum.startY;
             that._momentumAnimation = $.animate({
                 duration: momentum.duration,
                 easing: momentum.easing,
+                init: function() {
+                    this.autoInit('x', momentum.startX, momentum.endX);
+                    this.autoInit('y', momentum.startY, momentum.endY);
+                },
                 step: function(eProgress) {
-                    evt.dx = momentum.startX + diffX * eProgress;
-                    evt.dy = momentum.startY + diffY * eProgress;
+                    evt.dx = this.autoCalc('x', eProgress);
+                    evt.dy = this.autoCalc('y', eProgress);
                     evt.timeStamp = $.now();
                     that.settings.onDrag.call(that, evt);
                 },

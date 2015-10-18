@@ -215,33 +215,31 @@
                 duration: Math.max(200, duration),
                 easing: this.opts.easing,
                 init: function() {
-                    this.curr_pos = currSlidePosition;
-                    this.curr_diff = -currSlidePosition;
+                    this.autoInit('current_slide', currSlidePosition, 0);
+
 
                     if ($currSlide.get(0) == leftSlide) {
                         // второй слайд - правый
                         this.$otherSlide = $(rightSlide);
                         if (rightSlide) {
-                            this.other_pos = parseFloat(rightSlide.style.left);
-                            this.other_diff = slide_left - this.other_pos;
+                            this.autoInit('other_slide', parseFloat(rightSlide.style.left), slide_left);
                         }
                     } else {
                         // второй слайд - левый
                         this.$otherSlide = $(leftSlide);
                         if (leftSlide) {
-                            this.other_pos = parseFloat(leftSlide.style.left);
-                            this.other_diff = -slide_left - this.other_pos;
+                            this.autoInit('other_slide', parseFloat(leftSlide.style.left), -slide_left);
                         }
                     }
                 },
                 step: function(eProgress) {
                     $currSlide.css({
-                        left: this.curr_pos + this.curr_diff * eProgress + '%'
+                        left: this.autoCalc('current_slide', eProgress) + '%'
                     });
 
                     if (this.$otherSlide.length) {
                         this.$otherSlide.css({
-                            left: this.other_pos + this.other_diff * eProgress + '%'
+                            left: this.autoCalc('other_slide', eProgress) + '%'
                         });
                     }
                 },
