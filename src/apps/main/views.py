@@ -13,10 +13,6 @@ class IndexView(TemplateExView):
         self.config = MainPageConfig.get_solo()
 
     def get(self, request):
-        form_obj = ClientFormModel.objects.first()
-        form = MainForm(instance=form_obj, prefix='main')
-        formset = InlineFormSet(instance=form_obj, prefix='inlines')
-
         # SEO
         seo = Seo()
         seo.set_data(self.config)
@@ -29,6 +25,31 @@ class IndexView(TemplateExView):
             'image': 'http://cs307814.vk.me/v307814291/5255/5WStSQHmBpg.jpg',
             'description': self.config.description,
         })
+
+        return self.render_to_response({
+            'config': self.config,
+        })
+
+
+def render_first_block(request, block):
+    return '<div class="block-1">%s</div>' % block.label
+
+
+def render_second_block(request, block):
+    return '<div class="block-2">%s</div>' % block.label
+
+
+class FormsView(TemplateExView):
+    config = None
+    template_name = 'main/forms.html'
+
+    def before_get(self, request):
+        self.config = MainPageConfig.get_solo()
+
+    def get(self, request):
+        form_obj = ClientFormModel.objects.first()
+        form = MainForm(instance=form_obj, prefix='main')
+        formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
         return self.render_to_response({
             'config': self.config,
@@ -48,12 +69,4 @@ class IndexView(TemplateExView):
             form.save()
             formset.save()
 
-        return redirect('index')
-
-
-def render_first_block(request, block):
-    return '<div class="block-1">%s</div>' % block.label
-
-
-def render_second_block(request, block):
-    return '<div class="block-2">%s</div>' % block.label
+        return redirect('forms')

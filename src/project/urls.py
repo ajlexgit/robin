@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.views import IndexView
+from main import views as main_views
 from .sitemaps import site_sitemaps
 
 
 urlpatterns = [
-    url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^$', main_views.IndexView.as_view(), name='index'),
+    url(r'^forms/$', main_views.FormsView.as_view(), name='forms'),
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^shop/', include('shop.urls', namespace='shop')),

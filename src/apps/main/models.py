@@ -175,6 +175,18 @@ class MainBlockSecond(AttachableBlock):
 
 class ClientFormModel(models.Model):
     title = models.CharField(_('title'), max_length=128, blank=True, default='Example')
+    image = StdImageField(_('image'),
+        storage=MediaStorage('main/client_images'),
+        min_dimensions=(100, 100),
+        admin_variation='normal',
+        crop_area=True,
+        aspects=('normal',),
+        variations=dict(
+            normal=dict(
+                size=(200, 200),
+            ),
+        ),
+    )
 
     def __str__(self):
         return self.title

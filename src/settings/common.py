@@ -178,7 +178,6 @@ PIPELINE_CSS = {
             'scss/slider/slider.scss',
             'scss/slider/plugins/controls.scss',
             'scss/slider/plugins/navigation.scss',
-            'scss/inlines.scss',
             'scss/parallax.scss',
             'gallery/scss/gallery.scss',
             'comments/scss/comments.scss',
@@ -186,6 +185,13 @@ PIPELINE_CSS = {
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
+    },
+    'main_forms': {
+        'source_filenames': (
+            'scss/inlines.scss',
+            'main/scss/forms.scss',
+        ),
+        'output_filename': 'css/main_forms.css',
     },
     'users-profile': {
         'source_filenames': (
@@ -227,7 +233,6 @@ PIPELINE_JS = {
     'main_page': {
         'source_filenames': (
             'js/drager.js',
-            'js/inlines.js',
             'js/parallax.js',
             'js/sticky.js',
             'js/slider/slider.js',
@@ -244,6 +249,13 @@ PIPELINE_JS = {
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',
+    },
+    'main_forms': {
+        'source_filenames': (
+            'js/inlines.js',
+            'main/js/forms.js',
+        ),
+        'output_filename': 'js/main_forms.js',
     },
     'users-profile': {
         'source_filenames': (

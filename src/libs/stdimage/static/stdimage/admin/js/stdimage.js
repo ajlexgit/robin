@@ -70,13 +70,19 @@
         $.fileReaderDeferred($input.prop('files').item(0)).done(function(src) {
             $.loadImageDeferred(src).done(function(img) {
                 var $image = $('<img/>');
-                $crop_btn_wrapper.removeClass('hide')
+                $crop_btn_wrapper
+                    .show()
                     .find('button')
                     .removeData('crop')
                     .removeAttr('data-crop');
-                $preview.empty().removeClass('hide preloader').css({
-                    background: 'none'
-                }).append($image);
+                $preview
+                    .show()
+                    .empty()
+                    .removeClass('preloader')
+                    .css({
+                        background: 'none'
+                    })
+                    .append($image);
 
                 preview_data.source = src;
                 $image.attr('src', preview_data.source);
@@ -84,7 +90,7 @@
                 positionImage($preview, img);
             }).fail(function(reason) {
                 $input.val('');
-                $preview.removeClass('preloader').addClass('hide');
+                $preview.removeClass('preloader').hide();
                 preview_data.source = '';
 
                 if (reason == 'Not image') {
@@ -95,7 +101,7 @@
             });
         }).fail(function(reason) {
             $input.val('');
-            $preview.removeClass('preloader').addClass('hide');
+            $preview.removeClass('preloader').hide();
             preview_data.source = '';
 
             if (reason != 'Not a file') {

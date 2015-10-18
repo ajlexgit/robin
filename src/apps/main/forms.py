@@ -3,6 +3,11 @@ from .models import ClientFormModel, ClientInlineFormModel
 
 
 class MainForm(forms.ModelForm):
+    image = forms.ImageField(
+        label='Image',
+        required=False
+    )
+
     class Meta:
         model = ClientFormModel
         fields = '__all__'

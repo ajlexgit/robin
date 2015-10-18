@@ -2,7 +2,8 @@
 {% load variation_field %}
 
 <div class="stdimage">
-  <div class="item-preview {% if not value %}hide{% endif %}"
+  <div class="item-preview"
+       {% if not value %}style="display: none"{% endif %}
        data-size="{{ admin_variation.size|join:'x' }}"
        data-crop="{{ admin_variation.crop|yesno:"1,0,1" }}"
        data-stretch="{{ admin_variation.stretch|yesno:"1,0,0" }}"
