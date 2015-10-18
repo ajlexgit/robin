@@ -18,7 +18,7 @@ class IndexView(TemplateExView):
         # SEO
         seo = Seo()
         seo.set_data(self.config, defaults={
-            'title': self.config.title
+            'title': self.config.header
         })
         seo.save(request)
 
@@ -46,7 +46,7 @@ class CategoryView(TemplateExView):
             raise Http404
 
         # Breadcrumbs
-        request.breadcrumbs.add(self.config.title, 'shop:index')
+        request.breadcrumbs.add(self.config.header, 'shop:index')
         parent_categories = self.category.get_ancestors()
         for category in parent_categories:
             request.breadcrumbs.add(category.title, 'shop:category', category_alias=category.alias)
@@ -54,7 +54,7 @@ class CategoryView(TemplateExView):
 
         # SEO
         seo = Seo()
-        seo.set_title(self.config, default=self.config.title)
+        seo.set_title(self.config, default=self.config.header)
         seo.set_data(self.category, defaults={
             'title': self.category.title
         })
@@ -91,7 +91,7 @@ class DetailView(TemplateExView):
             raise Http404
 
         # Breadcrumbs
-        request.breadcrumbs.add(self.config.title, 'shop:index')
+        request.breadcrumbs.add(self.config.header, 'shop:index')
         parent_categories = self.category.get_ancestors(include_self=True)
         for category in parent_categories:
             request.breadcrumbs.add(category.title, 'shop:category', category_alias=category.alias)
@@ -99,7 +99,7 @@ class DetailView(TemplateExView):
 
         # SEO
         seo = Seo()
-        seo.set_title(self.config, default=self.config.title)
+        seo.set_title(self.config, default=self.config.header)
         seo.set_title(self.category, default=self.category.title)
         seo.set_data(self.product, defaults={
             'title': self.product.title,

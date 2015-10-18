@@ -18,7 +18,7 @@ from .signals import products_changed
 
 
 class ShopConfig(SingletonModel):
-    title = models.CharField(_('title'), max_length=128)
+    header = models.CharField(_('header'), max_length=128)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
