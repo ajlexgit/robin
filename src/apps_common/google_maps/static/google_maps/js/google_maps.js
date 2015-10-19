@@ -36,7 +36,10 @@
             return {
                 lat: 53.510171,
                 lng: 49.418785,
-                zoom: 14,
+                map_options: {
+                    scrollwheel: false,
+                    zoom: 14
+                },
                 onResize: $.noop
             }
         };
@@ -65,10 +68,9 @@
                 return
             }
 
-            this.map = new google.maps.Map(this.$container.get(0), {
-                zoom: this.opts.zoom,
+            this.map = new google.maps.Map(this.$container.get(0), $.extend({
                 center: point
-            });
+            }, this.opts.map_options));
         };
 
         // Создание маркера Google

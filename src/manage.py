@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Google Maps: bounds + upgrade JS, $.GoogleMapsReady(handler), str longitude after get_or_create,
+#              marker options
 # создать JS, сохраняющий CSS и восстанавливающий их
 # Comments: есть возможность написать коммент к удаленному комменту. Как быть?
 # интеллектуальная проркутка слайдов мышью, чтоб не дергалась

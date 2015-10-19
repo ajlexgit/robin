@@ -15,6 +15,8 @@ class MapAndAddress(models.Model):
             coords = geocode(self.address)
             if coords:
                 self.longitude, self.latitude = coords
+            else:
+                return
         super(MapAndAddress, self).save(*args, **kwargs)
 
     def __str__(self):
