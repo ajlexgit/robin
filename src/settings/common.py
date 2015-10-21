@@ -259,10 +259,8 @@ PIPELINE_JS = {
     },
     'users-profile': {
         'source_filenames': (
-            'js/plupload/moxie.min.js',
-            'js/plupload/plupload.min.js',
+            'js/plupload/plupload.full.min.js',
             'js/plupload/i18n/%s.js' % SHORT_LANGUAGE_CODE,
-            'js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
             'js/jquery.Jcrop.js',
             'js/cropdialog.js',
             'users/js/profile.js',

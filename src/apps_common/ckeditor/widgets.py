@@ -16,10 +16,8 @@ class CKEditorUploadWidget(CKEditorWidget):
 
     class Media:
         js = CKEditorWidget.Media.js + (
-            'admin/js/plupload/moxie.min.js',
-            'admin/js/plupload/plupload.min.js',
+            'admin/js/plupload/plupload.full.min.js',
             'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
-            'admin/js/plupload/jquery.ui.plupload/jquery.ui.plupload.min.js',
         )
         css = CKEditorWidget.Media.css
 
@@ -70,7 +68,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         # CSS приходится грузить JS-ом из-за переопределения стилей
         self.editor_options['PLUPLOADER_CSS'] = (
             static('admin/css/jquery-ui/jquery-ui.min.css'),
-            static('admin/js/plupload/jquery.ui.plupload/css/jquery.ui.plupload.css'),
+            static('admin/js/plupload/css/jquery.ui.plupload.css'),
             static('ckeditor/css/ckupload_fix.css'),
         )
 
