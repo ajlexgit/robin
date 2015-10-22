@@ -1,7 +1,8 @@
 @import "mixins";
 
-#profile {
-  @include clearfix;
+
+header {
+  position: static;
 }
 
 #profile-avatar {
@@ -13,17 +14,19 @@
   .actions {
     position: absolute;
     width: 100%;
-    bottom: -100%;
+    bottom: 0;
     left: 0;
     padding: 0 0 3px 0;
     background-color: rgba(0, 0, 0, 0.7);
-    @include transition(bottom 0.2s ease-in-out);
+    @include transform(translateY(100%));
+    @include transition-property(-webkit-transform, transform);
+    @include transition-duration(0.2s);
 
     a {
       display: block;
       color: white;
       text-align: center;
-      line-height: 22px;
+      @include font-size(16px);
 
       &:first-child {
         padding-top: 3px;
@@ -32,9 +35,6 @@
         padding-bottom: 3px;
       }
     }
-  }
-  &:hover .actions {
-    bottom: 0;
   }
 
   .delete-avatar {
@@ -47,8 +47,15 @@
     background: url(../img/delete_avatar.gif) no-repeat center center rgba(0, 0, 0, 0.8);
     @include no_fontsize;
   }
-  &:hover .delete-avatar {
-    top: 0;
+
+  &:hover {
+    .actions {
+      @include transform(translateY(0));
+    }
+
+    .delete-avatar {
+      top: 0;
+    }
   }
 }
 

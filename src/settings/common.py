@@ -263,6 +263,7 @@ PIPELINE_JS = {
             'js/plupload/i18n/%s.js' % SHORT_LANGUAGE_CODE,
             'js/jquery.Jcrop.js',
             'js/cropdialog.js',
+            'js/uploader.js',
             'users/js/profile.js',
         ),
         'output_filename': 'js/users-profile.js',
