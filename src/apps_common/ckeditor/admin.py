@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.http import JsonResponse, Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
-from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
+from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 from .models import PagePhoto, SimplePhoto, generate_tag
 
 
@@ -50,7 +50,7 @@ def upload_pagephoto(request):
 
     try:
         uploaded_file = upload_chunked_file(request, 'image')
-    except FileMissingError:
+    except TemporaryFileNotFoundError:
         raise Http404
     except NotLastChunk:
         return HttpResponse()
@@ -97,7 +97,7 @@ def upload_simplephoto(request):
 
     try:
         uploaded_file = upload_chunked_file(request, 'image')
-    except FileMissingError:
+    except TemporaryFileNotFoundError:
         raise Http404
     except NotLastChunk:
         return HttpResponse()

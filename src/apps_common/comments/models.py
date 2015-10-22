@@ -93,10 +93,9 @@ class Comment(MPTTModel):
         if is_add:
             self.created = now()
 
-            sort_order = self.get_siblings().aggregate(
-                max=models.Max('sort_order')
-            ).get('max')
-            self.sort_order = 0 if sort_order is None else sort_order + 1
+            self.sort_order = Comment.objects.filter(parent=self.parent).aggregate(
+                max=Coalesce(models.Max('sort_order'), 0) + 1
+            )['max']
         else:
             # Обновляем видимость
             visible_descendants = self.get_descendants().filter(deleted=False)

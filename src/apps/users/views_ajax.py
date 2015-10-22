@@ -2,10 +2,11 @@ from django.forms import model_to_dict
 from django.views.generic import View, FormView
 from django.http import HttpResponse, Http404, JsonResponse
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from libs.views_ajax import AjaxViewMixin
-from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
+from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 
 
@@ -118,12 +119,16 @@ class AvatarUploadView(AjaxViewMixin, View):
     def post(self, request):
         """ Загрузка автарки """
         if not request.user.is_authenticated():
-            raise Http404
+            return JsonResponse({
+                'message': _('Authentication required'),
+            }, status=401)
 
         try:
             uploaded_file = upload_chunked_file(request, 'image')
-        except FileMissingError:
-            raise Http404
+        except TemporaryFileNotFoundError as e:
+            return JsonResponse({
+                'message': str(e),
+            }, status=400)
         except NotLastChunk:
             return HttpResponse()
 
@@ -155,15 +160,21 @@ class AvatarCropView(AjaxViewMixin, View):
     """ Обрезка аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            raise Http404
+            return JsonResponse({
+                'message': _('Authentication required'),
+            }, status=401)
 
         if not request.user.avatar:
-            raise Http404
+            return JsonResponse({
+                'message': _('There are no avatar'),
+            }, status=400)
 
         try:
             croparea = request.POST.get('coords', '')
         except ValueError:
-            raise Http404
+            return JsonResponse({
+                'message': _('Croparea is empty'),
+            }, status=400)
 
         request.user.avatar.recut(croparea=croparea)
 
@@ -181,7 +192,9 @@ class AvatarRemoveView(AjaxViewMixin, View):
     """ Удаление аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            raise Http404
+            return JsonResponse({
+                'message': _('Authentication required'),
+            }, status=401)
 
         request.user.avatar.delete()
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 16:15+0400\n"
+"POT-Creation-Date: 2015-10-22 11:57+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,31 +146,31 @@ msgstr "область обрезки"
 msgid "Sign In or Register"
 msgstr "Войдите или зарегистрируйтесь"
 
-#: templates/users/ajax_login.html:22 templates/users/login.html:31
+#: templates/users/ajax_login.html:23 templates/users/login.html:31
 msgid "Sign in"
 msgstr "Войти"
 
-#: templates/users/ajax_login.html:23
+#: templates/users/ajax_login.html:24
 msgid "Forgot your password?"
 msgstr "Забыли пароль?"
 
-#: templates/users/ajax_login.html:24 templates/users/ajax_register.html:3
-#: templates/users/register.html:8 views.py:57
+#: templates/users/ajax_login.html:25 templates/users/ajax_register.html:3
+#: templates/users/register.html:8 views.py:64
 msgid "Registration"
 msgstr "Регистрация"
 
-#: templates/users/ajax_register.html:33 templates/users/register.html:41
+#: templates/users/ajax_register.html:34 templates/users/register.html:41
 msgid "Register"
 msgstr "Зарегистрироваться"
 
 #: templates/users/ajax_reset.html:3 templates/users/reset.html:8
 #: templates/users/reset_complete.html:8 templates/users/reset_confirm.html:8
-#: templates/users/reset_done.html:8 views.py:79 views.py:93 views.py:115
-#: views.py:134 views.py:162 views.py:193
+#: templates/users/reset_done.html:8 views.py:90 views.py:108 views.py:134
+#: views.py:157 views.py:189 views.py:224
 msgid "Reset password"
 msgstr "Сброс пароля"
 
-#: templates/users/ajax_reset.html:17 templates/users/reset.html:25
+#: templates/users/ajax_reset.html:18 templates/users/reset.html:25
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -205,7 +205,7 @@ msgstr "Для смены пароля пройдите по ссылке:"
 msgid "Password reset on %(site_name)s"
 msgstr "Сброс пароля на %(site_name)s"
 
-#: templates/users/login.html:8 views.py:34
+#: templates/users/login.html:8 views.py:37
 msgid "Authorization"
 msgstr "Авторизация"
 
@@ -252,7 +252,19 @@ msgstr ""
 msgid "Save"
 msgstr "Сохранить"
 
-#: views.py:225
+#: views.py:260
 #, python-format
 msgid "Profile of «%(username)s»"
 msgstr "Профиль пользователя «%(username)s»"
+
+#: views_ajax.py:123 views_ajax.py:164 views_ajax.py:196
+msgid "Authentication required"
+msgstr "Требуется авторизация"
+
+#: views_ajax.py:169
+msgid "There are no avatar"
+msgstr "Аватар не найден"
+
+#: views_ajax.py:176
+msgid "Croparea is empty"
+msgstr "Область обрезки пуста"

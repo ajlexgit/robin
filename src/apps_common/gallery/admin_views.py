@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse, Http404, HttpResponse
-from libs.upload import upload_chunked_file, FileMissingError, NotLastChunk
+from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 
 
 def _get_gallery(request):
@@ -101,7 +101,7 @@ def upload(request):
 
     try:
         uploaded_file = upload_chunked_file(request, 'image')
-    except FileMissingError as e:
+    except TemporaryFileNotFoundError as e:
         return JsonResponse({
             'message': str(e),
         }, status=400)

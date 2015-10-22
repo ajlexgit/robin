@@ -33,7 +33,13 @@
         };
 
         Comments.prototype.ajaxError = function(xhr, status, text) {
-            return gettext('Ошибка соединения с сервером: ' + text);
+            if (xhr.responseText) {
+                var json_response = $.parseJSON(xhr.responseText);
+                if (json_response.message) {
+                    return json_response.message;
+                }
+            }
+            return text
         };
 
         // Возвращает jQuery-список, содержащий ветку комментариев
@@ -113,9 +119,6 @@
                     comment: $comment.data('id')
                 },
                 success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
                     that.removeEmptyForms();
                     $comment.find('form').each(function() {
                         $comment.trigger('formclose', [this]);
@@ -149,9 +152,6 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
@@ -177,9 +177,6 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
@@ -206,9 +203,6 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
@@ -229,10 +223,6 @@
                 type: 'POST',
                 data: $form.serialize(),
                 success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
-
                     var $comment = $(response.html),
                         $parent_comment = $form.closest('.' + that.settings.comment_class);
 
@@ -272,9 +262,6 @@
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    if (response.error) {
-                        return df.reject(response.error);
-                    }
                     var $new_comment = $(response.html);
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);

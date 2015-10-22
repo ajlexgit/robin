@@ -9,10 +9,9 @@ class GalleryWidget(forms.Widget):
     class Media:
         js = (
             'admin/js/jquery.Jcrop.js',
-            'admin/js/canvas_utils.js',
-            'admin/js/cropdialog.js',
             'admin/js/plupload/plupload.full.min.js',
             'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
+            'admin/js/cropdialog.js',
             'gallery/admin/js/gallery_class.js',
             'gallery/admin/js/jquery.gallery.js',
             'gallery/admin/js/gallery.js',

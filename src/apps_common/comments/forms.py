@@ -42,7 +42,7 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
                 'object_mismatch': 'parent comment attached to another objetc',
             },
             'text': {
-                'required': 'comment text is required',
+                'required': 'text is required',
             },
         }
 

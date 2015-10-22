@@ -16,6 +16,11 @@
     line-height: 0;
     margin-top: 4px;
 }
+.gallery-items:after {
+    content: "";
+    display: table;
+    clear: both;
+}
 .dragover .gallery-items {
     min-height: 130px;
     position: relative;
@@ -36,7 +41,7 @@
 
 /* Элемент галереи */
 .gallery-item {
-    display: inline-block;
+    float: left;
     position: relative;
     overflow: hidden;
     line-height: 0;

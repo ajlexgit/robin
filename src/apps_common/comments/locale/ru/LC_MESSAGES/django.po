@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-20 11:51+0300\n"
+"POT-Creation-Date: 2015-10-22 12:00+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,101 +19,73 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin_views.py:17 admin_views.py:41 views_ajax.py:68
+#: admin_views.py:16 admin_views.py:38 views_ajax.py:88
 msgid "Comment not found"
 msgstr "Комментарий не найден"
 
-#: models.py:64
-msgid "parent comment"
-msgstr "родительский комментарий"
-
-#: models.py:65
-msgid "author"
-msgstr "автор"
-
-#: models.py:66
-msgid "text"
-msgstr "текст комментария"
-
-#: models.py:67
-msgid "rating"
-msgstr "рейтинг"
-
-#: models.py:69
-msgid "created on"
-msgstr "дата создания"
-
-#: models.py:70
-msgid "deleted"
-msgstr "удален"
-
-#: models.py:72
-msgid "deleted by"
-msgstr "удалил"
-
-#: models.py:73
-msgid "visible"
-msgstr "видимый"
-
-#: models.py:74
-msgid "order"
-msgstr "порядок"
-
-#: models.py:79
-msgid "comment"
-msgstr "комментарий"
-
-#: models.py:80
-msgid "comments"
-msgstr "комментарии"
-
-#: models.py:192
-msgid "vote"
-msgstr "оценка"
-
-#: models.py:193
-msgid "votes"
-msgstr "оценки"
-
-#: permissions.py:23
-msgid "Authentication required"
-msgstr "Необходима авторизация"
-
-#: permissions.py:27
-msgid "You cannot reply to your own comment"
-msgstr "Вы не можете отвечать на свои комментарии"
-
-#: permissions.py:31
-msgid "You cannot vote for your own comment"
-msgstr "Вы не можете голосовать за свой комментарий"
-
-#: permissions.py:35
-msgid "You have already voted for this comment"
-msgstr "Вы уже проголосовали за этот комментарий"
-
-#: permissions.py:39
-msgid "You don't have permission to edit this comment"
-msgstr "У вас нет прав редактировать этот комментарий"
-
-#: permissions.py:43
+#: admin_views.py:21 views_ajax.py:132
 msgid "You don't have permission to delete this comment"
 msgstr "У вас нет прав на удаление этого комментария"
 
-#: permissions.py:47
+#: admin_views.py:43 views_ajax.py:167
 msgid "You don't have permission to restore this comment"
 msgstr "У вас нет прав на восстановление этого комментария"
 
-#: permissions.py:51
-msgid "This comment was deleted"
-msgstr "Комментарий удалён"
-
-#: permissions.py:55
-msgid "This comment was not deleted"
-msgstr "Комментарий не был удалён"
-
-#: templates/comments/admin/admin_include.html:10
+#: apps.py:7 templates/comments/admin/admin_include.html:10
 msgid "Comments"
 msgstr "Комментарии"
+
+#: models.py:52
+msgid "parent comment"
+msgstr "родительский комментарий"
+
+#: models.py:53
+msgid "author"
+msgstr "автор"
+
+#: models.py:54
+msgid "text"
+msgstr "текст комментария"
+
+#: models.py:55
+msgid "rating"
+msgstr "рейтинг"
+
+#: models.py:57
+msgid "created on"
+msgstr "дата создания"
+
+#: models.py:58
+msgid "deleted"
+msgstr "удален"
+
+#: models.py:60
+msgid "deleted by"
+msgstr "удалил"
+
+#: models.py:61
+msgid "visible"
+msgstr "видимый"
+
+#: models.py:62
+msgid "sort order"
+msgstr "порядок"
+
+#: models.py:67
+msgid "comment"
+msgstr "комментарий"
+
+#: models.py:68
+msgid "comments"
+msgstr "комментарии"
+
+#: models.py:154
+msgid "vote"
+msgstr "оценка"
+
+#: models.py:155
+msgid "votes"
+msgstr "оценки"
 
 #: templates/comments/admin/admin_include.html:28
 msgid "Author"
@@ -124,18 +96,18 @@ msgid "Text"
 msgstr "Текст комментария"
 
 #: templates/comments/admin/admin_include.html:38
-#: templates/comments/admin/admin_include.html:63
+#: templates/comments/admin/admin_include.html:67
 #: templates/comments/comment.html:44
 msgid "Delete"
 msgstr "Удалить"
 
 #: templates/comments/admin/admin_include.html:43
-#: templates/comments/admin/admin_include.html:66
+#: templates/comments/admin/admin_include.html:72
 #: templates/comments/comment.html:41
 msgid "Restore"
 msgstr "Восстановить"
 
-#: templates/comments/admin/admin_include.html:73
+#: templates/comments/admin/admin_include.html:79
 msgid "You should create instance first"
 msgstr "Сначала вы должны создать сущность"
 
@@ -164,12 +136,37 @@ msgstr "Сохранить"
 #: templates/comments/comments_form.html:19
 #, python-format
 msgid ""
-"You must <a href=\"%(login_href)s\" class=\"login\">login</a> to post a "
-"comment"
+"You must <a href=\"%(login_href)s\" class=\"login-popup\">login</a> to post "
+"a comment"
 msgstr ""
 "Вы должны <a href=\"%(login_href)s\" class=\"login\">авторизоваться</a>, "
 "чтобы оставлять комментарии"
 
-#: views_ajax.py:221
+#: views_ajax.py:30
+msgid "Page not found"
+msgstr "Страница не найден"
+
+#: views_ajax.py:51 views_ajax.py:74 views_ajax.py:119 views_ajax.py:154
+#: views_ajax.py:189 views_ajax.py:229
+msgid "Authentication required"
+msgstr "Требуется авторизация"
+
+#: views_ajax.py:64 views_ajax.py:99
+msgid "You don't have permission to edit this comment"
+msgstr "У вас нет прав редактировать этот комментарий"
+
+#: views_ajax.py:203
+msgid "You don't have permission to post comment"
+msgstr "У вас нет прав редактировать этот комментарий"
+
+#: views_ajax.py:209
+msgid "You can't reply to your own comment"
+msgstr "Вы не можете отвечать на свои комментарии"
+
+#: views_ajax.py:242
+msgid "You don't have permission to vote for this comment"
+msgstr "У вас нет прав на восстановление этого комментария"
+
+#: views_ajax.py:249
 msgid "Bad vote value"
 msgstr "Некорректная оценка комментария"

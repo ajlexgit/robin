@@ -109,6 +109,7 @@
             // Сортировка элементов
             $container.find('.gallery-items').sortable({
                 containment: "parent",
+                helper: 'clone',
                 items: '> .gallery-item',
                 tolerance: 'pointer',
                 distance: 20,

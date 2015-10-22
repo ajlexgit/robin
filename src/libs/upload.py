@@ -5,9 +5,10 @@ import tempfile
 import contextlib
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+from django.utils.translation import ugettext_lazy as _
 from django.core.files.uploadedfile import UploadedFile, TemporaryUploadedFile, InMemoryUploadedFile
 
-__all__ = ('upload_file', 'upload_chunked_file', 'NotLastChunk', 'FileMissingError',
+__all__ = ('upload_file', 'upload_chunked_file', 'NotLastChunk', 'TemporaryFileNotFoundError',
            'HTTPError', 'URLError')
 
 logger = logging.getLogger(__name__)
@@ -16,13 +17,9 @@ logger = logging.getLogger(__name__)
 class NotLastChunk(Exception):
     pass
 
-class FileMissingError(Exception):
-    def __init__(self, filepath, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.filepath = filepath
 
-    def __str__(self):
-        return '%s: %s' % (self.__class__.__name__, self.filepath)
+class TemporaryFileNotFoundError(Exception):
+    pass
 
 
 class TempUploadedFile(UploadedFile):
@@ -101,12 +98,12 @@ def upload_chunked_file(request, param_name, allow_memory=True):
         будут принудительно сохранены во временные файлы на диске.
 
         Пример:
-            from libs.upload import upload_chunked_file, NotLastChunk, FileMissingError
+            from libs.upload import upload_chunked_file, NotLastChunk, TemporaryFileNotFoundError
             ...
 
             try:
                 uploaded_file = upload_chunked_file(request, 'image')
-            except FileMissingError as e:
+            except TemporaryFileNotFoundError as e:
                 return JsonResponse({
                     'message': str(e),
                 }, status=400)
@@ -164,7 +161,7 @@ def upload_chunked_file(request, param_name, allow_memory=True):
 
         if chunk_num > 0:
             if not os.path.exists(tempfile_path):
-                raise FileMissingError(tempfile_path)
+                raise TemporaryFileNotFoundError(_('Temporary file lost'))
 
         tmp = open(tempfile_path, 'ab+')
         if chunk_num == 0:
@@ -175,7 +172,7 @@ def upload_chunked_file(request, param_name, allow_memory=True):
 
         if chunk_num < chunk_count - 1:
             tmp.close()
-            raise NotLastChunk('%d of %d' % (chunk_num + 1, chunk_count))
+            raise NotLastChunk(chunk_num + 1, chunk_count)
 
         tmp.seek(0)
         tmp.flush()

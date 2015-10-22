@@ -8,7 +8,6 @@ class StdImageWidget(forms.FileInput):
     class Media:
         js = (
             'admin/js/jquery.Jcrop.js',
-            'admin/js/canvas_utils.js',
             'admin/js/cropdialog.js',
             'stdimage/admin/js/stdimage.js',
         )

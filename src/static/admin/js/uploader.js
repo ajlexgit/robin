@@ -15,7 +15,7 @@
             var self = new Uploader();
 
             self.$root = $.findFirstElement(root);
-            if (!self.$root) {
+            if (!self.$root.length) {
                 console.error('Uploader can\'t find root element');
                 return
             }
@@ -24,6 +24,7 @@
                 url: '',
                 buttonSelector: '',
                 dropSelector: 'self',
+                multiple: true,
                 resize: {},
                 max_size: 0,
 
@@ -31,11 +32,16 @@
                 // func()
                 onInit: $.noop,
 
+                // возвращает словарь с дополнительными данными, отправляемыми
+                // при загрузке файла
+                // func()
+                extraData: $.noop,
+
                 // файл добавлен
                 // func(file)
                 fileAdded: $.noop,
 
-                // перед нчалом загрузки файла
+                // перед началом загрузки файла
                 // func(file)
                 beforeUpload: $.noop,
 
@@ -82,6 +88,7 @@
                 flash_swf_url: '/static/js/plupload/Moxie.swf',
                 silverlight_xap_url: '/static/js/plupload/Moxie.xap',
                 prevent_duplicates: true,
+                multi_selection: this.opts.multiple,
                 resize: this.opts.resize,
                 filters: {
                     max_file_size: this.opts.max_size,
@@ -172,6 +179,12 @@
             }
 
             this.opts.onInit.call(this);
+
+            // установка дополнительных данных загрузки
+            var extra_data = this.opts.extraData.call(this);
+            if (extra_data) {
+                this.uploader.setOption('multipart_params', extra_data);
+            }
         };
 
         /*
@@ -223,7 +236,7 @@
             Ожидает ответ в формате JSON.
          */
         Uploader.prototype.FileUploadedHandler = function(file, response) {
-            var json_response = JSON.parse(response.response);
+            var json_response = $.parseJSON(response.response);
             this.opts.fileUploaded.call(this, file, json_response);
         };
 
@@ -239,7 +252,7 @@
             Ожидает ответ в формате JSON.
          */
         Uploader.prototype.ErrorHandler = function(error) {
-            var json_response = error.response && JSON.parse(error.response);
+            var json_response = error.response && $.parseJSON(error.response);
             var short_error = {
                 code: error.code,
                 message: error.message,

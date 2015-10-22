@@ -2,6 +2,7 @@ import os
 from django.db import models
 from django.core import checks
 from django.conf import settings
+from django.db.models.functions import Coalesce
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.core.exceptions import ValidationError
@@ -74,8 +75,9 @@ class GalleryItemBase(models.Model):
             self.self_type = ContentType.objects.get_for_model(type(self), for_concrete_model=False)
             self.created = now()
 
-            sort_order = self.gallery.items.aggregate(max=models.Max('sort_order')).get('max', 0)
-            self.sort_order = 0 if sort_order is None else sort_order + 1
+            self.sort_order = self.gallery.items.aggregate(
+                max=Coalesce(models.Max('sort_order'), 0) + 1
+            )['max']
 
         super().save(*args, **kwargs)
 
