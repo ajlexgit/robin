@@ -1,8 +1,6 @@
 import os
 import sys
 
-# All AJAX: status 400 on error, error_dict
-# $.parseJSON
 # Uploader: use uploader.js
 # Google Maps: bounds + upgrade JS, $.GoogleMapsReady(handler), str longitude after get_or_create,
 #              marker options

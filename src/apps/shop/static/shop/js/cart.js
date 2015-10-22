@@ -34,7 +34,7 @@
         // Получение хранилища заказа из localStorage
         Cart.prototype.getStorage = function() {
             var json = localStorage.getItem(this.settings.prefix) || '{}';
-            return JSON.parse(json);
+            return $.parseJSON(json);
         };
 
         // Сохранение заказа в localStorage

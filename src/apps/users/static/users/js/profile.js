@@ -48,7 +48,7 @@
 
                 // Файл загружен
                 FileUploaded: function(up, file, data) {
-                    var response = JSON.parse(data.response);
+                    var response = $.parseJSON(data.response);
                     change_avatar(response);
                 },
 
@@ -57,7 +57,7 @@
                     uploader.removeFile(err.file);
                     if (err.response) {
                         try {
-                            var response = JSON.parse(err.response);
+                            var response = $.parseJSON(err.response);
                             alert(response.message);
                             return
                         } catch(e) {}

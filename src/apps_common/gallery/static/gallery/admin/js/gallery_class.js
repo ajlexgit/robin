@@ -140,7 +140,7 @@
                     // Файл загружен
                     FileUploaded: function(up, file, data) {
                         var $gallery_item = $('#' + file.id),
-                            response = JSON.parse(data.response);
+                            response = $.parseJSON(data.response);
 
                         $gallery_item
                             .removeClass('gallery-item-loading')
@@ -217,7 +217,7 @@
 
                         if (err.response) {
                             try {
-                                var response = JSON.parse(err.response);
+                                var response = $.parseJSON(err.response);
 
                                 $preview.append(
                                     $('<span>').html(formatError(err.file, response.message, true))
@@ -370,7 +370,7 @@
                     $container.trigger('item-add.gallery', [$gallery_item, response]);
                 },
                 error: function(data) {
-                    var response = data.status == 400 ? JSON.parse(data.responseText) : {};
+                    var response = data.status == 400 ? $.parseJSON(data.responseText) : {};
                     $gallery_item.removeClass('gallery-item-loading');
                     $gallery_item.addClass('gallery-item-error');
 
