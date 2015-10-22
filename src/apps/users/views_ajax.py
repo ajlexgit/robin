@@ -1,6 +1,5 @@
 from django.forms import model_to_dict
 from django.views.generic import View, FormView
-from django.http import HttpResponse, Http404, JsonResponse
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
@@ -31,12 +30,12 @@ class LoginView(AjaxViewMixin, FormView):
     def form_valid(self, form):
         user = form.get_user()
         auth_login(self.request, user)
-        return JsonResponse({
+        return self.json_response({
             'user': user_to_dict(user),
         })
 
     def form_invalid(self, form):
-        return JsonResponse({
+        return self.json_response({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
@@ -48,9 +47,7 @@ class LogoutView(AjaxViewMixin, View):
     """ AJAX logout """
     def post(self, request):
         auth_logout(request)
-        return JsonResponse({
-
-        })
+        return self.json_response()
 
 
 class RegisterView(AjaxViewMixin, FormView):
@@ -65,12 +62,12 @@ class RegisterView(AjaxViewMixin, FormView):
             password=form.cleaned_data.get('password1')
         )
         auth_login(self.request, user)
-        return JsonResponse({
+        return self.json_response({
             'user': user_to_dict(user),
         })
 
     def form_invalid(self, form):
-        return JsonResponse({
+        return self.json_response({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
@@ -99,14 +96,14 @@ class PasswordResetView(AjaxViewMixin, FormView):
             'html_email_template_name': 'users/emails/reset_email.html',
         }
         form.save(**opts)
-        return JsonResponse({
+        return self.json_response({
             'done': self.render_to_string('users/ajax_reset_done.html', {
                 'email': self.email,
             }),
         })
 
     def form_invalid(self, form):
-        return JsonResponse({
+        return self.json_response({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
@@ -119,18 +116,18 @@ class AvatarUploadView(AjaxViewMixin, View):
     def post(self, request):
         """ Загрузка автарки """
         if not request.user.is_authenticated():
-            return JsonResponse({
+            return self.json_response({
                 'message': _('Authentication required'),
             }, status=401)
 
         try:
             uploaded_file = upload_chunked_file(request, 'image')
         except TemporaryFileNotFoundError as e:
-            return JsonResponse({
+            return self.json_response({
                 'message': str(e),
             }, status=400)
         except NotLastChunk:
-            return HttpResponse()
+            return self.json_response()
 
         request.user.avatar.save(uploaded_file.name, uploaded_file, save=False)
         uploaded_file.close()
@@ -139,14 +136,14 @@ class AvatarUploadView(AjaxViewMixin, View):
             request.user.avatar.field.clean(request.user.avatar, request.user)
         except ValidationError as e:
             request.user.avatar.delete(save=False)
-            return JsonResponse({
+            return self.json_response({
                 'message': ', '.join(e.messages),
             }, status=400)
 
         request.user.clean()
         request.user.save()
 
-        return JsonResponse({
+        return self.json_response({
             'micro_avatar': request.user.micro_avatar,
             'small_avatar': request.user.small_avatar,
             'normal_avatar': request.user.normal_avatar,
@@ -160,25 +157,25 @@ class AvatarCropView(AjaxViewMixin, View):
     """ Обрезка аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            return JsonResponse({
+            return self.json_response({
                 'message': _('Authentication required'),
             }, status=401)
 
         if not request.user.avatar:
-            return JsonResponse({
+            return self.json_response({
                 'message': _('There are no avatar'),
             }, status=400)
 
         try:
             croparea = request.POST.get('coords', '')
         except ValueError:
-            return JsonResponse({
+            return self.json_response({
                 'message': _('Croparea is empty'),
             }, status=400)
 
         request.user.avatar.recut(croparea=croparea)
 
-        return JsonResponse({
+        return self.json_response({
             'micro_avatar': request.user.micro_avatar,
             'small_avatar': request.user.small_avatar,
             'normal_avatar': request.user.normal_avatar,
@@ -192,13 +189,13 @@ class AvatarRemoveView(AjaxViewMixin, View):
     """ Удаление аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            return JsonResponse({
+            return self.json_response({
                 'message': _('Authentication required'),
             }, status=401)
 
         request.user.avatar.delete()
 
-        return JsonResponse({
+        return self.json_response({
             'micro_avatar': request.user.micro_avatar,
             'small_avatar': request.user.small_avatar,
             'normal_avatar': request.user.normal_avatar,

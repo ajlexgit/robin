@@ -6,7 +6,7 @@
             url: window.admin_comments_delete,
             type: 'POST',
             data: {
-                'id': button.data('id')
+                id: button.data('id')
             },
             success: function(response) {
                 if (response.error) {
@@ -17,10 +17,10 @@
                     .addClass('disabled')
                     .prop('disabled', true)
                     .closest('td')
-                        .siblings('.field-restore')
-                            .find('button')
-                            .removeClass('disabled')
-                            .prop('disabled', false);
+                    .siblings('.field-restore')
+                    .find('button')
+                    .removeClass('disabled')
+                    .prop('disabled', false);
             }
         });
         return false;
@@ -33,7 +33,7 @@
             url: window.admin_comments_restore,
             type: 'POST',
             data: {
-                'id': button.data('id')
+                id: button.data('id')
             },
             success: function(response) {
                 if (response.error) {
@@ -44,10 +44,13 @@
                     .addClass('disabled')
                     .prop('disabled', true)
                     .closest('td')
-                        .siblings('.field-delete')
-                            .find('button')
-                            .removeClass('disabled')
-                            .prop('disabled', false);
+                    .siblings('.field-delete')
+                    .find('button')
+                    .removeClass('disabled')
+                    .prop('disabled', false);
+            },
+            error: function(xhr, status, text) {
+                console.log(arguments)
             }
         });
         return false;
