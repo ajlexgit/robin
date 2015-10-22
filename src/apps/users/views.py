@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.http.response import Http404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
@@ -244,7 +245,7 @@ class ProfileView(TemplateView):
     """ Страница профиля """
     template_name = 'users/profile.html'
 
-    def get(self, request, username):
+    def get(self, request, username=None):
         request.js_storage.update(
             avatar_upload=resolve_url('users:avatar_upload'),
             avatar_crop=resolve_url('users:avatar_crop'),
@@ -252,12 +253,17 @@ class ProfileView(TemplateView):
         )
 
         UserModel = get_user_model()
-        user = get_object_or_404(UserModel, username=username)
+        if username:
+            user = get_object_or_404(UserModel, username=username)
+        elif not request.user.is_authenticated():
+            raise Http404
+        else:
+            user = request.user
 
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Profile of «%(username)s»') % {'username': username}
+            'title': _('Profile of «%(username)s»') % {'username': user.username}
         })
         seo.save(request)
 

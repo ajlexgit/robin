@@ -23,7 +23,7 @@
             self.opts = $.extend({
                 url: '',
                 buttonSelector: '',
-                dropSelector: 'self',
+                dropSelector: '',
                 multiple: true,
                 resize: {},
                 max_size: 0,

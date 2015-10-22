@@ -1,12 +1,9 @@
 (function($) {
 
-    var uploader;
-
     // Обновление аватарок на странице
     var change_avatar = function(response) {
         // Обновление кнопок
         $.loadImageDeferred(response.normal_avatar).done(function() {
-            uploader.destroy();
             $('#profile-avatar').replaceWith(response.profile_avatar_html);
             initUploader();
         });
@@ -16,59 +13,27 @@
 
     // Загрузчик аватарки
     var initUploader = function() {
-        uploader = new plupload.Uploader({
-            url : window.js_storage.avatar_upload,
-            browse_button : $('#upload-avatar').get(0),
-            chunk_size: '256kb',
-            file_data_name: 'image',
-            multi_selection: false,
-            runtimes : 'html5,flash,silverlight,html4',
-            flash_swf_url : window.js_storage.plupload_moxie_swf,
-            silverlight_xap_url : window.js_storage.plupload_moxie_xap,
+        return Uploader.create('#profile-avatar', {
+            url: window.js_storage.avatar_upload,
+            buttonSelector: '#upload-avatar',
+            multiple: false,
             resize: {
                 width: 1024,
                 height: 1024
             },
-            filters : {
-                max_file_size : '12mb',
-                mime_types: [
-                    {title : "Image files", extensions : "jpg,jpeg,png,bmp,gif"}
-                ]
+            max_size: '12mb',
+
+            fileUploaded: function(file, json_response) {
+                if (json_response) {
+                    change_avatar(json_response);
+                }
             },
-            headers: {
-                'X-CSRFToken': $.cookie('csrftoken'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            init: {
-                // Добавление файла в очередь
-                FilesAdded: function(up) {
-                    // Старт загрузки сразу после добавления
-                    up.start();
-                },
-
-                // Файл загружен
-                FileUploaded: function(up, file, data) {
-                    var response = $.parseJSON(data.response);
-                    change_avatar(response);
-                },
-
-                // Ошибка загрузки
-                Error: function(up, err) {
-                    uploader.removeFile(err.file);
-                    if (err.response) {
-                        try {
-                            var response = $.parseJSON(err.response);
-                            alert(response.message);
-                            return
-                        } catch(e) {}
-                    }
-
-                    alert(err.message);
+            onError: function(file, error, json_response) {
+                if (json_response && json_response.message) {
+                    alert(json_response.message)
                 }
             }
         });
-
-        uploader.init();
     };
 
 

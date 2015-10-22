@@ -19,10 +19,14 @@
   <div id="profile">
     <div class="grid">
       <div class="gc-full gc-alone">
-        <h1 class="title-h1">{% with username=profile_user.username %}{% blocktrans %}Profile of «{{ username }}»
-        {% endblocktrans %}{% endwith %}</h1>
+        <h1 class="title-h1">
+          {% with username=profile_user.username %}
+            {% blocktrans %}Profile of «{{ username }}»{% endblocktrans %}
+          {% endwith %}
+        </h1>
 
         {% include 'users/profile_avatar.html' %}
+
         <div class="profile-info">
           {% with fullname=profile_user.get_full_name %}
             {% if fullname %}
