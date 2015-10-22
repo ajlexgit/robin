@@ -1,18 +1,11 @@
-from django.contrib import admin
 from django.views.generic import View
 from django.utils.translation import ugettext_lazy as _
-from libs.views_ajax import AjaxViewMixin
+from libs.views_ajax import AjaxAdminViewMixin
 from .models import Comment
 
 
-class DeleteView(AjaxViewMixin, View):
+class DeleteView(AjaxAdminViewMixin, View):
     """ Удаление комментария """
-    def get_handler(self, request):
-        handler = super().get_handler(request)
-        if handler:
-            handler = admin.site.admin_view(handler)
-        return handler
-
     def post(self, request):
         try:
             comment = Comment.objects.get(pk=request.POST.get('id'))
@@ -33,14 +26,8 @@ class DeleteView(AjaxViewMixin, View):
         return self.json_response()
 
 
-class RestoreView(AjaxViewMixin, View):
+class RestoreView(AjaxAdminViewMixin, View):
     """ Восстановление комментария """
-    def get_handler(self, request):
-        handler = super().get_handler(request)
-        if handler:
-            handler = admin.site.admin_view(handler)
-        return handler
-
     def post(self, request):
         try:
             comment = Comment.objects.get(pk=request.POST.get('id'))

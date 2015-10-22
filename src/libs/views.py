@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.views.decorators.http import condition
 from django.template import loader, Context, RequestContext
 from django.views.generic.base import TemplateResponseMixin, View
@@ -31,6 +32,17 @@ class DecoratableViewMixin:
             before_handler(request, *args, **kwargs)
 
         return handler(request, *args, **kwargs)
+
+
+class AdminViewMixin:
+    """
+        Миксина для админской вьюхи
+    """
+    def get_handler(self, request):
+        handler = super().get_handler(request)
+        if handler:
+            handler = admin.site.admin_view(handler)
+        return handler
 
 
 class StringRenderMixin:

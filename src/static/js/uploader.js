@@ -149,6 +149,16 @@
             this.uploader.init();
         };
 
+        /*
+            Уничтожение заргузчика
+         */
+        Uploader.prototype.destroy = function() {
+            if (this.uploader) {
+                this.uploader.destroy();
+                this.uploader = null;
+                this.$drop.off('.uploader');
+            }
+        };
 
         /*
             Обертка над событием инициализации загрузчика

@@ -2,7 +2,7 @@ from django.utils.functional import Promise
 from django.utils.encoding import force_text
 from django.http.response import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
-from libs.views import DecoratableViewMixin, StringRenderMixin
+from libs.views import DecoratableViewMixin, AdminViewMixin, StringRenderMixin
 
 
 class LazyJSONEncoder(DjangoJSONEncoder):
@@ -35,3 +35,7 @@ class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
         }
         defaults.update(kwargs)
         return JsonResponse(data, **defaults)
+
+
+class AjaxAdminViewMixin(AdminViewMixin, AjaxViewMixin):
+    pass
