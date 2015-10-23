@@ -18,13 +18,17 @@
                   {% endfor %}
                 </div>
 
-                <div class="form empty-form">
+                <script class="form-template">
                    {% with form=formset.empty_form %}
+                    <div class="form">
                        {{ form }}
+                    </div>
                   {% endwith %}
-                </div>
+                </script>
             </div>
 
+        Пример JS:
+            fs = new Formset('#formset');
      */
 
     var prefix_regexp = /__prefix__/i;
@@ -75,6 +79,8 @@
                 return
             }
             $initial_forms.slice(0, initial_count).data('initial', true);
+
+            this.$root.data('formset', this);
         };
 
         /*
@@ -87,10 +93,19 @@
                 emptyFormClass: 'empty-form',
 
                 prefix: 'form',
+                showSpeed: 300,
+                hideSpeed: 300,
 
-                beforeAddForm: $.noop,
+                // перед добавлением формы
+                beforeAddForm: function() {
+                    return this.getFormCount() < this.getMaxFormCount();
+                },
                 afterAddForm: $.noop,
-                beforeDeleteForm: $.noop,
+
+                // перед удалением формы
+                beforeDeleteForm: function() {
+                    return this.getFormCount() > this.getMinFormCount()
+                },
                 afterDeleteForm: $.noop
             }
         };
@@ -126,7 +141,7 @@
         };
 
         /*
-            Получение всех форм набора
+            Получение контейнера форм
          */
         Formset.prototype.getFormsContainer = function() {
             return this.$root.find('.' + this.opts.formsContainerClass);
@@ -135,16 +150,53 @@
         /*
             Получение всех форм набора
          */
-        Formset.prototype.getForms = function() {
-            return this.$container.find('.' + this.opts.formClass);
+        Formset.prototype.getForms = function(with_deleted) {
+            var that = this;
+            var $forms = this.$container.find('.' + this.opts.formClass);
+            if (!with_deleted) {
+                $forms = $forms.filter(function(i, item) {
+                    return !that.formDeleted(item);
+                })
+            }
+            return $forms;
+        };
+
+        /*
+            Получение количества всех форм
+         */
+        Formset.prototype.getFormCount = function(with_deleted) {
+            return this.getForms(with_deleted).length;
+        };
+
+        /*
+            Получение минимального количества всех форм
+         */
+        Formset.prototype.getMinFormCount = function() {
+            return parseInt(this.management.$min_num_forms.val()) || 0;
+        };
+
+        /*
+            Получение максимального количества всех форм
+         */
+        Formset.prototype.getMaxFormCount = function() {
+            return parseInt(this.management.$max_num_forms.val()) || 1000;
         };
 
         /*
             Получение шаблона новой формы
          */
         Formset.prototype.getEmptyForm = function() {
-            return this.$root.find('.' + this.opts.emptyFormClass).first();
+            var $template = this.$root.find('.' + this.opts.emptyFormClass).first();
+            if (!$template.length) {
+                console.error('Not found empty form template');
+                return $()
+            }
+
+            return $($template.html());
         };
+
+
+
 
         /*
             Установка или получение значения DELETE-поля формы
@@ -178,111 +230,21 @@
 
 
         /*
-            Удаление формы. Устанавливает поле DELETE, если оно есть.
-            Если установлен hide_form, будет вызвана анимация скрытия формы.
-
-            Должен вызывать beforeDeleteForm и afterDeleteForm.
-
-            Возвращает jQuery-объект удаленной формы или false
-         */
-        Formset.prototype.deleteForm = function(form_selector, hide_form) {
-            var $form = $.findFirstElement(form_selector, this.$container);
-            if (!$form.length) {
-                console.error('Not found form to be deleted');
-                return false
-            }
-
-            if (this.beforeDeleteForm($form) === false) {
-                return false
-            }
-
-            this.formDeleted($form, true);
-
-            if (hide_form) {
-                this.hideForm($form);
-            } else {
-                this.afterDeleteForm($form);
-            }
-
-            return $form;
-        };
-
-        Formset.prototype.beforeDeleteForm = function($form) {
-            // ищем кол-во форм, которые не помечены удаленными
-            var that = this;
-            var final_count = 0;
-            var $forms = this.getForms();
-            $forms.each(function() {
-                if (!that.formDeleted(this)) {
-                    final_count++;
-                }
-            });
-
-            // предотвращаем добавление, если превышено кол-во форм
-            var min_num_forms = parseInt(this.management.$min_num_forms.val()) || 0;
-            if (final_count <= min_num_forms) {
-                return false;
-            }
-
-            // jQuery event
-            this.$container.trigger('beforeDeleteForm.formset', [$form]);
-
-            return this.opts.beforeDeleteForm.call(this, $form);
-        };
-
-        Formset.prototype.afterDeleteForm = function($form) {
-            this.opts.afterDeleteForm.call(this, $form);
-
-            // jQuery event
-            this.$container.trigger('afterDeleteForm.formset', [$form]);
-        };
-
-        /*
-            Скрытие (с возможным удалением) формы.
-
-            Должен вызывать afterDeleteForm.
-         */
-        Formset.prototype.hideForm = function($form) {
-            var that = this;
-            $form.slideUp(300, function() {
-                var form_data = $form.data();
-                if (!form_data.initial) {
-                    $form.remove();
-
-                    // уменьшаем TOTAL_FORMS
-                    var total_forms = parseInt(that.management.$total_forms.val()) || 0;
-                    that.management.$total_forms.val(--total_forms);
-                }
-
-                that.afterDeleteForm($form);
-            });
-        };
-
-
-        /*
             Добавление новой формы.
-
-            Должен вызывать beforeAddForm и afterAddForm.
 
             Возвращает jQuery-объект новой формы или false
          */
         Formset.prototype.addForm = function() {
-            if (this.beforeAddForm() === false) {
+            if (this.opts.beforeAddForm.call(this) === false) {
                 return false
             }
 
-            var $template = this.getEmptyForm();
-            if (!$template.length) {
-                console.error('Not found empty form template');
-                return false
-            }
-
-            var $form = $template.clone(true).removeClass(this.opts.emptyFormClass);
+            var $form = this.getEmptyForm();
             $form.hide().appendTo(this.$container);
 
             // увеличиваем TOTAL_FORMS
-            var total_forms = parseInt(this.management.$total_forms.val()) || 0;
-            this.management.$total_forms.val(++total_forms);
+            var total_forms = this.getFormCount(true);
+            this.management.$total_forms.val(total_forms + 1);
 
             // заменяем префикс
             var that = this;
@@ -291,48 +253,54 @@
             });
             this.nextFormIndex++;
 
-            this.afterAddForm($form);
+
+            $form.slideDown({
+                duration: this.opts.showSpeed,
+                complete: function() {
+                    that.opts.afterAddForm.call(this, $form);
+                }
+            });
 
             return $form;
         };
 
-        Formset.prototype.beforeAddForm = function() {
-            // ищем кол-во форм, которые не помечены удаленными
+
+        /*
+            Удаление формы. Устанавливает поле DELETE, если оно есть.
+
+            Возвращает jQuery-объект удаленной формы или false
+         */
+        Formset.prototype.deleteForm = function(form_selector) {
+            if (this.opts.beforeDeleteForm.call(this) === false) {
+                return false
+            }
+
+            var $form = $.findFirstElement(form_selector, this.$container);
+            if (!$form.length) {
+                console.error('Not found form to be deleted');
+                return false
+            }
+
+            this.formDeleted($form, true);
+
             var that = this;
-            var final_count = 0;
-            var $forms = this.getForms();
-            $forms.each(function() {
-                if (!that.formDeleted(this)) {
-                    final_count++;
+            $form.slideUp({
+                duration: that.opts.hideSpeed,
+                complete: function() {
+                    var form_data = $form.data();
+                    if (!form_data.initial) {
+                        $form.remove();
+
+                        // уменьшаем TOTAL_FORMS
+                        var total_forms = that.getFormCount(true);
+                        that.management.$total_forms.val(total_forms);
+                    }
+
+                    that.opts.afterDeleteForm.call(this, $form);
                 }
             });
 
-            // предотвращаем добавление, если превышено кол-во форм
-            var max_num_forms = parseInt(this.management.$max_num_forms.val()) || 1000;
-            if (final_count >= max_num_forms) {
-                return false;
-            }
-
-            // jQuery event
-            this.$container.trigger('beforeAddForm.formset');
-
-            return this.opts.beforeAddForm.call(this);
-        };
-
-        Formset.prototype.afterAddForm = function($form) {
-            this.opts.afterAddForm.call(this, $form);
-
-            // jQuery event
-            this.$container.trigger('afterAddForm.formset', [$form]);
-
-            this.showForm($form);
-        };
-
-        /*
-            Показ скрытой формы
-         */
-        Formset.prototype.showForm = function($form) {
-            $form.slideDown(300);
+            return $form;
         };
 
         return Formset;

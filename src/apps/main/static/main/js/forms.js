@@ -7,7 +7,7 @@
         });
 
         $('#form').on('click', '.delete', function() {
-            formset.deleteForm($(this).closest('.form'), true);
+            formset.deleteForm($(this).closest('.form'));
             return false;
         }).on('click', '.add', function() {
             formset.addForm();

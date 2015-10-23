@@ -53,37 +53,23 @@
               {% endfor %}
             </div>
 
-            <div class="form empty-form">
+            <div class="empty-form" style="display: none">
               {% with form=formset.empty_form %}
-                {{ form.id.as_hidden }}
+                <div class="form">
+                  {{ form.id.as_hidden }}
 
-                {% if formset.can_delete %}
-                  {{ form.DELETE.as_hidden }}
-                {% endif %}
+                  {% if formset.can_delete %}
+                    {{ form.DELETE.as_hidden }}
+                  {% endif %}
 
-                {{ form.name.label_tag }}
-                {{ form.name }}
-                {{ form.name.errors }}
+                  {{ form.name.label_tag }}
+                  {{ form.name }}
+                  {{ form.name.errors }}
 
-                <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
+                  <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
+                </div>
               {% endwith %}
             </div>
-          </div>
-
-          <div class="empty-formset" style="display: none">
-            {% if formset.can_delete %}
-              {{ formset.empty_form.DELETE.as_hidden }}
-            {% endif %}
-
-            {% if formset.can_order %}
-              {{ formset.empty_form.ORDER.as_hidden }}
-            {% endif %}
-
-            <fieldset>
-              {{ formset.empty_form.name.label_tag }}
-              {{ formset.empty_form.name }}
-              {{ formset.empty_form.name.errors }}
-            </fieldset>
           </div>
 
           <div style="margin-top: 10px;">
