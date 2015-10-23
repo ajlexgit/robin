@@ -468,16 +468,18 @@
                     that.$root.trigger('item-add.gallery', [$item, response]);
                 },
                 error: function(xhr) {
+                    var $preview = $item.find(that.opts.previewSelector);
+
                     $item.addClass(that.opts.errorClass);
+
+                    $preview.show();
 
                     var response = that.ajax_error(xhr);
                     if (response && response.message) {
-                        alert(response.message);
+                        $preview.append(
+                            $('<span>').html(response.message)
+                        );
                     }
-
-                    setTimeout(function() {
-                        that.deleteItem($item);
-                    }, 500);
 
                     // callback
                     that.$root.trigger('item-error.gallery', [$item, response]);
