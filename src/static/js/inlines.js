@@ -244,7 +244,7 @@
 
             // увеличиваем TOTAL_FORMS
             var total_forms = this.getFormCount(true);
-            this.management.$total_forms.val(total_forms + 1);
+            this.management.$total_forms.val(total_forms);
 
             // заменяем префикс
             var that = this;
