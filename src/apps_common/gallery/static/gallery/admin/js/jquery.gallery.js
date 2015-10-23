@@ -119,7 +119,7 @@
                         item_ids = [];
 
                     items.each(function() {
-                        var item_id = $(this).find('.item-id').val();
+                        var item_id = parseInt($(this).data('id'));
                         if (item_id) {
                             item_ids.push(item_id)
                         }

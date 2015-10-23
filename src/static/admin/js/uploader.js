@@ -156,7 +156,9 @@
             if (this.uploader) {
                 this.uploader.destroy();
                 this.uploader = null;
-                this.$drop.off('.uploader');
+                if (this.$drop && this.$drop.length) {
+                    this.$drop.off('.uploader');
+                }
             }
         };
 

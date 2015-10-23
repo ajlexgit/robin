@@ -41,6 +41,7 @@ class GalleryWidget(forms.Widget):
         context = dict(self.context, **{
             'name': name,
             'gallery': value,
+            'gallery_model': gallery_model,
             'attrs': flatatt(final_attrs),
         })
         return mark_safe(render_to_string(gallery_model.ADMIN_TEMPLATE, context))

@@ -114,9 +114,21 @@
             var that = this;
             var opts = $.extend(true, {
                 type: 'POST',
+                data: {
+                    app_label: this.app_label,
+                    model_name: this.model_name,
+                    field_name: this.field_name,
+                    gallery_id: that.gallery_id
+                },
                 dataType: 'json',
                 beforeSend: function() {
                     that.lock();
+                },
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
                 },
                 complete: function() {
                     that.unlock();
@@ -124,6 +136,40 @@
             }, options);
 
             return $.ajax(opts);
+        };
+
+        Gallery.prototype.ajaxItem = function($item, options) {
+            var that = this;
+            var item = $item.get(0);
+
+            if (item.query) {
+                item.query.abort();
+            }
+            var opts = $.extend(true, {
+                type: 'POST',
+                data: {
+                    app_label: this.app_label,
+                    model_name: this.model_name,
+                    field_name: this.field_name,
+                    gallery_id: this.gallery_id,
+                    item_id: parseInt($item.data('id')) || 0
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $item.addClass(that.opts.loadingClass);
+                },
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
+                },
+                complete: function() {
+                    $item.removeClass(that.opts.loadingClass);
+                }
+            }, options);
+
+            return item.query = $.ajax(opts);
         };
 
         Gallery.prototype.ajax_error = function(xhr) {
@@ -149,23 +195,10 @@
             var that = this;
             return this.ajax({
                 url: window.admin_gallery_create,
-                data: {
-                    app_label: this.app_label,
-                    model_name: this.model_name,
-                    field_name: this.field_name
-                },
                 success: function(response) {
-                    if (!that.initGallery(response.gallery_id)) {
-                        return
-                    }
-
                     that.$wrapper.html(response.html);
-                },
-                error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
-                    }
+
+                    that.initGallery(response.gallery_id);
                 }
             });
         };
@@ -177,7 +210,7 @@
             gallery_id = parseInt(gallery_id);
             if (!gallery_id) {
                 console.error('Invalid gallery_id');
-                return false
+                return
             }
 
             this.gallery_id = gallery_id;
@@ -196,8 +229,6 @@
 
             // callback
             this.$root.trigger('init.gallery');
-
-            return true;
         };
 
         /*
@@ -314,12 +345,11 @@
                                 });
                                 $image.attr('src', final_canvas.toDataURL());
                             });
-                        }).always(function() {
-                            $controls.show();
                         });
-                    }).fail(function() {
-                        $controls.show();
                     });
+
+                    $preview.show();
+                    $controls.show();
 
                     if (json_response) {
                         $preview.append(
@@ -371,11 +401,6 @@
             var that = this;
             return this.ajax({
                 url: window.admin_gallery_delete,
-                data: {
-                    app_label: this.app_label,
-                    model_name: this.model_name,
-                    field_name: this.field_name
-                },
                 success: function(response) {
                     that.gallery_id = null;
                     that.$galleryInput.val('');
@@ -389,12 +414,6 @@
 
                     // callback
                     that.$root.trigger('destroy.gallery');
-                },
-                error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
-                    }
                 }
             });
         };
@@ -420,9 +439,6 @@
             return this.ajax({
                 url: window.admin_gallery_upload_video,
                 data: {
-                    app_label: this.app_label,
-                    model_name: this.model_name,
-                    gallery_id: this.gallery_id,
                     link: link
                 },
                 beforeSend: function() {
@@ -513,18 +529,8 @@
                 });
                 return df.promise();
             } else {
-                if (this.locked()) {
-                    return
-                }
-
-                return this.ajax({
+                return this.ajaxItem($item, {
                     url: window.admin_gallery_delete_item,
-                    data: {
-                        app_label: this.app_label,
-                        model_name: this.model_name,
-                        gallery_id: this.gallery_id,
-                        item_id: parseInt($item.data('id')) || 0
-                    },
                     success: function() {
                         // Удаление блока из DOM
                         $item.animate({
@@ -540,12 +546,6 @@
                                 that.$root.trigger('item-delete.gallery', $item);
                             }
                         })
-                    },
-                    error: function(xhr) {
-                        var response = that.ajax_error(xhr);
-                        if (response && response.message) {
-                            alert(response.message);
-                        }
                     }
                 })
             }
@@ -569,37 +569,14 @@
                 return
             }
 
-            var that = this;
             direction = direction || 'left';
 
-            if ($item.get(0).query) {
-                $item.get(0).query.abort();
-            }
-            return $item.get(0).query = $.ajax({
+            return this.ajaxItem($item, {
                 url: window.admin_gallery_rotate_item + '?direction=' + direction,
-                type: 'POST',
-                data: {
-                    app_label: this.app_label,
-                    model_name: this.model_name,
-                    gallery_id: this.gallery_id,
-                    item_id: parseInt($item.data('id')) || 0
-                },
-                beforeSend: function() {
-                    $item.addClass(that.opts.loadingClass);
-                },
                 success: function(response) {
                     $item.find('img').attr({
                         src: response.preview_url
                     });
-                },
-                error: function() {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
-                    }
-                },
-                complete: function() {
-                    $item.removeClass(that.opts.loadingClass);
                 }
             });
         };
@@ -622,38 +599,17 @@
                 return
             }
 
-            var that = this;
             var data = $.extend({}, extra, {
-                app_label: this.app_label,
-                model_name: this.model_name,
-                gallery_id: this.gallery_id,
-                item_id: parseInt($item.data('id')) || 0,
                 coords: coords
             });
 
-            if ($item.get(0).query) {
-                $item.get(0).query.abort();
-            }
-            return $item.get(0).query = $.ajax({
+            return this.ajaxItem($item, {
                 url: window.admin_gallery_crop_item,
-                type: 'POST',
                 data: data,
-                beforeSend: function() {
-                    $item.addClass(that.opts.loadingClass);
-                },
                 success: function(response) {
                     $item.find('img').attr({
                         src: response.preview_url
                     });
-                },
-                error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
-                    }
-                },
-                complete: function() {
-                    $item.removeClass(that.opts.loadingClass);
                 }
             });
         };
@@ -676,34 +632,12 @@
                 return
             }
 
-            var that = this;
-            var data = $.extend({}, extra, {
-                app_label: this.app_label,
-                model_name: this.model_name,
-                gallery_id: this.gallery_id,
-                item_id: parseInt($item.data('id')) || 0
-            });
+            var data = $.extend({}, extra);
 
-            if ($item.get(0).query) {
-                $item.get(0).query.abort();
-            }
-            return $item.get(0).query = $.ajax({
+            return this.ajaxItem($item, {
                 url: window.admin_gallery_get_description,
-                type: 'POST',
                 async: false,
-                data: data,
-                beforeSend: function() {
-                    $item.addClass(that.opts.loadingClass);
-                },
-                error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
-                    }
-                },
-                complete: function() {
-                    $item.removeClass(that.opts.loadingClass);
-                }
+                data: data
             });
         };
 
@@ -725,35 +659,14 @@
                 return
             }
 
-            var that = this;
             var data = $.extend({}, extra, {
-                app_label: this.app_label,
-                model_name: this.model_name,
-                gallery_id: this.gallery_id,
-                item_id: parseInt($item.data('id')) || 0,
                 description: description
             });
 
-            if ($item.get(0).query) {
-                $item.get(0).query.abort();
-            }
-            return $item.get(0).query = $.ajax({
+            return this.ajaxItem($item, {
                 url: window.admin_gallery_set_description,
-                type: 'POST',
                 async: false,
-                data: data,
-                beforeSend: function() {
-                    $item.addClass(that.opts.loadingClass);
-                },
-                error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
-                    }
-                },
-                complete: function() {
-                    $item.removeClass(that.opts.loadingClass);
-                }
+                data: data
             });
         };
 

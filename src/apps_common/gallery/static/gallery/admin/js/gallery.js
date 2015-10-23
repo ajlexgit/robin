@@ -17,7 +17,7 @@
         var self = $(this),
             gallery = self.closest('.gallery').gallery('object');
         self.prop('disabled', true);
-        gallery.create().always(function() {
+        gallery.createGallery().always(function() {
             self.prop('disabled', false);
         });
         return false;
@@ -30,7 +30,7 @@
         }
 
         self.prop('disabled', true);
-        gallery.delete().always(function() {
+        gallery.deleteGallery().always(function() {
             self.prop('disabled', false);
         });
         return false;

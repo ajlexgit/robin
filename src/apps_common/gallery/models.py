@@ -481,7 +481,6 @@ class GalleryVideoLinkItem(GalleryItemBase):
         }
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         if self.video and self.video.info:
             preview_url = self.video.info['preview_url']
             try:
@@ -493,6 +492,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
             else:
                 self.video_preview.save(uploaded_file.name, uploaded_file, save=False)
                 uploaded_file.close()
+        super().save(*args, **kwargs)
 
 
     @classmethod

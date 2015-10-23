@@ -199,7 +199,21 @@
 .gallery-item-error {
     box-shadow: 0 0 1px 3px red;
 }
-.gallery-item-error .item-preloader span {
+
+.gallery-item-error .item-preview {
+    color: #d00000;
+}
+.gallery-item-error .item-preview:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.7);
+}
+.gallery-item-error .item-preview span {
     position: absolute;
     padding: 10px;
     left: 0;
@@ -209,14 +223,4 @@
     text-align: left;
     line-height: 1.1;
     z-index: 10;
-}
-.gallery-item-error .item-preloader:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 5;
-    background: rgba(255,255,255,0.7);
 }

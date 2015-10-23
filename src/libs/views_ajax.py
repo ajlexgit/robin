@@ -12,6 +12,11 @@ class LazyJSONEncoder(DjangoJSONEncoder):
         return super().default(obj)
 
 
+class JSONError(Exception):
+    def __init__(self, data, status=400):
+        self.data = data
+        self.status = status
+
 
 class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
     """
@@ -24,6 +29,12 @@ class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
             return None
         else:
             return super().get_handler(request)
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except JSONError as e:
+            return self.json_response(e.data, status=e.status)
 
     @staticmethod
     def json_response(data=None, **kwargs):
