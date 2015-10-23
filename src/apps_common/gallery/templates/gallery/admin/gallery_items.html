@@ -2,51 +2,48 @@
 
 <h4>
   {% blocktrans with image_count=gallery.image_items.count video_count=gallery.video_link_items.count count counter=image_count %}
-    Gallery has <span class="gallery-{{ name }}-counter-image">{{ image_count }}</span> image and
-    <span class="gallery-{{ name }}-counter-video-link">{{ video_count }}</span> video
+    Gallery has <span class="gallery-image-counter">{{ image_count }}</span> image and
+    <span class="gallery-videolink-counter">{{ video_count }}</span> video
   {% plural %}
-    Gallery has <span class="gallery-{{ name }}-counter-image">{{ image_count }}</span> images and
-    <span class="gallery-{{ name }}-counter-video-link">{{ video_count }}</span> video
+    Gallery has <span class="gallery-image-counter">{{ image_count }}</span> images and
+    <span class="gallery-videolink-counter">{{ video_count }}</span> video
   {% endblocktrans %}
 </h4>
 
 <div class="gallery-items" id="gallery-{{ name }}-items">
   {% for item in gallery.all_items %}
     {% if item.is_image %}
-      <div class="gallery-item gallery-item-image"
+      <div class="gallery-item gallery-item-image" data-id="{{ item.id }}"
           {% if item.image %}
            data-source_url="{{ item.image.url }}"
            data-source_size="{{ item.image.dimensions|join:',' }}"
           {% endif %}>
 
-        <input type="hidden" class="item-id" value="{{ item.id }}"/>
-
-        <a {% if item.show_url %}href="{{ item.show_url }}"{% endif %} target="_blank" class="item-show">
+        <a {% if item.show_url %}href="{{ item.show_url }}"{% endif %} target="_blank" class="item-preview">
           <img src="{{ item.admin_variation.url }}">
         </a>
 
         <span class="item-controls">
-            <input type="checkbox" class="check-box" value="{{ item.id }}">
-            <a class="icon-edit item-crop" title="{% trans 'Crop image' %}" data-crop="{{ item.image.croparea }}"></a>
-            <a class="icon-repeat item-rotate-left"
-               title="{% trans 'Rotate by 90 degrees counterclockwise' %}"></a>
-            <a class="icon-repeat item-rotate-right" title="{% trans 'Rotate by 90 degrees clockwise' %}"></a>
-            <a class="icon-list item-description" title="{% trans 'Edit description' %}"></a>
-            <a class="icon-trash item-delete" title="{% trans 'Delete' %}"></a>
+          <input type="checkbox" class="check-box" value="{{ item.id }}">
+          <a class="icon-edit item-crop" title="{% trans 'Crop image' %}" data-crop="{{ item.image.croparea }}"></a>
+          <a class="icon-repeat item-rotate-left"
+             title="{% trans 'Rotate by 90 degrees counterclockwise' %}"></a>
+          <a class="icon-repeat item-rotate-right" title="{% trans 'Rotate by 90 degrees clockwise' %}"></a>
+          <a class="icon-list item-description" title="{% trans 'Edit description' %}"></a>
+          <a class="icon-trash item-delete" title="{% trans 'Delete' %}"></a>
         </span>
       </div>
     {% elif item.is_video_link %}
-      <div class="gallery-item gallery-item-video-link">
-        <input type="hidden" class="item-id" value="{{ item.id }}"/>
-        <a href="{{ item.show_url }}" target="_blank" class="item-show">
+      <div class="gallery-item gallery-item-video-link" data-id="{{ item.id }}">
+        <a href="{{ item.show_url }}" target="_blank" class="item-preview">
           <span class="inner">
-              <img src="{{ item.admin_variation.url }}">
+            <img src="{{ item.admin_variation.url }}">
           </span>
         </a>
 
         <span class="item-controls">
-            <input type="checkbox" class="check-box" value="{{ item.id }}">
-            <a class="icon-trash item-delete" title="{% trans 'Delete' %}"></a>
+          <input type="checkbox" class="check-box" value="{{ item.id }}">
+          <a class="icon-trash item-delete" title="{% trans 'Delete' %}"></a>
         </span>
       </div>
     {% endif %}

@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Comment full_clean
 # Uploader: use uploader.js
 # Google Maps: bounds + upgrade JS, $.GoogleMapsReady(handler), str longitude after get_or_create,
 #              marker options

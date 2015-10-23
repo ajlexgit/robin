@@ -58,7 +58,7 @@ class GalleryItemBase(models.Model):
     description = models.TextField(_('description'), blank=True)
 
     sort_order = models.PositiveIntegerField(_('sort order'), default=0)
-    created = models.DateTimeField(_('created on'))
+    created = models.DateTimeField(_('created on'), blank=True)
     changed = models.DateTimeField(_('changed on'), auto_now=True)
 
     objects = GalleryItemQuerySet.as_manager()
@@ -458,6 +458,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
 
     video = VideoLinkField(_('video'))
     video_preview = GalleryVideoLinkPreviewField(_('preview'),
+        blank=True,
         storage=MediaStorage(),
         upload_to=generate_filepath,
     )
@@ -480,6 +481,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
         }
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         if self.video and self.video.info:
             preview_url = self.video.info['preview_url']
             try:
@@ -492,7 +494,6 @@ class GalleryVideoLinkItem(GalleryItemBase):
                 self.video_preview.save(uploaded_file.name, uploaded_file, save=False)
                 uploaded_file.close()
 
-        super().save(*args, **kwargs)
 
     @classmethod
     def check(cls, **kwargs):
@@ -600,8 +601,11 @@ class GalleryVideoLinkItem(GalleryItemBase):
 
     @cached_property
     def admin_variation(self):
-        """ Получение имени вариации для админки """
-        return getattr(self.video_preview, self.ADMIN_VARIATION, self.video_preview)
+        """ Получение вариации для админки """
+        if self.video_preview:
+            return getattr(self.video_preview, self.ADMIN_VARIATION, self.video_preview)
+        else:
+            return None
 
     @property
     def show_url(self):

@@ -52,19 +52,53 @@
     box-sizing: border-box;
     box-shadow: 1px 1px 3px 0 #808080;
 }
-.gallery-item .item-show {
+.gallery-item .item-preview {
     display: inline-block;
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
+/* Прелоадер в процессе загрузки */
+.gallery-item .item-preloader {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: url(../img/loading.gif) no-repeat 50% 50%;
+}
+
+/* Прогрессбар */
+.gallery-item .progress {
+    display: none;
+}
+
+.gallery-item-loading .progress {
+    display: block;
+    height: 6px;
+    margin: 0;
+    position: absolute;
+    bottom: 10px;
+    width: 90%;
+    left: 5%;
+    z-index: 5;
+    border: 2px solid black;
+}
+
+.gallery-item-loading .progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: #337ab7;
+}
+
+
 
 /* Элемент видео */
 .gallery-item-video-link {
     box-shadow: 0 0 3px 1px blue;
 }
-.gallery-item-video-link .item-show:after {
+.gallery-item-video-link .item-preview:after {
     content: '';
     position: absolute;
     left: 50%;
@@ -76,7 +110,7 @@
     background: url(../img/video.png?x=1) no-repeat center center #000;
     transition: opacity, 0.2s;
 }
-.gallery-item-video-link:hover .item-show:after {
+.gallery-item-video-link:hover .item-preview:after {
     opacity: 0;
 }
 .gallery-item-video-link .inner {
@@ -158,39 +192,6 @@
 .gallery-item-loading .item-controls .item-delete,
 .gallery-item-error .item-controls .item-delete {
     visibility: visible;
-}
-
-
-/* Прелоадер в процессе загрузки */
-.gallery-item .item-preloader {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    background: url(../img/loading.gif) no-repeat 50% 50%;
-}
-
-
-/* Прогрессбар */
-.gallery-item .progress {
-    display: none;
-}
-.gallery-item-loading .progress {
-    display: block;
-    height: 6px;
-    margin: 0;
-    position: absolute;
-    bottom: 10px;
-    width: 90%;
-    left: 5%;
-    z-index: 5;
-    border: 2px solid black;
-}
-.gallery-item-loading .progress-bar {
-    width: 0;
-    height: 100%;
-    background-color: #337ab7;
 }
 
 

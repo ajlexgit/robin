@@ -5,66 +5,207 @@
         return gettext('Error') + ' "' + file.name + '":' + nl + message;
     };
 
-    var default_options = {
-        /*
-            Селектор кнопки, к которой будет привязан Pluploader
-            для закачки картинок.
-        */
-        upload_button: '.add-gallery-image'
-    };
-
     /*
         Класс галереи, предоставляющий базовые методы работы над картинками
     */
-    window.Gallery = function($container, options) {
-        var that = this;
-        var query;
+    window.Gallery = (function() {
+        var Gallery = function() {};
 
-        if ($container.data(Gallery.dataParam)) {
-            return
-        }
+        Gallery.create = function(root, options) {
+            var self = new Gallery();
 
-        options = $.extend(true, {}, default_options, options);
-        that.app_label = $container.children('.app_label').val();
-        that.model_name = $container.children('.model_name').val();
-        that.field_name = $container.children('.gallery_id').attr('name');
-        that.gallery_id = undefined;
-        that.uploader = undefined;
-
-        // Создание экземпляра галереи
-        that.create = function() {
-            if (that.gallery_id) {
-                console.info(gettext('Gallery already exists for this entry'));
+            self.$root = $.findFirstElement(root);
+            if (!self.$root.length) {
+                console.error('Gallery can\'t find root element');
                 return
             }
 
-            if (query) query.abort();
-            return query = $.ajax({
-                url: window.admin_gallery_create,
+            // настройки
+            self.opts = $.extend(self.getDefaultOpts(), options);
+
+            // данные о галерее
+            self.app_label = self.$root.data('applabel');
+            if (!self.app_label) {
+                console.error('Gallery can\'t find app_label');
+                return
+            }
+
+            self.model_name = self.$root.data('modelname');
+            if (!self.model_name) {
+                console.error('Gallery can\'t find model_name');
+                return
+            }
+
+            self.$galleryInput = $.findFirstElement(self.opts.galleryInputSelector, self.$root);
+            if (!self.$galleryInput.length) {
+                console.error('Gallery can\'t find input element');
+                return
+            }
+
+            self.field_name = self.$galleryInput.attr('name');
+            if (!self.field_name) {
+                console.error('Gallery can\'t find field_name');
+                return
+            }
+
+            self.$wrapper = $.findFirstElement(self.opts.galleryWrapperSelector, self.$root);
+            if (!self.$wrapper.length) {
+                console.error('Gallery can\'t find wrapper element');
+                return
+            }
+
+            self._locked = false;
+            self.gallery_id = null;
+            self.$list = $();
+
+            // save
+            self.$root.data(window.Gallery.dataParam, self);
+
+            // инициализация галереи
+            var gallery_id = parseInt(self.$galleryInput.val()) || null;
+            if (gallery_id) {
+                self.initGallery(gallery_id);
+            }
+
+            // callback
+            self.$root.trigger('create.gallery');
+
+            return self;
+        };
+
+        /*
+            Настройки по умолчанию
+         */
+        Gallery.prototype.getDefaultOpts = function() {
+            return {
+                galleryInputSelector: '.gallery_id',
+                galleryWrapperSelector: '.gallery-wrapper',
+                galleryListSelector: '.gallery-items',
+
+                uploadButtonSelector: '.add-gallery-image',
+
+                previewSelector: '.item-preview',
+                preloaderSelector: '.item-preloader',
+                progressSelector: '.progress',
+                progressBarSelector: '.progress-bar',
+                controlsSelector: '.item-controls',
+
+                imageTemplateSelector: '.image-template',
+                videolinkTemplateSelector: '.videolink-template',
+
+                loadingClass: 'gallery-item-loading',
+                errorClass: 'gallery-item-error'
+            }
+        };
+
+        Gallery.prototype.locked = function() {
+            return this._locked;
+        };
+
+        Gallery.prototype.lock = function() {
+            this._locked = true;
+        };
+
+        Gallery.prototype.unlock = function() {
+            this._locked = false;
+        };
+
+        Gallery.prototype.ajax = function(options) {
+            var that = this;
+            var opts = $.extend(true, {
                 type: 'POST',
-                data: {
-                    app_label: that.app_label,
-                    model_name: that.model_name,
-                    field_name: that.field_name
-                },
                 dataType: 'json',
-                success: function(resp) {
-                    if (resp) {
-                        $container.find('.gallery-wrapper').html(resp.html);
-                        that.init(resp.gallery_id);
-                    } else {
-                        alert(gettext('Failed creation gallery'));
-                    }
+                beforeSend: function() {
+                    that.lock();
                 },
-                error: function() {
-                    alert(gettext('Failed creation gallery'));
+                complete: function() {
+                    that.unlock();
+                }
+            }, options);
+
+            return $.ajax(opts);
+        };
+
+        Gallery.prototype.ajax_error = function(xhr) {
+            if (xhr.responseText) {
+                return $.parseJSON(xhr.responseText);
+            }
+        };
+
+
+        /*
+            Создание галереи
+         */
+        Gallery.prototype.createGallery = function() {
+            if (this.locked()) {
+                return
+            }
+
+            if (this.gallery_id) {
+                console.error('Gallery already exists for this entry');
+                return
+            }
+
+            var that = this;
+            return this.ajax({
+                url: window.admin_gallery_create,
+                data: {
+                    app_label: this.app_label,
+                    model_name: this.model_name,
+                    field_name: this.field_name
+                },
+                success: function(response) {
+                    if (!that.initGallery(response.gallery_id)) {
+                        return
+                    }
+
+                    that.$wrapper.html(response.html);
+                },
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
                 }
             });
         };
 
-        that._init_uploader = function() {
+        /*
+            Инициализация галереи
+         */
+        Gallery.prototype.initGallery = function(gallery_id) {
+            gallery_id = parseInt(gallery_id);
+            if (!gallery_id) {
+                console.error('Invalid gallery_id');
+                return false
+            }
+
+            this.gallery_id = gallery_id;
+            this.$galleryInput.val(gallery_id);
+
+            // список файлов
+            this.$list = $.findFirstElement(this.opts.galleryListSelector, this.$root);
+            if (!this.$list.length) {
+                console.error('Gallery can\'t find item list');
+                return
+            }
+
+            this.updateCounter();
+
+            this.initUploader();
+
+            // callback
+            this.$root.trigger('init.gallery');
+
+            return true;
+        };
+
+        /*
+            Инициализация загрузчика файлов
+         */
+        Gallery.prototype.initUploader = function() {
             // Клиентский ресайз
-            var resize = $container.find('.max_source').val();
+            var resize = this.$root.find('.max_source').val();
             if (resize) {
                 resize = String(resize).split('x').map(function(e) {
                     return parseInt(e)
@@ -73,332 +214,288 @@
             } else {
                 resize = {};
             }
+
             // Максимальный вес
-            var max_size = $container.find('.max_size').val();
+            var max_size = this.$root.find('.max_size').val();
             max_size = Number(max_size) || 0;
 
-            that.uploader = new plupload.Uploader({
-                url : window.admin_gallery_upload,
-                browse_button : $container.find(options.upload_button).get(0),
-                chunk_size: '256kb',
-                file_data_name: 'image',
-                runtimes : 'html5,flash,silverlight,html4',
-                flash_swf_url : '/static/js/plupload/Moxie.swf',
-                silverlight_xap_url : '/static/js/plupload/Moxie.xap',
-                prevent_duplicates: true,
+            var that = this;
+            that.uploader = Uploader.create(this.$root, {
+                url: window.admin_gallery_upload,
+                buttonSelector: this.opts.uploadButtonSelector,
+                drop_element: 'self',
                 resize: resize,
-                drop_element : $container.get(0),
-                filters : {
-                    max_file_size : max_size,
-                    mime_types: [
-                        {title : "Image files", extensions : "jpg,jpeg,png,bmp,gif"}
-                    ]
+                max_size: max_size,
+
+                fileAdded: function(file) {
+                    var template = that.$root.find(that.opts.imageTemplateSelector).html();
+                    var $item = $(template);
+                    $item.attr('id', file.id);
+                    that.$list.append($item);
                 },
-                headers: {
-                    'X-CSRFToken': $.cookie('csrftoken'),
-                    'X-Requested-With': 'XMLHttpRequest'
+                extraData: function() {
+                    return {
+                        app_label: that.app_label,
+                        model_name: that.model_name,
+                        field_name: that.field_name,
+                        gallery_id: that.gallery_id
+                    }
                 },
-                init: {
-                    // Добавление файла в очередь
-                    FilesAdded: function(up, files) {
-                        plupload.each(files, function(file) {
-                            // Формирование шаблона
-                            var $template = $($('#' + that.field_name + '_image_template').html());
+                beforeUpload: function(file) {
+                    var $item = that.$list.find('#' + file.id);
+                    $item.addClass(that.opts.loadingClass);
+                },
+                uploadProgress: function(file, percent) {
+                    var $item = that.$list.find('#' + file.id);
+                    $item.find(that.opts.progressBarSelector).css({
+                        width: percent + '%'
+                    });
+                },
+                fileUploaded: function(file, json_response) {
+                    var $item = that.$list.find('#' + file.id);
+                    var $preview = $item.find(that.opts.previewSelector);
 
-                            // Установка ID для дальнейшего обращения
-                            $template.attr('id', file.id);
+                    $item.removeAttr('id');
+                    $item.removeClass(that.opts.loadingClass);
+                    $item.data({
+                        id: json_response.id,
+                        source_url: json_response.source_url,
+                        source_size: json_response.source_size
+                    });
 
-                            $container.find('.gallery-items').append($template);
-                        });
+                    $preview.attr('href', json_response.show_url);
 
-                        // Старт загрузки сразу после добавления
-                        up.start();
-                    },
+                    // Загрузка реального превью
+                    $.loadImageDeferred(json_response.preview_url).done(function(img) {
+                        $preview.show();
+                        $preview.find('img').attr('src', img.src);
+                        $item.find(that.opts.preloaderSelector).remove();
+                    }).fail(function(reason) {
+                        console.error(reason);
+                    });
 
-                    // Начало загрузки файла
-                    BeforeUpload: function(up, file) {
-                        // Дополнительные параметры
-                        up.setOption('multipart_params', {
-                            app_label: that.app_label,
-                            model_name: that.model_name,
-                            field_name: that.field_name,
-                            gallery_id: that.gallery_id
-                        });
+                    // callback
+                    that.$root.trigger('item-add.gallery', [$item, json_response]);
+                },
+                uploadComplete: function(file) {
+                    that.updateCounter();
+                },
+                onError: function(file, error, json_response) {
+                    var $item = that.$list.find('#' + file.id);
+                    var $preview = $item.find(that.opts.previewSelector);
 
-                        var $gallery_item = $('#' + file.id);
-                        $gallery_item.addClass('gallery-item-loading');
-                    },
+                    var $controls = $item.find(that.opts.controlsSelector);
+                    $controls.hide();
 
-                    // Прогресс загрузки файла
-                    UploadProgress: function(up, file) {
-                        var $gallery_item = $('#' + file.id);
-                        $gallery_item.find('.progress-bar').css({
-                            width: file.percent + '%'
-                        });
-                    },
+                    $item.removeAttr('id');
+                    $item.removeClass(that.opts.loadingClass);
+                    $item.addClass(that.opts.errorClass);
+                    $item.find(that.opts.progressSelector).remove();
 
-                    // Файл загружен
-                    FileUploaded: function(up, file, data) {
-                        var $gallery_item = $('#' + file.id),
-                            response = $.parseJSON(data.response);
+                    // Ошибка показывается на фоне превью
+                    $.fileReaderDeferred(file.getNative()).done(function(src) {
+                        $.loadImageDeferred(src).done(function(img) {
+                            src = null;
+                            $.imageToCanvasDeferred(img, 600, 600).done(function(canvas) {
+                                img = null;
 
-                        $gallery_item
-                            .removeClass('gallery-item-loading')
-                            .data({
-                                'source_url': response.source_url,
-                                'source_size': response.source_size
-                            })
-                            .find('.item-id').val(response.id);
-
-                        // Загрузка реального превью
-                        $.loadImageDeferred(response.preview_url).done(function(img) {
-                            $gallery_item.find('.item-show').show();
-                            $gallery_item.find('img').attr('src', img.src);
-                            $gallery_item.find('.item-preloader').remove();
-                            $gallery_item.find('.progress').fadeOut(300);
-                        }).fail(function(reason) {
-                            console.error(reason);
-                        });
-
-                        // callback
-                        $container.trigger('item-add.gallery', [$gallery_item, response]);
-                    },
-
-                    // Все файлы загружены
-                    UploadComplete: function() {
-                        that.updateCounter();
-                    },
-
-                    // Ошибка загрузки
-                    Error: function(up, err) {
-                        var $gallery_item = $('#' + err.file.id);
-                        var $preview = $gallery_item.find('.item-preloader');
-                        var $controls = $gallery_item.find('.item-controls');
-
-                        if ((err.code == plupload.FILE_DUPLICATE_ERROR) || !$gallery_item.length) {
-                            alert(formatError(err.file, err.message));
-                            return;
-                        }
-
-                        $controls.hide();
-                        $gallery_item
-                            .removeClass('gallery-item-loading')
-                            .addClass('gallery-item-error')
-                            .find('.progress').fadeOut(500);
-
-                        // Ошибка показывается на фоне превью
-                        $.fileReaderDeferred(err.file.getNative()).done(function(src) {
-                            $.loadImageDeferred(src).done(function(img) {
-                                src = null;
-                                $.imageToCanvasDeferred(img, 600, 600).done(function(canvas) {
-                                    img = null;
-
-                                    var $image = $('<img/>');
-                                    $preview.find('img').remove();
-                                    $preview.prepend($image).css({
-                                        background: 'none'
-                                    });
-
-                                    var final_canvas = $.previewCanvas({
-                                        source: canvas,
-                                        width: $preview.width(),
-                                        height: $preview.height(),
-                                        crop: true,
-                                        stretch: false
-                                    });
-                                    $image.attr('src', final_canvas.toDataURL());
+                                var $image = $('<img/>');
+                                $preview.find('img').remove();
+                                $preview.prepend($image).css({
+                                    background: 'none'
                                 });
-                            }).always(function() {
-                                $controls.show();
+
+                                var final_canvas = $.previewCanvas({
+                                    source: canvas,
+                                    width: $preview.width(),
+                                    height: $preview.height(),
+                                    crop: true,
+                                    stretch: false
+                                });
+                                $image.attr('src', final_canvas.toDataURL());
                             });
-                        }).fail(function() {
+                        }).always(function() {
                             $controls.show();
                         });
+                    }).fail(function() {
+                        $controls.show();
+                    });
 
-                        if (err.response) {
-                            try {
-                                var response = $.parseJSON(err.response);
-
-                                $preview.append(
-                                    $('<span>').html(formatError(err.file, response.message, true))
-                                );
-
-                                // callback
-                                $container.trigger('item-error.gallery', [$gallery_item, response]);
-                                return
-                            } catch(e) {}
-                        }
+                    if (json_response) {
                         $preview.append(
-                            $('<span>').html(formatError(err.file, err.message, true))
+                            $('<span>').html(formatError(file, json_response.message, true))
                         );
-
-                        // callback
-                        $container.trigger('item-error.gallery', [$gallery_item, err]);
-                    }
-                }
-            });
-
-            // Настройки Drag & Drop
-            that.uploader.bind('Init', function() {
-                if (!that.uploader.features.dragdrop) {
-                    return
-                }
-
-                var drag_counter = 0;
-                $container.on('dragenter.gallery.drag', function() {
-                    drag_counter++;
-                    if (drag_counter == 1) {
-                        $container.addClass('dragover');
-                    }
-                }).on('dragleave.gallery.drag', function() {
-                    drag_counter--;
-                    if (drag_counter === 0) {
-                        $container.removeClass('dragover');
-                    }
-                }).on('drop.gallery.drag', function() {
-                    drag_counter = 0;
-                    setTimeout(function() {
-                        $container.removeClass('dragover');
-                    }, 0);
-                });
-            });
-
-            that.uploader.init();
-        };
-
-        // Инициализация загрузчика
-        that.init = function(gallery_id) {
-            if (that.gallery_id) {
-                console.info(gettext('Gallery already exists for this entry'));
-                return
-            }
-
-            that.gallery_id = gallery_id;
-            $container.children('.gallery_id').val(that.gallery_id);
-            that.updateCounter();
-
-            if (options.upload_button) {
-                that._init_uploader();
-            }
-
-            // callback
-            $container.trigger('init.gallery');
-        };
-
-        // Удаление галереи
-        that.delete = function() {
-            if (!that.gallery_id) {
-                console.info(gettext('Gallery does not exist'));
-                return
-            }
-
-            if (query) query.abort();
-            return query = $.ajax({
-                url: window.admin_gallery_delete,
-                type: 'POST',
-                data: {
-                    app_label: that.app_label,
-                    model_name: that.model_name,
-                    gallery_id: that.gallery_id
-                },
-                success: function(resp) {
-                    if (resp) {
-                        that.destroy();
-                        $container.find('.gallery-wrapper').html(resp);
                     } else {
-                        alert(gettext('Failed deletion gallery'));
+                        $preview.append(
+                            $('<span>').html(formatError(file, error.message, true))
+                        );
                     }
-                },
-                error: function() {
-                    alert(gettext('Failed deletion gallery'));
                 }
-            })
+            });
         };
 
-        // Освобождение ресурсов галереи
-        that.destroy = function() {
-            if (!that.gallery_id) {
-                console.info(gettext('Gallery does not exist'));
+        /*
+            Обновление значения счетчиков картинок
+         */
+        Gallery.prototype.updateCounter = function() {
+            var $img_counter = this.$root.find('.gallery-image-counter');
+            if ($img_counter.length) {
+                var $images = this.$list.find('.gallery-item-image');
+                $images = $images.not('.' + this.opts.errorClass);
+                $images = $images.not('.' + this.opts.loadingClass);
+                $img_counter.text($images.length);
+            }
+
+            var $video_counter = this.$root.find('.gallery-videolink-counter');
+            if ($video_counter.length) {
+                var $videos = this.$list.find('.gallery-item-video-link');
+                $videos = $videos.not('.' + this.opts.errorClass);
+                $videos = $videos.not('.' + this.opts.loadingClass);
+                $video_counter.text($videos.length);
+            }
+        };
+
+        /*
+            Удаление галереи
+         */
+        Gallery.prototype.deleteGallery = function() {
+            if (this.locked()) {
                 return
             }
 
-            that.gallery_id = "";
-            $container.children('.gallery_id').val("");
-            that.updateCounter();
-
-            if (that.uploader) {
-                that.uploader.destroy();
-                $container.off('.gallery.drag');
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
             }
 
-            // callback
-            $container.trigger('destroy.gallery');
+            var that = this;
+            return this.ajax({
+                url: window.admin_gallery_delete,
+                data: {
+                    app_label: this.app_label,
+                    model_name: this.model_name,
+                    field_name: this.field_name
+                },
+                success: function(response) {
+                    that.gallery_id = null;
+                    that.$galleryInput.val('');
+
+                    that.uploader.destroy();
+                    that.$list = $();
+
+                    that.updateCounter();
+
+                    that.$wrapper.html(response.html);
+
+                    // callback
+                    that.$root.trigger('destroy.gallery');
+                },
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
+                }
+            });
         };
 
-        // Добавление видео
-        that.addVideo = function(link) {
-            // Формирование шаблона
-            var $gallery_item = $($('#' + that.field_name + '_video_link_template').html()),
-                tpl_img = $gallery_item.find('img');
+        /*
+            Добавление ссылки на видео
+         */
+        Gallery.prototype.addVideo = function(link) {
+            if (this.locked()) {
+                return
+            }
 
-            $gallery_item.find('.item-show').css({
-                width: parseInt(tpl_img.attr('width')),
-                height: parseInt(tpl_img.attr('height'))
-            });
-            $container.find('.gallery-items').append($gallery_item);
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
+            }
 
-            $gallery_item.addClass('gallery-item-loading');
-            return $.ajax({
+            var template = this.$root.find(this.opts.videolinkTemplateSelector).html();
+            var $item = $(template);
+            this.$list.append($item);
+
+            var that = this;
+            return this.ajax({
                 url: window.admin_gallery_upload_video,
-                type: 'POST',
                 data: {
-                    app_label: that.app_label,
-                    model_name: that.model_name,
-                    gallery_id: that.gallery_id,
+                    app_label: this.app_label,
+                    model_name: this.model_name,
+                    gallery_id: this.gallery_id,
                     link: link
                 },
-                dataType: 'json',
+                beforeSend: function() {
+                    $item.addClass(that.opts.loadingClass);
+                },
                 success: function(response) {
-                    $gallery_item.removeClass('gallery-item-loading');
-                    $gallery_item.find('.item-id').val(response.id);
-                    $gallery_item.find('.item-show').show();
-                    $gallery_item.find('img').attr('src', response.preview_url);
+                    var $preview = $item.find(that.opts.previewSelector);
+
+                    $item.data({
+                        id: response.id
+                    });
+
+                    $preview.attr('href', response.show_url);
+
+                    // Загрузка реального превью
+                    $.loadImageDeferred(response.preview_url).done(function(img) {
+                        $preview.show();
+                        $preview.find('img').attr('src', img.src);
+                        $item.find(that.opts.preloaderSelector).remove();
+                    }).fail(function(reason) {
+                        console.error(reason);
+                    });
 
                     that.updateCounter();
 
                     // callback
-                    $container.trigger('item-add.gallery', [$gallery_item, response]);
+                    that.$root.trigger('item-add.gallery', [$item, response]);
                 },
-                error: function(data) {
-                    var response = data.status == 400 ? $.parseJSON(data.responseText) : {};
-                    $gallery_item.removeClass('gallery-item-loading');
-                    $gallery_item.addClass('gallery-item-error');
+                error: function(xhr) {
+                    $item.addClass(that.opts.errorClass);
 
-                    if (response.message) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
                         alert(response.message);
                     }
 
                     setTimeout(function() {
-                        that.deleteItem($gallery_item);
+                        that.deleteItem($item);
                     }, 500);
 
                     // callback
-                    $container.trigger('item-error.gallery', [$gallery_item, response]);
+                    that.$root.trigger('item-error.gallery', [$item, response]);
+                },
+                complete: function() {
+                    $item.removeClass(that.opts.loadingClass);
                 }
             })
         };
 
-        // Удаление элемента галереи
-        that.deleteItem = function($item) {
+        /*
+            Удаление элемента галереи
+         */
+        Gallery.prototype.deleteItem = function($item) {
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
+            }
+
+            if (!$item.length) {
+                console.error('Item not found');
+                return
+            }
+
             // Удаление элемента галереи из очереди загрузок
-            if (that.uploader) {
-                var file = that.uploader.getFile($item.attr('id'));
-                if (file) {
-                    that.uploader.removeFile(file);
+            if (this.uploader && this.uploader.uploader) {
+                var file_id = $item.attr('id');
+                if (file_id) {
+                    this.uploader.uploader.removeFile(file_id);
                 }
             }
 
-            if ($item.hasClass('gallery-item-error') || $item.hasClass('gallery-item-loading')) {
+            var that = this;
+            if ($item.hasClass(this.opts.loadingClass) || $item.hasClass(this.opts.errorClass)) {
                 // Удаление блока из DOM
                 var df = $.Deferred();
                 $item.animate({
@@ -411,22 +508,22 @@
 
                         // callback
                         df.resolve();
-                        $container.trigger('item-delete.gallery', $item);
+                        that.$root.trigger('item-delete.gallery', $item);
                     }
                 });
                 return df.promise();
             } else {
-                return $.ajax({
+                if (this.locked()) {
+                    return
+                }
+
+                return this.ajax({
                     url: window.admin_gallery_delete_item,
-                    type: 'POST',
                     data: {
-                        app_label: that.app_label,
-                        model_name: that.model_name,
-                        gallery_id: that.gallery_id,
-                        item_id: parseInt($item.find('.item-id').val()) || 0
-                    },
-                    beforeSend: function() {
-                        $item.addClass('gallery-item-locked');
+                        app_label: this.app_label,
+                        model_name: this.model_name,
+                        gallery_id: this.gallery_id,
+                        item_id: parseInt($item.data('id')) || 0
                     },
                     success: function() {
                         // Удаление блока из DOM
@@ -440,20 +537,39 @@
                                 that.updateCounter();
 
                                 // callback
-                                $container.trigger('item-delete.gallery', $item);
+                                that.$root.trigger('item-delete.gallery', $item);
                             }
                         })
                     },
-                    error: function() {
-                        $item.removeClass('gallery-item-locked');
-                        alert(gettext('Failed deletion item'));
+                    error: function(xhr) {
+                        var response = that.ajax_error(xhr);
+                        if (response && response.message) {
+                            alert(response.message);
+                        }
                     }
                 })
             }
         };
 
-        // Поворот картинки
-        that.rotateItem = function($item, direction) {
+        /*
+            Поворот картинки
+         */
+        Gallery.prototype.rotateItem = function($item, direction) {
+            if (this.locked()) {
+                return
+            }
+
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
+            }
+
+            if (!$item.length) {
+                console.error('Item not found');
+                return
+            }
+
+            var that = this;
             direction = direction || 'left';
 
             if ($item.get(0).query) {
@@ -463,35 +579,55 @@
                 url: window.admin_gallery_rotate_item + '?direction=' + direction,
                 type: 'POST',
                 data: {
-                    app_label: that.app_label,
-                    model_name: that.model_name,
-                    gallery_id: that.gallery_id,
-                    item_id: parseInt($item.find('.item-id').val()) || 0
+                    app_label: this.app_label,
+                    model_name: this.model_name,
+                    gallery_id: this.gallery_id,
+                    item_id: parseInt($item.data('id')) || 0
                 },
                 beforeSend: function() {
-                    $item.addClass('gallery-item-locked');
+                    $item.addClass(that.opts.loadingClass);
                 },
-                success: function(resp) {
+                success: function(response) {
                     $item.find('img').attr({
-                        'src': resp.preview_url
+                        src: response.preview_url
                     });
                 },
                 error: function() {
-                    alert(gettext('Failed rotation image'));
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
                 },
                 complete: function() {
-                    $item.removeClass('gallery-item-locked');
+                    $item.removeClass(that.opts.loadingClass);
                 }
             });
         };
 
-        // Обрезка картинки. Параметр coords - 4 числа, разделенные двоеточием
-        that.cropItem = function($item, coords, extra) {
+        /*
+            Обрезка картинки
+         */
+        Gallery.prototype.cropItem = function($item, coords, extra) {
+            if (this.locked()) {
+                return
+            }
+
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
+            }
+
+            if (!$item.length) {
+                console.error('Item not found');
+                return
+            }
+
+            var that = this;
             var data = $.extend({}, extra, {
-                app_label: that.app_label,
-                model_name: that.model_name,
-                gallery_id: that.gallery_id,
-                item_id: parseInt($item.find('.item-id').val()) || 0,
+                app_label: this.app_label,
+                model_name: this.model_name,
+                gallery_id: this.gallery_id,
+                item_id: parseInt($item.data('id')) || 0,
                 coords: coords
             });
 
@@ -503,29 +639,49 @@
                 type: 'POST',
                 data: data,
                 beforeSend: function() {
-                    $item.addClass('gallery-item-locked');
+                    $item.addClass(that.opts.loadingClass);
                 },
-                success: function(resp) {
+                success: function(response) {
                     $item.find('img').attr({
-                        'src': resp.preview_url
+                        src: response.preview_url
                     });
                 },
-                error: function() {
-                    alert(gettext('Failed crop image'));
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
                 },
                 complete: function() {
-                    $item.removeClass('gallery-item-locked');
+                    $item.removeClass(that.opts.loadingClass);
                 }
             });
         };
 
-        // Получение подписи к картинке
-        that.getItemDescription = function($item, extra) {
+        /*
+            Получение подписи к картинке
+         */
+        Gallery.prototype.getItemDescription = function($item, extra) {
+            if (this.locked()) {
+                return
+            }
+
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
+            }
+
+            if (!$item.length) {
+                console.error('Item not found');
+                return
+            }
+
+            var that = this;
             var data = $.extend({}, extra, {
-                app_label: that.app_label,
-                model_name: that.model_name,
-                gallery_id: that.gallery_id,
-                item_id: parseInt($item.find('.item-id').val()) || 0
+                app_label: this.app_label,
+                model_name: this.model_name,
+                gallery_id: this.gallery_id,
+                item_id: parseInt($item.data('id')) || 0
             });
 
             if ($item.get(0).query) {
@@ -537,24 +693,44 @@
                 async: false,
                 data: data,
                 beforeSend: function() {
-                    $item.addClass('gallery-item-locked');
+                    $item.addClass(that.opts.loadingClass);
                 },
-                error: function() {
-                    alert(gettext('Failed getting description'));
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
                 },
                 complete: function() {
-                    $item.removeClass('gallery-item-locked');
+                    $item.removeClass(that.opts.loadingClass);
                 }
             });
         };
 
-        // Установка подписи к картинке
-        that.setItemDescription = function($item, description, extra) {
+        /*
+            Установка подписи к картинке
+         */
+        Gallery.prototype.setItemDescription = function($item, description, extra) {
+            if (this.locked()) {
+                return
+            }
+
+            if (!this.gallery_id) {
+                console.error('Gallery does not exist');
+                return
+            }
+
+            if (!$item.length) {
+                console.error('Item not found');
+                return
+            }
+
+            var that = this;
             var data = $.extend({}, extra, {
-                app_label: that.app_label,
-                model_name: that.model_name,
-                gallery_id: that.gallery_id,
-                item_id: parseInt($item.find('.item-id').val()) || 0,
+                app_label: this.app_label,
+                model_name: this.model_name,
+                gallery_id: this.gallery_id,
+                item_id: parseInt($item.data('id')) || 0,
                 description: description
             });
 
@@ -564,48 +740,25 @@
             return $item.get(0).query = $.ajax({
                 url: window.admin_gallery_set_description,
                 type: 'POST',
+                async: false,
                 data: data,
                 beforeSend: function() {
-                    $item.addClass('gallery-item-locked');
+                    $item.addClass(that.opts.loadingClass);
                 },
-                success: function(resp) {
-
-                },
-                error: function() {
-                    alert(gettext('Failed setting description'));
+                error: function(xhr) {
+                    var response = that.ajax_error(xhr);
+                    if (response && response.message) {
+                        alert(response.message);
+                    }
                 },
                 complete: function() {
-                    $item.removeClass('gallery-item-locked');
+                    $item.removeClass(that.opts.loadingClass);
                 }
             });
         };
 
-        // Обновление значения счетчиков картинок
-        that.updateCounter = function() {
-            var counters = $('.gallery-' + that.field_name + '-counter-image');
-            if (counters.length) {
-                var items = $container.find('.gallery-item-image:not(.gallery-item-error):not(.gallery-item-loading)');
-                counters.text(items.length);
-            }
-
-            counters = $('.gallery-' + that.field_name + '-counter-video-link');
-            if (counters.length) {
-                items = $container.find('.gallery-item-video-link:not(.gallery-item-error):not(.gallery-item-loading)');
-                counters.text(items.length);
-            }
-        };
-
-        $container.data(Gallery.dataParam, that);
-
-        // callback
-        $container.trigger('create.gallery');
-
-        // Если галерея существует - инициализируем её
-        var gallery_id = $container.children('.gallery_id').val();
-        if (gallery_id) {
-            that.init(gallery_id);
-        }
-    };
+        return Gallery;
+    })();
 
     window.Gallery.dataParam = 'object';
 

@@ -178,14 +178,9 @@
         // Добавлен элемент галереи
         setDefaultEvent(this, 'item-add.gallery', function(event, $item, response) {
             if (response.show_url) {
-                $item.find('.item-show').attr('href', response.show_url);
+                $item.find('.item-preview').attr('href', response.show_url);
             }
             $item.find('.check-box').val(response.id);
-        });
-
-        // Ошибка добавления элемента галереи
-        setDefaultEvent(this, 'item-error.gallery', function(event, $item, err) {
-
         });
 
         // Элемент удалён из галереи
@@ -197,7 +192,7 @@
 
 
         return this.each(function() {
-            new Gallery($(this), settings);
+            Gallery.create($(this), settings);
         })
     };
 

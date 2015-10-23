@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 
@@ -12,6 +13,7 @@ class GalleryWidget(forms.Widget):
             'admin/js/plupload/plupload.full.min.js',
             'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
             'admin/js/cropdialog.js',
+            'admin/js/uploader.js',
             'gallery/admin/js/gallery_class.js',
             'gallery/admin/js/jquery.gallery.js',
             'gallery/admin/js/gallery.js',
@@ -34,9 +36,11 @@ class GalleryWidget(forms.Widget):
             value = self.queryset.get(pk=value)
 
         gallery_model = self.queryset.model
+        final_attrs = self.build_attrs(attrs)
 
         context = dict(self.context, **{
             'name': name,
             'gallery': value,
+            'attrs': flatatt(final_attrs),
         })
         return mark_safe(render_to_string(gallery_model.ADMIN_TEMPLATE, context))

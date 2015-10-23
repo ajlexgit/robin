@@ -133,15 +133,13 @@ class AvatarUploadView(AjaxViewMixin, View):
         uploaded_file.close()
 
         try:
-            request.user.avatar.field.clean(request.user.avatar, request.user)
+            request.user.full_clean()
         except ValidationError as e:
-            request.user.avatar.delete(save=False)
             return self.json_response({
                 'message': ', '.join(e.messages),
             }, status=400)
-
-        request.user.clean()
-        request.user.save()
+        else:
+            request.user.save()
 
         return self.json_response({
             'micro_avatar': request.user.micro_avatar,
