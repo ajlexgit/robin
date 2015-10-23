@@ -233,14 +233,10 @@
             return $()
         } else if (expression.jquery) {
             // jQuery
-            if (expression.selector) {
-                return $(expression.selector, context).first();
-            } else {
-                return expression.first();
-            }
+            return expression.first();
         } else {
             // DOM element or array
-            return $(expression);
+            return $(expression).first();
         }
     };
 
