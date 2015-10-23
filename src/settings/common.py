@@ -188,7 +188,6 @@ PIPELINE_CSS = {
     },
     'main_forms': {
         'source_filenames': (
-            'scss/inlines.scss',
             'main/scss/forms.scss',
         ),
         'output_filename': 'css/main_forms.css',
