@@ -23,10 +23,10 @@ InlineFormSet = forms.inlineformset_factory(
     ClientFormModel,
     ClientInlineFormModel,
     InlineForm,
-    extra=1,
-    can_delete=True,
-    max_num=4,
-    validate_max=True,
+    extra=0,
     min_num=1,
-    validate_min=True
+    max_num=4,
+    can_delete=True,
+    validate_min=True,
+    validate_max=True,
 )

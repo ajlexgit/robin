@@ -64,15 +64,14 @@ def upload_pagephoto(request):
     uploaded_file.close()
 
     try:
-        pagephoto.photo.field.clean(pagephoto.photo, pagephoto)
+        pagephoto.full_clean()
     except ValidationError as e:
         pagephoto.photo.delete(save=False)
         return JsonResponse({
             'message': ', '.join(e.messages),
         }, status=400)
-
-    pagephoto.clean()
-    pagephoto.save()
+    else:
+        pagephoto.save()
 
     return JsonResponse({
         'tag': generate_tag(pagephoto),
@@ -112,15 +111,14 @@ def upload_simplephoto(request):
     uploaded_file.close()
 
     try:
-        simplephoto.photo.field.clean(simplephoto.photo, simplephoto)
+        simplephoto.full_clean()
     except ValidationError as e:
         simplephoto.photo.delete(save=False)
         return JsonResponse({
             'message': ', '.join(e.messages),
         }, status=400)
-
-    simplephoto.clean()
-    simplephoto.save()
+    else:
+        simplephoto.save()
 
     return JsonResponse({
         'url': simplephoto.photo.url,
