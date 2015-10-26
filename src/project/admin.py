@@ -2,6 +2,7 @@ from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from suit.widgets import AutosizedTextarea
+from libs.stdimage import StdImageField, StdImageAdminWidget
 from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
 
 
@@ -34,6 +35,9 @@ class ModelAdminInlineMixin:
         models.TimeField: {
             'widget': TimeWidget
         },
+        StdImageField: {
+            'widget': StdImageAdminWidget
+        }
     }
 
 

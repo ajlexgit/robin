@@ -36,7 +36,7 @@ class GalleryWidget(forms.Widget):
             value = self.queryset.get(pk=value)
 
         gallery_model = self.queryset.model
-        final_attrs = self.build_attrs(attrs)
+        final_attrs = self.build_attrs(attrs, name=name)
 
         context = dict(self.context, **{
             'name': name,

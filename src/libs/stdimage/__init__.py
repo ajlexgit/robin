@@ -36,5 +36,6 @@
 """
 
 from .fields import StdImageField
+from .widgets import StdImageWidget, StdImageAdminWidget
 
 __all__ = ['StdImageField']

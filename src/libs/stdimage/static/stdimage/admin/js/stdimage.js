@@ -60,6 +60,7 @@
         $image.attr('src', canvas.toDataURL());
     };
 
+
     $(document).on('change', '.stdimage .uploader', function() {
         var $input = $(this),
             $field = $input.closest('.stdimage'),

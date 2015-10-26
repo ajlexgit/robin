@@ -22,7 +22,7 @@
     {% trans 'Dimensions: ' %} {% trans 'from' %} {{ min_dimensions|join:'x' }} {% trans 'to' %} {{ max_dimensions|join:'x' }}
   </p>
 
-  {{ input }}
+  <input type="file" {{ attrs }}>
 
   {% if crop_area %}
     <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">

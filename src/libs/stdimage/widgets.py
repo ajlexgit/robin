@@ -1,10 +1,49 @@
 from django import forms
+from django.forms.utils import flatatt
 from django.forms.widgets import FILE_INPUT_CONTRADICTION
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 
-class StdImageWidget(forms.FileInput):
+class StdImageWidgetMixin:
+    template = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.context = {}
+
+    def get_template(self, attrs=None):
+        return (attrs and attrs.get('tempalte')) or self.template
+
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+
+        # Добавляем класс
+        classes = final_attrs.get('class', '')
+        final_attrs['class'] = classes + ' uploader'
+
+        context = dict(self.context, **{
+            'name': name,
+            'value': value,
+            'attrs': flatatt(final_attrs),
+        })
+
+        return mark_safe(render_to_string(self.get_template(), context))
+
+
+class StdImageWidget(StdImageWidgetMixin, forms.FileInput):
+    """
+        Виджет для клиентской части
+    """
+    template = 'stdimage/client_widget.html'
+
+
+class StdImageAdminWidget(StdImageWidgetMixin, forms.FileInput):
+    template = 'stdimage/admin_widget.html'
+
     class Media:
         js = (
             'admin/js/jquery.Jcrop.js',
@@ -18,25 +57,6 @@ class StdImageWidget(forms.FileInput):
                 'stdimage/admin/css/stdimage.css',
             )
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.context = {}
-
-    def render(self, name, value, attrs=None):
-        input_tag = super().render(name, value, dict(attrs, **{
-            'class': 'uploader',
-        }))
-
-        context = dict(self.context, **{
-            'name': name,
-            'input': input_tag,
-        })
-
-        if value and hasattr(value, 'field'):
-            context['value'] = value
-
-        return mark_safe(render_to_string('stdimage/admin_widget.html', context))
 
     def clear_checkbox_name(self, name):
         return name + '-delete'

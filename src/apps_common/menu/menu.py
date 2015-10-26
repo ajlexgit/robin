@@ -114,7 +114,6 @@ class MenuItem(MenuListMixin):
 
     @active.setter
     def active(self, value):
-
         self._active = bool(value)
 
 

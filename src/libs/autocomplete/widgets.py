@@ -20,8 +20,6 @@ def default_format_item(obj):
 
 
 class AutocompleteWidget(widgets.Widget):
-    choices = ()
-
     """
         Виджет для автокомплит-полей.
 
@@ -49,6 +47,8 @@ class AutocompleteWidget(widgets.Widget):
             close_on_select: bool
                 Закрывать список после выбора элемента
     """
+    choices = ()
+
     class Media:
         js = (
             'autocomplete/js/autocomplete.js',
@@ -109,9 +109,7 @@ class AutocompleteWidget(widgets.Widget):
         }), timeout=1800)
 
         # Аттрибуты
-        attrs = self.build_attrs(attrs)
-
-        attrs.update({
+        final_attrs = self.build_attrs(attrs, name=name, **{
             'data-minimum_input_length': self.minimum_input_length,
             'data-expressions': self.expressions,
             'data-close_on_select': self.close_on_select,
@@ -124,8 +122,8 @@ class AutocompleteWidget(widgets.Widget):
         })
 
         # Добавляем класс
-        classes = attrs.get('class', '')
-        attrs['class'] = classes + ' autocomplete_widget'
+        classes = final_attrs.get('class', '')
+        final_attrs['class'] = classes + ' autocomplete_widget'
 
         # Форматирование value
         if isinstance(value, (list, tuple)):
@@ -133,7 +131,7 @@ class AutocompleteWidget(widgets.Widget):
 
         # render
         return render_to_string(self.template, {
-            'attrs': flatatt(attrs),
+            'attrs': flatatt(final_attrs),
             'value': value or '',
             'name': name,
         })
@@ -182,7 +180,7 @@ class AutocompleteTextboxWidget(widgets.Widget):
 
     def render(self, name, value, attrs=None):
         # Аттрибуты
-        attrs = self.build_attrs(attrs)
+        attrs = self.build_attrs(attrs, name=name)
 
         if callable(self.choices):
             choices = self.choices()

@@ -12,7 +12,6 @@ class StdImageFormField(ImageField):
         min_dimensions = kwargs.pop('min_dimensions')
         max_dimensions = kwargs.pop('max_dimensions')
         aspects = kwargs.pop('aspects', ())
-        kwargs.pop('widget', None)
         super().__init__(*args, **kwargs)
 
         self.widget.context.update(
