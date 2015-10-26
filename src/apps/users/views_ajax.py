@@ -135,6 +135,7 @@ class AvatarUploadView(AjaxViewMixin, View):
         try:
             request.user.full_clean()
         except ValidationError as e:
+            request.user.avatar.delete(save=False)
             return self.json_response({
                 'message': ', '.join(e.messages),
             }, status=400)

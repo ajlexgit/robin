@@ -121,6 +121,7 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         try:
             item.full_clean()
         except ValidationError as e:
+            item.image.delete(save=False)
             return self.json_response({
                 'message': '; '.join(e.messages),
             }, status=400)
@@ -152,6 +153,7 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         try:
             item.full_clean()
         except ValidationError as e:
+            item.video_preview.delete(save=False)
             return self.json_response({
                 'message': '; '.join(e.messages),
             }, status=400)

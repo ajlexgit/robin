@@ -53,15 +53,14 @@ def upload_file(url, timeout=5):
             uploaded_file.close()
 
             try:
-                request.user.avatar.field.clean(request.user.avatar, request.user)
+                request.user.full_clean()
             except ValidationError as e:
                 request.user.avatar.delete(save=False)
                 return JsonResponse({
                     'message': ', '.join(e.messages),
                 }, status=400)
-
-            request.user.avatar.clean()
-            request.user.avatar.save()
+            else:
+                request.user.save()
     """
     logger.debug('Uploading %s...', url)
     with contextlib.closing(urlopen(url, timeout=timeout)) as fp:

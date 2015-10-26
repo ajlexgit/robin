@@ -109,7 +109,7 @@ class GalleryItemBase(models.Model):
 
     def after_copy(self, **kwargs):
         """
-            Постобработка скопированного элемента.
+            Пост-обработка скопированного элемента.
             Параметр self - это уже новый элемент.
         """
         pass
@@ -396,7 +396,6 @@ class GalleryImageItem(GalleryItemBase):
 
     def copy_for(self, dest_gallery, **kwargs):
         """ Создание копии текущего элемента для другой галереи """
-        errors = []
         copy_fields = self.COPY_FIELDS
 
         new_item = dest_gallery.IMAGE_MODEL(
@@ -408,22 +407,16 @@ class GalleryImageItem(GalleryItemBase):
             img.open()
             new_item.image.save(self.image.name, img, save=False)
 
-        try:
-            new_item.image.field.clean(new_item.image, new_item)
-        except ValidationError as e:
-            new_item.image.delete()
-            errors.extend(e.messages)
-
         for field in self._meta.concrete_fields:
             if field.name in copy_fields:
                 value = field.value_from_object(self)
                 field.save_form_data(new_item, value)
 
-        return new_item, errors
+        return new_item
 
     def after_copy(self, **kwargs):
         """
-            Постобработка скопированного элемента.
+            Пост-обработка скопированного элемента.
             Параметр self - это уже новый элемент.
         """
         if self.image_crop:
@@ -613,7 +606,6 @@ class GalleryVideoLinkItem(GalleryItemBase):
 
     def copy_for(self, dest_gallery, **kwargs):
         """ Создание копии текущего элемента для другой галереи """
-        errors = []
         copy_fields = self.COPY_FIELDS
 
         new_item = dest_gallery.VIDEO_LINK_MODEL(
@@ -624,7 +616,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
                 value = field.value_from_object(self)
                 field.save_form_data(new_item, value)
 
-        return new_item, errors
+        return new_item
 
 
 class GalleryBase(models.Model):
@@ -748,13 +740,17 @@ class GalleryBase(models.Model):
                 errors[item.pk] = _('Item belongs to another gallery')
                 continue
 
-            new_item, item_errors = item.copy_for(dest_gallery, **kwargs)
-            if item_errors:
-                errors[item.pk] = ', '.join(item_errors)
-                continue
+            new_item = item.copy_for(dest_gallery, **kwargs)
 
-            new_item.clean()
-            new_item.save()
+            try:
+                new_item.full_clean()
+            except ValidationError as e:
+                # new_item.image.delete()
+                errors[item.pk] = ', '.join(e.messages)
+                continue
+            else:
+                new_item.save()
+
             new_item.after_copy(**kwargs)
             success[item.pk] = new_item.pk
         return success, errors
