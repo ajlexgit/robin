@@ -1,21 +1,21 @@
 {% load i18n %}
-{% load variation_field %}
 
 <div class="stdimage">
   <div class="item-preview"
        {% if not value %}style="display: none"{% endif %}
-       data-size="{{ admin_variation.size|join:'x' }}"
-       data-crop="{{ admin_variation.crop|yesno:"1,0,1" }}"
-       data-stretch="{{ admin_variation.stretch|yesno:"1,0,0" }}"
-       data-max_width="{{ admin_variation.max_width }}"
-       data-max_height="{{ admin_variation.max_height }}"
-       data-offset="{{ admin_variation.offset|default:''|join:'x' }}"
-       data-center="{{ admin_variation.center|default:''|join:'x' }}"
-       data-background="{{ admin_variation.background|join:',' }}"
+       data-size="{{ preview_variation.size|join:'x' }}"
+       data-crop="{{ preview_variation.crop|yesno:"1,0,1" }}"
+       data-stretch="{{ preview_variation.stretch|yesno:"1,0,0" }}"
+       data-max_width="{{ preview_variation.max_width }}"
+       data-max_height="{{ preview_variation.max_height }}"
+       data-offset="{{ preview_variation.offset|default:''|join:'x' }}"
+       data-center="{{ preview_variation.center|default:''|join:'x' }}"
+       data-background="{{ preview_variation.background|join:',' }}"
        data-source="{{ value.url_nocache }}">
-    {% with variation_field=value|get_variation:admin_variation.name %}
-      <img src="{{ variation_field.url_nocache }}">
-    {% endwith %}
+
+    {% if preview %}
+      <img src="{{ preview.url_nocache }}">
+    {% endif %}
   </div>
 
   <p class="hint">

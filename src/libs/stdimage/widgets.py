@@ -29,6 +29,7 @@ class StdImageWidgetMixin:
             'name': name,
             'value': value,
             'attrs': flatatt(final_attrs),
+            'preview': getattr(value, self.context['preview_variation']['name'], None),
         })
 
         return mark_safe(render_to_string(self.get_template(), context))

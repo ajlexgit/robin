@@ -16,7 +16,7 @@ class StdImageFormField(ImageField):
 
         self.widget.context.update(
             variations=variations,
-            admin_variation=variations.get(admin_variation),
+            preview_variation=variations.get(admin_variation),
             crop_area=crop_area,
             min_dimensions=min_dimensions,
             max_dimensions=max_dimensions,

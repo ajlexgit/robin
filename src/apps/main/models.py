@@ -73,6 +73,7 @@ class MainPageConfig(SingletonModel):
     header_video = models.FileField(_('video'), blank=True, storage=MediaStorage('main/header'))
 
     preview = StdImageField(_('preview'),
+        blank=True,
         storage=MediaStorage('main/preview'),
         min_dimensions=(400, 300),
         admin_variation='admin',

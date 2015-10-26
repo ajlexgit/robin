@@ -76,6 +76,7 @@
                     .find('button')
                     .removeData('crop')
                     .removeAttr('data-crop');
+
                 $preview
                     .show()
                     .empty()
