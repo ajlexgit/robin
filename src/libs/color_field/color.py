@@ -79,3 +79,8 @@ class Color:
 
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__.__name__, self._color, self._opacity)
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.color.lower() == other.lower()
+        return super().__eq__(other)

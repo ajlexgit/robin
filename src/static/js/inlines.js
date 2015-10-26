@@ -18,7 +18,7 @@
                   {% endfor %}
                 </div>
 
-                <script class="form-template">
+                <script type="text/template" class="form-template">
                    {% with form=formset.empty_form %}
                     <div class="form">
                        {{ form }}
@@ -81,6 +81,9 @@
             $initial_forms.slice(0, initial_count).data('initial', true);
 
             this.$root.data('formset', this);
+
+            // callback
+            this.opts.onInit.call(this);
         };
 
         /*
@@ -95,6 +98,8 @@
                 prefix: 'form',
                 showSpeed: 300,
                 hideSpeed: 300,
+
+                onInit: $.noop,
 
                 // перед добавлением формы
                 beforeAddForm: function() {
