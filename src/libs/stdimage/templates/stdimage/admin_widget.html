@@ -1,18 +1,20 @@
 {% load i18n %}
 
-<div class="stdimage">
-  <div class="item-preview"
-       {% if not value %}style="display: none"{% endif %}
-       data-size="{{ preview_variation.size|join:'x' }}"
-       data-crop="{{ preview_variation.crop|yesno:"1,0,1" }}"
-       data-stretch="{{ preview_variation.stretch|yesno:"1,0,0" }}"
-       data-max_width="{{ preview_variation.max_width }}"
-       data-max_height="{{ preview_variation.max_height }}"
-       data-offset="{{ preview_variation.offset|default:''|join:'x' }}"
-       data-center="{{ preview_variation.center|default:''|join:'x' }}"
-       data-background="{{ preview_variation.background|join:',' }}"
-       data-source="{{ value.url_nocache }}">
+<div class="stdimage"
+     data-size="{{ preview_variation.size|join:'x' }}"
+     data-crop="{{ preview_variation.crop|yesno:"1,0,1" }}"
+     data-stretch="{{ preview_variation.stretch|yesno:"1,0,0" }}"
+     data-max_width="{{ preview_variation.max_width }}"
+     data-max_height="{{ preview_variation.max_height }}"
+     data-offset="{{ preview_variation.offset|default:''|join:'x' }}"
+     data-center="{{ preview_variation.center|default:''|join:'x' }}"
+     data-background="{{ preview_variation.background|join:',' }}"
+     data-source="{{ value.url_nocache }}"
+     data-aspects="{{ aspects }}"
+     data-min_dimensions="{{ min_dimensions|join:'x' }}"
+     data-max_dimensions="{{ max_dimensions|join:'x' }}">
 
+  <div class="item-preview" {% if not value %}style="display: none"{% endif %}>
     {% if preview %}
       <img src="{{ preview.url_nocache }}">
     {% endif %}
@@ -26,14 +28,10 @@
 
   {% if crop_area %}
     <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">
-      <button class="btn"
-              data-crop="{{ value.croparea|default:'' }}"
-              data-aspects="{{ aspects }}"
-              data-min_dimensions="{{ min_dimensions|join:'x' }}"
-              data-max_dimensions="{{ max_dimensions|join:'x' }}">
+      <button class="btn">
         {% trans 'Crop image' %}
       </button>
-      <input type="hidden" name="{{ name }}-croparea" value="">
+      <input type="hidden" name="{{ name }}-croparea" value="{{ value.croparea|default:'' }}">
     </div>
   {% endif %}
 
