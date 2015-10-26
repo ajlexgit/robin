@@ -41,6 +41,16 @@ class StdImageWidget(StdImageWidgetMixin, forms.FileInput):
     """
     template = 'stdimage/client_widget.html'
 
+    class Media:
+        js = (
+            'stdimage/js/stdimage.js',
+        )
+        css = {
+            'all': (
+                'stdimage/css/stdimage.css',
+            )
+        }
+
 
 class StdImageAdminWidget(StdImageWidgetMixin, forms.FileInput):
     template = 'stdimage/admin_widget.html'
