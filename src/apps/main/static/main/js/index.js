@@ -79,6 +79,10 @@
                 })*/
             ]
         );
+
+
+        // вкладки
+        TabManager.create('#tabs');
     });
 
 })(jQuery);

@@ -234,6 +234,7 @@ PIPELINE_JS = {
             'js/drager.js',
             'js/parallax.js',
             'js/sticky.js',
+            'js/tabs.js',
             'js/slider/slider.js',
             'js/slider/plugins/side_animation.js',
             'js/slider/plugins/fade_animation.js',

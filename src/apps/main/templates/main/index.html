@@ -90,6 +90,36 @@
     </div>
   </div>
 
+  <div id="tabs">
+    <div class="tab tab-one visible">
+      <h4>Tab №1.1</h4>
+      <p><a href="#" data-tab="tab-two">tab 2</a></p>
+      <p><a href="#" data-tab="tab-three">tab 3</a></p>
+
+      <p><a href="#" data-tab-back>back</a></p>
+    </div>
+
+    <div class="tab tab-two">
+      <h4>Tab №2.1</h4>
+      <p><a href="#" data-tab="tab-two-two">tab 2.2</a></p>
+
+      <p><a href="#" data-tab-back>back</a></p>
+    </div>
+
+    <div class="tab tab-two-two">
+      <h4>Tab №2.2</h4>
+      <p><a href="#" data-tab="tab-two-two-three">tab 3.1 throw 2.2</a></p>
+
+      <p><a href="#" data-tab-back>back</a></p>
+    </div>
+
+    <div class="tab tab-three tab-two-two-three">
+      <h4>Tab №3.1</h4>
+
+      <p><a href="#" data-tab-back>back</a></p>
+    </div>
+  </div>
+
   {% if config.gallery and config.gallery.image_items %}
     <div id="slider_example">
       <div class="grid">
@@ -97,9 +127,9 @@
           <div class="slider">
             {% for item in config.gallery.image_items %}
               <img class="slide {% if forloop.counter == 1 %}active{% endif %}"
-                  {% if forloop.counter == 3 or forloop.counter == 4 %}
+                      {% if forloop.counter == 3 or forloop.counter == 4 %}
                    style="height: 200px;"
-                  {% endif %}
+                      {% endif %}
                    src="{{ item.image.normal.url }}"
                    alt=""
                    width="{{ item.image.normal.dimensions.0 }}"
