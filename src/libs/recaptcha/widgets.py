@@ -14,15 +14,11 @@ class ReCaptchaWidget(forms.Widget):
         )
 
     def render(self, name, value, attrs=None):
-        final_attrs = self.build_attrs(attrs)
-
-        final_attrs['data-sitekey'] = settings.RECAPTCHA_PUBLIC_KEY
-
-        final_attrs['data-theme'] = self.theme or \
-            getattr(settings, 'RECAPTCHA_DEFAULT_THEME', 'light')
-
-        final_attrs['data-callback'] = self.callback or \
-            getattr(settings, 'RECAPTCHA_DEFAULT_CALLBACK', '')
+        final_attrs = self.build_attrs(attrs, {
+            'data-sitekey': settings.RECAPTCHA_PUBLIC_KEY,
+            'data-theme': self.theme or getattr(settings, 'RECAPTCHA_DEFAULT_THEME', 'light'),
+            'data-callback': self.callback or getattr(settings, 'RECAPTCHA_DEFAULT_CALLBACK', ''),
+        })
 
         return mark_safe(
             '<div class="g-recaptcha" {}></div>'.format(flatatt(final_attrs))

@@ -3,6 +3,7 @@ from urllib import request, parse
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 from .widgets import ReCaptchaWidget
 
 RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
@@ -11,11 +12,11 @@ RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 class ReCaptchaFormField(forms.Field):
     widget = ReCaptchaWidget
     default_error_messages = {
-        'response-error': 'Невозможно проверить капчу',
-        'missing-input-secret': 'Не указан секретный ключ',
-        'invalid-input-secret': 'Секретный ключ неверен',
-        'missing-input-response': 'Проверка не пройдена',
-        'invalid-input-response': 'Данные некорректны',
+        'response-error': _('Response error'),
+        'missing-input-secret': _('Secret key is empty'),
+        'invalid-input-secret': _('Invalid secret key'),
+        'missing-input-response': _('Not checked'),
+        'invalid-input-response': _('Invalid data'),
     }
 
     def __init__(self, *args, theme=None, callback=None, **kwargs):
