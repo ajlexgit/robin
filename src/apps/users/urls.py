@@ -19,6 +19,6 @@ urlpatterns = [
     url(r'^reset_confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', views.ResetConfirmView.as_view(), name='reset_confirm'),
     url(r'^reset_complete/$', views.ResetCompleteView.as_view(), name='reset_complete'),
     url(r'^reset_password/$', views.ResetConfirmView.as_view(), name='reset_password'),
-    url(r'^profile/$', views.ProfileView.as_view(), name='profile'),
+    url(r'^profile/$', views.ProfileView.as_view(), name='profile_self'),
     url(r'^profile/(?P<username>[\w.@+-]+)/$', views.ProfileView.as_view(), name='profile'),
 ]

@@ -82,5 +82,5 @@ class Color:
 
     def __eq__(self, other):
         if isinstance(other, str):
-            return self.color.lower() == other.lower()
+            return self._opacity == Decimal(1) and self.color.lower() == other.lower()
         return super().__eq__(other)
