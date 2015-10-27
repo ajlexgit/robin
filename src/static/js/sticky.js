@@ -116,11 +116,8 @@
 
     var applyStickies = function() {
         var win_scroll = $window.scrollTop();
-
         $.each(stickies, function(i, obj) {
-            $.animation_frame(function() {
-                obj.process(win_scroll);
-            })(obj.$block.get(0));
+            obj.process(win_scroll);
         });
     };
 
