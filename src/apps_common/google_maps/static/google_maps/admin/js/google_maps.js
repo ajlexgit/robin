@@ -59,6 +59,7 @@
         that.center = text2coords($field.val());
 
         that.map = new google.maps.Map($map.get(0), {
+            scrollwheel: false,
             zoom: 15,
             center: that.center
         });
