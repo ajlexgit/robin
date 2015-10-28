@@ -39,22 +39,19 @@
 
     // Обрезка аватара
     $(document).cropdialog('click.cropdialog', '#crop-avatar', {
-        image_url: function($element) {
-            return $element.data('source');
-        },
-        min_size: function($element) {
-            return $element.data('min_dimensions');
-        },
-        aspect: function($element) {
-            return $element.data('aspect');
-        },
-        crop_position: function($element) {
-            return $element.data('crop');
-        },
         dialog_opts: {
             classes: 'popup-crop-avatar'
         },
-        onCrop: function($element, coords) {
+        getImage: function($button) {
+            return $button.data('source');
+        },
+        getMinSize: function($button) {
+            return $button.data('min_dimensions');
+        },
+        getCropCoords: function($button) {
+            return $button.data('crop');
+        },
+        onCrop: function($button, coords) {
             var coords_str = coords.join(':');
             $.ajax({
                 url: window.js_storage.avatar_crop,
@@ -65,7 +62,7 @@
                 dataType: 'json',
                 success: change_avatar
             });
-            $element.data('crop', coords_str);
+            $button.data('crop', coords_str);
         }
     });
 

@@ -3,72 +3,191 @@
     /*
         Открытие диалогового окна с картинкой для кропа
 
-        Требует: canvas_utils.js
-
-        Настройки:
-            // Функция или значение пути к картинке. Если вернет false - диалог не откроется.
-            image_url: $.noop,
-
-            // Максимальный размер картинки в окне
-            image_box_size: [600, 500],
-
-            // Функция или значение минимального размера обрезки.
-            // Формат: "100x100" или [100, 100]
-            min_size: $.noop,
-
-            // Функция или значение максимального размера обрезки
-            // Формат: "100x100" или [100, 100]
-            max_size: $.noop,
-
-            // Функция или значение фиксированных аспектов обрезки
-            // Формат: "1.34|1.56" или 1.45 или [1.34, 1.56]
-            aspect: $.noop,
-
-            // Начальная позиция окна обрезки
-            // Формат: "0:0:100:100" или [0, 0, 100, 100]
-            crop_position: $.noop,
-
-            // Опции диалога
-            dialog_opts: {},
-
-            // Callback применения обрезки. Если вернет false - диалог не закроется
-            onCrop: $.noop,
-
-            // Callback отмены обрезки. Если вернет false - диалог не закроется
-            onCancel: $.noop,
-
-            // Callback закрытия окна. Если вернет false - диалог не закроется
-            onClose: $.noop
+        Требует:
+            jquery.utils.js, jquery-ui.js
     */
 
-    // Класс диалогового окна кропа
-    var CropDialog = function(options) {
-        var that = this;
-        var dialog, jcrop_api,
-            storage = {},
-            jcrop_relation_x = 1,
-            jcrop_relation_y = 1;
+    /*
+        Форматирует строку вида '120x120' в массив [120, 120]
+     */
+    var toSize = function(value) {
+        var arr;
 
-        // Получение значения настройки
-        var get_value = function(parameter) {
-            var option = options[parameter];
-            if ($.isFunction(option)) {
-                return option.apply(storage, Array.prototype.slice.call(arguments, 1));
-            } else {
-                return option
+        if ($.isArray(value)) {
+            arr = value
+        } else if (typeof value == 'string') {
+            arr = value.split('x');
+        } else {
+            arr = value.toString().split('x');
+        }
+
+        arr = arr.map(function(item) {
+            var num = Number(item);
+            return num && num.toFixed(0);
+        }).filter($.isNumeric).slice(0, 2);
+
+        if (arr.length == 2) {
+            return arr
+        }
+    };
+
+
+    /*
+        Форматирует строку вида '50:50:150:150' в массив [50, 50, 150, 150]
+     */
+    var toCoords = function(value) {
+        var arr;
+
+        if ($.isArray(value)) {
+            arr = value
+        } else if (typeof value == 'string') {
+            arr = value.split(':');
+        } else {
+            arr = value.toString().split(':');
+        }
+
+        arr = arr.map(function(item) {
+            var num = Number(item);
+            return num && num.toFixed(0);
+        }).filter($.isNumeric).slice(0, 4);
+
+        if (arr.length == 4) {
+            return arr
+        }
+    };
+
+
+    /*
+        Форматирует строку аспектов вида '1.5|1.66' в массив [1.5, 1.66]
+     */
+    var formatAspects = function(value) {
+        var arr;
+
+        if ($.isArray(value)) {
+            arr = value
+        } else if (typeof value == 'string') {
+            arr = value.split('|');
+        } else {
+            arr = value.toString().split('|');
+        }
+
+        arr = arr.map(function(item) {
+            return parseFloat(item);
+        }).filter($.isNumeric).slice(0, 2);
+
+        if (arr.length) {
+            return arr
+        }
+    };
+
+
+    window.CropDialog = (function() {
+        var CropDialog = function() {};
+
+        CropDialog.create = function(root, options) {
+            var self = new CropDialog();
+
+            self.$root = $.findFirstElement(root);
+            if (!self.$root.length) {
+                console.warn('CropDialog can\'t find root element');
+                return
+            }
+
+            // настройки
+            self.opts = $.extend(true, self.getDefaultOpts(), options);
+
+            // EVENTS
+            self.$root.on(self.opts.eventType, self.opts.buttonSelector, function() {
+                var options = self.collectDialogOptions($(this));
+                if (options) {
+                    self.openDialog(options);
+                }
+                return false;
+            });
+
+            self.$root.data('cropdialog', self);
+
+            return self;
+        };
+
+        /*
+            Настройки по умолчанию
+         */
+        CropDialog.prototype.getDefaultOpts = function() {
+            return {
+                eventType: 'click',
+                buttonSelector: 'button',
+
+                dialog_opts: {},
+                dialog_image_max_size: [600, 500],
+                getImage: function($button) {
+
+                },
+                getMinSize: function($button) {
+                    return $button.data('min-size');
+                },
+                getMaxSize: function($button) {
+                    return $button.data('max-size');
+                },
+                getAspects: function($button) {
+                    return $button.data('aspect');
+                },
+                getCropCoords: function($button) {
+                    return $button.data('crop-coords');
+                },
+
+                beforeOpen: function($button) {
+
+                },
+                onCrop: function($button, coords) {
+                    $button.data('crop-coords', coords.join(':'));
+                },
+                onCancel: function($butoon) {
+
+                }
             }
         };
 
-        // Опции окна
-        this.dialogOptions = function($element, image_url) {
-            var dialog_options = get_value('dialog_opts') || {};
-            return $.extend(true, {}, dialog_options, {
+
+        /*
+            Получение настроек для открытия диалогового окна
+         */
+        CropDialog.prototype.collectDialogOptions = function($button) {
+            var that = this;
+            var options = {};
+
+            // callback
+            if (this.opts.beforeOpen.call(this, $button) === false) {
+                return
+            }
+
+            var image = this.opts.getImage.call(this, $button);
+            if (!image) {
+                console.warn('CropDialog can\'t find image url');
+                return
+            } else {
+                options.image = image;
+            }
+
+            options.min_size = toSize(this.opts.getMinSize.call(this, $button));
+            options.max_size = toSize(this.opts.getMaxSize.call(this, $button));
+            options.aspects = formatAspects(this.opts.getAspects.call(this, $button));
+            options.cropcoords = toCoords(this.opts.getCropCoords.call(this, $button));
+
+            // настройки UI-диалога
+            options.dialog_opts = $.extend(true, {
                 title: gettext('Crop image'),
                 width: 610,
                 minHeight: 300,
                 closeText: '',
-                show: { effect: "fadeIn", duration: 100 },
-                hide: { effect: "fadeOut", duration: 100 },
+                show: {
+                    effect: "fadeIn",
+                    duration: 100
+                },
+                hide: {
+                    effect: "fadeOut",
+                    duration: 100
+                },
                 modal: true,
                 resizable: false,
                 position: {
@@ -76,234 +195,194 @@
                     at: "center top+40",
                     of: window
                 },
-                buttons: [{
+                buttons: [
+                    {
                         text: gettext('Cancel'),
                         click: function() {
-                            that.cancel($element);
+                            that.cancelCrop($button, options);
                         }
-                    }, {
+                    },
+                    {
                         text: gettext('Ok'),
                         click: function() {
-                            that.crop($element);
+                            that.applyCrop($button, options);
                         }
                     }
                 ],
                 open: function() {
-                    that.init($element, image_url);
+                    that.onDialogOpen($button, options);
                 },
                 close: function() {
-                    that.destroy($element);
+                    that.onDialogClose($button, options);
                 }
-            });
+            }, this.opts.dialog_opts);
+
+            return options;
         };
 
-        // Создание окна
-        this.create = function($element, image_url) {
-            var $template = $('<div/>')
-                .attr('id', 'crop-dialog')
-                .addClass('preload')
-                .appendTo('body');
-            var settings = this.dialogOptions($element, image_url);
-            return $template.dialog(settings);
+
+        /*
+            Создание и открытие окна
+         */
+        CropDialog.prototype.openDialog = function(options) {
+            var $template = $('<div/>').addClass('preload').appendTo('body');
+            this.$dialog = $template.dialog(options.dialog_opts);
         };
 
-        // Инициализация окна
-        this.init = function($element, image_url) {
+
+        /*
+            Закрытие окна
+         */
+        CropDialog.prototype.closeDialog = function() {
+            if (this.$dialog && this.$dialog.length) {
+                this.$dialog.dialog('close');
+            }
+        };
+
+
+        /*
+            Событие открытия окна
+         */
+        CropDialog.prototype.onDialogOpen = function($button, options) {
+            var that = this;
+
+            // начальные занчения отношения размеров
+            this.preview_relation_x = 1;
+            this.preview_relation_y = 1;
+
             setTimeout(function() {
-                $.loadImageDeferred(image_url).always(function() {
-                    dialog.removeClass('preload');
+                $.loadImageDeferred(options.image).always(function() {
+                    that.$dialog.removeClass('preload');
                 }).done(function(img) {
-                    that.load($element, img);
+                    // картинка загружена
+                    var $image = $('<img>').attr({
+                        src: img.src
+                    }).css({
+                        // maxWidth: that.opts.dialog_image_max_size[0],
+                        // maxHeight: that.opts.dialog_image_max_size[1]
+                    });
+
+                    that.$dialog.prepend($image);
+
+                    // отношение реальных размеров картинки к
+                    // картинке в окне
+                    that.preview_relation_x = $image.prop('naturalWidth') / $image.width();
+                    that.preview_relation_y = $image.prop('naturalHeight') / $image.height();
+
+                    // Инициализация jCrop
+                    $image.Jcrop({
+                        keySupport: false,
+                        bgOpacity: 0.3,
+                        boxWidth: that.opts.dialog_image_max_size[0],
+                        boxHeight: that.opts.dialog_image_max_size[1],
+                        boundary: 0
+                    }, function() {
+                        that.jcrop_api = this;
+
+                        // Ограничения размеров
+                        if (options.min_size) {
+                            var minSize = [
+                                Math.ceil(options.min_size[0] / that.preview_relation_x),
+                                Math.ceil(options.min_size[1] / that.preview_relation_y)
+                            ];
+                            that.jcrop_api.setOptions({minSize: minSize});
+                            that.jcrop_api.setSelect([0,0].concat(minSize));
+                        }
+                        if (options.max_size) {
+                            var maxSize = [
+                                Math.floor(options.max_size[0] / that.preview_relation_x),
+                                Math.floor(options.max_size[1] / that.preview_relation_y)
+                            ];
+                            that.jcrop_api.setOptions({maxSize: maxSize})
+                        }
+
+                        // Аспекты
+                        if (options.aspects) {
+                            that.jcrop_api.setOptions({aspectRatio: options.aspects[0]});
+                        }
+
+                        // Положение кропа
+                        if (options.cropcoords) {
+                            var preview_crop_x = options.cropcoords[0] / that.preview_relation_x;
+                            var preview_crop_y = options.cropcoords[1] / that.preview_relation_y;
+                            var preview_crop_w = options.cropcoords[2] / that.preview_relation_x;
+                            var preview_crop_h = options.cropcoords[3] / that.preview_relation_y;
+
+                            that.jcrop_api.setOptions({
+                                setSelect: [
+                                    preview_crop_x,
+                                    preview_crop_y,
+                                    preview_crop_x + preview_crop_w,
+                                    preview_crop_y + preview_crop_h
+                                ]
+                            });
+                        }
+                    });
+
                     img = null;
                 }).fail(function() {
-                    that.close();
+                    that.closeDialog();
                 });
             }, 100);
         };
 
-        // Картинка загружена
-        this.load = function($element, img) {
-            var $image = $('<img>').attr({
-                src: img.src
-            }).prependTo(dialog);
 
-            // jCrop
-            this.jcrop($element, $image);
+        /*
+            Событие закрытия окна
+         */
+        CropDialog.prototype.onDialogClose = function($button, options) {
+            if (this.jcrop_api) {
+                this.jcrop_api.destroy();
+                this.jcrop_api = null;
+            }
+            if (this.$dialog && this.$dialog.length) {
+                this.$dialog.empty();
+                this.$dialog.remove();
+                this.$dialog = null;
+            }
         };
 
-        // Инициализация jCrop
-        this.jcrop = function($element, $image) {
-            var image_box = get_value('image_box_size', $element);
 
-            // min_size
-            var min_size = get_value('min_size', $element) || '';
-            if (!$.isArray(min_size)) {
-                min_size = String(min_size).split('x');
-            }
-            min_size = min_size.map(function(item) {
-                return parseInt(item);
-            }).filter($.isNumeric).slice(0, 2);
-
-            // max_size
-            var max_size = get_value('max_size', $element) || '';
-            if (!$.isArray(max_size)) {
-                max_size = String(max_size).split('x');
-            }
-            max_size = max_size.map(function(item) {
-                return parseInt(item);
-            }).filter($.isNumeric).slice(0, 2);
-
-            // aspects
-            var aspects = get_value('aspect', $element) || '';
-            if (!$.isArray(aspects)) {
-                aspects = String(aspects).split('|');
-            }
-            aspects = aspects.map(function(item) {
-                return parseFloat(item);
-            }).filter($.isNumeric);
-
-            // crop_postition
-            var crop_position = get_value('crop_position', $element) || '';
-            if (!$.isArray(crop_position)) {
-                crop_position = String(crop_position).split(':');
-            }
-            crop_position = crop_position.map(function(item) {
-                return parseInt(item);
-            }).filter($.isNumeric).slice(0, 4);
-
-            $image.Jcrop({
-                keySupport: false,
-                bgOpacity: 0.3,
-                boxWidth: image_box[0],
-                boxHeight: image_box[1],
-                boundary: 0
-            }, function() {
-                jcrop_api = this;
-                jcrop_relation_x = $image.prop('naturalWidth') / $image.width();
-                jcrop_relation_y = $image.prop('naturalHeight') / $image.height();
-
-                // Ограничения размеров
-                if (min_size.length == 2) {
-                    var minSize = [
-                        Math.ceil(min_size[0] / jcrop_relation_x),
-                        Math.ceil(min_size[1] / jcrop_relation_y)
-                    ];
-                    this.setOptions({minSize: minSize});
-                    this.setSelect([0,0].concat(minSize));
-                }
-                if (max_size.length == 2) {
-                    var maxSize = [
-                        Math.floor(max_size[0] / jcrop_relation_x),
-                        Math.floor(max_size[1] / jcrop_relation_y)
-                    ];
-                    this.setOptions({maxSize: maxSize})
-                }
-
-                // Аспекты
-                if (aspects.length) {
-                    this.setOptions({aspectRatio: aspects[0]});
-                }
-
-                // Положение кропа
-                if (crop_position.length == 4) {
-                    crop_position[0] /= jcrop_relation_x;
-                    crop_position[1] /= jcrop_relation_y;
-                    crop_position[2] /= jcrop_relation_x;
-                    crop_position[3] /= jcrop_relation_y;
-                    this.setOptions({
-                        setSelect: [
-                            crop_position[0],
-                            crop_position[1],
-                            crop_position[0] + crop_position[2],
-                            crop_position[1] + crop_position[3]
-                        ]
-                    });
-                }
-            });
+        /*
+            Отмена обрезки
+         */
+        CropDialog.prototype.cancelCrop = function($button, options) {
+            this.opts.onCancel.call(this, $button);
+            this.closeDialog();
         };
 
-        // Обрезка
-        this.crop = function($element) {
-            var coords = jcrop_api.tellSelect();
+
+        /*
+            Применение обрезки
+         */
+        CropDialog.prototype.applyCrop = function($button, options) {
+            var coords = this.jcrop_api.tellSelect();
+
+            // рассчет области обрезки с учетом уменьшения картинки в окне
             var real_coords = [
-                Math.round(jcrop_relation_x * coords.x),
-                Math.round(jcrop_relation_y * coords.y),
-                Math.round(jcrop_relation_x * coords.w),
-                Math.round(jcrop_relation_y * coords.h)
+                Math.round(this.preview_relation_x * coords.x),
+                Math.round(this.preview_relation_y * coords.y),
+                Math.round(this.preview_relation_x * coords.w),
+                Math.round(this.preview_relation_y * coords.h)
             ];
 
-            if (get_value('onCrop', $element, real_coords) === false) {
-                return
-            }
-            this.close();
+            this.opts.onCrop.call(this, $button, real_coords);
+            this.closeDialog();
         };
 
-        // Закрыть окно
-        this.close = function() {
-            dialog.dialog("close");
-        };
+        return CropDialog;
+    })();
 
-        // Деинициализация окна
-        this.destroy = function($element) {
-            if (get_value('onClose', $element) === false) {
-                return false
-            }
-
-            if (jcrop_api) {
-                jcrop_api.destroy();
-                jcrop_api = null;
-            }
-            dialog.empty();
-            dialog.remove();
-            dialog = null;
-        };
-
-        // Отмена обрезки
-        this.cancel = function($element) {
-            if (get_value('onCancel', $element) === false) {
-                return
-            }
-            this.close();
-        };
-
-        // Наступление целевого события
-        this.trigger = function($element) {
-            var image_url = get_value('image_url', $element);
-            if (!image_url) {
-                console.error('cropdialog: ' + gettext('empty image url'));
-                return false;
-            }
-
-            dialog = this.create($element, image_url);
-
-            return false;
-        };
-    };
 
     $.fn.cropdialog = function(event, selector, options) {
-        if (typeof selector == 'object') {
-            options = selector;
-            selector = undefined;
-        }
-
-        var settings = $.extend(true, {}, $.fn.cropdialog.defaults, options);
-        var crop_object = new CropDialog(settings);
-        return this.on(event, selector, function() {
-            return crop_object.trigger($(this));
+        var settings = $.extend(true, {}, options, {
+            eventType: event,
+            buttonSelector: selector
         });
-    };
 
-    $.fn.cropdialog.defaults = {
-        image_url: $.noop,
-        dialog_opts: {},
-        image_box_size: [600, 500],
-        min_size: $.noop,
-        max_size: $.noop,
-        aspect: $.noop,
-        crop_position: $.noop,
-        onCrop: $.noop,
-        onCancel: $.noop,
-        onClose: $.noop
+        return this.each(function() {
+            CropDialog.create(this, settings);
+        });
     };
 
 })(jQuery);

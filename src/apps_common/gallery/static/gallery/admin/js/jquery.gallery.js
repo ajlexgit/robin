@@ -74,25 +74,25 @@
             var gallery = $container.gallery('object');
 
             $container.cropdialog('click.gallery.cropdialog', '.gallery-item .item-crop', {
-                image_url: function($element) {
-                    return $element.closest('.gallery-item').data('source_url');
+                getImage: function($button) {
+                    return $button.closest('.gallery-item').data('source_url');
                 },
-                min_size: function() {
+                getMinSize: function($button) {
                     return $container.find('.min_dimensions').val();
                 },
-                max_size: function() {
+                getMaxSize: function($button) {
                     return $container.find('.max_dimensions').val();
                 },
-                aspect: function() {
+                getAspects: function($button) {
                     return $container.find('.aspects').val();
                 },
-                crop_position: function($element) {
-                    return $element.data('crop');
+                getCropCoords: function($button) {
+                    return $button.data('crop');
                 },
-                onCrop: function($element, coords) {
+                onCrop: function($button, coords) {
                     var coords_str = coords.join(':');
-                    gallery.cropItem($element.closest('.gallery-item'), coords_str);
-                    $element.data('crop', coords_str);
+                    gallery.cropItem($button.closest('.gallery-item'), coords_str);
+                    $button.data('crop', coords_str);
                 }
             });
         });

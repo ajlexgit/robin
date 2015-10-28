@@ -111,44 +111,43 @@
 
 
     $(document).cropdialog('click.cropdialog', '.stdimage .crop-btn-wrapper button', {
-        image_url: function($element) {
-            var $field = $element.closest('.stdimage');
-            return $field.data('source');
+        beforeOpen: function($button) {
+            this.$field = $button.closest('.stdimage');
         },
-        min_size: function($element) {
-            var $field = $element.closest('.stdimage');
-            return $field.data('min_dimensions');
+
+        getImage: function($button) {
+            return this.$field.data('source');
         },
-        max_size: function($element) {
-            var $field = $element.closest('.stdimage');
-            return $field.data('max_dimensions');
+        getMinSize: function($button) {
+            return this.$field.data('min_dimensions');
         },
-        aspect: function($element) {
-            var $field = $element.closest('.stdimage');
-            return $field.data('aspects');
+        getMaxSize: function($button) {
+            return this.$field.data('max_dimensions');
         },
-        crop_position: function($element) {
-            var $wrapper = $element.closest('.crop-btn-wrapper');
+        getAspects: function($button) {
+            return this.$field.data('aspects');
+        },
+        getCropCoords: function($button) {
+            var $wrapper = $button.closest('.crop-btn-wrapper');
             return $wrapper.find('input').val();
         },
-        onCrop: function($element, coords) {
-            var $field = $element.closest('.stdimage');
-            var $wrapper = $element.closest('.crop-btn-wrapper');
-            var $image = $field.find('.item-preview').find('img');
-
+        onCrop: function($button, coords) {
             // Загружаем исходник и позиционируем его
-            var source_url = $field.data('source');
+            var source_url = this.opts.getImage.call(this, $button);
             if (source_url.substr(0, 4) != 'data') {
                 source_url += '?_=' + Math.random().toString().substr(2);
             }
+
+            var that = this;
+            var $image = this.$field.find('.item-preview').find('img');
             $.loadImageDeferred(source_url).done(function(img) {
                 $image.attr('src', img.src);
-                positionImage($field, $image, img, coords);
+                positionImage(that.$field, $image, img, coords);
             });
 
             // Записываем координаты в форму
-            var coords_text = coords.join(':');
-            $wrapper.find('input').val(coords_text);
+            var $wrapper = $button.closest('.crop-btn-wrapper');
+            $wrapper.find('input').val(coords.join(':'));
         }
     });
 

@@ -1,7 +1,7 @@
 import os
 import sys
 
-# cropdialog: JS-class
+
 # Кастомные поля: клиентские виджеты
 # ColorField: невозможно задать choices
 # Google Maps: bounds + upgrade JS, $.GoogleMapsReady(handler), str longitude after get_or_create,
