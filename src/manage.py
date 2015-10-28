@@ -2,7 +2,7 @@ import os
 import sys
 
 
-# Кастомные поля: клиентские виджеты
+# Локальный шаблон в шаблоне (типа блока)
 # ColorField: невозможно задать choices
 # Google Maps: bounds + upgrade JS, $.GoogleMapsReady(handler), str longitude after get_or_create,
 #              marker options
