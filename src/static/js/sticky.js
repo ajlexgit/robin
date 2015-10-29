@@ -45,7 +45,7 @@
 
         Sticky.prototype.getDefaultOpts = function() {
             return {
-                strategy: 'margin',     // margin / fixed
+                strategy: 'fixed',     // margin / fixed
                 topOffset: 50,
                 bottomOffset: 50,
                 minEnableWidth: 768
