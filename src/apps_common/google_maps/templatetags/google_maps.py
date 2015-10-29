@@ -64,7 +64,7 @@ def google_map_interactive(address=None, **kwargs):
         height: Высота
 
     Необходимо подключить JS:
-        google_maps/js/google_maps.js
+        google_maps/js/core.js
 
     Пример:
         {% google_map_interactive address=company.coords height=400 %}

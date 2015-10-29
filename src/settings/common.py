@@ -244,6 +244,7 @@ PIPELINE_JS = {
             'js/slider/plugins/drag.js',
             'comments/js/comments_class.js',
             'comments/js/comments.js',
+            'google_maps/js/core.js',
             'gallery/js/gallery_class.js',
             'gallery/js/gallery.js',
             'main/js/index.js',

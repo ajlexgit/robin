@@ -11,6 +11,7 @@ class GoogleCoordsFieldWidget(forms.TextInput):
             )
         }
         js = (
+            'google_maps/js/core.js',
             'google_maps/admin/js/google_maps.js',
         )
 

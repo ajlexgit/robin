@@ -3,7 +3,7 @@
         libs.coords
 
     Необходимо подключить:
-        google_maps/js/google_maps.js
+        google_maps/js/core.js
 
     Установка:
         settings.py:
@@ -44,15 +44,15 @@
             coords = GoogleCoordsField(_('coordinates'), null=True, blank=True)
 
         page.js:
-            $(document).on('google-maps-ready', function() {
-                var gmap = new GoogleMap('.google-map', {
-                    lng: $contact.data('lng'),
-                    lat: $contact.data('lat'),
-                    onResize: function() {
-                        if (gmap_marker) {
-                            this.setCenter(gmap_marker.getPosition());
-                        }
-                    }
+            $(document).ready(function() {
+                var gmap = GoogleMap.create('#gmap');
+                GoogleMap.ready(function() {
+                    var point = gmap.createPoint(49.418785, 53.510171);
+                    var marker = gmap.createMarker(point);
+                    var bubble = gmap.createBubble('<p>Hello</p>');
+                    gmap.addListener(marker, 'click', function() {
+                        bubble.open(this.map, marker);
+                    });
                 });
             });
 
