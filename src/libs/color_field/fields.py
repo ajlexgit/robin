@@ -6,6 +6,9 @@ from .color import Color
 
 class ColorField(models.Field):
     def __init__(self, *args, **kwargs):
+        if 'choices' in kwargs:
+            raise ValueError('ColorField not accept choices')
+
         kwargs.setdefault('max_length', 12)
         super().__init__(*args, **kwargs)
 
