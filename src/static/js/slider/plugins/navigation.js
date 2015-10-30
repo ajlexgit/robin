@@ -29,7 +29,7 @@
                 activeItemClass: 'active',
 
                 container: null,
-                oneSlideDisable: true
+                dragOneSlide: false
             };
         };
 
@@ -124,7 +124,7 @@
             Деактивация навигации на одном слайде
          */
         NavigationPlugin.prototype.checkEnabled = function(slider) {
-            if (this.opts.oneSlideDisable && (slider.$slides.length < 2)) {
+            if (!this.opts.dragOneSlide && (slider.$slides.length < 2)) {
                 this.$wrapper.addClass(this.opts.wrapperDisabledClass);
             } else {
                 this.$wrapper.removeClass(this.opts.wrapperDisabledClass);

@@ -108,7 +108,7 @@
 
             var methodName = '_process' + capitalize(this.opts.strategy);
             if (methodName in this) {
-                this[methodName].call(this, win_scroll);
+                this[methodName].call(this, win_scroll || 0);
             }
         };
 
