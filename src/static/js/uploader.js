@@ -171,7 +171,12 @@
             Добавление z-index из-за косяка в режиме мобильной версии
          */
         Uploader.prototype.fixZIndex = function() {
-            this.$root.find('.moxie-shim').css('zIndex', this.opts.zIndex);
+            this.$root.find('.moxie-shim').css({
+                zIndex: this.opts.zIndex
+            }).find('input').css({
+                zIndex: this.opts.zIndex,
+                cursor: 'pointer'
+            });
         };
         
         /*
