@@ -27,6 +27,7 @@
                 multiple: true,
                 resize: {},
                 max_size: 0,
+                zIndex: 1,
 
                 // инициализация загрузчика
                 // func()
@@ -103,6 +104,10 @@
                 init: {
                     Init: function() {
                         that.InitHandler();
+                        that.fixZIndex();
+                    },
+                    Refresh: function() {
+                        that.fixZIndex();
                     },
                     FilesAdded: function(up, files) {
                         that.FilesAddedHandler(files);
@@ -162,6 +167,13 @@
             }
         };
 
+        /*
+            Добавление z-index из-за косяка в режиме мобильной версии
+         */
+        Uploader.prototype.fixZIndex = function() {
+            this.$root.find('.moxie-shim').css('zIndex', this.opts.zIndex);
+        };
+        
         /*
             Обертка над событием инициализации загрузчика
          */
