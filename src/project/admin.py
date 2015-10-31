@@ -2,6 +2,8 @@ from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from suit.widgets import AutosizedTextarea
+from libs.valute_field import ValuteField, ValuteFormField
+from libs.color_field import ColorField, ColorFormField, ColorOpacityField, ColorOpacityFormField
 from libs.stdimage import StdImageField, StdImageAdminWidget
 from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
 
@@ -37,6 +39,15 @@ class ModelAdminInlineMixin:
         },
         StdImageField: {
             'widget': StdImageAdminWidget
+        },
+        ColorField: {
+            'form_class': ColorFormField
+        },
+        ColorOpacityField: {
+            'form_class': ColorOpacityFormField
+        },
+        ValuteField: {
+            'form_class': ValuteFormField
         }
     }
 

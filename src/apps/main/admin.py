@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
-from project.admin import ModelAdminMixin
+from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from seo.admin import SeoModelAdminMixin
 from suit.admin import SortableStackedInline
 from files.admin import PageFileInlineMixin
@@ -10,7 +10,7 @@ from attachable_blocks import AttachedBlocksTabularInline
 from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem, ListItemFile
 
 
-class InlineSampleAdmin(admin.TabularInline):
+class InlineSampleAdmin(ModelAdminInlineMixin, admin.TabularInline):
     model = InlineSample
     extra = 0
     suit_classes = 'suit-tab suit-tab-general'

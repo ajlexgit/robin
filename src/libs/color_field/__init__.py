@@ -8,5 +8,6 @@
 
 from .color import Color
 from .fields import ColorField, ColorOpacityField
+from .forms import ColorFormField, ColorOpacityFormField
 
 __all__ = ['Color', 'ColorField', 'ColorOpacityField']

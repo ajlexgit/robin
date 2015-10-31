@@ -52,6 +52,15 @@ class MainGallery(GalleryBase):
 
 
 class MainPageConfig(SingletonModel):
+    COLORS = (
+        ('#FFFFFF', 'white'),
+        ('#FF0000', 'red'),
+        ('#00FF00', 'green'),
+        ('#0000FF', 'blue'),
+        ('#FFFF00', 'yellow'),
+        ('#000000', 'black'),
+    )
+
     header_title = models.CharField('title', max_length=255)
     header_background = StdImageField(_('background'),
         storage=MediaStorage('main/header'),
@@ -71,7 +80,6 @@ class MainPageConfig(SingletonModel):
         ),
     )
     header_video = models.FileField(_('video'), blank=True, storage=MediaStorage('main/header'))
-
     preview = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('main/preview'),
@@ -102,8 +110,8 @@ class MainPageConfig(SingletonModel):
     )
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     description = models.TextField(_('description'), blank=True)
-    color = ColorField(_('color'), blank=True)
-    color2 = ColorOpacityField(_('color2'), blank=True)
+    color = ColorField(_('color'), choices=COLORS)
+    color2 = ColorOpacityField(_('color2'))
     price = ValuteField(_('price'),
         validators=[MinValueValidator(0)]
     )
@@ -187,6 +195,11 @@ class ClientFormModel(models.Model):
                 size=(200, 200),
             ),
         ),
+    )
+    color = ColorField(_('color'), blank=True)
+    color2 = ColorOpacityField(_('color2'), blank=True)
+    price = ValuteField(_('price'),
+        validators=[MinValueValidator(0)]
     )
 
     def __str__(self):

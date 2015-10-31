@@ -30,18 +30,33 @@ body {
   table-layout: fixed;
   z-index: 1;
 
-  .header-wrapper {
+  #header-wrapper {
     display: table-row;
-    height: 1px;
+    height: 0;
+
+    & > header {
+      display: table-cell;
+      vertical-align: top;
+    }
   }
 
-  .content-wrapper {
+  #content-wrapper {
     display: table-row;
+
+    & > .content {
+      display: table-cell;
+      vertical-align: top;
+    }
   }
 
-  .footer-wrapper {
+  #footer-wrapper {
     display: table-row;
-    height: 1px;
+    height: 0;
+
+    & > footer {
+      display: table-cell;
+      vertical-align: top;
+    }
   }
 }
 
@@ -60,7 +75,7 @@ body {
     height: 768px; // for old
     height: 100vh;
   }
-  
+
   .section-image {
     position: absolute;
     left: 50%;
@@ -71,7 +86,7 @@ body {
     @include transform(translate3d(-50%, -50%, 0));
     @include backface-visibility(hidden);
   }
-  
+
   .section-video {
     position: absolute;
     left: 50%;
@@ -92,7 +107,7 @@ body {
   @at-root .js &.video-loaded .section-video {
     visibility: visible;
   }
-  
+
   .section-inner {
     position: relative;
     display: inline-block;

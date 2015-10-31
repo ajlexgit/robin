@@ -20,7 +20,8 @@
             1 234.56 руб.
 """
 
-from .fields import ValuteField
 from .valute import Valute
+from .fields import ValuteField
+from .forms import ValuteFormField
 
 __all__ = ['Valute', 'ValuteField']

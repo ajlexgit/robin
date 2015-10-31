@@ -1,7 +1,6 @@
 @import "mixins";
 
 #form {
-  margin-top: 150px;
   padding: 40px 0;
   background: #222;
   @include font-size(16px);

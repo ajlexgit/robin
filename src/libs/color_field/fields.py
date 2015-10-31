@@ -1,14 +1,10 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from .widgets import ColorWidget, ColorOpacityWidget
+from django.core import exceptions, checks
 from .color import Color
 
 
 class ColorField(models.Field):
     def __init__(self, *args, **kwargs):
-        if 'choices' in kwargs:
-            raise ValueError('ColorField not accept choices')
-
         kwargs.setdefault('max_length', 12)
         super().__init__(*args, **kwargs)
 
@@ -24,51 +20,52 @@ class ColorField(models.Field):
     def from_db_value(self, value, *args, **kwargs):
         if not value:
             return None
-        elif isinstance(value, str):
-            try:
-                return Color(value)
-            except (ValueError, TypeError):
-                return None
-        else:
-            raise ValueError('Invalid color type: %r' % value)
+
+        try:
+            return Color(value)
+        except (ValueError, TypeError):
+            return None
 
     def get_prep_value(self, value):
+        value = super().get_prep_value(value)
         if not value:
             return ''
-        elif isinstance(value, Color):
-            return value.db_value
-        else:
-            raise TypeError('Invalid color type: %r' % value)
+
+        if not isinstance(value, Color):
+            value = Color(value)
+
+        return value.db_value
 
     def to_python(self, value):
         if not value:
             return None
-        elif isinstance(value, Color):
+
+        if isinstance(value, Color):
             return value
-        elif isinstance(value, str):
-            try:
-                return Color(value)
-            except (TypeError, ValueError) as e:
-                raise ValidationError(e)
-        else:
-            raise ValidationError('Invalid color type: %r' % value)
+
+        try:
+            return Color(value)
+        except (TypeError, ValueError) as e:
+            raise exceptions.ValidationError(e)
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
 
-    def formfield(self, **kwargs):
-        defaults = {
-            'widget': ColorWidget,
-        }
-        defaults.update(kwargs)
-        return super().formfield(**defaults)
-
 
 class ColorOpacityField(ColorField):
-    def formfield(self, **kwargs):
-        defaults = {
-            'widget': ColorOpacityWidget,
-        }
-        defaults.update(kwargs)
-        return super().formfield(**defaults)
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_choices_allowed(**kwargs))
+        return errors
+
+    def _check_choices_allowed(self, **kwargs):
+        if self.choices:
+            return [
+                checks.Error(
+                    'choices are not allowed',
+                    obj=self
+                )
+            ]
+        else:
+            return []

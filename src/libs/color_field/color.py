@@ -17,6 +17,20 @@ class Color:
         self.opacity = opacity
         return self
 
+    def __str__(self):
+        if self._opacity == 1:
+            return self.color
+        else:
+            return self.rgba
+
+    def __repr__(self):
+        return '%s(%r, %r)' % (self.__class__.__name__, self._color, self._opacity)
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self._opacity == Decimal(1) and self.color.lower() == other.lower()
+        return super().__eq__(other)
+
     @property
     def opacity(self):
         opacity = str(self._opacity).rstrip('0').rstrip('.')
@@ -69,18 +83,7 @@ class Color:
 
     @property
     def db_value(self):
-        return '{}:{}'.format(self._color, self._opacity)
-
-    def __str__(self):
         if self._opacity == 1:
-            return self.color
+            return self._color
         else:
-            return self.rgba
-
-    def __repr__(self):
-        return '%s(%r, %r)' % (self.__class__.__name__, self._color, self._opacity)
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return self._opacity == Decimal(1) and self.color.lower() == other.lower()
-        return super().__eq__(other)
+            return '{}:{}'.format(self._color, self._opacity)

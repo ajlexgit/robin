@@ -35,21 +35,31 @@
 {% seo_counters 'body_top' %}
 
 <div id="wrapper">
-  <div class="header-wrapper">
-    {% block header %}
-      {% header %}
-    {% endblock header %}
+  {% block header %}
+    <div id="header-wrapper">
+      <header>
+        {% block header_content %}
+          {% header %}
+        {% endblock header_content %}
+      </header>
+    </div>
+  {% endblock header %}
+
+  <div id="content-wrapper">
+    <div class="content">
+      {% block content %}{% endblock content %}
+    </div>
   </div>
 
-  <div class="content-wrapper">
-    {% block content %}{% endblock content %}
-  </div>
-
-  <div class="footer-wrapper">
-    {% block footer %}
-      {% footer %}
-    {% endblock footer %}
-  </div>
+  {% block footer %}
+    <div id="footer-wrapper">
+      <footer>
+        {% block footer_content %}
+          {% footer %}
+        {% endblock footer_content %}
+      </footer>
+    </div>
+  {% endblock footer %}
 </div>
 
 {% block static_js %}
