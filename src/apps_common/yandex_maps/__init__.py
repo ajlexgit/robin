@@ -3,7 +3,7 @@
         libs.coords
 
     Необходимо подключить:
-        yandex_maps/js/yandex_maps.js
+        yandex_maps/js/core.js
 
     Установка:
         settings.py:
@@ -13,14 +13,8 @@
                 ...
             )
 
-        urls.py:
-            ...
-            url(r'^yandex_maps/', include('yandex_maps.urls', namespace='yandex_maps'))
-
     Настройки (settings.py):
         YANDEX_MAPS_API_KEY - ключ
-        YANDEX_MAP_PERMISSIONS - функция определения прав на получение координат
-                                 по адресу через AJAX (по умолчанию - сотрудники)
         ADMIN_YANDEX_MAP_WIDTH - ширина карты в админке (по умолчанию 100%)
         ADMIN_YANDEX_MAP_HEIGHT - высота карты в админке (по умолчанию 300px)
 
@@ -46,17 +40,30 @@
 
         page.js:
             $(document).on('google-maps-ready', function() {
-                var ymap = new YandexMap('.yandex-map', {
-                    lng: $contact.data('lng'),
-                    lat: $contact.data('lat')
+                var ymap = YandexMap.create('#ymap');
+                YandexMap.ready(function() {
+                    var point = ymap.createPoint(49.418785, 53.510171);
+                    var marker = ymap.createMarker(point);
+                    var bubble = ymap.createBubble('<p>Hello</p>');
+                    ymap.addListener(marker, 'click', function() {
+                        bubble.open(marker.geometry.getCoordinates());
+                    });
                 });
             });
 
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var ymap_object = $('#id_coords').next('div').data('map');
-                ymap_object.addressCoords($(this).val());
+                var ymap = $('#id_coords').next('.yandex-map').data('map');
+                ymap.geocode($(this).val(), function(point) {
+                    if (this.marker) {
+                        this.marker.geometry.setCoordinates(point);
+                    } else {
+                        this.createMarker(point);
+                    }
+
+                    this.panTo(point);
+                });
             });
 
         template.html:

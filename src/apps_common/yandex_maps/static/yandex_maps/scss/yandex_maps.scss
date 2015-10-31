@@ -1,6 +1,8 @@
 @import "mixins";
 
-.ymaps-map {
+.yandex-map {
+  height: 300px;
+
   .ymaps-b-balloon__content {
     > ymaps {
       padding: 0 10px;

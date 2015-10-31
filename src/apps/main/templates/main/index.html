@@ -55,27 +55,12 @@
     </div>
   </div>
 
-  <div id="map_example">
-    <div id="gmap" style="height: 200px"></div>
-    <script>
-      $(document).ready(function() {
-        gmap = GoogleMap.create('#gmap', {
-          onInit: function() {
-            gmap.points = [
-              gmap.createPoint(49.418785, 53.510171),
-              gmap.createPoint(49.435000, 53.525000)
-            ];
+  <div id="gmap_example">
+    <div class="google-map"></div>
+  </div>
 
-            gmap.markers = [];
-            for(var i=0, l= gmap.points.length; i<l; i++) {
-              gmap.markers.push(gmap.createMarker(gmap.points[i]));
-            }
-
-            gmap.setCenter(gmap.points);
-          }
-        });
-      });
-    </script>
+  <div id="ymap_example">
+    <div class="yandex-map"></div>
   </div>
 
   <div id="text-content">

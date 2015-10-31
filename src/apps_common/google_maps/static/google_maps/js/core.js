@@ -37,8 +37,6 @@
                     this.setCenter(this.points);
                 }
             });
-
-
      */
 
 
@@ -213,7 +211,6 @@
         GoogleMap.prototype.addListener = function(object, event, handler) {
             var that = this;
             google.maps.event.addListener(object, event, function() {
-                console.log(arguments);
                 return handler.apply(that, arguments);
             });
         };

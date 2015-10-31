@@ -6,6 +6,7 @@ class YandexCoordsFieldWidget(forms.TextInput):
 
     class Media:
         js = (
+            'yandex_maps/js/core.js',
             'yandex_maps/admin/js/yandex_maps.js',
         )
 

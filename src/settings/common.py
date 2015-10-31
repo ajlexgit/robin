@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     'paginator',
     'seo',
     'social_buttons',
+    'yandex_maps',
 
     # Libs
     'libs.autocomplete',
@@ -179,8 +180,10 @@ PIPELINE_CSS = {
             'scss/slider/plugins/controls.scss',
             'scss/slider/plugins/navigation.scss',
             'scss/parallax.scss',
-            'gallery/scss/gallery.scss',
             'comments/scss/comments.scss',
+            'gallery/scss/gallery.scss',
+            'google_maps/scss/google_maps.scss',
+            'yandex_maps/scss/yandex_maps.scss',
             'social_buttons/scss/social_buttons.scss',
             'main/scss/index.scss',
         ),
@@ -245,6 +248,7 @@ PIPELINE_JS = {
             'comments/js/comments_class.js',
             'comments/js/comments.js',
             'google_maps/js/core.js',
+            'yandex_maps/js/core.js',
             'gallery/js/gallery_class.js',
             'gallery/js/gallery.js',
             'main/js/index.js',

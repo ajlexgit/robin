@@ -64,7 +64,7 @@ def yandex_map_interactive(address=None, **kwargs):
         height: Высота
 
     Необходимо подключить JS:
-        yandex_maps/js/yandex_maps.js
+        yandex_maps/js/core.js
 
     Пример:
         {% yandex_map_interactive address=company.coords height=400 %}

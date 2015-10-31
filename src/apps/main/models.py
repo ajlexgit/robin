@@ -8,6 +8,7 @@ from attachable_blocks import AttachableBlock
 from ckeditor import CKEditorUploadField
 from gallery import *
 from files import PageFile
+from yandex_maps import YandexCoordsField
 from google_maps import GoogleCoordsField
 from libs.color_field import ColorField, ColorOpacityField
 from libs.valute_field import ValuteField
@@ -116,6 +117,7 @@ class MainPageConfig(SingletonModel):
         validators=[MinValueValidator(0)]
     )
     coords = GoogleCoordsField(_('coords'), blank=True)
+    coords2 = YandexCoordsField(_('coords2'), blank=True)
     gallery = GalleryField(MainGallery,
         verbose_name=_('gallery'),
         blank=True,

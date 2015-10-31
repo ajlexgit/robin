@@ -36,31 +36,32 @@
         $field.after($map);
 
         // карта
-        var gmap = GoogleMap.create($map, {
+        GoogleMap.create($map, {
             map_options: {
                 disableDoubleClickZoom: true,
                 zoom: 15
+            },
+            onInit: function() {
+                // точка
+                var point = text2coords($field.val());
+                this.setCenter(point);
+                this.marker = this.createMarker(point, {
+                    draggable: true
+                });
+
+                // установка значения поля при перемещение маркера
+                this.addListener(this.marker, 'dragend', function() {
+                    var point = this.marker.getPosition();
+                    $field.val(coords2text(point));
+                });
+
+                // установка значения поля при двойном клике
+                this.addListener(this.map, 'dblclick', function(evt) {
+                    var point = evt.latLng;
+                    this.marker.setPosition(point);
+                    $field.val(coords2text(point));
+                });
             }
-        });
-
-        // точка
-        var point = text2coords($field.val());
-        gmap.setCenter(point);
-        gmap.marker = gmap.createMarker(point, {
-            draggable: true
-        });
-
-        // установка значения поля при перемещение маркера
-        gmap.addListener(gmap.marker, 'dragend', function() {
-            var point = this.marker.getPosition();
-            $field.val(coords2text(point));
-        });
-
-        // установка значения поля при войном клике
-        gmap.addListener(gmap.map, 'dblclick', function(evt) {
-            var point = evt.latLng;
-            this.marker.setPosition(point);
-            $field.val(coords2text(point));
         });
     };
 

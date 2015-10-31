@@ -53,7 +53,7 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'preview', 'preview2', 'text', 'description',
-                'color', 'color2' ,'price', 'coords', 'gallery', 'video'
+                'color', 'color2' ,'price', 'coords', 'coords2', 'gallery', 'video'
             ),
         }),
     )

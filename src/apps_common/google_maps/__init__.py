@@ -13,13 +13,7 @@
                 ...
             )
 
-        urls.py:
-            ...
-            url(r'^google_maps/', include('google_maps.urls', namespace='google_maps'))
-
     Настройки (settings.py):
-        GOOGLE_MAP_PERMISSIONS - функция определения прав на получение координат
-                                 по адресу через AJAX (по умолчанию - сотрудники)
         ADMIN_GOOGLE_MAP_WIDTH - ширина карты в админке (по умолчанию 100%)
         ADMIN_GOOGLE_MAP_HEIGHT - высота карты в админке (по умолчанию 300px)
 
