@@ -59,8 +59,16 @@
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var gmap_object = $('#id_coords').next('div').data('map');
-                gmap_object.addressCoords($(this).val());
+                var gmap = $('#id_coords').next('.google-map').data('map');
+                gmap.geocode($(this).val(), function(point) {
+                    if (this.marker) {
+                        this.marker.setPosition(point);
+                    } else {
+                        this.createMarker(point);
+                    }
+
+                    this.panTo(point);
+                });
             });
 
         template.html:

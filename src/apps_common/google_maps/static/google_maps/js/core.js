@@ -130,7 +130,8 @@
                 lng: 49.418785,
                 lat: 53.510171,
                 map_options: {
-                    streetViewControl: false,
+                    disableDefaultUI: true,
+                    zoomControl: true,
                     scrollwheel: false,
                     zoom: 14
                 },
