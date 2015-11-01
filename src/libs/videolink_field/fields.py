@@ -1,6 +1,5 @@
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.core import checks
+from django.core import checks, exceptions
 from libs.widgets import URLWidget
 from .videolink import VideoLink
 from .providers import PROVIDERS
@@ -52,34 +51,33 @@ class VideoLinkField(models.Field):
     def from_db_value(self, value, *args, **kwargs):
         if not value:
             return None
-        elif isinstance(value, str):
-            try:
-                return VideoLink(value, self._providers)
-            except (ValueError, TypeError):
-                return None
-        else:
-            raise ValueError('Invalid video type: %r' % value)
+
+        try:
+            return VideoLink(value, self._providers)
+        except (ValueError, TypeError):
+            return None
 
     def get_prep_value(self, value):
+        value = super().get_prep_value(value)
         if not value:
             return ''
-        elif isinstance(value, VideoLink):
-            return value.db_value
-        else:
-            raise TypeError('Invalid video type: %r' % value)
+
+        if not isinstance(value, VideoLink):
+            value = VideoLink(value, self._providers)
+
+        return value.db_value
 
     def to_python(self, value):
         if not value:
             return None
-        elif isinstance(value, VideoLink):
+
+        if isinstance(value, VideoLink):
             return value
-        elif isinstance(value, str):
-            try:
-                return VideoLink(value, self._providers)
-            except (TypeError, ValueError) as e:
-                raise ValidationError(e)
-        else:
-            raise ValidationError('Invalid video type: %r' % value)
+
+        try:
+            return VideoLink(value, self._providers)
+        except (TypeError, ValueError) as e:
+            raise exceptions.ValidationError(e)
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)

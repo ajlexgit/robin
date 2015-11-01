@@ -8,11 +8,10 @@ class YandexCoordsFormsField(forms.CharField):
     widget = YandexCoordsAdminWidget
 
     def to_python(self, value):
+        value = super().to_python(value)
+
         if not value:
             return None
-
-        if isinstance(value, Coords):
-            return value
 
         try:
             return Coords(*value.split(','))
