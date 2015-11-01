@@ -1,9 +1,3 @@
-"""
-    Миксина для форм, добавляющая форматированные списки ошибок:
-        1) form.error_list / form.error_list_full
-        2) form.error_dict / form.error_dict_full
-"""
-
 from django.forms.utils import ErrorList
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
@@ -27,7 +21,7 @@ class PlainErrorList(ErrorList):
 class PlainErrorFormMixin:
     """
         Форматирует ошибки полей формы. Добавляет методы для получения
-        ошибок в виде словаря или списка.
+        ошибок в виде списка словарей или списка списков.
     """
 
     # Добавлять к именам полей в error_dict и error_list префикс формы

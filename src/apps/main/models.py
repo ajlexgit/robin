@@ -200,6 +200,8 @@ class ClientFormModel(models.Model):
     )
     color = ColorField(_('color'), blank=True)
     color2 = ColorOpacityField(_('color2'), blank=True)
+    coords = GoogleCoordsField(_('coords'), blank=True)
+    coords2 = YandexCoordsField(_('coords2'), blank=True)
     price = ValuteField(_('price'),
         validators=[MinValueValidator(0)]
     )

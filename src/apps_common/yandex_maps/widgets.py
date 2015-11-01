@@ -1,7 +1,8 @@
 from django import forms
+from django.conf import settings
 
 
-class YandexCoordsFieldWidget(forms.TextInput):
+class YandexCoordsAdminWidget(forms.TextInput):
     attrs = None
 
     class Media:
@@ -13,7 +14,10 @@ class YandexCoordsFieldWidget(forms.TextInput):
     def __init__(self, attrs=None):
         defaults = {
             'class': 'yandex-map-field',
+            'data-width': getattr(settings, 'ADMIN_YANDEX_MAP_WIDTH', ''),
+            'data-height': getattr(settings, 'ADMIN_YANDEX_MAP_HEIGHT', ''),
         }
         if attrs:
             defaults.update(attrs)
+
         super().__init__(defaults)

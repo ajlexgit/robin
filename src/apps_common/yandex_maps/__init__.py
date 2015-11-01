@@ -80,6 +80,6 @@
 from .api import geocode
 from .models import geocode_cached
 from .fields import YandexCoordsField
-from .widgets import YandexCoordsFieldWidget
+from .widgets import YandexCoordsAdminWidget
 
-__all__ = ['geocode', 'geocode_cached', 'YandexCoordsField', 'YandexCoordsFieldWidget']
+__all__ = ['geocode', 'geocode_cached', 'YandexCoordsField']

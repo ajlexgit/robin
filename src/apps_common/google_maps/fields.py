@@ -1,8 +1,6 @@
 from django.db import models
-from django.conf import settings
 from django.core import exceptions
 from libs.coords import Coords
-from .widgets import GoogleCoordsFieldWidget
 
 
 class GoogleCoordsField(models.Field):
@@ -58,13 +56,3 @@ class GoogleCoordsField(models.Field):
             return self.get_prep_value(value)
         else:
             raise TypeError('Lookup type %r not supported.' % lookup_type)
-
-    def formfield(self, **kwargs):
-        defaults = {
-            'widget': GoogleCoordsFieldWidget(attrs={
-                'data-width': getattr(settings, 'ADMIN_GOOGLE_MAP_WIDTH', ''),
-                'data-height': getattr(settings, 'ADMIN_GOOGLE_MAP_HEIGHT', ''),
-            })
-        }
-        defaults.update(kwargs)
-        return super().formfield(**defaults)

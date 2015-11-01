@@ -79,6 +79,6 @@
 from .api import geocode
 from .models import geocode_cached
 from .fields import GoogleCoordsField
-from .widgets import GoogleCoordsFieldWidget
+from .widgets import GoogleCoordsAdminWidget
 
-__all__ = ['geocode', 'geocode_cached', 'GoogleCoordsField', 'GoogleCoordsFieldWidget']
+__all__ = ['geocode', 'geocode_cached', 'GoogleCoordsField']

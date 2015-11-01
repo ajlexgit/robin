@@ -2,9 +2,11 @@ from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from suit.widgets import AutosizedTextarea
-from libs.valute_field import ValuteField, ValuteFormField
+from google_maps import GoogleCoordsField, GoogleCoordsAdminWidget
+from yandex_maps import YandexCoordsField, YandexCoordsAdminWidget
 from libs.color_field import ColorField, ColorFormField, ColorOpacityField, ColorOpacityFormField
 from libs.stdimage import StdImageField, StdImageAdminWidget
+from libs.valute_field import ValuteField, ValuteFormField
 from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
 
 
@@ -48,7 +50,13 @@ class ModelAdminInlineMixin:
         },
         ValuteField: {
             'form_class': ValuteFormField
-        }
+        },
+        GoogleCoordsField: {
+            'widget': GoogleCoordsAdminWidget
+        },
+        YandexCoordsField: {
+            'widget': YandexCoordsAdminWidget
+        },
     }
 
 

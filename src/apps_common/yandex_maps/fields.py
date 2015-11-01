@@ -1,8 +1,6 @@
 from django.db import models
-from django.conf import settings
 from django.core import exceptions
 from libs.coords import Coords
-from .widgets import YandexCoordsFieldWidget
 
 
 class YandexCoordsField(models.Field):
@@ -58,13 +56,3 @@ class YandexCoordsField(models.Field):
             return self.get_prep_value(value)
         else:
             raise TypeError('Lookup type %r not supported.' % lookup_type)
-
-    def formfield(self, **kwargs):
-        defaults = {
-            'widget': YandexCoordsFieldWidget(attrs={
-                'data-width': getattr(settings, 'ADMIN_YANDEX_MAP_WIDTH', ''),
-                'data-height': getattr(settings, 'ADMIN_YANDEX_MAP_HEIGHT', ''),
-            })
-        }
-        defaults.update(kwargs)
-        return super().formfield(**defaults)
