@@ -1,5 +1,5 @@
 from django.template import Library
-from ..api import get_static_map_url, get_external_map_url, get_interactive_map_tag
+from ..api import get_static_map_url, get_external_map_url
 from ..models import geocode_cached
 
 register = Library()
@@ -49,29 +49,3 @@ def yandex_map_external(address, zoom=14):
 
     lng, lat = geocode_cached(address)
     return get_external_map_url(lng, lat, zoom)
-
-
-@register.simple_tag
-def yandex_map_interactive(address=None, **kwargs):
-    """
-    Тег, который выводит <div> с интерактивной картой.
-    На странице должны быть подключены JS Яндекс Карт и скрипт инициализации
-
-    Параметры:
-        address: Координаты или адрес стартовой локации
-        zoom: Начальный зум
-        width: Ширина
-        height: Высота
-
-    Необходимо подключить JS:
-        yandex_maps/js/core.js
-
-    Пример:
-        {% yandex_map_interactive address=company.coords height=400 %}
-        {% yandex_map_interactive address='Тольятти, Мира 6' zoom=14 %}
-    """
-    if address:
-        lng, lat = geocode_cached(address)
-        return get_interactive_map_tag(lng, lat, **kwargs)
-    else:
-        return get_interactive_map_tag(**kwargs)

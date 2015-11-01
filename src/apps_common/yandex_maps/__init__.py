@@ -41,7 +41,7 @@
         page.js:
             $(document).on('google-maps-ready', function() {
                 var ymap = YandexMap.create('#ymap');
-                var mark = ymap.createPlacemark({
+                ymap.addPlacemark({
                     lng: 49.418785,
                     lat: 53.510171,
                     hint: 'First',
@@ -54,15 +54,16 @@
             $(document).on('change', '#id_address', function() {
                 var ymap = $('#id_coords').next('.yandex-map').data('map');
                 ymap.geocode($(this).val(), function(point) {
-                    if (this.mark) {
-                        this.mark.moveTo(point);
+                    var placemark = this.getPlacemark();
+                    if (placemark) {
+                        placemark.moveTo(point);
                     } else {
-                        this.mark = this.createPlacemark({
+                        this.addPlacemark({
                             point: point
                         });
                     }
 
-                    this.mark.panHere();
+                    this.panTo(placemark.point);
                 });
             });
 
@@ -74,9 +75,6 @@
 
             <!-- Ссылка на карту в сервисе Яндекса -->
             <a href='{{ address|yandex_map_external:15 }}' target='_blank'>посмотреть карту</a>
-
-            <!-- Интерактивная карта -->
-            {% yandex_map_interactive address='Тольятти, Мира 6' zoom=14 height=300 %}
 """
 
 from .api import geocode

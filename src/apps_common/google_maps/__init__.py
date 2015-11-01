@@ -40,7 +40,7 @@
         page.js:
             $(document).ready(function() {
                 var gmap = GoogleMap.create('#gmap');
-                var mark = gmap.createPlacemark({
+                gmap.addPlacemark({
                     lng: 49.418785,
                     lat: 53.510171,
                     hint: 'First',
@@ -53,15 +53,16 @@
             $(document).on('change', '#id_address', function() {
                 var gmap = $('#id_coords').next('.google-map').data('map');
                 gmap.geocode($(this).val(), function(point) {
-                    if (this.mark) {
-                        this.mark.moveTo(point);
+                    var placemark = this.getPlacemark();
+                    if (placemark) {
+                        placemark.moveTo(point);
                     } else {
-                        this.mark = this.createPlacemark({
+                        this.addPlacemark({
                             point: point
                         });
                     }
 
-                    this.mark.panHere();
+                    this.panTo(placemark.point);
                 });
             });
 
@@ -73,9 +74,6 @@
 
             <!-- Ссылка на карту в сервисе Google -->
             <a href='{{ address|google_map_external:15 }}' target='_blank'>посмотреть карту</a>
-
-            <!-- Интерактивная карта -->
-            {% google_map_interactive address='Тольятти, Мира 6' zoom=14 height=300 %}
 """
 
 from .api import geocode

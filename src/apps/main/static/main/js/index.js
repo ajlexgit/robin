@@ -45,25 +45,22 @@
     $(document).ready(function() {
         window.gmap = GoogleMap.create('.google-map', {
             onInit: function() {
-                this.placemarks = [
-                    this.createPlacemark({
-                        lng: 49.418785,
-                        lat: 53.510171,
-                        hint: 'First',
-                        balloon: '<p>Hello</p>'
-                    }),
-                    this.createPlacemark({
-                        lng: 49.435000,
-                        lat: 53.525000,
-                        hint: '',
-                        draggable: true,
-                        balloon: '<p>Goodbay</p>'
-                    })
-                ];
+                this.addPlacemark({
+                    lng: 49.418785,
+                    lat: 53.510171,
+                    hint: 'First',
+                    balloon: '<p>Hello</p>'
+                });
 
-                this.setCenter(this.placemarks.map(function(item) {
-                    return item.point
-                }));
+                this.addPlacemark({
+                    lng: 49.435000,
+                    lat: 53.525000,
+                    hint: 'second',
+                    draggable: true,
+                    balloon: '<p>Goodbay</p>'
+                });
+
+                this.setCenter(this.getPoints());
             }
         });
     });
@@ -72,25 +69,22 @@
     $(document).ready(function() {
         window.ymap = YandexMap.create('.yandex-map', {
             onInit: function() {
-                this.placemarks = [
-                    this.createPlacemark({
-                        lng: 49.418785,
-                        lat: 53.510171,
-                        hint: 'First',
-                        balloon: '<p>Hello</p>'
-                    }),
-                    this.createPlacemark({
-                        lng: 49.435000,
-                        lat: 53.525000,
-                        hint: '',
-                        draggable: true,
-                        balloon: '<p>Goodbay</p>'
-                    })
-                ];
+                this.addPlacemark({
+                    lng: 49.418785,
+                    lat: 53.510171,
+                    hint: 'First',
+                    balloon: '<p>Hello</p>'
+                });
 
-                this.setCenter(this.placemarks.map(function(item) {
-                    return item.point
-                }));
+                this.addPlacemark({
+                    lng: 49.435000,
+                    lat: 53.525000,
+                    hint: 'second',
+                    draggable: true,
+                    balloon: '<p>Goodbay</p>'
+                });
+
+                this.setCenter(this.getPoints());
             }
         });
     });

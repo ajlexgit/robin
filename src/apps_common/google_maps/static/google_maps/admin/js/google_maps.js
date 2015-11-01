@@ -11,6 +11,7 @@
         return new google.maps.LatLng(coords[1], coords[0]);
     };
 
+
     // Получение текста координат
     var coords2text = function(coords) {
         coords = [coords.lng(), coords.lat()];
@@ -18,6 +19,7 @@
             return coord.toFixed(6)
         }).join(', ')
     };
+
 
     var init_map_field = function() {
         var $field = $(this);
@@ -44,7 +46,7 @@
             onInit: function() {
                 // точка
                 var point = text2coords($field.val());
-                this.mark = this.createPlacemark({
+                this.addPlacemark({
                     point: point,
                     draggable: true,
                     onDragEnd: function() {
@@ -56,7 +58,8 @@
                 var that = this;
                 this.addListener(this.map, 'dblclick', function(evt) {
                     var point = evt.latLng;
-                    that.mark.moveTo(point);
+                    var placemark = that.getPlacemark();
+                    placemark.moveTo(point);
                     $field.val(coords2text(point));
                 });
             }
@@ -77,12 +80,12 @@
     }).on('change', '.google-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var $map = $field.next('.google-map');
-        var gmap = $map.data('map');
+        var gmap = $field.next('.google-map').data('map');
 
         var point = text2coords($field.val());
-        gmap.mark.moveTo(point);
-        gmap.mark.panHere();
+        var placemark = gmap.getPlacemark();
+        placemark.moveTo(point);
+        gmap.panTo(point);
     });
 
 })(jQuery);

@@ -11,12 +11,14 @@
         return coords;
     };
 
+
     // Получение текста координат
     var coords2text = function(coords) {
         return coords.map(function(coord) {
             return coord.toFixed(6)
         }).reverse().join(', ')
     };
+
 
     var init_map_field = function() {
         var $field = $(this);
@@ -42,7 +44,7 @@
             onInit: function() {
                 // точка
                 var point = text2coords($field.val());
-                this.mark = this.createPlacemark({
+                this.addPlacemark({
                     point: point,
                     draggable: true,
                     onDragEnd: function() {
@@ -55,12 +57,14 @@
                 this.addListener(this.map, 'dblclick', function(evt) {
                     evt.preventDefault();
                     var point = evt.get('coords');
-                    that.mark.moveTo(point);
+                    var placemark = that.getPlacemark();
+                    placemark.moveTo(point);
                     $field.val(coords2text(point));
                 });
             }
         });
     };
+
 
     $(document).ready(function() {
         // Инициализация карт после добавления инлайна с картой
@@ -75,12 +79,12 @@
     }).on('change', '.yandex-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var $map = $field.next('.yandex-map');
-        var ymap = $map.data('map');
+        var ymap = $field.next('.yandex-map').data('map');
 
         var point = text2coords($field.val());
-        ymap.mark.moveTo(point);
-        ymap.mark.panHere();
+        var placemark = ymap.getPlacemark();
+        placemark.moveTo(point);
+        ymap.panTo(point);
     });
 
 })(jQuery);

@@ -11,7 +11,7 @@
 
         1) Неявный GoogleMap.ready():
             var gmap = GoogleMap.create('#gmap');
-            var mark = gmap.createPlacemark({
+            gmap.addPlacemark({
                 lng: 49.418785,
                 lat: 53.510171,
                 hint: 'First',
@@ -21,25 +21,22 @@
         2) onInit():
             var gmap = GoogleMap.create('#gmap', {
                 onInit: function() {
-                    this.placemarks = [
-                        this.createPlacemark({
-                            lng: 49.418785,
-                            lat: 53.510171,
-                            hint: 'First',
-                            balloon: '<p>Hello</p>'
-                        }),
-                        this.createPlacemark({
-                            lng: 49.435000,
-                            lat: 53.525000,
-                            hint: 'second',
-                            draggable: true,
-                            balloon: '<p>Goodbay</p>'
-                        })
-                    ];
+                    this.addPlacemark({
+                        lng: 49.418785,
+                        lat: 53.510171,
+                        hint: 'First',
+                        balloon: '<p>Hello</p>'
+                    });
 
-                    this.setCenter(this.placemarks.map(function(item) {
-                        return item.point
-                    }));
+                    this.addPlacemark({
+                        lng: 49.435000,
+                        lat: 53.525000,
+                        hint: 'second',
+                        draggable: true,
+                        balloon: '<p>Goodbay</p>'
+                    });
+
+                    this.setCenter(this.getPoints());
                 }
             });
      */
@@ -95,7 +92,7 @@
                     that.point = that.gmap.createPoint(that.opts.lng, that.opts.lat);
                 }
 
-                that.marker = that.gmap.createMarker(that.point, {
+                that.marker = that.gmap._createMarker(that.point, {
                     title: that.opts.hint,
                     draggable: that.opts.draggable
                 });
@@ -137,20 +134,6 @@
             this.marker.setPosition(point);
         };
 
-        /*
-            Установка центра карты в этой точке
-         */
-        Placemark.prototype.center = function() {
-            this.gmap.setCenter(this.point);
-        };
-
-        /*
-            Перемещение центра карты в эту точку
-         */
-        Placemark.prototype.panHere = function() {
-            this.gmap.panTo(this.point);
-        };
-
         return Placemark;
     })();
 
@@ -165,7 +148,7 @@
             if (gmaps_ready) {
                 callback()
             } else {
-                $(document).on('google-maps-ready', callback);
+                $(document).one('google-maps-ready', callback);
             }
         };
 
@@ -184,6 +167,9 @@
             self.opts.lng = self.opts.lng || 49.418785;
             self.opts.lat = self.opts.lat || 53.510171;
 
+            // точки на карте
+            self.placemarks = [];
+
             GoogleMap.ready(function() {
                 // создание карты
                 self.map = new google.maps.Map(
@@ -200,7 +186,7 @@
 
 
                 // создание балуна
-                self.balloon = self.createBalloon('');
+                self.balloon = self._createBalloon('');
 
                 // callback
                 self.opts.onInit.call(self);
@@ -226,8 +212,35 @@
                     zoom: 14
                 },
                 onInit: $.noop,
-                onResize: $.noop
+                onResize: function() {
+                    this.setCenter(this.getPoints());
+                }
             }
+        };
+
+
+        /*
+            Создание маркера
+         */
+        GoogleMap.prototype._createMarker = function(point, options) {
+            return new google.maps.Marker($.extend({}, options, {
+                map: this.map,
+                position: point
+            }));
+        };
+
+
+        /*
+            Создание балуна
+         */
+        GoogleMap.prototype._createBalloon = function(html) {
+            if (html.jquery) {
+                html = html.html();
+            }
+
+            return new google.maps.InfoWindow({
+                content: html
+            });
         };
 
 
@@ -240,7 +253,7 @@
 
 
         /*
-            Перемещение к точке или к множеству точек (fitbounds)
+            Перемещение к точке или к множеству точек (bounds)
          */
         GoogleMap.prototype.setCenter = function(points) {
             if ($.isArray(points)) {
@@ -248,14 +261,6 @@
             } else {
                 this.map.setCenter(points);
             }
-        };
-
-
-        /*
-            Изменение опций карты
-         */
-        GoogleMap.prototype.setOptions = function(options) {
-            this.map.setOptions(options);
         };
 
 
@@ -268,10 +273,58 @@
 
 
         /*
-            Создание метки на карте.
+            Изменение опций карты
          */
-        GoogleMap.prototype.createPlacemark = function(options) {
-            return new Placemark(this, options);
+        GoogleMap.prototype.setOptions = function(options) {
+            this.map.setOptions(options);
+        };
+
+
+        /*
+            Создание метки на карте
+         */
+        GoogleMap.prototype.addPlacemark = function(options) {
+            var placemark = new Placemark(this, options);
+            this.placemarks.push(placemark);
+            return placemark;
+        };
+
+
+        /*
+            Получение метки на карте
+         */
+        GoogleMap.prototype.getPlacemark = function(index) {
+            index = index || 0;
+            return (this.placemarks.length > index) && this.placemarks[index];
+        };
+
+
+        /*
+            Удаление метки на карте
+         */
+        GoogleMap.prototype.removePlacemark = function() {
+            if (arguments[0] instanceof Placemark) {
+                var index = this.placemarks.indexOf(arguments[0]);
+            } else if (typeof index == 'number') {
+                index = arguments[0];
+            } else {
+                return
+            }
+
+            if (this.placemarks.length > index) {
+                var placemark = this.placemarks.splice(index, 1)[0];
+                placemark.marker.setMap(null);
+            }
+        };
+
+
+        /*
+            Получение точек карты
+         */
+        GoogleMap.prototype.getPoints = function() {
+            return this.placemarks.map(function(item) {
+                return item.point
+            })
         };
 
 
@@ -285,31 +338,6 @@
                 return
             }
             return new google.maps.LatLng(lat, lng);
-        };
-
-
-        /*
-            Создание маркера
-         */
-        GoogleMap.prototype.createMarker = function(point, options) {
-            return new google.maps.Marker($.extend({}, options,{
-                map: this.map,
-                position: point
-            }));
-        };
-
-
-        /*
-            Создание балуна
-         */
-        GoogleMap.prototype.createBalloon = function(html) {
-            if (html.jquery) {
-                html = html.html();
-            }
-
-            return new google.maps.InfoWindow({
-                content: html
-            });
         };
 
 
@@ -328,7 +356,9 @@
             Получение координат по адресу.
 
             gmap.geocode('Тольятти Майский проезд 64', function(point) {
-                this.createMarker(point)
+                this.addPlacemark({
+                    point: point
+                })
             }, function(status, results) {
                 alert('Error:', status)
             })

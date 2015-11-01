@@ -1,7 +1,6 @@
 import xml
 from urllib import parse, request, error
 from django.conf import settings
-from django.forms.utils import flatatt
 
 STATIC_MAPS_URL = 'http://static-maps.yandex.ru/1.x/?'
 HOSTED_MAPS_URL = 'http://maps.yandex.ru/?'
@@ -50,35 +49,6 @@ def get_external_map_url(longitude, latitude, zoom=14):
         l='map',
         z=zoom,
     ))
-
-
-def get_interactive_map_tag(longitude=None, latitude=None, zoom=14, width=None, height=None):
-    """ Возвращает тэг, который будет превращен JS-скриптом в интерактивную Яндекс-карту
-    Параметры:
-        zoom - начальное значение уровня детализации
-        width - ширина карты
-        height - высота карты
-    """
-
-    if not latitude or not longitude:
-        longitude, latitude = DEFAULT
-
-    attrs = {
-        'data-lng': longitude,
-        'data-lat': latitude,
-        'data-zoom': zoom,
-    }
-
-    styles = ''
-    if width:
-        styles += 'width: %spx;' % width
-    else:
-        styles += 'width: 100%;'
-    if height:
-        styles += 'height: %spx;' % height
-    attrs['style'] = styles
-
-    return '<div class="yandex-map" %s></div>' % flatatt(attrs)
 
 
 def geocode(address, timeout=5.0):

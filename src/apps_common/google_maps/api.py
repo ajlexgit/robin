@@ -1,7 +1,6 @@
 import xml
 from urllib import parse, request, error
 from django.conf import settings
-from django.forms.utils import flatatt
 
 STATIC_MAPS_URL = 'http://maps.googleapis.com/maps/api/staticmap?'
 HOSTED_MAPS_URL = 'http://maps.google.com/maps?'
@@ -47,34 +46,6 @@ def get_external_map_url(longitude, latitude, zoom=14):
         hl=settings.SHORT_LANGUAGE_CODE,
         z=zoom,
     ))
-
-
-def get_interactive_map_tag(longitude=None, latitude=None, zoom=14, width=None, height=None):
-    """
-    Возвращает тэг, который будет превращен JS-скриптом в интерактивную Google-карту
-    Параметры:
-        zoom - начальное значение уровня детализации
-        width - ширина карты
-        height - высота карты
-    """
-
-    if not latitude or not longitude:
-        longitude, latitude = DEFAULT
-
-    attrs = {
-        'data-lng': longitude,
-        'data-lat': latitude,
-        'data-zoom': zoom,
-    }
-
-    styles = ''
-    if width:
-        styles += 'width: %spx;' % width
-    if height:
-        styles += 'height: %spx;' % height
-    attrs['style'] = styles
-
-    return '<div class="google-map" %s></div>' % flatatt(attrs)
 
 
 def geocode(address, timeout=5.0):
