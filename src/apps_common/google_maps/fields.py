@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core import exceptions
 from libs.coords import Coords
 from .widgets import GoogleCoordsFieldWidget
 
@@ -21,31 +21,33 @@ class GoogleCoordsField(models.Field):
     def from_db_value(self, value, *args, **kwargs):
         if not value:
             return None
-        elif isinstance(value, str):
+
+        try:
             return Coords(*value.split(','))
-        else:
-            raise TypeError('Invalid coordinates type: %r' % value)
+        except (ValueError, TypeError):
+            return None
 
     def get_prep_value(self, value):
+        value = super().get_prep_value(value)
         if not value:
             return ''
-        elif isinstance(value, Coords):
-            return str(value)
-        else:
-            raise TypeError('Invalid coordinates type: %r' % value)
+
+        if not isinstance(value, Coords):
+            value = Coords(*value.split(','))
+
+        return str(value)
 
     def to_python(self, value):
         if not value:
             return None
-        elif isinstance(value, Coords):
+
+        if isinstance(value, Coords):
             return value
-        elif isinstance(value, str):
-            try:
-                return Coords(*value.split(','))
-            except (TypeError, ValueError) as e:
-                raise ValidationError(e)
-        else:
-            raise ValidationError('Invalid coordinates type: %r' % value)
+
+        try:
+            return Coords(*value.split(','))
+        except (TypeError, ValueError) as e:
+            raise exceptions.ValidationError(e)
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
