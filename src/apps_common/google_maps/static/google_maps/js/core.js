@@ -263,6 +263,22 @@
 
 
         /*
+            Получение уровня приближения карты
+         */
+        GoogleMap.prototype.getZoom = function() {
+            return this.map.getZoom()
+        };
+
+
+        /*
+            Установка уровня приближения карты
+         */
+        GoogleMap.prototype.setZoom = function(zoom) {
+            this.map.setZoom(zoom);
+        };
+
+
+        /*
             Плавное перемещение к точке
          */
         GoogleMap.prototype.panTo = function(point) {

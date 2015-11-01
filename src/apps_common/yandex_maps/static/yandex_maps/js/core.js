@@ -254,6 +254,22 @@
 
 
         /*
+            Получение уровня приближения карты
+         */
+        YandexMap.prototype.getZoom = function() {
+            return this.map.getZoom()
+        };
+
+
+        /*
+            Установка уровня приближения карты
+         */
+        YandexMap.prototype.setZoom = function(zoom) {
+            this.map.setZoom(zoom);
+        };
+
+
+        /*
             Плавное перемещение к точке
          */
         YandexMap.prototype.panTo = function(point) {
