@@ -24,61 +24,65 @@
 
       <div class="grid">
         <div class="gc-full gc-alone">
-          {% for field in form %}
-            <fieldset>
-              {{ field.label_tag }}
-              {{ field }}
-              {{ field.errors }}
-            </fieldset>
-          {% endfor %}
+          <div style="display: inline-block">
+            {% for field in form %}
+              <fieldset>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+              </fieldset>
+            {% endfor %}
+          </div>
         </div>
 
         <div class="gc-full gc-alone">
-          <div class="formset">
-            {{ formset.management_form }}
+          <div style="display: inline-block">
+            <div class="formset">
+              {{ formset.management_form }}
 
-            <div class="forms">
-              {% for form in formset %}
-                <div class="form">
-                  {{ form.id.as_hidden }}
+              <div class="forms">
+                {% for form in formset %}
+                  <div class="form">
+                    {{ form.id.as_hidden }}
 
-                  {% if formset.can_delete %}
-                    {{ form.DELETE.as_hidden }}
-                  {% endif %}
+                    {% if formset.can_delete %}
+                      {{ form.DELETE.as_hidden }}
+                    {% endif %}
 
-                  {{ form.name.label_tag }}
-                  {{ form.name }}
-                  {{ form.name.errors }}
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {{ form.name.errors }}
 
-                  <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
-                </div>
-              {% endfor %}
+                    <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="empty-form" style="display: none">
+                {% with form=formset.empty_form %}
+                  <div class="form">
+                    {{ form.id.as_hidden }}
+
+                    {% if formset.can_delete %}
+                      {{ form.DELETE.as_hidden }}
+                    {% endif %}
+
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {{ form.name.errors }}
+
+                    <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
+                  </div>
+                {% endwith %}
+              </div>
             </div>
 
-            <div class="empty-form" style="display: none">
-              {% with form=formset.empty_form %}
-                <div class="form">
-                  {{ form.id.as_hidden }}
-
-                  {% if formset.can_delete %}
-                    {{ form.DELETE.as_hidden }}
-                  {% endif %}
-
-                  {{ form.name.label_tag }}
-                  {{ form.name }}
-                  {{ form.name.errors }}
-
-                  <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
-                </div>
-              {% endwith %}
+            <div style="margin-top: 10px;">
+              <a class="add" href="#" style="color: white;">add form</a>
             </div>
-          </div>
 
-          <div style="margin-top: 10px;">
-            <a class="add" href="#" style="color: white;">add form</a>
+            <input type="submit" value="Send" style="margin-top: 10px;">
           </div>
-
-          <input type="submit" value="Send" style="margin-top: 10px;">
         </div>
       </div>
     </form>

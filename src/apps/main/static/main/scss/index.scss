@@ -26,6 +26,12 @@
 }
 
 
+header {
+  position: absolute;
+  z-index: 100;
+}
+
+
 #video {
   .section-inner {
     padding: 100px 0;
