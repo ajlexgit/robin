@@ -39,7 +39,7 @@
         // карта
         YandexMap.create($map, {
             map_options: {
-                zoom: 15
+                zoom: 16
             },
             onInit: function() {
                 var point = text2coords($field.val());

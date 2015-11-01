@@ -196,7 +196,7 @@
                 lat: 53.510171,
                 map_options: {
                     controls: ["zoomControl", "fullscreenControl"],
-                    zoom: 14
+                    zoom: 15
                 },
                 onInit: $.noop
             }

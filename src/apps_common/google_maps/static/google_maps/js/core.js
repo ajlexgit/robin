@@ -209,12 +209,10 @@
                     disableDefaultUI: true,
                     zoomControl: true,
                     scrollwheel: false,
-                    zoom: 14
+                    zoom: 15
                 },
                 onInit: $.noop,
-                onResize: function() {
-                    this.setCenter(this.getPoints());
-                }
+                onResize: $.noop
             }
         };
 
