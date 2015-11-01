@@ -42,8 +42,8 @@
                 zoom: 15
             },
             onInit: function() {
-                // точка
                 var point = text2coords($field.val());
+
                 this.addPlacemark({
                     point: point,
                     draggable: true,
@@ -51,6 +51,8 @@
                         $field.val(coords2text(this.point));
                     }
                 });
+
+                this.setCenter(this.getPoints());
 
                 // установка значения поля при двойном клике
                 var that = this;

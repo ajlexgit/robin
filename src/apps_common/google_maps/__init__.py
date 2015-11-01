@@ -57,7 +57,7 @@
                     if (placemark) {
                         placemark.moveTo(point);
                     } else {
-                        this.addPlacemark({
+                        placemark = this.addPlacemark({
                             point: point
                         });
                     }
