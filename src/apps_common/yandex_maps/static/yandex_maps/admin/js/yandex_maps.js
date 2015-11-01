@@ -52,7 +52,7 @@
                     }
                 });
 
-                this.setCenter(this.getPoints());
+                this.setCenter(point);
 
                 // установка значения поля при двойном клике
                 var that = this;
