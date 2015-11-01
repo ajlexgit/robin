@@ -7,34 +7,39 @@
             jquery.utils.js
 
 
-        Рекомендуется работать с картой в обработчике события YandexMap.ready() или в onInit():
-        1) YandexMap.ready:
+        Рекомендуется работать с картой в обработчике события YandexMap.ready() или в onInit().
+
+        1) Неявный YandexMap.ready():
             var ymap = YandexMap.create('#ymap');
-            YandexMap.ready(function() {
-                var point = ymap.createPoint(49.418785, 53.510171);
-                var marker = ymap.createMarker(point, {
-                    draggable: true
-                });
-                var bubble = ymap.createBubble('<p>Hello</p>');
-                ymap.addListener(marker, 'click', function() {
-                    bubble.open(marker.geometry.getCoordinates());
-                });
+            var mark = ymap.createPlacemark({
+                lng: 49.418785,
+                lat: 53.510171,
+                hint: 'First',
+                balloon: '<p>Hello</p>'
             });
 
-        2) onInit:
+        2) onInit():
             var ymap = YandexMap.create('#ymap', {
                 onInit: function() {
-                    this.points = [
-                        this.createPoint(49.418785, 53.510171),
-                        this.createPoint(49.435000, 53.525000)
+                    this.placemarks = [
+                        this.createPlacemark({
+                            lng: 49.418785,
+                            lat: 53.510171,
+                            hint: 'First',
+                            balloon: '<p>Hello</p>'
+                        }),
+                        this.createPlacemark({
+                            lng: 49.435000,
+                            lat: 53.525000,
+                            hint: 'second',
+                            draggable: true,
+                            balloon: '<p>Goodbay</p>'
+                        })
                     ];
 
-                    this.markers = [];
-                    for(var i=0, l=this.points.length; i<l; i++) {
-                        this.markers.push(this.createMarker(this.points[i]));
-                    }
-
-                    this.setCenter(this.points);
+                    this.setCenter(this.placemarks.map(function(item) {
+                        return item.point
+                    }));
                 }
             });
      */
@@ -52,6 +57,93 @@
         script.src = '//api-maps.yandex.ru/2.1/?onload=init_yandex_maps&lang=' + lang;
         document.body.appendChild(script);
     });
+
+
+    var Placemark = (function() {
+        var Placemark = function(ymap, options) {
+            this.ymap = ymap;
+
+            this.opts = $.extend(true, {
+                lng: 49.418785,
+                lat: 53.510171,
+                point: null,
+                draggable: false,
+                hint: '',
+                balloon: '',
+                onClick: $.noop,
+                onDragEnd: $.noop
+            }, options);
+
+            var that = this;
+            GoogleMap.ready(function() {
+                if (that.opts.point) {
+                    that.point = that.opts.point
+                } else {
+                    that.point = that.ymap.createPoint(that.opts.lng, that.opts.lat);
+                }
+
+                that.marker = that.ymap.createMarker(that.point, {
+                    draggable: that.opts.draggable
+                });
+                that.marker.properties.set({
+                    hintContent: that.opts.hint
+                });
+
+                // клик на маркер
+                that.ymap.addListener(that.marker, 'click', function() {
+                    if (that.opts.onClick.call(that) === false) {
+                        return
+                    }
+
+                    if (that.opts.balloon) {
+                        this.balloon.options.set({
+                            contentLayout: ymaps.templateLayoutFactory.createClass(that.opts.balloon)
+                        });
+                        this.balloon.open(that.point);
+                    }
+                });
+
+                // конец перетаскивания
+                if (that.opts.draggable) {
+                    that.ymap.addListener(that.marker, 'dragend', function() {
+                        that.point = that.marker.geometry.getCoordinates();
+                        that.opts.onDragEnd.call(that);
+                    });
+                }
+            });
+        };
+
+        /*
+            Установка текста балуна
+         */
+        Placemark.prototype.setBalloon = function(content) {
+            this.opts.balloon = content || '';
+        };
+
+        /*
+            Перемещение маркера
+         */
+        Placemark.prototype.moveTo = function(point) {
+            this.point = point;
+            this.marker.geometry.setCoordinates(point);
+        };
+
+        /*
+            Установка центра карты в этой точке
+         */
+        Placemark.prototype.center = function() {
+            this.ymap.setCenter(this.point);
+        };
+
+        /*
+            Перемещение центра карты в эту точку
+         */
+        Placemark.prototype.panHere = function() {
+            this.ymap.panTo(this.point);
+        };
+
+        return Placemark;
+    })();
 
 
     var map_index = 0;
@@ -96,6 +188,9 @@
                     center: self.createPoint(self.opts.lng, self.opts.lat)
                 }, self.opts.map_options));
 
+                // создание балуна
+                self.balloon = self.createBalloon('');
+
                 // callback
                 self.opts.onInit.call(self);
             });
@@ -119,19 +214,6 @@
                 },
                 onInit: $.noop
             }
-        };
-
-
-        /*
-            Создание объекта точки YandexMap
-         */
-        YandexMap.prototype.createPoint = function(lng, lat) {
-            lng = parseFloat(lng.toString().replace(',', '.'));
-            lat = parseFloat(lat.toString().replace(',', '.'));
-            if (isNaN(lng) || isNaN(lat)) {
-                return
-            }
-            return [lat, lng];
         };
 
 
@@ -166,6 +248,35 @@
 
 
         /*
+            Плавное перемещение к точке
+         */
+        YandexMap.prototype.panTo = function(point) {
+            this.map.panTo(point);
+        };
+
+
+        /*
+            Создание метки на карте.
+         */
+        YandexMap.prototype.createPlacemark = function(options) {
+            return new Placemark(this, options);
+        };
+
+
+        /*
+            Создание объекта точки YandexMap
+         */
+        YandexMap.prototype.createPoint = function(lng, lat) {
+            lng = parseFloat(lng.toString().replace(',', '.'));
+            lat = parseFloat(lat.toString().replace(',', '.'));
+            if (isNaN(lng) || isNaN(lat)) {
+                return
+            }
+            return [lat, lng];
+        };
+
+
+        /*
             Создание маркера
          */
         YandexMap.prototype.createMarker = function(point, options) {
@@ -178,18 +289,18 @@
         /*
             Создание всплывающей подсказки
          */
-        YandexMap.prototype.createBubble = function(html) {
+        YandexMap.prototype.createBalloon = function(html) {
             if (html.jquery) {
                 html = html.html();
             }
 
-            var bubble = new ymaps.Balloon(this.map);
-            bubble.options.setParent(this.map.options);
-            bubble.options.set({
+            var balloon = new ymaps.Balloon(this.map);
+            balloon.options.setParent(this.map.options);
+            balloon.options.set({
                 contentLayout: ymaps.templateLayoutFactory.createClass(html)
             });
 
-            return bubble;
+            return balloon;
         };
 
 
@@ -201,14 +312,6 @@
             object.events.add(event, function() {
                 return handler.apply(that, arguments);
             });
-        };
-
-
-        /*
-            Плавное перемещение к точке
-         */
-        YandexMap.prototype.panTo = function(point) {
-            this.map.panTo(point);
         };
 
 

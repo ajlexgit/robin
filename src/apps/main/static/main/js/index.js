@@ -45,22 +45,25 @@
     $(document).ready(function() {
         window.gmap = GoogleMap.create('.google-map', {
             onInit: function() {
-                gmap.points = [
-                    gmap.createPoint(49.418785, 53.510171),
-                    gmap.createPoint(49.435000, 53.525000)
+                this.placemarks = [
+                    this.createPlacemark({
+                        lng: 49.418785,
+                        lat: 53.510171,
+                        hint: 'First',
+                        balloon: '<p>Hello</p>'
+                    }),
+                    this.createPlacemark({
+                        lng: 49.435000,
+                        lat: 53.525000,
+                        hint: '',
+                        draggable: true,
+                        balloon: '<p>Goodbay</p>'
+                    })
                 ];
 
-                gmap.markers = [];
-                for (var i = 0, l = gmap.points.length; i < l; i++) {
-                    gmap.markers.push(gmap.createMarker(gmap.points[i]));
-                }
-
-                gmap.setCenter(gmap.points);
-
-                var bubble = gmap.createBubble('<p>Hello</p>');
-                gmap.addListener(gmap.markers[0], 'click', function() {
-                    bubble.open(this.map, gmap.markers[0]);
-                });
+                this.setCenter(this.placemarks.map(function(item) {
+                    return item.point
+                }));
             }
         });
     });
@@ -69,22 +72,25 @@
     $(document).ready(function() {
         window.ymap = YandexMap.create('.yandex-map', {
             onInit: function() {
-                ymap.points = [
-                    ymap.createPoint(49.418785, 53.510171),
-                    ymap.createPoint(49.435000, 53.525000)
+                this.placemarks = [
+                    this.createPlacemark({
+                        lng: 49.418785,
+                        lat: 53.510171,
+                        hint: 'First',
+                        balloon: '<p>Hello</p>'
+                    }),
+                    this.createPlacemark({
+                        lng: 49.435000,
+                        lat: 53.525000,
+                        hint: '',
+                        draggable: true,
+                        balloon: '<p>Goodbay</p>'
+                    })
                 ];
 
-                ymap.markers = [];
-                for (var i = 0, l = ymap.points.length; i < l; i++) {
-                    ymap.markers.push(ymap.createMarker(ymap.points[i]));
-                }
-
-                ymap.setCenter(ymap.points);
-
-                var bubble = ymap.createBubble('<p>Hello</p>');
-                ymap.addListener(ymap.markers[0], 'click', function() {
-                    bubble.open(ymap.markers[0].geometry.getCoordinates());
-                });
+                this.setCenter(this.placemarks.map(function(item) {
+                    return item.point
+                }));
             }
         });
     });

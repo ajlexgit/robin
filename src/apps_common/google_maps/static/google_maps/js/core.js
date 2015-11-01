@@ -7,34 +7,39 @@
             jquery.utils.js
 
 
-        Рекомендуется работать с картой в обработчике события GoogleMaps.ready() или в onInit():
-        1) GoogleMap.ready:
+        Рекомендуется работать с картой в обработчике события GoogleMaps.ready() или в onInit().
+
+        1) Неявный GoogleMap.ready():
             var gmap = GoogleMap.create('#gmap');
-            GoogleMap.ready(function() {
-                var point = gmap.createPoint(49.418785, 53.510171);
-                var marker = gmap.createMarker(point, {
-                    draggable: true
-                });
-                var bubble = gmap.createBubble('<p>Hello</p>');
-                gmap.addListener(marker, 'click', function() {
-                    bubble.open(this.map, marker);
-                });
+            var mark = gmap.createPlacemark({
+                lng: 49.418785,
+                lat: 53.510171,
+                hint: 'First',
+                balloon: '<p>Hello</p>'
             });
 
-        2) onInit:
+        2) onInit():
             var gmap = GoogleMap.create('#gmap', {
                 onInit: function() {
-                    this.points = [
-                        this.createPoint(49.418785, 53.510171),
-                        this.createPoint(49.435000, 53.525000)
+                    this.placemarks = [
+                        this.createPlacemark({
+                            lng: 49.418785,
+                            lat: 53.510171,
+                            hint: 'First',
+                            balloon: '<p>Hello</p>'
+                        }),
+                        this.createPlacemark({
+                            lng: 49.435000,
+                            lat: 53.525000,
+                            hint: 'second',
+                            draggable: true,
+                            balloon: '<p>Goodbay</p>'
+                        })
                     ];
 
-                    this.markers = [];
-                    for(var i=0, l=this.points.length; i<l; i++) {
-                        this.markers.push(this.createMarker(this.points[i]));
-                    }
-
-                    this.setCenter(this.points);
+                    this.setCenter(this.placemarks.map(function(item) {
+                        return item.point
+                    }));
                 }
             });
      */
@@ -65,6 +70,89 @@
         F.prototype = google.maps.LatLngBounds.prototype;
         return new F();
     };
+
+
+    var Placemark = (function() {
+        var Placemark = function(gmap, options) {
+            this.gmap = gmap;
+
+            this.opts = $.extend(true, {
+                lng: 49.418785,
+                lat: 53.510171,
+                point: null,
+                draggable: false,
+                hint: '',
+                balloon: '',
+                onClick: $.noop,
+                onDragEnd: $.noop
+            }, options);
+
+            var that = this;
+            GoogleMap.ready(function() {
+                if (that.opts.point) {
+                    that.point = that.opts.point
+                } else {
+                    that.point = that.gmap.createPoint(that.opts.lng, that.opts.lat);
+                }
+
+                that.marker = that.gmap.createMarker(that.point, {
+                    title: that.opts.hint,
+                    draggable: that.opts.draggable
+                });
+
+                // клик на маркер
+                that.gmap.addListener(that.marker, 'click', function() {
+                    if (that.opts.onClick.call(that) === false) {
+                        return
+                    }
+
+                    if (that.opts.balloon) {
+                        this.balloon.setContent(that.opts.balloon);
+                        this.balloon.open(this.map, that.marker);
+                    }
+                });
+
+                // конец перетаскивания
+                if (that.opts.draggable) {
+                    that.gmap.addListener(that.marker, 'dragend', function() {
+                        that.point = that.marker.getPosition();
+                        that.opts.onDragEnd.call(that);
+                    });
+                }
+            });
+        };
+
+        /*
+            Установка текста балуна
+         */
+        Placemark.prototype.setBalloon = function(content) {
+            this.opts.balloon = content || '';
+        };
+
+        /*
+            Перемещение маркера
+         */
+        Placemark.prototype.moveTo = function(point) {
+            this.point = point;
+            this.marker.setPosition(point);
+        };
+
+        /*
+            Установка центра карты в этой точке
+         */
+        Placemark.prototype.center = function() {
+            this.gmap.setCenter(this.point);
+        };
+
+        /*
+            Перемещение центра карты в эту точку
+         */
+        Placemark.prototype.panHere = function() {
+            this.gmap.panTo(this.point);
+        };
+
+        return Placemark;
+    })();
 
 
     window.GoogleMap = (function() {
@@ -110,6 +198,10 @@
                     self.opts.onResize.call(self);
                 }, 300));
 
+
+                // создание балуна
+                self.balloon = self.createBalloon('');
+
                 // callback
                 self.opts.onInit.call(self);
             });
@@ -136,19 +228,6 @@
                 onInit: $.noop,
                 onResize: $.noop
             }
-        };
-
-
-        /*
-            Создание объекта точки GoogleMap
-         */
-        GoogleMap.prototype.createPoint = function(lng, lat) {
-            lng = parseFloat(lng.toString().replace(',', '.'));
-            lat = parseFloat(lat.toString().replace(',', '.'));
-            if (isNaN(lng) || isNaN(lat)) {
-                return
-            }
-            return new google.maps.LatLng(lat, lng);
         };
 
 
@@ -181,7 +260,36 @@
 
 
         /*
-            Создание маркера Google
+            Плавное перемещение к точке
+         */
+        GoogleMap.prototype.panTo = function(point) {
+            this.map.panTo(point);
+        };
+
+
+        /*
+            Создание метки на карте.
+         */
+        GoogleMap.prototype.createPlacemark = function(options) {
+            return new Placemark(this, options);
+        };
+
+
+        /*
+            Создание точки
+         */
+        GoogleMap.prototype.createPoint = function(lng, lat) {
+            lng = parseFloat(lng.toString().replace(',', '.'));
+            lat = parseFloat(lat.toString().replace(',', '.'));
+            if (isNaN(lng) || isNaN(lat)) {
+                return
+            }
+            return new google.maps.LatLng(lat, lng);
+        };
+
+
+        /*
+            Создание маркера
          */
         GoogleMap.prototype.createMarker = function(point, options) {
             return new google.maps.Marker($.extend({}, options,{
@@ -192,9 +300,9 @@
 
 
         /*
-            Создание всплывающей подсказки Google
+            Создание балуна
          */
-        GoogleMap.prototype.createBubble = function(html) {
+        GoogleMap.prototype.createBalloon = function(html) {
             if (html.jquery) {
                 html = html.html();
             }
@@ -213,14 +321,6 @@
             google.maps.event.addListener(object, event, function() {
                 return handler.apply(that, arguments);
             });
-        };
-
-
-        /*
-            Плавное перемещение к точке
-         */
-        GoogleMap.prototype.panTo = function(point) {
-            this.map.panTo(point);
         };
 
 

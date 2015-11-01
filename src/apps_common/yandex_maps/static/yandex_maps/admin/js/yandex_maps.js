@@ -42,22 +42,20 @@
             onInit: function() {
                 // точка
                 var point = text2coords($field.val());
-                this.setCenter(point);
-                this.marker = this.createMarker(point, {
-                    draggable: true
-                });
-
-                // установка значения поля при перемещение маркера
-                this.addListener(this.marker, 'dragend', function() {
-                    var point = this.marker.geometry.getCoordinates();
-                    $field.val(coords2text(point));
+                this.mark = this.createPlacemark({
+                    point: point,
+                    draggable: true,
+                    onDragEnd: function() {
+                        $field.val(coords2text(this.point));
+                    }
                 });
 
                 // установка значения поля при двойном клике
+                var that = this;
                 this.addListener(this.map, 'dblclick', function(evt) {
                     evt.preventDefault();
                     var point = evt.get('coords');
-                    this.marker.geometry.setCoordinates(point);
+                    that.mark.moveTo(point);
                     $field.val(coords2text(point));
                 });
             }
@@ -81,8 +79,8 @@
         var ymap = $map.data('map');
 
         var point = text2coords($field.val());
-        ymap.panTo(point);
-        ymap.marker.geometry.setCoordinates(point);
+        ymap.mark.moveTo(point);
+        ymap.mark.panHere();
     });
 
 })(jQuery);

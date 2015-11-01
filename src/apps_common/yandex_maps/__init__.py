@@ -41,13 +41,11 @@
         page.js:
             $(document).on('google-maps-ready', function() {
                 var ymap = YandexMap.create('#ymap');
-                YandexMap.ready(function() {
-                    var point = ymap.createPoint(49.418785, 53.510171);
-                    var marker = ymap.createMarker(point);
-                    var bubble = ymap.createBubble('<p>Hello</p>');
-                    ymap.addListener(marker, 'click', function() {
-                        bubble.open(marker.geometry.getCoordinates());
-                    });
+                var mark = ymap.createPlacemark({
+                    lng: 49.418785,
+                    lat: 53.510171,
+                    hint: 'First',
+                    balloon: '<p>Hello</p>'
                 });
             });
 
@@ -56,13 +54,15 @@
             $(document).on('change', '#id_address', function() {
                 var ymap = $('#id_coords').next('.yandex-map').data('map');
                 ymap.geocode($(this).val(), function(point) {
-                    if (this.marker) {
-                        this.marker.geometry.setCoordinates(point);
+                    if (this.mark) {
+                        this.mark.moveTo(point);
                     } else {
-                        this.createMarker(point);
+                        this.mark = this.createPlacemark({
+                            point: point
+                        });
                     }
 
-                    this.panTo(point);
+                    this.mark.panHere();
                 });
             });
 
