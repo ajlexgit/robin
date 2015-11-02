@@ -1,10 +1,10 @@
 (function() {
 
     /*
-        Модальное окно с прелоадером
+        Эффект параллакса при скролле.
 
         Требует:
-            jquery.canvas.js, jquery.popups.js
+            jquery.utils.js, jquery.popups.js
      */
 
     $.preloader = function(options) {

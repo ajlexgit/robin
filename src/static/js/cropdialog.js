@@ -4,7 +4,7 @@
         Открытие диалогового окна с картинкой для кропа
 
         Требует:
-            jquery.utils.js, jquery.canvas.js, jquery-ui.js
+            jquery.utils.js, jquery-ui.js
     */
 
     /*

@@ -12,7 +12,6 @@ class GalleryWidget(forms.Widget):
             'admin/js/jquery.Jcrop.js',
             'admin/js/plupload/plupload.full.min.js',
             'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
-            'admin/js/jquery.canvas.js',
             'admin/js/cropdialog.js',
             'admin/js/uploader.js',
             'gallery/admin/js/gallery_class.js',

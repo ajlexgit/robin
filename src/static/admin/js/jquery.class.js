@@ -25,7 +25,7 @@
                     if (isNaN(this._x)) {
                         console.error('invalid X');
                         return false;
-                    };
+                    }
 
                     this._y = parseInt(y);
                     if (isNaN(this._y)) {
@@ -53,7 +53,7 @@
                         console.error('invalid Z');
                         return false;
                     }
-                };
+                }
 
                 cls.prototype.print = function() {
                     return superclass.prototype.print.call(this) + ':' + this._z

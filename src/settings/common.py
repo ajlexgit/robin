@@ -216,7 +216,6 @@ PIPELINE_JS = {
     'core': {
         'source_filenames': (
             'js/jquery.ajax_csrf.js',
-            'js/jquery.canvas.js',
             'js/jquery.class.js',
             'js/jquery.fitvids.js',
             'js/jquery.fakelink.js',
