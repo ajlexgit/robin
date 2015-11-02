@@ -73,6 +73,8 @@ class ShopCategory(MPTTModel):
         help_text=_('count of visible products'),
     )
     sort_order = models.PositiveIntegerField(_('sort order'))
+    created = models.DateTimeField(_('create date'), default=now, editable=False)
+    updated = models.DateTimeField(_('change date'), auto_now=True)
 
     objects = ShopCategoryTreeManager()
 
