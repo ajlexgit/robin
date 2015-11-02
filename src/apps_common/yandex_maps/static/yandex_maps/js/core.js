@@ -195,6 +195,7 @@
                 lng: 49.418785,
                 lat: 53.510171,
                 map_options: {
+                    behaviors: ['drag', 'multiTouch', 'dblClickZoom', 'rightMouseButtonMagnifier'],
                     controls: ["zoomControl", "fullscreenControl"],
                     zoom: 15
                 },

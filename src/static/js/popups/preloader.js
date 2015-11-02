@@ -4,7 +4,7 @@
         Эффект параллакса при скролле.
 
         Требует:
-            jquery.utils.js, jquery.popups.js
+            jquery.canvas.js, jquery.popups.js
      */
 
     $.preloader = function(options) {
