@@ -19,7 +19,7 @@
             // создание класса Point2D, унаследованного от Object
             // с функцией инициализации и методом print().
 
-            var Point2D = Class(Object, function(cls, superclass) {
+            var Point2D = Class(null, function(cls, superclass) {
                 cls.init = function(x, y) {
                     this._x = parseInt(x);
                     if (isNaN(this._x)) {
