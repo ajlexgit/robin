@@ -128,8 +128,6 @@ class ShopCategory(MPTTModel):
             self.get_descendants(include_self=True).update(total_product_count=0)
             categories_changed.send(self.__class__, categories=self.pk, include_self=False)
 
-        # self.__class__.objects.rebuild()
-
     def __str__(self):
         return self.title
 
@@ -150,7 +148,7 @@ class ShopCategory(MPTTModel):
     def autocomplete_item(obj):
         return {
             'id': obj.pk,
-            'text': '–' * obj.level + obj.title,
+            'text': '–' * obj.level + ' ' + obj.title,
         }
 
     def get_absolute_url(self):
@@ -166,11 +164,26 @@ class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
             qs &= models.Q(is_visible=True)
         else:
             qs &= models.Q(is_visible=False)
+
+        supercategory = kwargs.pop('supercategory', None)
+        if supercategory is None:
+            pass
+        else:
+            if isinstance(supercategory, (str, int)):
+                supercategory = ShopCategory.objects.get(pk=supercategory)
+
+            categories = supercategory.get_descendants(include_self=True).filter(visible=True)
+            qs &= models.Q(category__in=categories)
+
         return qs
 
 
 class ShopProduct(models.Model):
     """ Товар """
+    category = models.ForeignKey(ShopCategory,
+        verbose_name=_('category'),
+        related_name='immediate_products'
+    )
     title = models.CharField(_('title'), max_length=128)
     alias = AutoSlugField(_('alias'),
         populate_from=('title',),
@@ -182,13 +195,9 @@ class ShopProduct(models.Model):
         unique=True,
         help_text=_('Unique identifier of the product')
     )
-    category = models.ForeignKey(ShopCategory,
-        verbose_name=_('category'),
-        related_name='immediate_products'
-    )
     photo = StdImageField(_('photo'),
         storage=MediaStorage('shop/product'),
-        min_dimensions=(180, 60),
+        min_dimensions=(100, 60),
         admin_variation='admin',
         crop_area=True,
         crop_field='photo_crop',

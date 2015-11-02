@@ -45,7 +45,9 @@ def autocomplete_widget(request, application, model_name, name):
             val = val.split(',')
             key += '__in'
 
-        queryset = queryset.filter(Q((key, val)))
+        queryset = queryset.filter(**{
+            key: val
+        })
 
     # Поиск по выражениям
     expressions = request.POST.get('expressions')
