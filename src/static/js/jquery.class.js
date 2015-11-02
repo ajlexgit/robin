@@ -3,15 +3,14 @@
     /*
         Система классов Javascript.
 
-        1) КАЖДЫЙ класс должен имель явную реализацию функции инициализации.
-        2) Если функция инициализации вернет false - это является сигналом
+        1) Если функция инициализации вернет false - это является сигналом
            ошибки инициализации.
-        3) При ошибке иницилизации:
+        2) При ошибке иницилизации:
             а) если объект создавался через CLASS.create() - вызов вернет undefined
-            б) если объект создавался через new CLASS() - вернет объект, вероятно, неполный.
-        4) При наследовании функции инициализации не забываем, что родительская
+            б) если объект создавался через new CLASS() - вернет объект, но, вероятно, неполный.
+        3) При наследовании функции инициализации не забываем, что родительская
            функция может вернуть false. В этом случае, нужно также вернуть false.
-        5) Не путаем:
+        4) Не путаем:
             родительский метод инициализации - superclass.init
             родительский метод METHOD        - superclass.prototype.METHOD
 
@@ -73,7 +72,7 @@
             < InnerFunc {_x:NaN, ...}
 
             > p2 = Point2D.create(6, 7)
-            < T {_x:6, _y:7, ...}
+            < Object {_x:6, _y:7, ...}
 
             > p3 = new Point3D(2, 3, 4)
             < InnerFunc {_x:2, _y:3, _z:4, ...}
@@ -91,24 +90,17 @@
         };
 
         // установка прототипа, унаследованного от родительского
-        var F = function() {
-
-        };
-        F.prototype = parent.prototype;
-        InnerFunc.prototype = new F;
+        InnerFunc.prototype = Object.create(parent && parent.prototype);
         InnerFunc.prototype.constructor = InnerFunc;
-        InnerFunc.super = parent.prototype;
+        InnerFunc.superclass = parent;
 
         // конструктор класса, возвращающий undefined в случае, если
         // функция инициализации вернет false
         InnerFunc.create = function() {
             // вызов конструктора с хаком для .apply()
-            var args = arguments;
-            var T = function() {
-                return InnerFunc.apply(this, args);
-            };
-            T.prototype = InnerFunc.prototype;
-            var obj = new T;
+            var obj = Object.create(InnerFunc.prototype);
+            InnerFunc.apply(obj, arguments);
+            obj.constructor = InnerFunc;
 
             if (obj.__init_result === false) {
                 return
@@ -120,9 +112,13 @@
         // вызов функции, добавляющей пользовательские методы и свойства
         constructor(InnerFunc, parent);
 
-        // если метод инициализации не описан - выбрасываем исключение
+        // если метод инициализации не описан - ищем в родителе
         if (InnerFunc.init === undefined) {
-            console.error('Class has no "init" method');
+            if (parent.init) {
+                InnerFunc.init = parent.init;
+            } else {
+                console.error('Class has no "init" method');
+            }
         }
 
         return InnerFunc;
