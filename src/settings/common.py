@@ -191,6 +191,7 @@ PIPELINE_CSS = {
     },
     'main_forms': {
         'source_filenames': (
+            'scss/custom_checkbox.scss',
             'main/scss/forms.scss',
         ),
         'output_filename': 'css/main_forms.css',
@@ -258,6 +259,7 @@ PIPELINE_JS = {
     'main_forms': {
         'source_filenames': (
             'js/inlines.js',
+            'js/custom_checkbox.js',
             'main/js/forms.js',
         ),
         'output_filename': 'js/main_forms.js',

@@ -126,3 +126,12 @@ body {
     @include font-size(28px);
   }
 }
+
+.title-h2 {
+  line-height: 1;
+  font-weight: bold;
+  @include font-size(28px);
+  @include media_interval(0, $media768) {
+    @include font-size(20px);
+  }
+}

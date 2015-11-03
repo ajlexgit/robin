@@ -86,7 +86,7 @@ class BaseMixin:
 
     @property
     def storing_data(self):
-        raise NotImplementedError
+        return {}
 
     def save_to_session(self, request):
         """ Сохранение данных и ошибок формы/формсета в сессию """
@@ -101,10 +101,10 @@ class BaseMixin:
                 form.add_error(field, ValidationError(**error))
 
     def _load_errors(self, stored):
-        raise NotImplementedError
+        pass
 
     def _load_data(self, stored):
-        raise NotImplementedError
+        pass
 
     def load_from_session(self, request):
         """ Загрузка данных и ошибок формы/формсета из сессии """

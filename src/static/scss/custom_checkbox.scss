@@ -1,13 +1,28 @@
 @import 'mixins';
 
 .custom-checkbox {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    vertical-align: text-bottom;
-    background-color: gray;
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  z-index: 1;
+  border: 1px solid #808080;
+  background-color: #FFFFFF;
+  vertical-align: text-bottom;
+  @include border-box;
+  @include no_fontsize;
+  @include border_radius(2px);
 
-    &.checked {
-      background-color: green;
+  &.checked {
+    &:before {
+      content: '✔';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      color: #000000;
+      line-height: 1;
+      @include font-size(15px);
+      @include transform(translate(-50%, -50%));
     }
+  }
 }

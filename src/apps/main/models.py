@@ -205,6 +205,7 @@ class ClientFormModel(models.Model):
     price = ValuteField(_('price'),
         validators=[MinValueValidator(0)]
     )
+    visible = models.BooleanField(_('visible'), default=False)
 
     def __str__(self):
         return self.title

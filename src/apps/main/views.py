@@ -51,6 +51,12 @@ class FormsView(TemplateExView):
         form = MainForm(instance=form_obj, prefix='main')
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
+        form.load_from_session(request)
+        form.remove_from_session(request)
+
+        # formset.load_from_session(request)
+        # formset.remove_from_session(request)
+
         return self.render_to_response({
             'config': self.config,
             'form': form,
@@ -66,7 +72,13 @@ class FormsView(TemplateExView):
         formset_valid = formset.is_valid()
 
         if form_valid and formset_valid:
+            form.remove_from_session(request)
+            # formset.remove_from_session(request)
+
             form.save()
             formset.save()
+        else:
+            form.save_to_session(request)
+            # formset.save_to_session(request)
 
         return redirect('forms')

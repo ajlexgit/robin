@@ -26,10 +26,12 @@
         <div class="gc-full gc-alone">
           <div style="display: inline-block">
             {% for field in form %}
-              <fieldset>
+              <fieldset class="{{ field.errors.classes }}">
                 {{ field.label_tag }}
                 {{ field }}
-                {{ field.errors }}
+                {% if field.errors %}
+                  <span class="error">{{ field.errors }}</span>
+                {% endif %}
               </fieldset>
             {% endfor %}
           </div>
@@ -39,6 +41,8 @@
           <div style="display: inline-block">
             <div class="formset">
               {{ formset.management_form }}
+
+              <h2 class="title-h2">Inline forms</h2>
 
               <div class="forms">
                 {% for form in formset %}
@@ -53,7 +57,7 @@
                     {{ form.name }}
                     {{ form.name.errors }}
 
-                    <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
+                    <a class="delete-inline" href="#">delete</a>
                   </div>
                 {% endfor %}
               </div>
@@ -71,17 +75,17 @@
                     {{ form.name }}
                     {{ form.name.errors }}
 
-                    <a class="delete" href="#" style="color: white; margin-left: 10px;">delete</a>
+                    <a class="delete-inline" href="#">delete</a>
                   </div>
                 {% endwith %}
               </div>
             </div>
 
             <div style="margin-top: 10px;">
-              <a class="add" href="#" style="color: white;">add form</a>
+              <a class="add-inline" href="#">add form</a>
             </div>
 
-            <input type="submit" value="Send" style="margin-top: 10px;">
+            <button type="submit" class="send">Send</button>
           </div>
         </div>
       </div>

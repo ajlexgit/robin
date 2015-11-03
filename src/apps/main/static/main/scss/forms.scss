@@ -2,15 +2,26 @@
 
 #form {
   padding: 40px 0;
-  background: #222;
+  background: #EAEAEA;
   @include font-size(16px);
 
   label {
     display: block;
-    color: #FFFFFF;
+  }
+
+  @at-root .js & input[type=checkbox] {
+    display: none;
   }
 
   .formset {
     margin-top: 20px;
+
+    .delete-inline {
+      margin-left: 10px;
+    }
+  }
+
+  .send {
+    margin-top: 10px;
   }
 }
