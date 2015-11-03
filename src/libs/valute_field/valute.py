@@ -1,66 +1,175 @@
-from decimal import Decimal, ROUND_CEILING
-from .formatters import get_formatter
+from decimal import Decimal, getcontext, ROUND_CEILING
+from django.conf import settings
+from django.utils.functional import cached_property
+from .utils import split_price
 
 
-class Valute(Decimal):
-    def canonical(self, rounding=ROUND_CEILING):
-        return get_formatter().canonical(self, rounding=rounding)
+# Формат валюты по умолчанию
+valute_formats = getattr(settings, 'VALUTE_FORMATS', {})
+for langs, val in valute_formats.items():
+    if settings.SHORT_LANGUAGE_CODE in langs:
+        default_formatter = val
+        break
+else:
+    default_formatter = {}
 
-    @property
-    def plain(self):
-        return get_formatter().to_string(self)
 
-    @property
-    def utf(self):
-        return get_formatter().utf(self)
+class Valute:
+    def __init__(self, value='0', rounding=ROUND_CEILING, formatter=None):
+        # настройки форматирования
+        formatter = formatter or {}
+        self._formatter = dict(default_formatter, **formatter)
 
-    @property
-    def alternate(self):
-        return get_formatter().alternate(self)
+        # форматирование числа
+        context = getcontext().copy()
+        context.prec = 18
+        context.rounding = rounding
+        value = Decimal(value)
+        self._value = value.quantize(Decimal('.1') ** self._formatter['decimal_places'], context=context)
+
+        # целая и дробная части
+        self._int, self._frac = str(self._value).rsplit('.', 1)
 
     def __repr__(self):
-        return "Valute('%s')" % str(self)
+        return "%s('%s')" % (self.__class__.__name__, self)
+
+    def _join(self, int_part, frac_part):
+        """ Объединение частей цены разделителем """
+        if not frac_part:
+            return int_part
+        else:
+            return self._formatter['decimal_mark'].join((int_part, frac_part))
+
+    def _thousands(self, value):
+        """ Разделение на тысячные разряды """
+        if self._formatter['thousands']:
+            value = split_price(value, join=self._formatter['thousands'])
+        return value
+
+    # ===========
+    # Форматы
+    # ===========
+
+    def __str__(self):
+        """
+            Без символа валюты,
+            без удаления финальных нулей,
+            без разделения на разряды
+            с разделителем целого и дробного
+
+            Пример: 12340.00
+        """
+        _int = self._int
+        _frac = self._frac
+        return self._join(_int, _frac)
+
+    @cached_property
+    def simple(self):
+        """
+            Без символа валюты,
+            без удаления финальных нулей,
+            с разделением на разряды
+            с разделителем целого и дробного
+
+            Пример: 12 340.00
+        """
+        _int = self._thousands(self._int)
+        _frac = self._frac
+        return self._join(_int, _frac)
+
+    @cached_property
+    def trailed(self):
+        """
+            Без символа валюты,
+            c удалением финальных нулей,
+            с разделением на разряды
+            с разделителем целого и дробного
+
+            Пример: 12 340
+        """
+        _int = self._thousands(self._int)
+        _frac = self._frac if self._frac.strip('0') else ''
+        return self._join(_int, _frac)
+
+    @cached_property
+    def utf(self):
+        """
+            С символом валюты,
+            c удалением финальных нулей (конфиг),
+            с разделением на разряды
+            с разделителем целого и дробного
+
+            Пример: 12,340.00 Р
+        """
+        if self._formatter['trailed_format']:
+            value = self.trailed
+        else:
+            value = self.simple
+
+        return self._formatter['utf_format'].format(value)
+
+    @cached_property
+    def alternate(self):
+        """
+            С символом валюты (без UTF),
+            c удалением финальных нулей (конфиг),
+            с разделением на разряды
+            с разделителем целого и дробного
+
+            Пример: 12,340.00 руб
+        """
+        if self._formatter['trailed_format']:
+            value = self.trailed
+        else:
+            value = self.simple
+
+        return self._formatter['alternate_format'].format(value)
+
+
+    # ===========
+    # Операторы
+    # ===========
 
     def __neg__(self, *args, **kwargs):
-        return self.__class__(super().__neg__(*args, **kwargs))
+        return self.__class__(self._value.__neg__(*args, **kwargs))
 
     def __abs__(self, *args, **kwargs):
-        return self.__class__(super().__abs__(*args, **kwargs))
+        return self.__class__(self._value.__abs__(*args, **kwargs))
 
     def __add__(self, *args, **kwargs):
-        return self.__class__(super().__add__(*args, **kwargs))
+        return self.__class__(self._value.__add__(*args, **kwargs))
 
     __radd__ = __add__
 
     def __sub__(self, *args, **kwargs):
-        return self.__class__(super().__sub__(*args, **kwargs))
+        return self.__class__(self._value.__sub__(*args, **kwargs))
 
     def __rsub__(self, *args, **kwargs):
-        return self.__class__(super().__rsub__(*args, **kwargs))
+        return self.__class__(self._value.__rsub__(*args, **kwargs))
 
     def __mul__(self, *args, **kwargs):
-        return self.__class__(super().__mul__(*args, **kwargs))
+        return self.__class__(self._value.__mul__(*args, **kwargs))
 
     def __truediv__(self, *args, **kwargs):
-        return self.__class__(super().__truediv__(*args, **kwargs))
+        return self.__class__(self._value.__truediv__(*args, **kwargs))
 
     def __rtruediv__(self, *args, **kwargs):
-        return self.__class__(super().__rtruediv__(*args, **kwargs))
+        return self.__class__(self._value.__rtruediv__(*args, **kwargs))
 
     def __divmod__(self, *args, **kwargs):
-        return self.__class__(super().__divmod__(*args, **kwargs))
+        return self.__class__(self._value.__divmod__(*args, **kwargs))
 
     def __rdivmod__(self, *args, **kwargs):
-        return self.__class__(super().__rdivmod__(*args, **kwargs))
+        return self.__class__(self._value.__rdivmod__(*args, **kwargs))
 
     def __mod__(self, *args, **kwargs):
-        return self.__class__(super().__mod__(*args, **kwargs))
+        return self.__class__(self._value.__mod__(*args, **kwargs))
 
     def __rmod__(self, *args, **kwargs):
-        return self.__class__(super().__rmod__(*args, **kwargs))
+        return self.__class__(self._value.__rmod__(*args, **kwargs))
 
     def __floordiv__(self, *args, **kwargs):
-        return self.__class__(super().__floordiv__(*args, **kwargs))
+        return self.__class__(self._value.__floordiv__(*args, **kwargs))
 
     def __rfloordiv__(self, *args, **kwargs):
-        return self.__class__(super().__rfloordiv__(*args, **kwargs))
+        return self.__class__(self._value.__rfloordiv__(*args, **kwargs))
