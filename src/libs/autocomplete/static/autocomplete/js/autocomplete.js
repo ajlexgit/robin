@@ -126,4 +126,16 @@
         }
     });
 
+    // фикс для джанговских кнопок добавления / редактирования ForeignKey
+    django.jQuery(document).on('change', 'input.autocomplete_widget', function() {
+        var $input = $(this);
+        var select2_object = $input.data('select2');
+        if (!select2_object) {
+            return
+        }
+
+        var value = $input.val();
+        console.log(value)
+    });
+
 })(jQuery);
