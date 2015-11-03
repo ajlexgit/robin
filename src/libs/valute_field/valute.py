@@ -33,6 +33,10 @@ class Valute:
     def __repr__(self):
         return "%s('%s')" % (self.__class__.__name__, self)
 
+    @property
+    def as_decimal(self):
+        return self._value
+
     def _join(self, int_part, frac_part):
         """ Объединение частей цены разделителем """
         if not frac_part:

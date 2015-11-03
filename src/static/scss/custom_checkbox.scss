@@ -1,0 +1,13 @@
+@import 'mixins';
+
+.custom-checkbox {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+    background-color: gray;
+
+    &.checked {
+      background-color: green;
+    }
+}

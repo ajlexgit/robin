@@ -32,6 +32,20 @@ class ValuteField(models.DecimalField):
         except (ValueError, TypeError):
             return None
 
+    def get_db_prep_save(self, value, connection):
+        value = self.to_python(value)
+        return connection.ops.value_to_db_decimal(value.as_decimal, self.max_digits, self.decimal_places)
+
+    def get_prep_value(self, value):
+        value = super().get_prep_value(value)
+        if value is None:
+            return None
+
+        if not isinstance(value, Valute):
+            value = Valute(value)
+
+        return value.as_decimal
+
     def to_python(self, value):
         if value is None:
             return None
@@ -44,3 +58,5 @@ class ValuteField(models.DecimalField):
         except (TypeError, ValueError) as e:
             raise exceptions.ValidationError(e)
 
+    def run_validators(self, value):
+        return super().run_validators(value.as_decimal)
