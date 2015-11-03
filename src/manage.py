@@ -3,7 +3,6 @@ import sys
 
 
 # JS: избавиться от $.findFirstElem
-# autocomplete widget add related - не ставит значение
 # css background em?
 # Comments: есть возможность написать коммент к удаленному комменту. Как быть?
 # интеллектуальная прокрутка слайдов мышью, чтоб не дергалась
