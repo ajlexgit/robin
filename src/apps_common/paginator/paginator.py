@@ -20,6 +20,9 @@ class Paginator(paginator.Paginator):
         # При сжатии страниц: минимальное кол-во страниц, заменямых многоточием
         self.min_zip_pages = kwargs.pop('min_zip_pages', 2)
 
+        # Якорь, добавляемяй к ссылкам
+        self.anchor = kwargs.pop('anchor', '')
+
         super().__init__(*args, **kwargs)
         self.request = request
         if not self.allow_empty_first_page and self.count == 0:
@@ -82,4 +85,5 @@ class Paginator(paginator.Paginator):
         return loader.render_to_string(self.template, {
             'paginator': self,
             'page': page,
+            'anchor': self.anchor,
         })

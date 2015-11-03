@@ -7,4 +7,7 @@ register = Library()
 def href(paginator, number):
     """ Генерация ссылки на страницу навигации """
     number = paginator.real_page_number(number)
-    return paginator.href(number)
+    link = paginator.href(number)
+    if anchor:
+        link += '#' + anchor 
+    return link
