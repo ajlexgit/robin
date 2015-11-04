@@ -23,12 +23,12 @@
             },
             max_size: '12mb',
 
-            fileUploaded: function(file, json_response) {
+            onFileUploaded: function(file, json_response) {
                 if (json_response) {
                     change_avatar(json_response);
                 }
             },
-            onError: function(file, error, json_response) {
+            onFileUploadError: function(file, error, json_response) {
                 if (json_response && json_response.message) {
                     alert(json_response.message)
                 }

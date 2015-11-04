@@ -258,13 +258,7 @@
                 resize: resize,
                 max_size: max_size,
 
-                fileAdded: function(file) {
-                    var template = that.$root.find(that.opts.imageTemplateSelector).html();
-                    var $item = $(template);
-                    $item.attr('id', file.id);
-                    that.$list.append($item);
-                },
-                extraData: function() {
+                getExtraData: function() {
                     return {
                         app_label: that.app_label,
                         model_name: that.model_name,
@@ -272,17 +266,23 @@
                         gallery_id: that.gallery_id
                     }
                 },
-                beforeUpload: function(file) {
+                onFileAdded: function(file) {
+                    var template = that.$root.find(that.opts.imageTemplateSelector).html();
+                    var $item = $(template);
+                    $item.attr('id', file.id);
+                    that.$list.append($item);
+                },
+                onBeforeFileUpload: function(file) {
                     var $item = that.$list.find('#' + file.id);
                     $item.addClass(that.opts.loadingClass);
                 },
-                uploadProgress: function(file, percent) {
+                onFileUploadProgress: function(file, percent) {
                     var $item = that.$list.find('#' + file.id);
                     $item.find(that.opts.progressBarSelector).css({
                         width: percent + '%'
                     });
                 },
-                fileUploaded: function(file, json_response) {
+                onFileUploaded: function(file, json_response) {
                     var $item = that.$list.find('#' + file.id);
                     var $preview = $item.find(that.opts.previewSelector);
 
@@ -308,10 +308,10 @@
                     // callback
                     that.$root.trigger('item-add.gallery', [$item, json_response]);
                 },
-                uploadComplete: function(file) {
+                onUploadComplete: function() {
                     that.updateCounter();
                 },
-                onError: function(file, error, json_response) {
+                onFileUploadError: function(file, error, json_response) {
                     var $item = that.$list.find('#' + file.id);
                     var $preview = $item.find(that.opts.previewSelector);
 
@@ -506,10 +506,7 @@
 
             // Удаление элемента галереи из очереди загрузок
             if (this.uploader && this.uploader.uploader) {
-                var file_id = $item.attr('id');
-                if (file_id) {
-                    this.uploader.uploader.removeFile(file_id);
-                }
+                this.uploader.removeFile($item.attr('id'));
             }
 
             var that = this;
