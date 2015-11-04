@@ -42,7 +42,7 @@
 
         // Обрезка аватара
         CropDialog.create($profile, {
-            eventType: 'click.cropdialog',
+            eventTypes: 'click.cropdialog',
             buttonSelector: '#crop-avatar',
             dialogOptions: {
                 classes: 'popup-crop-avatar'

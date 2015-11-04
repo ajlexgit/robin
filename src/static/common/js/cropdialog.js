@@ -45,7 +45,7 @@
 
         Пример:
             CropDialog.create('.gallery', {
-                eventType: 'click',
+                eventTypes: 'click',
                 buttonSelector: 'button.crop'
             })
      */
