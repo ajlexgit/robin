@@ -459,20 +459,18 @@
 
 
     /*
-        Получение ссылки на картинку
+        Получение адреса картинки тэга <img>
      */
-    $.getSrc = function(image_expr) {
-        var $image = $.findFirstElement(image_expr);
+    $.getSrc = function($image) {
         if (!$image.length) return;
         return $image.prop('currentSrc') || $image.prop('src');
     };
 
     /*
-        Возвращает Deferred-объект, сигнализирубщий окончание загрузки картинки
+        Возвращает Deferred-объект, сигнализирующий окончание загрузки картинки тэга <img>
      */
-    $.imgDeferred = function(image_expr) {
+    $.imgDeferred = function($image) {
         var d = $.Deferred();
-        var $image = $.findFirstElement(image_expr);
         if (!$image.length) {
             console.error('$.imageDeferred can\'t find image "' + image_expr + '"');
             return d.reject($());
