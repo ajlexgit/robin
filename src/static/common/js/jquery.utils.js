@@ -472,7 +472,7 @@
     $.imgDeferred = function($image) {
         var d = $.Deferred();
         if (!$image.length) {
-            console.error('$.imageDeferred can\'t find image "' + image_expr + '"');
+            console.error('$.imgDeferred can\'t find image "' + image_expr + '"');
             return d.reject($());
         }
 
