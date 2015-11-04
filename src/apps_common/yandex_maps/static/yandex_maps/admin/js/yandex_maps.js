@@ -39,6 +39,7 @@
         // карта
         YandexMap.create($map, {
             map_options: {
+                behaviors: ["drag", "multiTouch"],
                 zoom: 16
             },
             onInit: function() {

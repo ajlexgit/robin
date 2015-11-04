@@ -196,6 +196,7 @@
                 lat: 53.510171,
                 map_options: {
                     controls: ["zoomControl", "fullscreenControl"],
+                    behaviors: ["drag", "dblClickZoom", "multiTouch"],
                     zoom: 15
                 },
                 onInit: $.noop
