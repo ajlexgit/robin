@@ -16,8 +16,8 @@ class CKEditorUploadWidget(CKEditorWidget):
 
     class Media:
         js = CKEditorWidget.Media.js + (
-            'admin/js/plupload/plupload.full.min.js',
-            'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
+            'common/js/plupload/plupload.full.min.js',
+            'common/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
         )
         css = CKEditorWidget.Media.css
 
@@ -62,13 +62,13 @@ class CKEditorUploadWidget(CKEditorWidget):
         self.editor_options['SIMPLEPHOTOS_MAX_FILE_SIZE'] = '10mb'
 
         # Moxie
-        self.editor_options['MOXIE_SWF'] = static('admin/js/plupload/Moxie.swf')
-        self.editor_options['MOXIE_XAP'] = static('admin/js/plupload/Moxie.xap')
+        self.editor_options['MOXIE_SWF'] = static('common/js/plupload/Moxie.swf')
+        self.editor_options['MOXIE_XAP'] = static('common/js/plupload/Moxie.xap')
 
         # CSS приходится грузить JS-ом из-за переопределения стилей
         self.editor_options['PLUPLOADER_CSS'] = (
             static('admin/css/jquery-ui/jquery-ui.min.css'),
-            static('admin/js/plupload/css/jquery.ui.plupload.css'),
+            static('common/js/plupload/css/jquery.ui.plupload.css'),
             static('ckeditor/css/ckupload_fix.css'),
         )
 

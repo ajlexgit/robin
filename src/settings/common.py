@@ -198,7 +198,7 @@ PIPELINE_CSS = {
     },
     'users-profile': {
         'source_filenames': (
-            'css/jcrop/jquery.Jcrop.css',
+            'common/css/jcrop/jquery.Jcrop.css',
             'users/scss/profile.scss',
         ),
         'output_filename': 'css/users-profile.css',
@@ -209,18 +209,18 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/jquery-2.1.4.min.js',
             'js/jquery-ui.min.js',
-            'js/jquery.cookie.js',
             'js/jquery.picturefill.min.js',
         ),
         'output_filename': 'js/head_core.js',
     },
     'core': {
         'source_filenames': (
-            'js/jquery.ajax_csrf.js',
+            'common/js/jquery.cookie.js',
+            'common/js/jquery.utils.js',
+            'common/js/jquery.ajax_csrf.js',
             'js/jquery.fitvids.js',
             'js/jquery.fakelink.js',
             'js/jquery.scrollTo.js',
-            'js/jquery.utils.js',
             'js/jquery.youtube.js',
             'js/jquery.vimeo.js',
             'js/appear.js',
@@ -266,11 +266,11 @@ PIPELINE_JS = {
     },
     'users-profile': {
         'source_filenames': (
-            'js/plupload/plupload.full.min.js',
-            'js/plupload/i18n/%s.js' % SHORT_LANGUAGE_CODE,
-            'js/jquery.Jcrop.js',
-            'js/cropdialog.js',
-            'js/uploader.js',
+            'common/js/jquery.Jcrop.js',
+            'common/js/plupload/plupload.full.min.js',
+            'common/js/plupload/i18n/%s.js' % SHORT_LANGUAGE_CODE,
+            'common/js/cropdialog.js',
+            'common/js/uploader.js',
             'users/js/profile.js',
         ),
         'output_filename': 'js/users-profile.js',

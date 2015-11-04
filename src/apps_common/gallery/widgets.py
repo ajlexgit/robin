@@ -9,18 +9,18 @@ class GalleryWidget(forms.Widget):
 
     class Media:
         js = (
-            'admin/js/jquery.Jcrop.js',
-            'admin/js/plupload/plupload.full.min.js',
-            'admin/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
-            'admin/js/cropdialog.js',
-            'admin/js/uploader.js',
+            'common/js/jquery.Jcrop.js',
+            'common/js/plupload/plupload.full.min.js',
+            'common/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
+            'common/js/cropdialog.js',
+            'common/js/uploader.js',
             'gallery/admin/js/gallery_class.js',
             'gallery/admin/js/jquery.gallery.js',
             'gallery/admin/js/gallery.js',
         )
         css = {
             'all': (
-                'admin/css/jcrop/jquery.Jcrop.css',
+                'common/css/jcrop/jquery.Jcrop.css',
                 'admin/css/cropdialog/cropdialog.css',
                 'gallery/admin/css/gallery.css',
                 'gallery/admin/css/description_window.css',

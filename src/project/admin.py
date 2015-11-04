@@ -81,10 +81,10 @@ class ModelAdminMixin(ModelAdminInlineMixin):
         return super().media + forms.Media(
             js = (
                 'admin/js/jquery-ui.min.js',
-                'admin/js/jquery.cookie.js',
-                'admin/js/jquery.ajax_csrf.js',
+                'common/js/jquery.cookie.js',
+                'common/js/jquery.ajax_csrf.js',
+                'common/js/jquery.utils.js',
                 'admin/js/jquery.mousewheel.min.js',
-                'admin/js/jquery.utils.js',
                 'admin/js/button_filter.js',
             ),
             css = {

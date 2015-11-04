@@ -57,13 +57,13 @@ class StdImageAdminWidget(StdImageWidgetMixin, forms.FileInput):
 
     class Media:
         js = (
-            'admin/js/jquery.Jcrop.js',
-            'admin/js/cropdialog.js',
+            'common/js/jquery.Jcrop.js',
+            'common/js/cropdialog.js',
             'stdimage/admin/js/stdimage.js',
         )
         css = {
             'all': (
-                'admin/css/jcrop/jquery.Jcrop.css',
+                'common/css/jcrop/jquery.Jcrop.css',
                 'admin/css/cropdialog/cropdialog.css',
                 'stdimage/admin/css/stdimage.css',
             )

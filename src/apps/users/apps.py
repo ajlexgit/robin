@@ -16,7 +16,7 @@ class Config(AppConfig):
             'ajax_logout': resolve_url('users:ajax_logout'),
             'ajax_register': resolve_url('users:ajax_register'),
             'ajax_reset': resolve_url('users:ajax_reset'),
-            'plupload_moxie_swf': static('js/plupload/Moxie.swf'),
-            'plupload_moxie_xap': static('js/plupload/Moxie.xap'),
+            'plupload_moxie_swf': static('common/js/plupload/Moxie.swf'),
+            'plupload_moxie_xap': static('common/js/plupload/Moxie.xap'),
         })
 

@@ -16,12 +16,12 @@ class PagePhotoAdmin(admin.ModelAdmin):
     class Media:
         js = (
             'admin/js/jquery-ui.min.js',
-            'admin/js/jquery.Jcrop.js',
+            'common/js/jquery.Jcrop.js',
         )
         css = {
             'all': (
                 'admin/css/jquery-ui/jquery-ui.min.css',
-                'admin/css/jcrop/jquery.Jcrop.css',
+                'common/css/jcrop/jquery.Jcrop.css',
             )
         }
 
