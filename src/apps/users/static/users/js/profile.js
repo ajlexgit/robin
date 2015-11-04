@@ -11,7 +11,7 @@
         $(document).trigger('change_avatar.users', response);
     };
 
-    // Загрузчик аватарки
+    // Инициализация загрузчика аватарки
     var initUploader = function() {
         return Uploader.create('#profile-avatar', {
             url: window.js_storage.avatar_upload,
@@ -37,52 +37,61 @@
     };
 
 
-    // Обрезка аватара
-    $(document).cropdialog('click.cropdialog', '#crop-avatar', {
-        dialog_opts: {
-            classes: 'popup-crop-avatar'
-        },
-        getImage: function($button) {
-            return $button.data('source');
-        },
-        getMinSize: function($button) {
-            return $button.data('min_dimensions');
-        },
-        getCropCoords: function($button) {
-            return $button.data('crop');
-        },
-        onCrop: function($button, coords) {
-            var coords_str = coords.join(':');
+    $(document).ready(function() {
+        var $profile = $('#profile');
+
+        // Обрезка аватара
+        CropDialog.create($profile, {
+            eventType: 'click.cropdialog',
+            buttonSelector: '#crop-avatar',
+            dialogOptions: {
+                classes: 'popup-crop-avatar'
+            },
+
+            getImage: function($button) {
+                return $button.data('source');
+            },
+            getMinSize: function($button) {
+                return this.formatSize($button.data('min_dimensions'));
+            },
+            getAspects: function($button) {
+                return this.formatAspects($button.data('aspect'));
+            },
+            getCropCoords: function($button) {
+                return this.formatCoords($button.data('crop'));
+            },
+            onCrop: function($button, coords) {
+                var coords_str = coords.join(':');
+                $.ajax({
+                    url: window.js_storage.avatar_crop,
+                    type: 'POST',
+                    data: {
+                        coords: coords_str
+                    },
+                    dataType: 'json',
+                    success: change_avatar
+                });
+                $button.data('crop', coords_str);
+            }
+        });
+
+        // Клик на кнопку удаления аватара
+        $profile.on('click', '.delete-avatar', function() {
+            if (!confirm(gettext('Are you sure that you want to delete this avatar?'))) {
+                return false;
+            }
+
             $.ajax({
-                url: window.js_storage.avatar_crop,
+                url: window.js_storage.avatar_delete,
                 type: 'POST',
-                data: {
-                    coords: coords_str
-                },
                 dataType: 'json',
                 success: change_avatar
             });
-            $button.data('crop', coords_str);
-        }
-    });
 
-
-    // Удаление аватара
-    $(document).on('click', '.delete-avatar', function() {
-        if (!confirm(gettext('Are you sure that you want to delete this avatar?'))) {
             return false;
-        }
-        $.ajax({
-            url: window.js_storage.avatar_delete,
-            type: 'POST',
-            dataType: 'json',
-            success: change_avatar
         });
-        return false;
-    });
 
-
-    $(document).ready(function() {
+        // Инициализация загрузчика аватарки
         initUploader();
     });
 

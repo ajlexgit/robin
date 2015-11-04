@@ -1,7 +1,6 @@
 import os
 import sys
 
-
 # SessionStoreMixin: переделать? Не работает для InlineFormset
 # JS: избавиться от $.findFirstElem
 # css background em?
