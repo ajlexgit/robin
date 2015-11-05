@@ -5,7 +5,7 @@
 
         Пример:
             $('input[type=checkbox]').each(function() {
-                CustomCheckbox.create($(this));
+                CustomCheckbox.create(this);
             })
 
         Требует:
@@ -16,15 +16,23 @@
         var dataParamName = 'object';
         var className = 'custom-checkbox';
 
-        cls.init = function($checkbox, options) {
-            this.$input = $checkbox.first();
-            this.$elem = $('<div>').addClass(className).insertAfter(this.$input);
+        cls.init = function(input, options) {
+            this.$input = $(input).first();
+            if (!this.$input.length) {
+                console.error('CustomCheckbox can\'t find input element');
+                return false;
+            }
 
+            // настройки
             this.opts = $.extend({
                 checkedClass: 'checked',
                 beforeChange: $.noop
             }, options);
 
+            // новый чекбокс
+            this.$elem = $('<div>').addClass(className).insertAfter(this.$input);
+
+            // начальное состояние
             this._set_checked(this.$input.prop('checked'));
 
             var that = this;

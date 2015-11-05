@@ -65,6 +65,9 @@
   ul {
     padding-left: 1.6em;
     margin: 1.1em 0;
+    &:nth-last-of-type(1) {
+      margin-bottom: 0;
+    }
 
     li {
       position: relative;
@@ -84,6 +87,9 @@
     list-style: decimal;
     padding-left: 1.6em;
     margin: 1.1em 0;
+    &:nth-last-of-type(1) {
+      margin-bottom: 0;
+    }
   }
 
 
