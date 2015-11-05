@@ -5,6 +5,7 @@ from django.shortcuts import resolve_url
 from django.utils.functional import cached_property
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
+from gallery import *
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
 from libs.aliased_queryset import AliasedQuerySetMixin
@@ -13,8 +14,7 @@ from libs.media_storage import MediaStorage
 from libs.valute_field import ValuteField
 from libs.autoslug import AutoSlugField
 from libs.mptt import *
-from shop.signals import categories_changed
-from .signals import products_changed
+from .signals import products_changed, categories_changed
 
 
 class ShopConfig(SingletonModel):
@@ -180,6 +180,39 @@ class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
         return qs
 
 
+class ShopProductGalleryImageItem(GalleryImageItem):
+    STORAGE_LOCATION = 'shop/product/gallery'
+    MIN_DIMENSIONS = (100, 60)
+    ADMIN_CLIENT_RESIZE = True
+
+    SHOW_VARIATION = 'normal'
+    ASPECTS = 'normal'
+    ADMIN_VARIATION = 'admin'
+    VARIATIONS = dict(
+        normal=dict(
+            size=(300, 300),
+            crop=False,
+        ),
+        small=dict(
+            size=(160, 160),
+            crop=False,
+        ),
+        admin=dict(
+            size=(160, 120),
+            background=(255, 255, 255, 255),
+        ),
+        admin_micro=dict(
+            size=(60, 60),
+            crop=False,
+            background=(255, 255, 255, 255),
+        )
+    )
+
+
+class ShopProductGallery(GalleryBase):
+    IMAGE_MODEL = ShopProductGalleryImageItem
+
+
 class ShopProduct(models.Model):
     """ Товар """
     category = models.ForeignKey(ShopCategory,
@@ -197,37 +230,7 @@ class ShopProduct(models.Model):
         unique=True,
         help_text=_('Unique identifier of the product')
     )
-    photo = StdImageField(_('photo'),
-        storage=MediaStorage('shop/product'),
-        min_dimensions=(100, 60),
-        admin_variation='admin',
-        crop_area=True,
-        crop_field='photo_crop',
-        variations=dict(
-            normal=dict(
-                size=(300, 300),
-                crop=False,
-            ),
-            small=dict(
-                size=(160, 160),
-                crop=False,
-            ),
-            admin=dict(
-                size=(200, 200),
-                crop=False,
-            ),
-            admin_micro=dict(
-                size=(60, 60),
-                crop=False,
-                background=(255,255,255,255),
-            )
-        ),
-    )
-    photo_crop = models.CharField(_('stored_crop'),
-        max_length=32,
-        blank=True,
-        editable=False,
-    )
+    gallery = GalleryField(ShopProductGallery, verbose_name=_('gallery'), blank=True, null=True)
     description = CKEditorField(_('description'),
         editor_options=settings.CKEDITOR_CONFIG_MEDIUM,
         blank=True
@@ -291,6 +294,13 @@ class ShopProduct(models.Model):
                 self.__class__,
                 categories=self.category_id
             )
+
+    @cached_property
+    def photo(self):
+        if self.gallery:
+            item = self.gallery.image_items.first()
+            return item.image if item else None
+        return None
 
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):

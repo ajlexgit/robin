@@ -154,7 +154,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'category', 'title', 'alias', 'serial', 'photo', 'price',
+                'category', 'title', 'alias', 'serial', 'gallery', 'price',
                 'is_visible', 'description',
             ),
         }),
