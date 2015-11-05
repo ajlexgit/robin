@@ -21,12 +21,20 @@
             if (!this.$input.length) {
                 console.error('CustomCheckbox can\'t find input element');
                 return false;
+            } else {
+                // отвызывание старого экземпляра
+                var old_instance = this.$input.data(dataParamName);
+                if (old_instance) {
+                    old_instance.destroy();
+                }
+                this.$input.data(dataParamName, this);
             }
 
             // настройки
             this.opts = $.extend({
                 checkedClass: 'checked',
-                beforeChange: $.noop
+                beforeChange: $.noop,
+                afterChange: $.noop
             }, options);
 
             // новый чекбокс
@@ -36,7 +44,7 @@
             this._set_checked(this.$input.prop('checked'));
 
             var that = this;
-            this.$input.data(dataParamName, this).off('.checkbox').on('change.checkbox', function() {
+            this.$input.off('.checkbox').on('change.checkbox', function() {
                 that._set_checked(!that.is_checked());
                 return false;
             });
@@ -58,6 +66,7 @@
                 return
             }
 
+            // callback
             if (this.opts.beforeChange.call(this, value) === false) {
                 return
             }
@@ -71,6 +80,9 @@
                 this.$elem.removeClass(this.opts.checkedClass);
                 this.$input.prop('checked', false);
             }
+
+            // callback
+            this.opts.afterChange.call(this, value);
 
             return this._checked;
         };
