@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.shortcuts import resolve_url
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from attachable_blocks import AttachableBlock
@@ -198,7 +198,9 @@ class ClientFormModel(models.Model):
             ),
         ),
     )
-    count = models.PositiveIntegerField(_('count'), max_length=2, default=1)
+    count = models.PositiveIntegerField(_('count'), max_length=2, default=1, validators=[
+        MaxValueValidator(99)
+    ])
     color = ColorField(_('color'), blank=True)
     color2 = ColorOpacityField(_('color2'), blank=True)
     coords = GoogleCoordsField(_('coords'), blank=True)

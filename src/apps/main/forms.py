@@ -1,6 +1,5 @@
 from django import forms
-from django.forms.models import BaseInlineFormSet
-from libs.session_form import SessionStoredFormMixin, SessionStoredFormSetMixin
+from libs.session_form import SessionStoredFormMixin
 from libs.plainerror_form import PlainErrorFormMixin
 from .models import ClientFormModel, ClientInlineFormModel
 
@@ -9,6 +8,11 @@ class MainForm(PlainErrorFormMixin, SessionStoredFormMixin, forms.ModelForm):
     class Meta:
         model = ClientFormModel
         fields = '__all__'
+        widgets = {
+            'count': forms.NumberInput(attrs={
+                'max': 99,
+            })
+        }
 
 
 class InlineForm(forms.ModelForm):
