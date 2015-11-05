@@ -14,7 +14,7 @@
             </div>
 
             $(document).ready(function() {
-                new Parallax('#block');
+                Parallax.create('#block');
                 // или
                 $('#block').parallax();
             });

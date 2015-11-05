@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Пример Layer.js
 # SessionStoreMixin: переделать? Не работает для InlineFormset
 # JS: избавиться от $.findFirstElem
 # css background em?

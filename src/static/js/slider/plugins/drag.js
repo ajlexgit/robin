@@ -39,7 +39,7 @@
             parent.prototype.onAttach.call(this, slider);
 
             var that = this;
-            this.drager = new Drager(slider.$listWrapper, {
+            this.drager = Drager.create(slider.$listWrapper, {
                 mouse: that.opts.mouse,
                 touch: that.opts.touch,
                 ignoreDistanceX: that.opts.ignoreDistanceX,

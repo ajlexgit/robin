@@ -2,7 +2,7 @@
 
     $(document).ready(function() {
         // inlines
-        window.formset = new Formset('#form .formset', {
+        window.formset = Formset.create('#form .formset', {
             prefix: 'inlines'
         });
 
@@ -16,7 +16,7 @@
 
         // custom checkboxes
         $('input:checkbox').each(function() {
-            CustomCheckbox.create($(this));
+            CustomCheckbox.create(this);
         });
     });
 

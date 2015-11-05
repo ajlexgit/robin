@@ -1,4 +1,5 @@
 (function($) {
+
     /*
         https://developers.google.com/youtube/iframe_api_reference?hl=ru
 
@@ -27,7 +28,9 @@
         $(document).trigger('ready.youtube');
     };
 
+
     $.youtube = function(element, options, callback) {
+        // добавление скрипта YouTube
         if (!script) {
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";

@@ -6,11 +6,13 @@
   width: 16px;
   height: 16px;
   z-index: 1;
+  cursor: pointer;
   border: 1px solid #808080;
   background-color: #FFFFFF;
   vertical-align: text-bottom;
   @include border-box;
   @include no_fontsize;
+  @include unselectable;
   @include border_radius(2px);
 
   &.checked {

@@ -14,7 +14,6 @@
 
     window.CustomCheckbox = Class(null, function(cls, superclass) {
         var dataParamName = 'object';
-        var className = 'custom-checkbox';
 
         cls.init = function(input, options) {
             this.$input = $(input).first();
@@ -22,7 +21,7 @@
                 console.error('CustomCheckbox can\'t find input element');
                 return false;
             } else {
-                // отвызывание старого экземпляра
+                // отвязывание старого экземпляра
                 var old_instance = this.$input.data(dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
@@ -32,18 +31,27 @@
 
             // настройки
             this.opts = $.extend({
+                className: 'custom-checkbox',
                 checkedClass: 'checked',
                 beforeChange: $.noop,
                 afterChange: $.noop
             }, options);
 
             // новый чекбокс
-            this.$elem = $('<div>').addClass(className).insertAfter(this.$input);
+            this.$elem = $('<div>').insertAfter(this.$input);
+            this.$elem.addClass(this.opts.className);
 
             // начальное состояние
             this._set_checked(this.$input.prop('checked'));
 
             var that = this;
+
+            // клик на новый элемент
+            this.$elem.off('.checkbox').on('click.checkbox', function() {
+                that.$input.change();
+            });
+
+            // изменение состояния
             this.$input.off('.checkbox').on('change.checkbox', function() {
                 that._set_checked(!that.is_checked());
                 return false;

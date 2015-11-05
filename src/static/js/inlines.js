@@ -6,6 +6,29 @@
         Требует:
             jquery.utils.js
 
+        Параметры:
+            formsContainerSelector      - селектор контейнера форм
+
+            formClass                   - класс каждой формы
+
+            emptyFormClass              - класс пустой формы, которая является шаблоном для добавления
+
+            prefix                      - Django-префикс формы
+
+            showSpeed                   - скорость показа новой формы при добавлении
+
+            hideSpeed                   - скорость скрытия формы при удалении
+
+            beforeAddForm               - событие, вызываемое перед добавлением новой формы.
+                                          Если вернёт false, форма не будет добавлена
+
+            afterAddForm                - событие, вызываемое после добавления новой формы
+
+            beforeDeleteForm            - событие, вызываемое перед удалением формы.
+                                          Если вернёт false, форма не будет удалена
+
+            afterDeleteForm             - событие, вызываемое после удаления формы
+
         Пример HTML:
             <div id="formset">
                 {{ formset.management_form }}
@@ -28,7 +51,7 @@
             </div>
 
         Пример JS:
-            fs = new Formset('#formset');
+            Formset.create('#formset');
      */
 
     var prefix_regexp = /__prefix__/i;
@@ -50,48 +73,25 @@
         }
     };
 
-    window.Formset = (function() {
-        var Formset = function(root, settings) {
-            this.$root = $.findFirstElement(root);
+    window.Formset = Class(null, function(cls, superclass) {
+        var dataParamName = 'formset';
+
+        cls.init = function(root, options) {
+            this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Empty root element for Formset');
-                return
+                console.error('Formset can\'t find root element');
+                return false;
+            } else {
+                // отвязывание старого экземпляра
+                var old_instance = this.$root.data(dataParamName);
+                if (old_instance) {
+                    old_instance.destroy();
+                }
+                this.$root.data(dataParamName, this);
             }
 
-            this.opts = $.extend(true, this.getDefaultOpts(), settings);
-
-            // mangement form
-            this.management = this.getManagementForm();
-
-            // forms container
-            this.$container = this.getFormsContainer();
-
-            // Находим формы, которые уже есть
-            var $initial_forms = this.getForms();
-
-            // индекс следующей добавленной формы
-            this.nextFormIndex = $initial_forms.length;
-
-            // Помечаем реально начальные формы
-            var initial_count = parseInt(this.management.$initial_forms.val()) || 0;
-            if ($initial_forms.length < initial_count) {
-                console.error('INITIAL_FORMS is less than real from count');
-                return
-            }
-            $initial_forms.slice(0, initial_count).data('initial', true);
-
-            this.$root.data('formset', this);
-
-            // callback
-            this.opts.onInit.call(this);
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        Formset.prototype.getDefaultOpts = function() {
-            return {
-                formsContainerClass: 'forms',
+            this.opts = $.extend({
+                formsContainerSelector: '.forms',
                 formClass: 'form',
                 emptyFormClass: 'empty-form',
 
@@ -99,9 +99,6 @@
                 showSpeed: 300,
                 hideSpeed: 300,
 
-                onInit: $.noop,
-
-                // перед добавлением формы
                 beforeAddForm: function() {
                     return this.getFormCount() < this.getMaxFormCount();
                 },
@@ -112,13 +109,47 @@
                     return this.getFormCount() > this.getMinFormCount()
                 },
                 afterDeleteForm: $.noop
+            }, options);
+
+            // management form
+            this.management = this.getManagementForm();
+            if (this.management === false) {
+                return false;
             }
+
+            // контейнер форм
+            this.$container = this.$root.find(this.opts.formsContainerSelector);
+            if (!this.$container.length) {
+                console.error('Formset can\'t find forms container element');
+                return false;
+            }
+
+            // Находим начальные формы
+            var $initial_forms = this.getForms();
+
+            // индекс следующей добавляемой формы
+            this.nextFormIndex = $initial_forms.length;
+
+            // Помечаем начальные формы
+            var initial_count = parseInt(this.management.$initial_forms.val()) || 0;
+            if ($initial_forms.length < initial_count) {
+                console.error('INITIAL_FORMS is less than real forms count');
+                return false
+            }
+            $initial_forms.slice(0, initial_count).data('initial', true);
+        };
+
+        /*
+            Отвязывание плагина
+         */
+        cls.prototype.destroy = function() {
+            this.$root.removeData(dataParamName);
         };
 
         /*
             Получение полей management-формы
          */
-        Formset.prototype.getManagementForm = function() {
+        cls.prototype.getManagementForm = function() {
             var $total_forms = $('#id_' + this.opts.prefix + '-TOTAL_FORMS');
             var $initial_forms = $('#id_' + this.opts.prefix + '-INITIAL_FORMS');
             var $min_num_forms = $('#id_' + this.opts.prefix + '-MIN_NUM_FORMS');
@@ -126,15 +157,19 @@
 
             if (!$total_forms.length) {
                 console.error('Not found TOTAL_FORMS field');
+                return false
             }
             if (!$initial_forms.length) {
                 console.error('Not found INITIAL_FORMS field');
+                return false
             }
             if (!$min_num_forms.length) {
                 console.error('Not found MIN_NUM_FORMS field');
+                return false
             }
             if (!$max_num_forms.length) {
                 console.error('Not found MAX_NUM_FORMS field');
+                return false
             }
 
             return {
@@ -146,16 +181,9 @@
         };
 
         /*
-            Получение контейнера форм
-         */
-        Formset.prototype.getFormsContainer = function() {
-            return this.$root.find('.' + this.opts.formsContainerClass);
-        };
-
-        /*
             Получение всех форм набора
          */
-        Formset.prototype.getForms = function(with_deleted) {
+        cls.prototype.getForms = function(with_deleted) {
             var that = this;
             var $forms = this.$container.find('.' + this.opts.formClass);
             if (!with_deleted) {
@@ -169,28 +197,28 @@
         /*
             Получение количества всех форм
          */
-        Formset.prototype.getFormCount = function(with_deleted) {
+        cls.prototype.getFormCount = function(with_deleted) {
             return this.getForms(with_deleted).length;
         };
 
         /*
             Получение минимального количества всех форм
          */
-        Formset.prototype.getMinFormCount = function() {
+        cls.prototype.getMinFormCount = function() {
             return parseInt(this.management.$min_num_forms.val()) || 0;
         };
 
         /*
             Получение максимального количества всех форм
          */
-        Formset.prototype.getMaxFormCount = function() {
+        cls.prototype.getMaxFormCount = function() {
             return parseInt(this.management.$max_num_forms.val()) || 1000;
         };
 
         /*
             Получение шаблона новой формы
          */
-        Formset.prototype.getEmptyForm = function() {
+        cls.prototype.getEmptyForm = function() {
             var $template = this.$root.find('.' + this.opts.emptyFormClass).first();
             if (!$template.length) {
                 console.error('Not found empty form template');
@@ -200,14 +228,13 @@
             return $($template.html());
         };
 
-
-
+        // =====================================================
 
         /*
             Установка или получение значения DELETE-поля формы
          */
-        Formset.prototype.formDeleted = function(form_selector, value) {
-            var $form = $.findFirstElement(form_selector, this.$container);
+        cls.prototype.formDeleted = function(form_selector, value) {
+            var $form = this.$container.find(form_selector).first();
             if (!$form.length) {
                 console.error('Not found form');
                 return
@@ -239,7 +266,7 @@
 
             Возвращает jQuery-объект новой формы или false
          */
-        Formset.prototype.addForm = function() {
+        cls.prototype.addForm = function() {
             if (this.opts.beforeAddForm.call(this) === false) {
                 return false
             }
@@ -258,7 +285,7 @@
             });
             this.nextFormIndex++;
 
-
+            // анимация показа
             $form.slideDown({
                 duration: this.opts.showSpeed,
                 complete: function() {
@@ -275,12 +302,12 @@
 
             Возвращает jQuery-объект удаленной формы или false
          */
-        Formset.prototype.deleteForm = function(form_selector) {
+        cls.prototype.deleteForm = function(form_selector) {
             if (this.opts.beforeDeleteForm.call(this) === false) {
                 return false
             }
 
-            var $form = $.findFirstElement(form_selector, this.$container);
+            var $form = this.$container.find(form_selector);
             if (!$form.length) {
                 console.error('Not found form to be deleted');
                 return false
@@ -289,6 +316,8 @@
             this.formDeleted($form, true);
 
             var that = this;
+
+            // анимация удаления
             $form.slideUp({
                 duration: that.opts.hideSpeed,
                 complete: function() {
@@ -307,8 +336,6 @@
 
             return $form;
         };
-
-        return Formset;
-    })();
+    });
 
 })(jQuery);

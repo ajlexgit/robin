@@ -29,7 +29,7 @@
             onMomentumStopped(completed)      - остановка инерции
 
         Примеры:
-            var drager = new Drager(element, {
+            var drager = Drager.create(element, {
                 onMouseDown: function(evt) {
                     var $element = $(evt.target);
 
@@ -111,8 +111,11 @@
 
     // ===============================================
 
-    var Momentum = (function() {
-        var Momentum = function(drager, event, momentumPoint) {
+    /*
+        Движение по инерции
+     */
+    var Momentum = Class(null, function(cls, superclass) {
+        cls.init = function(drager, event, momentumPoint) {
             this.lightness = drager.settings.momentumLightness;
             this.easing = drager.settings.momentumEasing;
             this.startX = event.dx;
@@ -127,7 +130,7 @@
             this.setSpeed(dx / duration, dy / duration);
         };
 
-        Momentum.prototype.setSpeed = function(speedX, speedY) {
+        cls.prototype.setSpeed = function(speedX, speedY) {
             if (typeof speedX != 'undefined') {
                 this.speedX = speedX;
             }
@@ -139,20 +142,20 @@
             this.setDuration(speed * this.lightness);
         };
 
-        Momentum.prototype.setDuration = function(duration) {
+        cls.prototype.setDuration = function(duration) {
             this.duration = Math.abs(duration) || 0;
             this.endX = this.startX + this.speedX * this.duration;
             this.endY = this.startY + this.speedY * this.duration;
         };
 
-        Momentum.prototype.setLightness = function(lightness) {
+        cls.prototype.setLightness = function(lightness) {
             this.lightness = lightness;
 
             var speed = Math.max(Math.abs(this.speedX), Math.abs(this.speedY));
             this.setDuration(speed * this.lightness);
         };
 
-        Momentum.prototype.setEndPoint = function(endX, endY) {
+        cls.prototype.setEndPoint = function(endX, endY) {
             var dx = endX - this.startX;
             var dy = endY - this.startY;
             var tx = this.speedX ? Math.abs(dx / this.speedX) : 0;
@@ -163,17 +166,15 @@
             this.endY = endY;
         };
 
-        Momentum.prototype.setEasing = function(easing) {
+        cls.prototype.setEasing = function(easing) {
             this.easing = easing;
         };
-
-        return Momentum;
-    })();
+    });
 
     // ===============================================
 
-    var DragerEvent = (function() {
-        return function(event, drager) {
+    var DragerEvent = Class(null, function(cls, superclass) {
+        cls.init = function(event, drager) {
             var mouseEvent = event;
             if (event.type.substr(0, 5) == 'touch') {
                 mouseEvent = getTouchPoint(event);
@@ -189,74 +190,62 @@
                 clientY: mouseEvent.clientY
             }
         };
-    })();
+    });
 
-    var MouseDownDragerEvent = (function(parent) {
-        var MouseDownDragerEvent = function(event, drager) {
-            parent.call(this, event, drager);
+    var MouseDownDragerEvent = Class(DragerEvent, function(cls, superclass) {
+        cls.init = function(event, drager) {
+            var result = superclass.init.call(this, event, drager);
+            if (result === false) {
+                return false;
+            }
 
             this.dx = 0;
             this.dy = 0;
             this.abs_dx = 0;
             this.abs_dy = 0;
         };
+    });
 
-        var _ = function() { this.constructor = MouseDownDragerEvent; };
-        _.prototype = parent.prototype;
-        MouseDownDragerEvent.prototype = new _;
-
-        return MouseDownDragerEvent;
-    })(DragerEvent);
-
-    var MouseMoveDragerEvent = (function(parent) {
-        var MouseMoveDragerEvent = function(event, drager) {
-            parent.call(this, event, drager);
+    var MouseMoveDragerEvent = Class(DragerEvent, function(cls, superclass) {
+        cls.init = function(event, drager) {
+            var result = superclass.init.call(this, event, drager);
+            if (result === false) {
+                return false;
+            }
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
             this.abs_dx = Math.abs(this.dx);
             this.abs_dy = Math.abs(this.dy);
         };
+    });
 
-        var _ = function() { this.constructor = MouseMoveDragerEvent; };
-        _.prototype = parent.prototype;
-        MouseMoveDragerEvent.prototype = new _;
-
-        return MouseMoveDragerEvent;
-    })(DragerEvent);
-
-    var MouseUpDragerEvent = (function(parent) {
-        var MouseUpDragerEvent = function(event, drager) {
-            parent.call(this, event, drager);
+    var MouseUpDragerEvent = Class(DragerEvent, function(cls, superclass) {
+        cls.init = function(event, drager) {
+            var result = superclass.init.call(this, event, drager);
+            if (result === false) {
+                return false;
+            }
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
             this.abs_dx = Math.abs(this.dx);
             this.abs_dy = Math.abs(this.dy);
         };
-
-        var _ = function() { this.constructor = MouseUpDragerEvent; };
-        _.prototype = parent.prototype;
-        MouseUpDragerEvent.prototype = new _;
-
-        return MouseUpDragerEvent;
-    })(DragerEvent);
+    });
 
     // ===============================================
 
-    window.Drager = (function() {
-        var dragerID = 0;
-
-        // ================================================
-
-        var Drager = function(element, options) {
-            this.$element = $.findFirstElement(element);
+    var dragerID = 0;
+    window.Drager = Class(null, function(cls, superclass) {
+        cls.init = function(element, options) {
+            this.$element = $(element).first();
             if (!this.$element.length) {
-                console.error('Empty element for Drager');
-                return
+                console.error('Drager can\'t find root element');
+                return false;
             }
 
-            this.settings = $.extend(true, {
+            this.opts = $.extend({
                 preventDefault: true,
 
                 mouse: true,
@@ -272,7 +261,9 @@
                 onStartDrag: $.noop,
                 onDrag: $.noop,
                 onStopDrag: $.noop,
-                onSetMomentum: function(evt, momentum) { return momentum },
+                onSetMomentum: function(evt, momentum) {
+                    return momentum
+                },
                 onMouseUp: $.noop,
                 onMomentumStarted: $.noop,
                 onMomentumStopped: $.noop
@@ -297,8 +288,12 @@
             this.attach();
         };
 
-        // Добавление точки вычисления инерции
-        Drager.prototype._addMomentumPoint = function(evt) {
+        // ================================================
+
+        /*
+            Добавление точки вычисления инерции
+         */
+        cls.prototype._addMomentumPoint = function(evt) {
             if (this._momentumPoints.length) {
                 // Если недавно уже добавляли - выходим
                 var lastPoint = this._momentumPoints[this._momentumPoints.length - 1];
@@ -318,8 +313,10 @@
             this._momentumPoints.push(record);
         };
 
-        // Получение точки вычисления инерции
-        Drager.prototype._getMomentumPoint = function(evt) {
+        /*
+            Получение точки вычисления инерции
+         */
+        cls.prototype._getMomentumPoint = function(evt) {
             if (!this._momentumPoints.length) {
                 return
             }
@@ -333,8 +330,10 @@
             return lastPoint;
         };
 
-        // Запуск инерционного движения
-        Drager.prototype.startMomentum = function(evt, momentum) {
+        /*
+            Запуск инерционного движения
+          */
+        cls.prototype.startMomentum = function(evt, momentum) {
             var that = this;
             that._momentumAnimation = $.animate({
                 duration: momentum.duration,
@@ -347,31 +346,37 @@
                     evt.dx = this.autoCalc('x', eProgress);
                     evt.dy = this.autoCalc('y', eProgress);
                     evt.timeStamp = $.now();
-                    that.settings.onDrag.call(that, evt);
+                    that.opts.onDrag.call(that, evt);
                 },
                 complete: function() {
                     that._momentumAnimation = null;
-                    that.settings.onMomentumStopped.call(that, true);
+                    that.opts.onMomentumStopped.call(that, true);
                 }
             });
         };
 
-        // Остановка инерционного движения
-        Drager.prototype.stopMomentum = function(jumpToEnd) {
+        /*
+            Остановка инерционного движения
+          */
+        cls.prototype.stopMomentum = function(jumpToEnd) {
             if (this._momentumAnimation) {
                 this._momentumAnimation.stop(jumpToEnd);
                 this._momentumAnimation = null;
-                this.settings.onMomentumStopped.call(this, false);
+                this.opts.onMomentumStopped.call(this, false);
             }
         };
 
-        // Сброс начала отсчета передвижения
-        Drager.prototype.setStartPoint = function(evt) {
+        /*
+            Сброс начала отсчета передвижения
+          */
+        cls.prototype.setStartPoint = function(evt) {
             this.startPoint = evt.point;
         };
 
-        // Прекращения отслеживания текущего сеанса перемещения
-        Drager.prototype.stopCurrent = function(evt) {
+        /*
+            Прекращения отслеживания текущего сеанса перемещения
+          */
+        cls.prototype.stopCurrent = function(evt) {
             var momentum;
             this._dragging_allowed = false;
 
@@ -379,26 +384,26 @@
                 this.wasDragged = false;
 
                 // Вычисление параметров инерции
-                if (this.settings.momentum) {
+                if (this.opts.momentum) {
                     var lastPoint = this._getMomentumPoint(evt);
                     if (lastPoint) {
-                        momentum = new Momentum(this, evt, lastPoint);
-                        momentum = this.settings.onSetMomentum.call(this, evt, momentum);
-                        if (!momentum || (momentum.duration < this.settings.minMomentumDuration)) {
+                        momentum = Momentum.create(this, evt, lastPoint);
+                        momentum = this.opts.onSetMomentum.call(this, evt, momentum);
+                        if (!momentum || (momentum.duration < this.opts.minMomentumDuration)) {
                             momentum = null;
                         }
                     }
                 }
 
-                this.settings.onStopDrag.call(this, evt, momentum);
+                this.opts.onStopDrag.call(this, evt, momentum);
             }
 
-            var result = this.settings.onMouseUp.call(this, evt, momentum);
+            var result = this.opts.onMouseUp.call(this, evt, momentum);
 
             // запуск инерции
             if (momentum) {
                 this.startMomentum(evt, momentum);
-                this.settings.onMomentumStarted.call(this, momentum);
+                this.opts.onMomentumStarted.call(this, momentum);
             }
 
             return result;
@@ -408,7 +413,7 @@
         // === Handlers ===
         // ================
 
-        Drager.prototype.mouseDownHandler = function(event) {
+        cls.prototype.mouseDownHandler = function(event) {
             var evt = new MouseDownDragerEvent(event, this);
             this.wasDragged = false;
             this._dragging_allowed = true;
@@ -416,18 +421,18 @@
             this._addMomentumPoint(evt);
 
             this.setStartPoint(evt);
-            return this.settings.onMouseDown.call(this, evt);
+            return this.opts.onMouseDown.call(this, evt);
         };
 
-        Drager.prototype.dragHandler = function(event) {
+        cls.prototype.dragHandler = function(event) {
             if (!this._dragging_allowed) return;
 
             var evt = new MouseMoveDragerEvent(event, this);
             this._addMomentumPoint(evt);
 
             if (!this.wasDragged) {
-                if ((evt.abs_dx > this.settings.ignoreDistanceX) || (evt.abs_dy > this.settings.ignoreDistanceY)) {
-                    var allowed = this.settings.onStartDrag.call(this, evt);
+                if ((evt.abs_dx > this.opts.ignoreDistanceX) || (evt.abs_dy > this.opts.ignoreDistanceY)) {
+                    var allowed = this.opts.onStartDrag.call(this, evt);
                     if (allowed === false) {
                         return
                     }
@@ -437,10 +442,10 @@
                 }
             }
 
-            return this.settings.onDrag.call(this, evt);
+            return this.opts.onDrag.call(this, evt);
         };
 
-        Drager.prototype.mouseUpHandler = function(event) {
+        cls.prototype.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
             var evt = new MouseUpDragerEvent(event, this);
@@ -452,14 +457,14 @@
         // ================
 
         // Удаление обработчиков событий
-        Drager.prototype.detach = function() {
+        cls.prototype.detach = function() {
             // Отвязываем все события, связанные с объектом
             this.$element.off('.drager' + this.id);
             $(document).off('.drager' + this.id);
         };
 
         // Привязка обработчиков событий
-        Drager.prototype.attach = function() {
+        cls.prototype.attach = function() {
             var that = this;
 
             this.detach();
@@ -467,9 +472,9 @@
             // ====================
             // === Mouse Events ===
             // ====================
-            if (this.settings.mouse) {
+            if (this.opts.mouse) {
                 // Блокируем дефолтовый Drag'n'Drop браузера
-                if (this.settings.preventDefault) {
+                if (this.opts.preventDefault) {
                     this.$element.on('dragstart.drager' + this.id, function() {
                         return false;
                     });
@@ -478,6 +483,7 @@
                 this.$element.on('mousedown.drager' + this.id, function(event) {
                     return that.mouseDownHandler.call(that, event);
                 });
+
                 $(document).on('mousemove.drager' + this.id, function(event) {
                     return that.dragHandler.call(that, event);
                 }).on('mouseup.drager' + this.id, function(event) {
@@ -488,7 +494,7 @@
             // ====================
             // === Touch Events ===
             // ====================
-            if (this.settings.touch) {
+            if (this.opts.touch) {
                 var ns = 'drager' + this.id;
 
                 this.$element.on('touchstart.' + ns + ' pointerdown.' + ns, function(event) {
@@ -504,8 +510,6 @@
                 });
             }
         };
-
-        return Drager;
-    })();
+    });
 
 })(jQuery);

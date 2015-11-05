@@ -4,6 +4,11 @@
         Кастомное поле ввода чисел.
 
         Пример:
+            <div class="custom-counter">
+                <input type="text" maxlength="2" value="1">
+            </div>
+
+
             $('.custom-counter').each(function() {
                 CustomCounter.create(this);
             })
@@ -21,7 +26,7 @@
                 console.error('CustomCounter can\'t find root element');
                 return false;
             } else {
-                // отвызывание старого экземпляра
+                // отвязывание старого экземпляра
                 var old_instance = this.$input.data(dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
