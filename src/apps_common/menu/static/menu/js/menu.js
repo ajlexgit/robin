@@ -17,14 +17,14 @@
             // На мобиле и iPad высота меню - весь экран
             $.winHeight($menu);
         } else {
-            $('#mobile-menu').removeClass('active');
+            $('#mobile-menu-button').removeClass('active');
             $menu.removeClass('active');
         }
     };
 
     $(document).ready(function() {
         // Клик на кнопку мобильного меню
-        $('#mobile-menu').on('click', function() {
+        $('#mobile-menu-button').on('click', function() {
             var $button = $(this);
             var $menu = $('#main-menu');
             if ($button.hasClass('active')) {
