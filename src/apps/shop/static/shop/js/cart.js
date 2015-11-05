@@ -14,7 +14,7 @@
 
     window.Cart = (function() {
         var Cart = function(initial, options) {
-            this.settings = $.extend({
+            this.opts = $.extend({
                 prefix: 'cart',
                 onSaveToSession: $.noop,
                 onUpdateStorage: $.noop
@@ -25,7 +25,7 @@
             var that = this;
             $(window).off('.cart').on('storage.cart', function(event) {
                 var origEvent = event.originalEvent;
-                if (origEvent.key == that.settings.prefix) {
+                if (origEvent.key == that.opts.prefix) {
                     that.opts.onUpdateStorage.call(that);
                 }
             });
@@ -33,14 +33,14 @@
 
         // Получение хранилища заказа из localStorage
         Cart.prototype.getStorage = function() {
-            var json = localStorage.getItem(this.settings.prefix) || '{}';
+            var json = localStorage.getItem(this.opts.prefix) || '{}';
             return $.parseJSON(json);
         };
 
         // Сохранение заказа в localStorage
         Cart.prototype.saveStorage = function(storage) {
             var json = JSON.stringify(storage || {});
-            localStorage.setItem(this.settings.prefix, json);
+            localStorage.setItem(this.opts.prefix, json);
         };
 
         // Отправка localStorage на сервер для сохранения в сессии
