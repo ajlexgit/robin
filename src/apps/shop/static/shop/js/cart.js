@@ -97,6 +97,11 @@
             сохраняющий весь заказ в сессию.
          */
         Cart.prototype.addItem = function(product_id, count) {
+            if (!product_id) {
+                console.warn('Cart can\'t find product ID');
+                return $.Deferred().reject();
+            }
+
             var storage = this.getStorage();
             var oldValue = parseInt(storage[product_id]) || 0;
             var finalCount = oldValue + Math.max(0, parseInt(count) || 0);
