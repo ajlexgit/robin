@@ -10,6 +10,11 @@ urlpatterns = [
         cart.save_cart,
         name='save_cart',
     ),
+    url(
+        r'^clear-cart/$',
+        cart.clear_cart,
+        name='clear_cart',
+    ),
 
     url(
         r'^$', views.IndexView.as_view(),

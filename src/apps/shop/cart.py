@@ -31,14 +31,14 @@ class CartProducts:
 
     def _format(self):
         """
-            Превращает неформатированный словарь self._unformatted вида {SN: count}
+            Превращает неформатированный словарь self._unformatted вида {ID: count}
             в кортеж self._products вида {Product, count, price*count}
         """
-        products = ShopProduct.objects.filter(serial__in=self._unformatted)
+        products = ShopProduct.objects.filter(id__in=self._unformatted)
 
         result = []
         for product in products:
-            count = self._unformatted[product.serial]
+            count = self._unformatted[product.id]
             if count > 0:
                 count = max(0, count)
             if options.MAX_PRODUCT_COUNT:
@@ -66,7 +66,17 @@ class CartProducts:
             Заполнение объекта из сессии
         """
         cart = cls()
-        cart._unformatted = request.session.get(options.SESSION_CART_NAME, {})
+
+        cart._unformatted = {}
+        data = request.session.get(options.SESSION_CART_NAME, {})
+        for product_id, count in data:
+            try:
+                product_id = int(product_id)
+            except (TypeError, ValueError):
+                continue
+
+            cart._unformatted[product_id] = count
+
         cart._format()
         return cart
 
@@ -76,7 +86,7 @@ class CartProducts:
             Заполнение объекта из GET или POST-данных.
             Информация извлекается из полей вида "cart[SN]=count"
         """
-        re_items_key = re.compile('^{}\[([-\w]+)\]$'.format(fieldname))
+        re_items_key = re.compile('^{}\[(\d+)\]$'.format(fieldname))
 
         cart = cls()
         cart._unformatted = {}
@@ -85,13 +95,18 @@ class CartProducts:
             if not match:
                 continue
 
-            sn = match.group(1)
+            product_id = match.group(1)
+            try:
+                product_id = int(product_id)
+            except (TypeError, ValueError):
+                continue
+
             try:
                 value = int(value)
             except (TypeError, ValueError):
                 value = 0
 
-            cart._unformatted[sn] = value
+            cart._unformatted[product_id] = value
 
         cart._format()
         return cart
@@ -108,6 +123,16 @@ def save_cart(request):
     """ Установка всех товаров в корзине """
     cart = CartProducts.from_data(request.POST)
     cart.to_session(request)
+    return JsonResponse({
+
+    })
+
+
+@require_POST
+def clear_cart(request):
+    """ Очистка корзины """
+    cart = CartProducts.from_session(request)
+    cart.clear(request)
     return JsonResponse({
 
     })
