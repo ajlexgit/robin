@@ -26,13 +26,25 @@
         <div class="gc-full gc-alone">
           <div style="display: inline-block">
             {% for field in form %}
-              <fieldset class="{{ field.errors.classes }}">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.errors %}
-                  <span class="error">{{ field.errors }}</span>
-                {% endif %}
-              </fieldset>
+              {% if field.name == 'count' %}
+                <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
+                  {{ field.label_tag }}
+                  <div class="custom-counter">
+                    {{ field }}
+                  </div>
+                  {% if field.errors %}
+                    <span class="error">{{ field.errors }}</span>
+                  {% endif %}
+                </fieldset>
+              {% else %}
+                <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
+                  {{ field.label_tag }}
+                  {{ field }}
+                  {% if field.errors %}
+                    <span class="error">{{ field.errors }}</span>
+                  {% endif %}
+                </fieldset>
+              {% endif %}
             {% endfor %}
           </div>
         </div>

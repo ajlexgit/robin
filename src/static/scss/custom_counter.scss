@@ -1,0 +1,33 @@
+@import 'mixins';
+
+
+.custom-counter {
+  @include flexbox;
+  @include flex-flow(row nowrap);
+  @include justify-content(flex-start);
+  @include align-items(center);
+
+  .custom-counter-button {
+    width: 35px;
+    height: 35px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    background-color: green;
+    @include unselectable;
+    @include valign_after;
+    @include font-size(17px);
+  }
+
+  input.custom-counter-input {
+    width: 50px;
+    text-align: center;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}

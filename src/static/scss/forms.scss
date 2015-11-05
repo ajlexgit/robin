@@ -4,7 +4,7 @@ form {
   @include border-box;
 }
 
-input:not([type="radio"]):not([type="checkbox"]):not([type="file"]), select, textarea, button {
+input, select, textarea, button {
   width: 200px;
   padding: 5px 6px;
   border: 1px solid #808080;
@@ -26,7 +26,7 @@ fieldset {
   }
 
   &.errors {
-    input:not([type="radio"]):not([type="checkbox"]):not([type="file"]), select, textarea {
+    input, select, textarea {
       border: 2px solid red;
       padding: 3px 4px;
     }

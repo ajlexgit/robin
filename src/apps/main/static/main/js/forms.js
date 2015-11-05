@@ -18,6 +18,11 @@
         $('input:checkbox').each(function() {
             CustomCheckbox.create(this);
         });
+
+        // custom counter
+        $('.custom-counter').each(function() {
+            CustomCounter.create(this);
+        });
     });
 
 })(jQuery);

@@ -198,6 +198,7 @@ class ClientFormModel(models.Model):
             ),
         ),
     )
+    count = models.PositiveIntegerField(_('count'), max_length=2, default=1)
     color = ColorField(_('color'), blank=True)
     color2 = ColorOpacityField(_('color2'), blank=True)
     coords = GoogleCoordsField(_('coords'), blank=True)

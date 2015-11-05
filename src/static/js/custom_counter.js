@@ -27,7 +27,7 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$input.data(dataParamName);
+                var old_instance = this.$root.data(dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
@@ -53,8 +53,8 @@
             }
 
             // кнопки
-            this.$prev = $('<div>').text('-').prependTo(this.$root);
-            this.$next = $('<div>').text('+').appendTo(this.$root);
+            this.$prev = $('<div>').text('-').insertBefore(this.$input);
+            this.$next = $('<div>').text('+').insertAfter(this.$input);
 
             // вешаем классы
             this.$root.addClass(this.opts.containerClass);
