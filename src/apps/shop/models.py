@@ -9,8 +9,6 @@ from gallery import *
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
 from libs.aliased_queryset import AliasedQuerySetMixin
-from libs.stdimage.fields import StdImageField
-from libs.media_storage import MediaStorage
 from libs.valute_field import ValuteField
 from libs.autoslug import AutoSlugField
 from libs.mptt import *

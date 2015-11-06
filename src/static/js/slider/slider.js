@@ -16,7 +16,7 @@
             </div>
 
         JS пример:
-            var slider = new Slider($elem, {
+            new Slider('#slider', {
                 loop: false,
                 adaptiveHeight: true,
                 adaptiveHeightTransition: 800,
@@ -111,7 +111,7 @@
                 that.updateListHeight();
             }, 100);
 
-            $images.one('load', loadHandle);
+            $images.on('load', loadHandle);
         };
 
 
