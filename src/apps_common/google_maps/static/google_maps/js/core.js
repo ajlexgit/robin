@@ -156,7 +156,7 @@
         GoogleMap.create = function(container, options) {
             var self = new GoogleMap();
 
-            self.$container = $.findFirstElement(container);
+            self.$container = $(container).first();
             if (!self.$container.length) {
                 console.error('GoogleMap can\'t find container');
                 return

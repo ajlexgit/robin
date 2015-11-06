@@ -148,7 +148,7 @@
         YandexMap.create = function(container, options) {
             var self = new YandexMap();
 
-            self.$container = $.findFirstElement(container);
+            self.$container = $(container).first();
             if (!self.$container.length) {
                 console.error('YandexMap can\'t find container');
                 return
