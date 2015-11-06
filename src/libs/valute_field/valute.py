@@ -1,5 +1,6 @@
 from decimal import Decimal, getcontext, ROUND_CEILING
 from django.conf import settings
+from django.utils.functional import cached_property
 from .utils import split_price
 
 
@@ -66,7 +67,7 @@ class Valute:
         _frac = self._frac
         return self._join(_int, _frac)
 
-    @property
+    @cached_property
     def simple(self):
         """
             Без символа валюты,
@@ -80,7 +81,7 @@ class Valute:
         _frac = self._frac
         return self._join(_int, _frac)
 
-    @property
+    @cached_property
     def trailed(self):
         """
             Без символа валюты,
@@ -94,7 +95,7 @@ class Valute:
         _frac = self._frac if self._frac.strip('0') else ''
         return self._join(_int, _frac)
 
-    @property
+    @cached_property
     def utf(self):
         """
             С символом валюты,
@@ -111,7 +112,7 @@ class Valute:
 
         return self._formatter['utf_format'].format(value)
 
-    @property
+    @cached_property
     def alternate(self):
         """
             С символом валюты (без UTF),

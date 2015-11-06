@@ -66,8 +66,8 @@ class CartProducts:
         cart = cls()
 
         cart._unformatted = {}
-        data = request.session.get(options.SESSION_CART_NAME, {})
-        for product_id, count in data:
+        data = request.session.get(options.SESSION_CART_NAME) or {}
+        for product_id, count in data.items():
             try:
                 product_id = int(product_id)
             except (TypeError, ValueError):

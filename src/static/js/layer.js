@@ -8,7 +8,7 @@
 
         Параметры:
             speed           - отношение пути перемещения блока к пути скролла
-            strategy        - стратегия перемещения блока (margin / top)
+            strategy        - стратегия перемещения блока (margin / top / transform)
             minEnableWidth  - минимальная ширина экрана, при которой блок перемещается
      */
 
@@ -45,6 +45,12 @@
                 this._start = parseInt(this.$block.css('top')) || 0;
             } else if (this.opts.strategy == 'margin') {
                 this._start = parseInt(this.$block.css('margin')) || 0;
+            } else if (this.opts.strategy == 'transform') {
+                var matrix = this.$block.css('transform');
+                var match = /(\d+)\)/.exec(matrix);
+                if (match) {
+                    this._start = parseInt(match[1]) || 0;
+                }
             }
 
             // включение

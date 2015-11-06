@@ -23,7 +23,10 @@
 
     // Sticky
     $(document).ready(function() {
-        $('#sticky_example').find('.yellow').sticky();
+        $('#sticky_example').find('.yellow').sticky({
+            topOffset: 50,
+            bottomOffset: 50
+        });
     });
 
     // Layer

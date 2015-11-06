@@ -49,8 +49,8 @@
             // настройки
             this.opts = $.extend({
                 strategy: 'fixed',
-                topOffset: 50,
-                bottomOffset: 50,
+                topOffset: 0,
+                bottomOffset: 0,
                 minEnableWidth: 768
             }, options);
 
