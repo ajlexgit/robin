@@ -1,7 +1,7 @@
 import os
 import sys
 
-# Пример Layer.js
+
 # Custom Radio + group
 # Custom checkbox group
 # SessionStoreMixin: переделать? Не работает для InlineFormset
