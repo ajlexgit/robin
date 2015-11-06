@@ -24,6 +24,10 @@ class CartProducts:
         return self._products
 
     @property
+    def total_count(self):
+        return sum(item[1] for item in self._products)
+
+    @property
     def total_cost(self):
         return sum(item[2] for item in self._products)
 
