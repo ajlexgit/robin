@@ -23,7 +23,7 @@
     var Menu = Class(null, function(cls, superclass) {
         cls.init = function(options) {
             this.opts = $.extend({
-                menuSelector: '#main-menu',
+                menuSelector: '#mobile-menu',
                 menuActiveClass: 'active',
                 buttonSelector: '#mobile-menu-button',
                 buttonActiveClass: 'active',
@@ -108,11 +108,6 @@
 
     // главное меню на мобиле
     window.menu = Menu.create({
-        menuSelector: '#main-menu',
-        menuActiveClass: 'active',
-        buttonSelector: '#mobile-menu-button',
-        buttonActiveClass: 'active',
-
         onResize: function(win_width) {
             if (win_width >= 1024) {
                 // скрытие на больших экранах

@@ -45,6 +45,8 @@ body {
 
     & > .content {
       display: table-cell;
+      position: relative;
+      z-index: 1;
       vertical-align: top;
     }
   }
