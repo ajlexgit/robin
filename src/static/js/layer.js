@@ -38,16 +38,16 @@
             // настройки
             this.opts = $.extend({
                 speed: 0.5,
-                strategy: 'margin',
+                strategy: 'top',
                 minEnableWidth: 768
             }, options);
 
             // получаем начальное положение
             this._start = 0;
             if (this.opts.strategy == 'top') {
-                this._start = parseInt(this.$block.css('top'));
-            } else if (this.opts.strategy == 'marginTop') {
-                this._start = parseInt(this.$block.css('marginTop'));
+                this._start = parseInt(this.$block.css('top')) || 0;
+            } else if (this.opts.strategy == 'margin') {
+                this._start = parseInt(this.$block.css('margin')) || 0;
             }
 
             // включение

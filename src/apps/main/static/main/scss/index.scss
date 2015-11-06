@@ -57,11 +57,40 @@ header {
   background: black;
 
   .gc-full {
-    overflow: auto;     // fix margin
+    position: relative;
+    overflow: auto;   // fix margin
     height: 800px;
+    z-index: 1;
   }
 
   .yellow {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+  }
+}
+
+#layer_example {
+  background: gray;
+
+  .gc-full {
+    position: relative;
+    overflow: auto;   // fix margin
+    height: 800px;
+    z-index: 1;
+  }
+
+  .yellow {
+    position: absolute;
+    left: 30%;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+  }
+
+  .green {
+    position: absolute;
+    left: 60%;
     width: 100px;
     height: 100px;
     margin: auto;

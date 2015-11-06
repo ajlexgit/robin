@@ -125,4 +125,11 @@
         };
     });
 
+
+    $.fn.counter = function(options) {
+        this.each(function() {
+            CustomCounter.create(this, options);
+        })
+    }
+
 })(jQuery);

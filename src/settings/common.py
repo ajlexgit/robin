@@ -238,6 +238,7 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/drager.js',
             'js/parallax.js',
+            'js/layer.js',
             'js/sticky.js',
             'js/tabs.js',
             'js/slider/slider.js',

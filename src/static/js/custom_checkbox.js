@@ -117,4 +117,11 @@
         };
     });
 
+
+    $.fn.checkbox = function(options) {
+        this.each(function() {
+            CustomCheckbox.create(this, options);
+        })
+    }
+
 })(jQuery);

@@ -26,6 +26,17 @@
         new Sticky('#sticky_example .yellow');
     });
 
+    // Layer
+    $(document).ready(function() {
+        var $layer = $('#layer_example');
+        $layer.find('.yellow').layer({
+            speed: 0.2
+        });
+        $layer.find('.green').layer({
+            speed: 0.3
+        });
+    });
+
     // Parallax
     $(document).ready(function() {
         $('#parallax_sample').parallax();

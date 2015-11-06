@@ -15,14 +15,10 @@
         });
 
         // custom checkboxes
-        $('input:checkbox').each(function() {
-            CustomCheckbox.create(this);
-        });
+        $('input:checkbox').checkbox();
 
         // custom counter
-        $('.custom-counter').each(function() {
-            CustomCounter.create(this);
-        });
+        $('.custom-counter').counter();
     });
 
 })(jQuery);
