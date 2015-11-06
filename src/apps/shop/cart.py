@@ -1,6 +1,5 @@
 import re
 from django.views.generic import View
-from libs.valute_field import Valute
 from libs.views_ajax import AjaxViewMixin
 from .models import ShopProduct
 from . import options
@@ -26,8 +25,7 @@ class CartProducts:
 
     @property
     def total_cost(self):
-        result = sum(item[2] for item in self._products)
-        return Valute(result)
+        return sum(item[2] for item in self._products)
 
     def _format(self):
         """
@@ -116,7 +114,6 @@ class CartProducts:
             Сохранение данных в сессию
         """
         request.session[options.SESSION_CART_NAME] = self._unformatted
-
 
 
 class SaveCart(AjaxViewMixin, View):

@@ -1,6 +1,5 @@
 from decimal import Decimal, getcontext, ROUND_CEILING
 from django.conf import settings
-from django.utils.functional import cached_property
 from .utils import split_price
 
 
@@ -67,7 +66,7 @@ class Valute:
         _frac = self._frac
         return self._join(_int, _frac)
 
-    @cached_property
+    @property
     def simple(self):
         """
             Без символа валюты,
@@ -81,7 +80,7 @@ class Valute:
         _frac = self._frac
         return self._join(_int, _frac)
 
-    @cached_property
+    @property
     def trailed(self):
         """
             Без символа валюты,
@@ -95,7 +94,7 @@ class Valute:
         _frac = self._frac if self._frac.strip('0') else ''
         return self._join(_int, _frac)
 
-    @cached_property
+    @property
     def utf(self):
         """
             С символом валюты,
@@ -112,7 +111,7 @@ class Valute:
 
         return self._formatter['utf_format'].format(value)
 
-    @cached_property
+    @property
     def alternate(self):
         """
             С символом валюты (без UTF),
@@ -134,46 +133,70 @@ class Valute:
     # Операторы
     # ===========
 
-    def __neg__(self, *args, **kwargs):
-        return self.__class__(self._value.__neg__(*args, **kwargs))
+    def __neg__(self):
+        return self.__class__(self._value.__neg__())
 
-    def __abs__(self, *args, **kwargs):
-        return self.__class__(self._value.__abs__(*args, **kwargs))
+    def __abs__(self, round=True):
+        return self.__class__(self._value.__abs__(round))
 
-    def __add__(self, *args, **kwargs):
-        return self.__class__(self._value.__add__(*args, **kwargs))
+    def __add__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__add__(other._value))
+        return self.__class__(self._value.__add__(other))
 
     __radd__ = __add__
 
-    def __sub__(self, *args, **kwargs):
-        return self.__class__(self._value.__sub__(*args, **kwargs))
+    def __sub__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__sub__(other._value))
+        return self.__class__(self._value.__sub__(other))
 
-    def __rsub__(self, *args, **kwargs):
-        return self.__class__(self._value.__rsub__(*args, **kwargs))
+    def __rsub__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__rsub__(other._value))
+        return self.__class__(self._value.__rsub__(other))
 
-    def __mul__(self, *args, **kwargs):
-        return self.__class__(self._value.__mul__(*args, **kwargs))
+    def __mul__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__mul__(other._value))
+        return self.__class__(self._value.__mul__(other))
 
-    def __truediv__(self, *args, **kwargs):
-        return self.__class__(self._value.__truediv__(*args, **kwargs))
+    def __truediv__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__truediv__(other._value))
+        return self.__class__(self._value.__truediv__(other))
 
-    def __rtruediv__(self, *args, **kwargs):
-        return self.__class__(self._value.__rtruediv__(*args, **kwargs))
+    def __rtruediv__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__rtruediv__(other._value))
+        return self.__class__(self._value.__rtruediv__(other))
 
-    def __divmod__(self, *args, **kwargs):
-        return self.__class__(self._value.__divmod__(*args, **kwargs))
+    def __divmod__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__divmod__(other._value))
+        return self.__class__(self._value.__divmod__(other))
 
-    def __rdivmod__(self, *args, **kwargs):
-        return self.__class__(self._value.__rdivmod__(*args, **kwargs))
+    def __rdivmod__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__rdivmod__(other._value))
+        return self.__class__(self._value.__rdivmod__(other))
 
-    def __mod__(self, *args, **kwargs):
-        return self.__class__(self._value.__mod__(*args, **kwargs))
+    def __mod__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__mod__(other._value))
+        return self.__class__(self._value.__mod__(other))
 
-    def __rmod__(self, *args, **kwargs):
-        return self.__class__(self._value.__rmod__(*args, **kwargs))
+    def __rmod__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__rmod__(other._value))
+        return self.__class__(self._value.__rmod__(other))
 
-    def __floordiv__(self, *args, **kwargs):
-        return self.__class__(self._value.__floordiv__(*args, **kwargs))
+    def __floordiv__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__floordiv__(other._value))
+        return self.__class__(self._value.__floordiv__(other))
 
-    def __rfloordiv__(self, *args, **kwargs):
-        return self.__class__(self._value.__rfloordiv__(*args, **kwargs))
+    def __rfloordiv__(self, other):
+        if isinstance(other, Valute):
+            return self.__class__(self._value.__rfloordiv__(other._value))
+        return self.__class__(self._value.__rfloordiv__(other))
