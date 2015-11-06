@@ -3,13 +3,20 @@
     /*
         Кастомный чекбокс, подключаемый к стандартному.
 
-        Пример:
-            $('input[type=checkbox]').each(function() {
-                CustomCheckbox.create(this);
-            })
-
         Требует:
             jquery.utils.js
+
+        Параметры:
+            className           - класс, который добавляется на новый элемент, представляющий чекбокс
+
+            checkedClass        - класс, который добавляется на новый элемент, когда он выделен
+
+            beforeChange        - событие перед изменением состояния чекбокса
+
+            afterChange         - событие после изменения состояния чекбокса
+
+        Пример:
+            $('input[type=checkbox]').checkbox()
     */
 
     window.CustomCheckbox = Class(null, function(cls, superclass) {
@@ -37,6 +44,9 @@
                 afterChange: $.noop
             }, options);
 
+            // скрываем чекбокс
+            this.$input.hide();
+
             // новый чекбокс
             this.$elem = $('<div>').insertAfter(this.$input);
             this.$elem.addClass(this.opts.className);
@@ -53,7 +63,7 @@
 
             // изменение состояния
             this.$input.off('.checkbox').on('change.checkbox', function() {
-                that._set_checked(!that.is_checked());
+                that._set_checked(!that.checked());
                 return false;
             });
         };
@@ -81,7 +91,7 @@
 
             this._checked = value;
 
-            if (this.is_checked()) {
+            if (this.checked()) {
                 this.$elem.addClass(this.opts.checkedClass);
                 this.$input.prop('checked', true);
             } else {
@@ -98,7 +108,7 @@
         /*
             Получение состояния
          */
-        cls.prototype.is_checked = function() {
+        cls.prototype.checked = function() {
             return this._checked
         };
 

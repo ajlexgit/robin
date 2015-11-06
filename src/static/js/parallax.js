@@ -7,6 +7,15 @@
         Требует:
             jquery.utils.js
 
+        Параметры:
+            selector        - селектор выбора элемента, который будет перемещаться
+
+            easing          - функция сглаживания перемещения фона
+
+            extraHeight     - добавление высоты к перемещающемуся элементу в процентах
+
+            minEnableWidth  - минимальная ширина экрана, при которой элемент перемещается
+
         Пример:
             <div id="block">
                 <img class="parallax" src="/img/bg.jpg">
@@ -15,30 +24,46 @@
 
             $(document).ready(function() {
                 Parallax.create('#block');
+
                 // или
+
                 $('#block').parallax();
             });
      */
 
-
     var $window = $(window);
     var parallaxes = [];
 
-    window.Parallax = (function() {
-        var Parallax = function(block, options) {
-            this.$block = $.findFirstElement(block);
+    window.Parallax = Class(null, function(cls, superclass) {
+        var dataParamName = 'parallax';
+
+        cls.init = function(block, options) {
+            this.$block = $(block).first();
             if (!this.$block.length) {
                 console.error('Parallax can\'t find block');
-                return
+                return false;
+            } else {
+                // отвязывание старого экземпляра
+                var old_instance = this.$block.data(dataParamName);
+                if (old_instance) {
+                    old_instance.destroy();
+                }
+                this.$block.data(dataParamName, this);
             }
 
             // настройки
-            this.opts = $.extend(true, this.getDefaultOpts(), options);
+            this.opts = $.extend({
+                selector: '.parallax',
+                easing: 'easeInOutQuad',
+                extraHeight: 50,
+                minEnableWidth: 768
+            }, options);
 
             this.$block.css({
                 overflow: 'hidden'
             });
 
+            // передвигающийся элемент
             this.$bg = this.$block.find(this.opts.selector);
             if (!this.$bg.length) {
                 console.error('Parallax can\'t find background');
@@ -54,19 +79,23 @@
             parallaxes.push(this);
         };
 
-        Parallax.prototype.getDefaultOpts = function() {
-            return {
-                selector: '.parallax',
-                easing: 'easeInOutQuad',
-                extraHeight: 50,
-                minEnableWidth: 768
+        /*
+            Отвязывание плагина
+         */
+        cls.prototype.destroy = function() {
+            this.disable();
+            this.$block.removeData(dataParamName);
+
+            var index = parallaxes.indexOf(this);
+            if (index >= 0) {
+                parallaxes.splice(index, 1);
             }
         };
 
         /*
             Включение параллакса
          */
-        Parallax.prototype.enable = function() {
+        cls.prototype.enable = function() {
             if (this.enabled) {
                 return
             } else{
@@ -83,7 +112,7 @@
         /*
             Отключение параллакса
          */
-        Parallax.prototype.disable = function() {
+        cls.prototype.disable = function() {
             if (!this.enabled) {
                 return
             } else {
@@ -99,7 +128,7 @@
         /*
             Расчет смещения картинки по текущему положению окна
          */
-        Parallax.prototype.process = function(win_scroll, win_height) {
+        cls.prototype.process = function(win_scroll, win_height) {
             if (!this.enabled) {
                 return
             }
@@ -125,9 +154,7 @@
                 top: -backgroundOffset + '%'
             });
         };
-
-        return Parallax;
-    })();
+    });
 
 
     var applyParallaxes = function() {
@@ -153,9 +180,10 @@
         });
     }, 100));
 
+
     $.fn.parallax = function(options) {
         this.each(function() {
-            new Parallax(this, options);
+            Parallax.create(this, options);
         })
     }
 

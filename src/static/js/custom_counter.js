@@ -1,20 +1,31 @@
 (function($) {
 
     /*
-        Кастомное поле ввода чисел.
-
-        Пример:
-            <div class="custom-counter">
-                <input type="text" maxlength="2" value="1">
-            </div>
-
-
-            $('.custom-counter').each(function() {
-                CustomCounter.create(this);
-            })
+        Кастомное поле ввода чисел, которое подключется к обёртке над
+        сттандартным полем
 
         Требует:
             jquery.utils.js
+
+        Параметры:
+            buttonClass      - класс, добавляемый кнопкам
+
+            inputClass       - класс, добавляемый полю
+
+            minValue         - минимальное значение поля
+
+            maxValue         - максимальное значение поля
+
+            beforeChange     - событие перед изменением значения
+
+            afterChange      - событие после изменения значения
+
+        Пример:
+            <div class="custom-counter">
+                <input type="number" value="1">
+            </div>
+
+            $('.custom-counter').counter()
     */
 
     window.CustomCounter = Class(null, function(cls, superclass) {
@@ -36,7 +47,6 @@
 
             // настройки
             this.opts = $.extend({
-                containerClass: 'custom-counter',
                 buttonClass: 'custom-counter-button',
                 inputClass: 'custom-counter-input',
                 minValue: 0,
@@ -57,10 +67,14 @@
             this.$next = $('<div>').text('+').insertAfter(this.$input);
 
             // вешаем классы
-            this.$root.addClass(this.opts.containerClass);
             this.$input.addClass(this.opts.inputClass);
             this.$prev.addClass(this.opts.buttonClass + ' decr');
             this.$next.addClass(this.opts.buttonClass + ' incr');
+
+            if (this.$input.attr('type') == 'number') {
+                this.$input.attr('min', this.opts.minValue);
+                this.$input.attr('max', this.opts.maxValue);
+            }
 
             // форматируем текущее значение
             this.value(this.value());
