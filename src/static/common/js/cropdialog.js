@@ -120,6 +120,8 @@
                 arr = value
             } else if (typeof value == 'string') {
                 arr = value.split('x');
+            } else if (!value) {
+                return
             } else {
                 arr = value.toString().split('x');
             }
@@ -145,6 +147,8 @@
                 arr = value
             } else if (typeof value == 'string') {
                 arr = value.split('|');
+            } else if (!value) {
+                return
             } else {
                 arr = value.toString().split('|');
             }
@@ -169,6 +173,8 @@
                 arr = value
             } else if (typeof value == 'string') {
                 arr = value.split(':');
+            } else if (!value) {
+                return
             } else {
                 arr = value.toString().split(':');
             }
