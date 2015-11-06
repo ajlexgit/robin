@@ -8,11 +8,8 @@
 
         Параметры:
             speed           - отношение пути перемещения блока к пути скролла
-
             strategy        - стратегия перемещения блока (margin / top)
-
             minEnableWidth  - минимальная ширина экрана, при которой блок перемещается
-
      */
 
     var $window = $(window);
@@ -153,7 +150,7 @@
 
 
     $.fn.layer = function(options) {
-        this.each(function() {
+        return this.each(function() {
             Layer.create(this, options);
         })
     }

@@ -26,6 +26,15 @@
             <a data-tab-back>...</a>
 
 
+        Параметры:
+            tabSelector         - селектор вкладок внутри $root
+            tabVisibleClass     - класс видимой вкладки
+            getBackTabName      - определение предыдущей вкладки для возврата
+            beforeCloseTab      - событие перед закрытием вкладки
+            closeTab            - событие закрытия вкладки
+            beforeShowTab       - событие перед показом вкладки
+            showTab             - событие показа вкладки
+
         Пример:
             HTML:
               <div id="tabs">
@@ -52,77 +61,79 @@
               tm.openTab('tab-two')
      */
 
-    window.TabManager = (function() {
-        var TabManager = function() {};
+    window.TabManager = Class(null, function(cls, superclass) {
+        var dataParamName = 'tabs';
 
-        TabManager.create = function(root, options) {
-            var self = new TabManager();
-
-            self.$root = $.findFirstElement(root);
-            if (!self.$root.length) {
-                console.warn('TabManager can\'t find root element');
-                return
+        cls.init = function(root, options) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
+                console.error('TabManager can\'t find root element');
+                return false;
+            } else {
+                // отвязывание старого экземпляра
+                var old_instance = this.$root.data(dataParamName);
+                if (old_instance) {
+                    old_instance.destroy();
+                }
+                this.$root.data(dataParamName, this);
             }
 
-            // opts
-            self.opts = $.extend(self.getDefaultOpts(), options);
-
-            // определяем текущую вкладку
-            var $current = $.findFirstElement(self.opts.tabSelector + '.' + self.opts.tabVisibleClass, self.$root);
-            self.setCurrentTab($current);
-
-            // events
-            self.$root.off('click.tabmanger');
-            self.$root.on('click.tabmanger', '[data-tab]', function() {
-                var tabName = $(this).data('tab');
-                self.openTab(tabName);
-                return false;
-            });
-
-            self.$root.on('click.tabmanger', '[data-tab-back]', function() {
-                var tabName = self.opts.getBackTabName.call(self, self.currentTabName);
-                self.openTab(tabName);
-                return false;
-            });
-
-            self.$root.data('tabmanager', self);
-
-            return self;
-        };
-
-        TabManager.prototype.getDefaultOpts = function() {
-            return {
+            // настройки
+            this.opts = $.extend({
                 tabSelector: '.tab',
                 tabVisibleClass: 'visible',
 
                 getBackTabName: function(tabName) {
-                    // имя предыдущей вкладки
                     return tabName.split('-').slice(0, -1).join('-');
                 },
-
                 beforeCloseTab: function($tab, tabName) {
-                    // перед закрытием текущей вкладки
+
                 },
                 closeTab: function($tab, tabName) {
-                    // закрытие вкладки
                     $tab.removeClass(this.opts.tabVisibleClass);
                 },
-
                 beforeShowTab: function($tab, tabName) {
-                    // перед показом вкладки
+
                 },
                 showTab: function($tab, tabName) {
-                    // показ вкладки
                     $tab.addClass(this.opts.tabVisibleClass);
                 }
-            }
+            }, options);
+
+            // определяем текущую вкладку
+            var $current = this.$root.find(this.opts.tabSelector + '.' + this.opts.tabVisibleClass);
+            this.setCurrentTab($current);
+
+            var that = this;
+
+            // клик на ссылке открытия вкладки
+            this.$root.on('click.tabmanger', '[data-tab]', function() {
+                var tabName = $(this).data('tab');
+                that.openTab(tabName);
+                return false;
+            });
+
+            // клик на ссылке открытия предыдущей вкладки
+            this.$root.on('click.tabmanger', '[data-tab-back]', function() {
+                var tabName = that.opts.getBackTabName.call(that, that.currentTabName);
+                that.openTab(tabName);
+                return false;
+            });
+        };
+
+        /*
+            Отвязывание плагина
+         */
+        cls.prototype.destroy = function() {
+            this.$root.off('.tabmanger');
+            this.$root.removeData(dataParamName);
         };
 
 
         /*
             Установка текущей вкладки и её имени
          */
-        TabManager.prototype.setCurrentTab = function($tab, tabName) {
+        cls.prototype.setCurrentTab = function($tab, tabName) {
             this.$currentTab = $tab;
             if (tabName) {
                 this.currentTabName = tabName;
@@ -136,19 +147,17 @@
             }
         };
 
-
         /*
             Получение вкладки по её имени
          */
-        TabManager.prototype.getTabByName = function(tabName) {
-            return $.findFirstElement(this.opts.tabSelector + '.' + tabName, this.$root);
+        cls.prototype.getTabByName = function(tabName) {
+            return this.$root.find(this.opts.tabSelector + '.' + tabName);
         };
-
 
         /*
             Показ вкладки
          */
-        TabManager.prototype.openTab = function(tabName) {
+        cls.prototype.openTab = function(tabName) {
             if (!tabName) {
                 return
             }
@@ -172,8 +181,13 @@
             this.$currentTab = $tab;
             this.currentTabName = tabName;
         };
+    });
 
-        return TabManager;
-    })();
+
+    $.fn.tabManager = function(options) {
+        return this.each(function() {
+            TabManager.create(this, options);
+        })
+    }
 
 })(jQuery);

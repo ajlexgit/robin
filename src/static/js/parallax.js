@@ -9,11 +9,8 @@
 
         Параметры:
             selector        - селектор выбора элемента, который будет перемещаться
-
             easing          - функция сглаживания перемещения фона
-
             extraHeight     - добавление высоты к перемещающемуся элементу в процентах
-
             minEnableWidth  - минимальная ширина экрана, при которой элемент перемещается
 
         Пример:
@@ -182,7 +179,7 @@
 
 
     $.fn.parallax = function(options) {
-        this.each(function() {
+        return this.each(function() {
             Parallax.create(this, options);
         })
     }

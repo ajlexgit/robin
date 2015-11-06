@@ -8,10 +8,14 @@
             jquery.utils.js
 
         Параметры:
-            strategy:         - метод перемещения блока ("margin" или "fixed")
+            strategy          - метод перемещения блока ("margin" или "fixed")
             topOffset         - расстояние от верха окна до ползающего блока
-            bottomOffset      - расстояние от низа родительского блока
-                                до ползающего блока
+            bottomOffset      - расстояние от низа родительского блока до ползающего блока
+            minEnableWidth    - минимальная ширина экрана, при которой блок перемещается
+
+        Пример:
+            $('.block').sticky()
+
      */
 
     var $window = $(window);
@@ -21,18 +25,34 @@
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
 
-    window.Sticky = (function() {
-        var Sticky = function(block, options) {
-            this.$block = $.findFirstElement(block);
+
+    window.Sticky = Class(null, function(cls, superclass) {
+        var dataParamName = 'sticky';
+
+        cls.init = function(block, options) {
+            this.$block = $(block).first();
             if (!this.$block.length) {
                 console.error('Sticky can\'t find block');
-                return
+                return false;
+            } else {
+                // отвязывание старого экземпляра
+                var old_instance = this.$block.data(dataParamName);
+                if (old_instance) {
+                    old_instance.destroy();
+                }
+                this.$block.data(dataParamName, this);
             }
 
+            // родительский контейнер
             this.$container = this.$block.parent();
 
             // настройки
-            this.opts = $.extend(true, this.getDefaultOpts(), options);
+            this.opts = $.extend({
+                strategy: 'fixed',
+                topOffset: 50,
+                bottomOffset: 50,
+                minEnableWidth: 768
+            }, options);
 
             // включение
             if (window.innerWidth >= this.opts.minEnableWidth) {
@@ -43,19 +63,23 @@
             stickies.push(this);
         };
 
-        Sticky.prototype.getDefaultOpts = function() {
-            return {
-                strategy: 'fixed',     // margin / fixed
-                topOffset: 50,
-                bottomOffset: 50,
-                minEnableWidth: 768
+        /*
+            Отвязывание плагина
+         */
+        cls.prototype.destroy = function() {
+            this.disable();
+            this.$block.removeData(dataParamName);
+
+            var index = stickies.indexOf(this);
+            if (index >= 0) {
+                stickies.splice(index, 1);
             }
         };
 
         /*
             Включение ползания
          */
-        Sticky.prototype.enable = function() {
+        cls.prototype.enable = function() {
             if (this.enabled) {
                 return
             } else {
@@ -71,7 +95,7 @@
         /*
             Выключение ползания
          */
-        Sticky.prototype.disable = function() {
+        cls.prototype.disable = function() {
             if (!this.enabled) {
                 return
             } else {
@@ -83,11 +107,10 @@
             })
         };
 
-
         /*
             Запоминаем ширину блока (для strategy = fixed)
          */
-        Sticky.prototype.updateWidth = function() {
+        cls.prototype.updateWidth = function() {
             var initial_css = this.$block.get(0).style.cssText;
             this.$block.get(0).style.cssText = '';
 
@@ -97,11 +120,10 @@
             return this._width;
         };
 
-
         /*
             Обработка скролла
          */
-        Sticky.prototype.process = function(win_scroll) {
+        cls.prototype.process = function(win_scroll) {
             if (!this.enabled) {
                 return
             }
@@ -112,11 +134,10 @@
             }
         };
 
-
         /*
             Обработка скролла при стратегии fixed
          */
-        Sticky.prototype._processFixed = function(win_scroll) {
+        cls.prototype._processFixed = function(win_scroll) {
             var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
             var block_height = this.$block.outerHeight();
             var container_height = this.$container.height();
@@ -161,7 +182,7 @@
         /*
             Обработка скролла при стратегии margin
          */
-        Sticky.prototype._processMargin = function(win_scroll) {
+        cls.prototype._processMargin = function(win_scroll) {
             var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
             var block_height = this.$block.outerHeight();
             var container_height = this.$container.height();
@@ -193,9 +214,7 @@
                 });
             }
         };
-
-        return Sticky;
-    })();
+    });
 
     var applyStickies = function() {
         var win_scroll = $window.scrollTop();
@@ -215,5 +234,12 @@
             }
         });
     }, 100));
+
+
+    $.fn.sticky = function(options) {
+        return this.each(function() {
+            Sticky.create(this, options);
+        })
+    }
 
 })(jQuery);

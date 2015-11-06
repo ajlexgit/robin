@@ -9,15 +9,10 @@
 
         Параметры:
             buttonClass      - класс, добавляемый кнопкам
-
             inputClass       - класс, добавляемый полю
-
             minValue         - минимальное значение поля
-
             maxValue         - максимальное значение поля
-
             beforeChange     - событие перед изменением значения
-
             afterChange      - событие после изменения значения
 
         Пример:
@@ -82,19 +77,31 @@
             var that = this;
 
             // уменьшение значения
-            this.$prev.on('click', function() {
+            this.$prev.on('click.counter', function() {
                 that.value(that.value() - 1);
+                return false;
             });
 
             // увеличение значения
-            this.$next.on('click', function() {
+            this.$next.on('click.counter', function() {
                 that.value(that.value() + 1);
+                return false;
             });
 
             // форматирование значения при потере фокуса
-            this.$input.off('.counter').on('blur.counter', function() {
+            this.$input.on('blur.counter', function() {
                 that.value(that.value());
             });
+        };
+
+        /*
+            Отключение плагина
+         */
+        cls.prototype.destroy = function() {
+            this.$root.removeData(dataParamName);
+            this.$input.off('.counter');
+            this.$prev.remove();
+            this.$next.remove();
         };
 
         /*
@@ -127,21 +134,11 @@
                 }
             }
         };
-
-        /*
-            Отключение плагина
-         */
-        cls.prototype.destroy = function() {
-            this.$root.removeData(dataParamName);
-            this.$input.off('.counter');
-            this.$prev.remove();
-            this.$next.remove();
-        };
     });
 
 
     $.fn.counter = function(options) {
-        this.each(function() {
+        return this.each(function() {
             CustomCounter.create(this, options);
         })
     }

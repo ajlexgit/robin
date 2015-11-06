@@ -1,43 +1,129 @@
 (function($) {
 
     /*
+        Класс, отвечающий за показ/скрытие меню при нажатии кнопки.
 
         Требует:
             jquery.utils.js
 
+        Параметры:
+            menuSelector        - селектор элемента меню
+            menuActiveClass     - класс меню, когда оно активно
+            buttonSelector      - селектор кнопки, активирующей меню
+            buttonActiveClass   - класс кнопки, когда меню активно
+            beforeShow          - событие перед показом меню. Если вернёт false,
+                                  меню не будет показано
+            beforeHide          - событие перед скрытием меню. Если вернёт false,
+                                  меню не будет скрыто
+            onResize            - событие изменения размера окна браузера
     */
 
-    var refresh_menu = function() {
-        var $menu = $('#main-menu');
-        if (!$menu.hasClass('active')) {
-            return
-        }
+    var menus = [];
 
-        if (window.innerWidth < 1024) {
-            // На мобиле и iPad высота меню - весь экран
-            $.winHeight($menu);
-        } else {
-            $('#mobile-menu-button').removeClass('active');
-            $menu.removeClass('active');
-        }
-    };
+    var Menu = Class(null, function(cls, superclass) {
+        cls.init = function(options) {
+            this.opts = $.extend({
+                menuSelector: '#main-menu',
+                menuActiveClass: 'active',
+                buttonSelector: '#mobile-menu-button',
+                buttonActiveClass: 'active',
 
-    $(document).ready(function() {
-        // Клик на кнопку мобильного меню
-        $('#mobile-menu-button').on('click', function() {
-            var $button = $(this);
-            var $menu = $('#main-menu');
-            if ($button.hasClass('active')) {
-                $button.removeClass('active');
-                $menu.removeClass('active');
-            } else {
-                $button.addClass('active');
-                $menu.addClass('active');
-                refresh_menu();
+                beforeShow: $.noop,
+                beforeHide: $.noop,
+                onResize: $.noop
+            }, options);
+
+            // элемент меню
+            this.$menu = $(this.opts.menuSelector).first();
+            if (!this.$menu.length) {
+                console.error('Menu can\'t find menu element');
+                return false;
             }
-        });
+
+            var that = this;
+
+            // клик на кнопку
+            $(document).off('.menu').on('click.menu', this.opts.buttonSelector, function() {
+                return that.onClick($(this));
+            });
+
+            menus.push(this);
+        };
+
+        /*
+            Обработчик нажатия кнопки
+         */
+        cls.prototype.onClick = function($button) {
+            var currently_active = $button.hasClass(this.opts.buttonActiveClass);
+            if (currently_active) {
+                this.hide()
+            } else {
+                this.show()
+            }
+            return false;
+        };
+
+        /*
+            Показ меню
+         */
+        cls.prototype.show = function() {
+            if (this.opts.beforeShow.call(this) === false) {
+                return false;
+            }
+
+            $(this.opts.buttonSelector).addClass(this.opts.buttonActiveClass);
+            this.$menu.addClass(this.opts.menuActiveClass);
+        };
+
+        /*
+            Скрытие меню
+         */
+        cls.prototype.hide = function() {
+            if (this.opts.beforeHide.call(this) === false) {
+                return false;
+            }
+
+            $(this.opts.buttonSelector).removeClass(this.opts.buttonActiveClass);
+            this.$menu.removeClass(this.opts.menuActiveClass);
+        };
+
+        /*
+            Обновление при изменении размера окна
+         */
+        cls.prototype.refresh = function(win_width) {
+            if (!this.$menu.hasClass(this.opts.menuActiveClass)) {
+                return
+            }
+
+            this.opts.onResize.call(this, win_width);
+        };
     });
 
-    $(window).on('resize', $.rared(refresh_menu, 150));
+    $(window).on('resize.menu', $.rared(function() {
+        $.each(menus, function() {
+            this.refresh(window.innerWidth)
+        })
+    }, 100));
+
+
+    // главное меню на мобиле
+    window.menu = Menu.create({
+        menuSelector: '#main-menu',
+        menuActiveClass: 'active',
+        buttonSelector: '#mobile-menu-button',
+        buttonActiveClass: 'active',
+
+        onResize: function(win_width) {
+            if (win_width >= 1024) {
+                // скрытие на больших экранах
+                var $buttons = $(this.opts.buttonSelector);
+                $buttons.removeClass(this.opts.buttonActiveClass);
+                this.$menu.removeClass(this.opts.menuActiveClass);
+            } else {
+                // меню на всю высоту на мобилах
+                $.winHeight(this.$menu);
+            }
+        }
+    });
 
 })(jQuery);

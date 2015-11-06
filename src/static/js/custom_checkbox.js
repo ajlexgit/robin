@@ -7,13 +7,10 @@
             jquery.utils.js
 
         Параметры:
-            className           - класс, который добавляется на новый элемент, представляющий чекбокс
-
-            checkedClass        - класс, который добавляется на новый элемент, когда он выделен
-
-            beforeChange        - событие перед изменением состояния чекбокса
-
-            afterChange         - событие после изменения состояния чекбокса
+            className       - класс, который добавляется на новый элемент, представляющий чекбокс
+            checkedClass    - класс, который добавляется на новый элемент, когда он выделен
+            beforeChange    - событие перед изменением состояния чекбокса
+            afterChange     - событие после изменения состояния чекбокса
 
         Пример:
             $('input[type=checkbox]').checkbox()
@@ -57,12 +54,13 @@
             var that = this;
 
             // клик на новый элемент
-            this.$elem.off('.checkbox').on('click.checkbox', function() {
+            this.$elem.on('click.checkbox', function() {
                 that.$input.change();
+                return false;
             });
 
             // изменение состояния
-            this.$input.off('.checkbox').on('change.checkbox', function() {
+            this.$input.on('change.checkbox', function() {
                 that._set_checked(!that.checked());
                 return false;
             });
@@ -72,7 +70,8 @@
             Отключение плагина
          */
         cls.prototype.destroy = function() {
-            this.$input.removeData(dataParamName).off('.checkbox');
+            this.$input.removeData(dataParamName);
+            this.$input.off('.checkbox');
             this.$elem.remove();
         };
 
@@ -129,7 +128,7 @@
 
 
     $.fn.checkbox = function(options) {
-        this.each(function() {
+        return this.each(function() {
             CustomCheckbox.create(this, options);
         })
     }

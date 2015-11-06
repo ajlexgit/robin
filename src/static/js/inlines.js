@@ -8,50 +8,43 @@
 
         Параметры:
             formsContainerSelector      - селектор контейнера форм
-
             formClass                   - класс каждой формы
-
             emptyFormClass              - класс пустой формы, которая является шаблоном для добавления
-
             prefix                      - Django-префикс формы
-
             showSpeed                   - скорость показа новой формы при добавлении
-
             hideSpeed                   - скорость скрытия формы при удалении
-
             beforeAddForm               - событие, вызываемое перед добавлением новой формы.
                                           Если вернёт false, форма не будет добавлена
-
             afterAddForm                - событие, вызываемое после добавления новой формы
-
             beforeDeleteForm            - событие, вызываемое перед удалением формы.
                                           Если вернёт false, форма не будет удалена
-
             afterDeleteForm             - событие, вызываемое после удаления формы
 
-        Пример HTML:
-            <div id="formset">
-                {{ formset.management_form }}
+        Пример:
+            HTML:
+              <div id="formset">
+                  {{ formset.management_form }}
 
-                <div class="forms">
-                  {% for form in formset %}
-                    <div class="form">
-                      {{ form }}
-                    </div>
-                  {% endfor %}
-                </div>
+                  <div class="forms">
+                    {% for form in formset %}
+                      <div class="form">
+                        {{ form }}
+                      </div>
+                    {% endfor %}
+                  </div>
 
-                <script type="text/template" class="form-template">
-                   {% with form=formset.empty_form %}
-                    <div class="form">
-                       {{ form }}
-                    </div>
-                  {% endwith %}
-                </script>
-            </div>
+                  <script type="text/template" class="form-template">
+                     {% with form=formset.empty_form %}
+                      <div class="form">
+                         {{ form }}
+                      </div>
+                    {% endwith %}
+                  </script>
+              </div>
 
-        Пример JS:
-            Formset.create('#formset');
+            JS:
+              fs = Formset.create('#formset');
+              fs.addForm();
      */
 
     var prefix_regexp = /__prefix__/i;

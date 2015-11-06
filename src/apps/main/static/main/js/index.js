@@ -23,7 +23,7 @@
 
     // Sticky
     $(document).ready(function() {
-        new Sticky('#sticky_example .yellow');
+        $('#sticky_example').find('.yellow').sticky();
     });
 
     // Layer
@@ -137,10 +137,11 @@
                 })*/
             ]
         );
-
-
-        // вкладки
-        TabManager.create('#tabs');
     });
+
+    // Вкладки
+    $(document).ready(function() {
+        $('#tabs').tabManager();
+    })
 
 })(jQuery);
