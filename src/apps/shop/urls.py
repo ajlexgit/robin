@@ -7,12 +7,12 @@ urlpatterns = [
     # AJAX
     url(
         r'^save-cart/$',
-        cart.save_cart,
+        cart.SaveCart.as_view(),
         name='save_cart',
     ),
     url(
         r'^clear-cart/$',
-        cart.clear_cart,
+        cart.ClearCart.as_view(),
         name='clear_cart',
     ),
 

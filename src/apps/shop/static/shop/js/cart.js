@@ -16,15 +16,16 @@
         var Cart = function(options) {
             this.opts = $.extend({
                 prefix: 'cart',
-                onSaveToSession: $.noop,
-                onUpdateStorage: $.noop
+                onSave: $.noop,
+                onUpdate: $.noop,
+                onClear: $.noop
             }, options);
 
             var that = this;
             $(window).off('.cart').on('storage.cart', function(event) {
                 var origEvent = event.originalEvent;
                 if (origEvent.key == that.opts.prefix) {
-                    that.opts.onUpdateStorage.call(that);
+                    that.opts.onUpdate.call(that);
                 }
             });
         };
@@ -35,15 +36,15 @@
 
             localStorage.removeItem(this.opts.prefix);
 
-            if (this._sendQuery) {
-                this._sendQuery.abort();
+            if (this._clearQuery) {
+                this._clearQuery.abort();
             }
-            return this._sendQuery = $.ajax({
+            return this._clearQuery = $.ajax({
                 url: window.js_storage.clear_cart,
                 type: 'POST',
                 dataType: 'json',
                 success: function(response) {
-                    that.opts.onSaveToSession.call(that, response);
+                    that.opts.onClear.call(that, response);
                 },
                 error: function(xhr, status, error) {
                     if (status != 'abort') {
@@ -80,7 +81,7 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    that.opts.onSaveToSession.call(that, response);
+                    that.opts.onSave.call(that, response);
                 },
                 error: function(xhr, status, error) {
                     if (status != 'abort') {
@@ -133,13 +134,12 @@
         return Cart;
     })();
 
-
-    window.cart = new Cart();
-
     // После авторизации заново записываем заказ в сессию
-    $(document).on('login.auth.users', function() {
+    $(document).on('login.auth.users logout.auth.users', function() {
         var storage = cart.getStorage();
         cart.sendStorage(storage);
     });
 
+    window.cart = new Cart();
+    
 })(jQuery);

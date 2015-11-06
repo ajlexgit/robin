@@ -1,7 +1,7 @@
 import re
-from django.http.response import JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.generic import View
 from libs.valute_field import Valute
+from libs.views_ajax import AjaxViewMixin
 from .models import ShopProduct
 from . import options
 
@@ -118,21 +118,18 @@ class CartProducts:
         request.session[options.SESSION_CART_NAME] = self._unformatted
 
 
-@require_POST
-def save_cart(request):
-    """ Установка всех товаров в корзине """
-    cart = CartProducts.from_data(request.POST)
-    cart.to_session(request)
-    return JsonResponse({
 
-    })
+class SaveCart(AjaxViewMixin, View):
+    def post(self, request):
+        """ Установка всех товаров в корзине """
+        cart = CartProducts.from_data(request.POST)
+        cart.to_session(request)
+        return self.json_response()
 
 
-@require_POST
-def clear_cart(request):
-    """ Очистка корзины """
-    cart = CartProducts.from_session(request)
-    cart.clear(request)
-    return JsonResponse({
-
-    })
+class ClearCart(AjaxViewMixin, View):
+    def post(self, request):
+        """ Очистка корзины """
+        cart = CartProducts.from_data(request.POST)
+        cart.to_session(request)
+        return self.json_response()
