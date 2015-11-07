@@ -12,8 +12,8 @@
             })
      */
 
-    window.Cart = (function() {
-        var Cart = function(options) {
+    window.Cart = Class(null, function(cls, superclass) {
+        cls.init = function(options) {
             this.opts = $.extend({
                 prefix: 'cart',
                 onSave: $.noop,
@@ -30,8 +30,10 @@
             });
         };
 
-        // Очистка заказа
-        Cart.prototype.clear = function() {
+        /*
+            Очистка заказа
+         */
+        cls.prototype.clear = function() {
             var that = this;
 
             localStorage.removeItem(this.opts.prefix);
@@ -54,20 +56,26 @@
             });
         };
 
-        // Получение хранилища заказа из localStorage
-        Cart.prototype.getStorage = function() {
+        /*
+            Получение хранилища заказа из localStorage
+          */
+        cls.prototype.getStorage = function() {
             var json = localStorage.getItem(this.opts.prefix) || '{}';
             return $.parseJSON(json);
         };
 
-        // Сохранение заказа в localStorage
-        Cart.prototype.saveStorage = function(storage) {
+        /*
+            Сохранение заказа в localStorage
+          */
+        cls.prototype.saveStorage = function(storage) {
             var json = JSON.stringify(storage || {});
             localStorage.setItem(this.opts.prefix, json);
         };
 
-        // Отправка localStorage на сервер для сохранения в сессии
-        Cart.prototype.sendStorage = function(storage) {
+        /*
+            Отправка localStorage на сервер для сохранения в сессии
+          */
+        cls.prototype.sendStorage = function(storage) {
             var that = this;
 
             if (this._sendQuery) {
@@ -97,7 +105,7 @@
             Возвращает Deferred-объект, представляющий AJAX-запрос,
             сохраняющий весь заказ в сессию.
          */
-        Cart.prototype.addItem = function(product_id, count) {
+        cls.prototype.addItem = function(product_id, count) {
             if (!product_id) {
                 console.warn('Cart can\'t find product ID');
                 return $.Deferred().reject();
@@ -121,7 +129,7 @@
             Возвращает Deferred-объект, представляющий AJAX-запрос,
             сохраняющий весь заказ в сессию.
          */
-        Cart.prototype.removeItem = function(product_id) {
+        cls.prototype.removeItem = function(product_id) {
             var storage = this.getStorage();
             if (product_id in storage) {
                 delete storage[product_id];
@@ -130,9 +138,7 @@
             this.saveStorage(storage);
             return this.sendStorage(storage);
         };
-
-        return Cart;
-    })();
+    });
 
     // После авторизации заново записываем заказ в сессию
     $(document).on('login.auth.users logout.auth.users', function() {
@@ -141,5 +147,5 @@
     });
 
     window.cart = new Cart();
-    
+
 })(jQuery);
