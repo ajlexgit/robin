@@ -1,141 +1,92 @@
 (function($) {
 
-    // Имя data-атрибута для сохранения объекта
-    window.GALLERY_DATA_NAME = 'gallery';
+    var galleries = [];
 
-    window.Gallery = (function() {
-        // Classes
-        var ROOT = 'gallery-root';
-        var MAIN_IMAGE = 'gallery-image';
-        var ARROW = 'gallery-button';
-        var LEFT_ARROW = 'gallery-left-button';
-        var RIGHT_ARROW = 'gallery-right-button';
-
-        // ===================================================
-
-        var getActiveGallery = function() {
-            var popup = $.popup();
-            if (popup && popup.visible) {
-                // Ищем чьё окно видимо
-                var result = undefined;
-                $('.' + ROOT).each(function() {
-                    var gallery = $(this).data(window.GALLERY_DATA_NAME);
-                    if (gallery.popup === popup) {
-                        result = gallery;
-                        return false;
-                    }
-                });
-                return result;
-            }
-        };
-
-        // ===================================================
-
-        // События стрелок окна и клик на главной картинке
-        $(document).on('click.gallery', '.' + LEFT_ARROW, function() {
-            var gallery = getActiveGallery();
-            if (gallery) {
-                gallery.gotoPrev();
-            }
-            return false;
-        }).on('click.gallery', '.' + RIGHT_ARROW, function() {
-            var gallery = getActiveGallery();
-            if (gallery) {
-                gallery.gotoNext();
-            }
-            return false;
-        }).on('click.gallery', '.' + MAIN_IMAGE, function() {
-            var gallery = getActiveGallery();
-            if (gallery) {
-                gallery.gotoNext();
-            }
-            return false;
-        });
-
-        // Обновление размеров окна
-        $(window).on('resize.gallery', $.rared(function() {
-            var gallery = getActiveGallery();
-            if (gallery) {
-                var $main_img = gallery.popup.$content.find('.' + MAIN_IMAGE);
-                $main_img.css({
-                    height: 'auto'
-                });
-
-                var img_height = $main_img.height();
-                var max_height = gallery.popup.$window.height();
-                if (img_height > max_height) {
-                    $main_img.width('').height(max_height);
-                }
-            }
-        }, 100));
-
-        // ===================================================
-
-        var Gallery = function(root, options) {
-            var $root = $(root).first();
-            if (!$root.length) {
-                console.error('Empty root element for Gallery');
-                return
+    window.Gallery = Class(null, function(cls, superclass) {
+        cls.init = function(root, options) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
+                console.error('Gallery can\'t find root element');
+                return false;
             }
 
-            this.settings = $.extend({
+            // настройки
+            this.opts = $.extend({
+                rootClass: 'gallery-root',
+                mainImageClass: 'gallery-image',
+                arrowClass: 'gallery-button',
+                leftArrowClass: 'gallery-left-button',
+                rightArrowClass: 'gallery-right-button',
+
                 itemSelector: 'img',
                 itemVideoClass: 'gallery-item-video-link',
                 popupClass: 'popup-gallery',
                 popupVideoClass: 'popup-gallery-video'
             }, options);
 
+            this.$root.addClass(this.opts.rootClass);
+
             // Открытие галереи при клике на элемент
             var that = this;
-            $root.off('click.gallery', this.settings.itemSelector);
-            $root.on('click.gallery', this.settings.itemSelector, function() {
+            this.$root.on('click.gallery', this.opts.itemSelector, function() {
                 that.showItem($(this));
                 return false;
             });
 
-            // Сохранение объекта
-            $root.addClass(ROOT).data(window.GALLERY_DATA_NAME, this);
+            // События стрелок окна и клик на главной картинке
+            $(document).on('click.gallery', '.' + this.opts.leftArrowClass, function() {
+                that.gotoPrev();
+                return false;
+            }).on('click.gallery', '.' + this.opts.rightArrowClass, function() {
+                that.gotoNext();
+                return false;
+            }).on('click.gallery', '.' + this.opts.mainImageClass, function() {
+                that.gotoNext();
+                return false;
+            });
+
+            galleries.push(this);
         };
 
         // Получение текущего слайда
-        Gallery.prototype.getCurrent = function() {
+        cls.prototype.getCurrent = function() {
             return this._current_item;
         };
 
         // Получение следующего слайда
-        Gallery.prototype.nextItem = function($item) {
-            var $next = $item.next(this.settings.itemSelector);
+        cls.prototype.nextItem = function($item) {
+            var $next = $item.next(this.opts.itemSelector);
             if ($next.length) {
                 return $next;
             } else {
-                return $item.parent().find(this.settings.itemSelector).first();
+                return $item.parent().find(this.opts.itemSelector).first();
             }
         };
 
         // Получение предыдущего слайда
-        Gallery.prototype.prevItem = function($item) {
-            var $prev = $item.prev(this.settings.itemSelector);
+        cls.prototype.prevItem = function($item) {
+            var $prev = $item.prev(this.opts.itemSelector);
             if ($prev.length) {
                 return $prev;
             } else {
-                return $item.parent().find(this.settings.itemSelector).last();
+                return $item.parent().find(this.opts.itemSelector).last();
             }
         };
 
         // Переключение на указанный слайд-картинку
-        Gallery.prototype._gotoImageItem = function($item) {
+        cls.prototype._gotoImageItem = function($item) {
             var that = this;
             $.loadImageDeferred($item.data('big')).done(function(img) {
-                var $main_img = $('<img>').addClass(MAIN_IMAGE).prop('src', img.src);
+                var $main_img = $('<img>').addClass(that.opts.mainImageClass).prop('src', img.src);
                 that.popup.update({
-                    classes: that.settings.popupClass,
+                    classes: that.opts.popupClass,
                     content: $main_img,
                     clean: false,
                     ui: function() {
                         return [
                             this._defaultUI(),
-                            $('<div>').addClass(ARROW).addClass(LEFT_ARROW),
-                            $('<div>').addClass(ARROW).addClass(RIGHT_ARROW)
+                            $('<div>').addClass(that.opts.arrowClass).addClass(that.opts.leftArrowClass),
+                            $('<div>').addClass(that.opts.arrowClass).addClass(that.opts.rightArrowClass)
                         ]
                     },
                     outClick: function() {
@@ -162,18 +113,18 @@
         };
 
         // Переключение на указанный слайд-видео
-        Gallery.prototype._gotoVideoItem = function($item) {
+        cls.prototype._gotoVideoItem = function($item) {
             var that = this;
             var $frame = $('<div>').attr('id', 'gallery-video-player');
 
             that.popup.update({
-                classes: that.settings.popupClass + ' ' + that.settings.popupVideoClass,
+                classes: that.opts.popupClass + ' ' + that.opts.popupVideoClass,
                 content: $frame,
                 ui: function() {
                     return [
                         this._defaultUI(),
-                        $('<div>').addClass(ARROW).addClass(LEFT_ARROW),
-                        $('<div>').addClass(ARROW).addClass(RIGHT_ARROW)
+                        $('<div>').addClass(that.opts.arrowClass).addClass(that.opts.leftArrowClass),
+                        $('<div>').addClass(that.opts.arrowClass).addClass(that.opts.rightArrowClass)
                     ]
                 },
                 outClick: function() {
@@ -214,11 +165,11 @@
         };
 
         // Переход к слайду
-        Gallery.prototype._gotoItem = function($item) {
+        cls.prototype._gotoItem = function($item) {
             if ((!this.popup) || (this.popup != $.popup())) return;
 
             this._current_item = $item;
-            if ($item.hasClass(this.settings.itemVideoClass)) {
+            if ($item.hasClass(this.opts.itemVideoClass)) {
                 this._gotoVideoItem($item);
             } else {
                 this._gotoImageItem($item);
@@ -226,7 +177,7 @@
         };
 
         // Открытие слайда
-        Gallery.prototype.showItem = function($item) {
+        cls.prototype.showItem = function($item) {
             this.popup = $.popup.force({
                 classes: 'preloader',
                 ui: false,
@@ -237,14 +188,14 @@
         };
 
         // Показ следующего слайда
-        Gallery.prototype.gotoNext = function() {
+        cls.prototype.gotoNext = function() {
             if ((!this.popup) || (this.popup != $.popup())) return;
 
             var $next = this.nextItem(this.getCurrent());
             if (!$next.length) return;
 
             this.popup.update({
-                classes: this.settings.popupClass + ' preloader',
+                classes: this.opts.popupClass + ' preloader',
                 outClick: false
             });
 
@@ -255,14 +206,14 @@
         };
 
         // Показ предыдущего слайда
-        Gallery.prototype.gotoPrev = function() {
+        cls.prototype.gotoPrev = function() {
             if ((!this.popup) || (this.popup != $.popup())) return;
 
             var $prev = this.prevItem(this.getCurrent());
             if (!$prev.length) return;
 
             this.popup.update({
-                classes: this.settings.popupClass + ' preloader',
+                classes: this.opts.popupClass + ' preloader',
                 outClick: false
             });
 
@@ -271,8 +222,22 @@
             this._gotoItem($prev);
             return false;
         };
+    });
 
-        return Gallery;
-    })();
+    // Обновление размеров окна
+    $(window).on('resize.gallery', $.rared(function() {
+        $.each(galleries, function(i, gallery) {
+            var $main_img = gallery.popup.$content.find('.' + gallery.opts.mainImageClass);
+            $main_img.css({
+                height: 'auto'
+            });
+
+            var img_height = $main_img.height();
+            var max_height = gallery.popup.$window.height();
+            if (img_height > max_height) {
+                $main_img.width('').height(max_height);
+            }
+        });
+    }, 100));
 
 })(jQuery);

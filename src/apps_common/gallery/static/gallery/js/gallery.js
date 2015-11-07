@@ -2,7 +2,7 @@
 
     $(document).ready(function() {
         $('.gallery').each(function() {
-            new Gallery(this, {
+            Gallery.create(this, {
                 itemSelector: '.gallery-item'
             });
         })
