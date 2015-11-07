@@ -110,36 +110,34 @@
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
             itemsPerSlide: 2
-        }).attachPlugins(
-            [
-                SliderSideAnimation.create({
-                    speed: 800,
-                    slideMarginPercent: 5
-                }),
-                SliderSideShortestAnimation.create({
-                    speed: 800,
-                    slideMarginPercent: 5
-                }),
-                SliderFadeAnimation.create({
-                    speed: 800
-                }),
-                SliderControlsPlugin.create({
-                    animationName: 'side-shortest'
-                }),
-                SliderNavigationPlugin.create({
-                    animationName: 'side'
-                }),
-                SliderDragPlugin.create({
-                    speed: 800,
-                    slideMarginPercent: 5
-                }),
-                SliderAutoscrollPlugin.create({
-                    animationName: 'fade',
-                    direction: 'random',
-                    interval: 3000
-                })
-            ]
-        );
+        }).attachPlugins([
+            SliderSideAnimation.create({
+                speed: 800,
+                slideMarginPercent: 5
+            }),
+            SliderSideShortestAnimation.create({
+                speed: 800,
+                slideMarginPercent: 5
+            }),
+            SliderFadeAnimation.create({
+                speed: 800
+            }),
+            SliderControlsPlugin.create({
+                animationName: 'side-shortest'
+            }),
+            SliderNavigationPlugin.create({
+                animationName: 'side'
+            }),
+            SliderDragPlugin.create({
+                speed: 800,
+                slideMarginPercent: 5
+            }),
+            SliderAutoscrollPlugin.create({
+                animationName: 'fade',
+                direction: 'random',
+                interval: 3000
+            })
+        ]);
     });
 
     // Вкладки

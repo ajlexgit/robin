@@ -2,7 +2,7 @@ import os
 import sys
 
 
-# Slider3D new JS + example
+# new JS popups
 # Custom Radio + group
 # Custom checkbox group
 # SessionStoreMixin: переделать? Не работает для InlineFormset
