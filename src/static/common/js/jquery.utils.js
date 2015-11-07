@@ -356,36 +356,6 @@
     // ======================================================================================
 
     /*
-        Ищет первый DOM-элемент, соответствуюее параметрам.
-        Возвращает jQuery-объект с этим элементом
-
-        expression может быть:
-            1) строковый селектор
-            2) DOM-элемент или массив DOM-элементов
-            3) jQuery-объект
-            4) функция, возвращающая jQuery-объект
-     */
-    $.findFirstElement = function(expression, context) {
-        if (typeof expression == 'string') {
-            // string
-            return $(expression, context).first();
-        } else if (typeof expression == 'function') {
-            // function
-            var $result = expression(context);
-            return $result.first();
-        } else if (expression == null) {
-            // null or undefined
-            return $()
-        } else if (expression.jquery) {
-            // jQuery
-            return expression.first();
-        } else {
-            // DOM element or array
-            return $(expression).first();
-        }
-    };
-
-    /*
         Обмен двух DOM-элементов местами
      */
     $.swapElements = function(elm1, elm2) {

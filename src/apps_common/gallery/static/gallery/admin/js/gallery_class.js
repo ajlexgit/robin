@@ -5,79 +5,20 @@
         return gettext('Error') + ' "' + file.name + '":' + nl + message;
     };
 
+
     /*
         Класс галереи, предоставляющий базовые методы работы над картинками
     */
-    window.Gallery = (function() {
-        var Gallery = function() {};
-
-        Gallery.create = function(root, options) {
-            var self = new Gallery();
-
-            self.$root = $.findFirstElement(root);
-            if (!self.$root.length) {
+    window.Gallery = Class(null, function(cls, superclass) {
+        cls.init = function(root, options) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
                 console.error('Gallery can\'t find root element');
-                return
+                return false
             }
 
             // настройки
-            self.opts = $.extend(self.getDefaultOpts(), options);
-
-            // данные о галерее
-            self.app_label = self.$root.data('applabel');
-            if (!self.app_label) {
-                console.error('Gallery can\'t find app_label');
-                return
-            }
-
-            self.model_name = self.$root.data('modelname');
-            if (!self.model_name) {
-                console.error('Gallery can\'t find model_name');
-                return
-            }
-
-            self.$galleryInput = $.findFirstElement(self.opts.galleryInputSelector, self.$root);
-            if (!self.$galleryInput.length) {
-                console.error('Gallery can\'t find input element');
-                return
-            }
-
-            self.field_name = self.$galleryInput.attr('name');
-            if (!self.field_name) {
-                console.error('Gallery can\'t find field_name');
-                return
-            }
-
-            self.$wrapper = $.findFirstElement(self.opts.galleryWrapperSelector, self.$root);
-            if (!self.$wrapper.length) {
-                console.error('Gallery can\'t find wrapper element');
-                return
-            }
-
-            self._locked = false;
-            self.gallery_id = null;
-            self.$list = $();
-
-            // save
-            self.$root.data(window.Gallery.dataParam, self);
-
-            // инициализация галереи
-            var gallery_id = parseInt(self.$galleryInput.val()) || null;
-            if (gallery_id) {
-                self.initGallery(gallery_id);
-            }
-
-            // callback
-            self.$root.trigger('create.gallery');
-
-            return self;
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        Gallery.prototype.getDefaultOpts = function() {
-            return {
+            this.opts = $.extend({
                 galleryInputSelector: '.gallery_id',
                 galleryWrapperSelector: '.gallery-wrapper',
                 galleryListSelector: '.gallery-items',
@@ -95,22 +36,69 @@
 
                 loadingClass: 'gallery-item-loading',
                 errorClass: 'gallery-item-error'
+            }, options);
+
+            // данные о галерее
+            this.app_label = this.$root.data('applabel');
+            if (!this.app_label) {
+                console.error('Gallery can\'t find app_label');
+                return false
             }
+
+            this.model_name = this.$root.data('modelname');
+            if (!this.model_name) {
+                console.error('Gallery can\'t find model_name');
+                return false
+            }
+
+            this.$galleryInput = this.$root.find(this.opts.galleryInputSelector).first();
+            if (!this.$galleryInput.length) {
+                console.error('Gallery can\'t find input element');
+                return false
+            }
+
+            this.field_name = this.$galleryInput.attr('name');
+            if (!this.field_name) {
+                console.error('Gallery can\'t find field_name');
+                return false
+            }
+
+            this.$wrapper = this.$root.find(this.opts.galleryWrapperSelector).first();
+            if (!this.$wrapper.length) {
+                console.error('Gallery can\'t find wrapper element');
+                return false
+            }
+
+            this._locked = false;
+            this.gallery_id = null;
+            this.$list = $();
+
+            // save
+            this.$root.data(Gallery.dataParamName, this);
+
+            // инициализация галереи
+            var gallery_id = parseInt(this.$galleryInput.val()) || null;
+            if (gallery_id) {
+                this.initGallery(gallery_id);
+            }
+
+            // callback
+            this.$root.trigger('create.gallery');
         };
 
-        Gallery.prototype.locked = function() {
+        cls.prototype.locked = function() {
             return this._locked;
         };
 
-        Gallery.prototype.lock = function() {
+        cls.prototype.lock = function() {
             this._locked = true;
         };
 
-        Gallery.prototype.unlock = function() {
+        cls.prototype.unlock = function() {
             this._locked = false;
         };
 
-        Gallery.prototype.ajax = function(options) {
+        cls.prototype.ajax = function(options) {
             var that = this;
             var opts = $.extend(true, {
                 type: 'POST',
@@ -118,7 +106,7 @@
                     app_label: this.app_label,
                     model_name: this.model_name,
                     field_name: this.field_name,
-                    gallery_id: that.gallery_id
+                    gallery_id: this.gallery_id
                 },
                 dataType: 'json',
                 beforeSend: function() {
@@ -138,7 +126,7 @@
             return $.ajax(opts);
         };
 
-        Gallery.prototype.ajaxItem = function($item, options) {
+        cls.prototype.ajaxItem = function($item, options) {
             var that = this;
             var item = $item.get(0);
 
@@ -172,7 +160,7 @@
             return item.query = $.ajax(opts);
         };
 
-        Gallery.prototype.ajax_error = function(xhr) {
+        cls.prototype.ajax_error = function(xhr) {
             if (xhr.responseText) {
                 return $.parseJSON(xhr.responseText);
             }
@@ -182,7 +170,7 @@
         /*
             Создание галереи
          */
-        Gallery.prototype.createGallery = function() {
+        cls.prototype.createGallery = function() {
             if (this.locked()) {
                 return
             }
@@ -206,7 +194,7 @@
         /*
             Инициализация галереи
          */
-        Gallery.prototype.initGallery = function(gallery_id) {
+        cls.prototype.initGallery = function(gallery_id) {
             gallery_id = parseInt(gallery_id);
             if (!gallery_id) {
                 console.error('Invalid gallery_id');
@@ -217,7 +205,7 @@
             this.$galleryInput.val(gallery_id);
 
             // список файлов
-            this.$list = $.findFirstElement(this.opts.galleryListSelector, this.$root);
+            this.$list = this.$root.find(this.opts.galleryListSelector).first();
             if (!this.$list.length) {
                 console.error('Gallery can\'t find item list');
                 return
@@ -234,7 +222,7 @@
         /*
             Инициализация загрузчика файлов
          */
-        Gallery.prototype.initUploader = function() {
+        cls.prototype.initUploader = function() {
             // Клиентский ресайз
             var resize = this.$root.find('.max_source').val();
             if (resize) {
@@ -367,7 +355,7 @@
         /*
             Обновление значения счетчиков картинок
          */
-        Gallery.prototype.updateCounter = function() {
+        cls.prototype.updateCounter = function() {
             var $img_counter = this.$root.find('.gallery-image-counter');
             if ($img_counter.length) {
                 var $images = this.$list.find('.gallery-item-image');
@@ -388,7 +376,7 @@
         /*
             Удаление галереи
          */
-        Gallery.prototype.deleteGallery = function() {
+        cls.prototype.deleteGallery = function() {
             if (this.locked()) {
                 return
             }
@@ -421,7 +409,7 @@
         /*
             Добавление ссылки на видео
          */
-        Gallery.prototype.addVideo = function(link) {
+        cls.prototype.addVideo = function(link) {
             if (this.locked()) {
                 return
             }
@@ -493,7 +481,7 @@
         /*
             Удаление элемента галереи
          */
-        Gallery.prototype.deleteItem = function($item) {
+        cls.prototype.deleteItem = function($item) {
             if (!this.gallery_id) {
                 console.error('Gallery does not exist');
                 return
@@ -553,7 +541,7 @@
         /*
             Поворот картинки
          */
-        Gallery.prototype.rotateItem = function($item, direction) {
+        cls.prototype.rotateItem = function($item, direction) {
             if (this.locked()) {
                 return
             }
@@ -583,7 +571,7 @@
         /*
             Обрезка картинки
          */
-        Gallery.prototype.cropItem = function($item, coords, extra) {
+        cls.prototype.cropItem = function($item, coords, extra) {
             if (this.locked()) {
                 return
             }
@@ -616,7 +604,7 @@
         /*
             Получение подписи к картинке
          */
-        Gallery.prototype.getItemDescription = function($item, extra) {
+        cls.prototype.getItemDescription = function($item, extra) {
             if (this.locked()) {
                 return
             }
@@ -643,7 +631,7 @@
         /*
             Установка подписи к картинке
          */
-        Gallery.prototype.setItemDescription = function($item, description, extra) {
+        cls.prototype.setItemDescription = function($item, description, extra) {
             if (this.locked()) {
                 return
             }
@@ -668,10 +656,7 @@
                 data: data
             });
         };
-
-        return Gallery;
-    })();
-
-    window.Gallery.dataParam = 'object';
+    });
+    Gallery.dataParamName = 'gallery';
 
 })(jQuery);

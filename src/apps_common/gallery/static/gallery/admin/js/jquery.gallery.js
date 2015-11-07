@@ -6,7 +6,7 @@
             switch (options) {
                 case 'object':
                     // Получение объекта галереи
-                    return this.first().data(Gallery.dataParam);
+                    return this.first().data(Gallery.dataParamName);
                 case 'destroy':
                     // Уничтожение объекта галереи
                     return this.each(function() {
@@ -14,7 +14,7 @@
                         var gallery = $container.gallery('object');
                         if (gallery) {
                             gallery.destroy();
-                            $container.removeData(Gallery.dataParam)
+                            $container.removeData(Gallery.dataParamName)
                         }
                     });
             }
@@ -195,7 +195,7 @@
 
 
         return this.each(function() {
-            Gallery.create($(this), settings);
+            Gallery.create(this, settings);
         })
     };
 
