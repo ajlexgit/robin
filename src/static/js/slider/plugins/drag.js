@@ -1,20 +1,8 @@
 (function($) {
 
-    window.SliderDragPlugin = (function(parent) {
-        // Инициализация плагина
-        var DragPlugin = function(settings) {
-            parent.call(this, settings);
-        };
-
-        var _ = function() {
-            this.constructor = DragPlugin;
-        };
-        _.prototype = parent.prototype;
-        DragPlugin.prototype = new _;
-
-
+    window.SliderDragPlugin = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
-        DragPlugin.prototype.getDefaultOpts = function() {
+        cls.prototype.getDefaultOpts = function() {
             return {
                 mouse: true,
                 touch: true,
@@ -35,8 +23,8 @@
         /*
             Создание объекта Drager
          */
-        DragPlugin.prototype.onAttach = function(slider) {
-            parent.prototype.onAttach.call(this, slider);
+        cls.prototype.onAttach = function(slider) {
+            superclass.prototype.onAttach.call(this, slider);
 
             var that = this;
             this.drager = Drager.create(slider.$listWrapper, {
@@ -83,16 +71,15 @@
         /*
             Перевод смещения в пикселях в смещение в процентах
          */
-        DragPlugin.prototype._dxToPercents = function(slider, evt) {
+        cls.prototype._dxToPercents = function(slider, evt) {
             var slider_width = slider.$list.outerWidth();
             return 100 * evt.dx / slider_width
         };
 
-
         /*
             Начало перетаскивания слайдов мышью или тачпадом
          */
-        DragPlugin.prototype.onStartDrag = function(slider) {
+        cls.prototype.onStartDrag = function(slider) {
             // Запоминаем слайд, с которого начали перетаскивание
             this.$startSlide = slider.$currentSlide;
 
@@ -100,11 +87,10 @@
             this._movedSlides = [];
         };
 
-
         /*
             Перетаскивание слайдов мышью или тачпадом
          */
-        DragPlugin.prototype.onDrag = function(slider, evt) {
+        cls.prototype.onDrag = function(slider, evt) {
             var dxPercents = this._dxToPercents(slider, evt);
             var absDxPercents = Math.abs(dxPercents);
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -194,7 +180,7 @@
         /*
             Завершение перетаскивания слайдов мышью или тачпадом
          */
-        DragPlugin.prototype.onStopDrag = function(slider, evt) {
+        cls.prototype.onStopDrag = function(slider, evt) {
             if (!this._movedSlides || (this._movedSlides.length != 2)) {
                 return
             }
@@ -256,8 +242,6 @@
                 }
             });
         };
-
-        return DragPlugin;
-    })(SliderPlugin);
+    });
 
 })(jQuery);

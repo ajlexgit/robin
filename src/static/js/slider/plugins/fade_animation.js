@@ -1,20 +1,8 @@
 (function($) {
 
-    window.SliderFadeAnimation = (function(parent) {
-        // Инициализация плагина
-        var FadeAnimation = function(settings) {
-            parent.call(this, settings);
-        };
-
-        var _ = function() {
-            this.constructor = FadeAnimation;
-        };
-        _.prototype = parent.prototype;
-        FadeAnimation.prototype = new _;
-
-
+    window.SliderFadeAnimation = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
-        FadeAnimation.prototype.getDefaultOpts = function() {
+        cls.prototype.getDefaultOpts = function() {
             return {
                 name: 'fade',
                 speed: 800,
@@ -26,7 +14,7 @@
             Реализация метода перехода от одного слайда к другому
             посредством исчезания
          */
-        FadeAnimation.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
+        cls.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }
@@ -76,8 +64,6 @@
 
             slider.updateListHeight(animatedHeight);
         };
-
-        return FadeAnimation;
-    })(SliderPlugin);
+    });
 
 })(jQuery);

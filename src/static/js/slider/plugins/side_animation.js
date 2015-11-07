@@ -1,20 +1,8 @@
 (function($) {
 
-    window.SliderSideAnimation = (function(parent) {
-        // Инициализация плагина
-        var SideAnimation = function(settings) {
-            parent.call(this, settings);
-        };
-
-        var _ = function() {
-            this.constructor = SideAnimation;
-        };
-        _.prototype = parent.prototype;
-        SideAnimation.prototype = new _;
-
-
+    window.SliderSideAnimation = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
-        SideAnimation.prototype.getDefaultOpts = function() {
+        cls.prototype.getDefaultOpts = function() {
             return {
                 name: 'side',
                 speed: 800,
@@ -28,7 +16,7 @@
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        SideAnimation.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
+        cls.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }
@@ -49,7 +37,7 @@
         /*
             Выбор направления анимации
          */
-        SideAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slide_info.toIndex > slide_info.fromIndex) {
@@ -64,7 +52,7 @@
         /*
             Появление нового слайда справа от текущего
          */
-        SideAnimation.prototype.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.prototype.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -137,7 +125,7 @@
         /*
             Появление нового слайда слева от текущего
          */
-        SideAnimation.prototype.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.prototype.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -206,30 +194,17 @@
 
             slider.updateListHeight(animatedHeight);
         };
-
-        return SideAnimation;
-    })(SliderPlugin);
+    });
 
 
     //========================================================
     //  Анимация, выбирающая направление, соответствующее
     //  кратчайшему пути.
     //========================================================
-    window.SliderSideShortestAnimation = (function(parent) {
-        var SideShortestAnimation = function(settings) {
-            parent.call(this, settings);
-        };
-
-        var _ = function() {
-            this.constructor = SideShortestAnimation;
-        };
-        _.prototype = parent.prototype;
-        SideShortestAnimation.prototype = new _;
-
-
+    window.SliderSideShortestAnimation = Class(SliderSideAnimation, function(cls, superclass) {
         // Настройки по умолчанию
-        SideShortestAnimation.prototype.getDefaultOpts = function() {
-            var defaults = parent.prototype.getDefaultOpts.call(this);
+        cls.prototype.getDefaultOpts = function() {
+            var defaults = superclass.prototype.getDefaultOpts.call(this);
             return $.extend(true, defaults, {
                 name: 'side-shortest'
             });
@@ -238,7 +213,7 @@
         /*
             Выбор направления анимации
          */
-        SideShortestAnimation.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slider.opts.loop) {
@@ -263,8 +238,6 @@
                 }
             }
         };
-
-        return SideShortestAnimation;
-    })(SliderSideAnimation);
+    });
 
 })(jQuery);

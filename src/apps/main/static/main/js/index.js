@@ -106,38 +106,38 @@
     // slider
     $(document).ready(function() {
         var $elem = $('#slider_example').find('.slider');
-        window.slider = new Slider($elem, {
+        window.slider = Slider.create($elem, {
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
-            slideItems: 2
+            itemsPerSlide: 2
         }).attachPlugins(
             [
-                new SliderSideAnimation({
+                SliderSideAnimation.create({
                     speed: 800,
                     slideMarginPercent: 5
                 }),
-                new SliderSideShortestAnimation({
+                SliderSideShortestAnimation.create({
                     speed: 800,
                     slideMarginPercent: 5
                 }),
-                new SliderFadeAnimation({
+                SliderFadeAnimation.create({
                     speed: 800
                 }),
-                new SliderControlsPlugin({
+                SliderControlsPlugin.create({
                     animationName: 'side-shortest'
                 }),
-                new SliderNavigationPlugin({
+                SliderNavigationPlugin.create({
                     animationName: 'side'
                 }),
-                new SliderDragPlugin({
+                SliderDragPlugin.create({
                     speed: 800,
                     slideMarginPercent: 5
-                })/*,
-                new SliderAutoscrollPlugin({
+                }),
+                SliderAutoscrollPlugin.create({
                     animationName: 'fade',
                     direction: 'random',
                     interval: 3000
-                })*/
+                })
             ]
         );
     });

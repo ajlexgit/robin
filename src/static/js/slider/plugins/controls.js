@@ -1,24 +1,20 @@
 (function($) {
 
-    window.SliderControlsPlugin = (function(parent) {
-        // Инициализация плагина
-        var ControlsPlugin = function(settings) {
-            parent.call(this, settings);
+    window.SliderControlsPlugin = Class(SliderPlugin, function(cls, superclass) {
+        cls.init = function(settings) {
+            var result = superclass.init.call(this, settings);
+            if (result === false) {
+                return false
+            }
 
             if (!this.opts.animationName) {
                 console.error('Controls plugin must set animationName');
+                return false;
             }
         };
 
-        var _ = function() {
-            this.constructor = ControlsPlugin;
-        };
-        _.prototype = parent.prototype;
-        ControlsPlugin.prototype = new _;
-
-
         // Настройки по умолчанию
-        ControlsPlugin.prototype.getDefaultOpts = function() {
+        cls.prototype.getDefaultOpts = function() {
             return {
                 animationName: '',
                 animatedHeight: true,
@@ -36,40 +32,41 @@
         /*
             Создание стрелок при подключении плагина
          */
-        ControlsPlugin.prototype.onAttach = function(slider) {
-            parent.prototype.onAttach.call(this, slider);
+        cls.prototype.onAttach = function(slider) {
+            superclass.prototype.onAttach.call(this, slider);
 
             this.createControls(slider);
             this.checkAllowed(slider);
         };
 
-
         /*
             Деактивируем стрелки на границах сладера
          */
-        ControlsPlugin.prototype.afterSetCurrentSlide = function(slider) {
+        cls.prototype.afterSetCurrentSlide = function(slider) {
             this.checkAllowed(slider);
         };
 
         /*
             Создание стрелок
          */
-        ControlsPlugin.prototype.createControls = function(slider) {
+        cls.prototype.createControls = function(slider) {
             if (this.opts.container) {
-                this.$container = $.findFirstElement(this.opts.container, slider);
+                this.$container = slider.$root.find(this.opts.container).first();
             } else {
                 this.$container = slider.$listWrapper;
             }
 
             if (this.$container.length) {
                 this.createControlItems(slider);
+            } else {
+                this.$container = null;
             }
         };
 
         /*
             Добавление стрелок в DOM
          */
-        ControlsPlugin.prototype.createControlItems = function(slider) {
+        cls.prototype.createControlItems = function(slider) {
             var that = this;
 
             this.$left = $('<div>')
@@ -102,7 +99,7 @@
         /*
             Проверка и деактивация кнопок на границах
          */
-        ControlsPlugin.prototype.checkAllowed = function(slider) {
+        cls.prototype.checkAllowed = function(slider) {
             var $curr = slider.$currentSlide;
             var $next = slider.getNextSlide($curr);
             var $prev = slider.getPreviousSlide($curr);
@@ -119,8 +116,6 @@
                 this.$right.removeClass(this.opts.arrowDisabledClass)
             }
         };
-
-        return ControlsPlugin;
-    })(SliderPlugin);
+    });
 
 })(jQuery);

@@ -1,24 +1,20 @@
 (function($) {
 
-    window.SliderNavigationPlugin = (function(parent) {
-        // Инициализация плагина
-        var NavigationPlugin = function(settings) {
-            parent.call(this, settings);
+    window.SliderNavigationPlugin = Class(SliderPlugin, function(cls, superclass) {
+        cls.init = function(settings) {
+            var result = superclass.init.call(this, settings);
+            if (result === false) {
+                return false;
+            }
 
             if (!this.opts.animationName) {
                 console.error('Navigation plugin must set animationName');
+                return false;
             }
         };
 
-        var _ = function() {
-            this.constructor = NavigationPlugin;
-        };
-        _.prototype = parent.prototype;
-        NavigationPlugin.prototype = new _;
-
-
         // Настройки по умолчанию
-        NavigationPlugin.prototype.getDefaultOpts = function() {
+        cls.prototype.getDefaultOpts = function() {
             return {
                 animationName: '',
                 animatedHeight: true,
@@ -36,8 +32,8 @@
         /*
             Создание кнопок при подключении плагина
          */
-        NavigationPlugin.prototype.onAttach = function(slider) {
-            parent.prototype.onAttach.call(this, slider);
+        cls.prototype.onAttach = function(slider) {
+            superclass.prototype.onAttach.call(this, slider);
 
             this.createNavigation(slider);
             this.checkEnabled(slider);
@@ -46,26 +42,29 @@
         /*
             Установка активной кнопки после установки активного слайда
          */
-        NavigationPlugin.prototype.afterSetCurrentSlide = function(slider, $slide) {
+        cls.prototype.afterSetCurrentSlide = function(slider, $slide) {
             this.activateNavigationItemBySlide(slider, $slide);
         };
 
         /*
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
-        NavigationPlugin.prototype.afterSetSlideItems = function(slider) {
+        cls.prototype.afterSetItemsPerSlide = function(slider) {
             this.createNavigation(slider);
             this.checkEnabled(slider);
         };
 
-
         /*
             Создание кнопок
          */
-        NavigationPlugin.prototype.createNavigation = function(slider) {
-            this.$container = this.getContainer(slider);
+        cls.prototype.createNavigation = function(slider) {
+            if (this.opts.container) {
+                this.$container = slider.$root.find(this.opts.container).first();
+            } else {
+                this.$container = slider.$root
+            }
+
             if (this.$container.length) {
-                this.$container = this.$container.first();
                 this.createNavigationItems(slider);
                 this.activateNavigationItemBySlide(slider, slider.$currentSlide);
             } else {
@@ -74,22 +73,12 @@
         };
 
         /*
-            Возвращает контейнер, в который будут добавлены кнопки
-         */
-        NavigationPlugin.prototype.getContainer = function(slider) {
-            if (this.opts.container) {
-                var $container = $.findFirstElement(this.opts.container, slider);
-            } else {
-                $container = slider.$root
-            }
-            return $container;
-        };
-
-        /*
             Добавление кнопок в DOM
          */
-        NavigationPlugin.prototype.createNavigationItems = function(slider) {
+        cls.prototype.createNavigationItems = function(slider) {
+            // удаление старых точек навигации
             this.$container.find('.' + this.opts.wrapperClass).remove();
+
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
             for (var i = 0; i < slider.$slides.length; i++) {
@@ -103,14 +92,18 @@
             this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
-                slider.slideTo(slider.$slides.eq(slideIndex), that.opts.animationName, that.opts.animatedHeight);
+                slider.slideTo(
+                    slider.$slides.eq(slideIndex),
+                    that.opts.animationName,
+                    that.opts.animatedHeight
+                );
             });
         };
 
         /*
             Активация соответствующей кнопки по объекту слайда
          */
-        NavigationPlugin.prototype.activateNavigationItemBySlide = function(slider, $slide) {
+        cls.prototype.activateNavigationItemBySlide = function(slider, $slide) {
             var slideIndex = slider.$slides.index($slide);
             if (this.$container.length) {
                 var $item = this.$container.find('.' + this.opts.itemClass).eq(slideIndex);
@@ -121,17 +114,15 @@
         };
 
         /*
-            Деактивация навигации на одном слайде
+            Деактивация навигации когда в слайдере всего один слайд
          */
-        NavigationPlugin.prototype.checkEnabled = function(slider) {
+        cls.prototype.checkEnabled = function(slider) {
             if (!this.opts.dragOneSlide && (slider.$slides.length < 2)) {
                 this.$wrapper.addClass(this.opts.wrapperDisabledClass);
             } else {
                 this.$wrapper.removeClass(this.opts.wrapperDisabledClass);
             }
         };
-
-        return NavigationPlugin;
-    })(SliderPlugin);
+    });
 
 })(jQuery);
