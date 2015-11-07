@@ -2,11 +2,10 @@ import os
 import sys
 
 
-# new JS popups, gallery
+# new JS popups
 # Custom Radio + group
 # Custom checkbox group
 # SessionStoreMixin: переделать? Не работает для InlineFormset
-# JS: избавиться от $.findFirstElem
 # css background em?
 # Comments: есть возможность написать коммент к удаленному комменту. Как быть?
 # интеллектуальная прокрутка слайдов мышью, чтоб не дергалась
