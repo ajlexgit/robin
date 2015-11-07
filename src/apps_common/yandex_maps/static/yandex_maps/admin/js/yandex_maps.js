@@ -82,7 +82,7 @@
     }).on('change', '.yandex-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var ymap = $field.next('.yandex-map').data('map');
+        var ymap = $field.next('.yandex-map').data(YandexMap.dataParamName);
 
         var point = text2coords($field.val());
         var placemark = ymap.getPlacemark();

@@ -22,6 +22,7 @@
 
     var Menu = Class(null, function(cls, superclass) {
         cls.init = function(options) {
+            // настройки
             this.opts = $.extend({
                 menuSelector: '#mobile-menu',
                 menuActiveClass: 'active',

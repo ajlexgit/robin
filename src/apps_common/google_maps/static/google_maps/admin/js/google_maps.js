@@ -82,7 +82,7 @@
     }).on('change', '.google-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var gmap = $field.next('.google-map').data('map');
+        var gmap = $field.next('.google-map').data(GoogleMap.dataParamName);
 
         var point = text2coords($field.val());
         var placemark = gmap.getPlacemark();

@@ -56,11 +56,12 @@
     });
 
 
-    var Placemark = (function() {
-        var Placemark = function(ymap, options) {
+    var Placemark = Class(null, function(cls, superclass) {
+        cls.init = function(ymap, options) {
             this.ymap = ymap;
 
-            this.opts = $.extend(true, {
+            // настройки
+            this.opts = $.extend({
                 lng: 49.418785,
                 lat: 53.510171,
                 point: null,
@@ -72,7 +73,7 @@
             }, options);
 
             var that = this;
-            GoogleMap.ready(function() {
+            YandexMap.ready(function() {
                 if (that.opts.point) {
                     that.point = that.opts.point
                 } else {
@@ -93,10 +94,10 @@
                     }
 
                     if (that.opts.balloon) {
-                        this.balloon.options.set({
+                        that.ymap.balloon.options.set({
                             contentLayout: ymaps.templateLayoutFactory.createClass(that.opts.balloon)
                         });
-                        this.balloon.open(that.point);
+                        that.ymap.balloon.open(that.point);
                     }
                 });
 
@@ -113,85 +114,37 @@
         /*
             Установка текста балуна
          */
-        Placemark.prototype.setBalloon = function(content) {
+        cls.prototype.setBalloon = function(content) {
             this.opts.balloon = content || '';
         };
 
         /*
             Перемещение маркера
          */
-        Placemark.prototype.moveTo = function(point) {
+        cls.prototype.moveTo = function(point) {
             this.point = point;
             this.marker.geometry.setCoordinates(point);
         };
-
-        return Placemark;
-    })();
+    });
 
 
     var map_index = 0;
-    window.YandexMap = (function() {
-        var YandexMap = function() {};
-
-        /*
-            Выполнение callback, когда JS YandexMaps загружен и готов
-         */
-        YandexMap.ready = function(callback) {
-            if (ymaps_ready) {
-                callback()
-            } else {
-                $(document).one('yandex-maps-ready', callback);
-            }
-        };
-
-
-        YandexMap.create = function(container, options) {
-            var self = new YandexMap();
-
-            self.$container = $(container).first();
-            if (!self.$container.length) {
-                console.error('YandexMap can\'t find container');
-                return
+    window.YandexMap = Class(null, function(cls, superclass) {
+        cls.init = function(root, options) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
+                console.error('YandexMap can\'t find root element');
+                return false
             }
 
-            var map_id = self.$container.attr('id');
+            var map_id = this.$root.attr('id');
             if (!map_id) {
                 map_id = 'ymap_' + (++map_index);
             }
-            self.$container.attr('id', map_id);
+            this.$root.attr('id', map_id);
 
             // настройки
-            self.opts = $.extend(true, self.getDefaultOpts(), options);
-            self.opts.lng = self.opts.lng || 49.418785;
-            self.opts.lat = self.opts.lat || 53.510171;
-
-            // точки на карте
-            self.placemarks = [];
-
-            YandexMap.ready(function() {
-                // создание карты
-                self.map = new ymaps.Map(map_id, $.extend({
-                    center: self.createPoint(self.opts.lng, self.opts.lat)
-                }, self.opts.map_options));
-
-                // создание балуна
-                self.balloon = self._createBalloon('');
-
-                // callback
-                self.opts.onInit.call(self);
-            });
-
-            self.$container.data('map', self);
-
-            return self;
-        };
-
-
-        /*
-            Настройки по умолчанию
-         */
-        YandexMap.prototype.getDefaultOpts = function() {
-            return {
+            this.opts = $.extend(true, {
                 lng: 49.418785,
                 lat: 53.510171,
                 map_options: {
@@ -200,24 +153,54 @@
                     zoom: 15
                 },
                 onInit: $.noop
-            }
+            }, options);
+            this.opts.lng = this.opts.lng || 49.418785;
+            this.opts.lat = this.opts.lat || 53.510171;
+
+            // точки на карте
+            this.placemarks = [];
+
+            var that = this;
+            YandexMap.ready(function() {
+                // создание карты
+                that.map = new ymaps.Map(map_id, $.extend({
+                    center: that.createPoint(that.opts.lng, that.opts.lat)
+                }, that.opts.map_options));
+
+                // создание балуна
+                that.balloon = that._createBalloon('');
+
+                // callback
+                that.opts.onInit.call(that);
+            });
+
+            this.$root.data(YandexMap.dataParamName, this);
         };
 
+        /*
+            Выполнение callback, когда JS YandexMaps загружен и готов
+         */
+        cls.ready = function(callback) {
+            if (ymaps_ready) {
+                callback()
+            } else {
+                $(document).one('yandex-maps-ready', callback);
+            }
+        };
 
         /*
             Создание маркера
          */
-        YandexMap.prototype._createMarker = function(point, options) {
+        cls.prototype._createMarker = function(point, options) {
             var marker = new ymaps.Placemark(point, {}, $.extend({}, options));
             this.map.geoObjects.add(marker);
             return marker;
         };
 
-
         /*
             Создание всплывающей подсказки
          */
-        YandexMap.prototype._createBalloon = function(html) {
+        cls.prototype._createBalloon = function(html) {
             if (html.jquery) {
                 html = html.html();
             }
@@ -231,19 +214,17 @@
             return balloon;
         };
 
-
         /*
             Получение координат текущего центра карты
          */
-        YandexMap.prototype.getCenter = function() {
+        cls.prototype.getCenter = function() {
             return this.map.getCenter()
         };
-
 
         /*
             Перемещение к точке или к множеству точек (bounds)
          */
-        YandexMap.prototype.setCenter = function(points) {
+        cls.prototype.setCenter = function(points) {
             if (points.length && $.isArray(points[0])) {
                 this.map.setBounds(points, {
                     zoomMargin: 8
@@ -253,62 +234,57 @@
             }
         };
 
-
         /*
             Получение уровня приближения карты
          */
-        YandexMap.prototype.getZoom = function() {
+        cls.prototype.getZoom = function() {
             return this.map.getZoom()
         };
-
 
         /*
             Установка уровня приближения карты
          */
-        YandexMap.prototype.setZoom = function(zoom) {
+        cls.prototype.setZoom = function(zoom) {
             this.map.setZoom(zoom);
         };
-
 
         /*
             Плавное перемещение к точке
          */
-        YandexMap.prototype.panTo = function(point) {
+        cls.prototype.panTo = function(point) {
             this.map.panTo(point);
         };
-
 
         /*
             Изменение опций карты
          */
-        YandexMap.prototype.setOptions = function(options) {
+        cls.prototype.setOptions = function(options) {
             this.map.setOptions(options);
         };
-
 
         /*
             Создание метки на карте.
          */
-        YandexMap.prototype.addPlacemark = function(options) {
-            var placemark = new Placemark(this, options);
-            this.placemarks.push(placemark);
+        cls.prototype.addPlacemark = function(options) {
+            var placemark = Placemark.create(this, options);
+            if (placemark) {
+                this.placemarks.push(placemark);
+            }
             return placemark;
         };
-
 
         /*
             Получение метки на карте
          */
-        YandexMap.prototype.getPlacemark = function(index) {
+        cls.prototype.getPlacemark = function(index) {
             index = index || 0;
             return (this.placemarks.length > index) && this.placemarks[index];
         };
 
-
         /*
             Удаление метки на карте
          */
-        YandexMap.prototype.removePlacemark = function() {
+        cls.prototype.removePlacemark = function() {
             if (arguments[0] instanceof Placemark) {
                 var index = this.placemarks.indexOf(arguments[0]);
             } else if (typeof index == 'number') {
@@ -323,21 +299,19 @@
             }
         };
 
-
         /*
             Получение точек карты
          */
-        YandexMap.prototype.getPoints = function() {
+        cls.prototype.getPoints = function() {
             return this.placemarks.map(function(item) {
                 return item.point
             })
         };
 
-
         /*
             Создание объекта точки YandexMap
          */
-        YandexMap.prototype.createPoint = function(lng, lat) {
+        cls.prototype.createPoint = function(lng, lat) {
             lng = parseFloat(lng.toString().replace(',', '.'));
             lat = parseFloat(lat.toString().replace(',', '.'));
             if (isNaN(lng) || isNaN(lat)) {
@@ -346,17 +320,15 @@
             return [lat, lng];
         };
 
-
         /*
             Добавление обработчика события на карте
          */
-        YandexMap.prototype.addListener = function(object, event, handler) {
+        cls.prototype.addListener = function(object, event, handler) {
             var that = this;
             object.events.add(event, function() {
                 return handler.apply(that, arguments);
             });
         };
-
 
         /*
             Получение координат по адресу.
@@ -369,7 +341,7 @@
                 alert('Error:', err.message)
             })
          */
-        YandexMap.prototype.geocode = function(address, success, error) {
+        cls.prototype.geocode = function(address, success, error) {
             var that = this;
             ymaps.geocode(address, {results: 1}).then(function(results) {
                 var point = results.geoObjects.get(0).geometry.getCoordinates();
@@ -378,8 +350,7 @@
                 error.call(that, err);
             });
         };
-
-        return YandexMap;
-    })();
+    });
+    YandexMap.dataParamName = 'map';
 
 })(jQuery);

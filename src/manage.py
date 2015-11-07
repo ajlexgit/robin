@@ -2,7 +2,7 @@ import os
 import sys
 
 
-# new JS popups
+# new JS popups, gallery
 # Custom Radio + group
 # Custom checkbox group
 # SessionStoreMixin: переделать? Не работает для InlineFormset
