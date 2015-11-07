@@ -1,15 +1,19 @@
 (function($) {
 
-    var SpriteImage = (function() {
-        function SpriteImage($root) {
-            this.$root = $root;
-            this.$input = $root.find('input:first');
-            this.$dropdown = $root.find('.sprite-icon-dropdown');
-            this.$preview = $root.find('.sprite-icon-preview');
+    var SpriteImage = Class(null, function(cls, superclass) {
+        cls.init = function(root) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
+                console.error('SpriteImage can\'t find root element');
+                return false;
+            }
+
+            this.$input = this.$root.find('input:first');
+            this.$dropdown = this.$root.find('.sprite-icon-dropdown');
+            this.$preview = this.$root.find('.sprite-icon-preview');
 
             // Events
             var that = this;
-            this.$root.off('.sprite-image');
             this.$root.on('click.sprite-image', '.sprite-icon-preview', function() {
                 if (!that.$root.hasClass('opened')) {
                     that.openDropdown();
@@ -19,9 +23,14 @@
                 that.selectItem($(this));
                 that.closeDropdown(true);
             });
-        }
 
-        SpriteImage.prototype.selectItem = function($item) {
+            this.$root.data(SpriteImage.dataParamName, this);
+        };
+
+        /*
+            Выбор элемента списка
+         */
+        cls.prototype.selectItem = function($item) {
             $item.addClass('active').siblings('.active').removeClass('active');
             this.$preview.css({
                 backgroundPosition: $item.css('background-position')
@@ -29,13 +38,16 @@
             this.$input.val($item.data('key'));
         };
 
-        // Dropdown
-        SpriteImage.prototype.openDropdown = function() {
-            var that = this;
+        /*
+            Открытие выпадающего списка
+         */
+        cls.prototype.openDropdown = function() {
+            this.$root.addClass('opened');
             var margin = parseInt(this.$preview.width()) + 18;
-            that.$root.addClass('opened');
-            that.$dropdown.css('margin-left', margin).stop().slideDown(200);
-            $(document).off('.sprite-image').on('click.sprite-image', function(event) {
+            this.$dropdown.css('margin-left', margin).stop().slideDown(200);
+
+            var that = this;
+            $(document).one('click.sprite-image', function(event) {
                 var $target = $(event.target);
                 if (!$target.closest(that.$dropdown.children('.sprite-icon-list')).length) {
                     that.closeDropdown();
@@ -43,8 +55,10 @@
             });
         };
 
-        SpriteImage.prototype.closeDropdown = function(instant) {
-            $(document).off('.sprite-image');
+        /*
+            Закрытие выпадающего списка
+         */
+        cls.prototype.closeDropdown = function(instant) {
             this.$root.removeClass('opened');
 
             if (instant) {
@@ -55,22 +69,23 @@
                 });
             }
         };
+    });
+    SpriteImage.dataParamName = 'sprite_image';
 
-        return SpriteImage;
-    })();
 
     $(document).ready(function() {
         $('.sprite-icon-field').each(function() {
-            var self = $(this);
-            if (!self.closest('.empty-form').length) {
-                self.data('object', new SpriteImage(self));
+            var $this = $(this);
+            if (!$this.closest('.empty-form').length) {
+                SpriteImage.create($this);
             }
         });
 
         if (window.Suit) {
             Suit.after_inline.register('sprite-icon', function(inline_prefix, row) {
-                var self = row.find('.sprite-icon-field');
-                self.data('object', new SpriteImage(self));
+                row.find('.sprite-icon-field').each(function() {
+                    SpriteImage.create(this);
+                });
             });
         }
     });

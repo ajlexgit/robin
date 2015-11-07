@@ -6,13 +6,12 @@
 {% block static_head %}
   {{ block.super }}
   {% stylesheet 'main_forms' %}
-
-  {{ form.media }}
 {% endblock static_head %}
 
 {% block static_js %}
   {{ block.super }}
   {% javascript 'main_forms' %}
+  {{ form.media }}
 {% endblock static_js %}
 
 

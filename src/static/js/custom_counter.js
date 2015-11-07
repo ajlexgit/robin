@@ -24,8 +24,6 @@
     */
 
     window.CustomCounter = Class(null, function(cls, superclass) {
-        var dataParamName = 'object';
-
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -33,11 +31,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$root.data(dataParamName);
+                var old_instance = this.$root.data(CustomCounter.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$root.data(dataParamName, this);
+                this.$root.data(CustomCounter.dataParamName, this);
             }
 
             // настройки
@@ -98,7 +96,7 @@
             Отключение плагина
          */
         cls.prototype.destroy = function() {
-            this.$root.removeData(dataParamName);
+            this.$root.removeData(CustomCounter.dataParamName);
             this.$input.off('.counter');
             this.$prev.remove();
             this.$next.remove();
@@ -135,6 +133,7 @@
             }
         };
     });
+    CustomCounter.dataParamName = 'counter';
 
 
     $.fn.counter = function(options) {

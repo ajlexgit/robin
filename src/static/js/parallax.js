@@ -32,8 +32,6 @@
     var parallaxes = [];
 
     window.Parallax = Class(null, function(cls, superclass) {
-        var dataParamName = 'parallax';
-
         cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
@@ -41,11 +39,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$block.data(dataParamName);
+                var old_instance = this.$block.data(Parallax.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$block.data(dataParamName, this);
+                this.$block.data(Parallax.dataParamName, this);
             }
 
             // настройки
@@ -81,7 +79,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$block.removeData(dataParamName);
+            this.$block.removeData(Parallax.dataParamName);
 
             var index = parallaxes.indexOf(this);
             if (index >= 0) {
@@ -152,6 +150,7 @@
             });
         };
     });
+    Parallax.dataParamName = 'parallax';
 
 
     var applyParallaxes = function() {

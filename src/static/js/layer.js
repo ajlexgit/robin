@@ -16,8 +16,6 @@
     var layers = [];
 
     window.Layer = Class(null, function(cls, superclass) {
-        var dataParamName = 'layer';
-
         cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
@@ -25,11 +23,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$block.data(dataParamName);
+                var old_instance = this.$block.data(Layer.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$block.data(dataParamName, this);
+                this.$block.data(Layer.dataParamName, this);
             }
 
             // настройки
@@ -67,7 +65,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$block.removeData(dataParamName);
+            this.$block.removeData(Layer.dataParamName);
 
             var index = layers.indexOf(this);
             if (index >= 0) {
@@ -127,6 +125,7 @@
             }
         };
     });
+    Layer.dataParamName = 'layer';
 
 
     /*

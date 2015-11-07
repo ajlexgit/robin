@@ -17,8 +17,6 @@
     */
 
     window.CustomCheckbox = Class(null, function(cls, superclass) {
-        var dataParamName = 'object';
-
         cls.init = function(input, options) {
             this.$input = $(input).first();
             if (!this.$input.length) {
@@ -26,11 +24,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$input.data(dataParamName);
+                var old_instance = this.$input.data(CustomCheckbox.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$input.data(dataParamName, this);
+                this.$input.data(CustomCheckbox.dataParamName, this);
             }
 
             // настройки
@@ -70,7 +68,7 @@
             Отключение плагина
          */
         cls.prototype.destroy = function() {
-            this.$input.removeData(dataParamName);
+            this.$input.removeData(CustomCheckbox.dataParamName);
             this.$input.off('.checkbox');
             this.$elem.remove();
         };
@@ -125,6 +123,7 @@
             return this._set_checked(false)
         };
     });
+    CustomCheckbox.dataParamName = 'checkbox';
 
 
     $.fn.checkbox = function(options) {

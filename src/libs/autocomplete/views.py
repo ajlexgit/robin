@@ -1,6 +1,7 @@
 import math
 import pickle
 import importlib
+from itertools import zip_longest
 from django.apps import apps
 from django.db.models import Q
 from django.conf import settings
@@ -31,23 +32,34 @@ def autocomplete_widget(request, application, model_name, name):
     if model is None:
         raise Http404
 
+    data = {
+        'result': [],
+    }
+
     queryset = model.objects.all()
     queryset.query = redis_data['query']
 
     # Зависимое поле
-    keys = (item[0] for item in redis_data['dependencies'])
+    query = Q()
+    dependencies = tuple(item[0] for item in redis_data['dependencies'])
     values = request.POST.get("values").split(';')
-    multiples = (item[2] for item in redis_data['dependencies'])
-    for key, val, multiple in zip(keys, values, multiples):
-        if not val:
-            val = None
+    is_multiple = tuple(item[2] for item in redis_data['dependencies'])
+    for index, key in enumerate(dependencies):
+        try:
+            value = values[index]
+            multiple = is_multiple[index]
+        except KeyError:
+            return JsonResponse(data)
+
+        if not value:
+            value = None
         elif multiple:
-            val = val.split(',')
+            value = value.split(',')
             key += '__in'
 
-        queryset = queryset.filter(**{
-            key: val
-        })
+        query &= Q((key, value))
+
+    queryset = queryset.filter(query)
 
     # Поиск по выражениям
     expressions = request.POST.get('expressions')
@@ -63,10 +75,6 @@ def autocomplete_widget(request, application, model_name, name):
                 expressions_query |= Q((expression, token))
 
         queryset = queryset.filter(expressions_query)
-
-    data = {
-        'result': [],
-    }
 
     # Постраничная навигация
     if page and page_limit:

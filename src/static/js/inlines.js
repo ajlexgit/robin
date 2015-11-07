@@ -67,8 +67,6 @@
     };
 
     window.Formset = Class(null, function(cls, superclass) {
-        var dataParamName = 'formset';
-
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -76,11 +74,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$root.data(dataParamName);
+                var old_instance = this.$root.data(Formset.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$root.data(dataParamName, this);
+                this.$root.data(Formset.dataParamName, this);
             }
 
             this.opts = $.extend({
@@ -136,7 +134,7 @@
             Отвязывание плагина
          */
         cls.prototype.destroy = function() {
-            this.$root.removeData(dataParamName);
+            this.$root.removeData(Formset.dataParamName);
         };
 
         /*
@@ -330,5 +328,6 @@
             return $form;
         };
     });
+    Formset.dataParamName = 'formset';
 
 })(jQuery);

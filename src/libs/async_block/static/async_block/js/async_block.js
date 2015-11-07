@@ -2,19 +2,19 @@
 
     $(document).ready(function() {
         $('.async-block').each(function() {
-            var self = $(this);
+            var $block = $(this);
             $.ajax({
-                url: self.data('url'),
+                url: $block.data('url'),
                 type: 'POST',
                 data: {
                     referrer: location.toString()
                 },
                 success: function(response) {
-                    self.replaceWith(response);
-                    self.trigger('loaded.async_block');
+                    $block.replaceWith(response);
+                    $block.trigger('loaded.async_block');
                 },
                 error: function() {
-                    self.remove();
+                    $block.remove();
                 }
             });
         });

@@ -14,54 +14,93 @@
         return state.selected_text || state.text;
     };
 
-    var bind_autocomplete_widget = function(elements) {
-        elements.each(function() {
-            var self = $(this),
-                name = self.attr('name'),
-                self_data = self.data();
-
-            // Форматирование имен
-            var parent_ids = self_data.depends.split(',');
-            if (name.indexOf('-') >= 0) {
-                var formset_prefix = name.split('-').slice(0, -1).join('-');
-                parent_ids = parent_ids.map(function(item) {
-                    return item.replace('__prefix__', formset_prefix);
-                })
+    window.Autocomplete = Class(null, function(cls, superclass) {
+        cls.init = function(element, options) {
+            this.$elem = $(element).first();
+            if (!this.$elem.length) {
+                console.error('Autocomplete can\'t find element');
+                return false;
             }
 
-            var parents = parent_ids.map(function(parent_id) {
-                return $('#id_' + parent_id).on('change', function() {
-                    self.change();
-                });
+            // настройки
+            this.opts = $.extend({
+                url: '',
+                depends: [],
+                expressions: 'title__icontains',
+                minimum_input_length: 2,
+                close_on_select: true,
+                multiple: false
+            }, options);
+
+            if (!this.opts.url) {
+                console.error('Autocomplete can\'t find url');
+                return false;
+            }
+
+            // имя элемента
+            this.name = this.$elem.attr('name');
+            if (!this.name) {
+                console.error('Autocomplete can\'t find name of element');
+                return false;
+            }
+
+            // Поля, от которых зависит текущее поле
+            var depends = this.opts.depends.concat();
+            if (this.name.indexOf('-') >= 0) {
+                var formset_prefix = this.name.split('-').slice(0, -1).join('-');
+                depends = depends.map(function(item) {
+                    return document.getElementById('id_' + item.replace('__prefix__', formset_prefix));
+                })
+            } else {
+                depends = depends.map(function(item) {
+                    return document.getElementById('id_' + item);
+                })
+            }
+            this.$depends = $(depends.filter(Boolean));
+
+            var that = this;
+
+            // при изменении зависимости вызываем событие изменения на текущем элементе
+            this.$depends.on('change.autocomplete', function() {
+                that.$elem.change();
             });
 
-            self.select2({
-                minimumInputLength: self_data.minimum_input_length,
-                closeOnSelect: parseInt(self_data.close_on_select) || 0,
-                multiple: self_data.multiple,
+            // инициализация select2
+            this.initSelect2();
+        };
+
+        cls.prototype._parentValues = function() {
+            return Array.prototype.map.call(this.$depends, function(item) {
+                return $(item).val()
+            }).join(';');
+        };
+
+        /*
+            Инициализация Select2
+         */
+        cls.prototype.initSelect2 = function() {
+            var that = this;
+            this.$elem.select2({
+                minimumInputLength: this.opts.minimum_input_length,
+                closeOnSelect: this.opts.close_on_select,
+                multiple: this.opts.multiple,
                 dropdownCssClass: "bigdrop",
                 formatResult: formatResult,
                 formatSelection: formatSelection,
                 allowClear: true,
                 ajax: {
-                    url: self_data.url,
+                    url: this.opts.url,
                     type: 'POST',
                     quietMillis: 1,
                     dataType: 'json',
                     data: function(term, page, page_limit) {
-                        var data = {
+                        return {
                             q: term,
                             page_limit: page_limit || 30,
                             page: page,
-                            expressions: self_data.expressions
+                            values: that._parentValues(),
+                            expressions: that.opts.expressions
                         };
-
-                        if (parents.length) {
-                            data.values = parents.map(function(item) {
-                                return item.val()
-                            }).join(';');
-                        }
-                        return data;
                     },
                     results: function(data, page) {
                         return {
@@ -71,47 +110,45 @@
                     }
                 },
                 initSelection: function(element, callback) {
-                    var id = $(element).val();
-                    if (id !== "") {
-                        var data = {
-                            q: id,
-                            expressions: self_data.multiple ? 'pk__in' : 'pk'
-                        };
-
-                        if (parents.length) {
-                            data.values = parents.map(function(item) {
-                                return item.val()
-                            }).join(';');
-                        }
-
-                        $.ajax(self_data.url, {
-                            type: 'POST',
-                            dataType: "json",
-                            data: data,
-                            success: function(response) {
-                                if (self_data.multiple) {
-                                    response = response.result;
-                                } else {
-                                    response = response.result.shift();
-                                }
-                                $(element).select2("data", response);
-                                callback(response);
-                            }
-                        })
+                    var id = that.$elem.val();
+                    if (!id) {
+                        return
                     }
+
+                    $.ajax(that.opts.url, {
+                        type: 'POST',
+                        dataType: "json",
+                        data: {
+                            q: id,
+                            values: that._parentValues(),
+                            expressions: that.opts.multiple ? 'pk__in' : 'pk'
+                        },
+                        success: function(response) {
+                            if (that.opts.multiple) {
+                                response = response.result;
+                            } else {
+                                response = response.result.shift();
+                            }
+                            that.$elem.select2("data", response);
+                            callback(response);
+                        }
+                    });
                 },
                 escapeMarkup: function(m) {
                     return m;
                 }
             });
-        })
-    };
+        };
+    });
 
     $(document).ready(function() {
         $('.autocomplete_widget').each(function() {
-            var self = $(this);
-            if (!self.closest('.empty-form').length) {
-                bind_autocomplete_widget(self);
+            var $this = $(this);
+            var data = $this.data();
+
+            if (!$this.closest('.empty-form').length) {
+                data.depends = data.depends.split(',');
+                Autocomplete.create(this, data);
             }
         });
 
@@ -121,7 +158,12 @@
 
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
-                bind_autocomplete_widget(row.find('.autocomplete_widget'));
+                row.find('.autocomplete_widget').each(function() {
+                    var $this = $(this);
+                    var data = $this.data();
+                    data.depends = data.depends.split(',');
+                    Autocomplete.create(this, data);
+                });
             });
         }
     });

@@ -1,7 +1,7 @@
 (function($) {
 
-    var AutocompleteTextbox = (function() {
-        var AutocompleteTextbox = function(block, options) {
+    var AutocompleteTextbox = Class(null, function(cls, superclass) {
+        cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
                 console.error('AutocompleteTextbox can\'t find block');
@@ -20,6 +20,7 @@
                 return
             }
 
+            // настройки
             this.opts = $.extend({
                 tags: [],
                 minimumInputLength: 1,
@@ -48,13 +49,13 @@
             // Текст активного элемента списка
             this.active_text = null;
 
-            this.$block.data('autocomplete', this);
+            this.$block.data(AutocompleteTextbox.dataParamName, this);
         };
 
         /*
             Фильтрация массива по строке
          */
-        AutocompleteTextbox.prototype.grep = function(array, term) {
+        cls.prototype.grep = function(array, term) {
             var that = this;
             return $.grep(array, function(item) {
                 return that.opts.matcher(term,  item)
@@ -64,7 +65,7 @@
         /*
             Получение отфильтрованных тэгов
          */
-        AutocompleteTextbox.prototype.get_matched_tags = function() {
+        cls.prototype.get_matched_tags = function() {
             var term = $.trim(this.$input.val());
             return this.grep(this.tags, term);
         };
@@ -72,9 +73,9 @@
         /*
             Построение списка
          */
-        AutocompleteTextbox.prototype.render_tags = function(tags) {
+        cls.prototype.render_tags = function(tags) {
             var result = '<ul>';
-            for (var i=0, l=tags.length; i<l; i++) {
+            for (var i = 0, l = tags.length; i < l; i++) {
                 result += '<li>' + tags[i] + '</li>';
             }
             result += '</ul>';
@@ -84,14 +85,14 @@
         /*
             Открыт ли список
          */
-        AutocompleteTextbox.prototype.is_opened = function() {
+        cls.prototype.is_opened = function() {
             return this.$block.hasClass('opened');
         };
 
         /*
             Установка активного элемента списка
          */
-        AutocompleteTextbox.prototype.set_active_text = function($item) {
+        cls.prototype.set_active_text = function($item) {
             if (!$item || !$item.length) {
                 this.active_text = null;
                 return
@@ -121,7 +122,7 @@
         /*
             Поиск активного элемента списка
          */
-        AutocompleteTextbox.prototype.get_active_item = function() {
+        cls.prototype.get_active_item = function() {
             var regexp = new RegExp('^' + this.active_text + '$');
             var $items = this.$choices.find('li').filter(function() {
                 return regexp.test($.trim($(this).text()))
@@ -133,7 +134,7 @@
         /*
             Показ списка
          */
-        AutocompleteTextbox.prototype.show_list = function() {
+        cls.prototype.show_list = function() {
             var tags = this.get_matched_tags();
             if (!tags || !tags.length) {
                 this.close_list();
@@ -173,14 +174,13 @@
         /*
             Закрытие списка
          */
-        AutocompleteTextbox.prototype.close_list = function() {
+        cls.prototype.close_list = function() {
             $(document).off('click.autocomplete_textbox');
             this.$block.removeClass('opened');
             this.set_active_text(null);
         };
-
-        return AutocompleteTextbox;
-    })();
+    });
+    AutocompleteTextbox.dataParamName = 'autocomplete_textbox';
 
 
     /*
@@ -204,7 +204,7 @@
 
     // Показ списка
     $(document).on('focus text-changed.autocomplete_textbox', '.autocomplete_textbox input', function() {
-        var obj = $(this).closest('.autocomplete_textbox').data('autocomplete');
+        var obj = $(this).closest('.autocomplete_textbox').data(AutocompleteTextbox.dataParamName);
         obj.show_list();
     });
 
@@ -212,7 +212,7 @@
     // Наведение на пункт списка
     $(document).on('mouseenter', '.autocomplete_textbox .choices li', function() {
         var $item = $(this);
-        var obj = $item.closest('.autocomplete_textbox').data('autocomplete');
+        var obj = $item.closest('.autocomplete_textbox').data(AutocompleteTextbox.dataParamName);
         obj.set_active_text($item);
     });
 
@@ -220,7 +220,7 @@
     // Клик на пункт списка
     $(document).on('click', '.autocomplete_textbox .choices li', function() {
         var $item = $(this);
-        var obj = $item.closest('.autocomplete_textbox').data('autocomplete');
+        var obj = $item.closest('.autocomplete_textbox').data(AutocompleteTextbox.dataParamName);
         obj.set_active_text($item);
         obj.$input.val(obj.active_text);
         obj.close_list();
@@ -229,7 +229,7 @@
 
     // Нажатие клавиш на поле ввода
     $(document).on('keydown', '.autocomplete_textbox input', function(event) {
-        var obj = $(this).closest('.autocomplete_textbox').data('autocomplete');
+        var obj = $(this).closest('.autocomplete_textbox').data(AutocompleteTextbox.dataParamName);
         if (!obj.is_opened()) {
             return;
         }
@@ -262,7 +262,7 @@
     $(document).ready(function() {
         $('.autocomplete_textbox').each(function() {
             if (!$(this).closest('.empty-form').length) {
-                new AutocompleteTextbox(this);
+                AutocompleteTextbox.create(this);
             }
         });
 
@@ -287,7 +287,7 @@
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_textbox', function(inline_prefix, row) {
                 row.find('.autocomplete_textbox').each(function() {
-                    new AutocompleteTextbox(this);
+                    AutocompleteTextbox.create(this);
                 });
             });
         }

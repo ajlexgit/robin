@@ -62,8 +62,6 @@
      */
 
     window.TabManager = Class(null, function(cls, superclass) {
-        var dataParamName = 'tabs';
-
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -71,11 +69,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$root.data(dataParamName);
+                var old_instance = this.$root.data(TabManager.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$root.data(dataParamName, this);
+                this.$root.data(TabManager.dataParamName, this);
             }
 
             // настройки
@@ -126,7 +124,7 @@
          */
         cls.prototype.destroy = function() {
             this.$root.off('.tabmanger');
-            this.$root.removeData(dataParamName);
+            this.$root.removeData(TabManager.dataParamName);
         };
 
 
@@ -182,6 +180,7 @@
             this.currentTabName = tabName;
         };
     });
+    TabManager.dataParamName = 'tabs';
 
 
     $.fn.tabManager = function(options) {

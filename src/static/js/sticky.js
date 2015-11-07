@@ -27,8 +27,6 @@
 
 
     window.Sticky = Class(null, function(cls, superclass) {
-        var dataParamName = 'sticky';
-
         cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
@@ -36,11 +34,11 @@
                 return false;
             } else {
                 // отвязывание старого экземпляра
-                var old_instance = this.$block.data(dataParamName);
+                var old_instance = this.$block.data(Sticky.dataParamName);
                 if (old_instance) {
                     old_instance.destroy();
                 }
-                this.$block.data(dataParamName, this);
+                this.$block.data(Sticky.dataParamName, this);
             }
 
             // родительский контейнер
@@ -68,7 +66,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$block.removeData(dataParamName);
+            this.$block.removeData(Sticky.dataParamName);
 
             var index = stickies.indexOf(this);
             if (index >= 0) {
@@ -215,6 +213,8 @@
             }
         };
     });
+    Sticky.dataParamName = 'sticky';
+
 
     var applyStickies = function() {
         var win_scroll = $window.scrollTop();
