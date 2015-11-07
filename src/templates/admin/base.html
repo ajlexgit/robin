@@ -2,24 +2,33 @@
 <!-- added script "admin_jsi18n" -->
 <!-- added favicon -->
 
-{% load admin_static %}{% load suit_tags %}{% load url from future %}<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+{% load admin_static %}{% load suit_tags %}{% load url from suit_compat %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{% block title %}{{ title }} | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</title>
+  {% block before_suit_styles %}{% endblock %}
   <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/bootstrap/css/bootstrap.min.css' %}" media="all"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/css/suit.css' %}" media="all">
   {% block extrastyle %}{% endblock %}
-  {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
-  <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+  {% if LANGUAGE_BIDI %}
+    <link rel="stylesheet" type="text/css"
+          href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
+  <script
+      type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
   <script src="{% static 'suit/js/jquery-1.10.2.min.js' %}"></script>
-  <script type="text/javascript">var Suit = { $: $.noConflict() }; if (!$) $ = Suit.$; </script>
+  <script type="text/javascript">var Suit = {$: $.noConflict()};
+  if (!$) $ = Suit.$; </script>
   <script src="{% static 'suit/bootstrap/js/bootstrap.min.js' %}"></script>
   {% if 'SHOW_REQUIRED_ASTERISK'|suit_conf %}
-  <style type="text/css">.required:after { content: '*'; margin: 0 0 0 5px; position: absolute; color: #ccc;}</style>
+    <style type="text/css">.required:after {
+      content: '*';
+      margin: 0 0 0 5px;
+      position: absolute;
+      color: #ccc;
+    }</style>
   {% endif %}
-
   {% block extrahead %}
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}"/>
   {% endblock %}
@@ -28,8 +37,7 @@
   <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 
   {% block blockbots %}
-    <meta name="robots" content="NONE,NOARCHIVE"/>
-  {% endblock %}
+    <meta name="robots" content="NONE,NOARCHIVE"/>{% endblock %}
 </head>
 {% load i18n %}
 
@@ -47,19 +55,20 @@
           <!-- Header -->
           <div id="header" class="header">
             <div id="branding">
-              <a href="{% url 'admin:index' %}"><h1 id="site-name">{% block branding %}{{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</h1></a>
+              <a href="{% url 'admin:index' %}"><h1 id="site-name">
+                {% block branding %}{{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</h1></a>
             </div>
 
             {% block header_time %}
-            <div class="header-content header-content-first">
-              <div class="header-column icon">
-                <i class="icon-time"></i>
+              <div class="header-content header-content-first">
+                <div class="header-column icon">
+                  <i class="icon-time"></i>
+                </div>
+                <div class="header-column">
+                  <span class="date"> {% suit_date %}</span><br>
+                  <span class="time" id="clock">{% suit_time %}</span>
+                </div>
               </div>
-              <div class="header-column">
-                <span class="date"> {% suit_date %}</span><br>
-                <span class="time" id="clock">{% suit_time %}</span>
-              </div>
-            </div>
             {% endblock %}
 
             {% block header_content %}
@@ -75,22 +84,24 @@
 
             {% if user.is_active and user.is_staff %}
               <div id="user-tools">
-                {% trans 'Welcome,' %}
-                <strong>
-                  {% filter force_escape %}
-                    {% firstof user.first_name user.username %}{% endfilter %}</strong>.
+                {% block welcome-msg %}
+                  {% trans 'Welcome,' %}
+                  <strong>
+                    {% filter force_escape %}
+                      {% firstof user.first_name user.username %}{% endfilter %}</strong>.
+                {% endblock %}
                 <span class="user-links">
                 {% block userlinks %}
                   {% url 'django-admindocs-docroot' as docsroot %}
                   {% if docsroot %}
                     <a href="{{ docsroot }}">{% trans 'Documentation' %}</a>
-                   <span class="separator">|</span>
+                    <span class="separator">|</span>
                   {% endif %}
                   <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a>
                   <span class="separator">|</span>
                   <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
-                  </span>
                 {% endblock %}
+                </span>
               </div>
             {% endif %}
             {% block nav-global %}{% endblock %}
@@ -157,7 +168,9 @@
               {% block quick-search %}
                 {% with 'SEARCH_URL'|suit_conf as search_url %}
                   {% if search_url %}
-                    <form class="form-search nav-quick-search" autocomplete="off" action="{% if '/' in search_url %}{{ search_url }}{% else %}{% url search_url %}{% endif %}" method="GET">
+                    <form class="form-search nav-quick-search" autocomplete="off"
+                          action="{% if '/' in search_url %}{{ search_url }}{% else %}{% url search_url %}{% endif %}"
+                          method="GET">
                       <input type="text" name="q" class="input-medium search-query" id="quick-search">
                       <i class="input-icon icon-search"></i>
                       <input type="submit" class="submit" value="">
@@ -177,45 +190,48 @@
   {% endblock %}
 
   {% if not is_popup %}
-  <!-- Sticky footer push -->
-  <div id="push"></div>
+    <!-- Sticky footer push -->
+    <div id="push"></div>
   {% endif %}
 
 </div>
 
 {% block footer %}
   {% if not is_popup %}
-  <div id="footer" class="footer">
-    <div class="content">
-      <div class="tools">
-        {% block footer_links %}
-          <a href="http://djangosuit.com/support/" target="_blank" class="icon"><i class="icon-question-sign"></i>Support</a>
-          <a href="http://djangosuit.com/pricing/" target="_blank" class="icon"><i class="icon-bookmark"></i>Licence</a>
-          <a href="http://github.com/darklow/django-suit/issues" target="_blank" class="icon"><i class="icon-comment"></i>Report a bug</a>
-        {% endblock %}
-      </div>
+    <div id="footer" class="footer">
+      <div class="content">
+        <div class="tools">
+          {% block footer_links %}
+            <a href="http://djangosuit.com/support/" target="_blank" class="icon"><i class="icon-question-sign"></i>Support</a>
+            <a href="http://djangosuit.com/pricing/" target="_blank" class="icon"><i
+                class="icon-bookmark"></i>Licence</a>
+            <a href="http://github.com/darklow/django-suit/issues" target="_blank" class="icon"><i
+                class="icon-comment"></i>Report a bug</a>
+          {% endblock %}
+        </div>
 
-      <div class="copyright">
-        {% block copyright %}
-          Copyright &copy; 2013 DjangoSuit.com<br>Developed by <a href="http://djangosuit.com" target="_blank">DjangoSuit.com</a>
-        {% endblock %}
-      </div>
+        <div class="copyright">
+          {% block copyright %}
+            Copyright &copy; 2013 DjangoSuit.com<br>Developed by
+            <a href="http://djangosuit.com" target="_blank">DjangoSuit.com</a>
+          {% endblock %}
+        </div>
 
-      <div class="branding">{% block footer_branding %}
-        {% with 'ADMIN_NAME'|suit_conf as admin_name %}
-          {{ admin_name }}
-          {% if admin_name == 'Django Suit' %}
-            v{{ 'VERSION'|suit_conf }}
-          {% endif %}
-        {% endwith %}
-      {% endblock %}</div>
+        <div class="branding">{% block footer_branding %}
+          {% with 'ADMIN_NAME'|suit_conf as admin_name %}
+            {{ admin_name }}
+            {% if admin_name == 'Django Suit' %}
+              v{{ 'VERSION'|suit_conf }}
+            {% endif %}
+          {% endwith %}
+        {% endblock %}</div>
+      </div>
     </div>
-  </div>
   {% endif %}
 {% endblock %}
 
-  <script src="{% static 'suit/js/suit.js' %}"></script>
-  {% block extrajs %}{% endblock %}
+<script src="{% static 'suit/js/suit.js' %}"></script>
+{% block extrajs %}{% endblock %}
 
 </body>
 </html>
