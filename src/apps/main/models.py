@@ -198,7 +198,7 @@ class ClientFormModel(models.Model):
             ),
         ),
     )
-    count = models.PositiveIntegerField(_('count'), max_length=2, default=1, validators=[
+    count = models.PositiveIntegerField(_('count'), default=1, validators=[
         MaxValueValidator(99)
     ])
     color = ColorField(_('color'), blank=True)

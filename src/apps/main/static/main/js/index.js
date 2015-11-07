@@ -105,7 +105,7 @@
 
     // slider
     $(document).ready(function() {
-        var $elem = $('.slider');
+        var $elem = $('#slider_example').find('.slider');
         window.slider = new Slider($elem, {
             adaptiveHeight: true,
             adaptiveHeightTransition: 800,
