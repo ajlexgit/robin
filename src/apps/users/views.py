@@ -58,6 +58,9 @@ class RegisterView(FormView):
     form_class = RegisterForm
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return redirect(get_redirect_url(request))
+
         # Seo
         seo = Seo()
         seo.set({
@@ -66,6 +69,11 @@ class RegisterView(FormView):
         seo.save(request)
 
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return redirect(get_redirect_url(request))
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         user = form.save()

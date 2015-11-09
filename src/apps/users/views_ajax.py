@@ -1,4 +1,5 @@
 from django.forms import model_to_dict
+from django.http.response import Http404
 from django.views.generic import View, FormView
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -54,6 +55,16 @@ class RegisterView(AjaxViewMixin, FormView):
     """ AJAX register """
     form_class = RegisterForm
     template_name = 'users/ajax_register.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            raise Http404
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            raise Http404
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         user = form.save()
