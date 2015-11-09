@@ -92,6 +92,11 @@ class PasswordResetView(AjaxViewMixin, FormView):
     form_class = PasswordResetForm
     template_name = 'users/ajax_reset.html'
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            raise Http404
+        return super().get(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         self.email = request.POST.get('email', '')
         request.session['reset_email'] = self.email
