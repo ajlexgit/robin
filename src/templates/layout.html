@@ -13,6 +13,7 @@
   <meta name="keywords" content="{{ request.seo.keywords }}"/>
   <meta name="description" content="{{ request.seo.description }}"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block extra_meta %}{% endblock extra_meta %}
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">

@@ -5,11 +5,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
 from django.shortcuts import redirect, resolve_url, get_object_or_404
-from django.views.generic import View, TemplateView
+from django.views.generic import View, FormView, TemplateView
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.views import logout as default_logout, password_reset, password_reset_confirm
 from seo import Seo
-from libs.session_form import SessionFormView
 from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
 
 
@@ -23,7 +22,7 @@ def get_redirect_url(request):
     return redirect_to
 
 
-class LoginView(SessionFormView):
+class LoginView(FormView):
     """ Страница авторизации """
     template_name = 'users/login.html'
     form_class = LoginForm
@@ -53,7 +52,7 @@ class LogoutView(View):
         return default_logout(request, *args, **kwargs)
 
 
-class RegisterView(SessionFormView):
+class RegisterView(FormView):
     """ Страница регистрации """
     template_name = 'users/register.html'
     form_class = RegisterForm

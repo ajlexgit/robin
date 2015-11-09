@@ -42,6 +42,7 @@
   min-width: 500px;
   @include media_interval(0, $media768) {
     min-width: 200px;
+    max-width: 90%;
   }
 }
 
