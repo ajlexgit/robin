@@ -315,9 +315,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'index'
-LOGOUT_URL = 'index'
+LOGIN_REDIRECT_URL = 'users:profile_self'
 RESET_PASSWORD_REDIRECT_URL = 'index'
+LOGOUT_URL = 'index'
 
 SESSION_COOKIE_AGE = 30 * 24 * 3600
 

@@ -7,9 +7,11 @@ from django.utils.http import is_safe_url, urlsafe_base64_decode
 from django.shortcuts import redirect, resolve_url, get_object_or_404
 from django.views.generic import View, FormView, TemplateView
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout
-from django.contrib.auth.views import logout as default_logout, password_reset, password_reset_confirm
+from django.contrib.auth.views import password_reset, password_reset_confirm
 from seo import Seo
 from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
+
+UserModel = get_user_model()
 
 
 def get_redirect_url(request, default=settings.LOGIN_REDIRECT_URL):
@@ -173,8 +175,6 @@ class ResetConfirmView(TemplateView):
         if request.user.is_authenticated():
             return redirect(get_redirect_url(request))
 
-        UserModel = get_user_model()
-
         # Seo
         seo = Seo()
         seo.set({
@@ -268,7 +268,6 @@ class ProfileView(TemplateView):
             avatar_delete=resolve_url('users:avatar_delete'),
         )
 
-        UserModel = get_user_model()
         if username:
             user = get_object_or_404(UserModel, username=username)
         elif not request.user.is_authenticated():

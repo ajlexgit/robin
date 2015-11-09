@@ -7,6 +7,8 @@ from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
 from libs.session_form import SessionStoredFormMixin
 from libs.plainerror_form import PlainErrorFormMixin
 
+UserModel = get_user_model()
+
 
 class LoginForm(PlainErrorFormMixin, SessionStoredFormMixin, AuthenticationForm):
     error_messages = {
@@ -78,7 +80,6 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         fields = ('username', 'email')
 
     def clean_username(self):
-        UserModel = get_user_model()
         username = self.cleaned_data["username"]
         try:
             UserModel._default_manager.get(username=username)
@@ -87,7 +88,6 @@ class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm
         self.add_field_error('username', 'unique')
 
     def clean_email(self):
-        UserModel = get_user_model()
         email = self.cleaned_data["email"]
         try:
             UserModel._default_manager.get(email__iexact=email)
@@ -111,7 +111,6 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
     )
 
     def clean_email(self):
-        UserModel = get_user_model()
         email = self.cleaned_data["email"]
         try:
             UserModel._default_manager.get(email__iexact=email)
