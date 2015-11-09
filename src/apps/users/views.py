@@ -6,19 +6,19 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
 from django.shortcuts import redirect, resolve_url, get_object_or_404
 from django.views.generic import View, FormView, TemplateView
-from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout
 from django.contrib.auth.views import logout as default_logout, password_reset, password_reset_confirm
 from seo import Seo
 from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
 
 
-def get_redirect_url(request):
+def get_redirect_url(request, default=settings.LOGIN_REDIRECT_URL):
     redirect_to = request.POST.get(
         REDIRECT_FIELD_NAME,
         request.GET.get(REDIRECT_FIELD_NAME, '')
     )
     if not is_safe_url(url=redirect_to, host=request.get_host()):
-        redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        redirect_to = resolve_url(default)
     return redirect_to
 
 
@@ -48,8 +48,15 @@ class LoginView(FormView):
 class LogoutView(View):
     """ Выход из профиля """
     @staticmethod
-    def post(request, *args, **kwargs):
-        return default_logout(request, *args, **kwargs)
+    def post(request, next_page=None):
+        auth_logout(request)
+
+        if next_page:
+            next_page = resolve_url(next_page)
+        else:
+            next_page = get_redirect_url(request, default=settings.LOGOUT_URL)
+
+        return redirect(next_page)
 
 
 class RegisterView(FormView):
