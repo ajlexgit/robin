@@ -85,13 +85,11 @@ class RegisterView(FormView):
         return redirect(get_redirect_url(self.request))
 
 
-class PasswordResetView(View):
+class PasswordResetView(TemplateView):
     """ Страница с формой ввода email для сброса пароля """
-    @staticmethod
-    def get(request):
-        if request.user.is_authenticated():
-            return redirect(resolve_url(settings.LOGIN_REDIRECT_URL))
+    template_name = 'users/reset_confirm.html'
 
+    def get(self, request, *args, **kwargs):
         # Seo
         seo = Seo()
         seo.set({
@@ -99,11 +97,19 @@ class PasswordResetView(View):
         })
         seo.save(request)
 
-        return password_reset(request,
-            template_name='users/reset.html',
-            password_reset_form=PasswordResetForm,
-            post_reset_redirect='users:reset_done',
-        )
+        if request.user.is_authenticated():
+            # Смена своего пароля, если авторизованы
+            form = SetPasswordForm(request.user)
+            return self.render_to_response({
+                'form': form,
+                'target': resolve_url('users:reset_self'),
+            })
+        else:
+            return password_reset(request,
+                template_name='users/reset.html',
+                password_reset_form=PasswordResetForm,
+                post_reset_redirect='users:reset_done',
+            )
 
     @staticmethod
     def post(request):
@@ -157,6 +163,9 @@ class ResetConfirmView(TemplateView):
     template_name = 'users/reset_confirm.html'
 
     def get(self, request, uidb64=None, token=None):
+        if request.user.is_authenticated():
+            return redirect(get_redirect_url(request))
+
         UserModel = get_user_model()
 
         # Seo
@@ -166,29 +175,22 @@ class ResetConfirmView(TemplateView):
         })
         seo.save(request)
 
-        if request.user.is_authenticated():
-            # Смена своего пароля, если авторизованы
-            form = SetPasswordForm(request.user)
-            return self.render_to_response({
-                'form': form,
-            })
-        else:
-            try:
-                uid = urlsafe_base64_decode(uidb64)
-                user = UserModel._default_manager.get(pk=uid)
-            except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-                user = None
+        try:
+            uid = urlsafe_base64_decode(uidb64)
+            user = UserModel._default_manager.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = None
 
-            if user is None or not default_token_generator.check_token(user, token):
-                return redirect(resolve_url(settings.RESET_PASSWORD_REDIRECT_URL))
+        if user is None or not default_token_generator.check_token(user, token):
+            return redirect(resolve_url(settings.RESET_PASSWORD_REDIRECT_URL))
 
-            return password_reset_confirm(request,
-                uidb64=uidb64,
-                token=token,
-                template_name='users/reset_confirm.html',
-                set_password_form=SetPasswordForm,
-                post_reset_redirect='users:reset_complete',
-            )
+        return password_reset_confirm(request,
+            uidb64=uidb64,
+            token=token,
+            template_name='users/reset_confirm.html',
+            set_password_form=SetPasswordForm,
+            post_reset_redirect='users:reset_complete',
+        )
 
     def post(self, request, uidb64=None, token=None):
         # Seo
@@ -234,10 +236,7 @@ class ResetCompleteView(TemplateView):
         seo.save(request)
 
         if request.user.is_authenticated():
-            # Смена своего пароля, если авторизованы
-            return self.render_to_response({
-                'redirect': resolve_url('users:profile', username=request.user.username),
-            })
+            return redirect(get_redirect_url(request))
         else:
             email = request.session.pop('reset_email', '')
             if not email:

@@ -11,7 +11,7 @@
 
     <div class="gc gc-alone">
       {{ form.media }}
-      <form method="post" action="" id="reset-confirm-form"
+      <form method="post" action="{{ target }}" id="reset-confirm-form"
             class="users-reset-confirm-form users-form" autocomplete="off">
         {% csrf_token %}
 
