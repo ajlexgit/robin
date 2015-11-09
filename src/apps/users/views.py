@@ -260,7 +260,7 @@ class ProfileView(TemplateView):
 
     def get(self, request, username=None):
         if not username and not request.user.is_authenticated():
-            return redirect(settings.LOGIN_REDIRECT_URL)
+            return redirect(settings.LOGIN_URL)
 
         request.js_storage.update(
             avatar_upload=resolve_url('users:avatar_upload'),

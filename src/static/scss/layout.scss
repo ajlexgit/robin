@@ -32,10 +32,10 @@ body {
 
   #header-wrapper {
     display: table-row;
-    height: 0;
 
     & > header {
       display: table-cell;
+      height: 0;
       vertical-align: top;
     }
   }
@@ -53,10 +53,10 @@ body {
 
   #footer-wrapper {
     display: table-row;
-    height: 0;
 
     & > footer {
       display: table-cell;
+      height: 0;
       vertical-align: top;
     }
   }
