@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^ajax/logout/$', views_ajax.LogoutView.as_view(), name='ajax_logout'),
     url(r'^ajax/register/$', views_ajax.RegisterView.as_view(), name='ajax_register'),
     url(r'^ajax/reset/$', views_ajax.PasswordResetView.as_view(), name='ajax_reset'),
+    url(r'^ajax/reset-confirm/$', views_ajax.ResetConfirmView.as_view(), name='ajax_reset_confirm'),
     url(r'^ajax/avatar_upload/$', views_ajax.AvatarUploadView.as_view(), name='avatar_upload'),
     url(r'^ajax/avatar_crop/$', views_ajax.AvatarCropView.as_view(), name='avatar_crop'),
     url(r'^ajax/avatar_delete/$', views_ajax.AvatarRemoveView.as_view(), name='avatar_delete'),

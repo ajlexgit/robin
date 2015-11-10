@@ -190,5 +190,64 @@
         });
         return false;
     });
+    
+    
+    /*
+        Открытие окна установки пароля
+     */
+    $(document).on('click', '.reset-confirm-popup', function() {
+        $.preloader();
+
+        $.ajax({
+            url: window.js_storage.ajax_reset_confirm,
+            type: 'GET',
+            success: function(response) {
+                $.popup({
+                    classes: 'users-popup',
+                    content: response
+                }).show();
+            },
+            error: function() {
+                alert(gettext('Connection error'));
+                $.popup().hide();
+            }
+        });
+        return false;
+    });
+    
+    
+    /*
+        AJAX set password
+     */
+    $(document).on('submit', '#ajax-reset-confirm-form', function() {
+        var form = $(this);
+        $.preloader();
+
+        $.ajax({
+            url: window.js_storage.ajax_reset_confirm,
+            type: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.form) {
+                    $.popup({
+                        classes: 'users-popup',
+                        content: response.form
+                    }).show();
+                } else {
+                    $(document).trigger('reset-confirm.auth.users');
+                    $.popup({
+                        classes: 'users-popup',
+                        content: response.done
+                    });
+                }
+            },
+            error: function() {
+                alert(gettext('Connection error'));
+                $.popup().hide();
+            }
+        });
+        return false;
+    });
 
 })(jQuery);

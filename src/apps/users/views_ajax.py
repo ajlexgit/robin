@@ -127,6 +127,39 @@ class PasswordResetView(AjaxViewMixin, FormView):
         })
 
 
+class ResetConfirmView(AjaxViewMixin, FormView):
+    """ AJAX reset password """
+    form_class = SetPasswordForm
+    template_name = 'users/ajax_reset_confirm.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            raise Http404
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            raise Http404
+        return super().post(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.setdefault('user', self.request.user)
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return self.json_response()
+
+    def form_invalid(self, form):
+        return self.json_response({
+            'errors': form.error_dict_full,
+            'form': self.render_to_string(self.template_name, {
+                'form': form,
+            }),
+        })
+
+
 class AvatarUploadView(AjaxViewMixin, View):
     """ Загрузка аватара """
     def post(self, request):
