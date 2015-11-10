@@ -38,11 +38,11 @@
 <div id="wrapper">
   {% block header %}
     <div id="header-wrapper">
-      <header>
+      <div class="header-cell">
         {% block header_content %}
           {% header %}
         {% endblock header_content %}
-      </header>
+      </div>
     </div>
   {% endblock header %}
 
@@ -54,11 +54,11 @@
 
   {% block footer %}
     <div id="footer-wrapper">
-      <footer>
+      <div class="footer-cell">
         {% block footer_content %}
           {% footer %}
         {% endblock footer_content %}
-      </footer>
+      </div>
     </div>
   {% endblock footer %}
 </div>

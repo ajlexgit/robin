@@ -25,12 +25,10 @@
   background: gray;
 }
 
-
 header {
   position: absolute;
-  z-index: 100;
+  z-index: 2;
 }
-
 
 #video {
   .section-inner {
@@ -75,7 +73,7 @@ header {
 
   .gc-full {
     position: relative;
-    overflow: auto;   // fix margin
+    overflow: hidden;
     height: 800px;
     z-index: 1;
   }

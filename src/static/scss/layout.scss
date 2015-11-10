@@ -30,10 +30,10 @@ body {
   table-layout: fixed;
   z-index: 1;
 
-  #header-wrapper {
+  #header-row {
     display: table-row;
 
-    & > header {
+    & > .header-cell {
       display: table-cell;
       height: 0;
       vertical-align: top;
@@ -54,7 +54,7 @@ body {
   #footer-wrapper {
     display: table-row;
 
-    & > footer {
+    & > .footer-cell {
       display: table-cell;
       height: 0;
       vertical-align: top;

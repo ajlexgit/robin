@@ -7,7 +7,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from libs.views_ajax import AjaxViewMixin
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
-from .forms import LoginForm, RegisterForm, PasswordResetForm
+from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
 
 
 def user_to_dict(user):
