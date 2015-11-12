@@ -1,7 +1,9 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
+from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -303,38 +305,63 @@ class ShopProduct(models.Model):
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
-        payed = kwargs.pop('payed', None)
-        if payed is None:
+        confirmed = kwargs.pop('confirmed', None)
+        if confirmed is None:
             pass
-        elif payed:
-            qs &= models.Q(status=ShopOrder.STATUS_PAID)
         else:
-            qs &= models.Q(status=ShopOrder.STATUS_NOT_PAID)
+            qs &= models.Q(is_confirmed=confirmed)
+
+        paid = kwargs.pop('paid', None)
+        if paid is None:
+            pass
+        else:
+            qs &= models.Q(is_paid=paid)
+
+        checked = kwargs.pop('checked', None)
+        if checked is None:
+            pass
+        else:
+            qs &= models.Q(is_checked=checked)
         return qs
 
 
 class ShopOrder(models.Model):
     """ Заказ """
-    STATUS_NOT_PAID = 1
-    STATUS_PAID = 2
-    STATUS = (
-        (STATUS_NOT_PAID, _('Not paid')),
-        (STATUS_PAID, _('Paid')),
-    )
-
-    status = models.PositiveSmallIntegerField(_('status'),
-        default=STATUS_NOT_PAID,
-        choices=STATUS,
-    )
-    pay_date = models.DateTimeField(_('pay date'),
-        null=True,
-        editable=False,
-    )
+    uuid = models.UUIDField(_('UUID'), default=uuid.uuid4, unique=True, editable=False)
+    session = models.CharField(_('session'), max_length=64, editable=False)
     products_cost = ValuteField(_('products cost'),
         validators=[MinValueValidator(0)],
         editable=False,
     )
-    session = models.CharField(_('session'), max_length=64, editable=False)
+
+    # Подтвержден плательщиком
+    is_confirmed = models.BooleanField(_('confirmed'), default=False, editable=False)
+    confirm_date = models.DateTimeField(_('confirm date'),
+        null=True,
+        editable=False,
+    )
+
+    # Отменен плательщиком
+    is_cancelled = models.BooleanField(_('cancelled'), default=False)
+    cancel_date = models.DateTimeField(_('cancel date'),
+        null=True,
+        editable=False,
+    )
+
+    # Проверка менеджером
+    is_checked = models.BooleanField(_('checked'), default=False)
+    check_date = models.DateTimeField(_('check date'),
+        null=True,
+        editable=False,
+    )
+
+    # Оплачен
+    is_paid = models.BooleanField(_('paid'), default=False)
+    pay_date = models.DateTimeField(_('pay date'),
+        null=True,
+        editable=False,
+    )
+
     date = models.DateTimeField(_('create date'), editable=False)
 
     objects = ShopOrderQuerySet.as_manager()
@@ -351,16 +378,53 @@ class ShopOrder(models.Model):
         if not self.date:
             self.date = now()
 
-        self.make_hash()
         super().save(*args, **kwargs)
+
+    def clean(self):
+        errors = {}
+
+        # неподтвержденный заказ не может быть проверен или оплачен
+        if not self.is_confirmed:
+            if self.is_checked:
+                errors['is_checked'] = _('Unconfirmed order can\'t be checked')
+            if self.is_paid:
+                errors['is_paid'] = _('Unconfirmed order can\'t be paid')
+
+        # заказ не может быть одновременно отменен и оплачен
+        if self.is_paid and self.is_cancelled:
+            errors['is_paid'] = _('Cancelled order can\'t be paid')
+
+        if errors:
+            raise ValidationError(errors)
 
     @property
     def total_cost(self):
         return self.products_cost
 
-    def mark_payed(self, save=False):
-        if self.status == self.STATUS_NOT_PAID:
-            self.status = self.STATUS_PAID
+    def mark_confirmed(self, save=False):
+        if not self.is_confirmed:
+            self.is_confirmed = True
+            self.confirm_date = now()
+            if save:
+                self.save()
+
+    def mark_cancelled(self, save=False):
+        if not self.is_cancelled:
+            self.is_cancelled = True
+            self.cancel_date = now()
+            if save:
+                self.save()
+
+    def mark_checked(self, save=False):
+        if not self.is_checked:
+            self.is_checked = True
+            self.check_date = now()
+            if save:
+                self.save()
+
+    def mark_paid(self, save=False):
+        if not self.is_paid:
+            self.is_paid = True
             self.pay_date = now()
             if save:
                 self.save()

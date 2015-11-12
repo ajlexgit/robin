@@ -220,12 +220,15 @@ class StatusShopOrderFilter(SimpleListFilter):
     template = 'admin/button_filter.html'
 
     def lookups(self, request, model_admin):
-        return ShopOrder.STATUS
+        return (
+            (0, 'Not paid'),
+            (1, 'Paid'),
+        )
 
     def queryset(self, request, queryset):
         value = self.value()
         if value:
-            queryset = queryset.filter(status=value)
+            queryset = queryset.filter(paid=value)
         return queryset
 
 
@@ -236,19 +239,45 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('fmt_products_cost', 'fmt_total_cost', ),
         }),
-        (_('Status'), {
+        (_('Cancelled'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'status', 'date', 'pay_date',
+                'is_cancelled', 'cancel_date',
+            ),
+        }),
+        (_('Checked'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'is_checked', 'check_date',
+            ),
+        }),
+        (_('Paid'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'is_paid', 'pay_date',
+            ),
+        }),
+        (_('Confirmed'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'is_confirmed', 'confirm_date',
+            ),
+        }),
+        (_('Created'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'date',
             ),
         }),
     )
     date_hierarchy = 'date'
     readonly_fields = (
-        'fmt_products_cost', 'fmt_total_cost', 'date', 'pay_date',
+        'fmt_products_cost', 'fmt_total_cost', 'date',
+        'is_confirmed', 'confirm_date',
+        'cancel_date', 'check_date', 'pay_date',
     )
     list_display = (
-        '__str__', 'status', 'fmt_total_cost', 'date', 'pay_date',
+        '__str__', 'fmt_total_cost', 'is_cancelled', 'is_checked', 'is_paid', 'pay_date', 'date',
     )
     list_filter = (StatusShopOrderFilter, 'date')
     suit_form_tabs = (
