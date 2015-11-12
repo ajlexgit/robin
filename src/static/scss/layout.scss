@@ -32,7 +32,8 @@ body {
 
   #header-row {
     display: table-row;
-
+    height: 0;
+    
     & > .header-cell {
       display: table-cell;
       height: 0;
@@ -53,6 +54,7 @@ body {
 
   #footer-wrapper {
     display: table-row;
+    height: 0;
 
     & > .footer-cell {
       display: table-cell;

@@ -62,6 +62,7 @@
                         });
                     }
 
+                    placemark.opts.onDragEnd.call(placemark);
                     this.panTo(placemark.point);
                 });
             });
