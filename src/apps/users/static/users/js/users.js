@@ -43,6 +43,7 @@
                 } else {
                     $(document).trigger('register.auth.users', response);
                     $(document).trigger('login.auth.users', response);
+                    $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
                     $.popup().hide();
                 }
             },
@@ -99,6 +100,7 @@
                     }).show();
                 } else {
                     $(document).trigger('login.auth.users', response);
+                    $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
                     $.popup().hide();
                 }
             },
@@ -123,6 +125,7 @@
             dataType: 'json',
             success: function(response) {
                 $(document).trigger('logout.auth.users', response);
+                $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
             },
             error: function() {
                 alert(gettext('Connection error'));

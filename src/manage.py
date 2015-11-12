@@ -2,6 +2,7 @@ import os
 import sys
 
 
+# AJAX-авторизация на странице регистрации
 # new JS popups + show/hide return popup
 # Custom Radio + group
 # Custom checkbox group
