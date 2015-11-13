@@ -382,7 +382,7 @@ class ShopOrder(models.Model):
     )
 
     # В архиве
-    is_archived = models.BooleanField(_('archived'), default=False, editable=False)
+    is_archived = models.BooleanField(_('archived'), default=False)
     archivation_date = models.DateTimeField(_('archivation date'),
         null=True,
         editable=False,

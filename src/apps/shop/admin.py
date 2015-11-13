@@ -219,16 +219,34 @@ class StatusShopOrderFilter(SimpleListFilter):
     parameter_name = 'status'
     template = 'admin/button_filter.html'
 
-    def lookups(self, request, model_admin):
-        return (
-            (0, 'Not paid'),
-            (1, 'Paid'),
-        )
+    STATUSES = (
+        ('non_checked', _('Not checked')),
+        ('checked', _('Checked')),
+        ('paid', _('Paid')),
+        ('cancelled', _('Cancelled')),
+        ('archived', _('Archived')),
+    )
 
-    def queryset(self, request, queryset):
-        value = self.value()
-        if value:
-            queryset = queryset.filter(paid=value)
+    def lookups(self, request, model_admin):
+        result = []
+        for key, name in self.STATUSES:
+            qs = self.queryset(request, model_admin.model._default_manager, key)
+            result.append((key, '%s (%d)' % (name, qs.count())))
+
+        return result
+
+    def queryset(self, request, queryset, value=None):
+        value = value or self.value()
+        if value == 'non_checked':
+            queryset = queryset.filter(confirmed=True, checked=False, paid=None, archived=False, cancelled=False)
+        elif value == 'checked':
+            queryset = queryset.filter(confirmed=True, checked=True, paid=False, archived=False, cancelled=False)
+        elif value == 'paid':
+            queryset = queryset.filter(confirmed=True, checked=True, paid=True, archived=False, cancelled=False)
+        elif value == 'cancelled':
+            queryset = queryset.filter(confirmed=True, checked=None, paid=None, archived=False, cancelled=True)
+        elif value == 'archived':
+            queryset = queryset.filter(confirmed=True, checked=None, paid=None, archived=True, cancelled=None)
         return queryset
 
 
@@ -259,16 +277,16 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'is_paid', 'pay_date',
             ),
         }),
-        (_('Confirmed'), {
-            'classes': ('suit-tab', 'suit-tab-status'),
-            'fields': (
-                'is_confirmed', 'confirm_date',
-            ),
-        }),
         (_('Archived'), {
             'classes': ('suit-tab', 'suit-tab-status'),
             'fields': (
                 'is_archived', 'archivation_date',
+            ),
+        }),
+        (_('Confirmed'), {
+            'classes': ('suit-tab', 'suit-tab-status'),
+            'fields': (
+                'is_confirmed', 'confirm_date',
             ),
         }),
         (_('Created'), {
@@ -282,8 +300,7 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     readonly_fields = (
         'fmt_products_cost', 'fmt_total_cost', 'date',
         'is_confirmed', 'confirm_date',
-        'is_archived', 'archivation_date',
-        'cancel_date', 'check_date', 'pay_date',
+        'cancel_date', 'check_date', 'pay_date', 'archivation_date',
     )
     list_display = (
         '__str__', 'fmt_total_cost', 'is_cancelled', 'is_checked', 'is_paid', 'pay_date', 'date',
