@@ -305,23 +305,41 @@ class ShopProduct(models.Model):
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
+        # подтвержденные
         confirmed = kwargs.pop('confirmed', None)
         if confirmed is None:
             pass
         else:
             qs &= models.Q(is_confirmed=confirmed)
 
+        # отмененные
+        cancelled = kwargs.pop('cancelled', None)
+        if cancelled is None:
+            pass
+        else:
+            qs &= models.Q(is_cancelled=cancelled)
+
+        # оплаченные
         paid = kwargs.pop('paid', None)
         if paid is None:
             pass
         else:
             qs &= models.Q(is_paid=paid)
 
+        # проверенные
         checked = kwargs.pop('checked', None)
         if checked is None:
             pass
         else:
             qs &= models.Q(is_checked=checked)
+
+        # в архиве
+        archived = kwargs.pop('archived', None)
+        if archived is None:
+            pass
+        else:
+            qs &= models.Q(is_archived=archived)
+
         return qs
 
 
