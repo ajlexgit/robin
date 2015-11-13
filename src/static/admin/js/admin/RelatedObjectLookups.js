@@ -1,5 +1,8 @@
 /*
-    FIX: Всплывающие окна располагаются по центру браузера
+    FIX: Всплывающие окна располагаются по центру браузера.
+    FIX: Добавлено jQuery-событие add-related в dismissAddRelatedObjectPopup.
+    FIX: Добавлено jQuery-событие change-related в dismissChangeRelatedObjectPopup.
+    FIX: Добавлено jQuery-событие delete-related в dismissDeleteRelatedObjectPopup.
  */
 
 
@@ -125,6 +128,7 @@ function dismissAddRelatedObjectPopup(win, newId, newRepr) {
         }
         // Trigger a change event to update related links if required.
         django.jQuery(elem).trigger('change');
+        jQuery(elem).trigger('add-related', newId, newRepr);
     } else {
         var toId = name + "_to";
         o = new Option(newRepr, newId);
@@ -146,8 +150,10 @@ function dismissChangeRelatedObjectPopup(win, objId, newRepr, newId) {
             this.value = newId;
         }
     });
+    selects.trigger('change', newId);
+    jQuery(selectsSelector).trigger('change-related', objId, newId, newRepr);
     win.close();
-};
+}
 
 function dismissDeleteRelatedObjectPopup(win, objId) {
     objId = html_unescape(objId);
@@ -159,8 +165,11 @@ function dismissDeleteRelatedObjectPopup(win, objId) {
             django.jQuery(this).remove();
         }
     }).trigger('change');
+
+    jQuery(selectsSelector).trigger('delete-related', objId);
+
     win.close();
-};
+}
 
 // Kept for backward compatibility
 showAddAnotherPopup = showRelatedObjectPopup;
