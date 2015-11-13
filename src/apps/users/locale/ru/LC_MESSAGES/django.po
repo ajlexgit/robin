@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-22 11:57+0400\n"
+"POT-Creation-Date: 2015-11-13 09:29+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,73 +48,73 @@ msgstr "Войти как"
 msgid "Users"
 msgstr "Пользователи"
 
-#: forms.py:13
+#: forms.py:15
 msgid "Login or password incorrect"
 msgstr "Логин или пароль неверен"
 
-#: forms.py:14
+#: forms.py:16
 msgid "Account blocked"
 msgstr "Аккаунт заблокирован"
 
-#: forms.py:18 forms.py:39
+#: forms.py:20 forms.py:41
 msgid "Login"
 msgstr "Логин"
 
-#: forms.py:21 forms.py:44
+#: forms.py:23 forms.py:46
 msgid "Please enter your login"
 msgstr "Введите логин"
 
-#: forms.py:25 forms.py:61
+#: forms.py:27 forms.py:63
 msgid "Password"
 msgstr "Пароль"
 
-#: forms.py:28 forms.py:64 forms.py:132
+#: forms.py:30 forms.py:66 forms.py:131
 msgid "Please enter your password"
 msgstr "Введите пароль"
 
-#: forms.py:35 forms.py:125
+#: forms.py:37 forms.py:124
 msgid "The two passwords didn't match"
 msgstr "Пароли не совпадают"
 
-#: forms.py:45
+#: forms.py:47
 msgid "This login is already taken"
 msgstr "Такой логин уже зарегистрирован"
 
-#: forms.py:46
+#: forms.py:48
 msgid "Login must contain only letters, numbers ans sumbols @+-_"
 msgstr "Логин может содержать только буквы, цифры и знаки @+-_"
 
-#: forms.py:47
+#: forms.py:49
 #, python-format
 msgid "Login must be at least %(limit_value)s characters long"
 msgstr "Логин должен содержать не менее %(limit_value)s символов"
 
-#: forms.py:48
+#: forms.py:50
 #, python-format
 msgid "Login must be no more than %(limit_value)s characters"
 msgstr "Логин должен содержать не более %(limit_value)s символов"
 
-#: forms.py:55 forms.py:108
+#: forms.py:57 forms.py:108
 msgid "Please enter your e-mail"
 msgstr "Введите ваш e-mail"
 
-#: forms.py:56
+#: forms.py:58
 msgid "This e-mail address is already taken"
 msgstr "Такой e-mail уже зарегистрирован"
 
-#: forms.py:57 forms.py:109
+#: forms.py:59 forms.py:109
 msgid "E-mail incorrect"
 msgstr "E-mail некорректен"
 
-#: forms.py:68
+#: forms.py:70
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
-#: forms.py:70
+#: forms.py:72
 msgid "Enter the same password as above, for verification."
 msgstr "Введите пароль ещё раз"
 
-#: forms.py:72 forms.py:139
+#: forms.py:74 forms.py:138
 msgid "Please enter password confirmation"
 msgstr "Введите подтверждение пароля"
 
@@ -126,11 +126,11 @@ msgstr "E-mail не зарегистрирован"
 msgid "E-mail"
 msgstr "E-mail"
 
-#: forms.py:129
+#: forms.py:128
 msgid "New password"
 msgstr "Новый пароль"
 
-#: forms.py:136
+#: forms.py:135
 msgid "New password confirmation"
 msgstr "Подтверждение нового пароля"
 
@@ -146,7 +146,7 @@ msgstr "область обрезки"
 msgid "Sign In or Register"
 msgstr "Войдите или зарегистрируйтесь"
 
-#: templates/users/ajax_login.html:23 templates/users/login.html:31
+#: templates/users/ajax_login.html:23 templates/users/login.html:32
 msgid "Sign in"
 msgstr "Войти"
 
@@ -155,30 +155,40 @@ msgid "Forgot your password?"
 msgstr "Забыли пароль?"
 
 #: templates/users/ajax_login.html:25 templates/users/ajax_register.html:3
-#: templates/users/register.html:8 views.py:64
+#: templates/users/register.html:9 views.py:76
 msgid "Registration"
 msgstr "Регистрация"
 
-#: templates/users/ajax_register.html:34 templates/users/register.html:41
+#: templates/users/ajax_register.html:34 templates/users/register.html:42
 msgid "Register"
 msgstr "Зарегистрироваться"
 
-#: templates/users/ajax_reset.html:3 templates/users/reset.html:8
-#: templates/users/reset_complete.html:8 templates/users/reset_confirm.html:8
-#: templates/users/reset_done.html:8 views.py:90 views.py:108 views.py:134
-#: views.py:157 views.py:189 views.py:224
+#: templates/users/ajax_reset.html:3 templates/users/reset.html:9
+#: templates/users/reset_complete.html:13 templates/users/reset_done.html:9
+#: views.py:105 views.py:131 views.py:157 views.py:181 views.py:206
+#: views.py:241
 msgid "Reset password"
 msgstr "Сброс пароля"
 
-#: templates/users/ajax_reset.html:18 templates/users/reset.html:25
+#: templates/users/ajax_reset.html:18 templates/users/reset.html:26
 msgid "Continue"
 msgstr "Продолжить"
+
+#: templates/users/ajax_reset_confirm.html:3
+#: templates/users/reset_confirm.html:9
+msgid "Set password"
+msgstr "Новый пароль"
+
+#: templates/users/ajax_reset_confirm.html:23
+#: templates/users/reset_confirm.html:31
+msgid "Save"
+msgstr "Сохранить"
 
 #: templates/users/ajax_reset_done.html:3
 msgid "Done"
 msgstr "Готово"
 
-#: templates/users/ajax_reset_done.html:6 templates/users/reset_done.html:13
+#: templates/users/ajax_reset_done.html:6 templates/users/reset_done.html:14
 #, python-format
 msgid "We've sent password reset instructions to your email <b>%(email)s</b>."
 msgstr "Инструкции по сбросу пароля отправлены на адрес <b>%(email)s</b>."
@@ -205,26 +215,24 @@ msgstr "Для смены пароля пройдите по ссылке:"
 msgid "Password reset on %(site_name)s"
 msgstr "Сброс пароля на %(site_name)s"
 
-#: templates/users/login.html:8 views.py:37
+#: templates/users/login.html:9 views.py:39
 msgid "Authorization"
 msgstr "Авторизация"
 
-#: templates/users/profile.html:22
+#: templates/users/profile.html:24 views.py:281
 #, python-format
-msgid ""
-"Profile of «%(username)s»\n"
-"        "
+msgid "Profile of «%(username)s»"
 msgstr "Профиль пользователя «%(username)s»"
 
-#: templates/users/profile.html:29
+#: templates/users/profile.html:33
 msgid "Name"
 msgstr "Имя"
 
-#: templates/users/profile.html:37
+#: templates/users/profile.html:41
 msgid "Last login"
 msgstr "Последний вход"
 
-#: templates/users/profile.html:39
+#: templates/users/profile.html:43
 msgid "Change password"
 msgstr "Поменять пароль"
 
@@ -240,7 +248,7 @@ msgstr "Загрузить аватар"
 msgid "Change thumbnail"
 msgstr "Изменить миниатюру"
 
-#: templates/users/reset_complete.html:13
+#: templates/users/reset_complete.html:18
 msgid ""
 "Your password was successfully changed. You will be redirected to a new page "
 "in 5 seconds."
@@ -248,23 +256,14 @@ msgstr ""
 "Новый пароль успешно сохранен. Вы будете автоматически перенаправлены через "
 "5 секунд "
 
-#: templates/users/reset_confirm.html:30
-msgid "Save"
-msgstr "Сохранить"
-
-#: views.py:260
-#, python-format
-msgid "Profile of «%(username)s»"
-msgstr "Профиль пользователя «%(username)s»"
-
-#: views_ajax.py:123 views_ajax.py:164 views_ajax.py:196
+#: views_ajax.py:169 views_ajax.py:209 views_ajax.py:241
 msgid "Authentication required"
 msgstr "Требуется авторизация"
 
-#: views_ajax.py:169
+#: views_ajax.py:214
 msgid "There are no avatar"
 msgstr "Аватар не найден"
 
-#: views_ajax.py:176
+#: views_ajax.py:221
 msgid "Croparea is empty"
 msgstr "Область обрезки пуста"

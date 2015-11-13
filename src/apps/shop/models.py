@@ -335,7 +335,8 @@ class ShopOrder(models.Model):
     )
 
     # Подтвержден плательщиком
-    is_confirmed = models.BooleanField(_('confirmed'), default=False, editable=False)
+    is_confirmed = models.BooleanField(_('confirmed'), default=False, editable=False,
+        help_text=_('Confirmed by the user'))
     confirm_date = models.DateTimeField(_('confirm date'),
         null=True,
         editable=False,
@@ -358,6 +359,13 @@ class ShopOrder(models.Model):
     # Оплачен
     is_paid = models.BooleanField(_('paid'), default=False)
     pay_date = models.DateTimeField(_('pay date'),
+        null=True,
+        editable=False,
+    )
+
+    # В архиве
+    is_archived = models.BooleanField(_('archived'), default=False, editable=False)
+    archivation_date = models.DateTimeField(_('archivation date'),
         null=True,
         editable=False,
     )
@@ -389,10 +397,6 @@ class ShopOrder(models.Model):
                 errors['is_checked'] = _('Unconfirmed order can\'t be checked')
             if self.is_paid:
                 errors['is_paid'] = _('Unconfirmed order can\'t be paid')
-
-        # заказ не может быть одновременно отменен и оплачен
-        if self.is_paid and self.is_cancelled:
-            errors['is_paid'] = _('Cancelled order can\'t be paid')
 
         if errors:
             raise ValidationError(errors)
@@ -426,6 +430,13 @@ class ShopOrder(models.Model):
         if not self.is_paid:
             self.is_paid = True
             self.pay_date = now()
+            if save:
+                self.save()
+
+    def mark_archived(self, save=False):
+        if not self.is_archived:
+            self.is_archived = True
+            self.archivation_date = now()
             if save:
                 self.save()
 
