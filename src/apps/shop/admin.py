@@ -305,6 +305,7 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display = (
         '__str__', 'fmt_total_cost', 'is_cancelled', 'is_checked', 'is_paid', 'pay_date', 'date',
     )
+    actions = ('action_set_checked', 'action_set_cancelled', 'action_set_paid', 'action_set_archived')
     list_filter = (StatusShopOrderFilter, 'date')
     suit_form_tabs = (
         ('general', _('General')),
@@ -326,6 +327,22 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+    def action_set_checked(self, request, queryset):
+        queryset.update(is_checked=True)
+    action_set_checked.short_description = _('Set %(verbose_name_plural)s checked')
+
+    def action_set_paid(self, request, queryset):
+        queryset.update(is_paid=True)
+    action_set_paid.short_description = _('Set %(verbose_name_plural)s paid')
+
+    def action_set_cancelled(self, request, queryset):
+        queryset.update(is_cancelled=True)
+    action_set_cancelled.short_description = _('Set %(verbose_name_plural)s cancelled')
+
+    def action_set_archived(self, request, queryset):
+        queryset.update(is_archived=True)
+    action_set_archived.short_description = _('Set %(verbose_name_plural)s archived')
 
     def change_view(self, request, object_id, *args, **kwargs):
         if object_id is None:

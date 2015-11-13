@@ -423,41 +423,6 @@ class ShopOrder(models.Model):
     def total_cost(self):
         return self.products_cost
 
-    def mark_confirmed(self, save=False):
-        if not self.is_confirmed:
-            self.is_confirmed = True
-            self.confirm_date = now()
-            if save:
-                self.save()
-
-    def mark_cancelled(self, save=False):
-        if not self.is_cancelled:
-            self.is_cancelled = True
-            self.cancel_date = now()
-            if save:
-                self.save()
-
-    def mark_checked(self, save=False):
-        if not self.is_checked:
-            self.is_checked = True
-            self.check_date = now()
-            if save:
-                self.save()
-
-    def mark_paid(self, save=False):
-        if not self.is_paid:
-            self.is_paid = True
-            self.pay_date = now()
-            if save:
-                self.save()
-
-    def mark_archived(self, save=False):
-        if not self.is_archived:
-            self.is_archived = True
-            self.archivation_date = now()
-            if save:
-                self.save()
-
 
 class OrderProduct(models.Model):
     """ Продукты заказа """
