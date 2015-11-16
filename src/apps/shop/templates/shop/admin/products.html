@@ -13,24 +13,24 @@
             </tr>
         </thead>
         <tbody>
-            {% for order_product in entity.products.all %}
+            {% for order_product in entity.order_products.all %}
                 <tr>
                     <td style="text-align: center">
                         <img src="{{ order_product.product.photo.small.url }}">
                     </td>
                     <td>
-                        <a href="{% url 'admin:shop_product_change' order_product.product.pk %}" target="_blank">{{ order_product.product.title }}</a>
+                        <a href="{% url 'admin:shop_shopproduct_change' order_product.product.pk %}" target="_blank">{{ order_product.product.title }}</a>
                     </td>
                     <td>
                         {{ order_product.product.serial }}
                     </td>
-                    <td style="font-size: 14px; font-weight: bold;">
+                    <td style="font-size: 14px; font-weight: bold; white-space: nowrap">
                         {{ order_product.order_price.alternate }}
                     </td>
                     <td style="font-size: 14px; font-weight: bold;">
                         {{ order_product.count }}
                     </td>
-                    <td style="font-size: 14px; font-weight: bold;">
+                    <td style="font-size: 14px; font-weight: bold; white-space: nowrap">
                         {{ order_product.total_cost.alternate }}
                     </td>
                 </tr>
