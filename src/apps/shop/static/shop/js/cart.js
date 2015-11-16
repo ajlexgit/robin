@@ -75,13 +75,14 @@
         /*
             Отправка localStorage на сервер для сохранения в сессии
           */
-        cls.prototype.sendStorage = function(storage) {
+        cls.prototype.sendStorage = function(storage, options) {
             var that = this;
 
             if (this._sendQuery) {
                 this._sendQuery.abort();
             }
-            return this._sendQuery = $.ajax({
+            
+            var ajax_options = $.extend(true, {
                 url: window.js_storage.save_cart,
                 type: 'POST',
                 data: {
@@ -96,7 +97,9 @@
                         console.error('Error: ' + error + ' (status: ' + status + ')');
                     }
                 }
-            });
+            }, options);
+            
+            return this._sendQuery = $.ajax(ajax_options);
         };
 
         /*
