@@ -29,6 +29,10 @@ class CartProducts:
         return zip(self._products, self._counts)
 
     @property
+    def products_prices_counts(self):
+        return ((prod, prod.price * count, count) for prod, count in self.products_counts)
+
+    @property
     def total_count(self):
         return sum(self._counts)
 
@@ -93,7 +97,7 @@ class CartProducts:
     def from_data(cls, data, fieldname='cart'):
         """
             Заполнение объекта из GET или POST-данных.
-            Информация извлекается из полей вида "cart[SN]=count"
+            Информация извлекается из полей вида "cart[ID]=count"
         """
         re_items_key = re.compile('^{}\[(\d+)\]$'.format(fieldname))
 

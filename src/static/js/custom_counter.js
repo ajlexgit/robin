@@ -88,7 +88,7 @@
 
             // форматирование значения при потере фокуса
             this.$input.on('blur.counter', function() {
-                that.value(that.value());
+                that.value(that.value(), true);
             });
         };
 
@@ -105,7 +105,7 @@
         /*
             Получение и установка значения
          */
-        cls.prototype.value = function(value) {
+        cls.prototype.value = function(value, force) {
             var current = parseInt(this.$input.val()) || 0;
 
             if (value === undefined) {
@@ -115,7 +115,7 @@
                 value = Math.max(this.opts.minValue, Math.min(value, this.opts.maxValue));
 
                 // callback
-                if (value != current) {
+                if (force || (value != current)) {
                     if (this.opts.beforeChange.call(this, current, value) === false) {
                         return
                     }
@@ -127,7 +127,7 @@
                 }
 
                 // callback
-                if (value != current) {
+                if (force || (value != current)) {
                     this.opts.afterChange.call(this, value);
                 }
             }
