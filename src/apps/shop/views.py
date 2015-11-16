@@ -1,4 +1,5 @@
 ﻿from django.http.response import Http404
+from django.shortcuts import resolve_url
 from seo import Seo
 from libs.views import TemplateExView
 from .models import ShopConfig, ShopCategory, ShopProduct
@@ -46,10 +47,10 @@ class CategoryView(TemplateExView):
             raise Http404
 
         # Breadcrumbs
-        request.breadcrumbs.add(self.config.header, 'shop:index')
+        request.breadcrumbs.add(self.config.header, resolve_url('shop:index'))
         parent_categories = self.category.get_ancestors()
         for category in parent_categories:
-            request.breadcrumbs.add(category.title, 'shop:category', category_alias=category.alias)
+            request.breadcrumbs.add(category.title, resolve_url('shop:category', category_alias=category.alias))
         request.breadcrumbs.add(self.category.title)
 
         # SEO
@@ -91,10 +92,10 @@ class DetailView(TemplateExView):
             raise Http404
 
         # Breadcrumbs
-        request.breadcrumbs.add(self.config.header, 'shop:index')
+        request.breadcrumbs.add(self.config.header, resolve_url('shop:index'))
         parent_categories = self.category.get_ancestors(include_self=True)
         for category in parent_categories:
-            request.breadcrumbs.add(category.title, 'shop:category', category_alias=category.alias)
+            request.breadcrumbs.add(category.title, resolve_url('shop:category', category_alias=category.alias))
         request.breadcrumbs.add(self.product.title)
 
         # SEO

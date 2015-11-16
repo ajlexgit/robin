@@ -1,6 +1,6 @@
 <ul class="breadcrumbs" itemscope itemtype="http://schema.org/BreadcrumbList">
   {% for crumb in breadcrumbs %}
-    <li class="breadcrumb-item"
+    <li class="breadcrumb-item {% if forloop.last %}active{% endif %}"
         itemscope
         itemprop="itemListElement"
         itemtype="http://schema.org/ListItem">
