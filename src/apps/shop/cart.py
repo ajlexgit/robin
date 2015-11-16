@@ -12,6 +12,7 @@ class CartProducts:
     def __init__(self):
         self._unformatted = {}
         self._products = ()
+        self._counts = ()
 
     def __bool__(self):
         return bool(self._products)
@@ -24,31 +25,36 @@ class CartProducts:
         return self._products
 
     @property
+    def products_counts(self):
+        return zip(self._products, self._counts)
+
+    @property
     def total_count(self):
-        return sum(item[1] for item in self._products)
+        return sum(self._counts)
 
     @property
     def total_cost(self):
-        return sum(item[2] for item in self._products)
+        return sum(prod.price * count for prod, count in self.products_counts)
 
     def _format(self):
         """
             Превращает неформатированный словарь self._unformatted вида {ID: count}
             в кортеж self._products вида {Product, count, price*count}
         """
-        products = ShopProduct.objects.filter(id__in=self._unformatted)
-
-        result = []
-        for product in products:
+        counts = []
+        products = []
+        for product in ShopProduct.objects.filter(id__in=self._unformatted):
             count = self._unformatted[product.id]
             if count > 0:
                 count = max(0, count)
             if options.MAX_PRODUCT_COUNT:
                 count = min(count, options.MAX_PRODUCT_COUNT)
             if count:
-                result.append((product, count, product.price * count))
+                counts.append(count)
+                products.append(product)
 
-        self._products = tuple(result)
+        self._counts = tuple(counts)
+        self._products = tuple(products)
 
     def clear(self, request):
         """
@@ -56,6 +62,7 @@ class CartProducts:
         """
         self._unformatted = {}
         self._products = ()
+        self._counts = ()
 
         try:
             del request.session[options.SESSION_CART_NAME]
@@ -125,7 +132,23 @@ class SaveCart(AjaxViewMixin, View):
         """ Установка всех товаров в корзине """
         cart = CartProducts.from_data(request.POST)
         cart.to_session(request)
-        return self.json_response()
+        return self.json_response({
+            'header_cart': self.render_to_string('shop/header_cart.html', {
+                'cart': cart
+            })
+        })
+
+
+class GetHeaderCart(AjaxViewMixin, View):
+    def get(self, request):
+        """ Получение отрендеренной корзины в шапке """
+        data = {}
+        cart = CartProducts.from_session(request)
+        if cart.products:
+            data['header_cart'] = self.render_to_string('shop/header_cart.html', {
+                'cart': cart
+            })
+        return self.json_response(data)
 
 
 class ClearCart(AjaxViewMixin, View):
