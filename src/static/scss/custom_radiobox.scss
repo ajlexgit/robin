@@ -1,6 +1,6 @@
 @import 'mixins';
 
-.custom-checkbox {
+.custom-radiobox {
   display: inline-block;
   position: relative;
   width: 16px;
@@ -13,11 +13,11 @@
   @include border-box;
   @include no_fontsize;
   @include unselectable;
-  @include border_radius(2px);
+  @include border_radius(50%);
 
   &.checked {
     &:before {
-      content: '✔';
+      content: '•';
       position: absolute;
       left: 50%;
       top: 50%;

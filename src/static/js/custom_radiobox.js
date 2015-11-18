@@ -1,27 +1,27 @@
 (function($) {
 
     /*
-        Кастомный чекбокс, подключаемый к стандартному.
+        Кастомный радиобокс, подключаемый к стандартному.
 
         Требует:
             jquery.utils.js
 
         Параметры:
-            className       - класс, который добавляется на новый элемент, представляющий чекбокс
+            className       - класс, который добавляется на новый элемент, представляющий радиобокс
             checkedClass    - класс, который добавляется на новый элемент, когда он выделен
             disabledClass   - класс, который добавляется на новый элемент, когда он отключен
-            beforeChange    - событие перед изменением состояния чекбокса
-            afterChange     - событие после изменения состояния чекбокса
+            beforeChange    - событие перед изменением состояния радиобокса
+            afterChange     - событие после изменения состояния радиобокса
 
         Пример:
-            $('input[type="checkbox"]').checkbox()
+            $('input[type="radio"]').radiobox()
     */
 
-    window.CustomCheckbox = Class(null, function(cls, superclass) {
+    window.CustomRadiobox = Class(null, function(cls, superclass) {
         cls.init = function(input, options) {
             this.$input = $(input).first();
             if (!this.$input.length) {
-                console.error('CustomCheckbox can\'t find input element');
+                console.error('CustomRadiobox can\'t find input element');
                 return false;
             } else {
                 // отвязывание старого экземпляра
@@ -34,17 +34,17 @@
 
             // настройки
             this.opts = $.extend({
-                className: 'custom-checkbox',
+                className: 'custom-radiobox',
                 checkedClass: 'checked',
                 disabledClass: 'disabled',
                 beforeChange: $.noop,
                 afterChange: $.noop
             }, options);
 
-            // скрываем чекбокс
+            // скрываем радиобокс
             this.$input.hide();
 
-            // новый чекбокс
+            // новый радиобокс
             this.$elem = $('<div>').insertAfter(this.$input);
             this.$elem.addClass(this.opts.className);
 
@@ -55,13 +55,13 @@
             var that = this;
 
             // клик на новый элемент
-            this.$elem.on('click.checkbox', function() {
+            this.$elem.on('click.radiobox', function() {
                 that.$input.change();
                 return false;
             });
 
             // изменение состояния
-            this.$input.on('change.checkbox', function() {
+            this.$input.on('change.radiobox', function() {
                 that._set_checked(!that.checked());
                 return false;
             });
@@ -72,13 +72,13 @@
          */
         cls.prototype.destroy = function() {
             this.$input.removeData(cls.dataParamName);
-            this.$input.off('.checkbox');
+            this.$input.off('.radiobox');
             this.$elem.remove();
         };
 
         /*
-         Установка состояния
-         */
+            Установка состояния
+          */
         cls.prototype._set_checked = function(value) {
             if (this.disabled()) {
                 return
@@ -99,6 +99,15 @@
             if (this.checked()) {
                 this.$elem.addClass(this.opts.checkedClass);
                 this.$input.prop('checked', true);
+
+                var name = this.$input.attr('name');
+                var $groupBoxes = $('input[name="' + name + '"]').not(this.$input);
+                $groupBoxes.each(function(i, item) {
+                    var box = $(item).data(cls.dataParamName);
+                    if (box) {
+                        box.uncheck()
+                    }
+                });
             } else {
                 this.$elem.removeClass(this.opts.checkedClass);
                 this.$input.prop('checked', false);
@@ -174,12 +183,12 @@
             return this._set_disabled(true)
         };
     });
-    CustomCheckbox.dataParamName = 'checkbox';
+    CustomRadiobox.dataParamName = 'radiobox';
 
 
-    $.fn.checkbox = function(options) {
+    $.fn.radiobox = function(options) {
         return this.each(function() {
-            CustomCheckbox.create(this, options);
+            CustomRadiobox.create(this, options);
         })
     }
 

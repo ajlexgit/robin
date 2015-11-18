@@ -124,6 +124,26 @@ class CartProducts:
         cart._format()
         return cart
 
+    @classmethod
+    def from_order(cls, order):
+        """
+            Заполнение объекта из заказа
+        """
+        cart = cls()
+
+        cart._unformatted = {}
+        data = {order_item.product_id: order_item.count for order_item in order.order_products.all()}
+        for product_id, count in data.items():
+            try:
+                product_id = int(product_id)
+            except (TypeError, ValueError):
+                continue
+
+            cart._unformatted[product_id] = count
+
+        cart._format()
+        return cart
+
     def to_session(self, request):
         """
             Сохранение данных в сессию

@@ -2,10 +2,9 @@ import os
 import sys
 
 
+# JSON.parse в try catch
 # AJAX-авторизация на странице регистрации
 # new JS popups + show/hide return popup
-# Custom Radio + group
-# Custom checkbox group
 # SessionStoreMixin: переделать? Не работает для InlineFormset
 # css background em?
 # Comments: есть возможность написать коммент к удаленному комменту. Как быть?

@@ -60,8 +60,13 @@
             Получение хранилища заказа из localStorage
           */
         cls.prototype.getStorage = function() {
-            var json = localStorage.getItem(this.opts.prefix) || '{}';
-            return $.parseJSON(json);
+            var json = localStorage.getItem(this.opts.prefix);
+            try {
+                var storage = $.parseJSON(json);
+            } catch (err) {
+                storage = {}
+            }
+            return storage;
         };
 
         /*
@@ -146,7 +151,9 @@
     // После авторизации заново записываем заказ в сессию
     $(document).on('login.auth.users logout.auth.users', function() {
         var storage = cart.getStorage();
-        cart.sendStorage(storage);
+        if (!$.isEmptyObject(storage)) {
+            cart.sendStorage(storage);
+        }
     });
 
     window.cart = new Cart();
