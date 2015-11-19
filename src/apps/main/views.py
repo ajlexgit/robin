@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from seo import Seo
+from robokassa.forms import RobokassaForm
 from libs.views import TemplateExView
 from .models import MainPageConfig, ClientFormModel
 from .forms import MainForm, InlineFormSet
@@ -51,16 +52,17 @@ class FormsView(TemplateExView):
         form = MainForm(instance=form_obj, prefix='main')
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
-        form.load_from_session(request)
-        form.remove_from_session(request)
-
-        # formset.load_from_session(request)
-        # formset.remove_from_session(request)
+        robokassa_form = RobokassaForm(initial={
+            'InvId': 0,
+            'OutSum': 8.96,
+            'Desc': 'Gold',
+        })
 
         return self.render_to_response({
             'config': self.config,
             'form': form,
             'formset': formset,
+            'robokassa_form': robokassa_form,
         })
 
     def post(self, request):
@@ -73,12 +75,9 @@ class FormsView(TemplateExView):
 
         if form_valid and formset_valid:
             form.remove_from_session(request)
-            # formset.remove_from_session(request)
-
             form.save()
             formset.save()
         else:
             form.save_to_session(request)
-            # formset.save_to_session(request)
 
         return redirect('forms')

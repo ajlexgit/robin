@@ -4,13 +4,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
                                        PasswordResetForm as DefaultPasswordResetForm,
                                        SetPasswordForm as DefaultSetPasswordForm)
-from libs.session_form import SessionStoredFormMixin
 from libs.plainerror_form import PlainErrorFormMixin
 
 UserModel = get_user_model()
 
 
-class LoginForm(PlainErrorFormMixin, SessionStoredFormMixin, AuthenticationForm):
+class LoginForm(PlainErrorFormMixin, AuthenticationForm):
     error_messages = {
         'invalid_login': _('Login or password incorrect'),
         'inactive': _('Account blocked'),
@@ -32,7 +31,7 @@ class LoginForm(PlainErrorFormMixin, SessionStoredFormMixin, AuthenticationForm)
     )
 
 
-class RegisterForm(PlainErrorFormMixin, SessionStoredFormMixin, UserCreationForm):
+class RegisterForm(PlainErrorFormMixin, UserCreationForm):
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }

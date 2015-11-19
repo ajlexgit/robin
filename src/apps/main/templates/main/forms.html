@@ -103,6 +103,13 @@
     </form>
   </div>
 
+  <div class="robokassa">
+    <form action="{{ robokassa_form.target }}" method="post" target="_blank">
+      {{ robokassa_form.as_p }}
+      <button type="submit">Robokassa</button>
+    </form>
+  </div>
+
   {% seo_block %}
 
 {% endblock content %}

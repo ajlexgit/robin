@@ -1,10 +1,9 @@
 from django import forms
-from libs.session_form import SessionStoredFormMixin
 from libs.plainerror_form import PlainErrorFormMixin
 from .models import ClientFormModel, ClientInlineFormModel
 
 
-class MainForm(PlainErrorFormMixin, SessionStoredFormMixin, forms.ModelForm):
+class MainForm(PlainErrorFormMixin, forms.ModelForm):
     class Meta:
         model = ClientFormModel
         fields = '__all__'
