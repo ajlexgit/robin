@@ -60,7 +60,7 @@ class CartProducts:
         self._counts = tuple(counts)
         self._products = tuple(products)
 
-    def clear(self, request):
+    def clear(self, request, response=None):
         """
             Очистка корзины и данных сессии
         """
@@ -72,6 +72,9 @@ class CartProducts:
             del request.session[options.SESSION_CART_NAME]
         except KeyError:
             pass
+
+        if response:
+            response.set_cookie('clear_cart', '1', path='/')
 
     @classmethod
     def from_session(cls, request):
@@ -178,6 +181,6 @@ class GetHeaderCart(AjaxViewMixin, View):
 class ClearCart(AjaxViewMixin, View):
     def post(self, request):
         """ Очистка корзины """
-        cart = CartProducts.from_data(request.POST)
-        cart.to_session(request)
+        cart = CartProducts.from_session(request)
+        cart.clear(request)
         return self.json_response()

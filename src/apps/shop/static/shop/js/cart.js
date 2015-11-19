@@ -21,6 +21,12 @@
                 onClear: $.noop
             }, options);
 
+            var force_clean = $.cookie('clear_cart');
+            if (force_clean) {
+                localStorage.removeItem(this.opts.prefix);
+                $.removeCookie('clear_cart', {path: '/'});
+            }
+
             var that = this;
             $(window).off('.cart').on('storage.cart', function(event) {
                 var origEvent = event.originalEvent;
@@ -66,7 +72,7 @@
             } catch (err) {
                 storage = {}
             }
-            return storage;
+            return storage || {};
         };
 
         /*
