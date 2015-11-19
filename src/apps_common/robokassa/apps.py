@@ -7,4 +7,4 @@ class Config(AppConfig):
     verbose_name = _('Robokassa')
 
     def ready(self):
-        import shop.signals.handlers
+        import robokassa.signals.handlers

@@ -27,7 +27,8 @@ class Log(models.Model):
     inv_id = models.PositiveIntegerField(_('InvId'), blank=True, null=True)
     step = models.PositiveSmallIntegerField(_('step'), choices=STEPS)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUSES)
-    message = models.CharField(_('Message'), max_length=255)
+    message = models.CharField(_('message'), max_length=255)
+    request = models.TextField(_('request'))
     created = models.DateTimeField(_('create date'), default=now, editable=False)
 
     class Meta:

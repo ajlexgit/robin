@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-19 21:53+0400\n"
+"POT-Creation-Date: 2015-11-19 23:30+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,68 +21,68 @@ msgstr ""
 
 #: admin.py:26 models.py:12 models.py:30
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 #: apps.py:7
 msgid "Robokassa"
-msgstr ""
-
-#: forms.py:115
-msgid "Undefined signature"
-msgstr ""
+msgstr "Robokassa"
 
 #: forms.py:118
-msgid "Invalid signature"
-msgstr ""
+msgid "Undefined signature"
+msgstr "Сигнатура не найдена"
 
-#: forms.py:164
-msgid "Payment was not complete"
-msgstr ""
+#: forms.py:121
+msgid "Invalid signature"
+msgstr "Некорректная сигнатура"
+
+#: forms.py:167
+msgid "Payment was not confirmed"
+msgstr "Платеж не подтвержден"
 
 #: models.py:13
 msgid "Warning"
-msgstr ""
+msgstr "Предупреждение"
 
 #: models.py:14
 msgid "Success"
-msgstr ""
+msgstr "Успех"
 
 #: models.py:15
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: models.py:22
 msgid "Result"
-msgstr ""
+msgstr "Подтверджение"
 
 #: models.py:23
 msgid "Success Page"
-msgstr ""
+msgstr "Страница Success"
 
 #: models.py:24
 msgid "Fail page"
-msgstr ""
+msgstr "Страница Fail"
 
 #: models.py:27
 msgid "InvId"
-msgstr ""
+msgstr "ID платежа"
 
 #: models.py:28
 msgid "step"
-msgstr ""
+msgstr "шаг"
 
 #: models.py:29
 msgid "status"
-msgstr ""
+msgstr "статус"
 
 #: models.py:31
 msgid "create date"
-msgstr ""
+msgstr "дата создания"
 
 #: models.py:34
 msgid "log message"
-msgstr ""
+msgstr "запись лога"
 
 #: models.py:35
 msgid "log messages"
-msgstr ""
+msgstr "записи лога"

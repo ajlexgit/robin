@@ -9,17 +9,25 @@ from .models import Log
 class LogAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'step', 'status', 'message', 'created',
+                'step', 'status', 'message', 'request', 'created',
             ),
         }),
     )
     list_filter = ('status',)
     list_display = ('step', 'status', 'short_message', 'created')
-    readonly_fields = ('step', 'status', 'message', 'created')
+    readonly_fields = ('step', 'status', 'message', 'request', 'created')
     list_display_links = ('step', 'short_message', )
     date_hierarchy = 'created'
+
+    def suit_row_attributes(self, obj, request):
+        css_class = {
+            Log.STATUS_SUCCESS: 'success',
+            Log.STATUS_WARNING: 'warning',
+            Log.STATUS_ERROR: 'error',
+        }.get(obj.status)
+        if css_class:
+            return {'class': css_class}
 
     def short_message(self, obj):
         return truncatechars(obj.message, 48)
@@ -29,4 +37,4 @@ class LogAdmin(ModelAdminMixin, admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return request.user.is_superuser

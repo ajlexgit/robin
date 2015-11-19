@@ -53,9 +53,9 @@ class FormsView(TemplateExView):
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
         robokassa_form = RobokassaForm(initial={
-            'InvId': 0,
-            'OutSum': 8.96,
-            'Desc': 'Gold',
+            'InvId': 58,
+            'OutSum': 1.50,
+            'Desc': 'Пустышка синяя',
         })
 
         return self.render_to_response({

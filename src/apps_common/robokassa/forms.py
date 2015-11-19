@@ -7,6 +7,8 @@ from .models import Log
 
 
 class BaseRobokassaForm(forms.Form):
+    SIGNATURE_FIELDS = ('MrchLogin', 'OutSum', 'InvId')
+    PASSWD = conf.PASSWORD1
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,6 +18,37 @@ class BaseRobokassaForm(forms.Form):
             self.fields[key] = forms.CharField(required=False)
             if 'initial' in kwargs:
                 self.fields[key].initial = kwargs['initial'].get(key, None)
+
+    def _get_value(self, fieldname):
+        """ Получение значения поля формы """
+        field = self.fields[fieldname]
+        if self.is_bound:
+            return self.cleaned_data.get(fieldname, field.initial)
+        else:
+            return self.initial.get(fieldname, field.initial)
+
+    def calc_signature(self):
+        hash_params = []
+        for fieldname in self.SIGNATURE_FIELDS:
+            value = self._get_value(fieldname)
+            if value is None:
+                value = ''
+            hash_params.append(str(value))
+
+        hash_params.append(self.PASSWD)
+
+        # extra
+        for key in sorted(conf.EXTRA_PARAMS):
+            value = self._get_value(key)
+            if value is None:
+                value = ''
+            value = quote_plus(str(value))
+            hash_params.append('%s=%s' % (key, value))
+
+        hash_data = ':'.join(hash_params)
+        hash_value = md5(hash_data.encode()).hexdigest().upper()
+        return hash_value
+
 
 
 class RobokassaForm(BaseRobokassaForm):
@@ -61,30 +94,7 @@ class RobokassaForm(BaseRobokassaForm):
         for field in self.fields:
             self.fields[field].widget = forms.HiddenInput()
 
-        self.calc_signature()
-
-    def calc_signature(self):
-        hash_params = []
-        for fieldname in ('MrchLogin', 'OutSum', 'InvId'):
-            value = self.initial.get(fieldname, self.fields[fieldname].initial or None)
-            if value is None:
-                value = ''
-            hash_params.append(str(value))
-
-        hash_params.append(conf.PASSWORD1)
-
-        # extra
-        for key in sorted(conf.EXTRA_PARAMS):
-            value = self.initial.get(key)
-            if value is None:
-                value = ''
-            value = quote_plus(str(value))
-            hash_params.append('%s=%s' % (key, value))
-
-        hash_data = ':'.join(hash_params)
-        hash_value = md5(hash_data.encode()).hexdigest().upper()
-        self.fields['SignatureValue'].initial = hash_value
-        return hash_value
+        self.fields['SignatureValue'].initial = self.calc_signature()
 
     def get_redirect_url(self):
         """
@@ -105,6 +115,7 @@ class ResultURLForm(BaseRobokassaForm):
     """
         Форма для приема результатов и проверки контрольной суммы
     """
+    SIGNATURE_FIELDS = ('OutSum', 'InvId')
     PASSWD = conf.PASSWORD2
 
     OutSum = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
@@ -121,29 +132,6 @@ class ResultURLForm(BaseRobokassaForm):
             raise forms.ValidationError(_('Invalid signature'))
 
         return self.cleaned_data
-
-    def calc_signature(self):
-        hash_params = []
-        for fieldname in ('OutSum', 'InvId'):
-            value = self.initial.get(fieldname, self.fields[fieldname].initial or None)
-            if value is None:
-                value = ''
-            hash_params.append(str(value))
-
-        hash_params.append(self.PASSWD)
-
-        # extra
-        for key in sorted(conf.EXTRA_PARAMS):
-            value = self.initial.get(key)
-            if value is None:
-                value = ''
-            value = quote_plus(str(value))
-            hash_params.append('%s=%s' % (key, value))
-
-        hash_data = ':'.join(hash_params)
-        hash_value = md5(hash_data.encode()).hexdigest().upper()
-        self.fields['SignatureValue'].initial = hash_value
-        return hash_value
 
 
 class SuccessRedirectForm(ResultURLForm):
@@ -164,7 +152,7 @@ class SuccessRedirectForm(ResultURLForm):
                 status=Log.STATUS_SUCCESS
             )
             if not log_record.exists():
-                raise forms.ValidationError(_('Payment was not complete'))
+                raise forms.ValidationError(_('Payment was not confirmed'))
         return data
 
 class FailRedirectForm(BaseRobokassaForm):
