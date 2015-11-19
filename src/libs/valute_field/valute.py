@@ -134,6 +134,36 @@ class Valute:
     # Операторы
     # ===========
 
+    def __eq__(self, other):
+        if isinstance(other, Valute):
+            return self._value.__eq__(other._value)
+        return self._value.__eq__(other)
+
+    def __ne__(self, other):
+        if isinstance(other, Valute):
+            return self._value.__ne__(other._value)
+        return self._value.__ne__(other)
+
+    def __lt__(self, other):
+        if isinstance(other, Valute):
+            return self._value.__lt__(other._value)
+        return self._value.__lt__(other)
+
+    def __le__(self, other):
+        if isinstance(other, Valute):
+            return self._value.__le__(other._value)
+        return self._value.__le__(other)
+
+    def __gt__(self, other):
+        if isinstance(other, Valute):
+            return self._value.__gt__(other._value)
+        return self._value.__gt__(other)
+
+    def __ge__(self, other):
+        if isinstance(other, Valute):
+            return self._value.__ge__(other._value)
+        return self._value.__ge__(other)
+
     def __neg__(self):
         return self.__class__(self._value.__neg__())
 

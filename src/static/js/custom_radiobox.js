@@ -56,7 +56,7 @@
 
             // клик на новый элемент
             this.$elem.on('click.radiobox', function() {
-                that.$input.change();
+                that._set_checked(true);
                 return false;
             });
 
