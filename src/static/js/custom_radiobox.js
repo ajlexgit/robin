@@ -108,6 +108,9 @@
                         box.uncheck()
                     }
                 });
+
+                // jQuery event
+                this.$input.trigger('checked.radiobox', [this]);
             } else {
                 this.$elem.removeClass(this.opts.checkedClass);
                 this.$input.prop('checked', false);

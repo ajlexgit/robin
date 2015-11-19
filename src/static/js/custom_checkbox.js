@@ -99,6 +99,9 @@
             if (this.checked()) {
                 this.$elem.addClass(this.opts.checkedClass);
                 this.$input.prop('checked', true);
+
+                // jQuery event
+                this.$input.trigger('checked.checkbox', [this]);
             } else {
                 this.$elem.removeClass(this.opts.checkedClass);
                 this.$input.prop('checked', false);
