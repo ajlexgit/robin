@@ -22,8 +22,16 @@ def result(request):
     """ Обработчик для ResultURL """
     data = request.POST if conf.USE_POST else request.GET
 
+    # попытка получить InvId
+    inv_id = data.get('InvId')
+    try:
+        inv_id = int(inv_id)
+    except (TypeError, ValueError):
+        inv_id = None
+
     # log result data
     Log.objects.create(
+        inv_id=inv_id,
         step=Log.STEP_RESULT,
         status=Log.STATUS_MESSAGE,
         request=data.urlencode(),
@@ -59,6 +67,7 @@ def result(request):
     else:
         # log form error
         Log.objects.create(
+            inv_id=inv_id,
             step=Log.STEP_RESULT,
             status=Log.STATUS_ERROR,
             request=data.urlencode(),
@@ -75,8 +84,16 @@ def success(request):
     """ обработчик для SuccessURL """
     data = request.POST if conf.USE_POST else request.GET
 
+    # попытка получить InvId
+    inv_id = data.get('InvId')
+    try:
+        inv_id = int(inv_id)
+    except (TypeError, ValueError):
+        inv_id = None
+
     # log success data
     Log.objects.create(
+        inv_id=inv_id,
         step=Log.STEP_SUCCESS,
         status=Log.STATUS_MESSAGE,
         request=data.urlencode(),
@@ -111,6 +128,7 @@ def success(request):
     else:
         # log form error
         Log.objects.create(
+            inv_id=inv_id,
             step=Log.STEP_SUCCESS,
             status=Log.STATUS_ERROR,
             request=data.urlencode(),
@@ -127,8 +145,16 @@ def fail(request):
     """ обработчик для FailURL """
     data = request.POST if conf.USE_POST else request.GET
 
+    # попытка получить InvId
+    inv_id = data.get('InvId')
+    try:
+        inv_id = int(inv_id)
+    except (TypeError, ValueError):
+        inv_id = None
+
     # log success data
     Log.objects.create(
+        inv_id=inv_id,
         step=Log.STEP_FAIL,
         status=Log.STATUS_MESSAGE,
         request=data.urlencode(),
@@ -163,6 +189,7 @@ def fail(request):
     else:
         # log form error
         Log.objects.create(
+            inv_id=inv_id,
             step=Log.STEP_FAIL,
             status=Log.STATUS_ERROR,
             request=data.urlencode(),

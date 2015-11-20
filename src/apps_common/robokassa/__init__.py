@@ -14,6 +14,7 @@
             ROBOKASSA_PASSWORD2 = 'nkvo6s8bv'
             ROBOKASSA_SUCCESS_REDIRECT_URL = 'shop:index'
             ROBOKASSA_FAIL_REDIRECT_URL = 'shop:index'
+            ROBOKASSA_TEST_MODE = False
 
             SUIT_CONFIG = {
                 ...
