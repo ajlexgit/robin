@@ -238,18 +238,31 @@ class StatusShopOrderFilter(SimpleListFilter):
 
         return result
 
+    def value(self):
+        return super().value() or None
+
     def queryset(self, request, queryset, value=None):
         value = value or self.value()
         if value == 'non_checked':
-            queryset = queryset.filter(confirmed=True, checked=False, paid=None, archived=False, cancelled=False)
+            queryset = queryset.filter(
+                confirmed=True, checked=False, paid=None, archived=False, cancelled=False
+            )
         elif value == 'checked':
-            queryset = queryset.filter(confirmed=True, checked=True, paid=False, archived=False, cancelled=False)
+            queryset = queryset.filter(
+                confirmed=True, checked=True, paid=False, archived=False, cancelled=False
+            )
         elif value == 'paid':
-            queryset = queryset.filter(confirmed=True, checked=True, paid=True, archived=False, cancelled=False)
+            queryset = queryset.filter(
+                confirmed=True, checked=True, paid=True, archived=False, cancelled=False
+            )
         elif value == 'cancelled':
-            queryset = queryset.filter(confirmed=True, checked=None, paid=None, archived=False, cancelled=True)
+            queryset = queryset.filter(
+                confirmed=True, checked=None, paid=None, archived=False, cancelled=True
+            )
         elif value == 'archived':
-            queryset = queryset.filter(confirmed=True, checked=None, paid=None, archived=True, cancelled=None)
+            queryset = queryset.filter(
+                confirmed=True, checked=None, paid=None, archived=True, cancelled=None
+            )
         return queryset
 
 
