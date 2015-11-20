@@ -11,6 +11,7 @@ from project.admin import ModelAdminMixin
 from solo.admin import SingletonModelAdmin
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
+from libs import admin_utils
 from libs.autocomplete import AutocompleteWidget
 from attachable_blocks import AttachedBlocksTabularInline
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
@@ -186,8 +187,10 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     micropreview.allow_tags = True
 
     def category_link(self, obj):
-        url = reverse('admin:shop_shopcategory_change', args=(obj.pk, ))
-        return '<a href="{0}">{1}</a>'.format(url, obj.category)
+        return '<a href="{0}">{1}</a>'.format(
+            admin_utils.get_change_url(obj.category), 
+            obj.category
+        )
     category_link.short_description = _('Category')
     category_link.allow_tags = True
 
