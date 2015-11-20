@@ -188,7 +188,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
 
     def category_link(self, obj):
         return '<a href="{0}">{1}</a>'.format(
-            admin_utils.get_change_url(obj.category), 
+            admin_utils.get_change_url(obj.category),
             obj.category
         )
     category_link.short_description = _('Category')
@@ -266,6 +266,34 @@ class StatusShopOrderFilter(SimpleListFilter):
         return queryset
 
 
+class ShopOrderForm(forms.ModelForm):
+    DATED_FLAGS = (
+        ('is_confirmed', 'confirm_date'),
+        ('is_cancelled', 'cancel_date'),
+        ('is_checked', 'check_date'),
+        ('is_paid', 'pay_date'),
+        ('is_archived', 'archivation_date'),
+    )
+
+    class Meta:
+        model = ShopOrder
+        fields = '__all__'
+
+    def _set_date(self, value, flagname, datename):
+        if value and not getattr(self.instance, flagname):
+            setattr(self.instance, datename, now())
+        elif not value:
+            setattr(self.instance, datename, None)
+
+    def clean(self):
+        data = super().clean()
+        for flagname, datename in self.DATED_FLAGS:
+            value = data.get(flagname)
+            if value is not None:
+                self._set_date(value, flagname, datename)
+        return data
+
+
 @admin.register(ShopOrder)
 class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
@@ -312,6 +340,7 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
             ),
         }),
     )
+    form = ShopOrderForm
     date_hierarchy = 'date'
     readonly_fields = (
         'fmt_products_cost', 'fmt_total_cost', 'date',
