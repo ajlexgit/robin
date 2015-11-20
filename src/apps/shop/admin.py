@@ -361,6 +361,12 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         ('shop/admin/products.html', 'top', 'products'),
     )
 
+    def suit_row_attributes(self, obj, request):
+        if obj.is_cancelled:
+            return {'class': 'error'}
+        if obj.is_paid:
+            return {'class': 'success'}
+
     def fmt_products_cost(self, obj):
         return obj.products_cost.alternate
     fmt_products_cost.short_description = _('Products cost')
