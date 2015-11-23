@@ -159,23 +159,7 @@ class SaveCart(AjaxViewMixin, View):
         """ Установка всех товаров в корзине """
         cart = CartProducts.from_data(request.POST)
         cart.to_session(request)
-        return self.json_response({
-            'header_cart': self.render_to_string('shop/header_cart.html', {
-                'cart': cart
-            })
-        })
-
-
-class GetHeaderCart(AjaxViewMixin, View):
-    def get(self, request):
-        """ Получение отрендеренной корзины в шапке """
-        data = {}
-        cart = CartProducts.from_session(request)
-        if cart.products:
-            data['header_cart'] = self.render_to_string('shop/header_cart.html', {
-                'cart': cart
-            })
-        return self.json_response(data)
+        return self.json_response()
 
 
 class ClearCart(AjaxViewMixin, View):

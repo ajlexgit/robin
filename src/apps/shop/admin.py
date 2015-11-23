@@ -1,8 +1,8 @@
 ﻿from django import forms
 from django.db import models
 from django.contrib import admin
+from django.utils.timezone import now
 from django.db.models import F, Func, Value
-from django.core.urlresolvers import reverse
 from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +14,7 @@ from libs.mptt import *
 from libs import admin_utils
 from libs.autocomplete import AutocompleteWidget
 from attachable_blocks import AttachedBlocksTabularInline
-from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder
+from .models import EmailReciever, ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import products_changed, categories_changed
 
 

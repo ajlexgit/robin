@@ -2,7 +2,7 @@ from django.apps import apps
 from django.views.generic import View
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from django.http import JsonResponse, Http404, HttpResponse
+from django.http import JsonResponse, Http404
 from libs.views_ajax import AjaxAdminViewMixin, JSONError
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 

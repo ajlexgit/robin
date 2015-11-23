@@ -431,7 +431,7 @@ ROBOKASSA_PASSWORD1 = 'hachapuri666'
 ROBOKASSA_PASSWORD2 = 'bublik72x'
 ROBOKASSA_SUCCESS_REDIRECT_URL = 'index'
 ROBOKASSA_FAIL_REDIRECT_URL = 'index'
-# ROBOKASSA_TEST_MODE = True
+ROBOKASSA_TEST_MODE = True
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
