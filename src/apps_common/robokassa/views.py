@@ -1,8 +1,9 @@
 from django.shortcuts import redirect
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .signals import robokassa_result, robokassa_success, robokassa_fail
+from .signals import robokassa_paid
 from .models import Log
+from .conf import EXTRA_PARAMS
 from .forms import ResultURLForm, SuccessRedirectForm, FailRedirectForm
 from . import conf
 
@@ -40,9 +41,14 @@ def result(request):
     form = ResultURLForm(data)
     if form.is_valid():
         inv_id = form.cleaned_data['InvId']
+        out_sum = form.cleaned_data['OutSum']
+
+        extra = {}
+        for key in EXTRA_PARAMS:
+            extra[key] = form.cleaned_data.get(key)
 
         try:
-            robokassa_result.send(sender=ResultURLForm, data=form.cleaned_data)
+            robokassa_paid.send(sender=ResultURLForm, inv_id=inv_id, out_sum=out_sum, extra=extra)
         except Exception as e:
             # log exception
             Log.objects.create(
@@ -103,28 +109,13 @@ def success(request):
     if form.is_valid():
         inv_id = form.cleaned_data['InvId']
 
-        try:
-            robokassa_success.send(sender=SuccessRedirectForm, data=form.cleaned_data)
-        except Exception as e:
-            # log exception
-            Log.objects.create(
-                inv_id=inv_id,
-                step=Log.STEP_SUCCESS,
-                status=Log.STATUS_ERROR,
-                request=data.urlencode(),
-                message='Signal exception:\n{}: {}'.format(
-                    e.__class__.__name__,
-                    ', '.join(e.args),
-                )
-            )
-        else:
-            # log success
-            Log.objects.create(
-                inv_id=inv_id,
-                step=Log.STEP_SUCCESS,
-                status=Log.STATUS_SUCCESS,
-                request=data.urlencode(),
-            )
+        # log success
+        Log.objects.create(
+            inv_id=inv_id,
+            step=Log.STEP_SUCCESS,
+            status=Log.STATUS_SUCCESS,
+            request=data.urlencode(),
+        )
     else:
         # log form error
         Log.objects.create(
@@ -164,28 +155,13 @@ def fail(request):
     if form.is_valid():
         inv_id = form.cleaned_data['InvId']
 
-        try:
-            robokassa_fail.send(sender=FailRedirectForm, data=form.cleaned_data)
-        except Exception as e:
-            # log exception
-            Log.objects.create(
-                inv_id=inv_id,
-                step=Log.STEP_FAIL,
-                status=Log.STATUS_ERROR,
-                request=data.urlencode(),
-                message='Signal exception:\n{}: {}'.format(
-                    e.__class__.__name__,
-                    ', '.join(e.args),
-                )
-            )
-        else:
-            # log success
-            Log.objects.create(
-                inv_id=inv_id,
-                step=Log.STEP_FAIL,
-                status=Log.STATUS_SUCCESS,
-                request=data.urlencode(),
-            )
+        # log success
+        Log.objects.create(
+            inv_id=inv_id,
+            step=Log.STEP_FAIL,
+            status=Log.STATUS_SUCCESS,
+            request=data.urlencode(),
+        )
     else:
         # log form error
         Log.objects.create(

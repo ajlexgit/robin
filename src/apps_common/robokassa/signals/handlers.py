@@ -1,18 +1,9 @@
 from django.dispatch import receiver
-from . import robokassa_result, robokassa_success, robokassa_fail
+from . import robokassa_paid
 
 
-@receiver(robokassa_result)
-def result_received_handler(sender, **kwargs):
-    data = kwargs['data']
-
-
-@receiver(robokassa_success)
-def success_page_visited_handler(sender, **kwargs):
-    data = kwargs['data']
-
-
-@receiver(robokassa_fail)
-def fail_page_visited_handler(sender, **kwargs):
-    data = kwargs['data']
-
+@receiver(robokassa_paid)
+def robokassa_paid_handler(sender, **kwargs):
+    inv_id = kwargs['inv_id']
+    out_sum = kwargs['out_sum']
+    extra = kwargs['extra']
