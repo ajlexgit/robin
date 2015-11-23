@@ -25,7 +25,6 @@ class ShopConfigBlocksInline(AttachedBlocksTabularInline):
 class EmailRecieverAdmin(ModelAdminInlineMixin, admin.TabularInline):
     model = EmailReciever
     extra = 0
-    min_num = 1
     suit_classes = 'suit-tab suit-tab-managers'
 
 
