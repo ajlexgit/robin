@@ -87,9 +87,6 @@ class RobokassaForm(BaseRobokassaForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if conf.TEST_MODE:
-            self.fields['isTest'] = forms.CharField(max_length=1, initial='1')
-
         # скрытый виджет по умолчанию
         for field in self.fields:
             self.fields[field].widget = forms.HiddenInput()

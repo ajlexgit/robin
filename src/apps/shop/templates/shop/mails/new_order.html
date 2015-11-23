@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<p>
+  {% blocktrans with domain=site.domain site=site.name %}New order was created at the
+    <a href="http://{{ domain }}/" target="_blank">{{ site }}</a>{% endblocktrans %}
+</p>
+<p>
+  <a href="http://{{ site.domain }}{% url 'admin:shop_shoporder_change' order.pk %}" target="_blank">
+    {% trans 'See details' %}
+  </a>
+</p>

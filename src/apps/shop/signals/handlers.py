@@ -4,7 +4,9 @@ from django.db.models import QuerySet, F
 from django.db.models.expressions import RawSQL
 from django.db.models.signals import post_delete
 from django.db.models.query import ValuesListQuerySet
+from django.utils.translation import ugettext_lazy as _
 from ..models import ShopCategory, ShopProduct, ShopOrder
+from ..utils import mail_managers
 from . import products_changed, categories_changed, order_confirmed, order_cancelled, order_paid
 
 
@@ -110,7 +112,14 @@ def order_confirmed_handler(sender, **kwargs):
     if not order or not isinstance(order, ShopOrder):
         return
 
-    pass
+    mail_managers(
+        subject=_('New order'),
+        message_template='shop/mails/new_order.html',
+        message_context={
+            'site': kwargs.get('site'),
+            'order': order,
+        }
+    )
 
 
 @receiver(order_paid, sender=ShopOrder)
