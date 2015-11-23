@@ -96,6 +96,10 @@
   }
   label {
     display: inline-block;
+    
+    &[for] {
+      cursor: pointer;
+    }
   }
   b, strong {
     font-weight: bold;
