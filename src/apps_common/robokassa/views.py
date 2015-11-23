@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.sites.shortcuts import get_current_site
 from .signals import robokassa_paid
 from .models import Log
 from .conf import EXTRA_PARAMS
@@ -48,7 +49,12 @@ def result(request):
             extra[key] = form.cleaned_data.get(key)
 
         try:
-            robokassa_paid.send(sender=ResultURLForm, inv_id=inv_id, out_sum=out_sum, extra=extra)
+            robokassa_paid.send(sender=ResultURLForm,
+                inv_id=inv_id,
+                out_sum=out_sum,
+                extra=extra,
+                site=get_current_site(request),
+            )
         except Exception as e:
             # log exception
             Log.objects.create(
