@@ -5,11 +5,11 @@ from django.db.models.expressions import RawSQL
 from django.db.models.signals import post_delete
 from django.db.models.query import ValuesListQuerySet
 from ..models import ShopCategory, ShopProduct, ShopOrder
-from . import products_changed, categories_changed, order_paid, order_cancelled
+from . import products_changed, categories_changed, order_confirmed, order_cancelled, order_paid
 
 
 @receiver(products_changed, sender=ShopProduct)
-def recalculate_product_count(sender, **kwargs):
+def products_changed_handler(sender, **kwargs):
     """
         Обработчик события изменения кол-ва видимых продуктов,
         привязанных непосредственно к категории
@@ -48,7 +48,7 @@ def recalculate_product_count(sender, **kwargs):
 
 
 @receiver(categories_changed, sender=ShopCategory)
-def recalculate_total_product_count(sender, **kwargs):
+def categories_changed_handler(sender, **kwargs):
     """
         Обработчик события изменения кол-ва видимых продуктов,
         привязанных к категории и её подкатегориям
@@ -91,7 +91,7 @@ def recalculate_total_product_count(sender, **kwargs):
 
 
 @receiver(post_delete, sender=ShopProduct)
-def delete_product(sender, **kwargs):
+def post_delete_handler(sender, **kwargs):
     """
         Удаление продукта.
         Если продукт был видимый - вызываем сигнал изменения кол-ва видимых продуктов
@@ -101,8 +101,20 @@ def delete_product(sender, **kwargs):
         products_changed.send(sender, categories=instance.category_id)
 
 
+@receiver(order_confirmed, sender=ShopOrder)
+def order_confirmed_handler(sender, **kwargs):
+    """
+        Обработчик сигнала подтверждения заказа пользователем
+    """
+    order = kwargs.get('order')
+    if not order or not isinstance(order, ShopOrder):
+        return
+
+    pass
+
+
 @receiver(order_paid, sender=ShopOrder)
-def order_paid_signal(sender, **kwargs):
+def order_paid_handler(sender, **kwargs):
     """
         Обработчик сигнала оплаты заказа
     """
@@ -114,9 +126,9 @@ def order_paid_signal(sender, **kwargs):
 
 
 @receiver(order_cancelled, sender=ShopOrder)
-def order_cancelled_signal(sender, **kwargs):
+def order_cancelled_handler(sender, **kwargs):
     """
-        Обработчик сигнала отмены заказа
+        Обработчик сигнала отмены заказа пользователем
     """
     order = kwargs.get('order')
     if not order or not isinstance(order, ShopOrder):

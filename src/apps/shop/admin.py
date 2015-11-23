@@ -7,7 +7,7 @@ from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
-from project.admin import ModelAdminMixin
+from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from solo.admin import SingletonModelAdmin
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
@@ -22,6 +22,13 @@ class ShopConfigBlocksInline(AttachedBlocksTabularInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
+class EmailRecieverAdmin(ModelAdminInlineMixin, admin.TabularInline):
+    model = EmailReciever
+    extra = 0
+    min_num = 1
+    suit_classes = 'suit-tab suit-tab-managers'
+
+
 @admin.register(ShopConfig)
 class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
@@ -32,9 +39,10 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
             ),
         }),
     )
-    inlines = (ShopConfigBlocksInline, )
+    inlines = (ShopConfigBlocksInline, EmailRecieverAdmin)
     suit_form_tabs = (
         ('general', _('General')),
+        ('managers', _('Managers')),
         ('blocks', _('Blocks')),
         ('seo', _('SEO')),
     )

@@ -28,6 +28,18 @@ class ShopConfig(SingletonModel):
         return resolve_url('shop:index')
 
 
+class EmailReciever(models.Model):
+    config = models.ForeignKey(ShopConfig, related_name='recievers')
+    email = models.EmailField(_('e-mail'))
+
+    class Meta:
+        verbose_name = _('e-mail reciever')
+        verbose_name_plural = _('e-mail recievers')
+
+    def __str__(self):
+        return self.email
+
+
 class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
     def aliases(self, qs, kwargs):
         visible = kwargs.pop('visible', None)
@@ -442,3 +454,4 @@ class OrderProduct(models.Model):
 
     def __str__(self):
         return '%s (x%s)' % (self.product.title, self.count)
+
