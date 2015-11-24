@@ -115,9 +115,11 @@ SUIT_CONFIG = {
             )
         },
         {
+            'app': 'blocks',
             'icon': 'icon-file',
             'label': _('Blocks'),
             'models': (
+                'myblock',
                 'main.mainblockfirst',
                 'main.mainblocksecond',
             ),

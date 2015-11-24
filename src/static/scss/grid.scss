@@ -22,9 +22,7 @@ $cols_mobile: 6;
 .gc {
   min-height: 1px;
   padding: 0 $grid_space;
-  @include flex-grow(1);
-  @include flex-shrink(1);
-  @include flex-basis(auto);
+  @include flex(1 1 auto);
   @include border-box;
 }
 
