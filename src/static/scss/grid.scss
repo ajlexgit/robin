@@ -1,5 +1,10 @@
 @import 'mixins';
 
+$cols_wide: 8;
+$cols_desktop: 8;
+$cols_tablet: 8;
+$cols_mobile: 4;
+
 .grid {
   display: block;
   width: 100%;
@@ -31,11 +36,6 @@
 .g-hidden {
   display: none;
 }
-
-$cols_wide: 8;
-$cols_desktop: 8;
-$cols_tablet: 8;
-$cols_mobile: 4;
 
 // Wide-desktop (1200+)
 @include media_interval($media1200, 0) {

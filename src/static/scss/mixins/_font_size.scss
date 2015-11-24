@@ -4,11 +4,15 @@
   @return $remSize * 1rem;
 }
 
-@mixin font-size($size) {
+@mixin font-size($size, $line_height:0) {
   font-size: $size;
 
   @if $size != 0 {
     font-size: calculateRem($size);
+  }
+
+  @if $line_height != 0 {
+    line-height: $line_height / $size;
   }
 }
 

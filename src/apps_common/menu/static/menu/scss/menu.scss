@@ -1,5 +1,12 @@
 @import 'mixins';
 
+$burger_color: $blue;
+$burgerline_height: 3px;
+$burgerline_gap: 5px;
+
+// точка показа мобильного меню
+$mobile_media: $media1024;
+
 
 #main-menu {
   display: inline-block;
@@ -7,7 +14,7 @@
   font-weight: bold;
   color: #FFFFFF;
   @include no_fontsize;
-  @include media_interval(0, $media1024) {
+  @include media_interval(0, $mobile_media) {
     display: none;
   }
 
@@ -44,30 +51,31 @@
 }
 
 // Кнопка меню для мобильной версии
-$menu_line_height: 3px;
-$menu_line_gap: 5px;
 #mobile-menu-button {
+  display: none;
   position: relative;
-  float: right;
   width: 28px;
-  height: 3 * $menu_line_height + 2 * $menu_line_gap;
+  height: 3 * $burgerline_height + 2 * $burgerline_gap;
   cursor: pointer;
   text-align: left;
   z-index: 55;
   vertical-align: middle;
   @include unselectable;
+  @include media_interval(0, $mobile_media) {
+    display: inline-block;
+  }
 
   &:before, &:after {
     content: '';
     position: absolute;
     width: 100%;
-    height: $menu_line_height;
-    background: #FFFFFF;
+    height: $burgerline_height;
+    background: $burger_color;
     @include transition-timing-function(linear);
   }
   &:before {
     top: 0;
-    box-shadow: #FFFFFF 0 ($menu_line_height + $menu_line_gap) 0 0;
+    box-shadow: $burger_color 0 ($burgerline_height + $burgerline_gap) 0 0;
     @include transform(translate3d(0, 0, 0) rotate(0deg));
     @include transition-property(-webkit-transform, transform, box-shadow, top);
     @include transition-duration(0.55s, 0.55s, 0.2s, 0.2s);
@@ -110,7 +118,7 @@ $menu_line_gap: 5px;
   background: #0000FF;
   @include border-box;
   @include transition(right 0.4s);
-  @include media_interval(0, $media1024) {
+  @include media_interval(0, $mobile_media) {
     display: block;
   }
 
