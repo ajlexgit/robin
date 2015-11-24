@@ -131,18 +131,8 @@
             SliderDragPlugin.create({
                 speed: 800,
                 slideMarginPercent: 5
-            }),
-            SliderAutoscrollPlugin.create({
-                animationName: 'fade',
-                direction: 'random',
-                interval: 3000
             })
         ]);
     });
-
-    // Вкладки
-    $(document).ready(function() {
-        $('#tabs').tabManager();
-    })
 
 })(jQuery);

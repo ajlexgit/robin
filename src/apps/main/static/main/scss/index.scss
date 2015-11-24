@@ -162,19 +162,3 @@ header {
 }
 
 
-#tabs {
-  @include font-size(12px);
-
-  .tab {
-    display: none;
-    min-height: 100px;
-
-    &.visible {
-      display: block;
-    }
-
-    h4 {
-      font-weight: bold;
-    }
-  }
-}
