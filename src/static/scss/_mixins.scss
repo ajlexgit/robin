@@ -101,6 +101,24 @@ $grid_max_width: 1400px;
   }
 }
 
+// Отступы контентых блоков
+$block_paddings: 90px, 60px, 40px;
+@mixin block-paddings($args...) {
+  @each $key in $args {
+    #{$key}: nth($block_paddings, 1);
+  }
+  @include media_interval($media768, $media1024) {
+    @each $key in $args {
+      #{$key}: nth($block_paddings, 2);
+    }
+  }
+  @include media_interval(0, $media768) {
+    @each $key in $args {
+      #{$key}: nth($block_paddings, 3);
+    }
+  }
+}
+
 // Стили текста
 $text_color: #2C3035;
 

@@ -122,6 +122,11 @@ body {
   }
 }
 
+// контентный блок
+.block {
+  @include block-paddings(padding-top, padding-bottom);
+}
+
 // Заголовки
 .title-h1 {
   line-height: 1;
