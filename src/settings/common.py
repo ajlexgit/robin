@@ -238,7 +238,6 @@ ANONYMOUS_USER_ID = -1
 AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'comments.backends.CommentPermissionsBackend'
 )
 
 LOGIN_URL = 'users:login'
