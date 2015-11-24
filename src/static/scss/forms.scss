@@ -8,7 +8,7 @@ input, select, textarea, button {
   width: 200px;
   padding: 5px 6px;
   border: 1px solid #808080;
-  @include default_font;
+  @include font_default;
   @include font-size(16px);
   @include border_radius(4px);
 }
@@ -31,7 +31,7 @@ fieldset {
   label {
     display: block;
     margin-bottom: 4px;
-    @include default_fontsize;
+    @include fontsize_default;
   }
 
   &.errors {

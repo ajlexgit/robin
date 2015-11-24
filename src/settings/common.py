@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'suit_ckeditor',
 
     # Apps
+    'blocks',
     'config',
     'main',
     'shop',
@@ -57,7 +58,6 @@ INSTALLED_APPS = (
     'attachable_blocks',
     'breadcrumbs',
     'ckeditor',
-    'comments',
     'files',
     'footer',
     'gallery',
@@ -119,8 +119,8 @@ SUIT_CONFIG = {
             'label': _('Blocks'),
             'models': (
                 'myblock',
-                'main.mainblockfirst',
-                'main.mainblocksecond',
+                'mainblockfirst',
+                'mainblocksecond',
             ),
         },
         {
@@ -183,7 +183,6 @@ PIPELINE_CSS = {
             'scss/slider/plugins/controls.scss',
             'scss/slider/plugins/navigation.scss',
             'scss/parallax.scss',
-            'comments/scss/comments.scss',
             'gallery/scss/gallery.scss',
             'google_maps/scss/google_maps.scss',
             'yandex_maps/scss/yandex_maps.scss',
@@ -250,8 +249,6 @@ PIPELINE_JS = {
             'js/slider/plugins/navigation.js',
             'js/slider/plugins/controls.js',
             'js/slider/plugins/drag.js',
-            'comments/js/comments_class.js',
-            'comments/js/comments.js',
             'google_maps/js/core.js',
             'yandex_maps/js/core.js',
             'gallery/js/gallery_class.js',

@@ -4,7 +4,6 @@
 {% load pipeline %}
 {% load attachable_blocks %}
 {% load social_buttons %}
-{% load comments %}
 {% load gallery %}
 {% load away %}
 {% load text %}
@@ -163,14 +162,6 @@
       </div>
     </div>
   {% endif %}
-
-  <div id="comments">
-    <div class="grid">
-      <div class="gc-full gc-alone">
-        {% comments_for config %}
-      </div>
-    </div>
-  </div>
 
   <div class="text-styles">
     <h2>First blocks:</h2>

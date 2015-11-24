@@ -1,7 +1,7 @@
 @import 'mixins';
 
 .text-styles {
-  @include default_fontsize;
+  @include fontsize_default;
 
   p {
     margin-bottom: 1em;

@@ -1,6 +1,6 @@
 @import 'mixins';
 
-$burger_color: $blue;
+$burger_color: #0000FF;
 $burgerline_height: 3px;
 $burgerline_gap: 5px;
 
@@ -16,7 +16,7 @@ $mobile_media: $media1024;
       color: #FFFFFF;
       font-weight: bold;
       line-height: 1;
-      @include default_fontsize;
+      @include fontsize_default;
 
       &:hover {
         @include opacity(0.8);
@@ -115,7 +115,7 @@ $mobile_media: $media1024;
   width: 80%;
   height: 100vh;
   z-index: 50;
-  background: #0000FF;
+  background: #8080FF;
   @include border-box;
   @include transition(right 0.4s);
   @include media_interval(0, $mobile_media) {

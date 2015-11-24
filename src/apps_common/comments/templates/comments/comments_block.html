@@ -23,7 +23,10 @@
   <!-- edit form template -->
   <script class="comments-edit-template" type="text/template">
     <form action="{% url 'comments:post' %}" method="post" class="form comment-edit-form" autocomplete="off">
+      {{ form.content_type }}
+      {{ form.object_id }}
       {{ form.hash }}
+      {{ form.parent }}
       <fieldset>
         {{ form.text }}
       </fieldset>

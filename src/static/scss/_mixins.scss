@@ -109,6 +109,7 @@ $grid_max_width: 1400px;
 
 // Отступы контентых блоков
 $block_paddings: 90px, 60px, 40px;
+
 @mixin block-paddings($args...) {
   @each $key in $args {
     #{$key}: nth($block_paddings, 1);
@@ -128,14 +129,14 @@ $block_paddings: 90px, 60px, 40px;
 // Стили текста
 $text_color: #2C3035;
 
-@mixin default_fontsize() {
+@mixin fontsize_default() {
   @include font-size(16px);
   @include media_interval(0, $media640) {
     @include font-size(14px);
   }
 }
 
-@mixin default_font() {
+@mixin font_default() {
   letter-spacing: 0.1em;
   font-family: Arial, Helvetica, sans-serif;
 }

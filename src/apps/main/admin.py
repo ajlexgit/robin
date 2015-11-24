@@ -5,9 +5,8 @@ from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from seo.admin import SeoModelAdminMixin
 from suit.admin import SortableStackedInline
 from files.admin import PageFileInlineMixin
-from comments.admin import CommentsModelAdminMixin
 from attachable_blocks import AttachedBlocksTabularInline
-from .models import MainPageConfig, MainBlockFirst, MainBlockSecond, InlineSample, ListItem, ListItemFile
+from .models import MainPageConfig, InlineSample, ListItem, ListItemFile
 
 
 class InlineSampleAdmin(ModelAdminInlineMixin, admin.TabularInline):
@@ -30,18 +29,8 @@ class MyPageSecondBlocksInline(AttachedBlocksTabularInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
-@admin.register(MainBlockFirst)
-class MainBlockFirstAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'visible')
-
-
-@admin.register(MainBlockSecond)
-class MainBlockSecondAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'visible')
-
-
 @admin.register(MainPageConfig)
-class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
         (_('Header'), {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -60,13 +49,10 @@ class MainPageConfigAdmin(CommentsModelAdminMixin, SeoModelAdminMixin, ModelAdmi
     inlines = (InlineSampleAdmin, MyPageFirstBlocksInline, MyPageSecondBlocksInline)
     suit_form_tabs = (
         ('general', _('General')),
-        ('comments', _('Comments')),
         ('blocks', _('Blocks')),
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
-    suit_comments_position = 'bottom'
-    suit_comments_tab = 'comments'
 
 
 class StatusListItemFilter(admin.SimpleListFilter):

@@ -2,7 +2,7 @@
 
 
 .users-form {
-  @include default_fontsize;
+  @include fontsize_default;
 }
 
 #ajax-login-form {

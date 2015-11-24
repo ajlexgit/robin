@@ -12,11 +12,9 @@ urlpatterns = [
     url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^users/', include('users.urls', namespace='users')),
-    url(r'^comments/', include('comments.urls', namespace='comments')),
 
     url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
 
-    url(r'^dladmin/comments/', include('comments.admin_urls', namespace='admin_comments')),
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
     url(r'^dladmin/dump/', include('admin_dump.admin_urls', namespace='admin_dump')),

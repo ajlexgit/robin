@@ -3,7 +3,6 @@ import sys
 
 
 # blocks app
-# grid flex; rm gc-alone
 # default_font -> font_default
 # default_fontsize -> fontsize_default
 # JSON.parse в try catch

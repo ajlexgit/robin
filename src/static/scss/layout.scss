@@ -11,7 +11,7 @@ body {
   color: $text_color;
   line-height: 1.4375;
   @include no_fontsize;
-  @include default_font;
+  @include font_default;
 }
 
 // Скрытый элемент

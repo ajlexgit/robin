@@ -227,6 +227,10 @@
     // Обновление размеров окна
     $(window).on('resize.gallery', $.rared(function() {
         $.each(galleries, function(i, gallery) {
+            if (!gallery.popup) {
+                return
+            }
+
             var $main_img = gallery.popup.$content.find('.' + gallery.opts.mainImageClass);
             $main_img.css({
                 height: 'auto'

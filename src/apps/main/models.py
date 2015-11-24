@@ -4,7 +4,6 @@ from django.shortcuts import resolve_url
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
-from attachable_blocks import AttachableBlock
 from ckeditor import CKEditorUploadField
 from gallery import *
 from files import PageFile
@@ -166,22 +165,6 @@ class InlineSample(models.Model):
     class Meta:
         verbose_name = _("Inline sample")
         verbose_name_plural = _('Inline samples')
-
-
-class MainBlockFirst(AttachableBlock):
-    BLOCK_VIEW = 'main.views.render_first_block'
-
-    class Meta:
-        verbose_name = _('First block')
-        verbose_name_plural = _("First blocks")
-
-
-class MainBlockSecond(AttachableBlock):
-    BLOCK_VIEW = 'main.views.render_second_block'
-
-    class Meta:
-        verbose_name = _('Second block')
-        verbose_name_plural = _("Second blocks")
 
 
 class ClientFormModel(models.Model):
