@@ -3,11 +3,10 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from libs.plainerror_form import PlainErrorFormMixin
-from libs.protected_form import ProtectedModelFormMixin
 from .models import Comment
 
 
-class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm):
+class CommentForm(PlainErrorFormMixin, forms.ModelForm):
     """ Форма добавления/редактирования комментария """
     hash = forms.CharField(
         widget = forms.HiddenInput,
@@ -15,8 +14,6 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
             'invalid': 'Invalid token',
         }
     )
-
-    protect_change_fields = ('content_type', 'object_id', 'parent')
 
     class Meta:
         model = Comment
@@ -63,8 +60,27 @@ class CommentForm(PlainErrorFormMixin, ProtectedModelFormMixin, forms.ModelForm)
             return self.add_field_error('hash', 'invalid')
         return form_hash
 
+    def clean_content_type(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.content_type
+        else:
+            return self.cleaned_data['content_type']
+
+    def clean_object_id(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.object_id
+        else:
+            return self.cleaned_data['object_id']
+
     def clean_parent(self):
-        parent = self.cleaned_data.get('parent')
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            parent = instance.parent
+        else:
+            parent = self.cleaned_data['parent']
+
         if parent is not None:
             content_type = self.cleaned_data.get('content_type')
             object_id = self.cleaned_data.get('object_id')

@@ -9,12 +9,12 @@
                 ...
             )
 
-            ROBOKASSA_LOGIN = 'super_shop'
-            ROBOKASSA_PASSWORD1 = 'a123b5c6h'
-            ROBOKASSA_PASSWORD2 = 'nkvo6s8bv'
+            ROBOKASSA_LOGIN = 'asskicker'
+            ROBOKASSA_PASSWORD1 = 'hachapuri666'
+            ROBOKASSA_PASSWORD2 = 'bublik72x'
             ROBOKASSA_SUCCESS_REDIRECT_URL = 'shop:index'
             ROBOKASSA_FAIL_REDIRECT_URL = 'shop:index'
-            ROBOKASSA_TEST_MODE = False
+            ROBOKASSA_TEST_MODE = True
 
             SUIT_CONFIG = {
                 ...

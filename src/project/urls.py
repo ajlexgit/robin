@@ -13,7 +13,6 @@ urlpatterns = [
     url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^comments/', include('comments.urls', namespace='comments')),
-    url(r'^robokassa/', include('robokassa.urls', namespace='robokassa')),
 
     url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
 

@@ -5,7 +5,6 @@
         apps.users
         libs.aliased_queryset
         libs.plainerror_form
-        libs.protected_form
         libs.views
         libs.widgets
 

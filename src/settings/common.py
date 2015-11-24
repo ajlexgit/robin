@@ -65,7 +65,6 @@ INSTALLED_APPS = (
     'header',
     'menu',
     'paginator',
-    'robokassa',
     'seo',
     'social_buttons',
     'yandex_maps',
@@ -127,13 +126,6 @@ SUIT_CONFIG = {
         {
             'app': 'config',
             'icon': 'icon-wrench',
-        },
-        {
-            'app': 'robokassa',
-            'icon': 'icon-shopping-cart',
-            'models': (
-                'log',
-            )
         },
         '-',
         '-',
@@ -425,14 +417,6 @@ VALUTE_FORMATS = {
         'alternate_format': '${}',
     }
 }
-
-# Robokassa
-ROBOKASSA_LOGIN = 'asskicker'
-ROBOKASSA_PASSWORD1 = 'hachapuri666'
-ROBOKASSA_PASSWORD2 = 'bublik72x'
-ROBOKASSA_SUCCESS_REDIRECT_URL = 'index'
-ROBOKASSA_FAIL_REDIRECT_URL = 'index'
-ROBOKASSA_TEST_MODE = True
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

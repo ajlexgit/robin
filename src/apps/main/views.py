@@ -1,6 +1,5 @@
 from django.shortcuts import redirect
 from seo import Seo
-from robokassa.forms import RobokassaForm
 from libs.views import TemplateExView
 from .models import MainPageConfig, ClientFormModel
 from .forms import MainForm, InlineFormSet
@@ -52,17 +51,10 @@ class FormsView(TemplateExView):
         form = MainForm(instance=form_obj, prefix='main')
         formset = InlineFormSet(instance=form_obj, prefix='inlines')
 
-        robokassa_form = RobokassaForm(initial={
-            'InvId': 58,
-            'OutSum': 1.50,
-            'Desc': 'Пустышка синяя',
-        })
-
         return self.render_to_response({
             'config': self.config,
             'form': form,
             'formset': formset,
-            'robokassa_form': robokassa_form,
         })
 
     def post(self, request):
