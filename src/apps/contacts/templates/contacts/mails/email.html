@@ -1,0 +1,17 @@
+{% load i18n %}
+
+{% if data.name %}
+  <p><b>{% trans 'Name' %}:</b> {{ data.name }}</p>
+{% endif %}
+
+{% if data.phone %}
+  <p><b>{% trans 'Phone' %}:</b> {{ data.phone }}</p>
+{% endif %}
+
+{% if data.email %}
+  <p><b>{% trans 'E-mail' %}:</b> {{ data.email }}</p>
+{% endif %}
+
+{% if data.message %}
+  <p><b>{% trans 'Message' %}:</b> {{ data.message }}</p>
+{% endif %}

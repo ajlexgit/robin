@@ -46,6 +46,7 @@ INSTALLED_APPS = (
 
     # Apps
     'blocks',
+    'contacts',
     'config',
     'main',
     'users',
@@ -97,6 +98,10 @@ SUIT_CONFIG = {
             'app': 'blocks',
             'icon': 'icon-file',
             'label': _('Blocks'),
+        },
+        {
+            'app': 'contacts',
+            'icon': 'icon-file',
         },
         {
             'app': 'config',
@@ -156,6 +161,12 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/main_page.css',
     },
+    'contacts_page': {
+        'source_filenames': (
+            'contacts/scss/index.scss',
+        ),
+        'output_filename': 'css/contacts_page.css',
+    },
 }
 PIPELINE_JS = {
     'head_core': {
@@ -187,6 +198,12 @@ PIPELINE_JS = {
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',
+    },
+    'contacts_page': {
+        'source_filenames': (
+            'contacts/js/index.js',
+        ),
+        'output_filename': 'js/contacts_page.js',
     },
 }
 

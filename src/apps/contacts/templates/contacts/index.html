@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% load attachable_blocks %}
+{% load pipeline %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'contacts_page' %}
+{% endblock static_head %}
+
+{% block static_js %}
+  {{ block.super }}
+  {% javascript 'contacts_page' %}
+{% endblock static_js %}
+
+
+{% block content %}
+
+  <div class="block grid" id="contacts">
+    <div class="gc">
+      <div class="title-h1">{{ config.title }}</div>
+
+      <form method="post" action="">
+        {% csrf_token %}
+
+        {% for field in form.visible_fields %}
+          <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
+            {{ field.label_tag }}
+            {{ field }}
+            <span>{{ field.errors }}</span>
+          </fieldset>
+        {% endfor %}
+
+        <fieldset class="buttons">
+          <button>Send</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+  {% render_attached_blocks config %}
+
+{% endblock content %}

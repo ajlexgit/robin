@@ -16,6 +16,6 @@ def main_menu(context, template='menu/menu.html'):
     menu.append(
         MenuItem(_('News'), '#'),
         MenuItem(_('Articles'), '#'),
-        MenuItem(_('Contacts'), '#'),
+        MenuItem(_('Contacts'), 'contacts:index'),
     )
     return menu.render(template)
