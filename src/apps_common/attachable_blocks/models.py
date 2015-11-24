@@ -103,5 +103,4 @@ class AttachableReference(models.Model):
         verbose_name = _('attached block')
         verbose_name_plural = _('attached blocks')
         ordering = ('set_name', 'sort_order')
-        unique_together = ('content_type', 'object_id', 'block', 'set_name')
         index_together = (('content_type', 'object_id', 'set_name'), )

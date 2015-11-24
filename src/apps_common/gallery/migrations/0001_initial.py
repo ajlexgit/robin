@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -14,19 +14,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GalleryItemBase',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('description', models.TextField(blank=True, verbose_name='description')),
+                ('description', models.TextField(verbose_name='description', blank=True)),
                 ('sort_order', models.PositiveIntegerField(verbose_name='sort order', default=0)),
-                ('created', models.DateTimeField(blank=True, verbose_name='created on')),
+                ('created', models.DateTimeField(verbose_name='created on', blank=True)),
                 ('changed', models.DateTimeField(auto_now=True, verbose_name='changed on')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('self_type', models.ForeignKey(to='contenttypes.ContentType', editable=False, help_text='Для выборки элементов определенного типа', related_name='+')),
+                ('self_type', models.ForeignKey(help_text='Для выборки элементов определенного типа', to='contenttypes.ContentType', related_name='+', editable=False)),
             ],
             options={
-                'verbose_name_plural': 'gallery items',
                 'ordering': ('object_id', 'sort_order', 'created'),
                 'verbose_name': 'gallery item',
+                'verbose_name_plural': 'gallery items',
             },
         ),
         migrations.AlterIndexTogether(

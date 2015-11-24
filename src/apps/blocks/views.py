@@ -1,6 +1,8 @@
-def render_first_block(request, block):
-    return '<div class="block-1">%s</div>' % block.label
+from django.template import loader, RequestContext
 
 
-def render_second_block(request, block):
-    return '<div class="block-2">%s</div>' % block.label
+def sample_block_render(request, block):
+    context = RequestContext(request, {
+        'block': block,
+    })
+    return loader.render_to_string('blocks/sample_block.html', context_instance=context)

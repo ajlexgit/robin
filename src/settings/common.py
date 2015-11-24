@@ -41,7 +41,6 @@ INSTALLED_APPS = (
 
     'admin_honeypot',
     'pipeline',
-    'mptt',
     'solo',
     'suit_ckeditor',
 
@@ -49,7 +48,6 @@ INSTALLED_APPS = (
     'blocks',
     'config',
     'main',
-    'shop',
     'users',
 
     # Apps common
@@ -66,18 +64,14 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
-    'social_buttons',
-    'yandex_maps',
 
     # Libs
     'libs.autocomplete',
     'libs.away',
     'libs.color_field',
-    'libs.geocity',
     'libs.js_storage',
     'libs.management',
     'libs.opengraph',
-    'libs.recaptcha',
     'libs.sprite_image',
     'libs.stdimage',
     'libs.templatetags',
@@ -98,30 +92,11 @@ SUIT_CONFIG = {
         {
             'app': 'main',
             'icon': 'icon-file',
-            'models': (
-                'listitem',
-                'mainpageconfig',
-            )
-        },
-        {
-            'app': 'shop',
-            'icon': 'icon-shopping-cart',
-            'models': (
-                'shoporder',
-                'shopproduct',
-                'shopcategory',
-                'shopconfig',
-            )
         },
         {
             'app': 'blocks',
             'icon': 'icon-file',
             'label': _('Blocks'),
-            'models': (
-                'myblock',
-                'mainblockfirst',
-                'mainblocksecond',
-            ),
         },
         {
             'app': 'config',
@@ -172,39 +147,14 @@ PIPELINE_CSS = {
             'menu/scss/menu.scss',
             'header/scss/header.scss',
             'footer/scss/footer.scss',
-            'seo/scss/block.scss',
-            'users/scss/users.scss',
         ),
         'output_filename': 'css/head_core.css',
     },
     'main_page': {
         'source_filenames': (
-            'scss/slider/slider.scss',
-            'scss/slider/plugins/controls.scss',
-            'scss/slider/plugins/navigation.scss',
-            'scss/parallax.scss',
-            'gallery/scss/gallery.scss',
-            'google_maps/scss/google_maps.scss',
-            'yandex_maps/scss/yandex_maps.scss',
-            'social_buttons/scss/social_buttons.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
-    },
-    'main_forms': {
-        'source_filenames': (
-            'scss/custom_checkbox.scss',
-            'scss/custom_counter.scss',
-            'main/scss/forms.scss',
-        ),
-        'output_filename': 'css/main_forms.css',
-    },
-    'users-profile': {
-        'source_filenames': (
-            'common/css/jcrop/jquery.Jcrop.css',
-            'users/scss/profile.scss',
-        ),
-        'output_filename': 'css/users-profile.css',
     },
 }
 PIPELINE_JS = {
@@ -222,59 +172,21 @@ PIPELINE_JS = {
             'common/js/jquery.utils.js',
             'common/js/jquery.ajax_csrf.js',
             'js/jquery.fitvids.js',
-            'js/jquery.fakelink.js',
             'js/jquery.scrollTo.js',
             'js/jquery.youtube.js',
             'js/jquery.vimeo.js',
-            'js/appear.js',
             'js/text_styles.js',
             'js/popups/jquery.popups.js',
             'js/popups/preloader.js',
             'menu/js/menu.js',
-            'users/js/users.js',
         ),
         'output_filename': 'js/core.js',
     },
     'main_page': {
         'source_filenames': (
-            'js/drager.js',
-            'js/parallax.js',
-            'js/layer.js',
-            'js/sticky.js',
-            'js/slider/slider.js',
-            'js/slider/plugins/side_animation.js',
-            'js/slider/plugins/fade_animation.js',
-            'js/slider/plugins/autoscroll.js',
-            'js/slider/plugins/navigation.js',
-            'js/slider/plugins/controls.js',
-            'js/slider/plugins/drag.js',
-            'google_maps/js/core.js',
-            'yandex_maps/js/core.js',
-            'gallery/js/gallery_class.js',
-            'gallery/js/gallery.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',
-    },
-    'main_forms': {
-        'source_filenames': (
-            'js/inlines.js',
-            'js/custom_checkbox.js',
-            'js/custom_counter.js',
-            'main/js/forms.js',
-        ),
-        'output_filename': 'js/main_forms.js',
-    },
-    'users-profile': {
-        'source_filenames': (
-            'common/js/jquery.Jcrop.js',
-            'common/js/plupload/plupload.full.min.js',
-            'common/js/plupload/i18n/%s.js' % SHORT_LANGUAGE_CODE,
-            'common/js/cropdialog.js',
-            'common/js/uploader.js',
-            'users/js/profile.js',
-        ),
-        'output_filename': 'js/users-profile.js',
     },
 }
 
@@ -369,11 +281,6 @@ AUTOCOMPLETE_CACHE_BACKEND = 'default'
 
 # Admin Dump
 BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
-
-# Recaptcha
-RECAPTCHA_PUBLIC_KEY = '6LfnuwATAAAAAOHTycEayB8UYkz-jN9zr_knTjJZ'
-RECAPTCHA_PRIVATE_KEY = '6LfnuwATAAAAAK9mABR7QIC63sWK0N6wnN2VFiR_'
-RECAPTCHA_DEFAULT_THEME = 'dark'
 
 # Youtube Data API
 # для ckeditor, videolink_field, youtube

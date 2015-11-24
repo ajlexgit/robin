@@ -1,13 +1,7 @@
 {% extends 'layout.html' %}
 
-{% load staticfiles %}
 {% load pipeline %}
 {% load attachable_blocks %}
-{% load social_buttons %}
-{% load gallery %}
-{% load away %}
-{% load text %}
-{% load seo %}
 
 {% block static_head %}
   {{ block.super }}
@@ -21,127 +15,7 @@
 
 
 {% block content %}
-  <div id="video" class="section section-full-height">
-    <img src="{{ config.header_background.desktop.url }}" class="section-image"
-         srcset="{{ config.header_background.desktop.srcset }}, {{ config.header_background.mobile.srcset }}"
-         sizes="100vw">
 
-    {% if config.header_video %}
-      <video class="section-video" loop="loop" preload="none" muted="">
-        <source src="{{ config.header_video.url }}">
-      </video>
-    {% endif %}
-
-    <div class="section-inner">
-      <div class="grid">
-        <div class="gray gc-wide-6 gc-6 gc-alone gc-center" style="height: 200px">
-          <h1 class="title title-h1">{{ config.header_title }}</h1>
-        </div>
-
-        <div class="blue gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2" style="height: 50px">
-        </div>
-        <div class="yellow gc-wide-4 gc-4 gc-tablet-4 gc-mobile-2" style="height: 50px">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="sticky_example">
-    <div class="grid">
-      <div class="gc-full gc-alone">
-        <div class="yellow"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="layer_example">
-    <div class="grid">
-      <div class="gc-full gc-alone">
-        <div class="yellow"></div>
-        <div class="green"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="gmap_example">
-    <div class="google-map"></div>
-  </div>
-
-  <div id="ymap_example">
-    <div class="yandex-map"></div>
-  </div>
-
-  <div id="text-content">
-    <div class="grid">
-      <article class="text-styles gc-wide-6 gc-6 gc-alone gc-center">
-        {% away config.text|typograf %}
-      </article>
-    </div>
-  </div>
-
-  <div id="parallax_sample">
-    <img class="parallax" src="{% static 'main/img/background.jpeg' %}">
-
-    <div class="appear-block grid">
-      <div class="yellow gc-wide-2 gc-2 gc-tablet-4"></div>
-      <div class="red gc-wide-2 gc-2 gc-tablet-4"></div>
-      <div class="gray gc-wide-2 gc-2 gc-tablet-4"></div>
-      <div class="orange gc-wide-2 gc-2 gc-tablet-4"></div>
-    </div>
-  </div>
-
-  <div id="social_buttons">
-    <div class="grid">
-      <div class="gc-full gc-alone">
-        {% social_share 'vk' %}
-        {% social_share 'fb' %}
-        {% social_share 'tw' %}
-        {% social_share 'gp' %}
-        {% social_share 'li' %}
-        {% social_share 'pi' %}
-        {% social_share 'sb' %}
-        {% social_share 'lj' %}
-        {% social_share 'dg' %}
-      </div>
-    </div>
-  </div>
-
-  {% if config.gallery and config.gallery.image_items %}
-    <div id="slider_example">
-      <div class="grid">
-        <div class="gc-full gc-alone">
-          <div class="slider">
-            {% for item in config.gallery.image_items %}
-              <img class="slide {% if forloop.counter == 1 %}active{% endif %}"
-                      {% if forloop.counter == 3 or forloop.counter == 4 %}
-                   style="height: 200px;"
-                      {% endif %}
-                   src="{{ item.image.normal.url }}"
-                   alt=""
-                   width="{{ item.image.normal.dimensions.0 }}"
-                   height="{{ item.image.normal.dimensions.1 }}">
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="gallery">
-      <div class="grid">
-        <div class="gc-full gc-alone">
-          {% gallery config.gallery %}
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
-  <div class="text-styles">
-    <h2>First blocks:</h2>
-    {% render_attached_blocks config set_name='first' %}
-    <h2>Second blocks:</h2>
-    {% render_attached_blocks config set_name='second' %}
-  </div>
-
-  {% seo_block %}
+  {% render_attached_blocks config %}
 
 {% endblock content %}

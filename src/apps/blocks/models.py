@@ -3,17 +3,11 @@ from django.utils.translation import ugettext_lazy as _
 from attachable_blocks.models import AttachableBlock
 
 
-class MainBlockFirst(AttachableBlock):
-    BLOCK_VIEW = 'blocks.views.render_first_block'
+class SampleBlock(AttachableBlock):
+    BLOCK_VIEW = 'blocks.views.sample_block_render'
+
+    title = models.CharField(_('title'), max_length=255, blank=True)
 
     class Meta:
-        verbose_name = _('First block')
-        verbose_name_plural = _("First blocks")
-
-
-class MainBlockSecond(AttachableBlock):
-    BLOCK_VIEW = 'blocks.views.render_second_block'
-
-    class Meta:
-        verbose_name = _('Second block')
-        verbose_name_plural = _("Second blocks")
+        verbose_name = _('Sample block')
+        verbose_name_plural = _("Sample blocks")

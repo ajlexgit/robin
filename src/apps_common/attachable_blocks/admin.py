@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.contrib.contenttypes.admin import (
     GenericTabularInline, GenericStackedInline, BaseGenericInlineFormSet
 )
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from suit.admin import SortableTabularInlineBase

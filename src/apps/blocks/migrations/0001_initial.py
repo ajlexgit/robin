@@ -7,19 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('attachable_blocks', '0001_initial'),
+        ('attachable_blocks', '__first__'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MyBlock',
+            name='SampleBlock',
             fields=[
-                ('attachableblock_ptr', models.OneToOneField(serialize=False, auto_created=True, to='attachable_blocks.AttachableBlock', parent_link=True, primary_key=True)),
-                ('title', models.CharField(blank=True, verbose_name='title', max_length=255)),
+                ('attachableblock_ptr', models.OneToOneField(primary_key=True, serialize=False, auto_created=True, to='attachable_blocks.AttachableBlock', parent_link=True)),
+                ('title', models.CharField(verbose_name='title', blank=True, max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'My blocks',
-                'verbose_name': 'My block',
+                'verbose_name': 'Sample block',
+                'verbose_name_plural': 'Sample blocks',
             },
             bases=('attachable_blocks.attachableblock',),
         ),

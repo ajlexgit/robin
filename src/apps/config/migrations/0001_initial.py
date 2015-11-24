@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -13,9 +13,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Config',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
-                ('email', models.EmailField(max_length=255, blank=True, verbose_name='email')),
-                ('phone', models.CharField(max_length=32, blank=True, verbose_name='phone')),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('email', models.EmailField(verbose_name='email', blank=True, max_length=255)),
+                ('phone', models.CharField(verbose_name='phone', blank=True, max_length=32)),
             ],
             options={
                 'verbose_name': 'Configuration',
