@@ -2,10 +2,6 @@ import os
 import sys
 
 
-# blocks app
-# default_font -> font_default
-# default_fontsize -> fontsize_default
-# JSON.parse в try catch
 # AJAX-авторизация на странице регистрации
 # new JS popups + show/hide return popup
 # css background em?
