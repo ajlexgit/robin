@@ -11,8 +11,6 @@ $mobile_media: $media1024;
 #main-menu {
   display: inline-block;
   height: auto !important;
-  font-weight: bold;
-  color: #FFFFFF;
   @include no_fontsize;
   @include media_interval(0, $mobile_media) {
     display: none;
@@ -31,21 +29,6 @@ $mobile_media: $media1024;
 
     a {
       display: inline-block;
-      padding: 5px;
-      line-height: 1;
-      @include default_fontsize;
-
-      &:hover {
-        @include opacity(0.8);
-      }
-    }
-
-    &.active {
-      color: #FFFF00;
-
-      a:hover {
-        @include opacity(1);
-      }
     }
   }
 }

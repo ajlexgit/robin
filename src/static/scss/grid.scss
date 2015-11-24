@@ -1,9 +1,9 @@
 @import 'mixins';
 
-$cols_wide: 8;
-$cols_desktop: 8;
+$cols_wide: 12;
+$cols_desktop: 12;
 $cols_tablet: 8;
-$cols_mobile: 4;
+$cols_mobile: 6;
 
 .grid {
   display: block;
@@ -33,10 +33,6 @@ $cols_mobile: 4;
   margin-right: auto;
 }
 
-.g-hidden {
-  display: none;
-}
-
 // Wide-desktop (1200+)
 @include media_interval($media1200, 0) {
   @for $index from 1 through $cols_wide - 1 {
@@ -56,6 +52,10 @@ $cols_mobile: 4;
 
   .g-wide-show {
     display: block;
+  }
+
+  .g-wide-hide {
+    display: none;
   }
 
   .gc-wide-full {
@@ -85,6 +85,10 @@ $cols_mobile: 4;
     display: block;
   }
 
+  .g-hide {
+    display: none;
+  }
+
   .gc-full {
     @extend .gc;
     width: 100%;
@@ -112,6 +116,10 @@ $cols_mobile: 4;
     display: block;
   }
 
+  .g-tablet-hide {
+    display: none;
+  }
+
   .gc-tablet-full {
     @extend .gc;
     width: 100%;
@@ -137,6 +145,10 @@ $cols_mobile: 4;
 
   .g-mobile-show {
     display: block;
+  }
+
+  .g-mobile-hide {
+    display: none;
   }
 
   .gc-mobile-full {

@@ -40,7 +40,6 @@
     word-wrap: break-word;
     @include font-size(30px);
     @include media_interval(0, $media768) {
-      letter-spacing: 1px;
       @include font-size(24px);
     }
   }

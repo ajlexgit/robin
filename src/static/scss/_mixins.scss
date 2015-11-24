@@ -112,5 +112,6 @@ $text_color: #2C3035;
 }
 
 @mixin default_font() {
+  letter-spacing: 0.1em;
   font-family: Arial, Helvetica, sans-serif;
 }
