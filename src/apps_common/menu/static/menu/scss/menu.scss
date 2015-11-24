@@ -8,30 +8,13 @@ $burgerline_gap: 5px;
 $mobile_media: $media1024;
 
 
-#main-menu {
-  display: inline-block;
-  height: auto !important;
-  font-weight: bold;
-  color: #FFFFFF;
-  @include no_fontsize;
-  @include media_interval(0, $mobile_media) {
-    display: none;
-  }
-
+.main-menu {
   li {
-    display: inline-block;
-    margin: 0 10px;
-
-    &:nth-of-type(1) {
-      margin-left: 0;
-    }
-    &:nth-last-of-type(1) {
-      margin-right: 0;
-    }
-
     a {
       display: inline-block;
       padding: 5px;
+      color: #FFFFFF;
+      font-weight: bold;
       line-height: 1;
       @include default_fontsize;
 
@@ -46,6 +29,24 @@ $mobile_media: $media1024;
       a:hover {
         @include opacity(1);
       }
+    }
+  }
+}
+
+
+#main-menu {
+  display: inline-block;
+  height: auto !important;
+  @include no_fontsize;
+  @include media_interval(0, $mobile_media) {
+    display: none;
+  }
+
+  li {
+    display: inline-block;
+    margin-right: 10px;
+    &:nth-last-of-type(1) {
+      margin-right: 0;
     }
   }
 }
@@ -114,7 +115,6 @@ $mobile_media: $media1024;
   width: 80%;
   height: 100vh;
   z-index: 50;
-  color: #FFFFFF;
   background: #0000FF;
   @include border-box;
   @include transition(right 0.4s);
@@ -136,24 +136,6 @@ $mobile_media: $media1024;
     }
     &:nth-last-of-type(1) {
       margin-bottom: 0;
-    }
-
-    a {
-      line-height: 1;
-      font-weight: bold;
-      @include font-size(26px);
-
-      &:hover {
-        @include opacity(0.8);
-      }
-    }
-
-    &.active {
-      color: #FFFF00;
-
-      a:hover {
-        @include opacity(1);
-      }
     }
   }
 

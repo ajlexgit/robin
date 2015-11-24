@@ -69,6 +69,15 @@
   flex-grow: $grow;
 }
 
+// int >= 0
+@mixin flex-shrink($shrink) {
+  -webkit-box-flex-shrink: $shrink;
+  -moz-box-flex-shrink: $shrink;
+  -webkit-flex-shrink: $shrink;
+  -ms-flex-shrink: $shrink;
+  flex-shrink: $shrink;
+}
+
 // int
 @mixin order($order) {
   -webkit-box-ordinal-group: $order;

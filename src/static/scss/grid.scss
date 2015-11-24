@@ -6,31 +6,26 @@ $cols_tablet: 8;
 $cols_mobile: 6;
 
 .grid {
-  display: block;
   width: 100%;
   max-width: $grid_max_width;
-  @include clearfix;
+  @include flexbox;
+  @include flex-flow(row wrap);
+  @include align-items(stretch);
+  @include justify-content(flex-start);
   @include border-box;
   @include grid-paddings(padding-left, padding-right);
   @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
-  }
-
-  .gc-alone {
-    float: none;
-    clear: both;
   }
 }
 
 .gc {
   min-height: 1px;
   padding: 0 $grid_space;
+  @include flex-grow(1);
+  @include flex-shrink(1);
+  @include flex-basis(auto);
   @include border-box;
-}
-
-.gc-center {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 // Wide-desktop (1200+)
@@ -38,29 +33,13 @@ $cols_mobile: 6;
   @for $index from 1 through $cols_wide - 1 {
     .gc-wide-#{$index} {
       @extend .gc;
-      float: left;
-      width: (100% / $cols_wide) * $index;
+      @include flex-basis((100% / $cols_wide) * $index);
     }
-
-    .gc-ml-wide-#{$index} {
-      margin-left: (100% / $cols_wide) * $index;
-    }
-    .gc-mr-wide-#{$index} {
-      margin-right: (100% / $cols_wide) * $index;
-    }
-  }
-
-  .g-wide-show {
-    display: block;
-  }
-
-  .g-wide-hide {
-    display: none;
   }
 
   .gc-wide-full {
     @extend .gc;
-    width: 100%;
+    @include flex-basis(100%);
   }
 }
 
@@ -69,29 +48,13 @@ $cols_mobile: 6;
   @for $index from 1 through $cols_desktop - 1 {
     .gc-#{$index} {
       @extend .gc;
-      float: left;
-      width: (100% / $cols_desktop) * $index;
+      @include flex-basis((100% / $cols_desktop) * $index);
     }
-
-    .gc-ml-#{$index} {
-      margin-left: (100% / $cols_desktop) * $index;
-    }
-    .gc-mr-#{$index} {
-      margin-right: (100% / $cols_desktop) * $index;
-    }
-  }
-
-  .g-show {
-    display: block;
-  }
-
-  .g-hide {
-    display: none;
   }
 
   .gc-full {
     @extend .gc;
-    width: 100%;
+    @include flex-basis(100%);
   }
 }
 
@@ -100,29 +63,13 @@ $cols_mobile: 6;
   @for $index from 1 through $cols_tablet - 1 {
     .gc-tablet-#{$index} {
       @extend .gc;
-      float: left;
-      width: (100% / $cols_tablet) * $index;
+      @include flex-basis((100% / $cols_tablet) * $index);
     }
-
-    .gc-ml-tablet-#{$index} {
-      margin-left: (100% / $cols_tablet) * $index;
-    }
-    .gc-mr-tablet-#{$index} {
-      margin-right: (100% / $cols_tablet) * $index;
-    }
-  }
-
-  .g-tablet-show {
-    display: block;
-  }
-
-  .g-tablet-hide {
-    display: none;
   }
 
   .gc-tablet-full {
     @extend .gc;
-    width: 100%;
+    @include flex-basis(100%);
   }
 }
 
@@ -131,28 +78,12 @@ $cols_mobile: 6;
   @for $index from 1 through $cols_mobile - 1 {
     .gc-mobile-#{$index} {
       @extend .gc;
-      float: left;
-      width: (100% / $cols_mobile) * $index;
+      @include flex-basis((100% / $cols_mobile) * $index);
     }
-
-    .gc-ml-mobile-#{$index} {
-      margin-left: (100% / $cols_mobile) * $index;
-    }
-    .gc-mr-mobile-#{$index} {
-      margin-right: (100% / $cols_mobile) * $index;
-    }
-  }
-
-  .g-mobile-show {
-    display: block;
-  }
-
-  .g-mobile-hide {
-    display: none;
   }
 
   .gc-mobile-full {
     @extend .gc;
-    width: 100%;
+    @include flex-basis(100%);
   }
 }
