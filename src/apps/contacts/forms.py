@@ -9,8 +9,8 @@ class ContactForm(PlainErrorFormMixin, forms.Form):
         label=_('Name'),
         max_length=128,
         error_messages={
-            'required': _('Please enter your email or phone so we can contact you'),
-            'max_length': _('Phone number should not be longer than %(limit_value)d characters'),
+            'required': _('Please enter your name'),
+            'max_length': _('Name should not be longer than %(limit_value)d characters'),
         }
     )
 
@@ -19,7 +19,7 @@ class ContactForm(PlainErrorFormMixin, forms.Form):
         label=_('Phone'),
         max_length=32,
         error_messages={
-            'required': _('Please enter your email or phone so we can contact you'),
+            'required': _('Please enter your e-mail or phone so we can contact you'),
             'max_length': _('Phone number should not be longer than %(limit_value)d characters'),
         }
     )
@@ -29,8 +29,8 @@ class ContactForm(PlainErrorFormMixin, forms.Form):
         label=_('E-mail'),
         max_length=64,
         error_messages={
-            'required': _('Please enter your email or phone so we can contact you'),
-            'max_length': _('Email should not be longer than %(limit_value)d characters'),
+            'required': _('Please enter your e-mail or phone so we can contact you'),
+            'max_length': _('E-mail should not be longer than %(limit_value)d characters'),
         }
     )
 

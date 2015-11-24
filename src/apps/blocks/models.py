@@ -9,5 +9,5 @@ class SampleBlock(AttachableBlock):
     title = models.CharField(_('title'), max_length=255, blank=True)
 
     class Meta:
-        verbose_name = _('Sample block')
-        verbose_name_plural = _("Sample blocks")
+        verbose_name = _('sample block')
+        verbose_name_plural = _('sample blocks')

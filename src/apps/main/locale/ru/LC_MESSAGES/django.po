@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-31 18:19+0300\n"
+"POT-Creation-Date: 2015-11-24 23:16+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,10 +19,26 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: admin.py:26
+msgid "General"
+msgstr "Основные настройки"
+
+#: admin.py:27
+msgid "Blocks"
+msgstr "Блоки"
+
+#: admin.py:28
+msgid "SEO"
+msgstr "SEO"
+
 #: apps.py:7
 msgid "Main page"
 msgstr "Главная страница"
 
 #: models.py:10
-msgid "Settings"
-msgstr "Настройки"
+msgid "change date"
+msgstr "дата изменения"
+
+#: models.py:13
+msgid "settings"
+msgstr "настройки"

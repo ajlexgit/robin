@@ -24,7 +24,7 @@ class ContactsConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'title',
+                'header',
             ),
         }),
     )

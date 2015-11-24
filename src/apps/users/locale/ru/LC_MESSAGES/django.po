@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-13 09:29+0400\n"
+"POT-Creation-Date: 2015-11-24 23:22+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,89 +48,89 @@ msgstr "Войти как"
 msgid "Users"
 msgstr "Пользователи"
 
-#: forms.py:15
+#: forms.py:14
 msgid "Login or password incorrect"
 msgstr "Логин или пароль неверен"
 
-#: forms.py:16
+#: forms.py:15
 msgid "Account blocked"
 msgstr "Аккаунт заблокирован"
 
-#: forms.py:20 forms.py:41
+#: forms.py:19 forms.py:40
 msgid "Login"
 msgstr "Логин"
 
-#: forms.py:23 forms.py:46
+#: forms.py:22 forms.py:45
 msgid "Please enter your login"
 msgstr "Введите логин"
 
-#: forms.py:27 forms.py:63
+#: forms.py:26 forms.py:62
 msgid "Password"
 msgstr "Пароль"
 
-#: forms.py:30 forms.py:66 forms.py:131
+#: forms.py:29 forms.py:65 forms.py:130
 msgid "Please enter your password"
 msgstr "Введите пароль"
 
-#: forms.py:37 forms.py:124
+#: forms.py:36 forms.py:123
 msgid "The two passwords didn't match"
 msgstr "Пароли не совпадают"
 
-#: forms.py:47
+#: forms.py:46
 msgid "This login is already taken"
 msgstr "Такой логин уже зарегистрирован"
 
-#: forms.py:48
+#: forms.py:47
 msgid "Login must contain only letters, numbers ans sumbols @+-_"
 msgstr "Логин может содержать только буквы, цифры и знаки @+-_"
 
-#: forms.py:49
+#: forms.py:48
 #, python-format
 msgid "Login must be at least %(limit_value)s characters long"
 msgstr "Логин должен содержать не менее %(limit_value)s символов"
 
-#: forms.py:50
+#: forms.py:49
 #, python-format
-msgid "Login must be no more than %(limit_value)s characters"
+msgid "Login should not be longer than %(limit_value)s characters"
 msgstr "Логин должен содержать не более %(limit_value)s символов"
 
-#: forms.py:57 forms.py:108
+#: forms.py:56 forms.py:107
 msgid "Please enter your e-mail"
 msgstr "Введите ваш e-mail"
 
-#: forms.py:58
+#: forms.py:57
 msgid "This e-mail address is already taken"
 msgstr "Такой e-mail уже зарегистрирован"
 
-#: forms.py:59 forms.py:109
+#: forms.py:58 forms.py:108
 msgid "E-mail incorrect"
 msgstr "E-mail некорректен"
 
-#: forms.py:70
+#: forms.py:69
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
-#: forms.py:72
+#: forms.py:71
 msgid "Enter the same password as above, for verification."
 msgstr "Введите пароль ещё раз"
 
-#: forms.py:74 forms.py:138
+#: forms.py:73 forms.py:137
 msgid "Please enter password confirmation"
 msgstr "Введите подтверждение пароля"
 
-#: forms.py:101
+#: forms.py:100
 msgid "E-mail is not registered"
 msgstr "E-mail не зарегистрирован"
 
-#: forms.py:105
+#: forms.py:104
 msgid "E-mail"
 msgstr "E-mail"
 
-#: forms.py:128
+#: forms.py:127
 msgid "New password"
 msgstr "Новый пароль"
 
-#: forms.py:135
+#: forms.py:134
 msgid "New password confirmation"
 msgstr "Подтверждение нового пароля"
 

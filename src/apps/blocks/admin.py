@@ -11,7 +11,7 @@ class SampleBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('label', 'visible'),
         }),
-        (_('Private'), {
+        (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('title',),
         }),

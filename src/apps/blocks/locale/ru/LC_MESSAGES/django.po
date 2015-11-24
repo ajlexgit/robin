@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-24 23:23+0400\n"
+"POT-Creation-Date: 2015-11-24 23:08+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,14 +19,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: static/users/js/profile.js:80
-msgid "Are you sure that you want to delete this avatar?"
-msgstr "Вы действительно хотите удалить эту картинку?"
+#: admin.py:21
+msgid "General"
+msgstr "Основные настройки"
 
-#: static/users/js/users.js:18 static/users/js/users.js:51
-#: static/users/js/users.js:75 static/users/js/users.js:108
-#: static/users/js/users.js:131 static/users/js/users.js:155
-#: static/users/js/users.js:190 static/users/js/users.js:214
-#: static/users/js/users.js:249
-msgid "Connection error"
-msgstr "Ошибка соединения"
+#: apps.py:7
+msgid "Blocks"
+msgstr "Блоки"
+
+#: models.py:9
+msgid "title"
+msgstr "название"
+
+#: models.py:12
+msgid "sample block"
+msgstr ""
+
+#: models.py:13
+msgid "sample blocks"
+msgstr ""

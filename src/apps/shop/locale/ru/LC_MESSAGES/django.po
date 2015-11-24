@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-23 16:12+0400\n"
+"POT-Creation-Date: 2015-11-24 23:18+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,108 +19,108 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:44 admin.py:91 admin.py:185 admin.py:364
+#: admin.py:43 admin.py:90 admin.py:184 admin.py:363
 msgid "General"
-msgstr "Общие"
+msgstr "Основные настройки"
 
-#: admin.py:45
+#: admin.py:44
 msgid "Managers"
 msgstr "Менеджеры"
 
-#: admin.py:46
+#: admin.py:45
 msgid "Blocks"
 msgstr "Блоки"
 
-#: admin.py:47 admin.py:92 admin.py:186
+#: admin.py:46 admin.py:91 admin.py:185
 msgid "SEO"
 msgstr "SEO"
 
-#: admin.py:105 admin.py:216
+#: admin.py:104 admin.py:215
 #, python-format
 msgid "Hide selected %(verbose_name_plural)s"
 msgstr "Скрыть выбранные %(verbose_name_plural)s"
 
-#: admin.py:115 admin.py:224
+#: admin.py:114 admin.py:223
 #, python-format
 msgid "Show selected %(verbose_name_plural)s"
 msgstr "Показать выбранные %(verbose_name_plural)s"
 
-#: admin.py:120 admin.py:202
+#: admin.py:119 admin.py:201
 msgid "Category"
 msgstr "Категория"
 
-#: admin.py:194
+#: admin.py:193
 msgid "Preview"
 msgstr "Превью"
 
-#: admin.py:208 templates/shop/admin/products.html:10
+#: admin.py:207 templates/shop/admin/products.html:10
 msgid "Price"
 msgstr "Цена"
 
-#: admin.py:229 admin.py:365
+#: admin.py:228 admin.py:364
 msgid "Status"
 msgstr "Статус"
 
-#: admin.py:234
+#: admin.py:233
 msgid "Not checked"
 msgstr "Не проверен"
 
-#: admin.py:235 admin.py:320
+#: admin.py:234 admin.py:319
 msgid "Checked"
 msgstr "Проверен"
 
-#: admin.py:236 admin.py:326
+#: admin.py:235 admin.py:325
 msgid "Paid"
 msgstr "Оплачен"
 
-#: admin.py:237 admin.py:314
+#: admin.py:236 admin.py:313
 msgid "Cancelled"
 msgstr "Отменен"
 
-#: admin.py:238 admin.py:332
+#: admin.py:237 admin.py:331
 msgid "Archived"
 msgstr "В архиве"
 
-#: admin.py:308
+#: admin.py:307
 msgid "Cost"
 msgstr "Цена"
 
-#: admin.py:338
+#: admin.py:337
 msgid "Confirmed"
 msgstr "Подтвержден"
 
-#: admin.py:344
+#: admin.py:343
 msgid "Created"
 msgstr "Дата создания"
 
-#: admin.py:366
+#: admin.py:365
 msgid "Products"
 msgstr "Товары"
 
-#: admin.py:380
+#: admin.py:379
 msgid "Products cost"
 msgstr "Цена товаров"
 
-#: admin.py:385 templates/shop/admin/products.html:12
+#: admin.py:384 templates/shop/admin/products.html:12
 msgid "Total cost"
 msgstr "Итого"
 
-#: admin.py:392
+#: admin.py:391
 #, python-format
 msgid "Set %(verbose_name_plural)s checked"
 msgstr "Отметить выбранные %(verbose_name_plural)s как проверенные"
 
-#: admin.py:396
+#: admin.py:395
 #, python-format
 msgid "Set %(verbose_name_plural)s paid"
 msgstr "Отметить выбранные %(verbose_name_plural)s как оплаченные"
 
-#: admin.py:400
+#: admin.py:399
 #, python-format
 msgid "Set %(verbose_name_plural)s cancelled"
 msgstr "Отметить выбранные %(verbose_name_plural)s как отмененные"
 
-#: admin.py:404
+#: admin.py:403
 #, python-format
 msgid "Set %(verbose_name_plural)s archived"
 msgstr "Отметить выбранные %(verbose_name_plural)s как архивные"
@@ -138,8 +138,8 @@ msgid "change date"
 msgstr "дата изменения"
 
 #: models.py:25
-msgid "Settings"
-msgstr "Настройки"
+msgid "settings"
+msgstr "настройки"
 
 #: models.py:33
 msgid "e-mail"
@@ -147,11 +147,11 @@ msgstr "e-mail"
 
 #: models.py:36
 msgid "e-mail reciever"
-msgstr "получатель email-уведомлений"
+msgstr "получатель e-mail"
 
 #: models.py:37
 msgid "e-mail recievers"
-msgstr "получатели email-уведомлений"
+msgstr "получатели e-mail"
 
 #: models.py:67
 msgid "parent category"
