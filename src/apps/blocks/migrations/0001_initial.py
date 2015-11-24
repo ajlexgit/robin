@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SampleBlock',
             fields=[
-                ('attachableblock_ptr', models.OneToOneField(primary_key=True, serialize=False, auto_created=True, to='attachable_blocks.AttachableBlock', parent_link=True)),
+                ('attachableblock_ptr', models.OneToOneField(primary_key=True, auto_created=True, serialize=False, to='attachable_blocks.AttachableBlock', parent_link=True)),
                 ('title', models.CharField(verbose_name='title', blank=True, max_length=255)),
             ],
             options={
