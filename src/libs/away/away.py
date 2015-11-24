@@ -4,10 +4,16 @@ from django.shortcuts import resolve_url
 from django.contrib.sites.shortcuts import get_current_site
 
 
-def is_same_domain(domain1, domain2):
-    parts1 = domain1.split('.')
-    parts2 = domain2.split('.')
-    return parts1[-2:] == parts2[-2:]
+def is_same_domain(host, pattern):
+    # TODO: скоро будет в Django (django.utils.http)
+    if not pattern:
+        return False
+
+    pattern = pattern.lower()
+    return (
+        pattern[0] == '.' and (host.endswith(pattern) or host == pattern[1:]) or
+        pattern == host
+    )
 
 
 def away_links(request, html, target="_blank"):
@@ -19,8 +25,9 @@ def away_links(request, html, target="_blank"):
     for tag in soup.findAll('a'):
         if tag.get('href'):
             tag['target'] = target
+
             parsed = parse.urlparse(tag['href'])
-            if parsed.netloc and not is_same_domain(parsed.netloc, site.domain):
+            if '' not in (parsed.scheme, parsed.netloc) and not is_same_domain(parsed.netloc, site.domain):
                 tag['href'] = resolve_url('away') + '?url=' + parsed.geturl()
                 tag.string = parse.unquote(tag.string)
 

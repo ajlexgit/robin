@@ -233,7 +233,6 @@ PIPELINE_JS = {
             'js/jquery.youtube.js',
             'js/jquery.vimeo.js',
             'js/appear.js',
-            'js/preloader.js',
             'js/text_styles.js',
             'js/popups/jquery.popups.js',
             'js/popups/preloader.js',
