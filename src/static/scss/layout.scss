@@ -32,7 +32,7 @@ body {
   #header-row {
     display: table-row;
     height: 0;
-    
+
     & > .header-cell {
       display: table-cell;
       height: 0;
@@ -86,6 +86,7 @@ body {
     top: 50%;
     min-width: 100.1%;
     min-height: 100.1%;
+    max-width: none;
     z-index: 2;
     @include transform(translate3d(-50%, -50%, 0));
     @include backface-visibility(hidden);

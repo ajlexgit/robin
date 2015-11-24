@@ -163,6 +163,7 @@ PIPELINE_CSS = {
     'head_core': {
         'source_filenames': (
             'scss/grid.scss',
+            'scss/row.scss',
             'scss/layout.scss',
             'scss/forms.scss',
             'scss/text_styles.scss',

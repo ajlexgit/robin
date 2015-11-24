@@ -18,6 +18,12 @@
 @import 'mixins/valign';
 @import 'mixins/unselectable';
 
+// Кол-во колонок
+$cols_wide: 8;
+$cols_desktop: 8;
+$cols_tablet: 8;
+$cols_mobile: 4;
+
 // Точки для media-queries
 $media1200: 1200px;
 $media1024: 1024px;
