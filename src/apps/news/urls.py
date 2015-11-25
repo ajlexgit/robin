@@ -9,7 +9,7 @@ urlpatterns = [
         name='index'
     ),
     url(
-        r'^(?P<slug>{})$'.format(ALIAS_REGEXP), views.DetailView.as_view(),
+        r'^(?P<slug>{})/$'.format(ALIAS_REGEXP), views.DetailView.as_view(),
         name='detail'
     ),
 ]

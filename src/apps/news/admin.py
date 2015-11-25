@@ -36,13 +36,13 @@ class PostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'title', 'slug', 'text', 'is_visible',
+                'preview', 'title', 'slug', 'publication_date', 'is_visible', 'text',
             ),
         }),
     )
     inlines = (NewsPageBlocksInline,)
     search_fields = ('title', )
-    list_display = ('view', '__str__', 'is_visible')
+    list_display = ('view', '__str__', 'publication_date', 'is_visible')
     list_display_links = ('__str__', )
     actions = ('action_hide', 'action_show')
     prepopulated_fields = {

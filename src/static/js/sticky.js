@@ -137,7 +137,7 @@
          */
         cls.prototype._processFixed = function(win_scroll) {
             var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
-            var block_height = this.$block.outerHeight();
+            var block_height = this.$block.outerHeight(true);
             var container_height = this.$container.height();
             var scrollFrom = container_top - this.opts.topOffset;
             var scrollTo = scrollFrom + container_height - block_height - this.opts.bottomOffset;
@@ -153,26 +153,28 @@
                         width: ''
                     });
                 }
-            } else if (win_scroll > scrollTo) {
-                if (this._state != 'bottom') {
-                    this._state = 'bottom';
-                    this.$block.css({
-                        position: 'absolute',
-                        top: '',
-                        bottom: this.opts.bottomOffset,
-                        width: ''
-                    });
-                }
-            } else {
-                if (this._state != 'middle') {
-                    this._state = 'middle';
+            } else if (this.$container.height() > this.$block.outerHeight(true)) {
+                if (win_scroll > scrollTo) {
+                    if (this._state != 'bottom') {
+                        this._state = 'bottom';
+                        this.$block.css({
+                            position: 'absolute',
+                            top: '',
+                            bottom: this.opts.bottomOffset,
+                            width: this._width
+                        });
+                    }
+                } else if ((win_scroll >= scrollFrom) && (win_scroll <= scrollTo)) {
+                    if (this._state != 'middle') {
+                        this._state = 'middle';
 
-                    this.$block.css({
-                        position: 'fixed',
-                        top: this.opts.topOffset,
-                        bottom: '',
-                        width: this._width
-                    });
+                        this.$block.css({
+                            position: 'fixed',
+                            top: this.opts.topOffset,
+                            bottom: '',
+                            width: this._width
+                        });
+                    }
                 }
             }
         };
