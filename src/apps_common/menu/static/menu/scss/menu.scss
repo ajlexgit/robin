@@ -10,25 +10,22 @@ $mobile_media: $media1024;
 
 .main-menu {
   li {
+    color: #FFFFFF;
+    
     a {
       display: inline-block;
       padding: 5px;
-      color: #FFFFFF;
       font-weight: bold;
       line-height: 1;
       @include fontsize_default;
+    }
 
-      &:hover {
-        @include opacity(0.8);
-      }
+    &:hover {
+      color: #FF4040;
     }
 
     &.active {
-      color: #FFFF00;
-
-      a:hover {
-        @include opacity(1);
-      }
+      color: #FF0000;
     }
   }
 }

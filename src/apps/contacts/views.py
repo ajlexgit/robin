@@ -57,7 +57,7 @@ class IndexView(TemplateExView):
                 except BadHeaderError:
                     pass
 
-            return redirect('contacts')
+            return redirect('contacts:index')
         else:
             return self.render_to_response({
                 'config': self.config,

@@ -4,7 +4,7 @@
   width: 100%;
   max-width: $grid_max_width;
   @include flexbox;
-  @include flex-flow(row wrap);
+  @include flex-flow(row nowrap);
   @include align-items(stretch);
   @include justify-content(flex-start);
   @include border-box;
