@@ -13,7 +13,7 @@ class ContactsConfig(SingletonModel):
         verbose_name = _('settings')
 
     def get_absolute_url(self):
-        return resolve_url('contacts')
+        return resolve_url('contacts:index')
 
 
 class MessageReciever(models.Model):
