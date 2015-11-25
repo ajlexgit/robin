@@ -2,39 +2,42 @@
 
 header {
   position: relative;
-  padding: 45px 0;
-  width: 100%;
   z-index: 2;
-  background: rgba(green, 0.8);
-  @include media_interval(0, $media768) {
-    padding: 25px 0;
-  }
+  background-color: #808080;
 
-  .table {
-    display: table;
-    width: 100%;
+  .row {
+    padding-top: 20px;
+    padding-bottom: 20px;
 
-    .cell {
-      float: none;
-      display: table-cell;
-      vertical-align: middle;
+    .rc {
+      @include flexbox;
+      @include align-items(center);
+      @include justify-content(flex-start);
     }
   }
 
-  .menu-wrapper {
+  .logo-box {
+    padding-right: $grid_space;
+
+    a {
+      display: inline-block;
+      width: 117px;
+      height: 60px;
+      vertical-align: middle;
+      background: url(../../img/logo.png) no-repeat center;
+
+      &:hover {
+        @include opacity(0.8);
+      }
+    }
+  }
+
+  .menu-box {
     text-align: center;
-    @include valign_after;
+    @include flex(1 0 auto);
+    @include media_interval(0, $media1024) {
+      text-align: right;
+    }
   }
 }
 
-#logo {
-  display: inline-block;
-  width: 117px;
-  height: 60px;
-  vertical-align: middle;
-  background: url(../../img/logo.png) no-repeat center;
-
-  &:hover {
-    @include opacity(0.8);
-  }
-}

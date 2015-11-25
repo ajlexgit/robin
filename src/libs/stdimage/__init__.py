@@ -9,12 +9,12 @@
         STDIMAGE_MAX_SOURCE_DIMENSIONS_DEFAULT = (2048, 2048)
 
     Пример:
-        preview = StdImageField('превью',
+        preview = StdImageField(_('preview'),
             blank=True,
             storage=MediaStorage('main/header'),
             admin_variation='square',
             crop_area=True,
-            crop_field='preview_crop'
+            crop_field='preview_crop',
             aspects=('normal', ),
             variations=dict(
                 normal=dict(
