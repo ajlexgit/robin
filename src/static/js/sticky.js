@@ -54,7 +54,7 @@
 
             // включение
             if (window.innerWidth >= this.opts.minEnableWidth) {
-                this.enable()
+                this.enable($window.scrollTop())
             }
 
             // Сохраняем объект в массив для использования в событиях
@@ -77,17 +77,16 @@
         /*
             Включение ползания
          */
-        cls.prototype.enable = function() {
+        cls.prototype.enable = function(win_scroll) {
+            this.updateWidth();
+
             if (this.enabled) {
                 return
             } else {
                 this.enabled = true;
             }
 
-            if (this.opts.strategy == 'fixed') {
-                this.updateWidth();
-            }
-            this.process();
+            this.process(win_scroll);
         };
 
         /*
@@ -100,20 +99,39 @@
                 this.enabled = false;
             }
 
-            this.$block.css({
-                marginTop: ''
-            })
+            this._state = null;
+
+            if (this.opts.strategy == 'fixed') {
+                this.$block.css({
+                    position: '',
+                    top: '',
+                    bottom: '',
+                    width: ''
+                });
+            } else {
+                this.$block.css({
+                    marginTop: ''
+                })
+            }
         };
 
         /*
             Запоминаем ширину блока (для strategy = fixed)
          */
         cls.prototype.updateWidth = function() {
+            if (this.opts.strategy != 'fixed') {
+                return ''
+            }
+
             var initial_css = this.$block.get(0).style.cssText;
             this.$block.get(0).style.cssText = '';
 
             this._width = this.$block.width();
             this.$block.get(0).style.cssText = initial_css;
+
+            if ((this._state == 'bottom') || (this._state == 'middle')) {
+                this.$block.css('width', this._width);
+            }
 
             return this._width;
         };
@@ -228,11 +246,12 @@
     $window.on('scroll.sticky', applyStickies);
     $window.on('load.sticky', applyStickies);
     $window.on('resize.sticky', $.rared(function() {
+        var win_scroll = $window.scrollTop();
         $.each(stickies, function() {
             if (window.innerWidth < this.opts.minEnableWidth) {
                 this.disable()
             } else {
-                this.enable()
+                this.enable(win_scroll)
             }
         });
     }, 100));
