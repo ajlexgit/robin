@@ -69,10 +69,9 @@ body {
   position: relative;
   overflow: hidden;
   display: block;
-  color: #FFFFFF;
+  z-index: 1;
   text-align: center;
   @include border-box;
-  @include no_fontsize;
   @include valign_after;
 
   &.section-full-height {
