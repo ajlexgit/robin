@@ -70,13 +70,12 @@ body {
   overflow: hidden;
   display: block;
   z-index: 1;
-  text-align: center;
   @include border-box;
   @include valign_after;
 
   &.section-full-height {
-    height: 768px; // for old
-    height: 100vh;
+    min-height: 768px; // for old
+    min-height: 100vh;
   }
 
   .section-image {

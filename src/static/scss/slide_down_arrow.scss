@@ -1,0 +1,53 @@
+@import 'mixins';
+
+// Стрелка прокрутки
+@include keyframes(show-down-arrow) {
+  0% {
+    @include opacity(0);
+  }
+  100% {
+    @include opacity(0.6);
+  }
+}
+
+@include keyframes(jump-down-arrow) {
+  0% {
+    bottom: 50px;
+  }
+  100% {
+    bottom: 30px;
+  }
+}
+
+@include keyframes(jump-down-arrow-mobile) {
+  0% {
+    bottom: 30px;
+  }
+  100% {
+    bottom: 10px;
+  }
+}
+
+.slide-down-arrow {
+  position: absolute;
+  left: 50%;
+  margin-left: -20px;
+  width: 34px;
+  height: 52px;
+  z-index: 10;
+  background: url(../img/sprite_a.svg) no-repeat 2px -108px;
+  @include animation-name(show-down-arrow, jump-down-arrow);
+  @include animation-duration(0.5s, 1s);
+  @include animation-delay(1.2s, 1.3s);
+  @include animation-timing-function(ease-in, ease-out);
+  @include animation-direction(normal, alternate);
+  @include animation-fill-mode(both, both);
+  @include animation-iteration-count(1, infinite);
+  @include media_interval(0, $media768) {
+    @include animation-name(show-down-arrow, jump-down-arrow-mobile);
+  }
+
+  &:hover {
+    @include opacity(1);
+  }
+}
