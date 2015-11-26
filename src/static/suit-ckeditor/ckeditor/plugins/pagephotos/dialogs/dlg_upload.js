@@ -34,52 +34,52 @@
             flash_swf_url : editor.config.MOXIE_SWF,
             silverlight_xap_url : editor.config.MOXIE_XAP,
 
-            start: function() {
-                var ckDialog = CKEDITOR.dialog.getCurrent();
-                ckDialog._.buttons['ok'].disable()
-            },
+            init: {
+                Init: function() {
+                    var ckDialog = CKEDITOR.dialog.getCurrent();
+                    ckDialog._.buttons['ok'].disable()
+                },
+                FileUploaded: function(up, file, data) {
+                    var response = $.parseJSON(data.response);
+                    file.result_tag = response.tag;
 
-            complete: function() {
-                var ckDialog = CKEDITOR.dialog.getCurrent();
-                ckDialog._.buttons['ok'].enable()
-            },
+                    // Записываем id сохраненных картинок в форму
+                    var text_field = $('#id_' + response.field);
+                    if (text_field.length) {
+                        var pagephotos = text_field.siblings('input[name="' + response.field + '-page-photos"]');
+                        if (!pagephotos.length) {
+                            pagephotos = $('<input type="hidden" name="' + response.field + '-page-photos">');
+                            text_field.before(pagephotos);
+                        }
 
-            uploaded: function(event, object) {
-                var response = JSON.parse(object.data.response);
-                object.file.result_tag = response.tag;
+                        // Формируем список id загруженных картинок
+                        var value = pagephotos.val() || '';
+                        if (value) {
+                            value += ',' + response.id
+                        } else {
+                            value = response.id
+                        }
 
-                // Записываем id сохраненных картинок в форму
-                var text_field = $('#id_' + response.field);
-                if (text_field.length) {
-                    var pagephotos = text_field.siblings('input[name="' + response.field + '-page-photos"]');
-                    if (!pagephotos.length) {
-                        pagephotos = $('<input type="hidden" name="' + response.field + '-page-photos">');
-                        text_field.before(pagephotos);
+                        pagephotos.val(value);
                     }
+                },
+                UploadComplete: function(up, files) {
+                    var ckDialog = CKEDITOR.dialog.getCurrent();
+                    ckDialog._.buttons['ok'].enable()
+                },
+                Error: function(up, error) {
+                    up.removeFile(error.file);
 
-                    // Формируем список id загруженных картинок
-                    var value = pagephotos.val() || '';
-                    if (value) {
-                        value += ',' + response.id
-                    } else {
-                        value = response.id
+                    if (error.response) {
+                        try {
+                            var response = $.parseJSON(error.response);
+                            alert(response.message);
+                            return
+                        } catch (e) {
+                        }
                     }
-
-                    pagephotos.val(value);
+                    alert(error.message);
                 }
-            },
-            error: function(event, object) {
-                var err = object.error;
-                object.up.removeFile(err.file);
-
-                if (err.response) {
-                    try {
-                        var response = JSON.parse(err.response);
-                        alert(response.message);
-                        return
-                    } catch(e) {}
-                }
-                alert(err.message);
             }
         })
     };

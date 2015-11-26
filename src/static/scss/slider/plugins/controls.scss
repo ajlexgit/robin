@@ -16,7 +16,10 @@
 
   &.slider-arrow-left {
     left: 0;
-    @include transform(rotate(180deg));
+
+    span:before {
+      @include transform(rotate(180deg));
+    }
   }
 
   &.slider-arrow-right {

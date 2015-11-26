@@ -20,12 +20,14 @@
                                               кол-ва элементов в каждом слайде
 
             itemSelector                    - селектор элементов списка
-            itemsPerSlide                   - кол-во элментов на каждый слайд
+            itemsPerSlide                   - кол-во элментов на каждый слайд (может быть функцией)
             loop                            - зациклить слайдер
             adaptiveHeight                  - менять высоту слайдера в зависимости от высоты
                                               текущего слайда
             adaptiveHeightTransition        - длительность анимации высоты слайдера
 
+            onInit                          - событие инициализации
+            onSetItemsPerSlide              - событие установки кол-ва элементов слайда
             onResize                        - событие изменения размера окна
 
         HTML input:
@@ -99,6 +101,8 @@
                 adaptiveHeight: true,
                 adaptiveHeightTransition: 800,
 
+                onInit: $.noop,
+                onSetItemsPerSlide: $.noop,
                 onResize: $.noop
             }, options);
 
@@ -123,15 +127,15 @@
             this.$items = this.$list.find(this.opts.itemSelector);
             this.$items.addClass(this.opts.itemClass);
 
-            // текущий элемент
-            this.$currentItem = this.$items.filter('.' + this.opts.initialActiveClass).first();
-            if (!this.$currentItem.length) {
-                this.$currentItem = this.$slides.first();
-            }
-
             // флаг анимации и объект анимации
             this._animated = false;
             this._animation = null;
+
+            // текущий элемент
+            this.$currentItem = this.$items.filter('.' + this.opts.initialActiveClass).first();
+            if (!this.$currentItem.length) {
+                this.$currentItem = this.$items.first();
+            }
 
             // создаем слайды
             this.setItemsPerSlide(this.opts.itemsPerSlide);
@@ -149,6 +153,9 @@
             }, 100);
 
             $images.on('load', loadHandle);
+
+            // callback
+            this.opts.onInit.call(this);
 
             sliders.push(this);
         };
@@ -214,7 +221,16 @@
                 this._animation.stop(true)
             }
 
-            this.beforeSetItemsPerSlide();
+            // если функция
+            if ($.isFunction(itemsPerSlide)) {
+                itemsPerSlide = parseInt(itemsPerSlide.call(this));
+            }
+            itemsPerSlide = parseInt(itemsPerSlide);
+            if (!itemsPerSlide) {
+                return
+            }
+
+            this.beforeSetItemsPerSlide(itemsPerSlide);
 
             // удаляем ранее созданные слайды
             this.$slides = $();
@@ -242,14 +258,17 @@
                 this.opts.setItemsPerSlideAnimatedHeight
             );
 
-            this.afterSetItemsPerSlide();
+            this.afterSetItemsPerSlide(itemsPerSlide);
+
+            // callback
+            this.opts.onSetItemsPerSlide.call(this, itemsPerSlide);
         };
 
         /*
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед созданием слайдов.
          */
-        cls.prototype.beforeSetItemsPerSlide = function() {
+        cls.prototype.beforeSetItemsPerSlide = function(itemsPerSlide) {
             // jQuery event
             this.$list.trigger('beforeSetItemsPerSlide.slider');
 
@@ -260,7 +279,7 @@
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после созданием слайдов.
          */
-        cls.prototype.afterSetItemsPerSlide = function() {
+        cls.prototype.afterSetItemsPerSlide = function(itemsPerSlide) {
             this.callPluginsMethod('afterSetItemsPerSlide', null, true);
 
             // jQuery event

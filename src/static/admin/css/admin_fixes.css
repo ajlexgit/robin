@@ -110,3 +110,7 @@ input[type=number] {
 .admin-table tbody tr:nth-last-of-type(1) th {
     border-bottom: 0;
 }
+
+.cke_panel {
+    overflow: hidden !important;
+}

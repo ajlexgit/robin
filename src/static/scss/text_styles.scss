@@ -3,11 +3,12 @@
 .text-styles {
   @include fontsize_default;
 
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
   p {
     margin-bottom: 1em;
-    &:nth-last-of-type(1) {
-      margin-bottom: 0;
-    }
   }
 
   a {
@@ -23,7 +24,6 @@
   }
 
   img {
-    height: auto;
     margin-bottom: 10px;
   }
 
@@ -64,9 +64,6 @@
   ul {
     padding-left: 1.6em;
     margin: 1.1em 0;
-    &:nth-last-of-type(1) {
-      margin-bottom: 0;
-    }
 
     li {
       position: relative;
@@ -86,21 +83,48 @@
     list-style: decimal;
     padding-left: 1.6em;
     margin: 1.1em 0;
-    &:nth-last-of-type(1) {
+  }
+
+  .page-images, .page-video {
+    margin: 2.2em 0;
+    @include media_interval(0, $media1024) {
+      margin: 1.1em 0;
+    }
+    
+    img {
+      max-width: 100%;
       margin-bottom: 0;
     }
   }
 
+  .description {
+    margin-top: 5px;
+    color: #808080;
+    @include font_size(12px, 14px);
+  }
+
+  // JS-слайдер с описанием
+  .slider-root {
+    margin: 2.2em 0;
+    font-size: inherit;
+    @include media_interval(0, $media1024) {
+      margin: 1.1em 0;
+    }
+
+    .slider-list-wrapper {
+      @include no_fontsize;
+    }
+
+    .page-images {
+      margin: 0;
+    }
+  }
 
   // One image
   .single-image {
     margin: 2.2em 0;
-    color: #808080;
-    line-height: 1.2;
-    @include font-size(14px);
-
-    img {
-      margin: 0 0 5px;
+    @include media_interval(0, $media1024) {
+      margin: 1.1em 0;
     }
   }
 
@@ -108,10 +132,7 @@
   .page-video {
     position: relative;
     margin: 2.2em 0;
-    color: #808080;
-    line-height: 1.2;
     text-align: left;
-    @include font-size(14px);
 
     .fluid-width-video-wrapper {
       display: inline-block;
