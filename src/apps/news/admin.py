@@ -40,7 +40,6 @@ class PostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
             ),
         }),
     )
-    inlines = (NewsPageBlocksInline,)
     search_fields = ('title', )
     list_display = ('view', '__str__', 'publication_date', 'is_visible')
     list_display_links = ('__str__', )

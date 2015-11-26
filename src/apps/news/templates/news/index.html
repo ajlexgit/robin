@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 
+{% load attachable_blocks %}
 {% load pipeline %}
 {% load i18n %}
 
@@ -16,6 +17,6 @@
 
 {% block content %}
 
-
+  {% render_attached_blocks config %}
 
 {% endblock content %}
