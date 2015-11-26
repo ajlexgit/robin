@@ -2,6 +2,7 @@ import os
 import sys
 
 
+# Blocks - ссылка на создание блока
 # Слайдер - блокировка при некотром условии
 # AJAX-авторизация на странице регистрации
 # new JS popups + show/hide return popup

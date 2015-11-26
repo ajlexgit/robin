@@ -2,13 +2,10 @@ from django import forms
 from django.apps import apps
 from django.core import checks
 from django.core.cache import cache
-from django.contrib.contenttypes.admin import (
-    GenericTabularInline, GenericStackedInline, BaseGenericInlineFormSet
-)
-from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.admin import BaseGenericInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from suit.admin import SortableTabularInlineBase
+from suit.admin import SortableGenericTabularInline, SortableGenericStackedInline
 from project.admin import ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
 from .models import AttachableBlock, AttachableReference
@@ -38,7 +35,7 @@ class AttachedBlocksForm(forms.ModelForm):
     )
 
     class Meta:
-        fields = ('block_type', 'block', 'set_name')
+        fields = '__all__'
         widgets = {
             'block': AutocompleteWidget(
                 dependencies=(('block_content_type', '__prefix__-block_type', False),),
@@ -74,15 +71,14 @@ class AttachedBlocksFormset(BaseGenericInlineFormSet):
         return super().save_existing(form, instance, commit)
 
 
-class BaseAttachedBlocksMixin(ModelAdminInlineMixin, SortableTabularInlineBase):
+class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
     """ Базовый класс inline-моделей """
     form = AttachedBlocksForm
     formset = AttachedBlocksFormset
     model = AttachableReference
-    # fields = ('block_type', 'block', 'set_name')
+    fields = ('block_type', 'block', 'set_name')
     readonly_fields = ('set_name',)
     extra = 0
-    sortable = 'sort_order'
     set_name = 'default'
 
     @classmethod
@@ -113,11 +109,11 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin, SortableTabularInlineBase):
         return queryset.filter(set_name=self.set_name)
 
 
-class AttachedBlocksTabularInline(BaseAttachedBlocksMixin, GenericTabularInline):
+class AttachedBlocksTabularInline(BaseAttachedBlocksMixin, SortableGenericTabularInline):
     """ Родительская модель для tabular инлайнов """
-    pass
+    sortable = 'sort_order'
 
 
-class AttachedBlocksStackedInline(BaseAttachedBlocksMixin, GenericStackedInline):
+class AttachedBlocksStackedInline(BaseAttachedBlocksMixin, SortableGenericStackedInline):
     """ Родительская модель для stacked инлайнов """
-    pass
+    sortable = 'sort_order'
