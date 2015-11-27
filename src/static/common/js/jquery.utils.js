@@ -108,7 +108,7 @@
             < "2:3:4"
      */
 
-    window.Class = function(parent, constructor) {
+    window.Class = function(parent, class_constructor) {
         var InnerFunc = function() {
             this.__init_result = InnerFunc.init.apply(this, arguments);
         };
@@ -134,7 +134,7 @@
         };
 
         // вызов функции, добавляющей пользовательские методы и свойства
-        constructor(InnerFunc, parent);
+        class_constructor(InnerFunc, parent);
 
         // если метод инициализации не описан - ищем в родителе
         if (InnerFunc.init === undefined) {

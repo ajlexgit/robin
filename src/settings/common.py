@@ -22,7 +22,7 @@ LANGUAGES = (
 
 TIME_ZONE = 'America/New_York'
 TIME_FORMAT = 'H:i'
-DATE_FORMAT = 'j E Y'
+DATE_FORMAT = 'E j, Y'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -149,11 +149,11 @@ PIPELINE_CSS = {
             'scss/text_styles.scss',
             'scss/popups/popups.scss',
             'scss/popups/preloader.scss',
-            
+
             'scss/slider/slider.scss',
             'scss/slider/plugins/controls.scss',
             'scss/slider/plugins/navigation.scss',
-            
+
             'menu/scss/menu.scss',
             'header/scss/header.scss',
             'footer/scss/footer.scss',
@@ -191,9 +191,9 @@ PIPELINE_JS = {
             'js/jquery.scrollTo.js',
             'js/jquery.youtube.js',
             'js/jquery.vimeo.js',
-            'js/drager.js',
             'js/popups/jquery.popups.js',
             'js/popups/preloader.js',
+            'js/drager.js',
             'js/slider/slider.js',
             'js/slider/plugins/side_animation.js',
             'js/slider/plugins/fade_animation.js',
@@ -202,7 +202,7 @@ PIPELINE_JS = {
             'js/slider/plugins/controls.js',
             'js/slider/plugins/drag.js',
             'js/text_styles.js',
-            
+
             'menu/js/menu.js',
         ),
         'output_filename': 'js/core.js',
