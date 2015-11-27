@@ -80,7 +80,7 @@
             this.$list = $(list).first();
             if (!this.$list.length) {
                 console.error('Slider can\'t find list element');
-                return false
+                return false;
             }
 
             // настройки
@@ -127,6 +127,11 @@
             this.$items = this.$list.find(this.opts.itemSelector);
             this.$items.addClass(this.opts.itemClass);
 
+            if (!this.$items.length) {
+                console.error('Slider can\'t find any slide');
+                return false
+            }
+
             // флаг анимации и объект анимации
             this._animated = false;
             this._animation = null;
@@ -156,6 +161,8 @@
 
             // callback
             this.opts.onInit.call(this);
+
+            this.$list.data(Slider.dataParamName, this);
 
             sliders.push(this);
         };
@@ -412,32 +419,38 @@
         // ===============================================
 
         /*
+            Рассчет финальной высоты слайдера
+         */
+        cls.prototype.calcListHeight = function() {
+            if (this.opts.adaptiveHeight) {
+                return this.$currentSlide.outerHeight();
+            }
+
+            var final_height = 0;
+            this.$slides.height('auto');
+            $.each(this.$slides, function(i, slide) {
+                var $slide = $(slide);
+                var height = $slide.outerHeight();
+                if (height > final_height) {
+                    final_height = height;
+                }
+            });
+            this.$slides.height('');
+            return final_height;
+        };
+
+        /*
             Обновление высоты slider.$list в зависимости от высоты слайдов
             и настройки adaptiveHeight
          */
         cls.prototype.updateListHeight = function(animatedHeight) {
-            var final_height = 0;
-            var current_height = this.$list.outerHeight();
-
-            // определение финальной высоты слайдера
-            if (this.opts.adaptiveHeight) {
-                final_height = this.$currentSlide.outerHeight();
-            } else {
-                this.$slides.height('auto');
-                $.each(this.$slides, function(i, slide) {
-                    var $slide = $(slide);
-                    var height = $slide.outerHeight();
-                    if (height > final_height) {
-                        final_height = height;
-                    }
-                });
-                this.$slides.height('');
-            }
-
             // прерываем анимация высоты, если она идёт
             if (this._adaptive_animation) {
                 this._adaptive_animation.stop();
             }
+
+            var final_height = this.calcListHeight();
+            var current_height = this.$list.outerHeight();
 
             // высота не меняется - выходим
             if (current_height == final_height) {
@@ -560,6 +573,7 @@
             this.slideTo($prev, animationName, animatedHeight);
         };
     });
+    Slider.dataParamName = 'slider';
 
 
     // ================================================

@@ -2,6 +2,10 @@ html {
     min-height: 100%
 }
 
+body > *:first-child {
+    margin-top: 0;
+}
+
 p img {
     max-width: 100%;
 }

@@ -134,6 +134,9 @@ class Valute:
     # Операторы
     # ===========
 
+    def __bool__(self):
+        return bool(self._value)
+
     def __eq__(self, other):
         if isinstance(other, Valute):
             return self._value.__eq__(other._value)

@@ -3,6 +3,10 @@
 .text-styles {
   @include fontsize_default;
 
+  > *:first-child {
+    margin-top: 0;
+  }
+
   > *:last-child {
     margin-bottom: 0;
   }
@@ -90,7 +94,7 @@
     @include media_interval(0, $media1024) {
       margin: 1.1em 0;
     }
-    
+
     img {
       max-width: 100%;
       margin-bottom: 0;

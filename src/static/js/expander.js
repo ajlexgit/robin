@@ -32,13 +32,6 @@
             if (!this.$root.length) {
                 console.error('Expander can\'t find root element');
                 return false;
-            } else {
-                // отвязывание старого экземпляра
-                var old_instance = this.$root.data(Expander.dataParamName);
-                if (old_instance) {
-                    old_instance.destroy();
-                }
-                this.$root.data(Expander.dataParamName, this);
             }
 
             // настройки
@@ -79,7 +72,16 @@
             this.$root.on('click.expander', this.opts.buttonSelector, function() {
                 that.clickHandler($(this));
                 return false
-            })
+            });
+
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(Expander.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+            
+            this.$root.data(Expander.dataParamName, this);
         };
 
         /*
