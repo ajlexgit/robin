@@ -4,7 +4,9 @@ form {
   @include border-box;
 }
 
-input, select, textarea, button {
+input[type="text"], input[type="password"], input[type="email"],
+input[type="number"], input[type="time"], input[type="button"],
+input[type="submit"], select, textarea, button {
   width: 200px;
   padding: 5px 6px;
   border: 1px solid #808080;
