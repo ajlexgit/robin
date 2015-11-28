@@ -1,30 +1,41 @@
 @import 'mixins';
 
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  vertical-align: top;
+}
+
 .custom-checkbox {
   display: inline-block;
   position: relative;
+  overflow: hidden;
   width: 16px;
   height: 16px;
   z-index: 1;
   cursor: pointer;
-  border: 1px solid #808080;
-  background-color: #FFFFFF;
   vertical-align: top;
+  background: url(../img/sprite_a.svg) no-repeat -28px -72px;
   @include border-box;
-  @include no_fontsize;
   @include unselectable;
   @include border_radius(2px);
 
   &.checked {
+    background-position: -28px -56px;
+  }
+
+  &.disabled {
+    cursor: default;
+    @include opacity(0.3);
+
     &:before {
-      content: '✔';
+      content: '';
       position: absolute;
-      left: 50%;
-      top: 50%;
-      color: #000000;
-      line-height: 1;
-      @include font-size(15px);
-      @include transform(translate(-50%, -50%));
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.2);
     }
   }
 }

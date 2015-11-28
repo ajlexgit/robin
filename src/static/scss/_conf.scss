@@ -1,0 +1,56 @@
+//=======================
+// Точки для media-queries
+//=======================
+$media1200: 1200px;
+$media1024: 1024px;
+$media768: 768px;
+$media640: 640px;
+$media600: 600px;
+$media480: 480px;
+
+
+//=======================
+// Сетка
+//=======================
+$cols_wide: 8;
+$cols_desktop: 8;
+$cols_tablet: 8;
+$cols_mobile: 4;
+
+// Максимальная ширина сетки
+$grid_max_width: 1400px;
+
+// Боковые границы сетки
+$grid_padding_wide: 60px;
+$grid_padding: 40px;
+$grid_padding_tablet: 30px;
+$grid_padding_mobile: 16px;
+$grid_padding_micro: 10px;
+
+// Боковые границы каждого столбца
+$grid_space: 14px;
+
+
+//=======================
+// Sprite
+//=======================
+$sprite_width: 240px;
+$sprite_height: 106px;
+
+
+//=======================
+// Текст
+//=======================
+$text_color: #2C3035;
+
+
+//=======================
+// Меню
+//=======================
+$menu_burger_color: red;
+$menu_burger_width: 28px;
+$menu_burger_line_height: 4px;
+$menu_burger_line_space: 5px;
+
+// точка перехода к модильному меню
+$mobile_menu_point: $media768;

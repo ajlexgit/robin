@@ -16,6 +16,44 @@
 
 {% block content %}
 
+  <div class="grid-block">
+
+    <form>
+      <fieldset>
+        <input type="checkbox" id="chk1" value="one" name="chk" checked="checked">
+        <label for="chk1">One</label>
+      </fieldset>
+      <fieldset>
+        <input type="checkbox" id="chk2" value="two" name="chk" disabled>
+        <label for="chk2">Two</label>
+      </fieldset>
+      <fieldset>
+        <label>
+          <input type="checkbox" id="chk3" value="three" name="chk">
+          Three
+        </label>
+      </fieldset>
+    </form>
+
+    <form>
+      <fieldset>
+        <input type="radio" id="rad1" value="one" name="rad" checked="checked">
+        <label for="rad1">Radio one</label>
+      </fieldset>
+      <fieldset>
+        <input type="radio" id="rad2" value="two" name="rad" disabled>
+        <label for="rad2">Two</label>
+      </fieldset>
+      <fieldset>
+        <label>
+          <input type="radio" id="rad3" value="three" name="rad">
+          Three
+        </label>
+      </fieldset>
+    </form>
+
+  </div>
+
   {% render_attached_blocks config %}
 
 {% endblock content %}

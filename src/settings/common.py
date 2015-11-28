@@ -162,6 +162,8 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
+            'scss/custom_checkbox.scss',
+            'scss/custom_radiobox.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -188,12 +190,10 @@ PIPELINE_JS = {
             'common/js/jquery.utils.js',
             'common/js/jquery.ajax_csrf.js',
             'js/jquery.fitvids.js',
-            'js/jquery.scrollTo.js',
-            'js/jquery.youtube.js',
-            'js/jquery.vimeo.js',
+            'js/drager.js',
+
             'js/popups/jquery.popups.js',
             'js/popups/preloader.js',
-            'js/drager.js',
             'js/slider/slider.js',
             'js/slider/plugins/side_animation.js',
             'js/slider/plugins/fade_animation.js',
@@ -209,6 +209,8 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
+            'js/custom_checkbox.js',
+            'js/custom_radiobox.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

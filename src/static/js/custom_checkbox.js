@@ -1,7 +1,7 @@
 (function($) {
 
     /*
-        Кастомный чекбокс, подключаемый к стандартному.
+        Кастомный чекбокс, заменяющий стандартный.
 
         Требует:
             jquery.utils.js
@@ -10,8 +10,7 @@
             className       - класс, который добавляется на новый элемент, представляющий чекбокс
             checkedClass    - класс, который добавляется на новый элемент, когда он выделен
             disabledClass   - класс, который добавляется на новый элемент, когда он отключен
-            beforeChange    - событие перед изменением состояния чекбокса
-            afterChange     - событие после изменения состояния чекбокса
+            onCheck         - событие, вызываемое после включения чекбокса
 
         Пример:
             $('input[type="checkbox"]').checkbox()
@@ -21,15 +20,19 @@
         cls.init = function(input, options) {
             this.$input = $(input).first();
             if (!this.$input.length) {
-                console.error('CustomCheckbox can\'t find input element');
+                console.error('CustomCheckbox: input element not found');
                 return false;
-            } else {
-                // отвязывание старого экземпляра
-                var old_instance = this.$input.data(cls.dataParamName);
-                if (old_instance) {
-                    old_instance.destroy();
-                }
-                this.$input.data(cls.dataParamName, this);
+            }
+
+            if (this.$input.prop('tagName') != 'INPUT') {
+                console.error('CustomCheckbox: not INPUT element ');
+                return false;
+            }
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$input.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
             }
 
             // настройки
@@ -37,11 +40,11 @@
                 className: 'custom-checkbox',
                 checkedClass: 'checked',
                 disabledClass: 'disabled',
-                beforeChange: $.noop,
-                afterChange: $.noop
+                onCheck: $.noop
             }, options);
 
-            // скрываем чекбокс
+            // запоминаем CSS и скрываем чекбокс
+            this._initial_css = this.$input.get(0).style.cssText;
             this.$input.hide();
 
             // новый чекбокс
@@ -50,21 +53,30 @@
 
             // начальное состояние
             this._set_checked(this.$input.prop('checked'));
-            this._set_disabled(this.$input.prop('disabled'));
+            this._set_enabled(!this.$input.prop('disabled'));
 
-            var that = this;
 
             // клик на новый элемент
+            var that = this;
             this.$elem.on('click.checkbox', function() {
-                that.$input.change();
+                that.$input.triggerHandler('change');
                 return false;
             });
 
-            // изменение состояния
             this.$input.on('change.checkbox', function() {
-                that._set_checked(!that.checked());
+                if (!that.is_enabled()) {
+                    return false
+                }
+
+                var is_checked = that.is_checked();
+                that._set_checked(!is_checked);
+                that.opts.onCheck.call(that);
+                that.$input.trigger('check.checkbox', [that]);
+
                 return false;
             });
+
+            this.$input.data(cls.dataParamName, this);
         };
 
         /*
@@ -73,51 +85,25 @@
         cls.prototype.destroy = function() {
             this.$input.removeData(cls.dataParamName);
             this.$input.off('.checkbox');
+
+            // восстановление CSS
+            this.$input.get(0).style.cssText = this._initial_css;
+
             this.$elem.remove();
         };
 
         /*
-         Установка состояния
+            Установка состояния чекбокса
          */
-        cls.prototype._set_checked = function(value) {
-            if (this.disabled()) {
-                return
-            }
-
-            value = Boolean(value);
-            if (value == this._checked) {
-                return
-            }
-
-            // callback
-            if (this.opts.beforeChange.call(this, value) === false) {
-                return
-            }
-
-            this._checked = value;
-
-            if (this.checked()) {
+        cls.prototype._set_checked = function(checked) {
+            this._checked = Boolean(checked);
+            if (this._checked) {
                 this.$elem.addClass(this.opts.checkedClass);
                 this.$input.prop('checked', true);
-
-                // jQuery event
-                this.$input.trigger('checked.checkbox', [this]);
             } else {
                 this.$elem.removeClass(this.opts.checkedClass);
                 this.$input.prop('checked', false);
             }
-
-            // callback
-            this.opts.afterChange.call(this, value);
-
-            return this._checked;
-        };
-
-        /*
-            Получение состояния
-         */
-        cls.prototype.checked = function() {
-            return this._checked
         };
 
         /*
@@ -135,46 +121,45 @@
         };
 
         /*
-            Установка состояния включен / отключен
+            Получение состояния
          */
-        cls.prototype._set_disabled = function(value) {
-            value = Boolean(value);
-            if (value == this._disabled) {
-                return
-            }
-
-            this._disabled = value;
-
-            if (this.disabled()) {
-                this.$elem.addClass(this.opts.disabledClass);
-                this.$input.prop('disabled', true);
-            } else {
-                this.$elem.removeClass(this.opts.disabledClass);
-                this.$input.prop('disabled', false);
-            }
-
-            return this._disabled;
+        cls.prototype.is_checked = function() {
+            return this._checked
         };
 
         /*
-            Получение состояния включен / отключен
+            Установка состояния включен / отключен
          */
-        cls.prototype.disabled = function() {
-            return this._disabled
+        cls.prototype._set_enabled = function(enabled) {
+            this._enabled = Boolean(enabled);
+            if (this._enabled) {
+                this.$elem.removeClass(this.opts.disabledClass);
+                this.$input.prop('disabled', false);
+            } else {
+                this.$elem.addClass(this.opts.disabledClass);
+                this.$input.prop('disabled', true);
+            }
         };
 
         /*
             Включение
          */
         cls.prototype.enable = function() {
-            return this._set_disabled(false)
+            return this._set_enabled(true)
         };
 
         /*
             Выключение
          */
         cls.prototype.disable = function() {
-            return this._set_disabled(true)
+            return this._set_enabled(false)
+        };
+
+        /*
+            Получение состояния доступности
+         */
+        cls.prototype.is_enabled = function() {
+            return this._enabled
         };
     });
     CustomCheckbox.dataParamName = 'checkbox';

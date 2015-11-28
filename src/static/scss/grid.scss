@@ -1,20 +1,20 @@
 @import 'mixins';
 
-.grid {
+.grid-block {
   display: block;
   width: 100%;
   max-width: $grid_max_width;
-  @include clearfix;
   @include border-box;
-  @include grid-paddings(padding-left, padding-right);
+  @include grid-full-paddings(padding-left, padding-right);
   @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
   }
+}
 
-  .gc-alone {
-    float: none;
-    clear: both;
-  }
+.grid {
+  @extend .grid-block;
+  @include clearfix;
+  @include grid-paddings(padding-left, padding-right);
 }
 
 .gc {
@@ -28,8 +28,9 @@
   margin-right: auto;
 }
 
-.g-hidden {
-  display: none;
+.gc-alone {
+  float: none;
+  clear: both;
 }
 
 // Wide-desktop (1200+)
@@ -47,10 +48,6 @@
     .gc-mr-wide-#{$index} {
       margin-right: (100% / $cols_wide) * $index;
     }
-  }
-
-  .g-wide-show {
-    display: block;
   }
 
   .gc-wide-full {
@@ -76,10 +73,6 @@
     }
   }
 
-  .g-show {
-    display: block;
-  }
-
   .gc-full {
     @extend .gc;
     width: 100%;
@@ -103,10 +96,6 @@
     }
   }
 
-  .g-tablet-show {
-    display: block;
-  }
-
   .gc-tablet-full {
     @extend .gc;
     width: 100%;
@@ -128,10 +117,6 @@
     .gc-mr-mobile-#{$index} {
       margin-right: (100% / $cols_mobile) * $index;
     }
-  }
-
-  .g-mobile-show {
-    display: block;
   }
 
   .gc-mobile-full {

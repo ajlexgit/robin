@@ -1,22 +1,20 @@
 {% load menu %}
 
 <header>
-  <div class="row">
-    <div class="flex rc">
-      <div class="logo-box">
-        <a href="/"></a>
+  <div class="grid-block">
+    <div class="logo-box">
+      <a href="/"></a>
+    </div>
+
+    <div class="menu-box">
+      <span id="mobile-menu-button"></span>
+
+      <div id="main-menu" class="main-menu">
+        {% main_menu %}
       </div>
 
-      <div class="menu-box">
-        <span id="mobile-menu-button"></span>
-
-        <div id="main-menu" class="main-menu">
-          {% main_menu %}
-        </div>
-
-        <div id="mobile-menu" class="main-menu">
-          {% main_menu %}
-        </div>
+      <div id="mobile-menu" class="main-menu">
+        {% main_menu %}
       </div>
     </div>
   </div>

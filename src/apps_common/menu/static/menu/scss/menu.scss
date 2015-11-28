@@ -1,32 +1,19 @@
 @import 'mixins';
 
-$burger_color: #0000FF;
-$burgerline_height: 3px;
-$burgerline_gap: 5px;
-
-// точка показа мобильного меню
-$mobile_media: $media1024;
-
 
 .main-menu {
-  li {
-    color: #FFFFFF;
-    
-    a {
-      display: inline-block;
-      padding: 5px;
-      font-weight: bold;
-      line-height: 1;
-      @include fontsize_default;
-    }
+  a {
+    display: inline-block;
+    padding: 5px;
+    font-weight: bold;
 
     &:hover {
-      color: #FF4040;
+      color: #82BD36;
     }
+  }
 
-    &.active {
-      color: #FF0000;
-    }
+  &.active {
+    color: #82BD36;
   }
 }
 
@@ -35,31 +22,80 @@ $mobile_media: $media1024;
   display: inline-block;
   height: auto !important;
   @include no_fontsize;
-  @include media_interval(0, $mobile_media) {
+  @include media_interval(0, $mobile_menu_point) {
     display: none;
   }
 
   li {
     display: inline-block;
     margin-right: 10px;
+    color: #404040;
     &:nth-last-of-type(1) {
       margin-right: 0;
     }
   }
+
+  a {
+    @include font-size(18px, 20px);
+  }
 }
+
+
+#mobile-menu {
+  display: none;
+  position: absolute;
+  padding: 0 70px;
+  right: -100%;
+  top: 0;
+  width: 80%;
+  height: 100vh;
+  z-index: 50;
+  background: #5B3C2A;
+  @include border-box;
+  @include transition(right 0.4s);
+  @include media_interval(0, $mobile_menu_point) {
+    display: block;
+  }
+
+  ul {
+    position: relative;
+    top: 50%;
+    @include transform(translate3d(0, -50%, 0));
+  }
+
+  li {
+    margin: 24px 0;
+    color: #FFFFFF;
+    &:nth-of-type(1) {
+      margin-top: 0;
+    }
+    &:nth-last-of-type(1) {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    @include font-size(22px, 28px);
+  }
+
+  &.active {
+    right: 0;
+  }
+}
+
 
 // Кнопка меню для мобильной версии
 #mobile-menu-button {
   display: none;
   position: relative;
-  width: 28px;
-  height: 3 * $burgerline_height + 2 * $burgerline_gap;
+  width: $menu_burger_width;
+  height: 3 * $menu_burger_line_height + 2 * $menu_burger_line_space;
   cursor: pointer;
   text-align: left;
   z-index: 55;
   vertical-align: middle;
   @include unselectable;
-  @include media_interval(0, $mobile_media) {
+  @include media_interval(0, $mobile_menu_point) {
     display: inline-block;
   }
 
@@ -67,13 +103,13 @@ $mobile_media: $media1024;
     content: '';
     position: absolute;
     width: 100%;
-    height: $burgerline_height;
-    background: $burger_color;
+    height: $menu_burger_line_height;
+    background: $menu_burger_color;
     @include transition-timing-function(linear);
   }
   &:before {
     top: 0;
-    box-shadow: $burger_color 0 ($burgerline_height + $burgerline_gap) 0 0;
+    box-shadow: $menu_burger_color 0 ($menu_burger_line_height + $menu_burger_line_space) 0 0;
     @include transform(translate3d(0, 0, 0) rotate(0deg));
     @include transition-property(-webkit-transform, transform, box-shadow, top);
     @include transition-duration(0.55s, 0.55s, 0.2s, 0.2s);
@@ -99,44 +135,5 @@ $mobile_media: $media1024;
       @include transform(translate3d(0, -50%, 0) rotate(315deg));
       @include transition-delay(0.1s, 0.1s, 0s);
     }
-  }
-}
-
-
-#mobile-menu {
-  display: none;
-  position: absolute;
-  padding: 0 70px;
-  right: -100%;
-  top: 0;
-  width: 80%;
-  height: 100vh;
-  z-index: 50;
-  background: #8080FF;
-  @include border-box;
-  @include transition(right 0.4s);
-  @include media_interval(0, $mobile_media) {
-    display: block;
-  }
-
-  ul {
-    position: relative;
-    top: 50%;
-    @include transform(translate3d(0, -50%, 0));
-  }
-
-  li {
-    margin: 24px 0;
-
-    &:nth-of-type(1) {
-      margin-top: 0;
-    }
-    &:nth-last-of-type(1) {
-      margin-bottom: 0;
-    }
-  }
-
-  &.active {
-    right: 0;
   }
 }

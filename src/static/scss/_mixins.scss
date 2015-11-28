@@ -8,7 +8,6 @@
 @import 'mixins/filter';
 @import 'mixins/flex';
 @import 'mixins/font_size';
-@import 'mixins/justify_blocks';
 @import 'mixins/linear_gradient';
 @import 'mixins/opacity';
 @import 'mixins/placeholder';
@@ -17,20 +16,7 @@
 @import 'mixins/transform';
 @import 'mixins/valign';
 @import 'mixins/unselectable';
-
-// Кол-во колонок
-$cols_wide: 8;
-$cols_desktop: 8;
-$cols_tablet: 8;
-$cols_mobile: 4;
-
-// Точки для media-queries
-$media1200: 1200px;
-$media1024: 1024px;
-$media768: 768px;
-$media640: 640px;
-$media600: 600px;
-$media480: 480px;
+@import 'conf';
 
 @mixin media_interval($from, $to) {
   $line: "";
@@ -52,82 +38,64 @@ $media480: 480px;
   }
 }
 
+//============================================
+// Установка стилей из списка на каждый
+// media-интервал
+//============================================
+@mixin media_styles($values, $styles...) {
+  @each $style in $styles {
+    #{$style}: nth($values, 1);
+  }
+  @include media_interval($media1024, $media1200) {
+    @each $style in $styles {
+      #{$style}: nth($values, 2);
+    }
+  }
+  @include media_interval($media768, $media1024) {
+    @each $style in $styles {
+      #{$style}: nth($values, 3);
+    }
+  }
 
-// Боковые границы сетки
-$grid_padding_wide: 60px;
-$grid_padding: 40px;
-$grid_padding_mobile: 30px;
-$grid_padding_mobile_mini: 16px;
-
-// Боковые границы каждого столбца
-$grid_space: 14px;
-
-// Максимальная ширина
-$grid_max_width: 1400px;
+  @if length($values) <= 4 {
+    // 0 - 768
+    @include media_interval(0, $media768) {
+      @each $style in $styles {
+        #{$style}: nth($values, 4);
+      }
+    }
+  } @else {
+    // 0 - 640, 640 - 768
+    @include media_interval($media640, $media768) {
+      @each $style in $styles {
+        #{$style}: nth($values, 4);
+      }
+    }
+    @include media_interval(0, $media640) {
+      @each $style in $styles {
+        #{$style}: nth($values, 5);
+      }
+    }
+  }
+}
 
 @mixin grid-paddings($args...) {
-  @each $key in $args {
-    #{$key}: $grid_padding_wide;
-  }
-  @include media_interval($media768, $media1200) {
-    @each $key in $args {
-      #{$key}: $grid_padding;
-    }
-  }
-  @include media_interval($media600, $media768) {
-    @each $key in $args {
-      #{$key}: $grid_padding_mobile;
-    }
-  }
-  @include media_interval(0, $media600) {
-    @each $key in $args {
-      #{$key}: $grid_padding_mobile_mini;
-    }
-  }
+  $values: ($grid_padding_wide,
+  $grid_padding,
+  $grid_padding_tablet,
+  $grid_padding_mobile,
+  $grid_padding_micro);
+  @include media_styles($values, $args...);
 }
 
 @mixin grid-full-paddings($args...) {
-  @each $key in $args {
-    #{$key}: $grid_padding_wide + $grid_space;
-  }
-  @include media_interval($media768, $media1200) {
-    @each $key in $args {
-      #{$key}: $grid_padding + $grid_space;
-    }
-  }
-  @include media_interval($media600, $media768) {
-    @each $key in $args {
-      #{$key}: $grid_padding_mobile + $grid_space;
-    }
-  }
-  @include media_interval(0, $media600) {
-    @each $key in $args {
-      #{$key}: $grid_padding_mobile_mini + $grid_space;
-    }
-  }
+  $values: ($grid_padding_wide + $grid_space,
+  $grid_padding + $grid_space,
+  $grid_padding_tablet + $grid_space,
+  $grid_padding_mobile + $grid_space,
+  $grid_padding_micro + $grid_space);
+  @include media_styles($values, $args...);
 }
-
-// Отступы контентых блоков
-$block_paddings: 90px, 60px, 40px;
-
-@mixin block-paddings($args...) {
-  @each $key in $args {
-    #{$key}: nth($block_paddings, 1);
-  }
-  @include media_interval($media768, $media1024) {
-    @each $key in $args {
-      #{$key}: nth($block_paddings, 2);
-    }
-  }
-  @include media_interval(0, $media768) {
-    @each $key in $args {
-      #{$key}: nth($block_paddings, 3);
-    }
-  }
-}
-
-// Стили текста
-$text_color: #2C3035;
 
 @mixin fontsize_default() {
   @include font-size(16px);

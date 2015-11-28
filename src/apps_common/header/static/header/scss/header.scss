@@ -1,19 +1,18 @@
 @import 'mixins';
 
+$logo_width: 240px;
+$logo_height: 54px;
+
 header {
   position: relative;
+  padding: 20px 0;
   z-index: 2;
-  background-color: #808080;
+  background-color: #D0D0D0;
 
-  .row {
-    padding-top: 20px;
-    padding-bottom: 20px;
-
-    .rc {
-      @include flexbox;
-      @include align-items(center);
-      @include justify-content(flex-start);
-    }
+  .grid-block {
+    @include flexbox;
+    @include align-items(center);
+    @include justify-content(flex-start);
   }
 
   .logo-box {
@@ -21,10 +20,19 @@ header {
 
     a {
       display: inline-block;
-      width: 117px;
-      height: 60px;
+      width: $logo_width;
       vertical-align: middle;
-      background: url(../../img/logo.png) no-repeat center;
+      @include media_interval(0, $media480) {
+        width: 180px;
+      }
+
+      &:before {
+        content: '';
+        display: block;
+        padding-bottom: #{100 * $logo_height/$logo_width + "%"};
+        background: url(../../img/sprite_a.svg) no-repeat 0 0;
+        background-size: rel-background-size($logo_width, $logo_height, $sprite_width, $sprite_height);
+      }
 
       &:hover {
         @include opacity(0.8);
@@ -35,7 +43,7 @@ header {
   .menu-box {
     text-align: center;
     @include flex(1 0 auto);
-    @include media_interval(0, $media1024) {
+    @include media_interval(0, $mobile_menu_point) {
       text-align: right;
     }
   }

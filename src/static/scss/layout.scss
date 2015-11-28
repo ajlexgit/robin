@@ -9,7 +9,7 @@ html, body {
 body {
   overflow-x: hidden;
   color: $text_color;
-  line-height: 1.4375;
+  line-height: 1.2;
   @include no_fontsize;
   @include font_default;
 }
@@ -28,41 +28,42 @@ body {
   height: 100%;
   table-layout: fixed;
   z-index: 1;
-
-  #header-row {
-    display: table-row;
-    height: 0;
-
-    & > .header-cell {
-      display: table-cell;
-      height: 0;
-      vertical-align: top;
-    }
-  }
-
-  #content-wrapper {
-    display: table-row;
-
-    & > .content {
-      display: table-cell;
-      position: relative;
-      height: 100%;
-      z-index: 1;
-      vertical-align: top;
-    }
-  }
-
-  #footer-wrapper {
-    display: table-row;
-    height: 0;
-
-    & > .footer-cell {
-      display: table-cell;
-      height: 0;
-      vertical-align: top;
-    }
-  }
 }
+
+#header-wrapper {
+  display: table-row;
+  height: 0;
+}
+
+#header-cell {
+  display: table-cell;
+  height: 0;
+  vertical-align: top;
+}
+
+#content-wrapper {
+  display: table-row;
+}
+
+#content {
+  display: table-cell;
+  position: relative;
+  height: 100%;
+  z-index: 1;
+  vertical-align: top;
+}
+
+#footer-wrapper {
+  display: table-row;
+  height: 0;
+}
+
+#footer-cell {
+  display: table-cell;
+  height: 0;
+  vertical-align: top;
+}
+
 
 // Полноэкранный блок
 .section {
@@ -121,14 +122,10 @@ body {
   }
 }
 
-// контентный блок
-.block {
-  @include block-paddings(padding-top, padding-bottom);
-}
-
 // Заголовки
 .title-h1 {
   line-height: 1;
+  font-weight: bold;
   @include font-size(40px);
   @include media_interval(0, $media768) {
     @include font-size(28px);
