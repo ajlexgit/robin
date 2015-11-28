@@ -2,7 +2,7 @@
 
     /*
         Кастомное поле ввода чисел, которое подключется к обёртке над
-        сттандартным полем
+        стандартным полем input[type="number"]
 
         Требует:
             jquery.utils.js
@@ -10,8 +10,8 @@
         Параметры:
             buttonClass      - класс, добавляемый кнопкам
             inputClass       - класс, добавляемый полю
-            minValue         - минимальное значение поля
-            maxValue         - максимальное значение поля
+            min              - минимальное значение поля (перезапишет аттрибут)
+            max              - максимальное значение поля (перезапишет аттрибут)
             beforeChange     - событие перед изменением значения
             afterChange      - событие после изменения значения
 
@@ -27,23 +27,16 @@
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('CustomCounter can\'t find root element');
+                console.error('CustomCounter: root element not found');
                 return false;
-            } else {
-                // отвязывание старого экземпляра
-                var old_instance = this.$root.data(CustomCounter.dataParamName);
-                if (old_instance) {
-                    old_instance.destroy();
-                }
-                this.$root.data(CustomCounter.dataParamName, this);
             }
 
             // настройки
             this.opts = $.extend({
                 buttonClass: 'custom-counter-button',
                 inputClass: 'custom-counter-input',
-                minValue: 0,
-                maxValue: 99,
+                min: '',
+                max: '',
                 beforeChange: $.noop,
                 afterChange: $.noop
             }, options);
@@ -51,85 +44,124 @@
             // поле
             this.$input = this.$root.find('input').first();
             if (!this.$input.length) {
-                console.error('CustomCounter can\'t find input element');
+                console.error('CustomCounter: input element not found');
                 return false;
             }
 
-            // кнопки
-            this.$prev = $('<div>').text('-').insertBefore(this.$input);
-            this.$next = $('<div>').text('+').insertAfter(this.$input);
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
+            // создаем кнопки
+            this.$decrBtn = $('<div>').text('-').insertBefore(this.$input);
+            this.$incrBtn = $('<div>').text('+').insertAfter(this.$input);
 
             // вешаем классы
             this.$input.addClass(this.opts.inputClass);
-            this.$prev.addClass(this.opts.buttonClass + ' decr');
-            this.$next.addClass(this.opts.buttonClass + ' incr');
+            this.$decrBtn.addClass(this.opts.buttonClass + ' decr');
+            this.$incrBtn.addClass(this.opts.buttonClass + ' incr');
 
-            if (this.$input.attr('type') == 'number') {
-                this.$input.attr('min', this.opts.minValue);
-                this.$input.attr('max', this.opts.maxValue);
+            // границы значений
+            this.min = Number($.isNumeric(this.opts.min) ? this.opts.min : this.$input.prop('min'));
+            this.max = Number($.isNumeric(this.opts.max) ? this.opts.max : this.$input.prop('max'));
+            if (this.$input.prop('type') == 'number') {
+                this.$input.prop('min', this.min);
+                this.$input.prop('max', this.max);
+                this.$input.prop('step', 1);
             }
 
             // форматируем текущее значение
-            this.value(this.value());
+            this._set_value(this.$input.val());
 
-            var that = this;
 
             // уменьшение значения
-            this.$prev.on('click.counter', function() {
-                that.value(that.value() - 1);
+            var that = this;
+            this.$decrBtn.on('click.counter', function() {
+                var current = that._value || 0;
+                that.value(current - 1);
                 return false;
             });
 
             // увеличение значения
-            this.$next.on('click.counter', function() {
-                that.value(that.value() + 1);
+            this.$incrBtn.on('click.counter', function() {
+                var current = that._value || 0;
+                that.value(current + 1);
                 return false;
             });
 
             // форматирование значения при потере фокуса
             this.$input.on('blur.counter', function() {
-                that.value(that.value(), true);
+                that.value(that.$input.val());
+            }).on('keypress.counter', function(e) {
+                if (e.which == 13) {
+                    that.value(that.$input.val());
+                }
             });
+
+            this.$root.data(cls.dataParamName, this);
         };
 
         /*
             Отключение плагина
          */
         cls.prototype.destroy = function() {
-            this.$root.removeData(CustomCounter.dataParamName);
+            this.$decrBtn.remove();
+            this.$incrBtn.remove();
             this.$input.off('.counter');
-            this.$prev.remove();
-            this.$next.remove();
+            this.$root.removeData(cls.dataParamName);
+        };
+
+        /*
+            Форматирование значения
+         */
+        cls.prototype._formatted = function(value) {
+            value = parseInt(value);
+            if (isNaN(value)) {
+                return value;
+            }
+
+            if ($.isNumeric(this.min)) {
+                value = Math.max(value, this.min);
+            }
+
+            if ($.isNumeric(this.max)) {
+                value = Math.min(value, this.max);
+            }
+
+            return value
+        };
+
+        /*
+            Запись значения в input
+         */
+        cls.prototype._set_value = function(value) {
+            this._value = this._formatted(value);
+            this.$input.val(isNaN(this._value) ? '' : this._value);
         };
 
         /*
             Получение и установка значения
          */
-        cls.prototype.value = function(value, force) {
-            var current = parseInt(this.$input.val()) || 0;
-
+        cls.prototype.value = function(value) {
             if (value === undefined) {
-                return current;
+                return this._formatted(this.$input.val());
+            }
+
+            value = this._formatted(value);
+            if (isNaN(value) && isNaN(this._value)) {
+                this._set_value(value);
+            } else if (value !== this._value) {
+                if (this.opts.beforeChange.call(this, value) === false) {
+                    return
+                }
+
+                this._set_value(value);
+
+                this.opts.afterChange.call(this, value);
             } else {
-                value = parseInt(value) || 0;
-                value = Math.max(this.opts.minValue, Math.min(value, this.opts.maxValue));
-
-                // callback
-                if (force || (value != current)) {
-                    if (this.opts.beforeChange.call(this, current, value) === false) {
-                        return
-                    }
-                }
-
-                if (String(value) != this.$input.val()) {
-                    this.$input.val(value);
-                    this.$input.trigger('change');
-                }
-
-                // callback
-                if (force || (value != current)) {
-                    this.opts.afterChange.call(this, value);
-                }
+                this._set_value(value);
             }
         };
     });
