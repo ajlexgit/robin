@@ -162,8 +162,7 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
-            'scss/custom_checkbox.scss',
-            'scss/custom_radiobox.scss',
+            'scss/custom_counter.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -209,8 +208,7 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/custom_checkbox.js',
-            'js/custom_radiobox.js',
+            'js/custom_counter.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

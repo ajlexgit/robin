@@ -1,12 +1,11 @@
-{% load solo_tags %}
-
-
-{% get_solo 'config.Config' as config %}
-
 <footer>
-  <div class="grid">
-    <div class="gc-full gc-alone">
-      <a href="mailto:{{ config.email }}" class="email">{{ config.email }}</a>
+  <div class="grid-block">
+    <div class="copyright">
+      &copy; {% now "Y" %} Direktline Develorment
+    </div>
+
+    <div class="dl-logo">
+      <a href="http://directlinedev.com/" target="_blank"></a>
     </div>
   </div>
 </footer>

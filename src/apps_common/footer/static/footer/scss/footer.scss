@@ -1,9 +1,47 @@
 @import 'mixins';
 
+$logo_width: 100px;
+$logo_height: 32px;
+
 footer {
-  padding: 34px 0 50px;
-  color: white;
-  background: black;
+  padding: 30px 0;
+  background-color: #D0D0D0;
+
+  .grid-block {
+    @include flexbox;
+    @include align-items(center);
+    @include justify-content(flex-start);
+  }
+
+  .copyright {
+    @include flex(1 1 auto);
+    @include fontsize_default;
+  }
+
+  .dl-logo {
+    a {
+      display: inline-block;
+      width: $logo_width;
+      vertical-align: middle;
+      @include media_interval(0, $media480) {
+        width: 180px;
+      }
+
+      &:before {
+        content: '';
+        display: block;
+        padding-bottom: #{100 * $logo_height/$logo_width + "%"};
+        background: url(../../img/sprite_a.svg) no-repeat rel-background-position(
+            $logo_width, $logo_height, $sprite_width, $sprite_height, -86px, -56px
+        );
+        background-size: rel-background-size($logo_width, $logo_height, $sprite_width, $sprite_height);
+      }
+
+      &:hover {
+        @include opacity(0.8);
+      }
+    }
+  }
 }
 
 

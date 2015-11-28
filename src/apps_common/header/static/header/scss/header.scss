@@ -5,7 +5,7 @@ $logo_height: 54px;
 
 header {
   position: relative;
-  padding: 20px 0;
+  padding: 30px 0;
   z-index: 2;
   background-color: #D0D0D0;
 
@@ -16,8 +16,6 @@ header {
   }
 
   .logo-box {
-    padding-right: $grid_space;
-
     a {
       display: inline-block;
       width: $logo_width;
