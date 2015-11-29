@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MainPageConfig',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
             ],
             options={
-                'verbose_name': 'Settings',
+                'verbose_name': 'settings',
             },
         ),
     ]
