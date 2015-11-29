@@ -1,16 +1,31 @@
 (function($) {
 
+    /*
+        Виджет поля файла с превью.
+
+        Параметры:
+            previewsSelector    - селектор контейнера с превью
+            oldPreviewSelector  - селектор исходного превью
+            newPreviewSelector  - селектор нового превью
+
+            emptyClass          - класс, который вешается на обертку в случае,
+                                  когда на бэкенде и фронтенде нет значения
+            dragOverClass       - класс, который вешается на обертку при
+                                  перетаскивании файла над полем
+            preloaderClass      - класс, который вешается на обертку при
+                                  загрузке файла перед генерацией нового превью
+     */
     window.StdImage = Class(null, function(cls, superclass) {
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.log('StdImage can\'t find root element');
+                console.error('StdImage: root element not found');
                 return false;
             }
 
             this.$input = this.$root.find('input[type="file"]');
             if (!this.$input.length) {
-                console.log('StdImage can\'t find file element');
+                console.log('StdImage: file field not found');
                 return false;
             }
 
@@ -25,20 +40,24 @@
                 preloaderClass: 'preloader'
             }, options);
 
+            // отвязывание старого экземпляра
+            var old_instance = this.$input.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
             // превью
             this.$previews = this.$root.find(this.opts.previewsSelector);
             this.$old_preview = this.$root.find(this.opts.oldPreviewSelector);
             this.$new_preview = this.$root.find(this.opts.newPreviewSelector);
 
-            this.$root.data('stdimage', this);
-
             // значение не установлено изначально
             this._wasEmpty = this.$root.hasClass(this.opts.emptyClass) || !this.$old_preview.length;
 
+
+            // вешаем класс при перетаскивании файла над полем
             var that = this;
             var drag_counter = 0;
-
-            // вешаем класс на перетаскивании
             this.$root.on('dragenter.stdimage', function() {
                 drag_counter++;
                 if (drag_counter == 1) {
@@ -63,6 +82,58 @@
             this.$input.on('change.stdimage', function() {
                 that.changeHandler($(this));
             });
+
+            this.$root.data(cls.dataParamName, this);
+        };
+
+        /*
+            Отключение плагина
+         */
+        cls.prototype.destroy = function() {
+            this.$root.off('.stdimage');
+            this.$input.off('.stdimage');
+            this.$input.removeData(cls.dataParamName);
+        };
+
+        /*
+            Сброс на первоначальное превью, если оно было
+         */
+        cls.prototype.resetPreview = function() {
+            this.$new_preview.removeAttr('src').hide();
+            if (this._wasEmpty) {
+                this.$root.addClass(this.opts.emptyClass);
+            } else {
+                this.$old_preview.show();
+            }
+        };
+
+        /*
+            Создание нового превью
+         */
+        cls.prototype.setPreview = function(img) {
+            // размер превью
+            var size = this.$root.data('size').toString()
+                .split('x').map(function(item) {
+                    return parseInt(item)
+                }).filter(Boolean);
+            if (size.length != 2) {
+                size = [this.$previews.width(), this.$previews.height()];
+            }
+
+            // создаем превью
+            var final_canvas = $.previewCanvas({
+                source: img,
+                width: size[0],
+                height: size[1],
+                crop: true,
+                stretch: false
+            });
+
+            this.$root.removeClass(this.opts.emptyClass);
+            this.$root.removeClass(this.opts.preloaderClass);
+
+            this.$old_preview.hide();
+            this.$new_preview.attr('src', final_canvas.toDataURL()).show();
         };
 
         /*
@@ -72,7 +143,7 @@
             var file = $input.prop('files');
             file = file && file.length && file[0];
             if (!file) {
-                this.reset();
+                this.resetPreview();
                 return;
             }
 
@@ -82,52 +153,18 @@
             $.fileReaderDeferred(file).done(function(src) {
                 $.loadImageDeferred(src).done(function(img) {
                     src = null;
-
-                    // размер превью
-                    var size = that.$root.data('size').toString()
-                        .split('x').map(function(item) {
-                            return parseInt(item)
-                        }).filter(Boolean);
-                    if (size.length != 2) {
-                        size = [that.$previews.width(), that.$previews.height()];
-                    }
-
-                    // создаем превью
-                    var final_canvas = $.previewCanvas({
-                        source: img,
-                        width: size[0],
-                        height: size[1],
-                        crop: true,
-                        stretch: false
-                    });
-
-                    that.$root.removeClass(that.opts.emptyClass);
-                    that.$root.removeClass(that.opts.preloaderClass);
-
-                    that.$old_preview.hide();
-                    that.$new_preview.attr('src', final_canvas.toDataURL()).show();
+                    that.setPreview(img);
                 }).fail(function() {
-                    that.reset();
+                    that.resetPreview();
                     that.$root.removeClass(that.opts.preloaderClass);
                 })
             }).fail(function() {
-                that.reset();
+                that.resetPreview();
                 that.$root.removeClass(that.opts.preloaderClass);
             });
         };
-
-        /*
-            Сброс на первоначальное превью, если оно было
-         */
-        cls.prototype.reset = function() {
-            this.$new_preview.removeAttr('src').hide();
-            if (this._wasEmpty) {
-                this.$root.addClass(this.opts.emptyClass);
-            } else {
-                this.$old_preview.show();
-            }
-        };
     });
+    StdImage.dataParamName = 'stdimage';
 
 
     $(document).ready(function() {

@@ -5,9 +5,6 @@
         https://developers.google.com/recaptcha/docs/start
 
 
-    Необходимо подключить скрипт:
-        <script src="https://www.google.com/recaptcha/api.js?onload=recaptchaLoadCallback&render=explicit" async defer></script>
-
     Необходимо получить ключи для капчи:
         https://www.google.com/recaptcha/admin#list.
     Полученные ключи добавить в settings.py:
