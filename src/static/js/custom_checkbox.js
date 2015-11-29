@@ -68,7 +68,7 @@
                     return false
                 }
 
-                var is_checked = that.is_checked();
+                var is_checked = that.isChecked();
                 that._set_checked(!is_checked);
                 that.opts.onCheck.call(that);
                 that.$input.trigger('check.checkbox', [that]);
@@ -123,7 +123,7 @@
         /*
             Получение состояния
          */
-        cls.prototype.is_checked = function() {
+        cls.prototype.isChecked = function() {
             return this._checked
         };
 

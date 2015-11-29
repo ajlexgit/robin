@@ -2,7 +2,6 @@ from django.db import models
 from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
-from files import PageFile
 
 
 class MainPageConfig(SingletonModel):

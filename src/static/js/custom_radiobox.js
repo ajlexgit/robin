@@ -68,7 +68,7 @@
                     return false
                 }
 
-                var is_checked = that.is_checked();
+                var is_checked = that.isChecked();
                 if (is_checked) {
                     return false
                 }
@@ -137,7 +137,7 @@
         /*
             Получение состояния
          */
-        cls.prototype.is_checked = function() {
+        cls.prototype.isChecked = function() {
             return this._checked
         };
 
