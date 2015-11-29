@@ -33,6 +33,7 @@
 
             // настройки
             this.opts = $.extend({
+                wrapperClass: 'custom-counter-wrapper',
                 buttonClass: 'custom-counter-button',
                 inputClass: 'custom-counter-input',
                 min: '',
@@ -49,14 +50,16 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$input.data(cls.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
 
-            // создаем кнопки
-            this.$decrBtn = $('<div>').text('-').insertBefore(this.$input);
-            this.$incrBtn = $('<div>').text('+').insertAfter(this.$input);
+            // создаем кнопки и обертку
+            this.$wrapper = $('<div>').addClass(this.opts.wrapperClass);
+            this.$wrapper.prependTo(this.$root).append(this.$input);
+            this.$decrBtn = $('<div>').insertBefore(this.$input);
+            this.$incrBtn = $('<div>').insertAfter(this.$input);
 
             // вешаем классы
             this.$input.addClass(this.opts.inputClass);
@@ -79,15 +82,13 @@
             // уменьшение значения
             var that = this;
             this.$decrBtn.on('click.counter', function() {
-                var current = that._value || 0;
-                that.value(current - 1);
+                that.decrement();
                 return false;
             });
 
             // увеличение значения
             this.$incrBtn.on('click.counter', function() {
-                var current = that._value || 0;
-                that.value(current + 1);
+                that.increment();
                 return false;
             });
 
@@ -100,7 +101,7 @@
                 }
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$input.data(cls.dataParamName, this);
         };
 
         /*
@@ -109,8 +110,11 @@
         cls.prototype.destroy = function() {
             this.$decrBtn.remove();
             this.$incrBtn.remove();
+            this.$input.removeClass(this.opts.inputClass);
+            this.$input.prependTo(this.$root);
             this.$input.off('.counter');
-            this.$root.removeData(cls.dataParamName);
+            this.$wrapper.remove();
+            this.$input.removeData(cls.dataParamName);
         };
 
         /*
@@ -164,8 +168,45 @@
                 this._set_value(value);
             }
         };
+
+        /*
+            Инкремент значения
+         */
+        cls.prototype.increment = function() {
+            var current = this._value || 0;
+            this.value(current + 1);
+        };
+
+        /*
+            Декремент значения
+         */
+        cls.prototype.decrement = function() {
+            var current = this._value || 0;
+            this.value(current - 1);
+        };
     });
     CustomCounter.dataParamName = 'counter';
+
+
+    /*
+        Скролл поля изменяет значение
+     */
+    $(document).on('mousewheel.counter', '.custom-counter-wrapper', function(e) {
+        var obj = $(this).find('input').data(CustomCounter.dataParamName);
+        if (!obj) {
+            return
+        }
+
+        if (e.deltaY < 0) {
+            // вниз
+            obj.decrement();
+        } else {
+            // вверх
+            obj.increment();
+        }
+
+        return false
+    });
 
 
     $.fn.counter = function(options) {

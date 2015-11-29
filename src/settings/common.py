@@ -162,7 +162,6 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
-            'scss/custom_counter.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -188,6 +187,7 @@ PIPELINE_JS = {
             'common/js/jquery.cookie.js',
             'common/js/jquery.utils.js',
             'common/js/jquery.ajax_csrf.js',
+            'common/js/jquery.mousewheel.js',
             'js/jquery.fitvids.js',
             'js/drager.js',
 
@@ -208,7 +208,6 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/custom_counter.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

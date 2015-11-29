@@ -83,6 +83,7 @@ class ModelAdminMixin(ModelAdminInlineMixin):
                 'admin/js/jquery-ui.min.js',
                 'common/js/jquery.cookie.js',
                 'common/js/jquery.ajax_csrf.js',
+                'common/js/jquery.mousewheel.js',
                 'common/js/jquery.utils.js',
                 'admin/js/jquery.mousewheel.min.js',
                 'admin/js/button_filter.js',
