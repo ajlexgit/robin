@@ -1,28 +1,35 @@
 (function() {
 
     /*
-        Сворачивание / разворачивание текста, представленного в двух версиях.
+        Сворачивание / разворачивание блока, представленного в двух версиях.
 
         Требует:
             jquery.utils.js
 
         Параметры:
-            shortTextSelector   - селектор краткой версии текста
-            fullTextSelector    - селектор полной версии текста
-            buttonSelector      - селектор кнопок, которые сворачиают / разворачивают текст
-            hiddenClass         - класс скрытого текста
-            speed               - скорость сворачивания
+            shortBlockSelector  - селектор краткой версии
+            fullBlockSelector   - селектор полной версии
+            buttonSelector      - селектор кнопок, которые сворачиают / разворачивают блок
+            hiddenClass         - класс скрытого блока
+            speed               - скорость сворачивания / разворачивания
             easing              - функция сглаживания сворачивания
 
+            onBeforeExpand      - событие перед разворачиванием блока.
+                                  Если вернёт false, блок не будет развернут.
+            onAfterExpand       - событие после разворачивания блока
+            onBeforeReduce      - событие перед сворачиванием блока.
+                                  Если вернёт false, блок не будет свернут.
+            onAfterReduce       - событие после сворачивания блока
+
         Пример:
-            <div id="expander">
-                <div class="short-text">...</div>
-                <div class="full-text">...</div>
-                <a href="#" class="expander">read more</a>
+            <div id="text-block">
+                <div class="expander-short">...</div>
+                <div class="expander-full hidden">...</div>
+                <a href="#" class="expander-btn">read more</a>
             </div>
 
             $(document).ready(function() {
-                Expander.create('#expander');
+                $('#text-block').expander();
             });
      */
 
@@ -30,17 +37,17 @@
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Expander can\'t find root element');
+                console.error('Expander: root element not found');
                 return false;
             }
 
             // настройки
             this.opts = $.extend({
-                shortTextSelector: '.short-text',
-                fullTextSelector: '.full-text',
-                buttonSelector: '.expander',
+                shortBlockSelector: '.expander-short',
+                fullBlockSelector: '.expander-full',
+                buttonSelector: '.expander-btn',
                 hiddenClass: 'hidden',
-                speed: 500,
+                speed: 400,
                 easing: 'easeOutQuad',
 
                 onBeforeExpand: $.noop,
@@ -50,18 +57,30 @@
             }, options);
 
             // варианты текста
-            this.$short = this.$root.find(this.opts.shortTextSelector).first();
-            this.$full = this.$root.find(this.opts.fullTextSelector).first();
-            if (!this.$short.length || !this.$full.length) {
-                console.log('Not all text variations are found');
+            this.$short = this.$root.find(this.opts.shortBlockSelector).first();
+            if (!this.$short.length) {
+                console.error('Expander: short block not found');
                 return false;
             }
 
+            this.$full = this.$root.find(this.opts.fullBlockSelector).first();
+            if (!this.$full.length) {
+                console.error('Expander: full block not found');
+                return false;
+            }
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
+            // css
             this.$full.css('overflow', 'hidden');
 
-            // текущее состояние
-            this.expanded = this.$short.hasClass(this.opts.hiddenClass);
-            if (this.expanded) {
+            // определяем текущее состояние
+            this._expanded = this.$short.hasClass(this.opts.hiddenClass);
+            if (this._expanded) {
                 this.$full.removeClass(this.opts.hiddenClass);
             } else {
                 this.$full.addClass(this.opts.hiddenClass);
@@ -70,94 +89,115 @@
             // клик на кнопки сворачивания / разворачивания
             var that = this;
             this.$root.on('click.expander', this.opts.buttonSelector, function() {
-                that.clickHandler($(this));
+                if (that._expanded) {
+                    that.reduce($(this));
+                } else {
+                    that.expand($(this));
+                }
                 return false
             });
 
-
-            // отвязывание старого экземпляра
-            var old_instance = this.$root.data(Expander.dataParamName);
-            if (old_instance) {
-                old_instance.destroy();
-            }
-            
-            this.$root.data(Expander.dataParamName, this);
+            this.$root.data(cls.dataParamName, this);
         };
 
         /*
             Отвязывание плагина
          */
         cls.prototype.destroy = function() {
-            this.disable();
-            this.$root.removeData(Expander.dataParamName);
             this.$root.off('.expander');
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*
-            Клик на кнопку сворачивания / разворачивания
+            Определение высот блоков перед сворачиванием / разворачиванием
          */
-        cls.prototype.clickHandler = function($button) {
-            var that = this;
-            var from_height, to_height;
-
-            if (this.expanded) {
-                if (this.opts.onBeforeReduce.call(this, $button) === false) {
-                    return
-                }
-
-                this.expanded = false;
-                this.$full.height('');
-
-                // скрываем полную версию, показываем краткую
-                from_height = this.$full.height();
-
-                // временно показываем краткую версию, чтобы найти его высоту
-                this.$short.removeClass(this.opts.hiddenClass);
-                to_height = this.$short.height();
-                this.$short.addClass(this.opts.hiddenClass);
-
-                // анимация
-                this.$full.height(from_height);
-                this.$full.stop(true, false).animate({
-                    height: to_height
-                }, {
-                    duration: this.opts.speed,
-                    easing: this.opts.easing,
-                    complete: function() {
-                        that.$short.removeClass(that.opts.hiddenClass);
-                        that.$full.addClass(that.opts.hiddenClass);
-
-                        that.opts.onAfterReduce.call(this, $button);
-                    }
-                })
-            } else {
-                if (this.opts.onBeforeExpand.call(this, $button) === false) {
-                    return
-                }
-
-                this.expanded = true;
-                this.$full.height('');
-
-                // скрываем полную версию, показываем краткую
-                from_height = this.$short.height();
-                this.$short.addClass(this.opts.hiddenClass);
+        cls.prototype._prepare_resize = function() {
+            if (this.$full.hasClass(this.opts.hiddenClass)) {
+                this._current_height = this.$short.height();
                 this.$full.removeClass(this.opts.hiddenClass);
-                to_height = this.$full.height();
-
-                // анимация
-                this.$full.height(from_height);
-                this.$full.stop(true, false).animate({
-                    height: to_height
-                }, {
-                    duration: this.opts.speed,
-                    easing: this.opts.easing,
-                    complete: function() {
-                        that.opts.onAfterExpand.call(this, $button);
-                    }
-                })
+                this._full_height = this.$full.height();
+            } else {
+                this._current_height = this.$full.height();
+                this.$full.height('');
+                this._full_height = this.$full.height();
             }
+
+            this.$short.removeClass(this.opts.hiddenClass);
+            this._short_height = this.$short.height();
+            this.$short.addClass(this.opts.hiddenClass);
+        };
+
+        /*
+            Разворачивание блока
+         */
+        cls.prototype.expand = function($button) {
+            if (this._expanded) {
+                return
+            }
+
+            if (this.opts.onBeforeExpand.call(this, $button) === false) {
+                return
+            }
+
+            this._expanded = true;
+
+            this._prepare_resize();
+            this.$full.height(this._current_height);
+
+            // анимация
+            var that = this;
+            this.$full.stop(false, false).animate({
+                height: this._full_height
+            }, {
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    that.$full.height('');
+                    that.opts.onAfterExpand.call(this, $button);
+                }
+            })
+        };
+
+        /*
+            Сворачивание блока
+         */
+        cls.prototype.reduce = function($button) {
+            if (!this._expanded) {
+                return
+            }
+
+            if (this.opts.onBeforeReduce.call(this, $button) === false) {
+                return
+            }
+
+            this._expanded = false;
+
+            this._prepare_resize();
+            this.$full.height(this._current_height);
+
+            // анимация
+            var that = this;
+            this.$full.stop(false, false).animate({
+                height: this._short_height
+            }, {
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    that.$full.height('');
+                    that.$full.addClass(that.opts.hiddenClass);
+                    that.$short.removeClass(that.opts.hiddenClass);
+                    that.opts.onAfterReduce.call(this, $button);
+                }
+            })
         };
     });
     Expander.dataParamName = 'expander';
+
+
+    $.fn.expander = function(options) {
+        return this.each(function() {
+            Expander.create(this, options);
+        })
+    }
 
 })(jQuery);

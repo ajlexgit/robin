@@ -241,7 +241,7 @@
         cls.init = function(element, options) {
             this.$element = $(element).first();
             if (!this.$element.length) {
-                console.error('Drager can\'t find root element');
+                console.error('Drager: root element not found');
                 return false;
             }
 
