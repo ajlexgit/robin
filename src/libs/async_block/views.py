@@ -1,8 +1,8 @@
-from django.http.response import HttpResponse, Http404
-from django.views.generic import TemplateView
+from django.views.generic.base import View
+from libs.views_ajax import AjaxViewMixin
 
 
-class AsyncBlockView(TemplateView):
+class AsyncBlockView(AjaxViewMixin, View):
     """ Родительский класс для асинхронных блоков """
     referrer = ''
     allowed = ()    # Допустимые параметры
@@ -22,15 +22,13 @@ class AsyncBlockView(TemplateView):
     def sync_render(self, request, **kwargs):
         """ Получение блока синхронно """
         self.referrer = request.build_absolute_uri()
-
         params = self._filter_params(kwargs)
         return self.render(request, **params)
 
     def post(self, request):
         """ Получение блока асинхронно """
-        if not request.is_ajax():
-            raise Http404
-
         self.referrer = request.POST.get('referrer', '')
         params = self._filter_params(request.GET)
-        return HttpResponse(self.render(request, **params))
+        return self.json_response({
+            'html': self.render(request, **params),
+        })

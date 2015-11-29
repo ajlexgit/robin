@@ -542,12 +542,12 @@
             перед переходом к слайду.
          */
         cls.prototype.beforeSlide = function($toSlide) {
-            this._animated = true;
-
             // jQuery event
             this.$list.trigger('beforeSlide.slider', arguments);
 
             this.callPluginsMethod('beforeSlide', arguments);
+
+            this._animated = true;
         };
 
         /*

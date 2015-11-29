@@ -1,13 +1,16 @@
 """
     Модуль для блоков, загружаемых через AJAX при открытии страницы.
 
+    Зависит от:
+        libs.views_ajax
+
     Требуется подключить скрипт:
         async_block/js/async_block.js
 
     Пример использования:
         # views.py
             class AsyncHeader(AsyncBlockView):
-                allowed= ('id', )
+                allowed = ('id', )
 
                 def render(self, request, id=''):
                     return '(ID %s)' % id

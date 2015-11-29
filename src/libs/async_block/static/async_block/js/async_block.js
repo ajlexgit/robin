@@ -9,8 +9,9 @@
                 data: {
                     referrer: location.toString()
                 },
+                dataType: 'json',
                 success: function(response) {
-                    $block.replaceWith(response);
+                    $block.replaceWith(response.html);
                     $block.trigger('loaded.async_block');
                 },
                 error: function() {
