@@ -8,7 +8,7 @@
 
         Параметры:
             speed           - отношение пути перемещения блока к пути скролла
-            strategy        - стратегия перемещения блока (margin / top / transform)
+            strategy        - стратегия перемещения блока (top / transform)
             minEnableWidth  - минимальная ширина экрана, при которой блок перемещается
      */
 
@@ -19,15 +19,8 @@
         cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
-                console.error('Layer can\'t find block');
+                console.error('Layer: block not found');
                 return false;
-            } else {
-                // отвязывание старого экземпляра
-                var old_instance = this.$block.data(Layer.dataParamName);
-                if (old_instance) {
-                    old_instance.destroy();
-                }
-                this.$block.data(Layer.dataParamName, this);
             }
 
             // настройки
@@ -37,17 +30,27 @@
                 minEnableWidth: 768
             }, options);
 
+            if ((this.opts.strategy != 'top') && (this.opts.strategy != 'transform')) {
+                console.error('Layer: undefined strategy');
+                return false;
+            }
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$block.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
             // получаем начальное положение
-            this._start = 0;
             if (this.opts.strategy == 'top') {
-                this._start = parseInt(this.$block.css('top')) || 0;
-            } else if (this.opts.strategy == 'margin') {
-                this._start = parseInt(this.$block.css('margin')) || 0;
-            } else if (this.opts.strategy == 'transform') {
+                this._initial = parseInt(this.$block.css('top')) || 0;
+            } else {
                 var matrix = this.$block.css('transform');
                 var match = /(\d+)\)/.exec(matrix);
                 if (match) {
-                    this._start = parseInt(match[1]) || 0;
+                    this._initial = parseInt(match[1]) || 0;
+                } else {
+                    this._initial = 0;
                 }
             }
 
@@ -58,6 +61,8 @@
 
             // Сохраняем объект в массив для использования в событиях
             layers.push(this);
+
+            this.$block.data(cls.dataParamName, this);
         };
 
         /*
@@ -65,7 +70,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$block.removeData(Layer.dataParamName);
+            this.$block.removeData(cls.dataParamName);
 
             var index = layers.indexOf(this);
             if (index >= 0) {
@@ -96,14 +101,10 @@
                 this.enabled = false;
             }
 
-            if (!this._start) {
-                this.$block.css(this.opts.strategy, '');
+            if (this.opts.strategy == 'top') {
+                this.$block.css('top', this._initial);
             } else {
-                if (this.opts.strategy == 'transform') {
-                    this.$block.css(this.opts.strategy, 'translateY(' + this._start + 'px)');
-                } else {
-                    this.$block.css(this.opts.strategy, this._start);
-                }
+                this.$block.css('transform', 'translateY(' + this._initial + 'px)');
             }
         };
 
@@ -117,11 +118,11 @@
 
             win_scroll = win_scroll || $window.scrollTop();
 
-            var delta = this._start + parseInt(this.opts.speed * win_scroll);
-            if (this.opts.strategy == 'transform') {
-                this.$block.css('transform', 'translateY(' + delta + 'px)');
+            var delta = this._initial + parseInt(this.opts.speed * win_scroll);
+            if (this.opts.strategy == 'top') {
+                this.$block.css('top', delta + 'px');
             } else {
-                this.$block.css(this.opts.strategy, delta + 'px');
+                this.$block.css('transform', 'translateY(' + delta + 'px)');
             }
         };
     });

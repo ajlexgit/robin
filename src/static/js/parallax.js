@@ -35,15 +35,8 @@
         cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
-                console.error('Parallax can\'t find block');
+                console.error('Parallax: block not found');
                 return false;
-            } else {
-                // отвязывание старого экземпляра
-                var old_instance = this.$block.data(Parallax.dataParamName);
-                if (old_instance) {
-                    old_instance.destroy();
-                }
-                this.$block.data(Parallax.dataParamName, this);
             }
 
             // настройки
@@ -54,16 +47,22 @@
                 minEnableWidth: 768
             }, options);
 
-            this.$block.css({
-                overflow: 'hidden'
-            });
-
             // передвигающийся элемент
             this.$bg = this.$block.find(this.opts.selector);
             if (!this.$bg.length) {
-                console.error('Parallax can\'t find background');
+                console.error('Parallax: background not found');
                 return
             }
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$block.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
+            this.$block.css({
+                overflow: 'hidden'
+            });
 
             // включение
             if (window.innerWidth >= this.opts.minEnableWidth) {
@@ -72,6 +71,8 @@
 
             // Сохраняем объект в массив для использования в событиях
             parallaxes.push(this);
+
+            this.$block.data(cls.dataParamName, this);
         };
 
         /*
@@ -79,7 +80,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$block.removeData(Parallax.dataParamName);
+            this.$block.removeData(cls.dataParamName);
 
             var index = parallaxes.indexOf(this);
             if (index >= 0) {
@@ -157,10 +158,10 @@
         var win_scroll = $window.scrollTop();
         var win_height = $window.height();
 
-        $.each(parallaxes, function(i, obj) {
+        $.each(parallaxes, function(i, item) {
             $.animation_frame(function() {
-                obj.process(win_scroll, win_height);
-            })(obj.$bg.get(0));
+                item.process(win_scroll, win_height);
+            })(item.$bg.get(0));
         });
     };
 

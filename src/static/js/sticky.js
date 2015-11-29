@@ -30,19 +30,9 @@
         cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
-                console.error('Sticky can\'t find block');
+                console.error('Sticky: block not found');
                 return false;
-            } else {
-                // отвязывание старого экземпляра
-                var old_instance = this.$block.data(Sticky.dataParamName);
-                if (old_instance) {
-                    old_instance.destroy();
-                }
-                this.$block.data(Sticky.dataParamName, this);
             }
-
-            // родительский контейнер
-            this.$container = this.$block.parent();
 
             // настройки
             this.opts = $.extend({
@@ -52,13 +42,29 @@
                 minEnableWidth: 768
             }, options);
 
+            if ((this.opts.strategy != 'margin') && (this.opts.strategy != 'fixed')) {
+                console.error('Sticky: undefined strategy');
+                return false;
+            }
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$block.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
+            // родительский контейнер
+            this.$container = this.$block.parent();
+
             // включение
             if (window.innerWidth >= this.opts.minEnableWidth) {
-                this.enable($window.scrollTop())
+                this.enable()
             }
 
             // Сохраняем объект в массив для использования в событиях
             stickies.push(this);
+
+            this.$block.data(cls.dataParamName, this);
         };
 
         /*
@@ -66,7 +72,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$block.removeData(Sticky.dataParamName);
+            this.$block.removeData(cls.dataParamName);
 
             var index = stickies.indexOf(this);
             if (index >= 0) {
@@ -77,7 +83,7 @@
         /*
             Включение ползания
          */
-        cls.prototype.enable = function(win_scroll) {
+        cls.prototype.enable = function() {
             this.updateWidth();
 
             if (this.enabled) {
@@ -86,7 +92,7 @@
                 this.enabled = true;
             }
 
-            this.process(win_scroll);
+            this.process();
         };
 
         /*
@@ -146,7 +152,7 @@
 
             var methodName = '_process' + capitalize(this.opts.strategy);
             if (methodName in this) {
-                this[methodName].call(this, win_scroll || 0);
+                this[methodName].call(this, win_scroll || $window.scrollTop());
             }
         };
 
@@ -238,8 +244,10 @@
 
     var applyStickies = function() {
         var win_scroll = $window.scrollTop();
-        $.each(stickies, function(i, obj) {
-            obj.process(win_scroll);
+        $.each(stickies, function(i, item) {
+            $.animation_frame(function() {
+                item.process(win_scroll);
+            })(item.$block.get(0));
         });
     };
 
