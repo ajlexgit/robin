@@ -9,7 +9,7 @@
         Высота окна динамическая и зависит от содержимого. Кроме того, окно всегда
         находится в центре экрана.
 
-        Настройки:
+        Параметры:
             // Классы контейнера окна
             classes: ''
 
@@ -18,6 +18,15 @@
 
             // Скорость анимации показа и скрытия окна
             speed: 400
+
+            // Событие создания окна
+            onInit: function() {}
+
+            // Событие показа окна
+            beforeShow: function() {}
+
+            // Событие скрытия окна
+            beforeHide: function() {}
 
         Методы объекта окна:
             // Показ окна. Возвращает Deferred-объект
@@ -148,7 +157,11 @@
                 classes: '',
                 content: '',
                 speed: 400,
-                easing: 'easeOutCubic'
+                easing: 'easeOutCubic',
+
+                onInit: $.noop,
+                beforeShow: $.noop,
+                beforeHide: $.noop
             }
         };
 
@@ -183,10 +196,19 @@
          */
         cls.prototype._postInit = function() {
             // content
-            this.$content.html(this.opts.content);
+            var content;
+            if ($.isFunction(this.opts.content)) {
+                content = this.opts.content.call(this);
+            } else {
+                content = this.opts.content;
+            }
+            this.$content.html(content);
 
             // classes
             this.$container.addClass(this.opts.classes);
+
+            // callback
+            this.opts.onInit.call(this);
         };
 
         //=======================
@@ -303,6 +325,9 @@
         cls.prototype._beforeShow = function() {
             this._opened = true;
             this._hideScrollbar();
+
+            // callback
+            this.opts.beforeShow.call(this);
         };
 
         /*
@@ -357,6 +382,9 @@
 
         cls.prototype._beforeHide = function() {
             this._visible = false;
+
+            // callback
+            this.opts.beforeHide.call(this);
         };
 
         /*

@@ -1,21 +1,53 @@
 @import 'mixins';
 
-.preloader {
+// размеры окна (1024+, 640-1024, 480-640, 0-480)
+$width: 260px, 250px, 200px, 150px;
+$height: 180px, 160px, 120px, 100px;
 
-  #popup-content {
+// размеры прелоадера (1024+, 640-1024, 480-640, 0-480)
+$image_size: 80px, 70px, 60px, 50px;
+
+// цвет прелоадера
+$image_color: #82BD36;
+
+
+#popup-container.popup-preloader {
+  .popup-content {
     padding: 0;
+    width: nth($width, 1);
+    height: nth($height, 1);
     text-align: center;
     @include valign_after;
+    @include media_interval($media640, $media1024) {
+      width: nth($width, 2);
+      height: nth($height, 2);
+    }
+    @include media_interval($media480, $media640) {
+      width: nth($width, 3);
+      height: nth($height, 3);
+    }
+    @include media_interval(0, $media480) {
+      width: nth($width, 4);
+      height: nth($height, 4);
+    }
   }
 
   svg {
-    width: 80px;
-    height: 80px;
-    fill: #FFF;
+    width: nth($image_size, 1);
+    height: nth($image_size, 1);
+    fill: $image_color;
     vertical-align: middle;
+    @include media_interval($media640, $media1024) {
+      width: nth($image_size, 2);
+      height: nth($image_size, 2);
+    }
+    @include media_interval($media480, $media640) {
+      width: nth($image_size, 3);
+      height: nth($image_size, 3);
+    }
     @include media_interval(0, $media480) {
-      width: 64px;
-      height: 64px;
+      width: nth($image_size, 4);
+      height: nth($image_size, 4);
     }
   }
 }

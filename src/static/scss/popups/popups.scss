@@ -111,27 +111,15 @@ $close_btn_weight: 3px;
 // Theme
 //=======================
 #popup-container {
-  .popup-window {
-    min-width: 400px;
-    @include media_interval($media480, $media640) {
-      min-width: 320px;
-    }
-    @include media_interval(0, $media480) {
-      min-width: 240px;
-    }
-  }
 
   .popup-content {
     padding: 36px 50px;
-    min-height: 200px;
     color: #FFF;
     @include media_interval($media480, $media640) {
       padding: 36px;
-      min-height: 180px;
     }
     @include media_interval(0, $media480) {
       padding: 20px 20px 36px;
-      min-height: 150px;
     }
   }
 

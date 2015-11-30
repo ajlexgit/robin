@@ -1,7 +1,11 @@
 @import 'mixins';
 
-$logo_width: 100px;
-$logo_height: 32px;
+// размеры логотипа ДЛ
+$dl_logo_width: 100px;
+$dl_logo_height: 32px;
+
+// точка перехода к вертикальному подвалу
+$column_footer: $media480;
 
 footer {
   padding: 30px 0;
@@ -11,6 +15,9 @@ footer {
     @include flexbox;
     @include align-items(center);
     @include justify-content(flex-start);
+    @include media_interval(0, $column_footer) {
+      @include flex-direction(column);
+    }
   }
 
   .copyright {
@@ -19,22 +26,23 @@ footer {
   }
 
   .dl-logo {
+    @include media_interval(0, $column_footer) {
+      margin-top: 16px;
+    }
+
     a {
       display: inline-block;
-      width: $logo_width;
+      width: $dl_logo_width;
       vertical-align: middle;
-      @include media_interval(0, $media480) {
-        width: 180px;
-      }
 
       &:before {
         content: '';
         display: block;
-        padding-bottom: #{100 * $logo_height/$logo_width + "%"};
+        padding-bottom: #{100 * $dl_logo_height/$dl_logo_width + "%"};
         background: url(../../img/sprite_a.svg) no-repeat rel-background-position(
-            $logo_width, $logo_height, $sprite_width, $sprite_height, -86px, -56px
+            $dl_logo_width, $dl_logo_height, $sprite_width, $sprite_height, -86px, -56px
         );
-        background-size: rel-background-size($logo_width, $logo_height, $sprite_width, $sprite_height);
+        background-size: rel-background-size($dl_logo_width, $dl_logo_height, $sprite_width, $sprite_height);
       }
 
       &:hover {

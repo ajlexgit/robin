@@ -8,18 +8,21 @@
      */
 
     $.preloader = function(options) {
-        var settings = $.extend({
-            classes: 'preloader',
+        var opts = $.extend(true, {
+            classes: 'popup-preloader',
             content: function() {
                 var that = this;
                 $.urlReader('/static/scss/popups/preloader.svg').done(function(content) {
                     that.$content.append(content);
                 });
             },
-            ui: false,
-            outClick: false
+            speed: 200,
+            closeButton: false,
+            hideOnClick: false
         }, options);
-        return $.popup.force(settings);
+
+        var popup = OverlayedPopup.create(opts);
+        return popup.show();
     };
 
 })(jQuery);
