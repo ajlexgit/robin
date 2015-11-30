@@ -82,9 +82,8 @@
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
             for (var i = 0; i < slider.$slides.length; i++) {
-                var $item = $('<a>').addClass(this.opts.itemClass)
-                    .data('slideIndex', i)
-                    .text(i + 1);
+                var $item = $('<a>').addClass(this.opts.itemClass).data('slideIndex', i);
+                $item.append($('<span>').text(i+1));
                 this.$wrapper.append($item);
             }
 

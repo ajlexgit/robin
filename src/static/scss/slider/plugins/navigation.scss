@@ -26,27 +26,30 @@ $dot_size: 12px;
     }
 
     // dot
-    &:before {
-      content: '';
-      display: inline-block;
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
       width: $dot_size;
       height: $dot_size;
+      z-index: 1;
       vertical-align: middle;
       background-color: rgba(#3B91CA, 0.3);
       @include border_radius(50%);
+      @include transform(translate(-50%, -50%));
       @include transition-property(-webkit-transform, transform, color);
       @include transition-duration(0.3s);
     }
 
     &:hover {
-      &:before {
+      span {
         background-color: rgba(#3B91CA, 0.5);
         @include transform(scale(1.3));
       }
     }
 
     &.active {
-      &:before {
+      span {
         background-color: rgba(#3B91CA, 1);
         @include transform(scale(1.3));
       }
