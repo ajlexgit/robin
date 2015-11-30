@@ -1,19 +1,25 @@
 @import 'mixins';
 
-.popup-no-scrollbar {
+// отступы сверху (1024+, 640-1024, 480-640, 0-480)
+$window_vertical_margin: 60px, 50px, 40px, 40px;
+
+// максимальная ширина окна (1024+, 640-1024, 480-640, 0-480)
+$max_width: 70%, 80%, 80%, 80%;
+
+// цвет фона
+$background_color: #C0C0C0;
+
+// кнопка закрытия
+$close_btn_size: 30px;
+$close_btn_color: #F2F2F2;
+$close_btn_weight: 3px;
+
+
+//=======================
+// CORE
+//=======================
+.popup-opened {
   overflow: hidden !important;
-}
-
-
-#popup-overlay {
-  @include opacity(0.8);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url(overlay.png) repeat 0 0 black;
-  z-index: 100;
 }
 
 #popup-container {
@@ -26,100 +32,120 @@
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 101;
-}
 
-#popup-window-wrapper {
-  height: 100%;
-  @include valign_after;
-}
-
-#popup-window {
-  display: inline-block;
-  position: relative;
-  vertical-align: middle;
-  margin: 60px auto;
-  max-width: 80%;
-  min-width: 400px;
-  @include media_interval($media480, $media640) {
-    max-width: 90%;
-    min-width: 320px;
-  }
-  @include media_interval(0, $media480) {
-    min-width: 240px;
-  }
-}
-
-#popup-content {
-  overflow: hidden;
-  min-height: 200px;
-  padding: 36px 50px;
-  color: #FFF;
-  text-align: initial;
-  background-color: #0B0;
-  @include border-box;
-  @include media_interval($media480, $media640) {
-    padding: 36px;
-    min-height: 180px;
-  }
-  @include media_interval(0, $media480) {
-    padding: 20px 20px 36px;
-    min-height: 150px;
+  .popup-wrapper {
+    height: 100%;
+    @include valign_after;
   }
 
-  .title {
-    color: #FFF;
-    margin-bottom: 30px;
+  .popup-window {
+    display: inline-block;
+    position: relative;
+    max-width: nth($max_width, 1);
+    margin: nth($window_vertical_margin, 1) auto;
+    z-index: 1;
+    text-align: left;
+    vertical-align: middle;
+    @include border-box;
+    @include media_interval($media640, $media1024) {
+      max-width: nth($max_width, 2);
+      margin-top: nth($window_vertical_margin, 2);
+      margin-bottom: nth($window_vertical_margin, 2);
+    }
+    @include media_interval($media480, $media640) {
+      max-width: nth($max_width, 3);
+      margin-top: nth($window_vertical_margin, 3);
+      margin-bottom: nth($window_vertical_margin, 3);
+    }
     @include media_interval(0, $media480) {
-      margin-bottom: 16px;
+      max-width: nth($max_width, 4);
+      margin-top: nth($window_vertical_margin, 4);
+      margin-bottom: nth($window_vertical_margin, 4);
     }
   }
-}
 
-#popup-close-button {
-  position: absolute;
-  right: -36px;
-  top: -36px;
-  width: 36px;
-  height: 36px;
-  z-index: 100;
-  cursor: pointer;
-  @include transform(scale(0.8));
-  @include transition-property(-webkit-transform, transform);
-  @include transition-duration(0.2s);
-  @include transition-timing-function(ease-in);
-  @include media_interval(0, $media768) {
+  .popup-content {
+    overflow: hidden;
+    background-color: $background_color;
+    @include border-box;
+  }
+
+  .popup-close-button {
+    position: absolute;
     right: 0;
     top: 0;
-    width: 30px;
-    height: 30px;
-  }
+    width: $close_btn_size;
+    height: $close_btn_size;
+    z-index: 2;
+    cursor: pointer;
 
-  &:before, &:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    height: 5px;
-    background: #F2F2F2;
-    @include transition-property(background);
-    @include transition-duration(0.2s);
-    @include transition-timing-function(ease-in);
-    @include media_interval(0, $media768) {
-      background: #FFF;
-    }
-  }
-  &:before {
-    @include transform(translate3d(0, -50%, 0) rotate(45deg));
-  }
-  &:after {
-    @include transform(translate3d(0, -50%, 0) rotate(-45deg));
-  }
-
-  &:hover {
-    @include transform(scale(1));
     &:before, &:after {
-        background: #FFF;
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: $close_btn_weight;
+      background: $close_btn_color;
+    }
+    &:before {
+      @include transform(translate3d(0, -50%, 0) rotate(45deg));
+    }
+    &:after {
+      @include transform(translate3d(0, -50%, 0) rotate(-45deg));
     }
   }
+}
+
+#popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+
+//=======================
+// Theme
+//=======================
+#popup-container {
+  .popup-window {
+    min-width: 400px;
+    @include media_interval($media480, $media640) {
+      min-width: 320px;
+    }
+    @include media_interval(0, $media480) {
+      min-width: 240px;
+    }
+  }
+
+  .popup-content {
+    padding: 36px 50px;
+    min-height: 200px;
+    color: #FFF;
+    @include media_interval($media480, $media640) {
+      padding: 36px;
+      min-height: 180px;
+    }
+    @include media_interval(0, $media480) {
+      padding: 20px 20px 36px;
+      min-height: 150px;
+    }
+  }
+
+  .popup-close-button {
+    @include transform(scale(0.8));
+    @include transition-property(-webkit-transform, transform);
+    @include transition-duration(0.2s);
+
+    &:hover {
+      @include transform(scale(1));
+    }
+  }
+}
+
+#popup-overlay {
+  background: rgba(0,0,0,0.4);
 }

@@ -1,428 +1,511 @@
 (function($) {
 
-/*
-    Плагин модальных окон.
+    /*
+        Плагин модальных окон.
 
-    Может существовать только одно окно. Если осуществляется попытка
-    открыть новое окно - оно замещает текущее, включая обработчики событий.
+        Может существовать только одно окно.
+        Текущее окно можно получить через getCurrentPopup();
 
-    Высота окна динамическая и зависит от содержимого. Кроме того, окно всегда
-    находится в центре экрана.
+        Высота окна динамическая и зависит от содержимого. Кроме того, окно всегда
+        находится в центре экрана.
 
-    Настройки:
-        // Классы контейнера окна
-        classes: ''
+        Настройки:
+            // Классы контейнера окна
+            classes: ''
 
-        // Показать тень между сайтом и окном
-        overlay: true
+            // HTML или метод, возвращающий содержимое окна
+            content: ''
 
-        // Поместить UI вне модального окна
-        outer_ui: false,
+            // Скорость анимации показа и скрытия окна
+            speed: 400
 
-        // HTML или метод, возвращающий содержимое окна
-        content: ''
+        Методы объекта окна:
+            // Показ окна. Возвращает Deferred-объект
+            popup.show()
 
-        // HTML или метод, возвращающий дополнительные элементы окна, например кнопку закрытия.
-        ui: func()
+            // Изменение содержимого
+            popup.setContent('<h1>Hello</h1>')
 
-        // Метод, вызываемый при показе окна.
-        // Должен вызвать метод this._defaultBeforeShow();
-        show: func()
+            // Скрытие окна. Возвращает Deferred-объект
+            popup.hide()
 
-        // Метод, вызываемый при закрытии окна.
-        // Должен вызвать метод this._defaultAfterHide();
-        hide: func()
+            // Мгновенное уничтожение окна
+            popup.destroy()
 
-        // Метод, вызываемый при клике вне окна (либо false)
-        outClick: func(event)
+        Примеры:
+            // Уничтожение окна, открытого в данный момент
+            var current_popup = getCurrentPopup();
+            if (current_popup) {
+                current_popup.destroy()
+            }
 
-    Методы объекта окна:
-        // Показать окно
-        popup.show()
-
-        // Скрыть окно
-        popup.hide()
-
-        // Сохраняет значения указанных стилей css1, css2, ... элемента $element.
-        popup.saveStyles($element, css1, css2, ...)
-
-        // Восстанавливает ранее сохраненные значения стилей элемента $element.
-        popup.loadStyles($element)
-
-    Внутренняя система событий:
-        popup.on(events, callback)
-        popup.off(events, callback)
-        popup.trigger(event, params)
-
-        Где events - это имена событий, разделенных пробелом.
-        Ко всем событиям добавляется namespace ".popup"
-
-    Примеры:
-        0) Создание и показ пустого окна
-            $.popup({}).show();
-
-        1) Показать существующее окно
-            $.popup().show();
-
-        2) Закрыть окно:
-            $.popup().hide();
-
-        3) Создать окно с содержимым:
-            $.popup({
-                classes: 'popup-sample',
-                content: '<h1>Hello, my friend</h1>'
-            }).show();
-
-        4) Заменить содержимое и параметры открытого окна:
-            $.popup().update({
-                classes: 'new-class',
-                content: '<h1>Good bay, my friend</h1>',
-            })
-
-        5) Нечто вроде alert:
-            $.popup({
-                overlay: false,
-                content: '<h1>I am alert example</h1>',
-                show: function() {
-                    this.trigger('before_show');
-                    this._defaultBeforeShow();
-                    this.trigger('show');
-                },
-                hide: function() {
-                    this.trigger('before_hide');
-                    this._defaultAfterHide();
-                    this.trigger('hide');
-                },
-                outClick: $.noop
-            }).show()
-
-        6) Загрузка окна через AJAX:
-            $.ajax({
-                url: '/post/popup/',
-                success: function(response) {
-                    $.popup({
-                        content: response
-                    }).show();
-                },
-                error: function() {
-                    $.popup({
-                        content: '<h1>Ошибка</h1>'
-                    }).show();
-                }
-            })
-
-        7) Если окно видимо - обновить, иначе - создать и показать
-            $.popup.force({
-                classes: 'preloader',
-                ui: false,
-                outClick: false
+            // Создание скрытого окна с оверлеем
+            var popup = OverlayedPopup.create({
+                classes: 'my-popup',
+                content: '<h1 class="title-h1">Hello</h1>'
             });
 
-            $.ajax({
-                ...
-                success: function(response) {
-                    $.popup({
-                        content: response
-                    });
-                },
-                ...
-            })
+            // Создание и показ окна с оверлеем через jQuery-алиас
+            $.popup({
+                classes: 'overlayed-popup',
+                content: '<h1 class="title-h1">Overlayed popup</h1>'
+            }).show()
 
-    Инфа для разработчика:
-        Блок $content введен в $window из-за необходимости разных значений overflow.
-*/
 
-    window.Popup = (function() {
-        // IDs
-        var ID_CONTAINER = 'popup-container';
-        var ID_OVERLAY = 'popup-overlay';
-        var ID_WINDOW_WRAPPER = 'popup-window-wrapper';
-        var ID_WINDOW = 'popup-window';
-        var ID_CONTENT = 'popup-content';
-        var ID_CLOSE_BUTTON = 'popup-close-button';
+            // Показ окна с выводом сообщения после окончания анимации
+            popup.show().done(function() {
+                console.log('Окно показано')
+            });
 
-        // ===================================================
+            // Замена содержимого окна
+            popup.setContent('<h1 class="title-h1">Goodbay</h1>');
 
-        var $body = $(document.body);
-        var scrollWidth = (function() {
-            var div = document.createElement('div');
-            div.style.position = 'absolute';
-            div.style.overflowY = 'scroll';
-            div.style.width = '20px';
-            div.style.visibility = 'hidden';
-            div.style.padding = '0';
-            div.style.fontSize = '0';
-            div.style.borderWidth = '0';
-            document.body.appendChild(div);
-            var result = div.offsetWidth - div.clientWidth;
-            document.body.removeChild(div);
-            return result;
-        })();
+            // Скрытие окна и уничтожение после завершения анимации
+            popup.hide().done(function() {
+                popup.destroy();
+            });
 
-        var DEFAULT_SETTINGS = {
-            classes: '',
-            overlay: true,
-            content: '',
-            outer_ui: false,
-            clean: true,
+        Инфа для разработчика:
+            Блок $content введен в $window из-за необходимости разных значений overflow.
+    */
 
-            ui: function() {
-                var that = this;
-                return that._defaultUI();
-            },
+    // определение ширины скроллбара
+    var scrollWidth = (function() {
+        var div = document.createElement('div');
+        div.style.position = 'absolute';
+        div.style.overflowY = 'scroll';
+        div.style.width = '20px';
+        div.style.visibility = 'hidden';
+        div.style.padding = '0';
+        div.style.fontSize = '0';
+        div.style.borderWidth = '0';
+        document.body.appendChild(div);
+        var result = div.offsetWidth - div.clientWidth;
+        document.body.removeChild(div);
+        return result;
+    })();
 
-            show: function() {
-                var that = this;
-                that.trigger('before_show');
-                that._defaultBeforeShow();
+    // jQuery body
+    var $body = $(document.body);
 
-                that.$container.css({
-                    opacity: 0
-                }).animate({
-                    opacity: 1
-                }, 200, function() {
-                    that.trigger('show');
-                });
-            },
+    // текущее окно
+    var currentPopup = null;
 
-            hide: function() {
-                var that = this;
-                that.trigger('before_hide');
+    /*
+        Получение текущего окна
+     */
+    window.getCurrentPopup = function() {
+        return currentPopup;
+    };
 
-                that.$container.animate({
-                    opacity: 0
-                }, 200, function() {
-                    that._defaultAfterHide();
-                    that.trigger('hide');
-                });
-            },
+    window.Popup = Class(null, function(cls, superclass) {
+        cls.prototype.CONTAINER_ID = 'popup-container';
+        cls.prototype.WRAPPER_CLASS = 'popup-wrapper';
+        cls.prototype.WINDOW_CLASS = 'popup-window';
+        cls.prototype.CONTENT_CLASS = 'popup-content';
 
-            outClick: function() {
-                this.hide();
+        // класс <body>, вешающийся при показе окна
+        cls.prototype.BODY_OPENED_CLASS = 'popup-opened';
+
+        cls.init = function(options) {
+            // настройки
+            this.opts = $.extend(true, this.getDefaultOpts(), options);
+
+            // уничтожение старого окна
+            var old_popup = getCurrentPopup();
+            if (old_popup) {
+                // сохраняем старые параметры, т.к. они потеряются
+                old_popup.__opened = old_popup._opened;
+                old_popup.__visible = old_popup._visible;
+                old_popup.destroy();
+            }
+
+            this._createDom();
+            this._postInit();
+
+            this._opened = false;
+            this._visible = false;
+
+            // замена старого окна
+            if (old_popup) {
+                // восстанавливаем старые параметры
+                old_popup._opened = old_popup.__opened;
+                old_popup._visible = old_popup.__visible;
+                delete old_popup.__opened;
+                delete old_popup.__visible;
+                this._replacePopup(old_popup);
+            }
+
+            // установка текущего окна
+            currentPopup = this;
+        };
+
+        /*
+            Настройки по умолчанию
+         */
+        cls.prototype.getDefaultOpts = function() {
+            return {
+                classes: '',
+                content: '',
+                speed: 400,
+                easing: 'easeOutCubic'
             }
         };
 
-        // ===================================================
+        /*
+            Создание DOM:
 
-        var Popup = function(options) {
-            $('#' + ID_CONTAINER).remove();
-            $('#' + ID_OVERLAY).remove();
+            <div id="container">
+                <div id="wrapper">
+                    <div id="window">
+                        <div id="content"></div>
+                    </div>
+                </div>
+            </div>
+         */
+        cls.prototype._createDom = function() {
+            $('#' + this.CONTAINER_ID).remove();
 
-            // Создание DOM
-            this.$container = $('<div/>').attr('id', ID_CONTAINER);
-            this.$overlay = $('<div/>').attr('id', ID_OVERLAY);
-            this.$windowWrapper = $('<div/>').attr('id', ID_WINDOW_WRAPPER);
-            this.$window = $('<div/>').attr('id', ID_WINDOW);
-            this.$content = $('<div/>').attr('id', ID_CONTENT);
+            // Создание DOM (изначально скрытого)
+            this.$container = $('<div/>').attr('id', this.CONTAINER_ID).hide();
+            this.$windowWrapper = $('<div/>').addClass(this.WRAPPER_CLASS);
+            this.$window = $('<div/>').addClass(this.WINDOW_CLASS);
+            this.$content = $('<div/>').addClass(this.CONTENT_CLASS);
+
             this.$window.append(this.$content);
             this.$windowWrapper.append(this.$window);
             this.$container.append(this.$windowWrapper);
-            $body.append(this.$overlay);
             $body.append(this.$container);
-
-
-            this.visible = false;
-
-            this.settings = {};
-            this.update($.extend(true, {}, DEFAULT_SETTINGS, options));
-
-            // Отвязываем все события
-            this.$container.off('.popup');
-
-            // Закрываем окно, если оно открыто
-            this._defaultAfterHide();
         };
 
+        /*
+            Дополнительная обработка после создания DOM
+         */
+        cls.prototype._postInit = function() {
+            // content
+            this.$content.html(this.opts.content);
 
-        // Дополнительные элементы окна по умолчанию
-        Popup.prototype._defaultUI = function() {
-            var that = this;
-            var close_button = $('<div/>').attr('id', ID_CLOSE_BUTTON);
-            return close_button.on('click', function() {
-                that.hide();
-                return false;
-            });
+            // classes
+            this.$container.addClass(this.opts.classes);
         };
 
-        // Действия по умолчания при показе окна
-        Popup.prototype._defaultBeforeShow = function() {
-            this.$windowWrapper.get(0).scrollTop = 0;
+        //=======================
+        // Скроллбар <body>
+        //=======================
 
-            this._hideScrollbar();
+        // Есть ли дефолтный скроллбар
+        cls.prototype._hasScrollBar = function() {
+            return document.body.scrollHeight > document.body.clientHeight;
         };
-
-        // Действия по умолчания при закрытии окна
-        Popup.prototype._defaultAfterHide = function() {
-            this.$overlay.stop(true).hide();
-            this.$container.stop(true).hide();
-            this._showScrollbar();
-        };
-
-
-        // Показ оверлея, если он разрешен. Иначе - скрытие оверлея
-        Popup.prototype._checkOverlay = function() {
-            this.$overlay.hide();
-            if (this.visible && this.settings.overlay) {
-                this.$overlay.show();
-            }
-        };
-
 
         // Скрытие дефолтного скроллбара
-        Popup.prototype._hideScrollbar = function() {
+        cls.prototype._hideScrollbar = function() {
             var body_padding = parseInt($body.css('paddingRight')) || 0;
-            $body.addClass('popup-no-scrollbar');
-            $body.css({
-                paddingRight: body_padding + scrollWidth
-            });
-            $body.data('_popup_old_padding', body_padding);
+            document.body._popup_padding = body_padding;
+
+            $body.addClass(this.BODY_OPENED_CLASS);
+
+            if (this._hasScrollBar()) {
+                $body.css({
+                    paddingRight: body_padding + scrollWidth
+                });
+            }
         };
 
         // Показ дефолтного скроллбара
-        Popup.prototype._showScrollbar = function() {
-            var body_padding = $body.data('_popup_old_padding') || 0;
-            $body.css({
-                paddingRight: body_padding
-            });
-            $body.removeClass('popup-no-scrollbar');
-            $body.removeData('_popup_old_padding');
+        cls.prototype._showScrollbar = function() {
+            if (document.body._popup_padding !== undefined) {
+                var body_padding = parseInt(document.body._popup_padding) || 0;
+                delete document.body._popup_padding;
+
+                $body.css({
+                    paddingRight: body_padding
+                });
+            }
+
+            $body.removeClass(this.BODY_OPENED_CLASS);
         };
 
+        /*
+            Вызывается при создании ногово Popup, когда
+            ещё не уничтожен старый.
 
+            На момент вызова, DOM старого окна уже удален,
+            а DOM нового уже создан.
+
+            По умолчанию здесь происходит мгновенный показ окна, если прежнее окно было открыто.
+         */
+        cls.prototype._replacePopup = function(old_popup) {
+            if (old_popup.is_opened()) {
+                this._beforeShow();
+                this._showInstant();
+            }
+        };
+
+        //=======================
+        // Методы
+        //=======================
+
+        /*
+            Установка содержимого. Может быть анимировано
+         */
+        cls.prototype.setContent = function(content) {
+            this.$content.empty();
+            this.$content.html(content);
+        };
+
+        /*
+            Открыто ли окно (true до анимации)
+         */
+        cls.prototype.is_opened = function() {
+            return this._opened;
+        };
+
+        /*
+            Видимо ли окно (true после анимации)
+         */
+        cls.prototype.is_visible = function() {
+            return this._visible;
+        };
+
+        /*
+            Уничтожение
+         */
+        cls.prototype.destroy = function() {
+            this._beforeHide();
+            this._afterHide();
+            this.$container.remove();
+            currentPopup = null;
+        };
+
+        //=======================
         // Показ окна
-        Popup.prototype.show = function() {
-            if (this.visible) return;
-            this.visible = true;
+        //=======================
 
-            this._checkOverlay();
-            this.$container.stop(true).show();
+        /*
+            Показ готового окна.
+            Возвращает Deferred-объект, который "ресолвится" после
+            завершения анимации показа окна.
+         */
+        cls.prototype.show = function() {
+            this._deferredShow = $.Deferred();
 
-            // Вешаем событие на клик вне окна
+            if (this.is_opened()) {
+                return this._deferredShow.resolve();
+            }
+
+            this._beforeShow();
+            this._show();
+
+            return this._deferredShow;
+        };
+
+        cls.prototype._beforeShow = function() {
+            this._opened = true;
+            this._hideScrollbar();
+        };
+
+        /*
+            Анимация показа
+         */
+        cls.prototype._show = function() {
             var that = this;
-            $(document).off('.popup.out').on('click.popup.out', function(event) {
-                if ($.isFunction(that.settings.outClick)) {
-                    var $target = $(event.target);
-                    if (!$target.closest(that.$window).length) {
-                        that.settings.outClick.call(that, event);
-                    }
+            this.$container.stop(false, false).fadeIn({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    that._afterShow();
                 }
             });
-
-            this.settings.show.call(this);
-            return this;
         };
 
+        /*
+            Мгновенный показ окна.
+            Используется в случае замены уже существующего видимого окна.
+         */
+        cls.prototype._showInstant = function() {
+            this.$container.show();
+            this._afterShow();
+        };
+
+        cls.prototype._afterShow = function() {
+            this._visible = true;
+            this._deferredShow && this._deferredShow.resolve();
+        };
+
+        //=======================
         // Скрытие окна
-        Popup.prototype.hide = function() {
-            if (!this.visible) return;
-            this.visible = false;
+        //=======================
 
-            $(document).off('.popup.out');
+        /*
+            Скрытие открытого окна.
+            Возвращает Deferred-объект, который "ресолвится" после
+            завершения анимации скрытия окна.
+         */
+        cls.prototype.hide = function() {
+            this._deferredHide = $.Deferred();
 
-            this.settings.hide.call(this);
-            return this;
-        };
-
-        // Обновление конфигурации окна
-        Popup.prototype.update = function(options) {
-            $.extend(true, this.settings, options);
-
-            // Установка класса
-            if (typeof options.classes != 'undefined') {
-                this.$container.removeClass().addClass(options.classes);
+            if (!this.is_opened()) {
+                return this._deferredHide.resolve();
             }
 
-            // Интерфейс
-            if (typeof options.ui != 'undefined') {
-                var $ui = options.ui;
-                if ($.isFunction($ui)) {
-                    $ui = $ui.call(this);
+            this._beforeHide();
+            this._hide();
+
+            return this._deferredHide;
+        };
+
+        cls.prototype._beforeHide = function() {
+            this._visible = false;
+        };
+
+        /*
+            Анимация скрытия
+         */
+        cls.prototype._hide = function() {
+            var that = this;
+            this.$container.stop(false, false).fadeOut({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    that._afterHide();
                 }
+            });
+        };
 
-                // Очистка $window
-                this.$content.detach();
-                this.$window.empty().append(this.$content);
+        cls.prototype._afterHide = function() {
+            this._showScrollbar();
+            this._opened = false;
+            this._deferredHide && this._deferredHide.resolve();
+        };
+    });
 
-                // Очистка $windowWrapper
-                this.$window.detach();
-                this.$windowWrapper.empty().append(this.$window);
 
-                if (this.settings.outer_ui) {
-                    this.$windowWrapper.prepend($ui);
-                } else {
-                    this.$window.prepend($ui);
+    /*
+        Модальное окно с оверлеем, кнопкой закрытия
+     */
+    window.OverlayedPopup = Class(Popup, function(cls, superclass) {
+        cls.prototype.OVERLAY_ID = 'popup-overlay';
+        cls.prototype.CLOSE_BUTTON_CLASS = 'popup-close-button';
+
+        /*
+            Настройки по умолчанию
+         */
+        cls.prototype.getDefaultOpts = function() {
+            return $.extend(true, superclass.prototype.getDefaultOpts.call(this), {
+                closeButton: true,
+                hideOnClick: true
+            });
+        };
+
+        /*
+            Создание DOM
+         */
+        cls.prototype._createDom = function() {
+            $('#' + this.OVERLAY_ID).remove();
+
+            superclass.prototype._createDom.call(this);
+
+            this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
+            this.$container.before(this.$overlay);
+
+            if (this.opts.closeButton) {
+                this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS);
+                this.$window.prepend(this.$closeBtn);
+
+                var that = this;
+                this.$closeBtn.on('click.popup', function() {
+                    that.hide();
+                    return false;
+                });
+            }
+        };
+
+        /*
+            Уничтожение
+         */
+        cls.prototype.destroy = function() {
+            superclass.prototype.destroy.call(this);
+            this.$overlay.remove();
+        };
+
+        /*
+            Закрытие окна при клике вне модального окна
+         */
+        cls.prototype._beforeShow = function() {
+            superclass.prototype._beforeShow.call(this);
+
+            var that = this;
+            if (this.opts.hideOnClick) {
+                $(document).on('click.popup', function(evt) {
+                    var $target = $(evt.target);
+                    if (!$target.closest(that.$window).length) {
+                        that.hide();
+                    }
+                });
+            }
+        };
+
+        /*
+            Анимация показа
+         */
+        cls.prototype._show = function() {
+            var that = this;
+            this.$overlay.stop(false, false).fadeIn({
+                duration: this.opts.speed,
+                easing: this.opts.easing
+            });
+            this.$container.stop(false, false).fadeIn({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    that._afterShow();
                 }
-            }
+            });
+        };
 
-            // Содержимое окна
-            if (typeof options.content != 'undefined') {
-                var $content = options.content;
-                if ($.isFunction($content)) {
-                    $content = $content.call(this);
+        /*
+            Показ окна в случае замены уже существующего
+         */
+        cls.prototype._showInstant = function() {
+            this.$overlay.show();
+            this.$container.show();
+            this._afterShow();
+        };
+
+        /*
+            Анимация скрытия
+         */
+        cls.prototype._hide = function() {
+            var that = this;
+            this.$container.stop(false, false).fadeOut({
+                duration: this.opts.speed,
+                easing: this.opts.easing
+            });
+            this.$overlay.stop(false, false).fadeOut({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    that._afterHide();
                 }
-
-                this.$content.empty().append($content);
-            }
-
-            // Оверлэй
-            if (typeof options.overlay != 'undefined') {
-                this._checkOverlay();
-            }
-
-            this.trigger('config');
-            return this;
+            });
         };
 
-        // ===================================================
-
-        // Превращает "keyup click" в "keyup.popup click.popup"
-        Popup.prototype._format_events = function(events) {
-            events = events.trim().split(/\s+/);
-            return events.join('.popup ') + '.popup';
+        /*
+            Отвязывание обработчика закрытия окна при клике вне окна
+         */
+        cls.prototype._beforeHide = function() {
+            superclass.prototype._beforeHide.call(this);
+            $(document).off('click.popup');
         };
-
-        Popup.prototype.on = function(events) {
-            var args = [].slice.call(arguments, 0);
-            args[0] = this._format_events(events);
-
-            $.fn.on.apply(this.$container, args);
-            return this;
-        };
-
-        Popup.prototype.trigger = function(event) {
-            var args = [].slice.call(arguments, 0);
-            args[0] = this._format_events(event);
-
-            $.fn.trigger.apply(this.$container, args);
-            return this;
-        };
-
-        Popup.prototype.off = function(events) {
-            this.$container.off(events);
-            return this;
-        };
-
-        return Popup;
-    })();
+    });
 
 
-    var popup;
+    /*
+        Алиас создания окна с оверлеем
+     */
     $.popup = function(options) {
-        // $.popup() возвращает текущее окно
-        if (!options) return popup;
-
-        // $.popup({ ... }) создает новое окно
-        return popup = new Popup(options);
-    };
-
-    // Если окно видимо - обновляет, иначе - создает новое.
-    // Предназначено для прелоадера
-    $.popup.force = function(options) {
-        if (popup && popup.visible) {
-            return popup.update(options);
-        }
-
-        return popup = (new Popup(options)).show();
+        return OverlayedPopup.create(options);
     };
 
 })(jQuery);
