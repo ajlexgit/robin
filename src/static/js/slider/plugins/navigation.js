@@ -15,7 +15,7 @@
 
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            return {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 animationName: '',
                 animatedHeight: true,
 
@@ -26,7 +26,7 @@
 
                 container: null,
                 dragOneSlide: false
-            };
+            });
         };
 
         /*

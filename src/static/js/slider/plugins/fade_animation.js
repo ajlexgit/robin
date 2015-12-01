@@ -3,11 +3,11 @@
     window.SliderFadeAnimation = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            return {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 name: 'fade',
                 speed: 800,
                 easing: 'linear'
-            };
+            });
         };
 
         /*

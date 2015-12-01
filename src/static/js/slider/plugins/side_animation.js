@@ -3,13 +3,13 @@
     window.SliderSideAnimation = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            return {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 name: 'side',
                 speed: 800,
                 showIntermediate: true,
                 slideMarginPercent: 0,
                 easing: 'easeOutCubic'
-            };
+            });
         };
 
         /*
@@ -204,8 +204,7 @@
     window.SliderSideShortestAnimation = Class(SliderSideAnimation, function(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            var defaults = superclass.prototype.getDefaultOpts.call(this);
-            return $.extend(true, defaults, {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 name: 'side-shortest'
             });
         };

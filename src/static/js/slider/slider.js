@@ -577,7 +577,7 @@
 
 
     // ================================================
-    //            Базовый класс анимации
+    //            Базовый класс плагина
     // ================================================
     window.SliderPlugin = Class(null, function(cls, superclass) {
         cls.init = function(settings) {
@@ -586,12 +586,19 @@
 
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            return {};
+            return {
+                onResize: $.noop
+            };
         };
 
         // Инициализация
         cls.prototype.onAttach = function(slider) {
 
+        };
+
+        // Событие изменения размера окна
+        cls.prototype.onResize = function(slider) {
+          this.opts.onResize.call(this, slider);
         };
     });
 
@@ -602,9 +609,9 @@
     window.SliderInstantAnimation = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            return {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 name: 'instant'
-            };
+            });
         };
 
         /*
@@ -637,8 +644,8 @@
     }).on('resize.slider', $.rared(function() {
         $.each(sliders, function(i, slider) {
             slider.opts.onResize.call(slider);
-
-            slider.updateListHeight()
+            slider.callPluginsMethod('onResize');
+            slider.updateListHeight();
         });
     }, 100));
 

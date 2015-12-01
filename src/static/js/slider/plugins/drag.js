@@ -3,7 +3,7 @@
     window.SliderDragPlugin = Class(SliderPlugin, function(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
-            return {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 mouse: true,
                 touch: true,
                 ignoreDistanceX: 18,        // px
@@ -17,7 +17,7 @@
                 easing: 'easeOutCubic',
                 animatedHeight: true,
                 slideMarginPercent: 0
-            };
+            });
         };
 
         /*
