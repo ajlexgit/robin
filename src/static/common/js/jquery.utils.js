@@ -352,9 +352,27 @@
     };
 
     /*
-        Добавление события на загрузку картинки
+        Добавление события на загрузку картинки.
+        Если картинка уже загружена, вызовет обработчик немедленно.
+        Иначе, повесит обработчик на событие "load".
+
+        Если первым аргументом указан "true" - обработчик будет повешен в любом случае.
      */
-    $.fn.onLoaded = function(callback) {
+    $.fn.onLoaded = function() {
+        var permanent, callback;
+        if (typeof arguments[0] == 'boolean') {
+            permanent = arguments[0];
+            callback = arguments[1];
+        } else {
+            permanent = false;
+            callback = arguments[0];
+        }
+
+        if (!$.isFunction(callback)) {
+            console.warn('$.onLoaded: callback required');
+            return
+        }
+
         return this.each(function(i, image) {
             if (image.tagName != 'IMG') {
                 console.warn('$.onLoaded: not an image');
@@ -362,10 +380,17 @@
             }
 
             var $image = $(image);
+            if (permanent) {
+                // постоянный обработчик
+                $image.on('load', callback);
+            }
+
             if ($image.prop('complete') || ($image.prop('naturalWidth') > 0)) {
+                // уже загружена
                 callback.call(image);
-            } else {
-                $image.on('load', callback)
+            } else if (!permanent) {
+                // загрузится позже
+                $image.one('load', callback);
             }
         });
     };
