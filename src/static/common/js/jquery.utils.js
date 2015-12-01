@@ -485,6 +485,36 @@
         return max_height;
     };
 
+    /*
+        Сохранение и заргузка inline-стилей
+     */
+    var getInlineStyles = function(element) {
+        var inlines = {};
+        var cssText = element.style.cssText;
+        cssText = cssText.split(';').map($.trim).filter(Boolean);
+        for (var i = 0, l = cssText.length; i < l; i++) {
+            var style = cssText[i].split(':').map($.trim);
+            inlines[style[0].toLowerCase()] = style[1];
+        }
+        return inlines;
+    };
+
+    $.fn.pushInlineStyles = function() {
+        return this.each(function() {
+            this.__inline_styles = getInlineStyles(this);
+        });
+    };
+
+    $.fn.popInlineStyles = function() {
+        return this.each(function() {
+            var styles = this.__inline_styles;
+            delete this.__inline_styles;
+            if (styles !== undefined) {
+                $(this).css(styles);
+            }
+        });
+    };
+
 
     /*
         Получение адреса картинки тэга <img> с учетом srcset

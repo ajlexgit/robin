@@ -194,6 +194,7 @@ PIPELINE_JS = {
             'common/js/jquery.ajax_csrf.js',
             'common/js/jquery.mousewheel.js',
             'js/jquery.fitvids.js',
+            'js/aspecter.js',
             'js/media_intervals.js',
             'js/drager.js',
 

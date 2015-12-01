@@ -14,6 +14,9 @@
             соответствующей границы окна браузера,
             при превышении которого элемент считается видимым/невидимым.
 
+            beforeCheck - функция, вызываемая до проверки
+            afterCheck  - функция, вызываемая после проверки
+
         Пример:
             $('.block').inspect_visibility().on('appear', function() {
                 console.log('block became visible');
@@ -22,7 +25,7 @@
             });
 
             // удаление элементов из инспектирования
-            $('.block').ignore_visibility().on('appear', ...)
+            $('.block').ignore_visibility()
 
             // Проверка видимости ПЕРВОГО найденого элемента
             $('.block').is_visible({
@@ -39,7 +42,9 @@
             top: 1,
             right: 1,
             bottom: 1,
-            left: 1
+            left: 1,
+            beforeCheck: $.noop,
+            afterCheck: $.noop
         };
 
         // удаление элемента из инспектирования, если он есть
@@ -56,6 +61,38 @@
             // запрещено создавать экземпляры
             console.error('Visibility: creating instances are disallowed');
             return false;
+        };
+
+        /*
+            Определение состояния видимости элемента.
+            Если передан селектор - будет проверен первый найденный элемент
+         */
+        cls.is_visible = function(element, options) {
+            var $element = $(element);
+            if (!$element.length) {
+                console.error('Visibility: not found element for checking');
+                return false;
+            }
+
+            element = $element[0];
+            if (!element || !element.nodeType ||
+                (element.nodeType != 1)) {
+                console.error('Visibility: bad element ' + element);
+            }
+
+            var opts = options || element._appear_opts || default_opts;
+            opts.beforeCheck.call(element);
+
+            var vpWidth = document.documentElement.clientWidth;
+            var vpHeight = document.documentElement.clientHeight;
+            var rect = element.getBoundingClientRect();
+            var visible = rect.bottom >= opts.bottom;
+            visible = visible && (rect.right >= opts.right);
+            visible = visible && ((vpHeight - rect.top) >= opts.top);
+            visible = visible && ((vpWidth - rect.left) >= opts.left);
+
+            opts.afterCheck.call(element);
+            return visible;
         };
 
         /*
@@ -100,33 +137,24 @@
         };
 
         /*
-            Определение состояния видимости элемента.
-            Если передан селектор - будет проверен первый найденный элемент
+            Проверка элемента и вызов событий на нем,
+            если его состояние видимости изменилось.
          */
-        cls.is_visible = function(element, options) {
-            var $element = $(element);
-            if (!$element.length) {
-                console.error('Visibility: not found element for checking');
-                return false;
+        cls.check = function(element, force) {
+            var old_state = element._appear_state;
+            if (old_state === undefined) {
+                return;
             }
 
-            element = $element[0];
-            if (!element || !element.nodeType ||
-                (element.nodeType != Element.ELEMENT_NODE)) {
-                console.error('Visibility: bad element ' + element);
+            var new_state = this.is_visible(element, element._appear_opts);
+            if (force || (new_state != old_state)) {
+                element._appear_state = new_state;
+                if (new_state) {
+                    $(element).trigger('appear');
+                } else {
+                    $(element).trigger('disappear');
+                }
             }
-
-            var vpWidth = document.documentElement.clientWidth;
-            var vpHeight = document.documentElement.clientHeight;
-            var opts = options || default_opts;
-
-            var rect = element.getBoundingClientRect();
-            var visible = rect.bottom >= opts.bottom;
-            visible = visible && (rect.right >= opts.right);
-            visible = visible && ((vpHeight - rect.top) >= opts.top);
-            visible = visible && ((vpWidth - rect.left) >= opts.left);
-
-            return visible;
         };
 
         /*
@@ -135,20 +163,17 @@
          */
         cls.check_inspected = function() {
             for (var i = 0, l = inspected.length; i < l; i++) {
-                var elem = inspected[i];
-                var old_state = elem._appear_state;
-                var new_state = this.is_visible(elem, elem._appear_opts);
-                if (new_state != old_state) {
-                    elem._appear_state = new_state;
-                    if (new_state) {
-                        $(elem).trigger('appear');
-                    } else {
-                        $(elem).trigger('disappear');
-                    }
-                }
+                cls.check(inspected[i]);
             }
         }
     });
+
+    // Алиас для Visibility.check
+    $.fn.check_visibility = function(force) {
+        return this.each(function(i, elem) {
+            Visibility.check(elem, force);
+        });
+    };
 
     // Алиас для Visibility.inspect
     $.fn.inspect_visibility = function(options) {

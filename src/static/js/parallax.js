@@ -5,7 +5,7 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.utils.js, media_intervals.js
+            jquery.utils.js, media_intervals.js, aspecter.js
 
         Параметры:
             selector        - селектор выбора элемента, который будет перемещаться
@@ -78,6 +78,35 @@
                 this.enable();
             }
 
+            // инспектирование пропорций
+            this.$bg.on('wider.parallax', function() {
+                $(this).css({
+                    width: '',
+                    height: (100 + that.opts.extraHeight) + '%'
+                })
+            }).on('higher.parallax', function() {
+                // TODO
+                $(this).css({
+                    width: 100 + '%',
+                    height: ''
+                })
+            });
+
+            this.$bg.inspect_aspecter({
+                beforeCheck: function() {
+                    var $this = $(this);
+                    $this.pushInlineStyles();
+                    $this.css({
+                        width: '',
+                        height: ''
+                    })
+                },
+                afterCheck: function() {
+                    $(this).popInlineStyles();
+                }
+            });
+            this.$bg.check_aspecter(true);
+
             // показ параллакса, после того, как он спозиционирован
             this.$bg.show();
 
@@ -92,6 +121,8 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
+            this.$bg.off('.parallax');
+            this.$bg.ignore_aspecter();
             this._media_interval.destroy();
             this.$block.removeData(cls.dataParamName);
 
