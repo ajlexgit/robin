@@ -1,5 +1,7 @@
 @import "mixins";
 
+$button_size: 32px;
+
 
 #follow-us {
   padding: 40px 0;
@@ -10,13 +12,9 @@
     a {
       display: inline-block;
       margin-right: 20px;
-      width: 62px;
+      width: $button_size;
       &:nth-last-of-type(1) {
         margin-right: 0;
-      }
-      @include media_interval(0, $media768) {
-        width: 40px;
-        margin-right: 14px;
       }
 
       &:before {
@@ -24,19 +22,19 @@
         display: block;
         padding-bottom: 100%;
         background: url(../../img/sprite_a.svg) no-repeat;
-        background-size: rel-background-size(62, 62, 282, 225);
+        background-size: rel-background-size($button_size, $button_size, $sprite_width, $sprite_height);
       }
 
       &.fb:before {
-        background-position: 0 0;
+        background-position: rel-background-position($button_size, $button_size, $sprite_width, $sprite_height, -188px, -56px);
       }
 
       &.tw:before {
-        background-position: rel-background-position(62, 62, 282, 225, -62, 0);
+        background-position: rel-background-position($button_size, $button_size, $sprite_width, $sprite_height, -221px, -56px);
       }
 
       &.yt:before {
-        background-position: rel-background-position(62, 62, 282, 225, -124, 0);
+        background-position: rel-background-position($button_size, $button_size, $sprite_width, $sprite_height, -254px, -56px);
       }
 
       &:hover{
