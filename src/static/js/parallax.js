@@ -94,15 +94,14 @@
 
             this.$bg.inspect_aspecter({
                 beforeCheck: function() {
-                    var $this = $(this);
-                    $this.pushInlineStyles();
-                    $this.css({
+                    this.__styles = this.style.cssText;
+                    $(this).css({
                         width: '',
                         height: ''
                     })
                 },
                 afterCheck: function() {
-                    $(this).popInlineStyles();
+                    this.style.cssText = this.__styles;
                 }
             });
             this.$bg.check_aspecter(true);
