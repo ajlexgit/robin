@@ -4,7 +4,7 @@
         cls.init = function(settings) {
             var result = superclass.init.call(this, settings);
             if (result === false) {
-                return false
+                return false;
             }
 
             if (!this.opts.animationName) {

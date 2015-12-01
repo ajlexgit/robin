@@ -51,7 +51,7 @@
             this.$bg = this.$block.find(this.opts.selector);
             if (!this.$bg.length) {
                 console.error('Parallax: background not found');
-                return
+                return false;
             }
 
             // отвязывание старого экземпляра

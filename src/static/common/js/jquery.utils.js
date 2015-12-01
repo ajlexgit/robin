@@ -317,7 +317,7 @@
     $.arrayFind = function(arr, handler) {
         var i, l, result;
         for (i = 0, l = arr.length; i<l; i++) {
-            result = handler.call(arr[i], arr[i]);
+            result = handler.call(arr[i], i, arr[i]);
             if (result != undefined) {
                 return result
             }

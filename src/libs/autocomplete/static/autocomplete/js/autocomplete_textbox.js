@@ -5,19 +5,19 @@
             this.$block = $(block).first();
             if (!this.$block.length) {
                 console.error('AutocompleteTextbox can\'t find block');
-                return
+                return false
             }
 
             this.$input = this.$block.find('input').first();
             if (!this.$input.length) {
                 console.error('AutocompleteTextbox can\'t find input');
-                return
+                return false
             }
 
             this.$choices = this.$block.find('.choices').first();
             if (!this.$choices.length) {
                 console.error('AutocompleteTextbox can\'t find choices');
-                return
+                return false
             }
 
             // настройки
@@ -33,7 +33,7 @@
             var tags;
             if (!$.isArray(this.opts.tags)) {
                 console.log('AutocompleteTextbox: tags must be an array');
-                return
+                return false
             } else if (this.opts.tags.length) {
                 tags = this.opts.tags.concat();
             } else {
