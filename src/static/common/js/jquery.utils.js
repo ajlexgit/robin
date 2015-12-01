@@ -351,6 +351,25 @@
         }
     };
 
+    /*
+        Добавление события на загрузку картинки
+     */
+    $.fn.onLoaded = function(callback) {
+        return this.each(function(i, image) {
+            if (image.tagName != 'IMG') {
+                console.warn('$.onLoaded: not an image');
+                return
+            }
+
+            var $image = $(image);
+            if ($image.prop('complete') || ($image.prop('naturalWidth') > 0)) {
+                callback.call(image);
+            } else {
+                $image.on('load', callback)
+            }
+        });
+    };
+
     // ======================================================================================
     //      DOM UTILS
     // ======================================================================================
