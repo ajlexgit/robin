@@ -1,5 +1,7 @@
 (function($) {
 
+    var $window = $(window);
+
     // ======================================================================================
     //      ANIMATION MAGIC
     // ======================================================================================
@@ -309,7 +311,7 @@
     // ======================================================================================
 
     /*
-        Поиск по массиву (или селектору jQuery), возвращающий
+        Поиск по массиву (или коллекции jQuery), возвращающий
         первый результат функции handler, отличный от undefined.
      */
     $.arrayFind = function(arr, handler) {
@@ -425,10 +427,7 @@
             $('.block').winHeight(0.9);      - обновляемая высота d 90% высоты окна
 
      */
-
     var winBlocks = [];
-    var $window = $(window);
-
     $.winHeight = function($blocks, multiplier) {
         var win_height = document.documentElement.clientHeight;
 
@@ -473,35 +472,28 @@
 
 
     /*
-        Получение адреса картинки тэга <img>
+        Плагин, вычисляющий максимальную высоту элементов текущей коллекции.
+     */
+    $.fn.getMaxHeight = function() {
+        var max_height = 0;
+        this.each(function(i, element) {
+            var height = $(element).height();
+            if (height > max_height) {
+                max_height = height;
+            }
+        });
+        return max_height;
+    };
+
+
+    /*
+        Получение адреса картинки тэга <img> с учетом srcset
      */
     $.getSrc = function($image) {
         if (!$image.length) return;
         return $image.prop('currentSrc') || $image.prop('src');
     };
 
-    /*
-        Возвращает Deferred-объект, сигнализирующий окончание загрузки картинки тэга <img>
-     */
-    $.imgDeferred = function($image) {
-        var d = $.Deferred();
-        if (!$image.length) {
-            console.error('$.imgDeferred can\'t find image');
-            return d.reject($());
-        }
-
-        $image.one('load', function() {
-            d.resolve($image);
-        }).one('error', function() {
-            d.reject($image);
-        });
-
-        if ($image.get(0).complete) {
-            return d.resolve($image);
-        }
-
-        return d;
-    };
 
     // ======================================================================================
     //      CANVAS UTILS
