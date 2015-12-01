@@ -364,11 +364,13 @@
                     if (plugin && (plugin instanceof SliderPlugin)) {
                         this._plugins.push(plugin);
                         plugin.onAttach(this);
+                        plugin.afterAttach(this);
                     }
                 }
             } else if (plugins && (plugins instanceof SliderPlugin)) {
                 this._plugins.push(plugins);
                 plugins.onAttach(this);
+                plugins.afterAttach(this);
             }
             return this;
         };
@@ -587,6 +589,7 @@
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
             return {
+                afterAttach: $.noop,
                 onResize: $.noop
             };
         };
@@ -594,6 +597,11 @@
         // Инициализация
         cls.prototype.onAttach = function(slider) {
 
+        };
+
+        // Дополнительные действия после подключения
+        cls.prototype.afterAttach = function(slider) {
+            this.opts.afterAttach.call(this, slider);
         };
 
         // Событие изменения размера окна
