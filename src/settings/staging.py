@@ -57,9 +57,9 @@ LOGGING = {
             'class': 'django.utils.log.NullHandler',
         },
         'file': {
-            'level': 'INFO',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': '/home/webapp/django_debug.log',
+            'filename': '/home/webapp/%s/django_errors.log' % VZ_DIRECTORY,
         },
     },
     'loggers': {
@@ -79,4 +79,6 @@ LOGGING = {
         }
     },
 }
+
+
 

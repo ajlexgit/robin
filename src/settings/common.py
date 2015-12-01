@@ -45,10 +45,9 @@ INSTALLED_APPS = (
     'suit_ckeditor',
 
     # Apps
-    'blocks',
     'contacts',
-    'config',
     'main',
+    'social',
     'users',
 
     # Apps common
@@ -104,8 +103,12 @@ SUIT_CONFIG = {
             'icon': 'icon-file',
         },
         {
-            'app': 'config',
-            'icon': 'icon-wrench',
+            'app': 'social',
+            'icon': 'icon-bullhorn',
+            'models': (
+                'FollowUsBlock',
+                'SocialConfig',
+            )
         },
         '-',
         '-',
@@ -157,6 +160,7 @@ PIPELINE_CSS = {
             'menu/scss/menu.scss',
             'header/scss/header.scss',
             'footer/scss/footer.scss',
+            'social/scss/block.scss',
         ),
         'output_filename': 'css/head_core.css',
     },

@@ -1,0 +1,17 @@
+<div id="follow-us">
+  <div class="grid-block">
+    <div class="title-h1">{{ config.header }}</div>
+
+    <div class="buttons">
+      {% if config.facebook %}
+        <a href="{{ config.facebook }}" class="fb" target="_blank"></a>
+      {% endif %}
+      {% if config.twitter %}
+        <a href="{{ config.twitter }}" class="tw" target="_blank"></a>
+      {% endif %}
+      {% if config.youtube %}
+        <a href="{{ config.youtube }}" class="yt" target="_blank"></a>
+      {% endif %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+@import "mixins";
+
+
+#follow-us {
+  padding: 40px 0;
+  text-align: center;
+  background-color: #D0D0D0;
+
+  .buttons {
+    a {
+      display: inline-block;
+      margin-right: 20px;
+      width: 62px;
+      &:nth-last-of-type(1) {
+        margin-right: 0;
+      }
+      @include media_interval(0, $media768) {
+        width: 40px;
+        margin-right: 14px;
+      }
+
+      &:before {
+        content: '';
+        display: block;
+        padding-bottom: 100%;
+        background: url(../../img/sprite_a.svg) no-repeat;
+        background-size: rel-background-size(62, 62, 282, 225);
+      }
+
+      &.fb:before {
+        background-position: 0 0;
+      }
+
+      &.tw:before {
+        background-position: rel-background-position(62, 62, 282, 225, -62, 0);
+      }
+
+      &.yt:before {
+        background-position: rel-background-position(62, 62, 282, 225, -124, 0);
+      }
+
+      &:hover{
+        @include opacity(0.8);
+      }
+    }
+  }
+}
