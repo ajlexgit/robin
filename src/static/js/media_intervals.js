@@ -12,7 +12,14 @@
             mix     - верхняя граница интервала (НЕ включительно)
 
      */
+
+    var getMediaPoint = function() {
+        return window.innerWidth;
+    };
+
     var intervals = [];
+    var old_point = getMediaPoint();
+
     window.MediaInterval = Class(null, function(cls, superclass) {
         cls.init = function(min, max) {
             if (typeof min != 'number') {
@@ -51,19 +58,22 @@
         };
 
         /*
+            Возвращает true, если текущая ширна окна входит в интервал
+         */
+        cls.prototype.is_active = function() {
+            return this.contains(getMediaPoint());
+        };
+
+        /*
             Уничтожение всех обработчиков и прекращение отслеживания событий
          */
         cls.prototype.destroy = function() {
-            var that = this;
-            var index = $.arrayFind(intervals, function(index, item) {
-                return (item === that) && index;
-            });
+            this._events = {};
 
+            var index = intervals.indexOf(this);
             if (index >= 0) {
                 intervals.splice(index, 1);
             }
-
-            this._events = {};
         };
 
         /*
@@ -131,32 +141,22 @@
         };
     });
 
-    var old_width = window.innerWidth;
-
-    $(document).ready(function() {
-        $.each(intervals, function(i, interval) {
-            if (interval.contains(window.innerWidth)) {
-                interval.trigger('enter', window.innerWidth);
-            } else {
-                interval.trigger('leave', window.innerWidth);
-            }
-        });
-    });
-
     $(window).on('resize.media_interval', $.rared(function() {
+        var current_point = getMediaPoint();
+
         $.each(intervals, function(i, interval) {
-            if (interval.contains(window.innerWidth)) {
-                if (isNaN(old_width) || !interval.contains(old_width)) {
-                    interval.trigger('enter', window.innerWidth);
+            if (interval.contains(current_point)) {
+                if (!interval.contains(old_point)) {
+                    interval.trigger('enter', current_point);
                 }
             } else {
-                if (!isNaN(old_width) && interval.contains(old_width)) {
-                    interval.trigger('leave', window.innerWidth);
+                if (interval.contains(old_point)) {
+                    interval.trigger('leave', current_point);
                 }
             }
         });
 
-        old_width = window.innerWidth;
-    }, 60));
+        old_point = window.innerWidth;
+    }, 100));
 
 })(jQuery);

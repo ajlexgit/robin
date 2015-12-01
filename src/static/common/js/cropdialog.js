@@ -53,21 +53,26 @@
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.warn('CropDialog can\'t find root element');
+                console.error('CropDialog: root element not found');
                 return false;
-            } else {
-                this.$root.data('cropdialog', this);
             }
 
             // настройки
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
-            var that = this;
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
 
             // открытие окна при наступлении событий eventTypes
+            var that = this;
             this.$root.on(this.opts.eventTypes, this.opts.buttonSelector, function() {
                 return that.eventHandler($(this));
             });
+
+            this.$root.data(cls.dataParamName, this);
         };
 
         /*
@@ -80,33 +85,23 @@
                 dialogImageMaxSize: [600, 500],
                 dialogOptions: {},
 
-                beforeOpen: function($button) {
-
-                },
-
-                getImage: function($button) {
-
-                },
-                getMinSize: function($button) {
-
-                },
-                getMaxSize: function($button) {
-
-                },
-                getAspects: function($button) {
-
-                },
-                getCropCoords: function($button) {
-
-                },
-
-                onCrop: function($button, coords) {
-                    $button.data('crop-coords', coords.join(':'));
-                },
-                onCancel: function($butoon, coords) {
-
-                }
+                beforeOpen: function($button) {},
+                getImage: function($button) {},
+                getMinSize: function($button) {},
+                getMaxSize: function($button) {},
+                getAspects: function($button) {},
+                getCropCoords: function($button) {},
+                onCrop: function($button, coords) {},
+                onCancel: function($butoon, coords) {}
             }
+        };
+
+        /*
+            Уничтожение
+         */
+        cls.prototype.destroy = function() {
+            this.$root.off(this.opts.eventTypes);
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*
@@ -201,8 +196,8 @@
             // настройки обрезки
             var crop_opts = this.collectCropOptions($button);
             if (!crop_opts) {
-                console.warn('CropDialog can\'t collect crop options');
-                return false
+                console.error('CropDialog: crop options are empty');
+                return false;
             }
 
             var dialog_opts = this.collectDialogOptions($button, crop_opts);
@@ -220,8 +215,8 @@
 
             var image = this.opts.getImage.call(this, $button);
             if (!image) {
-                console.warn('CropDialog can\'t find image url');
-                return false
+                console.error('CropDialog: image url is empty');
+                return false;
             }
 
             options.image = image;
@@ -432,5 +427,6 @@
             this.opts.onCrop.call(this, $button, coords);
         };
     });
+    CropDialog.dataParamName = 'cropdialog';
 
 })(jQuery);

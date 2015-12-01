@@ -4,12 +4,12 @@
         Эффект параллакса при скролле.
 
         Требует:
-            jquery.utils.js
+            jquery.utils.js, media_intervals.js
 
         Параметры:
             speed           - отношение пути перемещения блока к пути скролла
             strategy        - стратегия перемещения блока (top / transform)
-            minEnableWidth  - минимальная ширина экрана, при которой блок перемещается
+            minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
      */
 
     var $window = $(window);
@@ -27,7 +27,7 @@
             this.opts = $.extend({
                 speed: 0.5,
                 strategy: 'top',
-                minEnableWidth: 768
+                minEnabledWidth: 768
             }, options);
 
             if ((this.opts.strategy != 'top') && (this.opts.strategy != 'transform')) {
@@ -54,8 +54,17 @@
                 }
             }
 
-            // включение
-            if (window.innerWidth >= this.opts.minEnableWidth) {
+            // интервал ширины окна, на котором модуль включен
+            var that = this;
+            this._media_interval = MediaInterval.create(this.opts.minEnabledWidth, 0);
+            this._media_interval.enter(function() {
+                that.enable()
+            }).leave(function() {
+                that.disable()
+            });
+
+            // включаем, если интервал активен
+            if (this._media_interval.is_active()) {
                 this.enable();
             }
 
@@ -70,6 +79,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
+            this._media_interval.destroy();
             this.$block.removeData(cls.dataParamName);
 
             var index = layers.indexOf(this);
@@ -82,10 +92,10 @@
             Включение параллакса
          */
         cls.prototype.enable = function() {
-            if (this.enabled) {
+            if (this._enabled) {
                 return
             } else{
-                this.enabled = true;
+                this._enabled = true;
             }
 
             this.process();
@@ -95,10 +105,10 @@
             Отключение параллакса
          */
         cls.prototype.disable = function() {
-            if (!this.enabled) {
+            if (!this._enabled) {
                 return
             } else {
-                this.enabled = false;
+                this._enabled = false;
             }
 
             if (this.opts.strategy == 'top') {
@@ -112,7 +122,7 @@
             Расчет смещения картинки по текущему положению окна
          */
         cls.prototype.process = function(win_scroll) {
-            if (!this.enabled) {
+            if (!this._enabled) {
                 return
             }
 
@@ -144,16 +154,6 @@
 
     $window.on('scroll.layers', updateLayers);
     $window.on('load.layers', updateLayers);
-    $window.on('resize.layers', $.rared(function() {
-        $.each(layers, function() {
-            if (window.innerWidth < this.opts.minEnableWidth) {
-                this.disable()
-            } else {
-                this.enable()
-            }
-        });
-    }, 100));
-
 
     $.fn.layer = function(options) {
         return this.each(function() {

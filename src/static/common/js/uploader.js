@@ -72,17 +72,17 @@
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Uploader can\'t find root element');
-                return false
-            } else {
-                this.$root.data('uploader', this);
+                console.error('Uploader: root element not found');
+                return false;
             }
 
             // настройки
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
             // инициализация загрузчика
-            this.init();
+            this.initPluploader();
+
+            this.$root.data(cls.dataParamName, this);
         };
 
         /*
@@ -114,7 +114,7 @@
         /*
             Инициализация загрузчика
          */
-        cls.prototype.init = function() {
+        cls.prototype.initPluploader = function() {
             var that = this;
             var config = {
                 url: this.opts.url,
@@ -170,7 +170,13 @@
 
             // кнопка загрузки
             if (this.opts.buttonSelector) {
-                config['browse_button'] = this.$root.find(this.opts.buttonSelector).get(0);
+                if (typeof this.opts.buttonSelector == 'string') {
+                    config['browse_button'] = this.$root.find(this.opts.buttonSelector).get(0);
+                } else if (this.opts.buttonSelector.jquery) {
+                    config['browse_button'] = this.opts.buttonSelector.get(0);
+                } else {
+                    config['browse_button'] = this.opts.buttonSelector;
+                }
             }
 
             // область перетаскивания файлов
@@ -340,5 +346,6 @@
             this.opts.onFileUploadError.call(this, error.file, short_error, json_response);
         };
     });
+    Uploader.dataParamName = 'uploader';
 
 })(jQuery);

@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 
-{% load pipeline %}
 {% load attachable_blocks %}
+{% load staticfiles %}
+{% load pipeline %}
 
 {% block static_head %}
   {{ block.super }}
@@ -51,6 +52,15 @@
         </label>
       </fieldset>
     </form>
+  </div>
+
+  <div id="parallax">
+    <img class="parallax" src="{% static 'main/img/bg.jpg' %}">
+  </div>
+
+  <div id="test">
+    <div class="layer"></div>
+    <div class="sticky"></div>
   </div>
 
   {% render_attached_blocks config %}

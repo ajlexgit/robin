@@ -2,7 +2,7 @@
 
     /*
         Требует:
-            jquery.fitvids.js
+            jquery.fitvids.js, slider.js
     */
 
     var cut_description = function(element) {

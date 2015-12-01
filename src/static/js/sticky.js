@@ -5,13 +5,13 @@
         Для фикса margin-top родительскому элементу нужно задать overflow: auto.
 
         Требует:
-            jquery.utils.js
+            jquery.utils.js, media_intervals.js
 
         Параметры:
             strategy          - метод перемещения блока ("margin" или "fixed")
             topOffset         - расстояние от верха окна до ползающего блока
             bottomOffset      - расстояние от низа родительского блока до ползающего блока
-            minEnableWidth    - минимальная ширина экрана, при которой блок перемещается
+            minEnabledWidth   - минимальная ширина экрана, при которой блок перемещается
 
         Пример:
             $('.block').sticky()
@@ -39,7 +39,7 @@
                 strategy: 'fixed',
                 topOffset: 0,
                 bottomOffset: 0,
-                minEnableWidth: 768
+                minEnabledWidth: 768
             }, options);
 
             if ((this.opts.strategy != 'margin') && (this.opts.strategy != 'fixed')) {
@@ -56,9 +56,18 @@
             // родительский контейнер
             this.$container = this.$block.parent();
 
-            // включение
-            if (window.innerWidth >= this.opts.minEnableWidth) {
-                this.enable()
+            // интервал ширины окна, на котором модуль включен
+            var that = this;
+            this._media_interval = MediaInterval.create(this.opts.minEnabledWidth, 0);
+            this._media_interval.enter(function() {
+                that.enable()
+            }).leave(function() {
+                that.disable()
+            });
+
+            // включаем, если интервал активен
+            if (this._media_interval.is_active()) {
+                this.enable();
             }
 
             // Сохраняем объект в массив для использования в событиях
@@ -72,6 +81,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
+            this._media_interval.destroy();
             this.$block.removeData(cls.dataParamName);
 
             var index = stickies.indexOf(this);
@@ -86,10 +96,10 @@
         cls.prototype.enable = function() {
             this.updateWidth();
 
-            if (this.enabled) {
+            if (this._enabled) {
                 return
             } else {
-                this.enabled = true;
+                this._enabled = true;
             }
 
             this.process();
@@ -99,10 +109,10 @@
             Выключение ползания
          */
         cls.prototype.disable = function() {
-            if (!this.enabled) {
+            if (!this._enabled) {
                 return
             } else {
-                this.enabled = false;
+                this._enabled = false;
             }
 
             this._state = null;
@@ -146,7 +156,7 @@
             Обработка скролла
          */
         cls.prototype.process = function(win_scroll) {
-            if (!this.enabled) {
+            if (!this._enabled) {
                 return
             }
 
@@ -253,17 +263,6 @@
 
     $window.on('scroll.sticky', applyStickies);
     $window.on('load.sticky', applyStickies);
-    $window.on('resize.sticky', $.rared(function() {
-        var win_scroll = $window.scrollTop();
-        $.each(stickies, function() {
-            if (window.innerWidth < this.opts.minEnableWidth) {
-                this.disable()
-            } else {
-                this.enable(win_scroll)
-            }
-        });
-    }, 100));
-
 
     $.fn.sticky = function(options) {
         return this.each(function() {

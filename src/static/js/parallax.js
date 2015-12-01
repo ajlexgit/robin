@@ -5,13 +5,13 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.utils.js
+            jquery.utils.js, media_intervals.js
 
         Параметры:
             selector        - селектор выбора элемента, который будет перемещаться
             easing          - функция сглаживания перемещения фона
             extraHeight     - добавление высоты к перемещающемуся элементу в процентах
-            minEnableWidth  - минимальная ширина экрана, при которой элемент перемещается
+            minEnabledWidth - минимальная ширина экрана, при которой элемент перемещается
 
         Пример:
             <div id="block">
@@ -44,7 +44,7 @@
                 selector: '.parallax',
                 easing: 'easeInOutQuad',
                 extraHeight: 50,
-                minEnableWidth: 768
+                minEnabledWidth: 768
             }, options);
 
             // передвигающийся элемент
@@ -64,10 +64,22 @@
                 overflow: 'hidden'
             });
 
-            // включение
-            if (window.innerWidth >= this.opts.minEnableWidth) {
-                this.enable()
+            // интервал ширины окна, на котором модуль включен
+            var that = this;
+            this._media_interval = MediaInterval.create(this.opts.minEnabledWidth, 0);
+            this._media_interval.enter(function() {
+                that.enable()
+            }).leave(function() {
+                that.disable()
+            });
+
+            // включаем, если интервал активен
+            if (this._media_interval.is_active()) {
+                this.enable();
             }
+
+            // показ параллакса, после того, как он спозиционирован
+            this.$bg.show();
 
             // Сохраняем объект в массив для использования в событиях
             parallaxes.push(this);
@@ -80,6 +92,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
+            this._media_interval.destroy();
             this.$block.removeData(cls.dataParamName);
 
             var index = parallaxes.indexOf(this);
@@ -92,10 +105,10 @@
             Включение параллакса
          */
         cls.prototype.enable = function() {
-            if (this.enabled) {
+            if (this._enabled) {
                 return
             } else{
-                this.enabled = true;
+                this._enabled = true;
             }
 
             this.$bg.css({
@@ -109,10 +122,10 @@
             Отключение параллакса
          */
         cls.prototype.disable = function() {
-            if (!this.enabled) {
+            if (!this._enabled) {
                 return
             } else {
-                this.enabled = false;
+                this._enabled = false;
             }
 
             this.$bg.css({
@@ -125,7 +138,7 @@
             Расчет смещения картинки по текущему положению окна
          */
         cls.prototype.process = function(win_scroll, win_height) {
-            if (!this.enabled) {
+            if (!this._enabled) {
                 return
             }
 
@@ -167,16 +180,6 @@
 
     $window.on('scroll.parallax', applyParallaxes);
     $window.on('load.parallax', applyParallaxes);
-    $window.on('resize.parallax', $.rared(function() {
-        $.each(parallaxes, function() {
-            if (window.innerWidth < this.opts.minEnableWidth) {
-                this.disable()
-            } else {
-                this.enable()
-            }
-        });
-    }, 100));
-
 
     $.fn.parallax = function(options) {
         return this.each(function() {

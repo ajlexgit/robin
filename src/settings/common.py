@@ -166,6 +166,7 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
+            'scss/parallax.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -193,6 +194,7 @@ PIPELINE_JS = {
             'common/js/jquery.ajax_csrf.js',
             'common/js/jquery.mousewheel.js',
             'js/jquery.fitvids.js',
+            'js/media_intervals.js',
             'js/drager.js',
 
             'js/popups/jquery.popups.js',
@@ -212,6 +214,9 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
+            'js/layer.js',
+            'js/sticky.js',
+            'js/parallax.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',
