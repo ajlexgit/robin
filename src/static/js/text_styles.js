@@ -11,7 +11,7 @@
         var description = '';
         var childs = element.childNodes;
         while (child = childs[i]) {
-            if (child.nodeType == Element.TEXT_NODE) {
+            if (child.nodeType == 3) {
                 description += child.data;
                 element.removeChild(child);
             } else if (child.tagName == 'BR') {

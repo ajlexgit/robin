@@ -497,14 +497,18 @@
             if (this.opts.touch) {
                 var ns = 'drager' + this.id;
 
-                this.$element.on('touchstart.' + ns + ' pointerdown.' + ns, function(event) {
+                var touchstart = window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart';
+                var touchmove = window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove';
+                var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';
+
+                this.$element.on(touchstart + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.mouseDownHandler.call(that, event);
                 });
-                $(document).on('touchmove.' + ns + ' pointermove.' + ns, function(event) {
+                $(document).on(touchmove + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.dragHandler.call(that, event);
-                }).on('touchend.' + ns + ' touchend.' + ns, function(event) {
+                }).on(touchend + '.' + ns , function(event) {
                     if (isMultiTouch(event)) return;
                     return that.mouseUpHandler.call(that, event);
                 });
