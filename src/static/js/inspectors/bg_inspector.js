@@ -1,10 +1,31 @@
 (function($) {
 
     /*
-        Инспектор, отслеживающий измеение аспекта картинки
+        Инспектор, отслеживающий изменение аспекта картинки по отношению к
+        аспекту родительского элемента.
+
+        Не следует создавать экземпляры класса BackgroundInspector.
+        Следует пользоваться уже созданным экземпляром $.bgInspector.
 
         Требует:
             jquery.utils.js, inspector.js
+
+        Пример:
+            $.bgInspector.inspect('.parallax', {
+                afterCheck: function($elem, opts, state) {
+                    if (state) {
+                        console.log('Картинка пропорционально шире, чем родительский элемент');
+                    } else {
+                        console.log('Картинка пропорционально выше, чем родительский элемент');
+                    }
+                }
+            });
+
+            // немедленная проверка элемента
+            $.bgInspector.check('.parallax');
+
+            // удаление элементов из инспектирования
+            $.bgInspector.ignore('.parallax');
      */
 
     var BackgroundInspector = Class(Inspector, function(cls, superclass) {
@@ -51,7 +72,7 @@
     // Единственный экземпляр инспектора
     $.bgInspector = BackgroundInspector.create();
 
-    $(window).on('resize.aspecter', $.rared(function() {
+    $(window).on('resize.bg_inspector', $.rared(function() {
         $.bgInspector.checkAll();
     }, 60));
 

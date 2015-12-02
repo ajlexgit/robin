@@ -5,7 +5,7 @@
         Для фикса margin-top родительскому элементу нужно задать overflow: auto.
 
         Требует:
-            jquery.utils.js, media_intervals.js
+            jquery.utils.js, media_inspector.js
 
         Параметры:
             strategy          - метод перемещения блока ("margin" или "fixed")
@@ -56,19 +56,25 @@
             // родительский контейнер
             this.$container = this.$block.parent();
 
-            // интервал ширины окна, на котором модуль включен
+            // Включение и выключение ползания в зависимости
+            // от ширины окна браузера
             var that = this;
-            this._media_interval = MediaInterval.create(this.opts.minEnabledWidth, 0);
-            this._media_interval.enter(function() {
-                that.enable()
-            }).leave(function() {
-                that.disable()
-            });
+            $.mediaInspector.inspect(this.$block, {
+                point: that.opts.minEnabledWidth,
+                afterCheck: function($block, opts, state) {
+                    var old_state = this.getState($block);
+                    if (state === old_state) {
+                        return
+                    }
 
-            // включаем, если интервал активен
-            if (this._media_interval.is_active()) {
-                this.enable();
-            }
+                    if (state) {
+                        that.enable();
+                    } else {
+                        that.disable()
+                    }
+                }
+            });
+            $.mediaInspector.check(this.$block);
 
             // Сохраняем объект в массив для использования в событиях
             stickies.push(this);
@@ -81,7 +87,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this._media_interval.destroy();
+            $.mediaInspector.ignore(this.$block);
             this.$block.removeData(cls.dataParamName);
 
             var index = stickies.indexOf(this);

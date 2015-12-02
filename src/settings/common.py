@@ -193,8 +193,12 @@ PIPELINE_JS = {
             'common/js/jquery.utils.js',
             'common/js/jquery.ajax_csrf.js',
             'common/js/jquery.mousewheel.js',
+
+            'js/inspectors/inspector.js',
+            'js/inspectors/bg_inspector.js',
+            'js/inspectors/media_inspector.js',
+
             'js/jquery.fitvids.js',
-            'js/media_intervals.js',
             'js/drager.js',
 
             'js/popups/jquery.popups.js',
@@ -214,9 +218,6 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/inspectors/inspector.js',
-            'js/inspectors/bg_inspector.js',
-
             'js/layer.js',
             'js/sticky.js',
             'js/parallax.js',

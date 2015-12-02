@@ -5,7 +5,7 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.utils.js, bg_inspector.js, media_intervals.js
+            jquery.utils.js, bg_inspector.js, media_inspector.js
 
         Параметры:
             selector        - селектор выбора элемента, который будет перемещаться
@@ -69,19 +69,25 @@
                 overflow: 'hidden'
             });
 
-            // интервал ширины окна, на котором модуль включен
+            // Включение и выключение параллакса в зависимости
+            // от ширины окна браузера
             var that = this;
-            this._media_interval = MediaInterval.create(this.opts.minEnabledWidth, 0);
-            this._media_interval.enter(function() {
-                that.enable()
-            }).leave(function() {
-                that.disable()
-            });
+            $.mediaInspector.inspect(this.$block, {
+                point: that.opts.minEnabledWidth,
+                afterCheck: function($block, opts, state) {
+                    var old_state = this.getState($block);
+                    if (state === old_state) {
+                        return
+                    }
 
-            // включаем, если интервал активен
-            if (this._media_interval.is_active()) {
-                this.enable();
-            }
+                    if (state) {
+                        that.enable();
+                    } else {
+                        that.disable()
+                    }
+                }
+            });
+            $.mediaInspector.check(this.$block);
 
             // инспектирование пропорций
             $.bgInspector.inspect(this.$bg, {
@@ -139,7 +145,7 @@
         cls.prototype.destroy = function() {
             this.disable();
             $.bgInspector.ignore(this.$bg);
-            this._media_interval.destroy();
+            $.mediaInspector.ignore(this.$block);
             this.$block.removeData(cls.dataParamName);
 
             var index = parallaxes.indexOf(this);

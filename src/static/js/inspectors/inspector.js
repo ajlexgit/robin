@@ -47,13 +47,6 @@
         };
 
         /*
-            Получение состояния DOM-элемента
-         */
-        cls.prototype.getState = function($element) {
-            return $element.first().data(this.STATE_DATA_KEY);
-        };
-
-        /*
             Сохранение состояния DOM-элемента
          */
         cls.prototype._setState = function($element, state) {
@@ -62,29 +55,6 @@
 
 
         // ================================================================
-
-        /*
-            Функция, проверяющая некоторое условие на DOM-элементе
-         */
-        cls.prototype.check = function($element, options) {
-            $element = $element.first();
-            if (!$element.length) {
-                console.error('Inspector: checking element required');
-                return false;
-            }
-
-            var opts = options || this.getOpts($element);
-            if (!opts) {
-                console.error('Inspector: checking options required');
-                return false;
-            }
-
-            this._beforeCheck($element, opts);
-            var state = this._check($element, opts);
-            this._afterCheck($element, opts, state);
-
-            return state;
-        };
 
         cls.prototype._beforeCheck = function($element, opts) {
             opts.beforeCheck.call(this, $element, opts);
@@ -102,9 +72,43 @@
         // ================================================================
 
         /*
+            Получение состояния DOM-элемента
+         */
+        cls.prototype.getState = function($element) {
+            return $element.first().data(this.STATE_DATA_KEY);
+        };
+
+        /*
+            Функция, проверяющая некоторое условие на DOM-элементе
+         */
+        cls.prototype.check = function($elements, options) {
+            $elements = $($elements);
+            if (!$elements.length) {
+                console.error('Inspector: checking elements required');
+                return false;
+            }
+
+            var that = this;
+            $elements.each(function(i, elem) {
+                var $elem = $(elem);
+
+                var opts = options || that.getOpts($elem);
+                if (!opts) {
+                    console.warn('Inspector: checking options required');
+                    return;
+                }
+
+                that._beforeCheck($elem, opts);
+                var state = that._check($elem, opts);
+                that._afterCheck($elem, opts, state);
+            });
+        };
+
+        /*
             Добавление элементов для инспектирования изменения их пропорций
          */
         cls.prototype.inspect = function($elements, options) {
+            $elements = $($elements);
             if (!$elements.length) {
                 console.error('Inspector: inspecting elements required');
                 return false;
@@ -125,7 +129,7 @@
 
                 // инициализация состояния
                 that._setOpts($elem, opts);
-                that._setState($elem, that._check($elem, opts));
+                that._setState($elem, null);
 
                 that._list.push($elem.get(0));
             });
@@ -135,6 +139,7 @@
             Удаление элементов из инспектирования
          */
         cls.prototype.ignore = function($elements) {
+            $elements = $($elements);
             if (!$elements.length) {
                 console.error('Inspector: ignoring elements required');
                 return false;
@@ -153,7 +158,7 @@
             var i = 0;
             var element;
             while (element = this._list[i]) {
-                this.check($(element));
+                this.check(element);
                 i++;
             }
         };
