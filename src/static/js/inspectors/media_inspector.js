@@ -9,13 +9,31 @@
 
         Требует:
             jquery.utils.js, inspector.js
+
+        Пример:
+            $.mediaInspector.inspect('body', {
+                point: 768,
+                afterCheck: function($elem, opts, state) {
+                    if (state) {
+                        console.log('Ширина экрана >= 768');
+                    } else {
+                        console.log('Ширина экрана < 768');
+                    }
+                }
+            });
+
+            // немедленная проверка элемента
+            $.mediaInspector.check('body');
+
+            // удаление элементов из инспектирования
+            $.mediaInspector.ignore('body');
      */
 
     var MediaInspector = Class(Inspector, function(cls, superclass) {
         cls.init = function() {
             this._list = [];
-            this.STATE_DATA_KEY = 'mediainspector_state';
-            this.OPTS_DATA_KEY = 'mediainspector_opts';
+            this.STATE_DATA_KEY = 'media_inspector_state';
+            this.OPTS_DATA_KEY = 'media_inspector_opts';
         };
 
         cls.prototype.getDefaultOpts = function() {

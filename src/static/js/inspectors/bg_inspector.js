@@ -31,8 +31,8 @@
     var BackgroundInspector = Class(Inspector, function(cls, superclass) {
         cls.init = function() {
             this._list = [];
-            this.STATE_DATA_KEY = 'bginspector_state';
-            this.OPTS_DATA_KEY = 'bginspector_opts';
+            this.STATE_DATA_KEY = 'bg_inspector_state';
+            this.OPTS_DATA_KEY = 'bg_inspector_opts';
         };
 
 

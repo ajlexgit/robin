@@ -197,6 +197,7 @@ PIPELINE_JS = {
             'js/inspectors/inspector.js',
             'js/inspectors/bg_inspector.js',
             'js/inspectors/media_inspector.js',
+            'js/inspectors/visibility_inspector.js',
 
             'js/jquery.fitvids.js',
             'js/drager.js',

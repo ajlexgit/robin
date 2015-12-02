@@ -2,8 +2,7 @@ import os
 import sys
 
 
-# aspecter + parallax
-# media_inervals переделать
+# visibility inspector
 # новый popup проверить
 # виджет выбора ссылки на сущность
 
