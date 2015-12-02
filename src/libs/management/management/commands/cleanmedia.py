@@ -29,7 +29,6 @@ class Command(BaseCommand):
             if not model._meta.managed:
                 continue
 
-        for model in apps.get_models():
             # поля, хранящие файлы
             file_fields = [
                 field.name
