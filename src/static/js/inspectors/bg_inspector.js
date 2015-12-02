@@ -35,6 +35,13 @@
             this.OPTS_DATA_KEY = 'bg_inspector_opts';
         };
 
+        cls.prototype.getDefaultOpts = function() {
+            return $.extend(superclass.prototype.getDefaultOpts(), {
+                getContainer: function($element) {
+                    return $element.parent();
+                }
+            })
+        };
 
         /*
             Сохраняем inline-стили и сбрасываем размеры
@@ -49,7 +56,7 @@
         };
 
         cls.prototype._check = function($element, opts) {
-            var $parent = $element.parent();
+            var $parent = opts.getContainer.call(this, $element);
 
             var elem_asp = $element.outerWidth() / $element.outerHeight();
             var parent_asp = $parent.outerWidth() / $parent.outerHeight();
