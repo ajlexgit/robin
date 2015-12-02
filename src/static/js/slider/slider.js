@@ -606,7 +606,7 @@
 
         // Событие изменения размера окна
         cls.prototype.onResize = function(slider) {
-          this.opts.onResize.call(this, slider);
+            this.opts.onResize.call(this, slider);
         };
     });
 

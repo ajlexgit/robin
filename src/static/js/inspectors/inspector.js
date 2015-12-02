@@ -92,7 +92,7 @@
             $elements.each(function(i, elem) {
                 var $elem = $(elem);
 
-                var opts = options || that.getOpts($elem);
+                var opts = $.extend({}, that.getOpts($elem), options);
                 if (!opts) {
                     console.warn('Inspector: checking options required');
                     return;

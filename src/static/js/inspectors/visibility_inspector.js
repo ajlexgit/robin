@@ -84,12 +84,6 @@
     // Единственный экземпляр инспектора
     $.visibilityInspector = VisibilityInspector.create();
 
-    $(document).ready(function() {
-        setTimeout(function() {
-            $.visibilityInspector.checkAll();
-        }, 0);
-    });
-
     $(window).on('scroll.visibility_inspector', $.rared(function() {
         $.visibilityInspector.checkAll();
     }, 100)).on('resize.visibility_inspector', $.rared(function() {
