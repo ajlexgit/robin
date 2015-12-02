@@ -5,12 +5,12 @@
         Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.utils.js, media_intervals.js, aspecter.js
+            jquery.utils.js, bg_inspector.js, media_intervals.js
 
         Параметры:
             selector        - селектор выбора элемента, который будет перемещаться
             easing          - функция сглаживания перемещения фона
-            extraHeight     - добавление высоты к перемещающемуся элементу в процентах
+            bgHeight        - высота фоновой картинки в процентах относительно высоты блока (>= 100)
             minEnabledWidth - минимальная ширина экрана, при которой элемент перемещается
 
         Пример:
@@ -43,9 +43,14 @@
             this.opts = $.extend({
                 selector: '.parallax',
                 easing: 'easeInOutQuad',
-                extraHeight: 50,
+                bgHeight: 150,
                 minEnabledWidth: 768
             }, options);
+
+            if (this.opts.bgHeight < 100) {
+                console.error('Parallax: bgHeight should be greather than 100');
+                return false;
+            }
 
             // передвигающийся элемент
             this.$bg = this.$block.find(this.opts.selector);
@@ -79,35 +84,48 @@
             }
 
             // инспектирование пропорций
-            this.$bg.on('wider.parallax', function() {
-                $(this).css({
-                    width: '',
-                    height: (100 + that.opts.extraHeight) + '%'
-                })
-            }).on('higher.parallax', function() {
-                // TODO
-                $(this).css({
-                    width: 100 + '%',
-                    height: ''
-                })
-            });
+            $.bgInspector.inspect(this.$bg, {
+                afterCheck: function($element, opts, state) {
+                    if (state) {
+                        // картинка шире
+                        if (that._enabled) {
+                            $element.css({
+                                width: '',
+                                height: that.opts.bgHeight + '%'
+                            })
+                        } else {
+                            $element.css({
+                                width: '',
+                                height: '100%'
+                            })
+                        }
+                    } else {
+                        // картинка выше
+                        var $parent = $element.parent();
+                        var elem_asp = $element.data('bginspector_aspect');
+                        var parent_asp = $parent.data('bginspector_aspect');
 
-            this.$bg.inspect_aspecter({
-                beforeCheck: function() {
-                    this.__styles = this.style.cssText;
-                    $(this).css({
-                        width: '',
-                        height: ''
-                    })
-                },
-                afterCheck: function() {
-                    this.style.cssText = this.__styles;
+                        var relation = 100 * (parent_asp / elem_asp);
+                        if (relation > that.opts.bgHeight) {
+                            $element.css({
+                                width: '100%',
+                                height: ''
+                            })
+                        } else {
+                            $element.css({
+                                width: 100 * that.opts.bgHeight / relation + '%',
+                                height: ''
+                            })
+                        }
+                    }
                 }
             });
-            this.$bg.check_aspecter(true);
 
-            // показ параллакса, после того, как он спозиционирован
-            this.$bg.show();
+            // Вызов инспектора после загрузки картинки
+            this.$bg.onLoaded(function() {
+                $.bgInspector.check(that.$bg);
+                that.$bg.show();
+            });
 
             // Сохраняем объект в массив для использования в событиях
             parallaxes.push(this);
@@ -120,8 +138,7 @@
          */
         cls.prototype.destroy = function() {
             this.disable();
-            this.$bg.off('.parallax');
-            this.$bg.ignore_aspecter();
+            $.bgInspector.ignore(this.$bg);
             this._media_interval.destroy();
             this.$block.removeData(cls.dataParamName);
 
@@ -142,7 +159,8 @@
             }
 
             this.$bg.css({
-                minHeight: (100 + this.opts.extraHeight) + '%'
+                transform: 'translate(-50%, 0)',
+                minHeight: this.opts.bgHeight + '%'
             });
 
             this.process();
@@ -159,7 +177,8 @@
             }
 
             this.$bg.css({
-                minHeight: '100%',
+                transform: '',
+                minHeight: '',
                 top: ''
             });
         };
@@ -187,7 +206,7 @@
             var scrollPosition = (win_scroll - scrollFrom) / scrollLength;
 
             var eProgress = $.easing[this.opts.easing](scrollPosition);
-            var backgroundOffset = eProgress * this.opts.extraHeight;
+            var backgroundOffset = eProgress * (this.opts.bgHeight - 100);
 
             this.$bg.css({
                 top: -backgroundOffset + '%'

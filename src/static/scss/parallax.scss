@@ -3,13 +3,13 @@
 .parallax {
   position: absolute;
   left: 50%;
-  top: 0;
+  top: 50%;
   min-width: 100%;
   min-height: 100%;
   max-width: none;
   z-index: 1;
   text-align: center;
-  @include transform(translateX(-50%));
+  @include transform(translate(-50%, -50%));
   @include backface-visibility(hidden);
 
   @at-root .js & {

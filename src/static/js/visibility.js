@@ -51,8 +51,7 @@
         var unregister_element = function(elem) {
             var index = inspected.indexOf(elem);
             if (index >= 0) {
-                delete elem._appear_state;
-                delete elem._appear_opts;
+                $(elem).removeData('appear_state appear_opts');
                 inspected.splice(index, 1);
             }
         };
@@ -68,7 +67,7 @@
             Если передан селектор - будет проверен первый найденный элемент
          */
         cls.is_visible = function(element, options) {
-            var $element = $(element);
+            var $element = $(element).first();
             if (!$element.length) {
                 console.error('Visibility: not found element for checking');
                 return false;
@@ -80,7 +79,10 @@
                 console.error('Visibility: bad element ' + element);
             }
 
-            var opts = options || element._appear_opts || default_opts;
+            var elem_data = $element.data();
+            var opts = options || elem_data.appear_opts || default_opts;
+
+            // callback
             opts.beforeCheck.call(element);
 
             var vpWidth = document.documentElement.clientWidth;
@@ -91,7 +93,9 @@
             visible = visible && ((vpHeight - rect.top) >= opts.top);
             visible = visible && ((vpWidth - rect.left) >= opts.left);
 
+            // callback
             opts.afterCheck.call(element);
+
             return visible;
         };
 
@@ -114,8 +118,10 @@
                 unregister_element(elem);
 
                 // инициализация состояния видимости
-                elem._appear_state = cls.is_visible(elem, opts);
-                elem._appear_opts = opts;
+                $(elem).data({
+                    appear_state: cls.is_visible(elem, opts),
+                    appear_opts: opts
+                });
 
                 inspected.push(elem);
             });
@@ -140,15 +146,22 @@
             Проверка элемента и вызов событий на нем,
             если его состояние видимости изменилось.
          */
-        cls.check = function(element, force) {
-            var old_state = element._appear_state;
+        cls.check = function(element) {
+            var $element = $(element).first();
+            if (!$element.length) {
+                console.error('Visibility: not found element for checking');
+                return;
+            }
+
+            var elem_data = $element.data();
+            var old_state = elem_data.appear_state;
             if (old_state === undefined) {
                 return;
             }
 
-            var new_state = this.is_visible(element, element._appear_opts);
-            if (force || (new_state != old_state)) {
-                element._appear_state = new_state;
+            var new_state = this.is_visible(element, elem_data.appear_opts);
+            if (new_state != old_state) {
+                elem_data.appear_state = new_state;
                 if (new_state) {
                     $(element).trigger('appear');
                 } else {
@@ -169,9 +182,9 @@
     });
 
     // Алиас для Visibility.check
-    $.fn.check_visibility = function(force) {
+    $.fn.check_visibility = function() {
         return this.each(function(i, elem) {
-            Visibility.check(elem, force);
+            Visibility.check(elem);
         });
     };
 
