@@ -2,7 +2,6 @@ import re
 from django.apps import apps
 from django.conf import settings
 from django.core.management import BaseCommand
-from django.core.management.base import CommandError
 from ...models import PagePhoto, SimplePhoto
 
 re_pagephoto = re.compile('/page_photos/\d+/photo_(\d+)')

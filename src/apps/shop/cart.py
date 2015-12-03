@@ -43,7 +43,7 @@ class CartProducts:
     def _format(self):
         """
             Превращает неформатированный словарь self._unformatted вида {ID: count}
-            в кортеж self._products вида {Product, count, price*count}
+            в кортеж self._products вида с элементами (Product, count, price*count)
         """
         counts = []
         products = []

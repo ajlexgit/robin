@@ -7,7 +7,8 @@
         Пример:
             cart = new Cart();
 
-            cart.addItem('polovnik', 2).done(function() {
+            // добавить два товара с ID 78
+            cart.addItem(78, 2).done(function() {
                 console.log('saved to session')
             })
      */
