@@ -1,7 +1,5 @@
 from datetime import time
 from django import forms
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html, smart_urlquote
 from django.forms.utils import flatatt, to_current_timezone
 from suit.widgets import SuitDateWidget, HTML5Input
@@ -25,27 +23,29 @@ class LinkWidget(forms.Widget):
 
 class URLWidget(forms.URLInput):
     """ Виджет URL """
-
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vURLField'}
         if attrs is not None:
             final_attrs.update(attrs)
         super().__init__(attrs=final_attrs)
 
+    def append(self, value):
+        if value:
+            output = '<a href="{href}" class="add-on" target="_blank"><i class="icon-globe"></i></a>'
+        else:
+            output = '<span class="add-on"><i class="icon-globe"></i></span>'
+        return format_html(output, href=smart_urlquote(value))
+
     def render(self, name, value, attrs=None):
         html = super().render(name, value, attrs)
-        if value:
-            value = force_text(self._format_value(value))
-            final_attrs = {
-                'href': smart_urlquote(value),
-                'target': '_blank'
-            }
-            html = format_html(
-                '<p class="url">{0} <a{1}>{2}</a><br />{3}</p>',
-                _('Currently:'), flatatt(final_attrs), value,
-                html
-            )
-        return html
+        return format_html(
+            '<div class="url input-append">'
+            '  {html} '
+            '  {append}'
+            '</div>',
+            html=html,
+            append=self.append(value)
+        )
 
 
 class SplitDateTimeWidget(forms.SplitDateTimeWidget):

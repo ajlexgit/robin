@@ -10,10 +10,13 @@ input[type=number] {
     width: 90%;
 }
 
-.url a {
-    word-wrap: break-word;
-    line-height: 1.4;
-    display: inline-block;
+.url.input-append {
+    display: block;
+    margin-right: 30px;
+}
+
+.url a:hover {
+    background-color: #D0D0D0;
 }
 
 .column-view {
