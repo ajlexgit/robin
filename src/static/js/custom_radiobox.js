@@ -87,13 +87,13 @@
             Отключение плагина
          */
         cls.prototype.destroy = function() {
-            this.$input.removeData(cls.dataParamName);
-            this.$input.off('.radiobox');
-
             // восстановление CSS
             this.$input.get(0).style.cssText = this._initial_css;
 
             this.$elem.remove();
+
+            this.$input.off('.radiobox');
+            this.$input.removeData(cls.dataParamName);
         };
 
         /*

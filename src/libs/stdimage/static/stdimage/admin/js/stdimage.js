@@ -34,6 +34,12 @@
             // настройки
             this.opts = this.getOpts();
 
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
             this.$root.data(cls.dataParamName, this);
         };
 
@@ -118,6 +124,13 @@
             }).filter($.isNumeric).slice(0, 2);
 
             return opts;
+        };
+
+        /*
+            Отключение плагина
+         */
+        cls.prototype.destroy = function() {
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*

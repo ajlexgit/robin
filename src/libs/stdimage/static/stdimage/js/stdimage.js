@@ -41,7 +41,7 @@
             }, options);
 
             // отвязывание старого экземпляра
-            var old_instance = this.$input.data(cls.dataParamName);
+            var old_instance = this.$root.data(cls.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -92,7 +92,7 @@
         cls.prototype.destroy = function() {
             this.$root.off('.stdimage');
             this.$input.off('.stdimage');
-            this.$input.removeData(cls.dataParamName);
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*

@@ -44,7 +44,7 @@
                 that.closeDropdown(true);
             });
 
-            this.$root.data(SpriteImage.dataParamName, this);
+            this.$root.data(cls.dataParamName, this);
         };
 
         /*

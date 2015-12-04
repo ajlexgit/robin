@@ -1,23 +1,23 @@
 (function($) {
 
     var AutocompleteTextbox = Class(null, function(cls, superclass) {
-        cls.init = function(block, options) {
-            this.$block = $(block).first();
-            if (!this.$block.length) {
-                console.error('AutocompleteTextbox can\'t find block');
-                return false
+        cls.init = function(root, options) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
+                console.error('AutocompleteTextbox: root element not found');
+                return false;
             }
 
-            this.$input = this.$block.find('input').first();
+            this.$input = this.$root.find('input').first();
             if (!this.$input.length) {
-                console.error('AutocompleteTextbox can\'t find input');
-                return false
+                console.error('AutocompleteTextbox: input element not found');
+                return false;
             }
 
-            this.$choices = this.$block.find('.choices').first();
+            this.$choices = this.$root.find('.choices').first();
             if (!this.$choices.length) {
-                console.error('AutocompleteTextbox can\'t find choices');
-                return false
+                console.error('AutocompleteTextbox: choices not found');
+                return false;
             }
 
             // настройки
@@ -33,7 +33,7 @@
             var tags;
             if (!$.isArray(this.opts.tags)) {
                 console.log('AutocompleteTextbox: tags must be an array');
-                return false
+                return false;
             } else if (this.opts.tags.length) {
                 tags = this.opts.tags.concat();
             } else {
@@ -49,7 +49,21 @@
             // Текст активного элемента списка
             this.active_text = null;
 
-            this.$block.data(AutocompleteTextbox.dataParamName, this);
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
+            this.$root.data(AutocompleteTextbox.dataParamName, this);
+        };
+
+        /*
+            Отключение плагина
+         */
+        cls.prototype.destroy = function() {
+            this.close_list();
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*
@@ -266,6 +280,14 @@
             }
         });
 
+        if (window.Suit) {
+            Suit.after_inline.register('autocomplete_textbox', function(inline_prefix, row) {
+                row.find('.autocomplete_textbox').each(function() {
+                    AutocompleteTextbox.create(this);
+                });
+            });
+        }
+
         // Скролл списка
         $(document).on('mousewheel', '.autocomplete_textbox .choices', function(event) {
             var $ul = $(this).find('ul').first();
@@ -283,14 +305,6 @@
             }
             return false;
         });
-
-        if (window.Suit) {
-            Suit.after_inline.register('autocomplete_textbox', function(inline_prefix, row) {
-                row.find('.autocomplete_textbox').each(function() {
-                    AutocompleteTextbox.create(this);
-                });
-            });
-        }
     });
 
 })(jQuery);

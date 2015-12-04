@@ -18,7 +18,7 @@
         cls.init = function(element, options) {
             this.$elem = $(element).first();
             if (!this.$elem.length) {
-                console.error('Autocomplete can\'t find element');
+                console.error('Autocomplete: element not found');
                 return false;
             }
 
@@ -33,19 +33,31 @@
             }, options);
 
             if (!this.opts.url) {
-                console.error('Autocomplete can\'t find url');
+                console.error('Autocomplete: url not found');
                 return false;
             }
 
             // имя элемента
             this.name = this.$elem.attr('name');
             if (!this.name) {
-                console.error('Autocomplete can\'t find name of element');
+                console.error('Autocomplete: name of element not found');
                 return false;
             }
 
+            // отвязывание старого экземпляра
+            var old_instance = this.$elem.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
+
             // Поля, от которых зависит текущее поле
-            var depends = this.opts.depends.concat();
+            var depends = this.opts.depends;
+            if (typeof depends == 'string') {
+                depends = depends.split(',');
+            } else {
+                depends = depends.concat();
+            }
+
             if (this.name.indexOf('-') >= 0) {
                 var formset_prefix = this.name.split('-').slice(0, -1).join('-');
                 depends = depends.map(function(item) {
@@ -58,17 +70,31 @@
             }
             this.$depends = $(depends.filter(Boolean));
 
-            var that = this;
 
             // при изменении зависимости вызываем событие изменения на текущем элементе
+            var that = this;
             this.$depends.on('change.autocomplete', function() {
                 that.$elem.change();
             });
 
             // инициализация select2
             this.initSelect2();
+
+            this.$elem.data(cls.dataParamName, this);
         };
 
+        /*
+            Отключение плагина
+         */
+        cls.prototype.destroy = function() {
+            // TODO: отключит все обработчики
+            this.$depends.off('.autocomplete');
+            this.$elem.removeData(cls.dataParamName);
+        };
+
+        /*
+            Возвращает значения, от которых зависит текущее поле
+         */
         cls.prototype._parentValues = function() {
             return Array.prototype.map.call(this.$depends, function(item) {
                 return $(item).val()
@@ -140,14 +166,12 @@
             });
         };
     });
+    Autocomplete.dataParamName = 'autocomplete';
+
 
     $(document).ready(function() {
         $('.autocomplete_widget').each(function() {
-            var $this = $(this);
-            var data = $this.data();
-
-            if (!$this.closest('.empty-form').length) {
-                data.depends = data.depends.split(',');
+            if (!$(this).closest('.empty-form').length) {
                 Autocomplete.create(this, data);
             }
         });
@@ -159,9 +183,6 @@
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
                 row.find('.autocomplete_widget').each(function() {
-                    var $this = $(this);
-                    var data = $this.data();
-                    data.depends = data.depends.split(',');
                     Autocomplete.create(this, data);
                 });
             });
