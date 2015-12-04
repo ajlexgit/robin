@@ -1,6 +1,7 @@
 {% load i18n %}
 
-<div class="stdimage"
+<div class="stdimage {{ classes }}"
+     data-source="{{ value.url_nocache }}"
      data-size="{{ preview_variation.size|join:'x' }}"
      data-crop="{{ preview_variation.crop|yesno:"1,0,1" }}"
      data-stretch="{{ preview_variation.stretch|yesno:"1,0,0" }}"
@@ -9,7 +10,6 @@
      data-offset="{{ preview_variation.offset|default:''|join:'x' }}"
      data-center="{{ preview_variation.center|default:''|join:'x' }}"
      data-background="{{ preview_variation.background|join:',' }}"
-     data-source="{{ value.url_nocache }}"
      data-aspects="{{ aspects }}"
      data-min_dimensions="{{ min_dimensions|join:'x' }}"
      data-max_dimensions="{{ max_dimensions|join:'x' }}">

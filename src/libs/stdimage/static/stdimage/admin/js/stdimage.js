@@ -1,124 +1,274 @@
 (function($) {
 
-    /*
-        Представление картинки source, обрезанной по области coords
-        в элемент $preview.
-     */
-    var showPreview = function($field, $preview, source, coords) {
-        var $image = $preview.find('img');
-        $preview.addClass('preloader');
 
-        // target
-        var target_size = $field.data('size') || '';
-        if (!$.isArray(target_size)) {
-            target_size = String(target_size).split('x');
-        }
-        target_size = target_size.map(function(item) {
-            return parseInt(item);
-        }).filter($.isNumeric).slice(0, 2);
+    var StdImage = Class(null, function(cls, superclass) {
+        var MIN_WIDTH_ERROR = gettext('Image width should not be less than %(limit)s pixels');
+        var MIN_HEIGHT_ERROR = gettext('Image height should not be less than %(limit)s pixels');
+        var MAX_WIDTH_ERROR = gettext('Image width should not be greater than %(limit)s pixels');
+        var MAX_HEIGHT_ERROR = gettext('Image height should not be greater than %(limit)s pixels');
 
-        // offset
-        var offset = $field.data('offset') || '';
-        if (!$.isArray(offset)) {
-            offset = String(offset).split('x');
-        }
-        offset = offset.map(function(item) {
-            return parseFloat(item);
-        }).filter($.isNumeric).slice(0, 2);
+        cls.init = function(root) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
+                console.error('StdImage: root element not found');
+                return false;
+            }
 
-        // center
-        var center = $field.data('center') || '';
-        if (!$.isArray(center)) {
-            center = String(center).split('x');
-        }
-        center = center.map(function(item) {
-            return parseFloat(item);
-        }).filter($.isNumeric).slice(0, 2);
+            // превью
+            this.$previews = this.$root.find('.item-preview').first();
+            if (!this.$previews.length) {
+                console.error('StdImage: previews block not found');
+                return false;
+            }
 
-        // background
-        var background = $field.data('background') || '255,255,255,0';
-        if (!$.isArray(background)) {
-            background = String(background).split(',');
-        }
-        background = background.map(function(item) {
-            return parseInt(item);
-        }).filter($.isNumeric).slice(0, 4);
+            // инпут
+            this.$input = this.$root.find('input[type="file"]').first();
+            if (!this.$input.length) {
+                console.error('StdImage: previews block not found');
+                return false;
+            }
 
-        var crop = parseInt($field.data('crop'));
-        var stretch = parseInt($field.data('stretch'));
-        var max_width = parseInt($field.data('max_width'));
-        var max_height = parseInt($field.data('max_height'));
+            // обертка кнопки обрезки
+            this.$crop_btn_wrapper = this.$root.find('.crop-btn-wrapper').first();
 
-        var canvas = $.previewCanvas({
-            source: source,
-            width: target_size[0],
-            height: target_size[1],
-            crop: crop,
-            stretch: stretch,
-            max_width: max_width,
-            max_height: max_height,
-            coords: coords,
-            offset: offset,
-            center: center,
-            background: background
-        });
+            // настройки
+            this.opts = this.getOpts();
 
-        $image.attr('src', canvas.toDataURL());
+            this.$root.data(cls.dataParamName, this);
+        };
 
-        $preview.removeClass('preloader');
-    };
+        /*
+            Получение всех настроек поля
+         */
+        cls.prototype.getOpts = function() {
+            var opts = {};
+            var data = this.$root.data();
 
-    /*
-        Изменение выбранного файла
-     */
-    $(document).on('change', '.stdimage .uploader', function() {
-        var $input = $(this),
-            $field = $input.closest('.stdimage'),
-            field_data = $field.data(),
-            $preview = $field.find('.item-preview').addClass('preloader').empty(),
-            $crop_btn_wrapper = $field.find('.crop-btn-wrapper');
+            // путь к исходнику (для cropdialog)
+            opts.source_url = data.source;
 
-        // сброс обрезки
-        $crop_btn_wrapper.find('input').val('');
+            // аспекты кропа (для cropdialog)
+            opts.aspects = data.aspects;
 
-        // загрузка картинки
-        $.fileReaderDeferred($input.prop('files').item(0)).done(function(src) {
-            $.loadImageDeferred(src).done(function(img) {
-                $crop_btn_wrapper.show();
+            // размер админской превью
+            opts.target_size = data.size || '';
+            if (!$.isArray(opts.target_size)) {
+                opts.target_size = String(opts.target_size).split('x');
+            }
+            opts.target_size = opts.target_size.map(function(item) {
+                return parseInt(item);
+            }).filter($.isNumeric).slice(0, 2);
 
-                // для cropdialog
-                field_data.source = src;
+            // можно ли обрезать картинку
+            opts.crop = parseInt(data.crop);
 
-                $preview.append('<img/>').show();
+            // можно ли растягивать картинку
+            opts.stretch = parseInt(data.stretch);
 
-                showPreview($field, $preview, img);
+            // максимальная ширина и высота контента картинки (для crop = False).
+            // Эти параметры описывают ограничения размеров картинки
+            // в случаях, когда в size один из параметров равен 0.
+            opts.max_width = parseInt(data.max_width);
+            opts.max_height = parseInt(data.max_height);
+
+            // Смещение картинки (отношение разницы размеров по горизонтали и вертикали)
+            opts.offset = data.offset || '';
+            if (!$.isArray(opts.offset)) {
+                opts.offset = String(opts.offset).split('x');
+            }
+            opts.offset = opts.offset.map(function(item) {
+                return parseFloat(item);
+            }).filter($.isNumeric).slice(0, 2);
+
+            // Смещение картинки (относительное положение центра накладываемой картинки)
+            opts.center = data.center || '';
+            if (!$.isArray(opts.center)) {
+                opts.center = String(opts.center).split('x');
+            }
+            opts.center = opts.center.map(function(item) {
+                return parseFloat(item);
+            }).filter($.isNumeric).slice(0, 2);
+
+            // Цвет фона
+            opts.background = data.background || '255,255,255,0';
+            if (!$.isArray(opts.background)) {
+                opts.background = String(opts.background).split(',');
+            }
+            opts.background = opts.background.map(function(item) {
+                return parseInt(item);
+            }).filter($.isNumeric).slice(0, 4);
+
+
+            // минимальный размер исходника
+            opts.min_dimensions = data.min_dimensions || '';
+            if (!$.isArray(opts.min_dimensions)) {
+                opts.min_dimensions = String(opts.min_dimensions).split('x');
+            }
+            opts.min_dimensions = opts.min_dimensions.map(function(item) {
+                return parseInt(item);
+            }).filter($.isNumeric).slice(0, 2);
+
+            // максимальный размер исходника
+            opts.max_dimensions = data.max_dimensions || '';
+            if (!$.isArray(opts.max_dimensions)) {
+                opts.max_dimensions = String(opts.max_dimensions).split('x');
+            }
+            opts.max_dimensions = opts.max_dimensions.map(function(item) {
+                return parseInt(item);
+            }).filter($.isNumeric).slice(0, 2);
+
+            return opts;
+        };
+
+        /*
+            Загрузка файла для создания превью
+         */
+        cls.prototype.readFile = function(success) {
+            var that = this;
+            var file = this.$input.prop('files').item(0);
+
+            this.$previews.addClass('preloader').show();
+
+            $.fileReaderDeferred(file).done(function(src) {
+                $.loadImageDeferred(src).done(function(img) {
+                    that.$crop_btn_wrapper.show();
+
+                    // для cropdialog
+                    that.opts.source_url = src;
+
+                    that.$previews.empty();
+                    that.$previews.prepend('<img/>');
+
+                    that.showPreview(img);
+
+                    success.call(that, img);
+
+                    that.$previews.removeClass('preloader');
+                }).fail(function(reason) {
+                    // ошибка разбора изображения
+                    that._badfile();
+                    if (reason == 'Not image') {
+                        alert(gettext('File is not an image'));
+                    } else {
+                        console.error(reason);
+                    }
+                });
             }).fail(function(reason) {
-                // ошибка разбора изображения
-                $input.val('');
-                $preview.removeClass('preloader').hide();
-
-                // для cropdialog
-                field_data.source = '';
-
-                if (reason == 'Not image') {
-                    alert(gettext('Файл не является изображением'));
-                } else {
-                    console.error(reason);
+                // ошибка загрузки файла
+                that._badfile();
+                if (reason != 'Not a file') {
+                    alert(reason);
                 }
             });
-        }).fail(function(reason) {
-            // ошибка загрузки файла
-            $input.val('');
-            $preview.removeClass('preloader').hide();
+        };
+
+        /*
+            Ошибка загрузки файла для создания превью
+         */
+        cls.prototype._badfile = function() {
+            this.$input.val('');
+            this.$previews.removeClass('preloader').hide();
 
             // для cropdialog
-            field_data.source = '';
+            this.opts.source_url = '';
+        };
 
-            if (reason != 'Not a file') {
-                alert(reason);
+        /*
+            Показ превью картинки source, обрезанной по области coords
+         */
+        cls.prototype.showPreview = function(img, coords) {
+            var canvas = $.previewCanvas({
+                source: img,
+                width: this.opts.target_size[0],
+                height: this.opts.target_size[1],
+                crop: this.opts.crop,
+                stretch: this.opts.stretch,
+                max_width: this.opts.max_width,
+                max_height: this.opts.max_height,
+                coords: coords,
+                offset: this.opts.offset,
+                center: this.opts.center,
+                background: this.opts.background
+            });
+            this.$previews.find('img').attr('src', canvas.toDataURL());
+        };
+
+        /*
+            Валидация размеров картинки
+         */
+        cls.prototype.validate = function(source) {
+            if (this.opts.min_dimensions[0] && (source.width < this.opts.min_dimensions[0])) {
+                this.setError(MIN_WIDTH_ERROR, {
+                    limit: this.opts.min_dimensions[0]
+                });
+                return
             }
+
+            if (this.opts.min_dimensions[1] && (source.height < this.opts.min_dimensions[1])) {
+                this.setError(MIN_HEIGHT_ERROR, {
+                    limit: this.opts.min_dimensions[1]
+                });
+                return
+            }
+
+            if (this.opts.max_dimensions[0] && (source.width > this.opts.max_dimensions[0])) {
+                this.setError(MAX_WIDTH_ERROR, {
+                    limit: this.opts.min_dimensions[0]
+                });
+                return
+            }
+
+            if (this.opts.max_dimensions[1] && (source.height > this.opts.max_dimensions[1])) {
+                this.setError(MAX_HEIGHT_ERROR, {
+                    limit: this.opts.max_dimensions[1]
+                });
+                // return
+            }
+        };
+
+        /*
+            Показ ошибки поля
+         */
+        cls.prototype.setError = function(msg, data) {
+            var text = interpolate(msg, data, true);
+            this.$previews.addClass('invalid');
+            this.$previews.append(
+                $('<span>').addClass('error').text(text)
+            )
+        };
+
+        /*
+            Очистка ошибок поля
+         */
+        cls.prototype.clearErrors = function() {
+            this.$previews.removeClass('invalid');
+            this.$previews.find('.error').remove();
+        };
+    });
+    StdImage.dataParamName = 'stdimage';
+
+
+    /*
+        Изменение файла в поле stdimage
+     */
+    $(document).on('change', '.stdimage', function() {
+        var stdimage = $(this).data(StdImage.dataParamName);
+        if (!stdimage) {
+            stdimage = StdImage.create(this);
+        }
+
+        stdimage.clearErrors();
+
+        // сброс обрезки
+        stdimage.$crop_btn_wrapper.find('input').val('');
+
+        // загрузка картинки и показ превью
+        stdimage.readFile(function(img) {
+            // валидация
+            this.validate(img);
         });
     });
+
 
 
     $(document).ready(function() {
@@ -129,23 +279,26 @@
 
             beforeOpen: function($button) {
                 this.$field = $button.closest('.stdimage');
+                this.stdimage = this.$field.data(StdImage.dataParamName);
+                if (!this.stdimage) {
+                    this.stdimage = StdImage.create(this.$field);
+                }
             },
 
             getImage: function() {
-                return this.$field.data('source');
+                return this.stdimage.opts.source_url;
             },
             getMinSize: function() {
-                return this.formatSize(this.$field.data('min_dimensions'));
+                return this.formatSize(this.stdimage.opts.min_dimensions);
             },
             getMaxSize: function() {
-                return this.formatSize(this.$field.data('max_dimensions'));
+                return this.formatSize(this.stdimage.opts.max_dimensions);
             },
             getAspects: function() {
-                return this.formatAspects(this.$field.data('aspects'));
+                return this.formatAspects(this.stdimage.opts.aspects);
             },
-            getCropCoords: function($button) {
-                var $wrapper = $button.closest('.crop-btn-wrapper');
-                return this.formatCoords($wrapper.find('input').val());
+            getCropCoords: function() {
+                return this.formatCoords(this.stdimage.$crop_btn_wrapper.find('input').val());
             },
 
             onCrop: function($button, coords) {
@@ -154,17 +307,16 @@
                     source_url += '?_=' + Math.random().toString().substr(2);
                 }
 
-                var that = this;
-                var $preview = this.$field.find('.item-preview').addClass('preloader');
-
                 // загружаем исходник и обрезаем его по выбранной области
+                var that = this;
+                this.stdimage.$previews.addClass('preloader');
                 $.loadImageDeferred(source_url).done(function(img) {
-                    showPreview(that.$field, $preview, img, coords);
+                    that.stdimage.showPreview(img, coords);
+                    that.stdimage.$previews.removeClass('preloader');
                 });
 
                 // Записываем координаты в форму
-                var $wrapper = $button.closest('.crop-btn-wrapper');
-                $wrapper.find('input').val(coords.join(':'));
+                this.stdimage.$crop_btn_wrapper.find('input').val(coords.join(':'));
             }
         });
     });

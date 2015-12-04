@@ -21,13 +21,13 @@ class StdImageWidgetMixin:
 
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
 
-        # Добавляем класс
-        classes = final_attrs.get('class', '')
-        final_attrs['class'] = classes + ' uploader'
+        # Переносим классы в родительский элемент
+        classes = final_attrs.pop('class', '')
 
         context = dict(self.context, **{
             'name': name,
             'value': value,
+            'classes': classes,
             'attrs': flatatt(final_attrs),
             'preview': getattr(value, self.context['preview_variation']['name'], None),
         })

@@ -3,6 +3,7 @@
     display: inline-block;
     position: relative;
     margin: 5px 0;
+    z-index: 1;
     box-shadow: 1px 1px 3px #808080;
 }
 
@@ -18,6 +19,30 @@
     position: absolute;
     z-index: 1;
 }
+
+/* Некорректная картинка */
+.stdimage .item-preview.invalid {
+    box-shadow: 1px 1px 4px red;
+}
+
+.stdimage .item-preview.invalid .error {
+    content: '';
+    position: absolute;
+    padding: 10px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: bold;
+    background-color: rgba(192, 0, 0, 0.75);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 
 /* Подсказка */
 .stdimage .hint {
