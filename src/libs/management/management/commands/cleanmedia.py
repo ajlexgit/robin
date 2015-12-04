@@ -5,6 +5,8 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from libs.variation_field import VariationImageFieldFile
 
+IGNORED_DIRS = ('simple_photos', 'page_photos')
+
 
 class Command(BaseCommand):
     """
@@ -19,6 +21,10 @@ class Command(BaseCommand):
         """ Получаем список файлов в папке MEDIA """
         result = []
         for path, dirs, files in os.walk(settings.MEDIA_ROOT):
+            curdir = os.path.relpath(path, settings.MEDIA_ROOT).split(os.path.sep, 1)[0].lower()
+            if curdir in IGNORED_DIRS:
+                continue
+
             for file in files:
                 result.append(os.path.join(path, file))
         return result
