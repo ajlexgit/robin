@@ -35,7 +35,7 @@
   width: 34px;
   height: 52px;
   z-index: 10;
-  background: url(../img/sprite_a.svg) no-repeat 2px -108px;
+  background: $sprite_url no-repeat 2px -108px;
   @include animation-name(show-down-arrow, jump-down-arrow);
   @include animation-duration(0.5s, 1s);
   @include animation-delay(1.2s, 1.3s);

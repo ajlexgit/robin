@@ -15,7 +15,7 @@ input[type="checkbox"] {
   z-index: 1;
   cursor: pointer;
   vertical-align: top;
-  background: url(../img/sprite_a.svg) no-repeat -28px -72px;
+  background: $sprite_url no-repeat -28px -72px;
   @include border-box;
   @include unselectable;
   @include border_radius(2px);

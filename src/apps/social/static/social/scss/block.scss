@@ -21,7 +21,7 @@ $button_size: 32px;
         content: '';
         display: block;
         padding-bottom: 100%;
-        background: url(../../img/sprite_a.svg) no-repeat;
+        background: $sprite_url no-repeat;
         background-size: rel-background-size($button_size, $button_size, $sprite_width, $sprite_height);
       }
 

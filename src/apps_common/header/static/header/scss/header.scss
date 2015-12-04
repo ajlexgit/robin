@@ -28,7 +28,7 @@ header {
         content: '';
         display: block;
         padding-bottom: #{100 * $logo_height/$logo_width + "%"};
-        background: url(../../img/sprite_a.svg) no-repeat 0 0;
+        background: $sprite_url no-repeat 0 0;
         background-size: rel-background-size($logo_width, $logo_height, $sprite_width, $sprite_height);
       }
 
