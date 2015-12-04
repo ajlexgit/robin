@@ -4,13 +4,33 @@
         cls.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('SpriteImage can\'t find root element');
+                console.error('SpriteImage: root element not found');
                 return false;
             }
 
             this.$input = this.$root.find('input:first');
+            if (!this.$input.length) {
+                console.error('SpriteImage: input element not found');
+                return false;
+            }
+
             this.$dropdown = this.$root.find('.sprite-icon-dropdown');
+            if (!this.$dropdown.length) {
+                console.error('SpriteImage: dropdown block not found');
+                return false;
+            }
+
             this.$preview = this.$root.find('.sprite-icon-preview');
+            if (!this.$preview.length) {
+                console.error('SpriteImage: preview not found');
+                return false;
+            }
+
+            // отвязывание старого экземпляра
+            var old_instance = this.$root.data(cls.dataParamName);
+            if (old_instance) {
+                old_instance.destroy();
+            }
 
             // Events
             var that = this;
@@ -25,6 +45,14 @@
             });
 
             this.$root.data(SpriteImage.dataParamName, this);
+        };
+
+        /*
+            Отключение плагина
+         */
+        cls.prototype.destroy = function() {
+            this.$root.off('.sprite-image');
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*

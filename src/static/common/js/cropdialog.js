@@ -354,13 +354,17 @@
          */
         cls.prototype.getCropCoords = function() {
             var coords = this.jcrop_api.tellSelect();
+            var x = Math.max(0, coords.x);
+            var y = Math.max(0, coords.y);
+            var width = coords.x2 - x;
+            var height = coords.y2 - y;
 
             // рассчет области обрезки с учетом уменьшения картинки в окне
             return [
-                Math.round(this.preview_relation_x * coords.x),
-                Math.round(this.preview_relation_y * coords.y),
-                Math.round(this.preview_relation_x * coords.w),
-                Math.round(this.preview_relation_y * coords.h)
+                Math.round(this.preview_relation_x * x),
+                Math.round(this.preview_relation_y * y),
+                Math.round(this.preview_relation_x * width),
+                Math.round(this.preview_relation_y * height)
             ];
         };
 
@@ -369,8 +373,6 @@
          */
         cls.prototype.onDialogOpened = function(crop_opts) {
             var that = this;
-
-            // загрузка картинки
             $.loadImageDeferred(crop_opts.image).always(function() {
                 that.$dialog.removeClass('preload');
             }).done(function(img) {

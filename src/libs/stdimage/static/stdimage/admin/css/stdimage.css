@@ -28,7 +28,7 @@
 .stdimage .item-preview.invalid .error {
     content: '';
     position: absolute;
-    padding: 10px;
+    padding: 8% 10%;
     left: 0;
     top: 0;
     width: 100%;

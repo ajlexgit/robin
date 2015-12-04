@@ -136,9 +136,6 @@
                     // для cropdialog
                     that.opts.source_url = src;
 
-                    that.$previews.empty();
-                    that.$previews.prepend('<img/>');
-
                     that.showPreview(img);
 
                     success.call(that, img);
@@ -147,6 +144,7 @@
                 }).fail(function(reason) {
                     // ошибка разбора изображения
                     that._badfile();
+                    that.$previews.hide();
                     if (reason == 'Not image') {
                         alert(gettext('File is not an image'));
                     } else {
@@ -156,6 +154,7 @@
             }).fail(function(reason) {
                 // ошибка загрузки файла
                 that._badfile();
+                that.$previews.hide();
                 if (reason != 'Not a file') {
                     alert(reason);
                 }
@@ -167,10 +166,12 @@
          */
         cls.prototype._badfile = function() {
             this.$input.val('');
-            this.$previews.removeClass('preloader').hide();
+            this.$previews.removeClass('preloader');
 
             // для cropdialog
             this.opts.source_url = '';
+
+            this.$crop_btn_wrapper.hide();
         };
 
         /*
@@ -190,7 +191,9 @@
                 center: this.opts.center,
                 background: this.opts.background
             });
-            this.$previews.find('img').attr('src', canvas.toDataURL());
+            this.$previews.empty();
+            var $image = $('<img/>').attr('src', canvas.toDataURL());
+            this.$previews.prepend($image);
         };
 
         /*
@@ -201,6 +204,8 @@
                 this.setError(MIN_WIDTH_ERROR, {
                     limit: this.opts.min_dimensions[0]
                 });
+
+                this._badfile();
                 return
             }
 
@@ -231,8 +236,7 @@
          */
         cls.prototype.setError = function(msg, data) {
             var text = interpolate(msg, data, true);
-            this.$previews.addClass('invalid');
-            this.$previews.append(
+            this.$previews.addClass('invalid').append(
                 $('<span>').addClass('error').text(text)
             )
         };
@@ -254,7 +258,8 @@
     $(document).on('change', '.stdimage', function() {
         var stdimage = $(this).data(StdImage.dataParamName);
         if (!stdimage) {
-            stdimage = StdImage.create(this);
+            console.error('StdImage object not found');
+            return false;
         }
 
         stdimage.clearErrors();
@@ -270,8 +275,23 @@
     });
 
 
-
     $(document).ready(function() {
+        $('.stdimage').each(function() {
+            var $this = $(this);
+            if (!$this.closest('.empty-form').length) {
+                StdImage.create($this);
+            }
+        });
+
+        if (window.Suit) {
+            Suit.after_inline.register('stdimage', function(inline_prefix, row) {
+                row.find('.stdimage').each(function() {
+                    StdImage.create(this);
+                });
+            });
+        }
+
+
         // Обрезка картинки
         CropDialog.create(document, {
             eventTypes: 'click.cropdialog',
@@ -281,7 +301,8 @@
                 this.$field = $button.closest('.stdimage');
                 this.stdimage = this.$field.data(StdImage.dataParamName);
                 if (!this.stdimage) {
-                    this.stdimage = StdImage.create(this.$field);
+                    console.error('CropDialog: StdImage not found');
+                    return false;
                 }
             },
 
