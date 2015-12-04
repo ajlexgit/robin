@@ -2,10 +2,10 @@
 
 
     var StdImage = Class(null, function(cls, superclass) {
-        var MIN_WIDTH_ERROR = gettext('Image width should not be less than %(limit)s pixels');
-        var MIN_HEIGHT_ERROR = gettext('Image height should not be less than %(limit)s pixels');
-        var MAX_WIDTH_ERROR = gettext('Image width should not be greater than %(limit)s pixels');
-        var MAX_HEIGHT_ERROR = gettext('Image height should not be greater than %(limit)s pixels');
+        var MIN_WIDTH_ERROR = gettext('Image should not be less than %(limit)spx in width');
+        var MIN_HEIGHT_ERROR = gettext('Image should not be less than %(limit)spx in height');
+        var MAX_WIDTH_ERROR = gettext('Image should not be more than %(limit)spx in width');
+        var MAX_HEIGHT_ERROR = gettext('Image should not be more than %(limit)spx in height');
 
         cls.init = function(root) {
             this.$root = $(root).first();

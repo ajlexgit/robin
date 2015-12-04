@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-04 20:47+0400\n"
+"POT-Creation-Date: 2015-12-04 21:13+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,21 +20,21 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: static/stdimage/admin/js/stdimage.js:5
-msgid "Image width should not be less than %(limit)s pixels"
-msgstr "Ширина картинки не должна быть меньше %(limit)s пикселей"
+msgid "Image should not be less than %(limit)spx in width"
+msgstr "Ширина картинки не должна быть меньше %(limit)spx"
 
 #: static/stdimage/admin/js/stdimage.js:6
-msgid "Image height should not be less than %(limit)s pixels"
-msgstr "Высота картинки не должна быть меньше %(limit)s пикселей"
+msgid "Image should not be less than %(limit)spx in height"
+msgstr "Высота картинки не должна быть меньше %(limit)spx"
 
 #: static/stdimage/admin/js/stdimage.js:7
-msgid "Image width should not be greater than %(limit)s pixels"
-msgstr "Ширина картинки не должна быть больше %(limit)s пикселей"
+msgid "Image should not be more than %(limit)spx in width"
+msgstr "Ширина картинки не должна быть превышать %(limit)spx"
 
 #: static/stdimage/admin/js/stdimage.js:8
-msgid "Image height should not be greater than %(limit)s pixels"
-msgstr "Высота картинки не должна быть больше %(limit)s пикселей"
+msgid "Image should not be more than %(limit)spx in height"
+msgstr "Высота картинки не должна быть превышать %(limit)spx"
 
-#: static/stdimage/admin/js/stdimage.js:148
+#: static/stdimage/admin/js/stdimage.js:149
 msgid "File is not an image"
 msgstr "Файл не является изображением"

@@ -329,11 +329,11 @@ class VariationImageField(models.ImageField):
     default_error_messages = dict(
         models.ImageField.default_error_messages,
         not_image=_("Image invalid or corrupted"),
-        not_enough_width=_('Image width should not be less than %(limit)s pixels'),
-        not_enough_height=_('Image height should not be less than %(limit)s pixels'),
-        too_much_width=_('Image width should not be greater than %(limit)s pixels'),
-        too_much_height=_('Image height should not be greater than %(limit)s pixels'),
-        too_big=_('Image width should not be greater than %(limit)s'),
+        not_enough_width=_('Image should not be less than %(limit)spx in width'),
+        not_enough_height=_('Image should not be less than %(limit)spx in height'),
+        too_much_width=_('Image should not be more than %(limit)spx in width'),
+        too_much_height=_('Image should not be more than %(limit)spx in height'),
+        too_big=_('Image must be no larger than %(limit)s'),
     )
 
     def __init__(self, *args, **kwargs):
