@@ -18,8 +18,6 @@
         $('#parallax').parallax({
 
         });
-
-
     })
 
 })(jQuery);

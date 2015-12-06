@@ -111,6 +111,10 @@
      */
 
     window.Class = function(parent, class_constructor) {
+        if (typeof class_constructor != 'function') {
+            throw Error('Class: class-constructor function required');
+        }
+
         var InnerFunc = function() {
             this.__init_result = InnerFunc.init.apply(this, arguments);
         };
@@ -194,7 +198,7 @@
             stop()      - приостановить анимацию
      */
     var Animation = (function() {
-        var Animation = function(settings) {
+        function Animation(settings) {
             this.opts = $.extend({
                 duration: 1000,
                 delay: 20,
@@ -219,8 +223,7 @@
             if (!this.opts.paused) {
                 this.start();
             }
-        };
-
+        }
 
         // Запуск анимации
         Animation.prototype.start = function() {

@@ -5,7 +5,7 @@
         отправляющая запросы на сохранение заказа в сессии.
 
         Пример:
-            cart = new Cart();
+            cart = Cart.create();
 
             // добавить два товара с ID 78
             cart.addItem(78, 2).done(function() {
@@ -93,7 +93,7 @@
             if (this._sendQuery) {
                 this._sendQuery.abort();
             }
-            
+
             var ajax_options = $.extend(true, {
                 url: window.js_storage.save_cart,
                 type: 'POST',
@@ -110,7 +110,7 @@
                     }
                 }
             }, options);
-            
+
             return this._sendQuery = $.ajax(ajax_options);
         };
 
@@ -163,6 +163,6 @@
         }
     });
 
-    window.cart = new Cart();
+    window.cart = Cart.create();
 
 })(jQuery);

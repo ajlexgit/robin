@@ -414,7 +414,7 @@
         // ================
 
         cls.prototype.mouseDownHandler = function(event) {
-            var evt = new MouseDownDragerEvent(event, this);
+            var evt = MouseDownDragerEvent.create(event, this);
             this.wasDragged = false;
             this._dragging_allowed = true;
             this._momentumPoints = [];
@@ -427,7 +427,7 @@
         cls.prototype.dragHandler = function(event) {
             if (!this._dragging_allowed) return;
 
-            var evt = new MouseMoveDragerEvent(event, this);
+            var evt = MouseMoveDragerEvent.create(event, this);
             this._addMomentumPoint(evt);
 
             if (!this.wasDragged) {
@@ -448,7 +448,7 @@
         cls.prototype.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
-            var evt = new MouseUpDragerEvent(event, this);
+            var evt = MouseUpDragerEvent.create(event, this);
             return this.stopCurrent(evt);
         };
 

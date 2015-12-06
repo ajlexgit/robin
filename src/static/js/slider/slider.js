@@ -108,7 +108,7 @@
 
             // плагины
             this._plugins = [
-                new SliderInstantAnimation()
+                SliderInstantAnimation.create()
             ];
 
             // добавляем класс на список
