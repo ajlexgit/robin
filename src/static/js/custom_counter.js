@@ -23,12 +23,11 @@
             $('.custom-counter').counter()
     */
 
-    window.CustomCounter = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.CustomCounter = Class(null, function CustomCounter(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('CustomCounter: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             // настройки
@@ -45,8 +44,7 @@
             // поле
             this.$input = this.$root.find('input').first();
             if (!this.$input.length) {
-                console.error('CustomCounter: input element not found');
-                return false;
+                return this.raise('input element not found');
             }
 
             // отвязывание старого экземпляра

@@ -15,18 +15,16 @@
             preloaderClass      - класс, который вешается на обертку при
                                   загрузке файла перед генерацией нового превью
      */
-    window.StdImage = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.StdImage = Class(null, function StdImage(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('StdImage: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             this.$input = this.$root.find('input[type="file"]');
             if (!this.$input.length) {
-                console.log('StdImage: file field not found');
-                return false;
+                return this.raise('input element not found');
             }
 
             // настройки

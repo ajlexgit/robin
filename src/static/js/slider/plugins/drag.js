@@ -1,6 +1,6 @@
 (function($) {
 
-    window.SliderDragPlugin = Class(SliderPlugin, function(cls, superclass) {
+    window.SliderDragPlugin = Class(SliderPlugin, function SliderDragPlugin(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
             return $.extend(superclass.prototype.getDefaultOpts.call(this), {

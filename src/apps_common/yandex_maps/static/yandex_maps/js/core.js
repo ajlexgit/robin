@@ -56,8 +56,8 @@
     });
 
 
-    var Placemark = Class(null, function(cls, superclass) {
-        cls.init = function(ymap, options) {
+    var Placemark = Class(null, function Placemark(cls, superclass) {
+        cls.prototype.init = function(ymap, options) {
             this.ymap = ymap;
 
             // настройки
@@ -129,12 +129,11 @@
 
 
     var map_index = 0;
-    window.YandexMap = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.YandexMap = Class(null, function YandexMap(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('YandexMap can\'t find root element');
-                return false
+                return this.raise('root element not found');
             }
 
             var map_id = this.$root.attr('id');

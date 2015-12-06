@@ -29,8 +29,8 @@
             $.mediaInspector.ignore('body');
      */
 
-    var MediaInspector = Class(Inspector, function(cls, superclass) {
-        cls.init = function() {
+    var MediaInspector = Class(Inspector, function MediaInspector(cls, superclass) {
+        cls.prototype.init = function() {
             this._list = [];
             this.STATE_DATA_KEY = 'media_inspector_state';
             this.OPTS_DATA_KEY = 'media_inspector_opts';

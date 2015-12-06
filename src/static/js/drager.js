@@ -114,8 +114,8 @@
     /*
         Движение по инерции
      */
-    var Momentum = Class(null, function(cls, superclass) {
-        cls.init = function(drager, event, momentumPoint) {
+    var Momentum = Class(null, function Momentum(cls, superclass) {
+        cls.prototype.init = function(drager, event, momentumPoint) {
             this.lightness = drager.settings.momentumLightness;
             this.easing = drager.settings.momentumEasing;
             this.startX = event.dx;
@@ -173,8 +173,8 @@
 
     // ===============================================
 
-    var DragerEvent = Class(null, function(cls, superclass) {
-        cls.init = function(event, drager) {
+    var DragerEvent = Class(null, function DragerEvent(cls, superclass) {
+        cls.prototype.init = function(event, drager) {
             var mouseEvent = event;
             if (event.type.substr(0, 5) == 'touch') {
                 mouseEvent = getTouchPoint(event);
@@ -192,12 +192,9 @@
         };
     });
 
-    var MouseDownDragerEvent = Class(DragerEvent, function(cls, superclass) {
-        cls.init = function(event, drager) {
-            var result = superclass.init.call(this, event, drager);
-            if (result === false) {
-                return false;
-            }
+    var MouseDownDragerEvent = Class(DragerEvent, function MouseDownDragerEvent(cls, superclass) {
+        cls.prototype.init = function(event, drager) {
+            superclass.prototype.init.call(this, event, drager);
 
             this.dx = 0;
             this.dy = 0;
@@ -206,12 +203,9 @@
         };
     });
 
-    var MouseMoveDragerEvent = Class(DragerEvent, function(cls, superclass) {
-        cls.init = function(event, drager) {
-            var result = superclass.init.call(this, event, drager);
-            if (result === false) {
-                return false;
-            }
+    var MouseMoveDragerEvent = Class(DragerEvent, function MouseMoveDragerEvent(cls, superclass) {
+        cls.prototype.init = function(event, drager) {
+            superclass.prototype.init.call(this, event, drager);
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
@@ -220,12 +214,9 @@
         };
     });
 
-    var MouseUpDragerEvent = Class(DragerEvent, function(cls, superclass) {
-        cls.init = function(event, drager) {
-            var result = superclass.init.call(this, event, drager);
-            if (result === false) {
-                return false;
-            }
+    var MouseUpDragerEvent = Class(DragerEvent, function MouseUpDragerEvent(cls, superclass) {
+        cls.prototype.init = function(event, drager) {
+            superclass.prototype.init.call(this, event, drager);
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
@@ -237,12 +228,11 @@
     // ===============================================
 
     var dragerID = 0;
-    window.Drager = Class(null, function(cls, superclass) {
-        cls.init = function(element, options) {
+    window.Drager = Class(null, function Drager(cls, superclass) {
+        cls.prototype.init = function(element, options) {
             this.$element = $(element).first();
             if (!this.$element.length) {
-                console.error('Drager: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             this.opts = $.extend({

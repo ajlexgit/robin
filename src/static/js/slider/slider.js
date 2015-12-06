@@ -75,12 +75,11 @@
 
     var sliders = [];
 
-    window.Slider = Class(null, function(cls, superclass) {
-        cls.init = function(list, options) {
+    window.Slider = Class(null, function Slider(cls, superclass) {
+        cls.prototype.init = function(list, options) {
             this.$list = $(list).first();
             if (!this.$list.length) {
-                console.error('Slider can\'t find list element');
-                return false;
+                return this.raise('list element not found');
             }
 
             // настройки
@@ -128,8 +127,7 @@
             this.$items.addClass(this.opts.itemClass);
 
             if (!this.$items.length) {
-                console.error('Slider can\'t find any slide');
-                return false
+                return this.raise('there are no items in list');
             }
 
             // флаг анимации и объект анимации
@@ -388,7 +386,7 @@
                 }
             }
 
-            console.error('Not found method "' + methodName + '" with name "' + animationName + '"');
+            this.warn('Not found method "' + methodName + '" with name "' + animationName + '"');
         };
 
         /*
@@ -581,8 +579,8 @@
     // ================================================
     //            Базовый класс плагина
     // ================================================
-    window.SliderPlugin = Class(null, function(cls, superclass) {
-        cls.init = function(settings) {
+    window.SliderPlugin = Class(null, function SliderPlugin(cls, superclass) {
+        cls.prototype.init = function(settings) {
             this.opts = $.extend(true, this.getDefaultOpts(), settings);
         };
 
@@ -614,7 +612,7 @@
     // ================================================
     //          Плагин мгновенной анимации
     // ================================================
-    window.SliderInstantAnimation = Class(SliderPlugin, function(cls, superclass) {
+    window.SliderInstantAnimation = Class(SliderPlugin, function SliderInstantAnimation(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
             return $.extend(superclass.prototype.getDefaultOpts.call(this), {

@@ -1,15 +1,10 @@
 (function($) {
 
-    window.SliderAutoscrollPlugin = Class(SliderPlugin, function(cls, superclass) {
-        cls.init = function(settings) {
-            var result = superclass.init.call(this, settings);
-            if (result === false) {
-                return false;
-            }
-
+    window.SliderAutoscrollPlugin = Class(SliderPlugin, function SliderAutoscrollPlugin(cls, superclass) {
+        cls.prototype.init = function(settings) {
+            superclass.prototype.init.call(this, settings);
             if (!this.opts.animationName) {
-                console.error('Autoscroll plugin must set animationName');
-                return false;
+                return this.raise('animationName required');
             }
         };
 

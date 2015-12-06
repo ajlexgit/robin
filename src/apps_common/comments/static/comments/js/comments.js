@@ -153,7 +153,7 @@
         $('.comments-wrapper').each(function() {
             var object = $(this).data(Comments.dataParamName);
             object.refresh().fail(function(reason) {
-                console.error(reason);
+                object.error(reason);
             });
         });
     }).on('logout.auth.comments', function() {
@@ -161,7 +161,7 @@
         $('.comments-wrapper').each(function() {
             var object = $(this).data(Comments.dataParamName);
             object.refresh().fail(function(reason) {
-                console.error(reason);
+                object.error(reason);
             });
         });
     }).on('click.comments', function(event) {

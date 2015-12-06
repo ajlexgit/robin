@@ -76,17 +76,15 @@
         }
     };
 
-    window.ManagementForm = Class(null, function(cls, superclass) {
-        cls.init = function(root, prefix) {
+    window.ManagementForm = Class(null, function ManagementForm(cls, superclass) {
+        cls.prototype.init = function(root, prefix) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('ManagementForm: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             if (!prefix) {
-                console.error('ManagementForm: prefix required');
-                return false;
+                return this.raise('prefix required');
             }
 
             this.$total_forms = this.$root.find('#id_' + prefix + '-TOTAL_FORMS');
@@ -95,20 +93,16 @@
             this.$max_num_forms = this.$root.find('#id_' + prefix + '-MAX_NUM_FORMS');
 
             if (!this.$total_forms.length) {
-                console.error('ManagementForm: not found TOTAL_FORMS field');
-                return false
+                return this.raise('not found TOTAL_FORMS field');
             }
             if (!this.$initial_forms.length) {
-                console.error('ManagementForm: not found INITIAL_FORMS field');
-                return false
+                return this.raise('not found INITIAL_FORMS field');
             }
             if (!this.$min_num_forms.length) {
-                console.error('ManagementForm: not found MIN_NUM_FORMS field');
-                return false
+                return this.raise('not found MIN_NUM_FORMS field');
             }
             if (!this.$max_num_forms.length) {
-                console.error('ManagementForm: not found MAX_NUM_FORMS field');
-                return false
+                return this.raise('not found MAX_NUM_FORMS field');
             }
         };
 
@@ -129,12 +123,11 @@
         };
     });
 
-    window.Formset = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.Formset = Class(null, function Formset(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Formset: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             this.opts = $.extend({
@@ -155,8 +148,7 @@
             }, options);
 
             if (!this.opts.prefix) {
-                console.error('Formset: prefix required');
-                return false;
+                return this.raise('prefix required');
             }
 
             // management form
@@ -168,29 +160,25 @@
             // контейнер форм
             this.$formContainer = this.$root.find(this.opts.formsListSelector);
             if (!this.$formContainer.length) {
-                console.error('Formset: forms container not found');
-                return false;
+                return this.raise('forms container not found');
             }
 
             // шаблон форм
             this.$template = this.$root.find(this.opts.formTemplate);
             if (!this.$template.length) {
-                console.error('Formset: form template not found');
-                return false;
+                return this.raise('form template not found');
             }
 
             // все формы
             var $forms = this.getForms();
             if ($forms.length != this.management.getTotalFormCount()) {
-                console.error('Formset: management TOTAL_FORMS is less than real form count');
-                return false;
+                return this.raise('management TOTAL_FORMS is less than real form count');
             }
 
             // начальные формы
             this.$initial_forms = $forms.slice(0, this.management.getInitialFormCount());
             if (this.$initial_forms.length != this.management.getInitialFormCount()) {
-                console.error('Formset: management INITIAL_FORMS is less than real form count');
-                return false;
+                return this.raise('management INITIAL_FORMS is less than real form count');
             }
 
             // отвязывание старого экземпляра
@@ -225,7 +213,7 @@
         cls.prototype.getDeleteField = function(form) {
             var $form = $(form).first();
             if (!$form.length) {
-                console.error('Formset: not found form to find delete field');
+                this.error('form not found');
                 return false;
             }
 
@@ -239,7 +227,7 @@
         cls.prototype.isInitial = function(form) {
             var $form = $(form).first();
             if (!$form.length) {
-                console.error('Formset: not found form to check initial');
+                this.error('form not found');
                 return false;
             }
 
@@ -257,7 +245,7 @@
                 if ($df.length) {
                     return !$df.prop('checked');
                 } else {
-                    console.warn('Formset: delete field not found');
+                    that.warn('"delete" field not found');
                     return true
                 }
             }).length
@@ -314,7 +302,7 @@
         cls.prototype.deleteForm = function(form) {
             var $form = $(form).first();
             if (!$form.length) {
-                console.error('Formset: not found form to delete');
+                this.error('form not found');
                 return false
             }
 
@@ -331,7 +319,7 @@
 
                 $df.prop('checked', true);
             } else {
-                console.warn('Formset: delete field not found');
+                this.warn('"delete" field not found');
             }
 
             // анимация удаления

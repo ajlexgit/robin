@@ -69,8 +69,8 @@
     };
 
 
-    var Placemark = Class(null, function(cls, superclass) {
-        cls.init = function(gmap, options) {
+    var Placemark = Class(null, function Placemark(cls, superclass) {
+        cls.prototype.init = function(gmap, options) {
             this.gmap = gmap;
 
             // настройки
@@ -136,13 +136,11 @@
         };
     });
 
-
-    window.GoogleMap = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.GoogleMap = Class(null, function GoogleMap(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('GoogleMap can\'t find root element');
-                return false
+                return this.raise('root element not found');
             }
 
             // настройки

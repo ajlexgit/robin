@@ -15,12 +15,11 @@
     var $window = $(window);
     var layers = [];
 
-    window.Layer = Class(null, function(cls, superclass) {
-        cls.init = function(block, options) {
+    window.Layer = Class(null, function Layer(cls, superclass) {
+        cls.prototype.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
-                console.error('Layer: block not found');
-                return false;
+                return this.raise('block not found');
             }
 
             // настройки
@@ -31,8 +30,7 @@
             }, options);
 
             if ((this.opts.strategy != 'top') && (this.opts.strategy != 'transform')) {
-                console.error('Layer: undefined strategy');
-                return false;
+                return this.raise('undefined strategy');
             }
 
             // отвязывание старого экземпляра

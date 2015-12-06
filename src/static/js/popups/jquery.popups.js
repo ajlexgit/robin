@@ -107,7 +107,7 @@
         return currentPopup;
     };
 
-    window.Popup = Class(null, function(cls, superclass) {
+    window.Popup = Class(null, function Popup(cls, superclass) {
         cls.prototype.CONTAINER_ID = 'popup-container';
         cls.prototype.WRAPPER_CLASS = 'popup-wrapper';
         cls.prototype.WINDOW_CLASS = 'popup-window';
@@ -116,7 +116,7 @@
         // класс <body>, вешающийся при показе окна
         cls.prototype.BODY_OPENED_CLASS = 'popup-opened';
 
-        cls.init = function(options) {
+        cls.prototype.init = function(options) {
             // настройки
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
@@ -412,7 +412,7 @@
     /*
         Модальное окно с оверлеем, кнопкой закрытия
      */
-    window.OverlayedPopup = Class(Popup, function(cls, superclass) {
+    window.OverlayedPopup = Class(Popup, function OverlayedPopup(cls, superclass) {
         cls.prototype.OVERLAY_ID = 'popup-overlay';
         cls.prototype.CLOSE_BUTTON_CLASS = 'popup-close-button';
 

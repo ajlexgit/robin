@@ -9,12 +9,11 @@
     /*
         Класс галереи, предоставляющий базовые методы работы над картинками
     */
-    window.Gallery = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.Gallery = Class(null, function Gallery(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Gallery can\'t find root element');
-                return false
+                return this.raise('root element not found');
             }
 
             // настройки
@@ -41,40 +40,32 @@
             // данные о галерее
             this.app_label = this.$root.data('applabel');
             if (!this.app_label) {
-                console.error('Gallery can\'t find app_label');
-                return false
+                return this.raise('app_label reqired');
             }
 
             this.model_name = this.$root.data('modelname');
             if (!this.model_name) {
-                console.error('Gallery can\'t find model_name');
-                return false
-            }
-
-            this.$galleryInput = this.$root.find(this.opts.galleryInputSelector).first();
-            if (!this.$galleryInput.length) {
-                console.error('Gallery can\'t find input element');
-                return false
+                return this.raise('model_name reqired');
             }
 
             this.field_name = this.$galleryInput.attr('name');
             if (!this.field_name) {
-                console.error('Gallery can\'t find field_name');
-                return false
+                return this.raise('field_name required');
+            }
+
+            this.$galleryInput = this.$root.find(this.opts.galleryInputSelector).first();
+            if (!this.$galleryInput.length) {
+                return this.raise('input element not found');
             }
 
             this.$wrapper = this.$root.find(this.opts.galleryWrapperSelector).first();
             if (!this.$wrapper.length) {
-                console.error('Gallery can\'t find wrapper element');
-                return false
+                return this.raise('wrapper element not found');
             }
 
             this._locked = false;
             this.gallery_id = null;
             this.$list = $();
-
-            // save
-            this.$root.data(Gallery.dataParamName, this);
 
             // инициализация галереи
             var gallery_id = parseInt(this.$galleryInput.val()) || null;
@@ -84,6 +75,8 @@
 
             // callback
             this.$root.trigger('create.gallery');
+
+            this.$root.data(cls.dataParamName, this);
         };
 
         cls.prototype.locked = function() {
@@ -176,8 +169,8 @@
             }
 
             if (this.gallery_id) {
-                console.error('Gallery already exists for this entry');
-                return
+                this.error('gallery already exists for this entry');
+                return;
             }
 
             var that = this;
@@ -197,8 +190,8 @@
         cls.prototype.initGallery = function(gallery_id) {
             gallery_id = parseInt(gallery_id);
             if (!gallery_id) {
-                console.error('Invalid gallery_id');
-                return
+                this.error('invalid gallery_id');
+                return;
             }
 
             this.gallery_id = gallery_id;
@@ -207,8 +200,8 @@
             // список файлов
             this.$list = this.$root.find(this.opts.galleryListSelector).first();
             if (!this.$list.length) {
-                console.error('Gallery can\'t find item list');
-                return
+                this.error('items container not found');
+                return;
             }
 
             this.updateCounter();
@@ -290,7 +283,7 @@
                         $preview.find('img').attr('src', img.src);
                         $item.find(that.opts.preloaderSelector).remove();
                     }).fail(function(reason) {
-                        console.error(reason);
+                        that.error(reason);
                     });
 
                     // callback
@@ -382,8 +375,8 @@
             }
 
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             var that = this;
@@ -415,8 +408,8 @@
             }
 
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             var template = this.$root.find(this.opts.videolinkTemplateSelector).html();
@@ -447,7 +440,7 @@
                         $preview.find('img').attr('src', img.src);
                         $item.find(that.opts.preloaderSelector).remove();
                     }).fail(function(reason) {
-                        console.error(reason);
+                        that.error(reason);
                     });
 
                     that.updateCounter();
@@ -483,13 +476,13 @@
          */
         cls.prototype.deleteItem = function($item) {
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             if (!$item.length) {
-                console.error('Item not found');
-                return
+                this.error('item element not found');
+                return;
             }
 
             // Удаление элемента галереи из очереди загрузок
@@ -547,13 +540,13 @@
             }
 
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             if (!$item.length) {
-                console.error('Item not found');
-                return
+                this.error('item element not found');
+                return;
             }
 
             direction = direction || 'left';
@@ -577,13 +570,13 @@
             }
 
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             if (!$item.length) {
-                console.error('Item not found');
-                return
+                this.error('item element not found');
+                return;
             }
 
             var data = $.extend({}, extra, {
@@ -610,13 +603,13 @@
             }
 
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             if (!$item.length) {
-                console.error('Item not found');
-                return
+                this.error('item element not found');
+                return;
             }
 
             var data = $.extend({}, extra);
@@ -637,13 +630,13 @@
             }
 
             if (!this.gallery_id) {
-                console.error('Gallery does not exist');
-                return
+                this.error('gallery does not exist');
+                return;
             }
 
             if (!$item.length) {
-                console.error('Item not found');
-                return
+                this.error('item element not found');
+                return;
             }
 
             var data = $.extend({}, extra, {

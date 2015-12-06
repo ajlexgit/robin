@@ -68,12 +68,11 @@
                 onFileUploadError:      function(file, error, json_response) {},
             });
      */
-    window.Uploader = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.Uploader = Class(null, function Uploader(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Uploader: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             // настройки
@@ -266,6 +265,8 @@
             if (this.$drop && this.$drop.length) {
                 this.$drop.off('.uploader');
             }
+
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*

@@ -1,15 +1,10 @@
 (function($) {
 
-    window.SliderControlsPlugin = Class(SliderPlugin, function(cls, superclass) {
-        cls.init = function(settings) {
-            var result = superclass.init.call(this, settings);
-            if (result === false) {
-                return false;
-            }
-
+    window.SliderControlsPlugin = Class(SliderPlugin, function SliderControlsPlugin(cls, superclass) {
+        cls.prototype.init = function(settings) {
+            superclass.prototype.init.call(this, settings);
             if (!this.opts.animationName) {
-                console.error('Controls plugin must set animationName');
-                return false;
+                return this.raise('animationName required');
             }
         };
 

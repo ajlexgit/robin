@@ -31,32 +31,20 @@
     /*
         Система классов Javascript.
 
-        1) Если функция инициализации вернет false - это является сигналом
-           ошибки инициализации. При ошибке иницилизации:
-            а) если объект создавался через CLASS.create() - вызов вернет undefined
-            б) если объект создавался через new CLASS() - вернет объект, но, вероятно, неполный.
-        2) Не забываем:
-            родительская функция может вернуть false. В этом случае, нужно также вернуть false.
-        3) Не путаем:
-            родительский метод инициализации - superclass.init
-            родительский метод METHOD        - superclass.prototype.METHOD
-
         Пример 1:
             // создание класса Point2D, унаследованного от Object
             // с функцией инициализации и методом print().
 
-            var Point2D = Class(null, function(cls, superclass) {
-                cls.init = function(x, y) {
+            var Point2D = Class(null, function Point2D(cls, superclass) {
+                cls.prototype.init = function(x, y) {
                     this._x = parseInt(x);
                     if (isNaN(this._x)) {
-                        console.error('invalid X');
-                        return false;
+                        return this.raise('invalid X');
                     };
 
                     this._y = parseInt(y);
                     if (isNaN(this._y)) {
-                        console.error('invalid Y');
-                        return false;
+                        return this.raise('invalid Y');
                     }
                 }
 
@@ -67,17 +55,13 @@
 
         Пример 2:
             // создание дочернего класса Point3D, унаследованного от Point2D.
-
-            var Point3D = Class(Point2D, function(cls, superclass) {
-                cls.init = function(x, y, z) {
-                    if (superclass.init.call(this, x, y) === false) {
-                        return false
-                    }
+            var Point3D = Class(Point2D, function Point3D(cls, superclass) {
+                cls.prototype.init = function(x, y, z) {
+                    superclass.prototype.init.call(this, x, y);
 
                     this._z = parseInt(z);
                     if (isNaN(this._z)) {
-                        console.error('invalid Z');
-                        return false;
+                        return this.raise('invalid Z');
                     }
                 };
 
@@ -88,71 +72,82 @@
 
         Пример 3:
             // создание экземпляров классов
-
-            > Point2D.create()
-            < invalid X
+            > Point2D.create(6)
+            < Point2D: invalid Y
             < undefined
 
-            > new Point2D()
-            < invalid X
-            < InnerFunc {_x:NaN, ...}
+            > Point2D.create(6, 'fail')
+            < Point2D: invalid Y
+            < undefined
 
-            > p2 = Point2D.create(6, 7)
-            < Object {_x:6, _y:7, ...}
+            > Point2D.create(6, 7)
+            < Object {...}
 
-            > p3 = new Point3D(2, 3, 4)
-            < InnerFunc {_x:2, _y:3, _z:4, ...}
 
-            > p2.print()
-            < "6:7"
+            > Point3D.create('fail', 6, 7)
+            < Point3D: invalid X
+            < undefined
 
-            > p3.print()
-            < "2:3:4"
+            > Point3D.create(6, 7)
+            < Point3D: invalid Z
+            < undefined
+
      */
-
     window.Class = function(parent, class_constructor) {
         if (typeof class_constructor != 'function') {
-            throw Error('Class: class-constructor function required');
+            throw Error('class-constructor function required');
         }
 
-        var InnerFunc = function() {
-            this.__init_result = InnerFunc.init.apply(this, arguments);
-        };
+        if (!class_constructor.name) {
+            throw Error('class-constructor should be a named function');
+        }
 
         // установка прототипа, унаследованного от родительского
-        InnerFunc.prototype = Object.create(parent && parent.prototype);
-        InnerFunc.prototype.constructor = InnerFunc;
-        InnerFunc.superclass = parent;
+        var ClassObj = {};
+        ClassObj.prototype = Object.create(parent && parent.prototype);
+        ClassObj.prototype.constructor = ClassObj;
+        ClassObj.superclass = parent;
 
-        // конструктор класса, возвращающий undefined в случае, если
-        // функция инициализации вернет false
-        InnerFunc.create = function() {
-            // вызов конструктора с хаком для .apply()
-            var obj = Object.create(InnerFunc.prototype);
-            InnerFunc.apply(obj, arguments);
-            obj.constructor = InnerFunc;
+        // конструктор экземпляров
+        ClassObj.create = function() {
+            var obj = Object.create(ClassObj.prototype);
+            obj.constructor = ClassObj;
 
-            if (obj.__init_result === false) {
-                return
+            try {
+                obj.init.apply(obj, arguments);
+                return obj;
+            } catch (err) {
+                if (err instanceof ClassError) {
+                    obj.error(err.message);
+                } else {
+                    throw err;
+                }
             }
+        };
 
-            return obj;
+        // Возбуждение исключения. Имеет смысл вызывать в методе init
+        ClassObj.prototype.raise = function(message) {
+            throw new ClassError(message);
+        };
+
+        // Вывод ошибки в консоль
+        ClassObj.prototype.error = function(message) {
+            console.error(class_constructor.name + ': ' + message);
+        };
+        ClassObj.prototype.warn = function(message) {
+            console.warn(class_constructor.name + ': ' + message);
         };
 
         // вызов функции, добавляющей пользовательские методы и свойства
-        class_constructor(InnerFunc, parent);
+        class_constructor(ClassObj, parent);
 
-        // если метод инициализации не описан - ищем в родителе
-        if (InnerFunc.init === undefined) {
-            if (parent.init) {
-                InnerFunc.init = parent.init;
-            } else {
-                console.error('Class has no "init" method');
-            }
-        }
-
-        return InnerFunc;
+        return ClassObj;
     };
+
+    function ClassError(message) {
+        this.message = message;
+    }
+    ClassError.prototype = new Error();
 
     // ======================================================================================
     //      ANIMATION UTILS

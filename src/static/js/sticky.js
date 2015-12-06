@@ -26,12 +26,11 @@
     };
 
 
-    window.Sticky = Class(null, function(cls, superclass) {
-        cls.init = function(block, options) {
+    window.Sticky = Class(null, function Sticky(cls, superclass) {
+        cls.prototype.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
-                console.error('Sticky: block not found');
-                return false;
+                return this.raise('block not found');
             }
 
             // настройки
@@ -43,8 +42,7 @@
             }, options);
 
             if ((this.opts.strategy != 'margin') && (this.opts.strategy != 'fixed')) {
-                console.error('Sticky: undefined strategy');
-                return false;
+                return this.raise('undefined strategy');
             }
 
             // отвязывание старого экземпляра

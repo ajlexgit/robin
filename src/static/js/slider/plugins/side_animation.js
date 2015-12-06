@@ -1,6 +1,6 @@
 (function($) {
 
-    window.SliderSideAnimation = Class(SliderPlugin, function(cls, superclass) {
+    window.SliderSideAnimation = Class(SliderPlugin, function SliderSideAnimation(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
             return $.extend(superclass.prototype.getDefaultOpts.call(this), {
@@ -201,7 +201,7 @@
     //  Анимация, выбирающая направление, соответствующее
     //  кратчайшему пути.
     //========================================================
-    window.SliderSideShortestAnimation = Class(SliderSideAnimation, function(cls, superclass) {
+    window.SliderSideShortestAnimation = Class(SliderSideAnimation, function SliderSideShortestAnimation(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
             return $.extend(superclass.prototype.getDefaultOpts.call(this), {

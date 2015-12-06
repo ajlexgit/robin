@@ -13,8 +13,8 @@
             })
      */
 
-    window.Cart = Class(null, function(cls, superclass) {
-        cls.init = function(options) {
+    window.Cart = Class(null, function Cart(cls, superclass) {
+        cls.prototype.init = function(options) {
             this.opts = $.extend({
                 prefix: 'cart',
                 onSave: $.noop,
@@ -122,7 +122,7 @@
          */
         cls.prototype.addItem = function(product_id, count) {
             if (!product_id) {
-                console.warn('Cart can\'t find product ID');
+                this.error('product ID required');
                 return $.Deferred().reject();
             }
 

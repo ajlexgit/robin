@@ -20,8 +20,8 @@
 
     var menus = [];
 
-    var Menu = Class(null, function(cls, superclass) {
-        cls.init = function(options) {
+    var Menu = Class(null, function Menu(cls, superclass) {
+        cls.prototype.init = function(options) {
             // настройки
             this.opts = $.extend({
                 menuSelector: '#mobile-menu',
@@ -37,8 +37,7 @@
             // элемент меню
             this.$menu = $(this.opts.menuSelector).first();
             if (!this.$menu.length) {
-                console.error('Menu can\'t find menu element');
-                return false;
+                return this.raise('menu element not found');
             }
 
             var that = this;

@@ -33,12 +33,11 @@
             });
      */
 
-    window.Expander = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.Expander = Class(null, function Expander(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Expander: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             // настройки
@@ -59,14 +58,12 @@
             // варианты текста
             this.$short = this.$root.find(this.opts.shortBlockSelector).first();
             if (!this.$short.length) {
-                console.error('Expander: short block not found');
-                return false;
+                return this.raise('short block not found');
             }
 
             this.$full = this.$root.find(this.opts.fullBlockSelector).first();
             if (!this.$full.length) {
-                console.error('Expander: full block not found');
-                return false;
+                return this.raise('full block not found');
             }
 
             // отвязывание старого экземпляра

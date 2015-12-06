@@ -37,8 +37,8 @@
             $.visibilityInspector.ignore('.block');
      */
 
-    var VisibilityInspector = Class(Inspector, function(cls, superclass) {
-        cls.init = function() {
+    var VisibilityInspector = Class(Inspector, function VisibilityInspector(cls, superclass) {
+        cls.prototype.init = function() {
             this._list = [];
             this.STATE_DATA_KEY = 'visibility_inspector_state';
             this.OPTS_DATA_KEY = 'visibility_inspector_opts';

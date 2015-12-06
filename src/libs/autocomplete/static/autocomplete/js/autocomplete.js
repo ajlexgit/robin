@@ -14,12 +14,12 @@
         return state.selected_text || state.text;
     };
 
-    window.Autocomplete = Class(null, function(cls, superclass) {
-        cls.init = function(element, options) {
+    var event_ns = 1;
+    window.Autocomplete = Class(null, function Autocomplete(cls, superclass) {
+        cls.prototype.init = function(element, options) {
             this.$elem = $(element).first();
             if (!this.$elem.length) {
-                console.error('Autocomplete: element not found');
-                return false;
+                return this.raise('element not found');
             }
 
             // настройки
@@ -33,15 +33,13 @@
             }, options);
 
             if (!this.opts.url) {
-                console.error('Autocomplete: url not found');
-                return false;
+                return this.raise('url required');
             }
 
             // имя элемента
             this.name = this.$elem.attr('name');
             if (!this.name) {
-                console.error('Autocomplete: name of element not found');
-                return false;
+                return this.raise('element name attribute not found');
             }
 
             // отвязывание старого экземпляра
@@ -73,7 +71,8 @@
 
             // при изменении зависимости вызываем событие изменения на текущем элементе
             var that = this;
-            this.$depends.on('change.autocomplete', function() {
+            this.event_ns = event_ns++;
+            this.$depends.on('change.autocomplete' + this.event_ns, function() {
                 that.$elem.change();
             });
 
@@ -87,8 +86,7 @@
             Отключение плагина
          */
         cls.prototype.destroy = function() {
-            // TODO: отключит все обработчики
-            this.$depends.off('.autocomplete');
+            this.$depends.off('.autocomplete' + this.event_ns);
             this.$elem.removeData(cls.dataParamName);
         };
 

@@ -1,23 +1,20 @@
 (function($) {
 
-    var AutocompleteTextbox = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    var AutocompleteTextbox = Class(null, function AutocompleteTextbox(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('AutocompleteTextbox: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             this.$input = this.$root.find('input').first();
             if (!this.$input.length) {
-                console.error('AutocompleteTextbox: input element not found');
-                return false;
+                return this.raise('input element not found');
             }
 
             this.$choices = this.$root.find('.choices').first();
             if (!this.$choices.length) {
-                console.error('AutocompleteTextbox: choices not found');
-                return false;
+                return this.raise('choices not found');
             }
 
             // настройки
@@ -32,8 +29,7 @@
             // Массив тэгов берется из опций или из строки data-tags, с разделителем "::"
             var tags;
             if (!$.isArray(this.opts.tags)) {
-                console.log('AutocompleteTextbox: tags must be an array');
-                return false;
+                return this.raise('tags must be an array');
             } else if (this.opts.tags.length) {
                 tags = this.opts.tags.concat();
             } else {

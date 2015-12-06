@@ -49,12 +49,11 @@
                 buttonSelector: 'button.crop'
             })
      */
-    window.CropDialog = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.CropDialog = Class(null, function CropDialog(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('CropDialog: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             // настройки
@@ -196,7 +195,7 @@
             // настройки обрезки
             var crop_opts = this.collectCropOptions($button);
             if (!crop_opts) {
-                console.error('CropDialog: crop options are empty');
+                this.error('crop options required');
                 return false;
             }
 
@@ -215,7 +214,7 @@
 
             var image = this.opts.getImage.call(this, $button);
             if (!image) {
-                console.error('CropDialog: image url is empty');
+                this.error('image url required');
                 return false;
             }
 

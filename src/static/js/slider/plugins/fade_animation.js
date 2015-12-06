@@ -1,6 +1,6 @@
 (function($) {
 
-    window.SliderFadeAnimation = Class(SliderPlugin, function(cls, superclass) {
+    window.SliderFadeAnimation = Class(SliderPlugin, function SliderFadeAnimation(cls, superclass) {
         // Настройки по умолчанию
         cls.prototype.getDefaultOpts = function() {
             return $.extend(superclass.prototype.getDefaultOpts.call(this), {

@@ -31,12 +31,11 @@
     var $window = $(window);
     var parallaxes = [];
 
-    window.Parallax = Class(null, function(cls, superclass) {
-        cls.init = function(block, options) {
+    window.Parallax = Class(null, function Parallax(cls, superclass) {
+        cls.prototype.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
-                console.error('Parallax: block not found');
-                return false;
+                return this.raise('block not found');
             }
 
             // настройки
@@ -48,15 +47,13 @@
             }, options);
 
             if (this.opts.bgHeight < 100) {
-                console.error('Parallax: bgHeight should be greather than 100');
-                return false;
+                return this.raise('bgHeight should not be less than 100');
             }
 
             // передвигающийся элемент
             this.$bg = this.$block.find(this.opts.selector);
             if (!this.$bg.length) {
-                console.error('Parallax: background not found');
-                return false;
+                return this.raise('background not found');
             }
 
             // отвязывание старого экземпляра

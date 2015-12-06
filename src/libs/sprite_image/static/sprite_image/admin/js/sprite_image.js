@@ -1,29 +1,25 @@
 (function($) {
 
-    var SpriteImage = Class(null, function(cls, superclass) {
-        cls.init = function(root) {
+    var SpriteImage = Class(null, function SpriteImage(cls, superclass) {
+        cls.prototype.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('SpriteImage: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             this.$input = this.$root.find('input:first');
             if (!this.$input.length) {
-                console.error('SpriteImage: input element not found');
-                return false;
+                return this.raise('input element not found');
             }
 
             this.$dropdown = this.$root.find('.sprite-icon-dropdown');
             if (!this.$dropdown.length) {
-                console.error('SpriteImage: dropdown block not found');
-                return false;
+                return this.raise('dropdown block not found');
             }
 
             this.$preview = this.$root.find('.sprite-icon-preview');
             if (!this.$preview.length) {
-                console.error('SpriteImage: preview not found');
-                return false;
+                return this.raise('preview not found');
             }
 
             // отвязывание старого экземпляра

@@ -1,31 +1,28 @@
 (function($) {
 
 
-    var StdImage = Class(null, function(cls, superclass) {
+    var StdImage = Class(null, function StdImage(cls, superclass) {
         var MIN_WIDTH_ERROR = gettext('Image should not be less than %(limit)spx in width');
         var MIN_HEIGHT_ERROR = gettext('Image should not be less than %(limit)spx in height');
         var MAX_WIDTH_ERROR = gettext('Image should not be more than %(limit)spx in width');
         var MAX_HEIGHT_ERROR = gettext('Image should not be more than %(limit)spx in height');
 
-        cls.init = function(root) {
+        cls.prototype.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('StdImage: root element not found');
-                return false;
+                return this.raise('root element not found');
             }
 
             // превью
             this.$previews = this.$root.find('.item-preview').first();
             if (!this.$previews.length) {
-                console.error('StdImage: previews block not found');
-                return false;
+                return this.raise('previews block not found');
             }
 
             // инпут
             this.$input = this.$root.find('input[type="file"]').first();
             if (!this.$input.length) {
-                console.error('StdImage: previews block not found');
-                return false;
+                return this.raise('input element not found');
             }
 
             // обертка кнопки обрезки
@@ -137,12 +134,10 @@
             Загрузка файла для создания превью
          */
         cls.prototype.readFile = function(success) {
-            var that = this;
-            var file = this.$input.prop('files').item(0);
-
             this.$previews.addClass('preloader').show();
 
-            $.fileReaderDeferred(file).done(function(src) {
+            var that = this;
+            $.fileReaderDeferred(this.$input.prop('files').item(0)).done(function(src) {
                 $.loadImageDeferred(src).done(function(img) {
                     that.$crop_btn_wrapper.show();
 
@@ -161,7 +156,7 @@
                     if (reason == 'Not image') {
                         alert(gettext('File is not an image'));
                     } else {
-                        console.error(reason);
+                        that.error(reason);
                     }
                 });
             }).fail(function(reason) {
@@ -314,7 +309,7 @@
                 this.$field = $button.closest('.stdimage');
                 this.stdimage = this.$field.data(StdImage.dataParamName);
                 if (!this.stdimage) {
-                    console.error('CropDialog: StdImage not found');
+                    this.error('StdImage object not found');
                     return false;
                 }
             },

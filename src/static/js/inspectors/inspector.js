@@ -7,8 +7,8 @@
             jquery.utils.js
      */
 
-    window.Inspector = Class(null, function(cls, superclass) {
-        cls.init = function() {
+    window.Inspector = Class(null, function Inspector(cls, superclass) {
+        cls.prototype.init = function() {
             this._list = [];
             this.STATE_DATA_KEY = 'inspector_state';
             this.OPTS_DATA_KEY = 'inspector_opts';
@@ -84,7 +84,7 @@
         cls.prototype.check = function($elements, options) {
             $elements = $($elements);
             if (!$elements.length) {
-                console.error('Inspector: checking elements required');
+                this.error('checking elements required');
                 return false;
             }
 
@@ -94,7 +94,7 @@
 
                 var opts = $.extend({}, that.getOpts($elem), options);
                 if (!opts) {
-                    console.warn('Inspector: checking options required');
+                    that.error('checking options required');
                     return;
                 }
 
@@ -110,13 +110,13 @@
         cls.prototype.inspect = function($elements, options) {
             $elements = $($elements);
             if (!$elements.length) {
-                console.error('Inspector: inspecting elements required');
+                this.error('inspecting elements required');
                 return false;
             }
 
             var opts = $.extend(this.getDefaultOpts(), options);
             if (!opts) {
-                console.error('Inspector: inspecting options required');
+                this.error('inspecting options required');
                 return false;
             }
 
@@ -141,7 +141,7 @@
         cls.prototype.ignore = function($elements) {
             $elements = $($elements);
             if (!$elements.length) {
-                console.error('Inspector: ignoring elements required');
+                this.error('ignoring elements required');
                 return false;
             }
 

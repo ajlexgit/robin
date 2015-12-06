@@ -1,13 +1,10 @@
 (function($) {
 
-    window.Comments = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.Comments = Class(null, function Comments(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Comments can\'t find root element');
-                return false;
-            } else {
-                this.$root.data(Comments.dataParamName, this);
+                return this.raise('root element not found');
             }
 
             // настройки
@@ -26,6 +23,8 @@
 
             // Удаляем атрибуты, чтобы лишний раз не палить
             this.$root.removeAttr('data-content_type data-object_id');
+
+            this.$root.data(cls.dataParamName, this);
         };
 
         cls.prototype.ajaxError = function(xhr, status, text) {

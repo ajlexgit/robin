@@ -2,12 +2,11 @@
 
     var galleries = [];
 
-    window.Gallery = Class(null, function(cls, superclass) {
-        cls.init = function(root, options) {
+    window.Gallery = Class(null, function Gallery(cls, superclass) {
+        cls.prototype.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
-                console.error('Gallery can\'t find root element');
-                return false;
+                return this.raise('root element not found');
             }
 
             // настройки

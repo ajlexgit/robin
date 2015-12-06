@@ -16,21 +16,19 @@
             $('input[type="checkbox"]').checkbox()
     */
 
-    window.CustomCheckbox = Class(null, function(cls, superclass) {
-        cls.init = function(input, options) {
-            this.$input = $(input).first();
-            if (!this.$input.length) {
-                console.error('CustomCheckbox: input element not found');
-                return false;
+    window.Checkbox = Class(null, function Checkbox(cls, superclass) {
+        cls.prototype.init = function(input, options) {
+            this.$root = $(input).first();
+            if (!this.$root.length) {
+                return this.raise('root element not found');
             }
 
-            if (this.$input.prop('tagName') != 'INPUT') {
-                console.error('CustomCheckbox: not INPUT element ');
-                return false;
+            if (this.$root.prop('tagName') != 'INPUT') {
+                return this.raise('root element is not an input');
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$input.data(cls.dataParamName);
+            var old_instance = this.$root.data(cls.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -44,26 +42,26 @@
             }, options);
 
             // запоминаем CSS и скрываем чекбокс
-            this._initial_css = this.$input.get(0).style.cssText;
-            this.$input.hide();
+            this._initial_css = this.$root.get(0).style.cssText;
+            this.$root.hide();
 
             // новый чекбокс
-            this.$elem = $('<div>').insertAfter(this.$input);
+            this.$elem = $('<div>').insertAfter(this.$root);
             this.$elem.addClass(this.opts.className);
 
             // начальное состояние
-            this._set_checked(this.$input.prop('checked'));
-            this._set_enabled(!this.$input.prop('disabled'));
+            this._set_checked(this.$root.prop('checked'));
+            this._set_enabled(!this.$root.prop('disabled'));
 
 
             // клик на новый элемент
             var that = this;
             this.$elem.on('click.checkbox', function() {
-                that.$input.triggerHandler('change');
+                that.$root.triggerHandler('change');
                 return false;
             });
 
-            this.$input.on('change.checkbox', function() {
+            this.$root.on('change.checkbox', function() {
                 if (!that.is_enabled()) {
                     return false
                 }
@@ -71,12 +69,12 @@
                 var is_checked = that.isChecked();
                 that._set_checked(!is_checked);
                 that.opts.onCheck.call(that);
-                that.$input.trigger('check.checkbox', [that]);
+                that.$root.trigger('check.checkbox', [that]);
 
                 return false;
             });
 
-            this.$input.data(cls.dataParamName, this);
+            this.$root.data(cls.dataParamName, this);
         };
 
         /*
@@ -84,12 +82,12 @@
          */
         cls.prototype.destroy = function() {
             // восстановление CSS
-            this.$input.get(0).style.cssText = this._initial_css;
+            this.$root.get(0).style.cssText = this._initial_css;
 
             this.$elem.remove();
 
-            this.$input.off('.checkbox');
-            this.$input.removeData(cls.dataParamName);
+            this.$root.off('.checkbox');
+            this.$root.removeData(cls.dataParamName);
         };
 
         /*
@@ -99,10 +97,10 @@
             this._checked = Boolean(checked);
             if (this._checked) {
                 this.$elem.addClass(this.opts.checkedClass);
-                this.$input.prop('checked', true);
+                this.$root.prop('checked', true);
             } else {
                 this.$elem.removeClass(this.opts.checkedClass);
-                this.$input.prop('checked', false);
+                this.$root.prop('checked', false);
             }
         };
 
@@ -134,10 +132,10 @@
             this._enabled = Boolean(enabled);
             if (this._enabled) {
                 this.$elem.removeClass(this.opts.disabledClass);
-                this.$input.prop('disabled', false);
+                this.$root.prop('disabled', false);
             } else {
                 this.$elem.addClass(this.opts.disabledClass);
-                this.$input.prop('disabled', true);
+                this.$root.prop('disabled', true);
             }
         };
 
@@ -162,12 +160,12 @@
             return this._enabled
         };
     });
-    CustomCheckbox.dataParamName = 'checkbox';
+    Checkbox.dataParamName = 'checkbox';
 
 
     $.fn.checkbox = function(options) {
         return this.each(function() {
-            CustomCheckbox.create(this, options);
+            Checkbox.create(this, options);
         })
     }
 
