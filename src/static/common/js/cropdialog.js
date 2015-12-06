@@ -96,7 +96,7 @@
         };
 
         /*
-            Уничтожение
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             this.$root.off(this.opts.eventTypes);

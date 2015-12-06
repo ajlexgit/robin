@@ -291,7 +291,7 @@
         };
 
         /*
-            Уничтожение
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             this._beforeHide();
@@ -450,7 +450,7 @@
         };
 
         /*
-            Уничтожение
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             superclass.prototype.destroy.call(this);

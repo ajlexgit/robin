@@ -55,7 +55,7 @@
         };
 
         /*
-            Отключение плагина
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             this.close_list();

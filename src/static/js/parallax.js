@@ -137,7 +137,7 @@
         };
 
         /*
-            Отвязывание плагина
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             this.disable();

@@ -10,11 +10,9 @@
                 case 'destroy':
                     // Уничтожение объекта галереи
                     return this.each(function() {
-                        var $container = $(this);
-                        var gallery = $container.gallery('object');
+                        var gallery = $(this).gallery('object');
                         if (gallery) {
                             gallery.destroy();
-                            $container.removeData(Gallery.dataParamName)
                         }
                     });
             }

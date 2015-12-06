@@ -194,7 +194,7 @@
         };
 
         /*
-            Отвязывание плагина
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             this.$root.removeData(cls.dataParamName);

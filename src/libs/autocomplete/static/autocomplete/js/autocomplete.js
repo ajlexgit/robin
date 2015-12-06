@@ -83,7 +83,7 @@
         };
 
         /*
-            Отключение плагина
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             this.$depends.off('.autocomplete' + this.event_ns);

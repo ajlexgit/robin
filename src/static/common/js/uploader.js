@@ -254,7 +254,7 @@
         };
 
         /*
-            Уничтожение заргузчика
+            Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
             if (this.uploader) {
