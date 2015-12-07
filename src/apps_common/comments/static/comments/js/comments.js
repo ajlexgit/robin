@@ -136,7 +136,7 @@
             if ($parent_comment.length) {
                 // Скролл к новому комментарию
                 $.scrollTo($comment, 300, {
-                    offset: -Math.round($(window).height() / 2),
+                    offset: -Math.round(document.documentElement.clientHeight / 2),
                     easing: 'easeOutQuad',
                     onAfter: function() {
                         $comment.addClass('comment-highlighted').switchClass('comment-highlighted', '', 2000);
