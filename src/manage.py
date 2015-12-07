@@ -1,7 +1,7 @@
 import os
 import sys
 
-# new JS classes: comments, gallery
+# new JS classes: comments
 # создать скрипт инициализации окружения
 # новый popup проверить
 # виджет выбора ссылки на сущность
