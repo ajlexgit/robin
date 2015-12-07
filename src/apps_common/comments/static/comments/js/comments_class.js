@@ -27,6 +27,7 @@
             this.$root.data(cls.dataParamName, this);
         };
 
+        // обработка ошибок ajax-запросов
         cls.prototype.ajaxError = function(xhr, status, text) {
             if (xhr.responseText) {
                 var json_response = $.parseJSON(xhr.responseText);
@@ -37,7 +38,7 @@
             return text
         };
 
-        // Возвращает jQuery-список, содержащий ветку комментариев
+        // Возвращает jQuery-коллекцию, содержащий ветку комментариев
         cls.prototype.getBranch = function($parent_comment) {
             var that = this;
             var parent_comment_level = $parent_comment.data('level');
