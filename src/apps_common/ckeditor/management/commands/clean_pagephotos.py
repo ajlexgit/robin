@@ -29,18 +29,20 @@ class Command(BaseCommand):
         )
 
     def get_model_textfields(self, model):
-        return (
+        return [
             item.name
             for item in model._meta.get_fields()
             if not item.auto_created and
                hasattr(item, 'get_internal_type') and
                item.get_internal_type() == 'TextField'
-        )
+        ]
 
     def process_model(self, app, model):
         app = model._meta.app_label
         modelname = model._meta.model_name
         fields = self.get_model_textfields(model)
+        if not fields:
+            return
 
         self.stdout.write('Processing model %s.%s...' % (app, modelname))
 
