@@ -14,12 +14,12 @@
             speed               - скорость сворачивания / разворачивания
             easing              - функция сглаживания сворачивания
 
-            onBeforeExpand      - событие перед разворачиванием блока.
+            beforeExpand        - событие перед разворачиванием блока.
                                   Если вернёт false, блок не будет развернут.
-            onAfterExpand       - событие после разворачивания блока
-            onBeforeReduce      - событие перед сворачиванием блока.
+            afterExpand         - событие после разворачивания блока
+            beforeReduce        - событие перед сворачиванием блока.
                                   Если вернёт false, блок не будет свернут.
-            onAfterReduce       - событие после сворачивания блока
+            afterReduce         - событие после сворачивания блока
 
         Пример:
             <div id="text-block">
@@ -49,10 +49,10 @@
                 speed: 400,
                 easing: 'easeOutQuad',
 
-                onBeforeExpand: $.noop,
-                onAfterExpand: $.noop,
-                onBeforeReduce: $.noop,
-                onAfterReduce: $.noop
+                beforeExpand: $.noop,
+                afterExpand: $.noop,
+                beforeReduce: $.noop,
+                afterReduce: $.noop
             }, options);
 
             // варианты текста
@@ -132,7 +132,7 @@
                 return
             }
 
-            if (this.opts.onBeforeExpand.call(this, $button) === false) {
+            if (this.opts.beforeExpand.call(this, $button) === false) {
                 return
             }
 
@@ -150,7 +150,7 @@
                 easing: this.opts.easing,
                 complete: function() {
                     that.$full.height('');
-                    that.opts.onAfterExpand.call(this, $button);
+                    that.opts.afterExpand.call(this, $button);
                 }
             })
         };
@@ -163,7 +163,7 @@
                 return
             }
 
-            if (this.opts.onBeforeReduce.call(this, $button) === false) {
+            if (this.opts.beforeReduce.call(this, $button) === false) {
                 return
             }
 
@@ -183,7 +183,7 @@
                     that.$full.height('');
                     that.$full.addClass(that.opts.hiddenClass);
                     that.$short.removeClass(that.opts.hiddenClass);
-                    that.opts.onAfterReduce.call(this, $button);
+                    that.opts.afterReduce.call(this, $button);
                 }
             })
         };
