@@ -103,7 +103,8 @@
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.form) {
+                if (response.errors) {
+                    // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
@@ -164,7 +165,8 @@
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.form) {
+                if (response.errors) {
+                    // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
@@ -223,7 +225,8 @@
             data: form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.form) {
+                if (response.errors) {
+                    // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
@@ -246,7 +249,7 @@
 
 
     // ==================================
-    //  Выход
+    //  Выход из профиля
     // ==================================
 
     window.logoutPopup = function() {
