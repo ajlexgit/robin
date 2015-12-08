@@ -169,8 +169,9 @@
 
     $(document).ready(function() {
         $('.autocomplete_widget').each(function() {
-            if (!$(this).closest('.empty-form').length) {
-                Autocomplete.create(this, data);
+            var $this = $(this);
+            if (!$this.closest('.empty-form').length) {
+                Autocomplete.create(this, $this.data());
             }
         });
 
@@ -181,7 +182,7 @@
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
                 row.find('.autocomplete_widget').each(function() {
-                    Autocomplete.create(this, data);
+                    Autocomplete.create(this, $(this).data());
                 });
             });
         }

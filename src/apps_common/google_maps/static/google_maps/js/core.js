@@ -93,14 +93,14 @@
         };
 
         /*
-            Превращение в строку "lng, lat"
+            Превращение в строку "lat, lng"
          */
         cls.prototype.toString = function() {
-            return [this.lng.toFixed(6), this.lat.toFixed(6)].join(', ');
+            return [this.lat.toFixed(6), this.lng.toFixed(6)].join(', ');
         };
 
         /*
-            Создание объекта из строки "lng, lat"
+            Создание объекта из строки "lat, lng"
          */
         cls.fromString = function(str) {
             var coords = str.toString().split(',');
@@ -108,7 +108,7 @@
                 console.error('invalid coords string: ' + str);
                 return;
             }
-            return cls.create(coords[1], coords[0]);
+            return cls.create(coords[0], coords[1]);
         }
     });
 
@@ -368,7 +368,7 @@
                 return false;
             }
 
-            this.native.getContent(value);
+            this.native.setContent(value);
         };
 
         /*
@@ -420,7 +420,7 @@
 
     /*
         Класс карты Google
-        TODO: bounds, disableDoubleClickZoom, zoom controls
+        TODO: bounds
      */
     window.GMap = Class(EventedObject, function GMap(cls, superclass) {
         var NATIVE_EVENTS = [
@@ -460,6 +460,7 @@
             var opts = $.extend({
                 center: null,
                 wheel: false,
+                styles: [],
                 zoom: 14
             }, options);
 
@@ -499,8 +500,9 @@
                 that.balloon = GMapBalloon(that, '');
 
                 that.center(opts.center);
-                that.zoom(opts.zoom);
                 that.wheel(opts.wheel);
+                that.styles(opts.styles);
+                that.zoom(opts.zoom);
 
                 setTimeout(function() {
                     that.trigger('ready');
@@ -561,6 +563,37 @@
         };
 
         /*
+            Получение / установка зума карты через колесико
+         */
+        cls.prototype.wheel = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return this.native.scrollwheel;
+            }
+
+            this.native.setOptions({
+                scrollwheel: Boolean(value)
+            });
+        };
+
+        /*
+            Получение / установка стилей карты
+         */
+        cls.prototype.styles = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return this.native.get('styles');
+            }
+
+            if (value && !$.isArray(value)) {
+                this.error('value should be an array');
+                return false;
+            }
+
+            this.native.set('styles', value);
+        };
+
+        /*
             Получение / установка зума карты
          */
         cls.prototype.zoom = function(value) {
@@ -575,20 +608,6 @@
             }
 
             this.native.setZoom(value);
-        };
-
-        /*
-            Получение / установка зума карты через колесико
-         */
-        cls.prototype.wheel = function(value) {
-            if (value === undefined) {
-                // получение значения
-                return this.native.scrollwheel;
-            }
-
-            this.native.setOptions({
-                scrollwheel: Boolean(value)
-            });
         };
 
         /*

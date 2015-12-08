@@ -11,10 +11,10 @@ class Coords:
     """
     __slots__ = ('_lat', '_lng')
 
-    def __new__(cls, lng=None, lat=None):
+    def __new__(cls, lat=None, lng=None):
         self = object.__new__(cls)
-        self._lng = self._format_number(lng)
         self._lat = self._format_number(lat)
+        self._lng = self._format_number(lng)
         return self
 
     @classmethod
@@ -43,7 +43,7 @@ class Coords:
         return self._lng
 
     def __iter__(self):
-        return iter((self.lng, self.lat))
+        return iter((self.lat, self.lng))
 
     def __repr__(self):
-        return '{0}, {1}'.format(self.lng, self.lat)
+        return '{0}, {1}'.format(self.lat, self.lng)

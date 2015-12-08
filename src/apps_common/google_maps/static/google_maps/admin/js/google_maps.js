@@ -22,7 +22,7 @@
         }).on('ready', function() {
             var point = GMapPoint.fromString($field.val());
             if (!point) {
-                return
+                point = GMapPoint(40.70583, -74.2588721);
             }
 
             var marker = GMapMarker({
