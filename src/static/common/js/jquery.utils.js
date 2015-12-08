@@ -294,11 +294,16 @@
                 var record;
                 while (record = evt_list[i]) {
                     if (this._isEveryNamespaces(record, evt_info.namespaces)) {
-                        record.handler.apply(this, [record].concat(args));
+                        var result = record.handler.apply(this, [record].concat(args));
                         if (record.once) {
                             evt_list.splice(i, 1);
                         } else {
                             i++;
+                        }
+
+                        // stop propagate
+                        if (result === false) {
+                            break
                         }
                     } else {
                         i++;
