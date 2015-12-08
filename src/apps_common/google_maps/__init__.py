@@ -39,12 +39,15 @@
 
         page.js:
             $(document).ready(function() {
-                var gmap = GoogleMap.create('#gmap');
-                gmap.addPlacemark({
-                    lng: 49.418785,
-                    lat: 53.510171,
-                    hint: 'First',
-                    balloon: '<p>Hello</p>'
+                var gmap = GMap('#gmap', {
+                    zoom:13
+                }).on('ready', function() {
+                    var marker = GMapMarker({
+                        map: this,
+                        position: GMapPoint(53.510171, 49.418785),
+                        hint: 'First',
+                        balloon: '<p>Hello</p>'
+                    })
                 });
             });
 
@@ -53,17 +56,18 @@
             $(document).on('change', '#id_address', function() {
                 var gmap = $('#id_coords').next('.google-map').data('map');
                 gmap.geocode($(this).val(), function(point) {
-                    var placemark = this.getPlacemark();
-                    if (placemark) {
-                        placemark.moveTo(point);
+                    var marker = this.markers[0];
+                    if (marker) {
+                        marker.position(point);
                     } else {
-                        placemark = this.addPlacemark({
-                            point: point
-                        });
+                        marker = GMapMarker({
+                            map: this,
+                            position: point
+                        })
                     }
 
-                    placemark.opts.onDragEnd.call(placemark);
-                    this.panTo(placemark.point);
+                    marker.trigger('dragend');
+                    this.panTo(point);
                 });
             });
 

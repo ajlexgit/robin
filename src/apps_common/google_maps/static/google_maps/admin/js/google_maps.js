@@ -1,26 +1,5 @@
 (function($) {
 
-    // Получение координат из строки "lng, lat"
-    var text2coords = function(text) {
-        var coords = text.split(',');
-        if (coords.length == 2)
-            coords = coords.map(parseFloat);
-        else
-            coords = [49.418785, 53.510171];
-
-        return new google.maps.LatLng(coords[1], coords[0]);
-    };
-
-
-    // Получение текста координат
-    var coords2text = function(coords) {
-        coords = [coords.lng(), coords.lat()];
-        return coords.map(function(coord) {
-            return coord.toFixed(6)
-        }).join(', ')
-    };
-
-
     var init_map_field = function() {
         var $field = $(this);
         if ($field.closest('.empty-form').length) {
@@ -38,33 +17,30 @@
         $field.after($map);
 
         // карта
-        GoogleMap.create($map, {
-            map_options: {
-                disableDoubleClickZoom: true,
-                zoom: 16
-            },
-            onInit: function() {
-                var point = text2coords($field.val());
-
-                this.addPlacemark({
-                    point: point,
-                    draggable: true,
-                    onDragEnd: function() {
-                        $field.val(coords2text(this.point));
-                    }
-                });
-
-                this.setCenter(point);
-
-                // установка значения поля при двойном клике
-                var that = this;
-                this.addListener(this.map, 'dblclick', function(evt) {
-                    var point = evt.latLng;
-                    var placemark = that.getPlacemark();
-                    placemark.moveTo(point);
-                    $field.val(coords2text(point));
-                });
+        var gmap = GMap($map, {
+            zoom:16
+        }).on('ready', function() {
+            var point = GMapPoint.fromString($field.val());
+            if (!point) {
+                return
             }
+
+            var marker = GMapMarker({
+                map: this,
+                position: point,
+                draggable: true
+            }).on('dragend', function() {
+                $field.val(this.position().toString());
+            });
+
+            this.center(point);
+
+            // установка значения поля при двойном клике
+            this.on('dblclick', function(evt) {
+                var point = GMapPoint(evt.latLng.lat(), evt.latLng.lng());
+                marker.position(point);
+                $field.val(point.toString());
+            });
         });
     };
 
@@ -82,11 +58,13 @@
     }).on('change', '.google-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
-        var gmap = $field.next('.google-map').data(GoogleMap.dataParamName);
+        var gmap = $field.next('.google-map').data(GMap.dataParamName);
 
-        var point = text2coords($field.val());
-        var placemark = gmap.getPlacemark();
-        placemark.moveTo(point);
+        var point = GMapPoint.fromString($field.val());
+        var marker = gmap.markers[0];
+        if (marker) {
+            marker.position(point);
+        }
         gmap.panTo(point);
     });
 

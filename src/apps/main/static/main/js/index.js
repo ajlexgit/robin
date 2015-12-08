@@ -22,7 +22,7 @@
 
 
     // gmap
-    GoogleMap.ready(function() {
+    GMap.ready(function() {
         var gmapStyle = [
             {
                 "featureType": "administrative",
@@ -73,8 +73,18 @@
         ];
 
 
-        window.gmap = GoogleMap.create('#gmap', {
-            map_options: {
+        window.gmap = GMap('#gmap', {
+            center: GMapPoint(53.510171, 49.418785),
+            zoom: 2
+        }).on('ready', function() {
+            console.log('ready');
+            var marker = GMapMarker({
+                map: this,
+                position: this.center()
+            })
+        });
+
+            /*map_options: {
                 styles: gmapStyle
             },
             onInit: function() {
@@ -96,7 +106,7 @@
                 this.setCenter(this.getPoints());
 
                 // intact
-                var intactSubdomains = [
+                /*var intactSubdomains = [
                     "0",
                     "1",
                     "2",
@@ -146,7 +156,7 @@
                 };
                 this.map.overlayMapTypes.insertAt(0, new google.maps.ImageMapType(tropicalTile));
             }
-        });
+        });*/
     });
 
 })(jQuery);
