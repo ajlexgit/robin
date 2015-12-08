@@ -31,6 +31,19 @@
     /*
         Система классов Javascript.
 
+        Экземпляры можно создавать через
+            > ClassName(arg1, ...)
+
+        Либо через
+            > ClassName.create(arg1, ...)
+
+        При создании экземпляров через
+            > new ClassName(arg1, ...)
+
+        всегда будет возвращен экземпляр класса,
+        но неполный (в случае ошибки инициализации).
+
+
         Пример 1:
             // создание класса Point2D, унаследованного от Object
             // с функцией инициализации и методом print().
@@ -72,23 +85,23 @@
 
         Пример 3:
             // создание экземпляров классов
-            > Point2D.create(6)
+            > Point2D(6)
             < Point2D: invalid Y
             < undefined
 
-            > Point2D.create(6, 'fail')
+            > Point2D(6, 'fail')
             < Point2D: invalid Y
             < undefined
 
-            > Point2D.create(6, 7)
+            > Point2D(6, 7)
             < Object {...}
 
 
-            > Point3D.create('fail', 6, 7)
+            > Point3D('fail', 6, 7)
             < Point3D: invalid X
             < undefined
 
-            > Point3D.create(6, 7)
+            > Point3D(6, 7)
             < Point3D: invalid Z
             < undefined
 
@@ -103,7 +116,9 @@
         }
 
         // установка прототипа, унаследованного от родительского
-        var ClassObj = {};
+        var ClassObj = function() {
+            return ClassObj.create.apply(null, arguments);
+        };
         ClassObj.prototype = Object.create(parent && parent.prototype);
         ClassObj.prototype.constructor = ClassObj;
         ClassObj.superclass = parent;
