@@ -187,7 +187,12 @@
             Форматирование имени события
          */
         cls.prototype._formatEventName = function(name) {
-            var name_arr = $.trim(name).toLowerCase().split('.');
+            name = $.trim(name).toLowerCase();
+            if (name.indexOf(' ') >= 0) {
+                this.raise('multiple events not allowed');
+            }
+
+            var name_arr = name.split('.');
             return {
                 name: name_arr.shift(),
                 namespaces: name_arr
@@ -206,6 +211,9 @@
 
             if (!handler) {
                 this.error('event handler required');
+                return this;
+            } else if (!$.isFunction(handler)) {
+                this.error('event handler should be a function');
                 return this;
             }
 
@@ -292,21 +300,18 @@
             if (evt_list) {
                 var i = 0;
                 var record;
-                while (record = evt_list[i]) {
+                while (record = evt_list[i++]) {
                     if (this._isEveryNamespaces(record, evt_info.namespaces)) {
                         var result = record.handler.apply(this, [record].concat(args));
                         if (record.once) {
                             evt_list.splice(i, 1);
-                        } else {
-                            i++;
+                            i--
                         }
 
                         // stop propagate
                         if (result === false) {
                             break
                         }
-                    } else {
-                        i++;
                     }
                 }
             }
