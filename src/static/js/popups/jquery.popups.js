@@ -530,10 +530,14 @@
 
 
     /*
-        Алиас создания окна с оверлеем
+        Алиас создания окна с оверлеем, либо получение текущего окна
      */
     $.popup = function(options) {
-        return OverlayedPopup.create(options);
+        if (options === undefined) {
+            return getCurrentPopup();
+        } else {
+            return OverlayedPopup.create(options);
+        }
     };
 
 })(jQuery);
