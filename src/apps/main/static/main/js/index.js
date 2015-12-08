@@ -37,9 +37,16 @@
                 ]
             },
             {
-                "featureType": "landscape",
+                "featureType": "landscape.man_made",
                 "stylers": [
                     {"visibility": "off"}
+                ]
+            },
+            {
+                "featureType": "landscape.natural",
+                "stylers": [
+                    {"visibility": "on"},
+                    {"color": "#efefef"}
                 ]
             },
             {
