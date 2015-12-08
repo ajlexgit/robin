@@ -7,7 +7,7 @@ __all__ = ['Coords']
 class Coords:
     """
         Класс, описывающий пару координат.
-        Используется в yandex_maps и google_maps.
+        Используется в google_maps.
     """
     __slots__ = ('_lat', '_lng')
 
