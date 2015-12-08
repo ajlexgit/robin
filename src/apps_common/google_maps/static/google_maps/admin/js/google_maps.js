@@ -37,7 +37,7 @@
 
             // установка значения поля при двойном клике
             this.on('dblclick', function(evt) {
-                var point = GMapPoint(evt.latLng.lat(), evt.latLng.lng());
+                var point = GMapPoint.fromNative(evt.latLng);
                 marker.position(point);
                 $field.val(point.toString());
             });

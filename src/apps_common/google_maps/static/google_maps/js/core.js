@@ -45,20 +45,6 @@
         document.body.appendChild(script);
     });
 
-
-    /*
-        Обертка над конструктором LatLngBounds, чтобы он принимал массив точек
-     */
-    var boundsByPoints = function(points) {
-        function F() {
-            return google.maps.LatLngBounds.apply(this, points);
-        }
-
-        F.prototype = google.maps.LatLngBounds.prototype;
-        return new F();
-    };
-
-
     /*
         Класс для пары координат
      */
@@ -109,6 +95,13 @@
                 return;
             }
             return cls.create(coords[0], coords[1]);
+        };
+
+        /*
+            Создание объекта из нативного объекта
+         */
+        cls.fromNative = function(native) {
+            return cls.create(native.lat(), native.lng());
         }
     });
 
@@ -236,8 +229,7 @@
         cls.prototype.position = function(value) {
             if (value === undefined) {
                 // получение положения
-                var native_point = this.native.getPosition();
-                return GMapPoint(native_point.lat(), native_point.lng());
+                return GMapPoint.fromNative(this.native.getPosition());
             }
 
             if (value) {
@@ -377,8 +369,7 @@
         cls.prototype.position = function(value) {
             if (value === undefined) {
                 // получение положения
-                var native_point = this.native.getPosition();
-                return GMapPoint(native_point.lat(), native_point.lng());
+                return GMapPoint.fromNative(this.native.getPosition());
             }
 
             if (value) {
@@ -420,7 +411,6 @@
 
     /*
         Класс карты Google
-        TODO: bounds
      */
     window.GMap = Class(EventedObject, function GMap(cls, superclass) {
         var NATIVE_EVENTS = [
@@ -536,8 +526,7 @@
         cls.prototype.center = function(value) {
             if (value === undefined) {
                 // получение центра карты
-                var native_point = this.native.getCenter();
-                return GMapPoint(native_point.lat(), native_point.lng());
+                return GMapPoint.fromNative(this.native.getCenter());
             }
 
             if (value) {
@@ -611,6 +600,24 @@
         };
 
         /*
+            Авторасчет зума и центра, чтобы были видны маркеры
+         */
+        cls.prototype.fitBounds = function() {
+            var bounds = new google.maps.LatLngBounds();
+
+            var items = arguments.length ? arguments : this.markers;
+            $.each(items, function(i, item) {
+                if (item instanceof GMapPoint) {
+                    bounds.extend(item.native);
+                } else if (item instanceof GMapMarker) {
+                    bounds.extend(item.position().native);
+                }
+            });
+
+            this.native.fitBounds(bounds);
+        };
+
+        /*
             Удаление всех маркеров
          */
         cls.prototype.removeAllMarkers = function() {
@@ -643,7 +650,7 @@
             }, function(results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                     var native_point = results[0].geometry.location;
-                    success.call(that, GMapPoint(native_point.lat(), native_point.lng()));
+                    success.call(that, GMapPoint.fromNative(native_point));
                 } else {
                     error.call(that, status, results);
                 }
