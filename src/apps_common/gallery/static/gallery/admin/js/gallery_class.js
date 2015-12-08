@@ -2,7 +2,7 @@
 
     var formatError = function(file, message, html) {
         var nl = html ? '<br>' : '\n';
-        return gettext('Error') + ' "' + file.name + '":' + nl + message;
+        return gettext('Error') + ':' + nl + message;
     };
 
 
@@ -48,14 +48,14 @@
                 return this.raise('model_name reqired');
             }
 
-            this.field_name = this.$galleryInput.attr('name');
-            if (!this.field_name) {
-                return this.raise('field_name required');
-            }
-
             this.$galleryInput = this.$root.find(this.opts.galleryInputSelector).first();
             if (!this.$galleryInput.length) {
                 return this.raise('input element not found');
+            }
+
+            this.field_name = this.$galleryInput.attr('name');
+            if (!this.field_name) {
+                return this.raise('field_name required');
             }
 
             this.$wrapper = this.$root.find(this.opts.galleryWrapperSelector).first();
@@ -73,10 +73,10 @@
                 this.initGallery(gallery_id);
             }
 
+            this.$root.data(cls.dataParamName, this);
+
             // callback
             this.$root.trigger('create.gallery');
-
-            this.$root.data(cls.dataParamName, this);
         };
 
         /*
@@ -277,7 +277,6 @@
                     var $item = that.$list.find('#' + file.id);
                     var $preview = $item.find(that.opts.previewSelector);
 
-                    $item.removeAttr('id');
                     $item.removeClass(that.opts.loadingClass);
                     $item.data({
                         id: json_response.id,
@@ -309,7 +308,6 @@
                     var $controls = $item.find(that.opts.controlsSelector);
                     $controls.hide();
 
-                    $item.removeAttr('id');
                     $item.removeClass(that.opts.loadingClass);
                     $item.addClass(that.opts.errorClass);
                     $item.find(that.opts.progressSelector).remove();

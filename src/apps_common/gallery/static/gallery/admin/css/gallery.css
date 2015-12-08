@@ -197,11 +197,11 @@
 
 /* Ошибка */
 .gallery-item-error {
-    box-shadow: 0 0 1px 3px red;
+    box-shadow: 1px 1px 4px #F00;
 }
 
 .gallery-item-error .item-preview {
-    color: #d00000;
+    color: #FFFFFF;
 }
 .gallery-item-error .item-preview:before {
     content: '';
@@ -211,16 +211,16 @@
     left: 0;
     top: 0;
     z-index: 5;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(192, 0, 0, 0.75);
 }
 .gallery-item-error .item-preview span {
     position: absolute;
-    padding: 10px;
+    padding: 8% 9%;
     left: 0;
     top: 0;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     text-align: left;
-    line-height: 1.1;
+    line-height: 1.2;
     z-index: 10;
 }

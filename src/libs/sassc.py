@@ -1,6 +1,7 @@
 import os
 from pipeline.conf import settings
 from pipeline.compilers import SubProcessCompiler
+from pipeline.exceptions import CompilerError
 
 
 class SASSCCompiler(SubProcessCompiler):
@@ -29,4 +30,8 @@ class SASSCCompiler(SubProcessCompiler):
             infile,
             outfile
         )
-        return self.execute_command(command, cwd=os.path.dirname(infile))
+        try:
+            return self.execute_command(command, cwd=os.path.dirname(infile))
+        except CompilerError:
+            print('CompilerError at file: %s' % infile)
+            raise

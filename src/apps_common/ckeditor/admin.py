@@ -5,12 +5,13 @@ from django.core.exceptions import ValidationError
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.http import JsonResponse, Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
+from project.admin import ModelAdminMixin
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 from .models import PagePhoto, SimplePhoto, generate_tag
 
 
 @admin.register(PagePhoto)
-class PagePhotoAdmin(admin.ModelAdmin):
+class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
     exclude = ('app_name', 'model_name', 'instance_id')
 
     class Media:

@@ -73,7 +73,7 @@
 }
 
 .sprite-icon-item.active {
-    box-shadow: 0 0 8px 1px #080;
+    box-shadow: 0 0 3px 2px #0A0;
 }
 
 .sprite-icon-item:hover {
