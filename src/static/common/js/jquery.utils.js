@@ -164,6 +164,194 @@
     }
     ClassError.prototype = new Error();
 
+
+    // ======================================================================================
+    //      Класс с событиями.
+    //
+    //      Имена событий и пространств имен не чувствительны к регистру
+    // ======================================================================================
+
+    window.EventedObject = Class(null, function EventedObject(cls, superclass) {
+        cls.prototype.init = function() {
+            this._events = {};
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.prototype.destroy = function() {
+            this._events = {};
+        };
+
+        /*
+            Форматирование имени события
+         */
+        cls.prototype._formatEventName = function(name) {
+            name = $.trim(name).toLowerCase();
+            if (name.indexOf(' ') >= 0) {
+                this.raise('multiple events not allowed');
+            }
+
+            var name_arr = name.split('.');
+            return {
+                name: name_arr.shift(),
+                namespaces: name_arr
+            };
+        };
+
+        /*
+            Добавление обработчика события
+         */
+        cls.prototype._addEventHandler = function(name, handler, options) {
+            var evt_info = this._formatEventName(name);
+            if (!evt_info.name) {
+                this.error('event name not found: ' + name);
+                return this;
+            }
+
+            if (!handler) {
+                this.error('event handler required');
+                return this;
+            } else if (!$.isFunction(handler)) {
+                this.error('event handler should be a function');
+                return this;
+            }
+
+            var evtRecord = $.extend(options, {
+                type: evt_info.name,
+                handler: handler,
+                namespaces: evt_info.namespaces
+            });
+
+            if (evt_info.name in this._events) {
+                this._events[evt_info.name].push(evtRecord);
+            } else {
+                this._events[evt_info.name] = [evtRecord];
+            }
+
+            return this;
+        };
+
+        /*
+            Проверка, что все namespaces содержатся в record
+         */
+        cls.prototype._isEveryNamespaces = function(record, namespaces) {
+            if (!namespaces.length) return true;
+            return namespaces.every(function(ns) {
+                return record.namespaces.indexOf(ns) >= 0;
+            })
+        };
+
+        /*
+            Проверка, что хоть один из namespaces содержатся в record
+         */
+        cls.prototype._isSomeNamespaces = function(record, namespaces) {
+            if (!namespaces.length) return true;
+            return namespaces.some(function(ns) {
+                return record.namespaces.indexOf(ns) >= 0;
+            })
+        };
+
+        /*
+            Удаление из стека evt_list событий evt_name, подходящих под пространства имен.
+         */
+        cls.prototype._removeEvents = function(evt_name, evt_list, evt_namespaces) {
+            if (!evt_list || !evt_list.length) {
+                return
+            }
+
+            if (!evt_namespaces.length) {
+                this._events[evt_name] = [];
+            } else {
+                var that = this;
+                this._events[evt_name] = evt_list.filter(function(record) {
+                    return !that._isSomeNamespaces(record, evt_namespaces);
+                });
+            }
+        };
+
+        /*
+            Добавление обработчика события
+         */
+        cls.prototype.on = function(name, handler) {
+            return this._addEventHandler(name, handler, {once: false});
+        };
+
+        /*
+            Добавление одноразового обработчика события
+         */
+        cls.prototype.one = function(name, handler) {
+            return this._addEventHandler(name, handler, {once: true});
+        };
+
+        /*
+            Вызов обработчиков события
+         */
+        cls.prototype.trigger = function() {
+            var args = Array.prototype.slice.call(arguments);
+            var name = args.shift();
+            var evt_info = this._formatEventName(name);
+            if (!evt_info.name) {
+                this.error('event name not found: ' + name);
+                return this;
+            }
+
+            var evt_list = this._events[evt_info.name];
+            if (evt_list) {
+                var i = 0;
+                var record;
+                while (record = evt_list[i++]) {
+                    if (this._isEveryNamespaces(record, evt_info.namespaces)) {
+                        var result = record.handler.apply(this, [record].concat(args));
+                        if (record.once) {
+                            evt_list.splice(i, 1);
+                            i--
+                        }
+
+                        // stop propagate
+                        if (result === false) {
+                            break
+                        }
+                    }
+                }
+            }
+            return this;
+        };
+
+        /*
+            Удаление обработчиков события
+         */
+        cls.prototype.off = function(name) {
+            // удаление всех обработчиков
+            name = $.trim(name);
+            if (!name || (name == '*')) {
+                this._events = {};
+                return this;
+            }
+
+            var evt_info = this._formatEventName(name);
+            if (evt_info.name) {
+                // удаление обработчиков определенного типа
+                var evt_list = this._events[evt_info.name];
+                if (evt_list) {
+                    this._removeEvents(evt_info.name, evt_list, evt_info.namespaces);
+                }
+            } else {
+                // удаление по пространству имен
+                for (var key in this._events) {
+                    if (this._events.hasOwnProperty(key)) {
+                        evt_list = this._events[key];
+                        if (evt_list) {
+                            this._removeEvents(key, evt_list, evt_info.namespaces);
+                        }
+                    }
+                }
+            }
+            return this;
+        };
+    });
+
+
     // ======================================================================================
     //      ANIMATION UTILS
     // ======================================================================================
