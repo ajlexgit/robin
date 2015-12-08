@@ -77,11 +77,22 @@
             center: GMapPoint(53.510171, 49.418785),
             zoom: 2
         }).on('ready', function() {
-            console.log('ready');
-            var marker = GMapMarker({
+            var marker1 = GMapMarker({
                 map: this,
-                position: this.center()
-            })
+                position: GMapPoint(53.510171, 49.418785),
+                hint: 'First',
+                balloon: '<p>Hello</p>'
+            });
+
+            var marker2 = GMapMarker({
+                map: this,
+                position: GMapPoint(-30, 30),
+                hint: 'second',
+                draggable: true,
+                balloon: '<p>Goodbay</p>'
+            });
+
+            this.center(this.markers[0].position());
         });
 
             /*map_options: {

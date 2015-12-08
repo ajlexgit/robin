@@ -194,7 +194,7 @@
             Получение / установка карты
          */
         cls.prototype.map = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение карты
                 return this._map;
             }
@@ -234,25 +234,27 @@
             Получение / установка положения
          */
         cls.prototype.position = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение положения
                 var native_point = this.native.getPosition();
                 return GMapPoint(native_point.lat(), native_point.lng());
             }
 
-            if (value && (value instanceof GMapPoint == false)) {
-                this.error('value should be a GMapPoint instance');
-                return false;
-            }
+            if (value) {
+                if (value instanceof GMapPoint == false) {
+                    this.error('value should be a GMapPoint instance');
+                    return false;
+                }
 
-            this.native.setPosition(value.native);
+                this.native.setPosition(value.native);
+            }
         };
 
         /*
             Получение / установка подсказки
          */
         cls.prototype.hint = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение подсказки
                 return this.native.getTitle();
             }
@@ -269,7 +271,7 @@
             Получение / установка иконки
          */
         cls.prototype.icon = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение иконки
                 return this.native.getIcon();
             }
@@ -286,7 +288,7 @@
             Получение / установка HTML всплывающего окна
          */
         cls.prototype.balloon = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение HTML
                 return this._balloon;
             }
@@ -316,7 +318,7 @@
             Получение / установка возможности перетаскивания
          */
         cls.prototype.draggable = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение значения
                 return this.native.getDraggable();
             }
@@ -356,7 +358,7 @@
             Получение / установка содержимого всплывающего окна
          */
         cls.prototype.content = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение содержимого
                 return this.native.getContent();
             }
@@ -373,18 +375,20 @@
             Получение / установка положения
          */
         cls.prototype.position = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение положения
                 var native_point = this.native.getPosition();
                 return GMapPoint(native_point.lat(), native_point.lng());
             }
 
-            if (value && (value instanceof GMapPoint == false)) {
-                this.error('value should be a GMapPoint instance');
-                return false;
-            }
+            if (value) {
+                if (value instanceof GMapPoint == false) {
+                    this.error('value should be a GMapPoint instance');
+                    return false;
+                }
 
-            this.native.setPosition(value.native);
+                this.native.setPosition(value.native);
+            }
         };
 
         /*
@@ -506,24 +510,6 @@
             this.$root.data(cls.dataParamName, this);
         };
 
-//        /*
-//            Освобождение ресурсов
-//         */
-//        cls.prototype.destroy = function() {
-//            this.balloon.content('');
-//            this.balloon.close();
-//
-//            var marker;
-//            while (marker = this.markers[0]) {
-//                marker.destroy();
-//            }
-//
-//            this.native_events = [];
-//            google.maps.event.clearInstanceListeners(this.native);
-//
-//            superclass.prototype.destroy.call(this);
-//        };
-
         /*
             Отлов событий
          */
@@ -546,18 +532,20 @@
             Получение / установка центра карты
          */
         cls.prototype.center = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение центра карты
                 var native_point = this.native.getCenter();
                 return GMapPoint(native_point.lat(), native_point.lng());
             }
 
-            if (value && (value instanceof GMapPoint == false)) {
-                this.error('value should be a GMapPoint instance');
-                return false;
-            }
+            if (value) {
+                if (value instanceof GMapPoint == false) {
+                    this.error('value should be a GMapPoint instance');
+                    return false;
+                }
 
-            this.native.setCenter(value.native);
+                this.native.setCenter(value.native);
+            }
         };
 
         /*
@@ -576,7 +564,7 @@
             Получение / установка зума карты
          */
         cls.prototype.zoom = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение зума
                 return this.native.getZoom();
             }
@@ -593,7 +581,7 @@
             Получение / установка зума карты через колесико
          */
         cls.prototype.wheel = function(value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 // получение значения
                 return this.native.scrollwheel;
             }
@@ -618,7 +606,8 @@
 
             gmap.geocode('Тольятти Майский проезд 64', function(point) {
                 GMapMarker({
-                    point: point
+                    map: this,
+                    position: point
                 })
             }, function(status, results) {
                 alert('Error:', status)
