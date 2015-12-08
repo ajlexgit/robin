@@ -18,46 +18,58 @@
         $('#parallax').parallax({
 
         });
+    });
 
 
-        // gmap
+    // gmap
+    GoogleMap.ready(function() {
         var gmapStyle = [
             {
                 "featureType": "administrative",
                 "stylers": [
                     {"visibility": "off"}
                 ]
-            }, {
+            },
+            {
                 "featureType": "administrative.country",
                 "stylers": [
                     {"visibility": "on"}
                 ]
-            }, {
+            },
+            {
                 "featureType": "landscape",
                 "stylers": [
                     {"visibility": "off"}
                 ]
-            }, {
+            },
+            {
                 "featureType": "poi",
                 "stylers": [
                     {"visibility": "off"}
                 ]
-            }, {
+            },
+            {
                 "featureType": "road",
                 "stylers": [
                     {"visibility": "off"}
                 ]
-            }, {
+            },
+            {
                 "featureType": "transit",
                 "stylers": [
                     {"visibility": "off"}
                 ]
-            }, {
+            },
+            {
                 "featureType": "water"
             }
         ];
 
+
         window.gmap = GoogleMap.create('#gmap', {
+            map_options: {
+                styles: gmapStyle
+            },
             onInit: function() {
                 this.addPlacemark({
                     lng: 49.418785,
@@ -77,7 +89,12 @@
                 this.setCenter(this.getPoints());
 
                 // intact
-                var intactSubdomains = ["0", "1", "2", "3"];
+                var intactSubdomains = [
+                    "0",
+                    "1",
+                    "2",
+                    "3"
+                ];
                 var intactIndex = 0;
                 var getIntactHost = function() {
                     var cdn = intactSubdomains[intactIndex++ % intactSubdomains.length];
@@ -85,7 +102,15 @@
                 };
                 var intactTile = {
                     getTileUrl: function(coord, zoom) {
-                        return [getIntactHost(), zoom, '/', coord.x, '/', coord.y, '.png'].join('');
+                        return [
+                            getIntactHost(),
+                            zoom,
+                            '/',
+                            coord.x,
+                            '/',
+                            coord.y,
+                            '.png'
+                        ].join('');
                     },
                     tileSize: new google.maps.Size(256, 256) // or whatever
                 };
@@ -100,16 +125,21 @@
                 };
                 var tropicalTile = {
                     getTileUrl: function(coord, zoom) {
-                        return [getTropicalHost(), zoom, '/', coord.x, '/', coord.y, '.png'].join('');
+                        return [
+                            getTropicalHost(),
+                            zoom,
+                            '/',
+                            coord.x,
+                            '/',
+                            coord.y,
+                            '.png'
+                        ].join('');
                     },
                     tileSize: new google.maps.Size(256, 256) // or whatever
                 };
                 this.map.overlayMapTypes.insertAt(0, new google.maps.ImageMapType(tropicalTile));
-            },
-            map_options: {
-                styles: gmapStyle
             }
         });
-    })
+    });
 
 })(jQuery);

@@ -2,6 +2,7 @@ import os
 import sys
 
 # Angular-like
+# Можно избавиться от .create
 # виджет выбора ссылки на сущность
 
 # Blocks - ссылка на создание блока
