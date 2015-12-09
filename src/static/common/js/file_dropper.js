@@ -6,10 +6,19 @@
         Требует:
             jquery.utils.js
 
+        Параметры:
+            dragOverClass   - класс, который вешается на DOM-элемент
+                              при перетаскивании над ним файла
 
+        События:
+            start.drag      - начало перетаскивания над областью
+            stop.drag       - завершение перетаскивания над областью
+            drop.drag       - файлы переместили на область
      */
-    window.FileDropper = Class(null, function Uploader(cls, superclass) {
+    window.FileDropper = Class(EventedObject, function Uploader(cls, superclass) {
         cls.prototype.init = function(root, options) {
+            superclass.prototype.init.call(this);
+
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -17,11 +26,7 @@
 
             // настройки
             this.opts = $.extend({
-                dragOverClass: 'dragover',
-
-                onStartDrag: $.noop,
-                onStopDrag: $.noop,
-                onDrop: $.noop
+                dragOverClass: 'dragover'
             }, options);
 
             var that = this;
@@ -32,9 +37,8 @@
                     $(this).addClass(that.opts.dragOverClass);
 
                     // callback
-                    that.opts.onStartDrag.call(that);
+                    that.trigger('start.drag');
                 }
-                return false;
             }).on('dragover.file_dropper', function() {
                 return false;
             }).on('dragleave.file_dropper', function() {
@@ -43,22 +47,19 @@
                     $(this).removeClass(that.opts.dragOverClass);
 
                     // callback
-                    that.opts.onStopDrag.call(that);
+                    that.trigger('stop.drag');
                 }
-                return false;
-            }).on('drop.file_dropper dragdrop.file_dropper', function(event) {
+            }).on('drop.file_dropper', function(event) {
                 drag_counter = 0;
                 $(this).removeClass(that.opts.dragOverClass);
 
                 // callback
-                that.opts.onStopDrag.call(that);
+                that.trigger('stop.drag');
 
                 var files = that.getFiles(event.originalEvent.dataTransfer);
                 if (files.length) {
-                    that.opts.onDrop.call(that, files);
+                    that.trigger('drop.drag', files);
                 }
-
-                return false;
             });
 
             this.$root.data(cls.dataParamName, this);
@@ -70,6 +71,7 @@
         cls.prototype.destroy = function() {
             this.$root.off('.file_dropper');
             this.$root.removeData(cls.dataParamName);
+            superclass.prototype.destroy.call(this);
         };
 
         /*
@@ -91,14 +93,5 @@
         }
     });
     FileDropper.dataParamName = 'file_dropper';
-
-    /*
-        Алиас для FileDropper
-     */
-    $.fn.fileDropper = function(options) {
-        return this.each(function() {
-            FileDropper(this, options)
-        })
-    }
 
 })(jQuery);

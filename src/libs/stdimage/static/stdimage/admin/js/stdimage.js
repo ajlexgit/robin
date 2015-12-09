@@ -45,17 +45,7 @@
 
             // обработчик перетаскивания файлов
             var that = this;
-            this.dropper = FileDropper(this.$root, {
-                onDrop: function(files) {
-                    var file;
-                    var i = 0;
-                    while (file = files[i++]) {
-                        if (file.type && (file.type.indexOf('image') == 0)) {
-                            return
-                        }
-                    }
-                }
-            });
+            this.dropper = FileDropper(this.$root);
 
             this.$button.on('click', function() {
                 that.$input.click();
@@ -156,14 +146,64 @@
         };
 
         /*
+            Показ прелоадера и блокировка кнопок
+         */
+        cls.prototype._preloaderStart = function() {
+            this.$root.addClass('preloader');
+            this.$previews.show();
+            this.$button.prop('disabled', true);
+        };
+
+        /*
+            Скрытие прелоадера и разблокировка кнопок
+         */
+        cls.prototype._preloaderStop = function() {
+            this.$root.removeClass('preloader');
+            this.$button.prop('disabled', false);
+        };
+
+        /*
+            Некорректная картинка
+         */
+        cls.prototype._invalid = function(msg, data) {
+            this.$input.val('');
+            this._preloaderStop();
+            this.$root.addClass('invalid');
+            this.$crop_btn_wrapper.hide();
+
+            // для cropdialog
+            this.opts.source_url = '';
+
+            if (msg) {
+                var text = interpolate(msg, data, true);
+                this.$previews.append(
+                    $('<span>').addClass('error').text(text)
+                )
+            }
+        };
+
+        /*
+            Очистка ошибки поля
+         */
+        cls.prototype._clearInvalid = function() {
+            this.$root.removeClass('invalid');
+            this.$previews.find('.error').remove();
+        };
+
+        /*
             Загрузка файла для создания превью
          */
         cls.prototype.readFile = function(success) {
-            this.$previews.addClass('preloader').show();
+            // сброс обрезки
+            this.$crop_btn_wrapper.find('input').val('');
+
+            this._clearInvalid();
+            this._preloaderStart();
 
             var that = this;
             $.fileReaderDeferred(this.$input.prop('files').item(0)).done(function(src) {
                 $.loadImageDeferred(src).done(function(img) {
+                    that._preloaderStop();
                     that.$crop_btn_wrapper.show();
 
                     // для cropdialog
@@ -172,11 +212,9 @@
                     that.showPreview(img);
 
                     success.call(that, img);
-
-                    that.$previews.removeClass('preloader');
                 }).fail(function(reason) {
                     // ошибка разбора изображения
-                    that._badfile();
+                    that._invalid();
                     that.$previews.hide();
                     if (reason == 'Not image') {
                         alert(gettext('File is not an image'));
@@ -186,25 +224,12 @@
                 });
             }).fail(function(reason) {
                 // ошибка загрузки файла
-                that._badfile();
+                that._invalid();
                 that.$previews.hide();
                 if (reason != 'Not a file') {
                     alert(reason);
                 }
             });
-        };
-
-        /*
-            Ошибка загрузки файла для создания превью
-         */
-        cls.prototype._badfile = function() {
-            this.$input.val('');
-            this.$previews.removeClass('preloader');
-
-            // для cropdialog
-            this.opts.source_url = '';
-
-            this.$crop_btn_wrapper.hide();
         };
 
         /*
@@ -234,7 +259,7 @@
          */
         cls.prototype.validate = function(source) {
             if (this.opts.min_dimensions[0] && (source.width < this.opts.min_dimensions[0])) {
-                this.setError(MIN_WIDTH_ERROR, {
+                this._invalid(MIN_WIDTH_ERROR, {
                     limit: this.opts.min_dimensions[0]
                 });
 
@@ -243,43 +268,24 @@
             }
 
             if (this.opts.min_dimensions[1] && (source.height < this.opts.min_dimensions[1])) {
-                this.setError(MIN_HEIGHT_ERROR, {
+                this._invalid(MIN_HEIGHT_ERROR, {
                     limit: this.opts.min_dimensions[1]
                 });
                 return
             }
 
             if (this.opts.max_dimensions[0] && (source.width > this.opts.max_dimensions[0])) {
-                this.setError(MAX_WIDTH_ERROR, {
+                this._invalid(MAX_WIDTH_ERROR, {
                     limit: this.opts.min_dimensions[0]
                 });
                 return
             }
 
             if (this.opts.max_dimensions[1] && (source.height > this.opts.max_dimensions[1])) {
-                this.setError(MAX_HEIGHT_ERROR, {
+                this._invalid(MAX_HEIGHT_ERROR, {
                     limit: this.opts.max_dimensions[1]
                 });
-                // return
             }
-        };
-
-        /*
-            Показ ошибки поля
-         */
-        cls.prototype.setError = function(msg, data) {
-            var text = interpolate(msg, data, true);
-            this.$previews.addClass('invalid').append(
-                $('<span>').addClass('error').text(text)
-            )
-        };
-
-        /*
-            Очистка ошибок поля
-         */
-        cls.prototype.clearErrors = function() {
-            this.$previews.removeClass('invalid');
-            this.$previews.find('.error').remove();
         };
     });
     StdImage.dataParamName = 'stdimage';
@@ -294,11 +300,6 @@
             console.error('StdImage object not found');
             return false;
         }
-
-        stdimage.clearErrors();
-
-        // сброс обрезки
-        stdimage.$crop_btn_wrapper.find('input').val('');
 
         // загрузка картинки и показ превью
         stdimage.readFile(function(img) {

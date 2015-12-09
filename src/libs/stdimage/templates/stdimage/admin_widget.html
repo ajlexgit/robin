@@ -35,7 +35,7 @@
   {% endif %}
 
   {% if value %}
-    <div>
+    <div class="delete-wrapper">
       <span>{% trans 'Delete' %}:</span>
       <input type="checkbox" name="{{ name }}-delete" class="delete"/>
     </div>
@@ -43,8 +43,8 @@
 
 
   <div class="dragover-content">
-    <p>{% trans 'Move file here' %}</p>
+    <span>{% trans 'Drop file here' %}</span>
   </div>
 
-  <input type="file" {{ attrs }}>
+  <input type="file" class="input-file" {{ attrs }}>
 </div>

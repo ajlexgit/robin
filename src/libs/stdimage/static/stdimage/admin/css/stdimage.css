@@ -1,13 +1,19 @@
 .stdimage {
     position: relative;
+    overflow: hidden;
     z-index: 1;
 }
 
 
-.stdimage input {
+.stdimage .input-file {
     font-size: 0;
     opacity: 0;
     position: absolute;
+    left: -5000px;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
 }
 
 /* Подсказка */
@@ -21,20 +27,42 @@
 
 
 /* Перетаскивание файла */
-.stdimage.dragover .normal-content {
-    display: none;
-}
-
 .stdimage .dragover-content {
     display: none;
-    padding: 30px 20px;
+    position: absolute;
+    padding: 20px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
     color: #606060;
     font-size: 20px;
+    text-align: center;
     background-color: #D0D0D0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.stdimage .dragover-content span {
+    vertical-align: middle;
+}
+.stdimage .dragover-content:after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    min-height: inherit;
+    vertical-align: middle;
 }
 
+.stdimage.dragover {
+    min-height: 120px;
+}
 .stdimage.dragover .dragover-content {
     display: block;
+}
+.stdimage.dragover .input-file {
+    left: 0;
 }
 
 
@@ -48,11 +76,11 @@
 }
 
 /* Прелоадер */
-.stdimage .item-preview.preloader {
+.stdimage.preloader .item-preview {
     min-width: 200px;
     min-height: 200px;
 }
-.stdimage .item-preview.preloader:before {
+.stdimage.preloader .item-preview:before {
     content: '';
     background: url(../img/loading.gif) no-repeat center center rgba(255,255,255,0.7);
     width: 100%;
@@ -60,14 +88,20 @@
     position: absolute;
     z-index: 1;
 }
+.stdimage.preloader .delete-wrapper {
+    display: none;
+}
+.stdimage.preloader .crop-btn-wrapper {
+    display: none;
+}
 
 /* Некорректная картинка */
-.stdimage .item-preview.invalid {
+.stdimage.invalid .item-preview {
     min-width: 120px;
     min-height: 120px;
     box-shadow: 1px 1px 4px red;
 }
-.stdimage .item-preview.invalid .error {
+.stdimage.invalid .item-preview .error {
     content: '';
     position: absolute;
     padding: 8% 9%;
