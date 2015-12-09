@@ -111,7 +111,15 @@
             throw Error('class-constructor function required');
         }
 
-        if (!class_constructor.name) {
+        // получение имени функции
+        var name = class_constructor.name;
+        if (name === undefined) {
+            var match = /function ([^\(]+)\(/ig.exec(class_constructor.toString());
+            if (match) {
+                name = match[1];
+            }
+        }
+        if (!name) {
             throw Error('class-constructor should be a named function');
         }
 
