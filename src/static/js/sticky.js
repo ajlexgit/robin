@@ -197,7 +197,7 @@
                         this._state = 'bottom';
                         this.$block.css({
                             position: 'absolute',
-                            top: '',
+                            top: 'auto',
                             bottom: this.opts.bottomOffset,
                             width: this._width
                         });
@@ -209,7 +209,7 @@
                         this.$block.css({
                             position: 'fixed',
                             top: this.opts.topOffset,
-                            bottom: '',
+                            bottom: 'auto',
                             width: this._width
                         });
                     }
