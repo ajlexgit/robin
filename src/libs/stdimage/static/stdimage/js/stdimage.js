@@ -3,6 +3,10 @@
     /*
         Виджет поля файла с превью.
 
+        Требует:
+            jquery.utils.js
+            file_dropper.js
+
         Параметры:
             previewsSelector    - селектор контейнера с превью
             oldPreviewSelector  - селектор исходного превью

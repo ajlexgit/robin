@@ -1,12 +1,53 @@
+.stdimage {
+    position: relative;
+    z-index: 1;
+}
+
+
+.stdimage input {
+    font-size: 0;
+    opacity: 0;
+    position: absolute;
+}
+
+/* Подсказка */
+.stdimage .hint {
+    margin-left: 10px;
+    color: gray;
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+
+/* Перетаскивание файла */
+.stdimage.dragover .normal-content {
+    display: none;
+}
+
+.stdimage .dragover-content {
+    display: none;
+    padding: 30px 20px;
+    color: #606060;
+    font-size: 20px;
+    background-color: #D0D0D0;
+}
+
+.stdimage.dragover .dragover-content {
+    display: block;
+}
+
+
 /* Превью */
 .stdimage .item-preview {
     display: inline-block;
     position: relative;
-    margin: 5px 0;
+    margin: 5px 0 10px;
     z-index: 1;
     box-shadow: 1px 1px 3px #808080;
 }
 
+/* Прелоадер */
 .stdimage .item-preview.preloader {
     min-width: 200px;
     min-height: 200px;
@@ -26,7 +67,6 @@
     min-height: 120px;
     box-shadow: 1px 1px 4px red;
 }
-
 .stdimage .item-preview.invalid .error {
     content: '';
     position: absolute;
@@ -45,15 +85,6 @@
     box-sizing: border-box;
 }
 
-
-/* Подсказка */
-.stdimage .hint {
-    color: gray;
-    font-size: 11px;
-    line-height: 1.4;
-    font-weight: bold;
-}
-
 /* Чекбокс удаления файла */
 .stdimage .delete {
     vertical-align: text-bottom;
@@ -61,5 +92,5 @@
 }
 
 .stdimage .crop-btn-wrapper {
-    margin: 4px 0;
+    margin: 10px 0 0;
 }

@@ -20,11 +20,10 @@
     {% endif %}
   </div>
 
-  <p class="hint">
-    {% trans 'Dimensions: ' %} {% trans 'from' %} {{ min_dimensions|join:'x' }} {% trans 'to' %} {{ max_dimensions|join:'x' }}
-  </p>
-
-  <input type="file" {{ attrs }}>
+  <div class="button-wrapper">
+    <button type="button" class="btn btn-success">{% trans 'Select file' %}</button>
+    <span class="hint">{% trans 'Dimensions: ' %} {% trans 'from' %} {{ min_dimensions|join:'x' }} {% trans 'to' %} {{ max_dimensions|join:'x' }}</span>
+  </div>
 
   {% if crop_area %}
     <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">
@@ -41,4 +40,11 @@
       <input type="checkbox" name="{{ name }}-delete" class="delete"/>
     </div>
   {% endif %}
+
+
+  <div class="dragover-content">
+    <p>{% trans 'Move file here' %}</p>
+  </div>
+
+  <input type="file" {{ attrs }}>
 </div>

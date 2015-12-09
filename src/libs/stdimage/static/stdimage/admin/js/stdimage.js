@@ -19,6 +19,12 @@
                 return this.raise('previews block not found');
             }
 
+            // кнопка
+            this.$button = this.$root.find('.button-wrapper .btn').first();
+            if (!this.$button.length) {
+                return this.raise('button element not found');
+            }
+
             // инпут
             this.$input = this.$root.find('input[type="file"]').first();
             if (!this.$input.length) {
@@ -36,6 +42,24 @@
             if (old_instance) {
                 old_instance.destroy();
             }
+
+            // обработчик перетаскивания файлов
+            var that = this;
+            this.dropper = FileDropper(this.$root, {
+                onDrop: function(files) {
+                    var file;
+                    var i = 0;
+                    while (file = files[i++]) {
+                        if (file.type && (file.type.indexOf('image') == 0)) {
+                            return
+                        }
+                    }
+                }
+            });
+
+            this.$button.on('click', function() {
+                that.$input.click();
+            });
 
             this.$root.data(cls.dataParamName, this);
         };
@@ -127,6 +151,7 @@
             Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
+            this.dropper.destroy();
             this.$root.removeData(cls.dataParamName);
         };
 

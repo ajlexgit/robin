@@ -81,6 +81,7 @@ class ModelAdminMixin(ModelAdminInlineMixin):
                 'common/js/jquery.ajax_csrf.js',
                 'common/js/jquery.mousewheel.js',
                 'common/js/jquery.utils.js',
+                'common/js/file_dropper.js',
                 'admin/js/button_filter.js',
             ),
             css = {
