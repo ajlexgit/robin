@@ -23,18 +23,13 @@ class LinkWidget(forms.Widget):
 
 class URLWidget(forms.URLInput):
     """ Виджет URL """
-    def __init__(self, attrs=None):
-        final_attrs = {'class': 'vURLField'}
-        if attrs is not None:
-            final_attrs.update(attrs)
-        super().__init__(attrs=final_attrs)
-
     def append(self, value):
         if value:
             output = '<a href="{href}" class="add-on" target="_blank"><i class="icon-globe"></i></a>'
+            return format_html(output, href=smart_urlquote(value))
         else:
             output = '<span class="add-on"><i class="icon-globe"></i></span>'
-        return format_html(output, href=smart_urlquote(value))
+            return format_html(output)
 
     def render(self, name, value, attrs=None):
         html = super().render(name, value, attrs)
