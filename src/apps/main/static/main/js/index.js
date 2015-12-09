@@ -46,7 +46,7 @@
                 "featureType": "landscape.natural",
                 "stylers": [
                     {"visibility": "on"},
-                    {"color": "#efefef"}
+                    {"color": "#d3e5b6"}
                 ]
             },
             {
@@ -68,7 +68,11 @@
                 ]
             },
             {
-                "featureType": "water"
+                "featureType": "water",
+                "stylers": [
+                    {"visibility": "on"},
+                    {"color": "#ffffff"}
+                ]
             }
         ];
 
@@ -80,20 +84,29 @@
         }).on('ready', function() {
             var marker1 = GMapMarker({
                 map: this,
-                position: GMapPoint(53.510171, 49.418785),
+                position: GMapPoint(62.281819, -150.287132),
                 hint: 'First',
                 balloon: '<p>Hello</p>'
             });
 
             var marker2 = GMapMarker({
                 map: this,
-                position: GMapPoint(-30, 30),
+                position: GMapPoint(62.400471, -150.005608),
                 hint: 'second',
                 draggable: true,
                 balloon: '<p>Goodbay</p>'
             });
 
-            this.center(this.markers[0].position());
+            var overlay = GMapOverlay({
+                map: this,
+                src: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/talkeetna.png',
+                coords: {
+                    bottomleft: GMapPoint(62.281819, -150.287132),
+                    topright: GMapPoint(62.400471, -150.005608)
+                }
+            });
+
+            this.center(GMapPoint(62.339889, -150.145683)).zoom(11);
         });
     });
 

@@ -9,27 +9,38 @@
 
         Рекомендуется работать с картой в обработчике события GMap.ready().
 
-        var gmap = GMap('#gmap', {
-            center: GMapPoint(53.510171, 49.418785),
-            zoom: 2
-        }).on('ready', function() {
-            var marker1 = GMapMarker({
-                map: this,
-                position: GMapPoint(53.510171, 49.418785),
-                hint: 'First',
-                balloon: '<p>Hello</p>'
-            });
+        Пример:
+            var gmap = GMap('#gmap', {
+                center: GMapPoint(53.510171, 49.418785),
+                styles: gmapStyles,
+                zoom: 2
+            }).on('ready', function() {
+                var marker1 = GMapMarker({
+                    map: this,
+                    position: GMapPoint(62.281819, -150.287132),
+                    hint: 'First',
+                    balloon: '<p>Hello</p>'
+                });
 
-            var marker2 = GMapMarker({
-                map: this,
-                position: GMapPoint(53.525000, 49.435000),
-                hint: 'second',
-                draggable: true,
-                balloon: '<p>Goodbay</p>'
-            });
+                var marker2 = GMapMarker({
+                    map: this,
+                    position: GMapPoint(62.400471, -150.005608),
+                    hint: 'second',
+                    draggable: true,
+                    balloon: '<p>Goodbay</p>'
+                });
 
-            this.center(this.markers[0].position());
-        });
+                var overlay = GMapOverlay({
+                    map: this,
+                    src: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/talkeetna.png',
+                    coords: {
+                        bottomleft: GMapPoint(62.281819, -150.287132),
+                        topright: GMapPoint(62.400471, -150.005608)
+                    }
+                });
+
+                this.center(GMapPoint(62.339889, -150.145683)).zoom(11);
+            });
      */
 
     var gmaps_ready = false;
@@ -195,7 +206,7 @@
             if (this._map) {
                 if (value === this._map) {
                     // попытка подключения к текущей карте
-                    return
+                    return this;
                 }
 
                 // отключение от текущей карты
@@ -213,7 +224,7 @@
                 // подключение к новой карте
                 if (value instanceof GMap == false) {
                     this.error('value should be a GMap instance');
-                    return false;
+                    return this;
                 }
 
                 this._map = value;
@@ -221,6 +232,8 @@
                 this.trigger('attached');
                 this._map.trigger('attach.marker', this);
             }
+
+            return this;
         };
 
         /*
@@ -235,11 +248,13 @@
             if (value) {
                 if (value instanceof GMapPoint == false) {
                     this.error('value should be a GMapPoint instance');
-                    return false;
+                    return this;
                 }
 
                 this.native.setPosition(value.native);
             }
+
+            return this;
         };
 
         /*
@@ -253,10 +268,11 @@
 
             if (value && (typeof value != 'string')) {
                 this.error('value should be a string');
-                return false;
+                return this;
             }
 
             this.native.setTitle(value);
+            return this;
         };
 
         /*
@@ -270,10 +286,11 @@
 
             if (value && (typeof value != 'string')) {
                 this.error('value should be a string');
-                return false;
+                return this;
             }
 
             this.native.setIcon(value);
+            return this;
         };
 
         /*
@@ -287,7 +304,7 @@
 
             if (value && (typeof value != 'string')) {
                 this.error('value should be a string');
-                return false;
+                return this;
             }
 
             this._balloon = value;
@@ -304,6 +321,8 @@
             } else {
                 this.off('click.balloon');
             }
+
+            return this;
         };
 
         /*
@@ -316,6 +335,7 @@
             }
 
             this.native.setDraggable(Boolean(value));
+            return this;
         };
     });
 
@@ -357,10 +377,11 @@
 
             if (value && (typeof value != 'string')) {
                 this.error('value should be a string');
-                return false;
+                return this;
             }
 
             this.native.setContent(value);
+            return this;
         };
 
         /*
@@ -375,26 +396,33 @@
             if (value) {
                 if (value instanceof GMapPoint == false) {
                     this.error('value should be a GMapPoint instance');
-                    return false;
+                    return this;
                 }
 
                 this.native.setPosition(value.native);
             }
+
+            return this;
         };
 
         /*
             Открытие балуна
          */
-        cls.prototype.open = function(marker) {
-            if (marker instanceof GMapMarker == false) {
-                this.error('marker should be a GMapMarker instance');
-                return false;
+        cls.prototype.open = function(marker_point) {
+            if (marker_point instanceof GMapMarker) {
+                this.native.open(this.map.native, marker_point.native);
+            } else if (marker_point instanceof GMapPoint) {
+                this.native.open(this.map.native);
+                this.position(marker_point);
+            } else {
+                this.error('marker should be a GMapMarker or GMapPoint instance');
+                return this;
             }
 
-            this.native.open(this.map.native, marker.native);
             this.opened = true;
-            this.anchor = marker;
+            this.anchor = marker_point;
             this.trigger('opened');
+            return this;
         };
 
         /*
@@ -405,6 +433,158 @@
             this.opened = false;
             this.anchor = null;
             this.trigger('closed');
+            return this;
+        };
+    });
+
+
+    /*
+        Класс наложения на карту Google
+     */
+    window.GMapOverlay = Class(EventedObject, function GMapOverlay(cls, superclass) {
+        cls.prototype.init = function(options) {
+            superclass.prototype.init.call(this);
+
+            var opts = $.extend(true, {
+                map: null,
+                src: '',
+                coords: {
+                    topright: null,
+                    bottomleft: null
+                }
+            }, options);
+
+            // нативный объект
+            var that = this;
+            var native_class = new Function();
+            native_class.prototype = new google.maps.OverlayView();
+            native_class.prototype.onAdd = function() {
+                that.onAdd.call(that);
+            };
+            native_class.prototype.draw = function() {
+                that.draw.call(that);
+            };
+            native_class.prototype.onRemove = function() {
+                that.onRemove.call(that);
+            };
+            this.native = new native_class();
+
+
+            if (!opts.src) {
+                return this.raise('src required');
+            } else {
+                this.src = opts.src;
+            }
+
+            if (!opts.coords) {
+                return this.raise('coords required');
+            } else if (opts.coords.bottomleft instanceof GMapPoint == false) {
+                return this.raise('coords.bottomleft should be a GMapPoint instance');
+            } else if (opts.coords.topright instanceof GMapPoint == false) {
+                return this.raise('coords.topright should be a GMapPoint instance');
+            } else {
+                this.bounds = new google.maps.LatLngBounds(
+                    opts.coords.bottomleft.native,
+                    opts.coords.topright.native
+                )
+            }
+
+            this.map(opts.map);
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.prototype.destroy = function() {
+            this.map(null);
+            superclass.prototype.destroy.call(this);
+        };
+
+        /*
+            Вызывается при добавлении оверлея на карту
+         */
+        cls.prototype.onAdd = function() {
+            this.container = document.createElement('div');
+            this.container.style.position = 'absolute';
+
+            var img = document.createElement('img');
+            img.src = this.src;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.position = 'absolute';
+            this.container.appendChild(img);
+
+            // Add the element to the "overlayLayer" pane.
+            var panes = this.native.getPanes();
+            panes.overlayLayer.appendChild(this.container);
+        };
+
+        /*
+            Отрисовка оверлея
+         */
+        cls.prototype.draw = function() {
+            // We use the south-west and north-east
+            // coordinates of the overlay to peg it to the correct position and size.
+            // To do this, we need to retrieve the projection from the overlay.
+            var overlayProjection = this.native.getProjection();
+
+            // Retrieve the south-west and north-east coordinates of this overlay
+            // in LatLngs and convert them to pixel coordinates.
+            // We'll use these coordinates to resize the div.
+            var sw = overlayProjection.fromLatLngToDivPixel(this.bounds.getSouthWest());
+            var ne = overlayProjection.fromLatLngToDivPixel(this.bounds.getNorthEast());
+
+            // Resize the image's div to fit the indicated dimensions.
+            this.container.style.left = sw.x + 'px';
+            this.container.style.top = ne.y + 'px';
+            this.container.style.width = (ne.x - sw.x) + 'px';
+            this.container.style.height = (sw.y - ne.y) + 'px';
+        };
+
+        /*
+            Вызывается при откреплении оверлея от карты
+         */
+        cls.prototype.onRemove = function() {
+            this.container.parentNode.removeChild(this.container);
+            this.container = null;
+        };
+
+        /*
+            Получение / установка карты
+         */
+        cls.prototype.map = function(value) {
+            if (value === undefined) {
+                // получение карты
+                return this._map;
+            }
+
+            if (this._map) {
+                if (value === this._map) {
+                    // попытка подключения к текущей карте
+                    return this;
+                }
+
+                // отключение от текущей карты
+                this._map.trigger('detach.overlay', this);
+                this.trigger('detached');
+                this.native.setMap(null);
+                this._map = null;
+            }
+
+            if (value !== null) {
+                // подключение к новой карте
+                if (value instanceof GMap == false) {
+                    this.error('value should be a GMap instance');
+                    return this;
+                }
+
+                this._map = value;
+                this.native.setMap(this._map.native);
+                this.trigger('attached');
+                this._map.trigger('attach.overlay', this);
+            }
+
+            return this;
         };
     });
 
@@ -482,6 +662,19 @@
                 }
             });
 
+            // оверлеи на карте
+            this.overlays = [];
+            this.on('attach.overlay', function(e, overlay) {
+                // добавление оверлея в массив
+                that.overlays.push(overlay);
+            }).on('detach.overlay', function(e, overlay) {
+                // удаление оверлея из массива
+                var index = that.overlays.indexOf(overlay);
+                if (index >= 0) {
+                    that.overlays.splice(index, 1);
+                }
+            });
+
             // инициализация
             cls.ready(function() {
                 // нативный объект
@@ -544,11 +737,13 @@
             if (value) {
                 if (value instanceof GMapPoint == false) {
                     this.error('value should be a GMapPoint instance');
-                    return false;
+                    return this;
                 }
 
                 this.native.setCenter(value.native);
             }
+
+            return this;
         };
 
         /*
@@ -560,7 +755,10 @@
                 return this.native.draggable;
             }
 
-            this.native.set('draggable', Boolean(value));
+            this.native.setOptions({
+                draggable: Boolean(value)
+            });
+            return this;
         };
 
         /*
@@ -569,10 +767,11 @@
         cls.prototype.panTo = function(center) {
             if (center instanceof GMapPoint == false) {
                 this.error('value should be a GMapPoint instance');
-                return false;
+                return this;
             }
 
             this.native.panTo(center);
+            return this;
         };
 
         /*
@@ -587,6 +786,7 @@
             this.native.setOptions({
                 scrollwheel: Boolean(value)
             });
+            return this;
         };
 
         /*
@@ -601,10 +801,11 @@
             value = value.toLowerCase();
             if (MAP_TYPES.indexOf(value) < 0) {
                 this.error('unknown map type: ' + value);
-                return false;
+                return this;
             }
 
             this.native.setMapTypeId(value);
+            return this;
         };
 
         /*
@@ -618,10 +819,11 @@
 
             if (value && !$.isArray(value)) {
                 this.error('value should be an array');
-                return false;
+                return this;
             }
 
             this.native.set('styles', value);
+            return this;
         };
 
         /*
@@ -635,10 +837,11 @@
 
             if (value && (typeof value != 'number')) {
                 this.error('value should be a number');
-                return false;
+                return this;
             }
 
             this.native.setZoom(value);
+            return this;
         };
 
         /*
@@ -666,6 +869,16 @@
             var marker;
             while (marker = this.markers[0]) {
                 marker.destroy();
+            }
+        };
+
+        /*
+            Удаление всех оверлеев
+         */
+        cls.prototype.removeAllOverlays = function() {
+            var overlay;
+            while (overlay = this.overlays[0]) {
+                overlay.destroy();
             }
         };
 
