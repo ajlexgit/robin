@@ -294,8 +294,8 @@
     /*
         Изменение файла в поле stdimage
      */
-    $(document).on('change', '.stdimage', function() {
-        var stdimage = $(this).data(StdImage.dataParamName);
+    $(document).on('change', '.stdimage .input-file', function() {
+        var stdimage = $(this).closest('.stdimage').data(StdImage.dataParamName);
         if (!stdimage) {
             console.error('StdImage object not found');
             return false;
@@ -303,7 +303,6 @@
 
         // загрузка картинки и показ превью
         stdimage.readFile(function(img) {
-            // валидация
             this.validate(img);
         });
     });
