@@ -428,6 +428,13 @@
             'zoom_changed'
         ];
 
+        var MAP_TYPES = [
+            'hybrid',
+            'roadmap',
+            'satellite',
+            'terrain'
+        ];
+
         /*
             Выполнение callback, когда JS GoogleMaps загружен и готов
          */
@@ -449,9 +456,13 @@
 
             var opts = $.extend({
                 center: null,
+                mapType: 'roadmap',
+                dblClickZoom: false,
+                draggable: true,
                 wheel: false,
                 styles: [],
-                zoom: 14
+                zoom: 14,
+                zoomControl: true
             }, options);
 
             // массив событий, которые повешены на нативный маркер
@@ -475,10 +486,10 @@
             cls.ready(function() {
                 // нативный объект
                 that.native = new google.maps.Map(that.$root.get(0), {
-                    center: GMapPoint(53.510171, 49.418785).native,
-                    disableDoubleClickZoom: true,
+                    center: opts.center,
+                    disableDoubleClickZoom: !opts.dblClickZoom,
                     disableDefaultUI: true,
-                    zoomControl: true
+                    zoomControl: opts.zoomControl
                 });
 
                 // Обработчик изменения размера экрана (например, для центрирования карты)
@@ -489,7 +500,8 @@
                 // создание балуна
                 that.balloon = GMapBalloon(that, '');
 
-                that.center(opts.center);
+                that.draggable(opts.draggable);
+                that.mapType(opts.mapType);
                 that.wheel(opts.wheel);
                 that.styles(opts.styles);
                 that.zoom(opts.zoom);
@@ -540,6 +552,18 @@
         };
 
         /*
+            Получение / установка возможности перетаскивания карты
+         */
+        cls.prototype.draggable = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return this.native.draggable;
+            }
+
+            this.native.set('draggable', Boolean(value));
+        };
+
+        /*
             Плавное перемещение к точке
          */
         cls.prototype.panTo = function(center) {
@@ -563,6 +587,24 @@
             this.native.setOptions({
                 scrollwheel: Boolean(value)
             });
+        };
+
+        /*
+            Получение / установка типа карты
+         */
+        cls.prototype.mapType = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return this.native.native.getMapTypeId();
+            }
+
+            value = value.toLowerCase();
+            if (MAP_TYPES.indexOf(value) < 0) {
+                this.error('unknown map type: ' + value);
+                return false;
+            }
+
+            this.native.setMapTypeId(value);
         };
 
         /*
