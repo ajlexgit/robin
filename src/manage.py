@@ -2,7 +2,6 @@ import os
 import sys
 
 # Angular-like
-# Layer: LIMIT
 # виджет выбора ссылки на сущность
 # модуль files: работает ли скачка файла через dowload.py
 

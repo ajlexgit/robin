@@ -84,7 +84,6 @@
                     }
                 }
             });
-            $.mediaInspector.check(this.$block);
 
             // инспектирование пропорций
             $.bgInspector.inspect(this.$bg, {
@@ -124,16 +123,18 @@
                 }
             });
 
+            // Сохраняем объект в массив для использования в событиях
+            parallaxes.push(this);
+
+            this.$block.data(cls.dataParamName, this);
+
+            $.mediaInspector.check(this.$block);
+
             // Вызов инспектора после загрузки картинки
             this.$bg.onLoaded(function() {
                 $.bgInspector.check(that.$bg);
                 that.$bg.show();
             });
-
-            // Сохраняем объект в массив для использования в событиях
-            parallaxes.push(this);
-
-            this.$block.data(cls.dataParamName, this);
         };
 
         /*

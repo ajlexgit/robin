@@ -72,12 +72,13 @@
                     }
                 }
             });
-            $.mediaInspector.check(this.$block);
 
             // Сохраняем объект в массив для использования в событиях
             stickies.push(this);
 
             this.$block.data(cls.dataParamName, this);
+
+            $.mediaInspector.check(this.$block);
         };
 
         /*

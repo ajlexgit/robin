@@ -4,7 +4,23 @@
         $.visibilityInspector.inspect('.layer');
 
         $('.layer').layer({
-            speed: 0.75
+            onInit: function() {
+                this.$ctnr = $('#test');
+            },
+            calcOffset: function(win_scroll) {
+                var ctnr_top = this.$ctnr.offset().top;
+                var ctnr_height = this.$ctnr.outerHeight();
+                var win_height = document.documentElement.clientHeight;
+
+                var from_point = ctnr_top - win_height;
+                var to_point = ctnr_top + ctnr_height;
+
+                if ((win_scroll >= from_point) && (win_scroll <= to_point)) {
+                    return this._initial + parseInt(0.5 * (win_scroll - from_point));
+                } else {
+                    return false;
+                }
+            }
         }).on('appear', function() {
             console.log('block became visible');
         }).on('disappear', function() {
