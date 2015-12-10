@@ -38,34 +38,34 @@
             </div>
 
         JS пример:
-            Slider.create('#slider', {
+            Slider('#slider', {
                 loop: false,
                 adaptiveHeight: true,
                 adaptiveHeightTransition: 800,
                 itemsPerSlide: 2
             }).attachPlugins([
-                SliderSideAnimation.create({
+                SliderSideAnimation({
                     speed: 800,
                     slideMarginPercent: 5
                 }),
-                SliderSideShortestAnimation.create({
+                SliderSideShortestAnimation({
                     speed: 800,
                     slideMarginPercent: 5
                 }),
-                SliderFadeAnimation.create({
+                SliderFadeAnimation({
                     speed: 800
                 }),
-                SliderControlsPlugin.create({
+                SliderControlsPlugin({
                     animationName: 'side-shortest'
                 }),
-                SliderNavigationPlugin.create({
+                SliderNavigationPlugin({
                     animationName: 'side'
                 }),
-                SliderDragPlugin.create({
+                SliderDragPlugin({
                     speed: 800,
                     slideMarginPercent: 5
                 }),
-                SliderAutoscrollPlugin.create({
+                SliderAutoscrollPlugin({
                     animationName: 'fade',
                     direction: 'random',
                     interval: 3000
@@ -107,7 +107,7 @@
 
             // плагины
             this._plugins = [
-                SliderInstantAnimation.create()
+                SliderInstantAnimation()
             ];
 
             // добавляем класс на список

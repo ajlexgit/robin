@@ -49,7 +49,7 @@
             }
 
             // Создание скрытого окна с оверлеем
-            var popup = OverlayedPopup.create({
+            var popup = OverlayedPopup({
                 classes: 'my-popup',
                 content: '<h1 class="title-h1">Hello</h1>'
             });
@@ -536,7 +536,7 @@
         if (options === undefined) {
             return getCurrentPopup();
         } else {
-            return OverlayedPopup.create(options);
+            return OverlayedPopup(options);
         }
     };
 

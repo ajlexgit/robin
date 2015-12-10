@@ -43,16 +43,16 @@
         $('.page-images.multi-image').each(function() {
             var description = cut_description(this);
 
-            var slider = Slider.create(this, {
+            var slider = Slider(this, {
                 itemSelector: 'img',
                 adaptiveHeight: false
             }).attachPlugins([
-                SliderSideAnimation.create({}),
-                SliderSideShortestAnimation.create({}),
-                SliderControlsPlugin.create({
+                SliderSideAnimation({}),
+                SliderSideShortestAnimation({}),
+                SliderControlsPlugin({
                     animationName: 'side-shortest'
                 }),
-                SliderDragPlugin.create({})
+                SliderDragPlugin({})
             ]);
 
             // вставляем описание в слайдер

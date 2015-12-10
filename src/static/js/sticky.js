@@ -270,7 +270,7 @@
 
     $.fn.sticky = function(options) {
         return this.each(function() {
-            Sticky.create(this, options);
+            Sticky(this, options);
         })
     }
 

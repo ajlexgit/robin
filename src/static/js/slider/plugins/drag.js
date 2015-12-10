@@ -27,7 +27,7 @@
             superclass.prototype.onAttach.call(this, slider);
 
             var that = this;
-            this.drager = Drager.create(slider.$listWrapper, {
+            this.drager = Drager(slider.$listWrapper, {
                 mouse: that.opts.mouse,
                 touch: that.opts.touch,
                 ignoreDistanceX: that.opts.ignoreDistanceX,

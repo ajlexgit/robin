@@ -20,7 +20,7 @@
             </div>
 
             $(document).ready(function() {
-                Parallax.create('#block');
+                Parallax('#block');
 
                 // или
 
@@ -235,7 +235,7 @@
 
     $.fn.parallax = function(options) {
         return this.each(function() {
-            Parallax.create(this, options);
+            Parallax(this, options);
         })
     }
 

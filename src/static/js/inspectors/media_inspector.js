@@ -50,7 +50,7 @@
 
 
     // Единственный экземпляр инспектора
-    $.mediaInspector = MediaInspector.create();
+    $.mediaInspector = MediaInspector();
 
     $(window).on('resize.media_inspector', $.rared(function() {
         $.mediaInspector.checkAll();

@@ -272,14 +272,14 @@
     $(document).ready(function() {
         $('.autocomplete_textbox').each(function() {
             if (!$(this).closest('.empty-form').length) {
-                AutocompleteTextbox.create(this);
+                AutocompleteTextbox(this);
             }
         });
 
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_textbox', function(inline_prefix, row) {
                 row.find('.autocomplete_textbox').each(function() {
-                    AutocompleteTextbox.create(this);
+                    AutocompleteTextbox(this);
                 });
             });
         }

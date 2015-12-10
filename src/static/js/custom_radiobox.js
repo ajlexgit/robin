@@ -179,7 +179,7 @@
 
     $.fn.radiobox = function(options) {
         return this.each(function() {
-            Radiobox.create(this, options);
+            Radiobox(this, options);
         })
     }
 

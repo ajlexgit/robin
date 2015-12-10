@@ -43,7 +43,7 @@
               </div>
 
             JS:
-              fs = Formset.create('#formset', {
+              fs = Formset('#formset', {
                   prefix: 'inlines'
               });
 
@@ -152,7 +152,7 @@
             }
 
             // management form
-            this.management = ManagementForm.create(this.$root, this.opts.prefix);
+            this.management = ManagementForm(this.$root, this.opts.prefix);
             if (!this.management) {
                 return false;
             }

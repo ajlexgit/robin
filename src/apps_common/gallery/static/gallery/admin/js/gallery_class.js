@@ -242,7 +242,7 @@
             max_size = Number(max_size) || 0;
 
             var that = this;
-            that.uploader = Uploader.create(this.$root, {
+            that.uploader = Uploader(this.$root, {
                 url: window.admin_gallery_upload,
                 buttonSelector: this.opts.uploadButtonSelector,
                 drop_element: 'self',

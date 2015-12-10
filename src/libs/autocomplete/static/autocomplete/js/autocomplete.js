@@ -171,7 +171,7 @@
         $('.autocomplete_widget').each(function() {
             var $this = $(this);
             if (!$this.closest('.empty-form').length) {
-                Autocomplete.create(this, $this.data());
+                Autocomplete(this, $this.data());
             }
         });
 
@@ -182,7 +182,7 @@
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
                 row.find('.autocomplete_widget').each(function() {
-                    Autocomplete.create(this, $(this).data());
+                    Autocomplete(this, $(this).data());
                 });
             });
         }

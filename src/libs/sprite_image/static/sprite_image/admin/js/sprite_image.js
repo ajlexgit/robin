@@ -99,16 +99,15 @@
 
     $(document).ready(function() {
         $('.sprite-icon-field').each(function() {
-            var $this = $(this);
-            if (!$this.closest('.empty-form').length) {
-                SpriteImage.create($this);
+            if (!$(this).closest('.empty-form').length) {
+                SpriteImage(this);
             }
         });
 
         if (window.Suit) {
             Suit.after_inline.register('sprite-icon', function(inline_prefix, row) {
                 row.find('.sprite-icon-field').each(function() {
-                    SpriteImage.create(this);
+                    SpriteImage(this);
                 });
             });
         }

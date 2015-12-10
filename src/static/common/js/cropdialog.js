@@ -44,7 +44,7 @@
             onCancel                - Функция, вызываемая при отмене изменений области обрезки.
 
         Пример:
-            CropDialog.create('.gallery', {
+            CropDialog('.gallery', {
                 eventTypes: 'click',
                 buttonSelector: 'button.crop'
             })

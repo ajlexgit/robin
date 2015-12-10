@@ -171,7 +171,7 @@
 
     $(document).ready(function() {
         $('.stdimage').each(function() {
-            StdImage.create(this);
+            StdImage(this);
         })
     })
 

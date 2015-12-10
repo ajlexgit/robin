@@ -13,7 +13,7 @@
 
     // Инициализация загрузчика аватарки
     var initUploader = function() {
-        return Uploader.create('#profile-avatar', {
+        return Uploader('#profile-avatar', {
             url: window.js_storage.avatar_upload,
             buttonSelector: '#upload-avatar',
             multiple: false,
@@ -41,7 +41,7 @@
         var $profile = $('#profile');
 
         // Обрезка аватара
-        CropDialog.create($profile, {
+        CropDialog($profile, {
             eventTypes: 'click.cropdialog',
             buttonSelector: '#crop-avatar',
             dialogOptions: {

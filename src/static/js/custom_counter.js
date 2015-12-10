@@ -209,7 +209,7 @@
 
     $.fn.counter = function(options) {
         return this.each(function() {
-            CustomCounter.create(this, options);
+            CustomCounter(this, options);
         })
     }
 

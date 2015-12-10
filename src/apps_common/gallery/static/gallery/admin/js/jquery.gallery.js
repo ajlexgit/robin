@@ -71,7 +71,7 @@
             var $container = $(this);
             var gallery = $container.gallery('object');
 
-            CropDialog.create($container, {
+            CropDialog($container, {
                 eventTypes: 'click.gallery.cropdialog',
                 buttonSelector: '.gallery-item .item-crop',
 
@@ -193,7 +193,7 @@
 
 
         return this.each(function() {
-            Gallery.create(this, settings);
+            Gallery(this, settings);
         })
     };
 

@@ -44,9 +44,9 @@
             }
 
             // обработчик перетаскивания файлов
-            var that = this;
             this.dropper = FileDropper(this.$root);
 
+            var that = this;
             this.$button.on('click', function() {
                 that.$input.click();
             });
@@ -310,23 +310,22 @@
 
     $(document).ready(function() {
         $('.stdimage').each(function() {
-            var $this = $(this);
-            if (!$this.closest('.empty-form').length) {
-                StdImage.create($this);
+            if (!$(this).closest('.empty-form').length) {
+                StdImage(this);
             }
         });
 
         if (window.Suit) {
             Suit.after_inline.register('stdimage', function(inline_prefix, row) {
                 row.find('.stdimage').each(function() {
-                    StdImage.create(this);
+                    StdImage(this);
                 });
             });
         }
 
 
         // Обрезка картинки
-        CropDialog.create(document, {
+        CropDialog(document, {
             eventTypes: 'click.cropdialog',
             buttonSelector: '.stdimage .crop-btn-wrapper button',
 

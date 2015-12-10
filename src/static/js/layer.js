@@ -161,7 +161,7 @@
 
     $.fn.layer = function(options) {
         return this.each(function() {
-            Layer.create(this, options);
+            Layer(this, options);
         })
     }
 

@@ -29,7 +29,7 @@
             onMomentumStopped(completed)      - остановка инерции
 
         Примеры:
-            var drager = Drager.create(element, {
+            var drager = Drager(element, {
                 onMouseDown: function(evt) {
                     var $element = $(evt.target);
 
@@ -377,7 +377,7 @@
                 if (this.opts.momentum) {
                     var lastPoint = this._getMomentumPoint(evt);
                     if (lastPoint) {
-                        momentum = Momentum.create(this, evt, lastPoint);
+                        momentum = Momentum(this, evt, lastPoint);
                         momentum = this.opts.onSetMomentum.call(this, evt, momentum);
                         if (!momentum || (momentum.duration < this.opts.minMomentumDuration)) {
                             momentum = null;
@@ -404,7 +404,7 @@
         // ================
 
         cls.prototype.mouseDownHandler = function(event) {
-            var evt = MouseDownDragerEvent.create(event, this);
+            var evt = MouseDownDragerEvent(event, this);
             this.wasDragged = false;
             this._dragging_allowed = true;
             this._momentumPoints = [];
@@ -417,7 +417,7 @@
         cls.prototype.dragHandler = function(event) {
             if (!this._dragging_allowed) return;
 
-            var evt = MouseMoveDragerEvent.create(event, this);
+            var evt = MouseMoveDragerEvent(event, this);
             this._addMomentumPoint(evt);
 
             if (!this.wasDragged) {
@@ -438,7 +438,7 @@
         cls.prototype.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
-            var evt = MouseUpDragerEvent.create(event, this);
+            var evt = MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
         };
 

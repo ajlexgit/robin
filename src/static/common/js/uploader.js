@@ -47,7 +47,7 @@
             onFileUploadError   - Событие ошибки загрузки файла
 
         Пример:
-            Uploader.create('#root', {
+            Uploader('#root', {
                 url: '/upload/',
                 buttonSelector: '.button',
                 multiple: false,

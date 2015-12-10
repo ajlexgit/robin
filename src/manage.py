@@ -3,7 +3,6 @@ import sys
 
 # Angular-like
 # Layer: LIMIT
-# Можно избавиться от .create
 # виджет выбора ссылки на сущность
 # модуль files: работает ли скачка файла через dowload.py
 

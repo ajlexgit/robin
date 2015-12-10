@@ -165,7 +165,7 @@
 
     $.fn.checkbox = function(options) {
         return this.each(function() {
-            Checkbox.create(this, options);
+            Checkbox(this, options);
         })
     }
 

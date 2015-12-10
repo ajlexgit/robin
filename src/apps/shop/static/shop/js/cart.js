@@ -5,8 +5,6 @@
         отправляющая запросы на сохранение заказа в сессии.
 
         Пример:
-            cart = Cart.create();
-
             // добавить два товара с ID 78
             cart.addItem(78, 2).done(function() {
                 console.log('saved to session')
@@ -163,6 +161,6 @@
         }
     });
 
-    window.cart = Cart.create();
+    window.cart = Cart();
 
 })(jQuery);

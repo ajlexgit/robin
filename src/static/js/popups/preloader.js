@@ -22,7 +22,7 @@
             hideOnClick: false
         }, options);
 
-        var popup = OverlayedPopup.create(opts);
+        var popup = OverlayedPopup(opts);
         return popup.show();
     };
 

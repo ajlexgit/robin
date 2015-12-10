@@ -193,7 +193,7 @@
 
     $.fn.expander = function(options) {
         return this.each(function() {
-            Expander.create(this, options);
+            Expander(this, options);
         })
     }
 

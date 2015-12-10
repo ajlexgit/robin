@@ -19,7 +19,7 @@
         }
 
         return this.each(function() {
-            Comments.create(this, options);
+            Comments(this, options);
         })
     };
 

@@ -77,7 +77,7 @@
 
 
     // Единственный экземпляр инспектора
-    $.bgInspector = BackgroundInspector.create();
+    $.bgInspector = BackgroundInspector();
 
     $(window).on('resize.bg_inspector', $.rared(function() {
         $.bgInspector.checkAll();

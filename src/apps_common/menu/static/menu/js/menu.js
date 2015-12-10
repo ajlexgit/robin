@@ -107,7 +107,7 @@
 
 
     // главное меню на мобиле
-    window.menu = Menu.create({
+    window.menu = Menu({
         onResize: function(win_width) {
             if (win_width >= 1024) {
                 // скрытие на больших экранах
