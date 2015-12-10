@@ -39,6 +39,8 @@
                     // callback
                     that.trigger('start.drag');
                 }
+            }).on('dragstart.file_dropper', function() {
+                return false;
             }).on('dragover.file_dropper', function() {
                 return false;
             }).on('dragleave.file_dropper', function() {
