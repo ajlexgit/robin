@@ -2,86 +2,118 @@
 
     $(document).ready(function() {
         $('.gallery-standart').each(function() {
-            var $self = $(this);
-            if (!$self.closest('.empty-form').length) {
-                $self.gallery();
+            if (!$(this).closest('.empty-form').length) {
+                DefaultGallery(this);
             }
         });
 
         if (window.Suit) {
             Suit.after_inline.register('gallery', function(inline_prefix, row) {
-                $(row).find('.gallery-standart').gallery();
+                $(row).find('.gallery-standart').each(function() {
+                    DefaultGallery(this);
+                });
             });
         }
     }).on('click.gallery', '.create-gallery', function() {
-        var self = $(this),
-            gallery = self.closest('.gallery').gallery('object');
-        self.prop('disabled', true);
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
+
+        $button.prop('disabled', true);
         gallery.createGallery().always(function() {
-            self.prop('disabled', false);
+            $button.prop('disabled', false);
         });
+
         return false;
     }).on('click.gallery', '.delete-gallery', function() {
-        var self = $(this),
-            gallery = self.closest('.gallery').gallery('object');
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
 
         if (!confirm(gettext('Are you sure you want to delete this gallery?'))) {
             return false
         }
 
-        self.prop('disabled', true);
+        $button.prop('disabled', true);
         gallery.deleteGallery().always(function() {
-            self.prop('disabled', false);
+            $button.prop('disabled', false);
         });
+
         return false;
     }).on('click.gallery', '.add-gallery-video', function() {
-        /* Добавление видео */
-        var self = $(this),
-            gallery = self.closest('.gallery').gallery('object');
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
+
         var video_link = prompt(gettext('Paste YouTube/Vimeo video URL'), 'http://');
         if (video_link) {
             gallery.addVideo(video_link);
         }
+
         return false;
     }).on('click.gallery', '.item-delete', function() {
-        /* Удаление картинки */
-        var self = $(this),
-            $item = self.closest('.gallery-item'),
-            gallery = self.closest('.gallery').gallery('object');
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
 
+        var $item = $button.closest('.gallery-item');
         gallery.deleteItem($item);
+
         return false;
     }).on('click.gallery', '.item-rotate-left', function() {
-        /* Поворот картинки против часовой стрелки */
-        var self = $(this),
-            $item = self.closest('.gallery-item'),
-            gallery = self.closest('.gallery').gallery('object');
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
 
+        var $item = $button.closest('.gallery-item');
         gallery.rotateItem($item, 'left').done(function() {
             $item.find('.item-crop').removeData('crop').removeAttr('data-crop');
         });
+
         return false;
     }).on('click.gallery', '.item-rotate-right', function() {
-        /* Поворот картинки по часовой стрелке */
-        var self = $(this),
-            $item = self.closest('.gallery-item'),
-            gallery = self.closest('.gallery').gallery('object');
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
 
+        var $item = $button.closest('.gallery-item');
         gallery.rotateItem($item, 'right').done(function() {
             $item.find('.item-crop').removeData('crop').removeAttr('data-crop');
         });
+
         return false;
     }).on('click.gallery', '.item-description', function() {
-        /* Редактирвоание описания картинки */
-        var self = $(this),
-            $item = self.closest('.gallery-item'),
-            gallery = self.closest('.gallery').gallery('object');
+        var $button = $(this);
+        var gallery = $button.closest('.gallery').data(Gallery.dataParamName);
+        if (!gallery) {
+            console.error('Gallery object not found');
+            return false;
+        }
 
         var $template = $('<div>')
             .attr('id', 'description-dialog')
             .append('<textarea>')
             .appendTo('body');
 
+        var $item = $button.closest('.gallery-item');
         gallery.getItemDescription($item).done(function(response) {
             $template.find('textarea').val(response.description);
 
@@ -123,6 +155,7 @@
                     dialog.empty();
                     dialog.remove();
                     dialog = null;
+                    $template.remove();
                 }
             });
         });

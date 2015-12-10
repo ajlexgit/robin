@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<h4>
+<div class="caption">
   {% blocktrans with image_count=gallery.image_items.count video_count=gallery.video_link_items.count count counter=image_count %}
     Gallery has <span class="gallery-image-counter">{{ image_count }}</span> image and
     <span class="gallery-videolink-counter">{{ video_count }}</span> video
@@ -8,7 +8,7 @@
     Gallery has <span class="gallery-image-counter">{{ image_count }}</span> images and
     <span class="gallery-videolink-counter">{{ video_count }}</span> video
   {% endblocktrans %}
-</h4>
+</div>
 
 <div class="gallery-items" id="gallery-{{ name }}-items">
   {% for item in gallery.all_items %}
@@ -52,7 +52,7 @@
 </div>
 
 {% block buttons %}
-  <div class="clearfix">
+  <div class="buttons clearfix">
     <div style="float: left">
       {% if gallery.IMAGE_MODEL %}
         <button class="btn btn-success add-gallery-image">{% trans 'Add image' %}</button>
@@ -68,3 +68,7 @@
     </div>
   </div>
 {% endblock buttons %}
+
+<div class="dragover-content">
+  <span>{% trans 'Drop files here' %}</span>
+</div>

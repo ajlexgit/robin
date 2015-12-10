@@ -7,10 +7,22 @@
 
 
     /*
-        Класс галереи, предоставляющий базовые методы работы над картинками
+        Класс галереи, предоставляющий базовые методы работы над картинками.
+
+        События:
+            create.gallery      - галерея создана
+            init.gallery        - галерея инициализирована
+            delete.gallery      - галерея удалена
+            destroy.gallery     - освобождение ресурсов JS-объекта галереи
+            item-add.gallery    - добавлен новый элемент
+            item-error.gallery  - ошибка добавления элемента
+            item-delete.gallery - элемент удален из галереи
+
     */
-    window.Gallery = Class(null, function Gallery(cls, superclass) {
+    window.Gallery = Class(EventedObject, function Gallery(cls, superclass) {
         cls.prototype.init = function(root, options) {
+            superclass.prototype.init.call(this);
+
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -75,18 +87,25 @@
 
             this.$root.data(cls.dataParamName, this);
 
-            // callback
-            this.$root.trigger('create.gallery');
+            // event
+            this.trigger('create.gallery');
         };
 
         /*
             Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
+            // event
+            this.trigger('destroy.gallery');
+
+            if (this.dropper) {
+                this.dropper.destroy();
+            }
             if (this.uploader) {
                 this.uploader.destroy();
             }
             this.$root.removeData(cls.dataParamName);
+            superclass.prototype.destroy.call(this);
         };
 
         cls.prototype.locked = function() {
@@ -101,6 +120,9 @@
             this._locked = false;
         };
 
+        /*
+            Базовая обертка над AJAX-запросами
+         */
         cls.prototype.ajax = function(options) {
             var that = this;
             var opts = $.extend(true, {
@@ -116,9 +138,15 @@
                     that.lock();
                 },
                 error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
+                    if (xhr.responseText) {
+                        try {
+                            var response = $.parseJSON(xhr.responseText);
+                            if (response && response.message) {
+                                alert(response.message);
+                            }
+                        } catch (err) {
+
+                        }
                     }
                 },
                 complete: function() {
@@ -129,6 +157,9 @@
             return $.ajax(opts);
         };
 
+        /*
+            Базовая обертка над AJAX-запросами для элемента галереи
+         */
         cls.prototype.ajaxItem = function($item, options) {
             var that = this;
             var item = $item.get(0);
@@ -150,9 +181,15 @@
                     $item.addClass(that.opts.loadingClass);
                 },
                 error: function(xhr) {
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        alert(response.message);
+                    if (xhr.responseText) {
+                        try {
+                            var response = $.parseJSON(xhr.responseText);
+                            if (response && response.message) {
+                                alert(response.message);
+                            }
+                        } catch (err) {
+
+                        }
                     }
                 },
                 complete: function() {
@@ -162,13 +199,6 @@
 
             return item.query = $.ajax(opts);
         };
-
-        cls.prototype.ajax_error = function(xhr) {
-            if (xhr.responseText) {
-                return $.parseJSON(xhr.responseText);
-            }
-        };
-
 
         /*
             Создание галереи
@@ -188,7 +218,6 @@
                 url: window.admin_gallery_create,
                 success: function(response) {
                     that.$wrapper.html(response.html);
-
                     that.initGallery(response.gallery_id);
                 }
             });
@@ -218,8 +247,26 @@
 
             this.initUploader();
 
-            // callback
-            this.$root.trigger('init.gallery');
+            // перемещение файлов
+            var that = this;
+            this.dropper = FileDropper(this.$wrapper, {
+                preventDefault: true
+            }).on('drop.drag', function(e, files) {
+                if (!that.uploader) {
+                    return
+                }
+
+                var i = 0;
+                var file;
+                while (file = files[i++]) {
+                    that.uploader.uploader.addFile(file);
+                }
+            });
+
+            // event
+            setTimeout(function() {
+                that.trigger('init.gallery');
+            }, 0);
         };
 
         /*
@@ -295,8 +342,8 @@
                         that.error(reason);
                     });
 
-                    // callback
-                    that.$root.trigger('item-add.gallery', [$item, json_response]);
+                    // event
+                    that.trigger('item-add.gallery', $item, json_response);
                 },
                 onUploadComplete: function() {
                     that.updateCounter();
@@ -349,6 +396,9 @@
                             $('<span>').html(formatError(file, error.message, true))
                         );
                     }
+
+                    // event
+                    that.trigger('item-error.gallery', $item, json_response);
                 }
             });
         };
@@ -394,6 +444,7 @@
                     that.gallery_id = null;
                     that.$galleryInput.val('');
 
+                    that.dropper.destroy();
                     that.uploader.destroy();
                     that.$list = $();
 
@@ -401,8 +452,8 @@
 
                     that.$wrapper.html(response.html);
 
-                    // callback
-                    that.$root.trigger('destroy.gallery');
+                    // event
+                    that.trigger('delete.gallery');
                 }
             });
         };
@@ -453,8 +504,8 @@
 
                     that.updateCounter();
 
-                    // callback
-                    that.$root.trigger('item-add.gallery', [$item, response]);
+                    // event
+                    that.trigger('item-add.gallery', $item, response);
                 },
                 error: function(xhr) {
                     var $preview = $item.find(that.opts.previewSelector);
@@ -463,15 +514,21 @@
 
                     $preview.show();
 
-                    var response = that.ajax_error(xhr);
-                    if (response && response.message) {
-                        $preview.append(
-                            $('<span>').html(response.message)
-                        );
+                    if (xhr.responseText) {
+                        try {
+                            var response = $.parseJSON(xhr.responseText);
+                            if (response && response.message) {
+                                $preview.append(
+                                    $('<span>').html(response.message)
+                                );
+                            }
+                        } catch (err) {
+
+                        }
                     }
 
-                    // callback
-                    that.$root.trigger('item-error.gallery', [$item, response]);
+                    // event
+                    that.trigger('item-error.gallery', $item, response);
                 },
                 complete: function() {
                     $item.removeClass(that.opts.loadingClass);
@@ -508,11 +565,12 @@
                 }, {
                     duration: 100,
                     complete: function() {
-                        $item.remove();
-
-                        // callback
                         df.resolve();
-                        that.$root.trigger('item-delete.gallery', $item);
+
+                        // event
+                        that.trigger('item-delete.gallery', $item);
+
+                        $item.remove();
                     }
                 });
                 return df.promise();
@@ -528,10 +586,10 @@
                             duration: 100,
                             complete: function() {
                                 $item.remove();
-                                that.updateCounter();
+                                // event
+                                that.trigger('item-delete.gallery', $item);
 
-                                // callback
-                                that.$root.trigger('item-delete.gallery', $item);
+                                that.updateCounter();
                             }
                         })
                     }

@@ -9,6 +9,7 @@
         Параметры:
             dragOverClass   - класс, который вешается на DOM-элемент
                               при перетаскивании над ним файла
+            preventDefault  - предотвращать поведение drop по умолчанию
 
         События:
             start.drag      - начало перетаскивания над областью
@@ -26,7 +27,8 @@
 
             // настройки
             this.opts = $.extend({
-                dragOverClass: 'dragover'
+                dragOverClass: 'dragover',
+                preventDefault: false
             }, options);
 
             var that = this;
@@ -61,6 +63,10 @@
                 var files = that.getFiles(event.originalEvent.dataTransfer);
                 if (files.length) {
                     that.trigger('drop.drag', files);
+                }
+
+                if (that.opts.preventDefault) {
+                    return false;
                 }
             });
 
