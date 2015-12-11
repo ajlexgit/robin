@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% load pipeline %}
 {% load text %}
+{% load i18n %}
 
 {% block static_head %}
   {{ block.super }}
@@ -17,28 +18,53 @@
 
 {% block content %}
 
+  <div id="blog" class="content">
+    <div class="header grid-block">
+      <h1 class="title-h1">{{ config.header }}</h1>
+    </div>
+  </div>
+
   <div class="grid">
     <div class="grid-col-wide-6 grid-col-6 grid-col-alone">
 
-      {% for post in paginator.page %}
-        <div class="post">
-          <div class="date">{{ post.date|date:"jS E Y" }}</div>
-
-          <div class="title title-h1">
-            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      {% if tags %}
+        <div id="tags">
+          <div class="tag {% if not current_tag %}active{% endif %}">
+            <a href="{{ tag.get_absolute_url }}">{% trans 'All' %}</a>
           </div>
 
-          {% if post.preview %}
-            <img src="{{ post.preview.normal.url }}" class="preview">
-          {% endif %}
-
-          {% if post.note %}
-            <div class="note text-styles">
-              {{ post.note|clean }}
+          {% for tag in tags %}
+            <div class="tag {% if current_tag.pk == tag.pk %}active{% endif %}">
+              <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
             </div>
-          {% endif %}
+          {% endfor %}
         </div>
-      {% endfor %}
+      {% endif %}
+
+      <div id="posts">
+        {% for post in paginator.page %}
+          <div class="post">
+            <div class="date">{{ post.date|date:"jS E Y" }}</div>
+
+            <div class="title title-h2">
+              <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </div>
+
+            {% if post.preview %}
+              <a href="{{ post.get_absolute_url }}" class="preview">
+                <img srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
+                     src="{{ post.preview.normal.url }}" sizes="(min-width: 1024px) 75vw, 100vw">
+              </a>
+            {% endif %}
+
+            {% if post.note %}
+              <div class="note text-styles">
+                {{ post.note|clean }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
 
       {% if paginator.num_pages > 1 %}
         <div id="paginator">

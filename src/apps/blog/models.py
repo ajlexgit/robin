@@ -44,6 +44,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return resolve_url('blog:tag', tag_slug=self.slug)
+
 
 class BlogPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
@@ -75,17 +78,20 @@ class BlogPost(models.Model):
     preview = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('blog/preview'),
-        min_dimensions=(1200, 600),
+        min_dimensions=(900, 500),
         admin_variation='admin',
         crop_area=True,
         aspects=('normal',),
         variations=dict(
-           normal=dict(
-               size=(1200, 600),
-           ),
-           admin=dict(
-               size=(400, 200),
-           ),
+            normal=dict(
+                size=(900, 500),
+            ),
+            mobile=dict(
+                size=(540, 300),
+            ),
+            admin=dict(
+                size=(450, 250),
+            ),
         ),
     )
 

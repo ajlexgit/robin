@@ -8,16 +8,25 @@ from .models import BlogConfig, BlogPost, Tag
 
 class IndexView(TemplateExView):
     config = None
+    tag = None
     template_name = 'blog/index.html'
 
-    def before_get(self, request):
+    def before_get(self, request, tag_slug=None):
         self.config = BlogConfig.get_solo()
 
-    def get(self, request):
+        if tag_slug is not None:
+            self.tag = get_object_or_404(Tag, slug=tag_slug)
+
+    def get(self, request, tag_slug=None):
+        if self.tag:
+            posts = BlogPost.objects.filter(visible=True, tags=self.tag)
+        else:
+            posts = BlogPost.objects.filter(visible=True)
+
         try:
             paginator = Paginator(
                 request,
-                object_list=BlogPost.objects.filter(visible=True),
+                object_list=posts,
                 per_page=5,
                 page_neighbors=1,
                 side_neighbors=1,
@@ -36,6 +45,7 @@ class IndexView(TemplateExView):
         return self.render_to_response({
             'config': self.config,
             'tags': Tag.objects.active(),
+            'current_tag': self.tag,
             'paginator': paginator,
         })
 

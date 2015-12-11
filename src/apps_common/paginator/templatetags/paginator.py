@@ -9,5 +9,5 @@ def href(paginator, number, anchor):
     number = paginator.real_page_number(number)
     link = paginator.href(number)
     if anchor:
-        link += '#' + anchor 
+        link += '#' + anchor
     return link

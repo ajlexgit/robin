@@ -3,26 +3,26 @@
 
 <div class="navigation">
   {% if not page.has_next %}
-    <span class="nav-item next-item {% if not page.has_next %}active{% endif %}">{% trans 'Next' %} →</span>
+    <span class="nav-item next-item">{% trans 'Next' %}</span>
   {% else %}
     <a href="{% href paginator page.next_page_number anchor %}"
-       class="nav-item next-item link {% if not page.has_next %}active{% endif %}"
-       data-page="{{ page.next_page_number }}">{% trans 'Next' %} →</a>
+       class="nav-item next-item link"
+       data-page="{{ page.next_page_number }}">{% trans 'Next' %}</a>
   {% endif %}
 
   {% if not page.has_previous %}
-    <span class="nav-item prev-item {% if not page.has_previous %}active{% endif %}">← {% trans 'Previous' %}</span>
+    <span class="nav-item prev-item">{% trans 'Previous' %}</span>
   {% else %}
     <a href="{% href paginator page.previous_page_number anchor %}"
-       class="nav-item prev-item link {% if not page.has_previous %}active{% endif %}"
-       data-page="{{ page.previous_page_number }}">← {% trans 'Previous' %}</a>
+       class="nav-item prev-item link"
+       data-page="{{ page.previous_page_number }}">{% trans 'Previous' %}</a>
   {% endif %}
 
   {% for page_num in paginator.zipped_page_range %}
     {% if page_num == None %}
       <span class="item zip-item">...</span>
     {% elif page.number == page_num %}
-      <span class="item link active">{{ page_num }}</span>
+      <span class="item active">{{ page_num }}</span>
     {% else %}
       <a href="{% href paginator page_num anchor %}"
          class="item link {% if page.number == page_num %}active{% endif %}"

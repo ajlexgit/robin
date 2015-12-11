@@ -26,7 +26,8 @@
       <h1 class="title title-h1">{{ post.title }}</h1>
 
       {% if post.preview %}
-        <img src="{{ post.preview.normal.url }}" class="preview">
+        <img class="preview" srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
+             src="{{ post.preview.normal.url }}" sizes="(min-width: 1024px) 75vw, 100vw">
       {% endif %}
 
       <div class="text text-styles">

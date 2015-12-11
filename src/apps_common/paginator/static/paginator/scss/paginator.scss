@@ -5,6 +5,8 @@
   @include clearfix;
 
   .nav-item {
+    @include opacity(0.5);
+
     &.next-item {
       float: right;
     }
@@ -13,21 +15,30 @@
       float: left;
     }
 
-    &.active {
-      color: #E5E5E5;
+    &.link {
+      @include opacity(1);
+
+      &:hover {
+        @include opacity(0.8);
+      }
     }
   }
 
   .item {
+    display: inline-block;
     padding: 0 10px;
     margin: 0 8px;
-    @include media_interval(0, $media1024) {
-      padding: 0 8px;
-      margin: 0 6px;
+
+    &.zip-item {
+      padding: 0;
     }
 
-    &:hover, &.active {
-      color: #C097FF;
+    &.active {
+      color: #000000;
+    }
+
+    &.link:hover {
+      @include opacity(0.8);
     }
   }
 }

@@ -5,5 +5,6 @@ from . import views
 
 urlpatterns = patterns('',
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^t-(?P<tag_slug>{0})/$'.format(ALIAS_REGEXP), views.IndexView.as_view(), name='tag'),
     url(r'^(?P<slug>{0})/$'.format(ALIAS_REGEXP), views.DetailView.as_view(), name='detail'),
 )
