@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         date = datetime.now().date()
 
-        backup_name = '{}.zip'.format(date.strftime('%d_%m_%Y'))
+        backup_name = '{}.zip'.format(date.strftime('%Y_%m_%d'))
         if args:
             backup_dir = os.path.abspath(args[0])
         else:

@@ -17,7 +17,7 @@ def _filesize(file):
 def index(request):
     """ Список бэкапов """
     zip_archives = []
-    for file in os.listdir(settings.BACKUP_ROOT):
+    for file in sorted(os.listdir(settings.BACKUP_ROOT)):
         absfile = os.path.abspath(os.path.join(settings.BACKUP_ROOT, file))
         if os.path.isfile(absfile) and absfile.endswith('.zip'):
             zip_archives.append((
