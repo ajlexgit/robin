@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% load staticfiles %}
+{% load pipeline %}
+{% load away %}
+{% load text %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'blog_post_page' %}
+{% endblock static_head %}
+
+{% block static_js %}
+  {{ block.super }}
+  {% javascript 'blog_post_page' %}
+{% endblock static_js %}
+
+
+{% block content %}
+
+  <div class="grid">
+    <div class="grid-col-wide-6 grid-col-6 grid-col-alone">
+
+      <div class="date">{{ post.date|date:"jS E Y" }}</div>
+
+      <h1 class="title title-h1">{{ post.title }}</h1>
+
+      {% if post.preview %}
+        <img src="{{ post.preview.normal.url }}" class="preview">
+      {% endif %}
+
+      <div class="text text-styles">
+        {% away post.text|typograf %}
+      </div>
+
+    </div>
+  </div>
+
+{% endblock content %}

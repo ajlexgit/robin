@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% load staticfiles %}
+{% load pipeline %}
+{% load text %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'blog_page' %}
+{% endblock static_head %}
+
+{% block static_js %}
+  {{ block.super }}
+  {% javascript 'blog_page' %}
+{% endblock static_js %}
+
+
+{% block content %}
+
+  <div class="grid">
+    <div class="grid-col-wide-6 grid-col-6 grid-col-alone">
+
+      {% for post in paginator.page %}
+        <div class="post">
+          <div class="date">{{ post.date|date:"jS E Y" }}</div>
+
+          <div class="title title-h1">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+          </div>
+
+          {% if post.preview %}
+            <img src="{{ post.preview.normal.url }}" class="preview">
+          {% endif %}
+
+          {% if post.note %}
+            <div class="note text-styles">
+              {{ post.note|clean }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {% if paginator.num_pages > 1 %}
+        <div id="paginator">
+          {{ paginator }}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+{% endblock content %}
