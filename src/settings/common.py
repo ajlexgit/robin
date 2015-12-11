@@ -172,6 +172,12 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/main_page.css',
     },
+    'error_page': {
+        'source_filenames': (
+            'scss/error_page.scss',
+        ),
+        'output_filename': 'css/error_page.css',
+    },
     'contacts_page': {
         'source_filenames': (
             'contacts/scss/index.scss',

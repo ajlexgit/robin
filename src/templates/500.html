@@ -1,13 +1,18 @@
 {% extends 'layout.html' %}
 
+{% load pipeline %}
 {% load i18n %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'error_page' %}
+{% endblock static_head %}
+
 
 {% block title %}{% trans 'Server error' %}{% endblock %}
 
 {% block content %}
-  <div class="grid">
-    <div class="gc gc-alone">
-      <h1>{% trans 'Server error' %}</h1>
-    </div>
+  <div class="grid-block text-styles">
+    <h1>{% trans 'Server error' %}</h1>
   </div>
 {% endblock %}

@@ -1,9 +1,20 @@
 {% extends 'layout.html' %}
 
+{% load pipeline %}
 {% load i18n %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'error_page' %}
+{% endblock static_head %}
+
 
 {% block title %}{% trans 'Page not found' %}{% endblock %}
 
 {% block content %}
-  <h1>{% trans 'Page not found' %}</h1>
+
+  <div class="grid-block text-styles">
+    <h1>{% trans 'Page not found' %}</h1>
+  </div>
+
 {% endblock %}
