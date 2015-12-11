@@ -23,6 +23,28 @@ class BlogConfig(SingletonModel):
         return resolve_url('blog:index')
 
 
+class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
+    def active(self):
+        return self.filter(
+            posts__status=BlogPost.STATUS_PUBLIC,
+            posts__date__lte=now()
+        ).distinct('pk')
+
+
+class Tag(models.Model):
+    title = models.CharField(_('title'), max_length=255)
+    alias = AutoSlugField(_('alias'), populate_from=('title',), unique=True)
+
+    objects = TagQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+    def __str__(self):
+        return self.title
+
+
 class BlogPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         # visible
@@ -32,18 +54,6 @@ class BlogPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
         elif visible is False:
             qs ^= models.Q(status=BlogPost.STATUS_PUBLIC, date__lte=now())
         return qs
-
-
-class Tag(models.Model):
-    title = models.CharField(_('title'), max_length=255)
-    alias = AutoSlugField(_('alias'), populate_from=('title',), unique=True)
-
-    class Meta:
-        verbose_name = _("Tag")
-        verbose_name_plural = _("Tags")
-
-    def __str__(self):
-        return self.title
 
 
 class BlogPost(models.Model):
@@ -60,7 +70,7 @@ class BlogPost(models.Model):
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     date = models.DateTimeField(_('publication date'), default=now)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=STATUS_DRAFT)
-    tags = models.ManyToManyField(Tag, verbose_name=_('tags'), through='PostTag')
+    tags = models.ManyToManyField(Tag, verbose_name=_('tags'), through='PostTag', related_name='posts')
 
     preview = StdImageField(_('preview'),
         blank=True,

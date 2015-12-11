@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from seo import Seo
 from paginator import Paginator, EmptyPage
 from libs.views import TemplateExView
-from .models import BlogConfig, BlogPost
+from .models import BlogConfig, BlogPost, Tag
 
 
 class IndexView(TemplateExView):
@@ -35,6 +35,7 @@ class IndexView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
+            'tags': Tag.objects.active(),
             'paginator': paginator,
         })
 
