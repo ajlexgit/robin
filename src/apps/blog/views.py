@@ -29,7 +29,7 @@ class IndexView(TemplateExView):
         # SEO
         seo = Seo()
         seo.set_data(self.config, defaults={
-            'title': self.config.title,
+            'title': self.config.header,
         })
         seo.save(request)
 
@@ -52,7 +52,7 @@ class DetailView(TemplateExView):
     def get(self, request, slug):
         # SEO
         seo = Seo()
-        seo.set_title(self.config)
+        seo.set_title(self.config, default=self.config.header)
         seo.set_data(self.post, defaults={
             'title': self.post.title,
         })

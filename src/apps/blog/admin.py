@@ -5,34 +5,22 @@ from django.utils import dateformat
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
-from suit.widgets import AutosizedTextarea
 from libs.autocomplete.widgets import AutocompleteWidget
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from seo.admin import SeoModelAdminMixin
 from .models import BlogConfig, BlogPost, Tag, PostTag
 
 
-class BlogConfigForm(forms.ModelForm):
-    class Meta:
-        widgets = {
-            'title': AutosizedTextarea(attrs={
-                'class': 'input-xxlarge',
-                'rows': 1,
-            }),
-        }
-
-
 @admin.register(BlogConfig)
 class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
-    form = BlogConfigForm
     fieldsets = (
         (None, {
-            'classes': ('suit-tab', 'suit-tab-header'),
-            'fields': ('title', ),
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('header', ),
         }),
     )
     suit_form_tabs = (
-        ('header', _('Header')),
+        ('general', _('General')),
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'

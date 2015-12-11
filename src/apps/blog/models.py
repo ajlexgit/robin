@@ -12,7 +12,7 @@ from libs.stdimage.fields import StdImageField
 
 
 class BlogConfig(SingletonModel):
-    title = models.CharField(_('title'), max_length=255)
+    header = models.CharField(_('header'), max_length=255)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
