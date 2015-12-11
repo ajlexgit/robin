@@ -1,7 +1,6 @@
 from . import options
 from pysyge.pysyge import GeoLocator, MODE_BATCH, MODE_MEMORY
 
-geodata = GeoLocator(options.DB_PATH, MODE_BATCH | MODE_MEMORY)
 __all__ = ['info']
 
 
@@ -25,5 +24,6 @@ def info(ip, detailed=False):
               'id': 0}}
 
     """
+    geodata = GeoLocator(options.DB_PATH, MODE_BATCH | MODE_MEMORY)
     data = geodata.get_location(ip, detailed)
     return data.get('info') if data else data
