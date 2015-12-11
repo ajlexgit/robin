@@ -45,11 +45,11 @@ class DetailView(TemplateExView):
     post = None
     template_name = 'blog/detail.html'
 
-    def before_get(self, request, alias):
+    def before_get(self, request, slug):
         self.config = BlogConfig.get_solo()
-        self.post = get_object_or_404(BlogPost, alias=alias)
+        self.post = get_object_or_404(BlogPost, slug=slug)
 
-    def get(self, request, alias):
+    def get(self, request, slug):
         # SEO
         seo = Seo()
         seo.set_title(self.config)

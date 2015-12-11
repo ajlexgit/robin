@@ -33,7 +33,7 @@ class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
 class Tag(models.Model):
     title = models.CharField(_('title'), max_length=255)
-    alias = AutoSlugField(_('alias'), populate_from=('title',), unique=True)
+    slug = AutoSlugField(_('slug'), populate_from=('title',), unique=True)
 
     objects = TagQuerySet.as_manager()
 
@@ -65,7 +65,7 @@ class BlogPost(models.Model):
     )
 
     title = models.CharField(_('title'), max_length=255)
-    alias = AutoSlugField(_('alias'), populate_from=('title',), unique=True)
+    slug = AutoSlugField(_('slug'), populate_from=('title',), unique=True)
     note = models.TextField(_('note'))
     text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
     date = models.DateTimeField(_('publication date'), default=now)
@@ -102,7 +102,7 @@ class BlogPost(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return resolve_url('blog:detail', alias=self.alias)
+        return resolve_url('blog:detail', slug=self.slug)
 
 
 class PostTag(models.Model):

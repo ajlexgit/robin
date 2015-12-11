@@ -42,11 +42,11 @@ class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
 class TagAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ('title', 'alias'),
+            'fields': ('title', 'slug'),
         }),
     )
     list_display = ('title',)
-    prepopulated_fields = {'alias': ('title',)}
+    prepopulated_fields = {'slug': ('title',)}
 
 
 class PostTagForm(forms.ModelForm):
@@ -71,7 +71,7 @@ class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('preview', 'title', 'alias', 'status', 'date'),
+            'fields': ('preview', 'title', 'slug', 'status', 'date'),
         }),
         (_('Content'), {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -84,7 +84,7 @@ class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     list_filter = ('status', )
     search_fields = ('title',)
     actions = ('make_public_action', 'make_draft_action')
-    prepopulated_fields = {'alias': ('title', )}
+    prepopulated_fields = {'slug': ('title', )}
 
     suit_form_tabs = (
         ('general', _('General')),

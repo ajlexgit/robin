@@ -5,5 +5,5 @@ from . import views
 
 urlpatterns = patterns('',
     url(r'^$', views.IndexView.as_view(), name='index'),
-    url(r'^(?P<alias>{0})/$'.format(ALIAS_REGEXP), views.DetailView.as_view(), name='detail'),
+    url(r'^(?P<slug>{0})/$'.format(ALIAS_REGEXP), views.DetailView.as_view(), name='detail'),
 )
