@@ -15,7 +15,7 @@
     color: #000000;
     line-height: 1;
     @include font-size(100px);
-    @include media_interval(0, $media540) {
+    @include media_interval(0, $media640) {
       @include font-size(80px);
     }
   }
@@ -23,7 +23,7 @@
   .description {
     max-width: 360px;
     margin: 20px auto 0;
-    @include media_interval($media400, $media540) {
+    @include media_interval($media400, $media640) {
       max-width: 300px;
     }
     @include media_interval(0, $media400) {
