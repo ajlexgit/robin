@@ -97,6 +97,10 @@
   @include media_styles($values, $args...);
 }
 
+@mixin block-paddings($args...) {
+  @include media_styles($block_paddings, $args...);
+}
+
 @mixin fontsize_default() {
   @include font-size(16px);
   @include media_interval(0, $media640) {

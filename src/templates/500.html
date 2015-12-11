@@ -12,7 +12,18 @@
 {% block title %}{% trans 'Server error' %}{% endblock %}
 
 {% block content %}
+
   <div class="grid-block text-styles">
-    <h1>{% trans 'Server error' %}</h1>
+    <div class="inner">
+      <div class="code title-h1">500</div>
+      <div class="description">
+        {% blocktrans %}
+          The server encountered an internal error or misconfiguration and was unable to complete your request.<br>
+          You can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
+          looking for.
+        {% endblocktrans %}
+      </div>
+    </div>
   </div>
+
 {% endblock %}
