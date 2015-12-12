@@ -1,21 +1,13 @@
 @import 'mixins';
 
+$text_color: #404040;
+$hover_color: #82BD36;
+$active_color: #82BD36;
 
-.main-menu {
-  a {
-    display: inline-block;
-    padding: 5px;
-    font-weight: bold;
-
-    &:hover {
-      color: #82BD36;
-    }
-  }
-
-  &.active {
-    color: #82BD36;
-  }
-}
+$mobile_background: #5B3C2A;
+$mobile_text_color: #FFFFFF;
+$mobile_hover_color: $hover_color;
+$mobile_active_color: $active_color;
 
 
 #main-menu {
@@ -29,14 +21,29 @@
   li {
     display: inline-block;
     margin-right: 10px;
-    color: #404040;
+    color: $text_color;
     &:nth-last-of-type(1) {
       margin-right: 0;
+    }
+
+    &.active {
+      color: $active_color;
+
+      a:hover {
+        color: $active_color;
+      }
     }
   }
 
   a {
+    display: inline-block;
+    padding: 5px;
+    font-weight: bold;
     @include font-size(18px, 20px);
+
+    &:hover {
+      color: $hover_color;
+    }
   }
 }
 
@@ -50,7 +57,7 @@
   width: 80%;
   height: 100vh;
   z-index: 50;
-  background: #5B3C2A;
+  background: $mobile_background;
   @include border-box;
   @include transition(right 0.4s);
   @include media_interval(0, $mobile_menu_point) {
@@ -65,17 +72,32 @@
 
   li {
     margin: 24px 0;
-    color: #FFFFFF;
+    color: $mobile_text_color;
     &:nth-of-type(1) {
       margin-top: 0;
     }
     &:nth-last-of-type(1) {
       margin-bottom: 0;
     }
+
+    &.active {
+      color: $mobile_active_color;
+
+      a:hover {
+        color: $mobile_active_color;
+      }
+    }
   }
 
   a {
+    display: inline-block;
+    padding: 5px;
+    font-weight: bold;
     @include font-size(22px, 28px);
+
+    &:hover {
+      color: $mobile_hover_color;
+    }
   }
 
   &.active {
