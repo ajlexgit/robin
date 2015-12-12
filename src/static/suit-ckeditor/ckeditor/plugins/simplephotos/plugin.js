@@ -41,7 +41,6 @@
                     // Файл загружен
                     var response = JSON.parse(data.response);
 
-                    window.e = editor;
                     var $doc = $(editor.editable().$);
                     $doc.find('#' + file.id).replaceWith(response.tag);
 

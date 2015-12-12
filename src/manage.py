@@ -1,7 +1,6 @@
 import os
 import sys
 
-# simplephotos srcset
 # Angular-like
 # виджет выбора ссылки на сущность
 
