@@ -141,6 +141,11 @@ class VariationImageFieldFile(ImageFieldFile):
         return self.storage.url(self.name) + '?_=%d' % mt
 
     @property
+    def srcset(self):
+        width = self.dimensions[0]
+        return '{url} {width}w'.format(url=self.url, width=width)
+
+    @property
     def croparea(self):
         return self._croparea
 

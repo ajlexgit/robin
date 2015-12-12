@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.contrib import admin
+from django.forms.utils import flatatt
 from django.utils.html import escapejs
 from django.core.exceptions import ValidationError
 from django.contrib.admin.options import IS_POPUP_VAR
@@ -7,7 +8,22 @@ from django.http import JsonResponse, Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
 from project.admin import ModelAdminMixin
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
-from .models import PagePhoto, SimplePhoto, generate_tag
+from .models import PagePhoto, SimplePhoto
+
+
+def pagephoto_tag(instance, nocache=False):
+    attrs = flatatt({
+        'src': instance.photo.normal.url_nocache if nocache else instance.photo.normal.url,
+        'srcset': '%s, %s' % (instance.photo.normal.srcset, instance.photo.mobile.srcset),
+        'width': instance.photo.normal.width,
+        'height': instance.photo.normal.height,
+        'sizes': '100vw',
+    })
+
+    return """<img data-id="{id}" alt="" {attrs}>""".format(
+        id=instance.id,
+        attrs=attrs,
+    )
 
 
 @admin.register(PagePhoto)
@@ -29,7 +45,7 @@ class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
     def response_change(self, request, obj):
         if IS_POPUP_VAR in request.POST:
             return SimpleTemplateResponse('ckeditor/popup_response.html', {
-                'newTag': escapejs(generate_tag(obj, random_param=True)),
+                'newTag': escapejs(pagephoto_tag(obj, nocache=True)),
             })
 
         return super(PagePhotoAdmin, self).response_change(request, obj)
@@ -75,10 +91,25 @@ def upload_pagephoto(request):
         pagephoto.save()
 
     return JsonResponse({
-        'tag': generate_tag(pagephoto),
+        'tag': pagephoto_tag(pagephoto),
         'field': field_name,
         'id': pagephoto.pk,
     })
+
+
+def simplephoto_tag(instance, nocache=False):
+    attrs = flatatt({
+        'src': instance.photo.url_nocache if nocache else instance.photo.url,
+        'srcset': '%s, %s' % (instance.photo.srcset, instance.photo.mobile.srcset),
+        'width': instance.photo.width,
+        'height': instance.photo.height,
+        'sizes': '100vw',
+    })
+
+    return """<img data-id="{id}" alt="" {attrs}>""".format(
+        id=instance.id,
+        attrs=attrs,
+    )
 
 
 @admin.site.admin_view
@@ -122,7 +153,7 @@ def upload_simplephoto(request):
         simplephoto.save()
 
     return JsonResponse({
-        'url': simplephoto.photo.url,
+        'tag': simplephoto_tag(simplephoto),
         'field': field_name,
         'id': simplephoto.pk,
     })

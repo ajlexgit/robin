@@ -1,9 +1,8 @@
 import os
 import sys
 
-# Pagephotos / simplephotos srcset
+# simplephotos srcset
 # Angular-like
-# в слайдере в тексте прятать все картинки, кроме первой
 # виджет выбора ссылки на сущность
 
 # Blocks - ссылка на создание блока

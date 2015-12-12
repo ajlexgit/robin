@@ -3,6 +3,7 @@ import itertools
 from PIL import Image, ImageOps, ImageEnhance
 from django.contrib.staticfiles.storage import staticfiles_storage
 from .croparea import CropArea
+from .size import Size
 
 
 DEFAULT_VARIATION = dict(
@@ -100,8 +101,6 @@ def check_variations(variations, obj):
             errors.append(checks.Error('variation %r requires \'size\' value' % name, obj=obj))
         if not is_size(params['size']):
             errors.append(checks.Error('"size" in variation %r should be a tuple of 2 non-negative numbers' % name, obj=obj))
-        if not any(d for d in params['size']):
-            errors.append(checks.Error('"size" in variation %r can\'t be zero-filled' % name, obj=obj))
 
         # crop
         if not isinstance(params['crop'], bool):
@@ -118,6 +117,9 @@ def check_variations(variations, obj):
             errors.append(checks.Error('"max_height" in variation %r must be a non-negative integer' % name, obj=obj))
         if params['crop'] and (params['max_width'] or params['max_height']):
             errors.append(checks.Error('"max_width" and "max_height" allowed only when crop=False in variation %r' % name, obj=obj))
+
+        if not any(d for d in params['size']) and not params['max_width'] and not params['max_height']:
+            errors.append(checks.Error('"size" in variation %r is empty and non-calulatable' % name, obj=obj))
 
         # offset
         if 'offset' in params:
@@ -345,7 +347,6 @@ def variation_resize(image, variation, target_format):
     stretch = bool(variation['stretch'])
 
     source_size = image.size
-    source_aspect = operator.truediv(*source_size)
 
     if crop:
         # Быстрое уменьшение картинки, если целевой размер намного меньше
@@ -374,57 +375,59 @@ def variation_resize(image, variation, target_format):
         if mode == 'RGBA' and target_format == 'JPEG':
             image = put_on_bg(image, image.size, masked=True, **bg_options)
     else:
+        # Размеры картинки, вписываемой в холст
+        image_size = Size(*source_size)
+
         max_width = variation['max_width']
         max_height = variation['max_height']
 
-        image_size = [
-            min(max_width or target_size[0], target_size[0] or max_width),
-            min(max_height or target_size[1], target_size[1] or max_height),
-        ]
+        # корректируем ограничения
+        max_width = min(max_width or target_size[0], target_size[0] or max_width)
+        max_height = min(max_height or target_size[1], target_size[1] or max_height)
 
-        # обработка случаев, когда size содержит нули, но заданы max_width/max_height
-        target_size = list(target_size)
-        target_size[0] = target_size[0] or image_size[0]
-        target_size[1] = target_size[1] or image_size[1]
-
-        # нули и в max_width и в size
-        if target_size[0] == 0:
-            new_width = target_size[1] * source_aspect
-            if not stretch:
-                new_width = min(new_width, source_size[0])
-
-            target_size[0] = image_size[0] = int(new_width)
-        elif target_size[1] == 0:
-            new_height = target_size[0] / source_aspect
-            if not stretch:
-                new_height = min(new_height, source_size[1])
-
-            target_size[1] = image_size[1] = int(new_height)
-
-
+        # Определяем размеры картинки
         if stretch:
-            image_aspect = operator.truediv(*image_size)
-            if source_aspect > image_aspect:
-                # исходник более широкий, чем цель
-                factor = image_size[0] / source_size[0]
-                new_size = (
-                    image_size[0],
-                    round(source_size[1] * factor),
-                )
+            # растягивать разрешено
+            if max_width:
+                if max_height:
+                    max_aspect = max_width / max_height
+                    if image_size.aspect > max_aspect:
+                        # картинка шире холста
+                        image_size.width = max_width
+                    else:
+                        # картинка выше холста
+                        image_size.height = max_height
+                else:
+                    # плавающая выcота
+                    image_size.width = max_width
             else:
-                # исходник более высокий, чем цель
-                factor = image_size[1] / source_size[1]
-                new_size = (
-                    round(source_size[0] * factor),
-                    image_size[1]
-                )
+                if max_height:
+                    # плавающая ширина
+                    image_size.height = max_height
+        else:
+            # растягивать запрещено
+            if max_width:
+                image_size.max_width(max_width)
+            if max_height:
+                image_size.max_height(max_height)
 
+        # Определение размера холста
+        target_size = list(target_size)
+        if target_size[0] == 0:
+            target_size[0] = image_size.width
+        if target_size[1] == 0:
+            target_size[1] = image_size.height
+
+
+        # Ресайз
+        img_size = (image_size.width, image_size.height)
+        if stretch:
             # Быстрое уменьшение картинки, если целевой размер намного меньше
-            image.draft(None, new_size)
-            image = image.resize(new_size, resample=Image.ANTIALIAS)
+            image.draft(None, img_size)
+            image = image.resize(img_size, resample=Image.ANTIALIAS)
         else:
             # OLD: INSRIBE
-            image.thumbnail(image_size, resample=Image.ANTIALIAS)
+            image.thumbnail(img_size, resample=Image.ANTIALIAS)
 
         masked = mode == 'RGBA'
         image = put_on_bg(image, target_size, masked=masked, **bg_options)

@@ -40,10 +40,10 @@
                 FileUploaded: function(up, file, data) {
                     // Файл загружен
                     var response = JSON.parse(data.response);
-                    var preloader = editor.document.getById(file.id);
-                    if (preloader) {
-                        preloader.setAttribute('src', response.url);
-                    }
+
+                    window.e = editor;
+                    var $doc = $(editor.editable().$);
+                    $doc.find('#' + file.id).replaceWith(response.tag);
 
                     var text_field = $('#id_' + response.field);
                     if (text_field.length) {

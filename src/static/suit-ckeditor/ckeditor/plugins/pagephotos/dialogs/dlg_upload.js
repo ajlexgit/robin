@@ -1,11 +1,6 @@
 (function($) {
 
     var InitPluploader = function(editor) {
-        // Вычисляем размеры превьюх в соответсвии с пропорциями результата
-        var aspect = editor.config.PAGEPHOTOS_PHOTO_SIZE[1] / editor.config.PAGEPHOTOS_PHOTO_SIZE[0],
-            thumb_width = 120,
-            thumb_height = Math.round(thumb_width * aspect);
-
         $("#ckupload").plupload({
             runtimes : 'html5,flash,silverlight,html4',
             url : editor.config.PAGEPHOTOS_UPLOAD_URL,
@@ -24,8 +19,8 @@
             sortable: true,
             dragdrop: true,
             autostart: true,
-            thumb_width: thumb_width,
-            thumb_height: thumb_height,
+            thumb_width: editor.config.PAGEPHOTOS_THUMB_SIZE[0],
+            thumb_height: editor.config.PAGEPHOTOS_THUMB_SIZE[1],
             views: {
                list: false,
                thumbs: true,
@@ -35,9 +30,10 @@
             silverlight_xap_url : editor.config.MOXIE_XAP,
 
             init: {
-                Init: function() {
+                BeforeUpload: function() {
                     var ckDialog = CKEDITOR.dialog.getCurrent();
-                    ckDialog._.buttons['ok'].disable()
+                    ckDialog._.buttons['ok'].disable();
+                    ckDialog._.buttons['cancel'].disable();
                 },
                 FileUploaded: function(up, file, data) {
                     var response = $.parseJSON(data.response);
@@ -65,7 +61,8 @@
                 },
                 UploadComplete: function(up, files) {
                     var ckDialog = CKEDITOR.dialog.getCurrent();
-                    ckDialog._.buttons['ok'].enable()
+                    ckDialog._.buttons['ok'].enable();
+                    ckDialog._.buttons['cancel'].enable();
                 },
                 Error: function(up, error) {
                     up.removeFile(error.file);
@@ -146,7 +143,7 @@
                 }
 
                 if (images.length) {
-                    //Вставка картинок
+                    // Вставка картинок
 					var container = editor.getSelection().getStartElement();
 					if (container.hasClass('page-images')) {
 						if (images.length) {

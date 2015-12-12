@@ -709,51 +709,100 @@
     // ======================================================================================
 
     /*
+        Класс, помогающий рассчитать размеры картинки
+        при её пропорциональном ресайзе.
+     */
+    window.Size = Class(null, function Size(cls, superclass) {
+        cls.prototype.init = function(width, height) {
+            this.width = this.source_width = parseInt(width) || 0;
+            if (width <= 0) {
+                return this.raise('width should be positive');
+            }
+
+            this.height = this.source_height = parseInt(height) || 0;
+            if (height <= 0) {
+                return this.raise('height should be positive');
+            }
+
+            this.aspect = this.width / this.height;
+        };
+
+        cls.prototype._heightByWidth = function(width) {
+            return Math.floor(width / this.aspect);
+        };
+
+        cls.prototype._widthByHeight = function(height) {
+            return Math.floor(height * this.aspect);
+        };
+
+        cls.prototype.setWidth = function(value) {
+            value = parseInt(value) || 0;
+            if (value <= 0) {
+                return this.raise('width should be positive');
+            }
+
+            this.width = value;
+            this.height = this._heightByWidth(value);
+        };
+
+        cls.prototype.setHeight = function(value) {
+            value = parseInt(value) || 0;
+            if (value <= 0) {
+                return this.raise('height should be positive');
+            }
+
+            this.height = value;
+            this.width = this._widthByHeight(value);
+        };
+
+        /*
+            Установка ограничения по ширине
+         */
+        cls.prototype.maxWidth = function(value) {
+            if (this.width > value) {
+                this.setWidth(value);
+            }
+        };
+
+        /*
+            Установка ограничения по ширине
+         */
+        cls.prototype.maxHeight = function(value) {
+            if (this.height > value) {
+                this.setHeight(value);
+            }
+        };
+    });
+
+
+
+    /*
         Возвращает размеры canvas с учетом ограничений браузера.
         Параметры:
             img_width, img_height - исходные размеры картинки
             max_width, max_height - целевые ограничения
     */
     window.canvasSize = function(img_width, img_height, max_width, max_height) {
-        var ratio = img_width / img_height;
-        var width, height;
-
-        // Размеры с учетом max_width/max_height
-        if (!max_width) {
-            if (max_height) {
-                // max_width == 0
-                height = Math.min(img_height, max_height);
-                width = Math.round(height * ratio);
-            } else {
-                // max_width == 0 && max_height == 0
-                width = img_width;
-                height = img_height;
-            }
-        } else if (!height) {
-            // max_height == 0
-            width = Math.min(img_width, max_width);
-            height = Math.round(width / ratio);
+        var size = Size(img_width, img_height);
+        if (max_width) {
+            size.maxWidth(max_width);
+        }
+        if (max_height) {
+            size.maxHeight(max_height);
         }
 
         // Ограничение IE
-        if (width > 4096) {
-            width = 4096;
-            height = Math.round(width / ratio);
-        }
-        if (height > 4096) {
-            height = 4096;
-            width = Math.round(height * ratio);
-        }
+        size.maxWidth(4096);
+        size.maxHeight(4096);
 
         // Ограничение iOS
-        if (width * height > 5000000) {
-            width = Math.floor(Math.sqrt(5000000 * ratio));
-            height = Math.floor(5000000 / Math.sqrt(5000000 * ratio));
+        if ((size.width * size.height) > 5000000) {
+            size.maxWidth(Math.floor(Math.sqrt(5000000 * size.aspect)));
         }
 
         return {
-            width: width,
-            height: height
+            width: size.width,
+            height: size.height
         };
     };
 
@@ -1022,33 +1071,52 @@
             }
         } else {
             // --- нельзя обрезать ---
+            var image_size = Size(settings.coords[2], settings.coords[3]);
 
-            var image_size = [
-                Math.min(settings.max_width || target_size[0], target_size[0] || settings.max_width),
-                Math.min(settings.max_height || target_size[1], target_size[1] || settings.max_height)
-            ];
+            var max_width = settings.max_width;
+            var max_height = settings.max_height;
 
-            // обработка случаев, когда size содержит нули, но заданы max_width/max_height
-            target_size[0] = target_size[0] || image_size[0];
-            target_size[1] = target_size[1] || image_size[1];
+            // корректируем ограничения
+            max_width = Math.min(max_width || target_size[0], target_size[0] || max_width);
+            max_height = Math.min(max_height || target_size[1], target_size[1] || max_height);
 
-            // нули и в max_width и в size
+            // Определяем размеры картинки
+            if (settings.stretch) {
+                // растягивать разрешено
+                if (max_width) {
+                    if (max_height) {
+                        var max_aspect = max_width / max_height;
+                        if (image_size.aspect > max_aspect) {
+                            // картинка шире холста
+                            image_size.setWidth(max_width)
+                        } else {
+                            // картинка выше холста
+                            image_size.setHeight(max_height);
+                        }
+                    } else {
+                        // плавающая выcота
+                        image_size.setWidth(max_width);
+                    }
+                } else if (max_height) {
+                    // плавающая ширина
+                    image_size.setHeight(max_height);
+                }
+            } else {
+                // растягивать запрещено
+                if (max_width) {
+                    image_size.maxWidth(max_width);
+                }
+                if (max_height) {
+                    image_size.maxHeight(max_height);
+                }
+            }
+
+            // Определение размера холста
             if (target_size[0] == 0) {
-                var new_w = target_size[1] * coords_ratio;
-
-                if (!settings.stretch) {
-                    new_w = Math.min(new_w, settings.coords[2])
-                }
-
-                target_size[0] = image_size[0] = Math.floor(new_w);
-            } else if (target_size[1] == 0) {
-                var new_h = target_size[0] / coords_ratio;
-
-                if (!settings.stretch) {
-                    new_h = Math.min(new_h, settings.coords[3])
-                }
-
-                target_size[1] = image_size[1] = Math.floor(new_h);
+                target_size[0] = image_size.width;
+            }
+            if (target_size[1] == 0) {
+                target_size[1] = image_size.height;
             }
 
             // Новый размер канвы
@@ -1058,31 +1126,8 @@
             context.fillStyle = 'rgba(' + settings.background.join(',') + ')';
             context.fillRect(0, 0, canvas.width, canvas.height);
 
-            if (settings.stretch) {
-                // можно растягивать
-                var image_ratio = image_size[0] / target_size[1];
-                if (coords_ratio >= image_ratio) {
-                    // картинка более "широкая", чем надо
-                    final_w = image_size[0];
-                    final_h = final_w / coords_ratio;
-                } else {
-                    // картинка более "высокая", чем надо
-                    final_h = image_size[1];
-                    final_w = final_h * coords_ratio;
-                }
-            } else {
-                // нельзя растягивать
-                final_w = settings.coords[2];
-                final_h = settings.coords[3];
-                if (final_w > image_size[0]) {
-                    final_w = image_size[0];
-                    final_h = final_w / coords_ratio;
-                }
-                if (final_h > image_size[1]) {
-                    final_h = image_size[1];
-                    final_w = final_h * coords_ratio;
-                }
-            }
+            final_w = image_size.width;
+            final_h = image_size.height;
 
             if (settings.center && (settings.center.length == 2)) {
                 final_l = Math.max(0, target_size[0] * settings.center[0] - final_w / 2);

@@ -4,7 +4,6 @@ from django.shortcuts import resolve_url
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from suit_ckeditor.widgets import CKEditorWidget
-from . import options
 
 
 class CKEditorUploadWidget(CKEditorWidget):
@@ -54,7 +53,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         self.editor_options['PAGEPHOTOS_EDIT_URL'] = resolve_url('admin:ckeditor_pagephoto_change', 1)
 
         # Размер фото на странице
-        self.editor_options['PAGEPHOTOS_PHOTO_SIZE'] = options.PHOTOS_IN_TEXT_SIZE
+        self.editor_options['PAGEPHOTOS_THUMB_SIZE'] = (192, 108)
 
         # Максимальный размер файла
         self.editor_options['PAGEPHOTOS_MAX_FILE_SIZE'] = '10mb'
