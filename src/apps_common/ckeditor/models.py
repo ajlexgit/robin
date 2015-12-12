@@ -33,7 +33,7 @@ class PagePhoto(models.Model):
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
     photo = StdImageField(_('image'),
-        storage = MediaStorage(options.PAGE_PHOTOS_PATH),
+        storage = MediaStorage('page_photos'),
         upload_to = page_photo_filename,
         blank = True,
         admin_variation = 'admin_thumbnail',
@@ -69,7 +69,7 @@ class SimplePhoto(models.Model):
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
     photo = StdImageField(_('image'),
-        storage = MediaStorage(options.SIMPLE_PHOTOS_PATH),
+        storage = MediaStorage('simple_photos'),
         upload_to = page_photo_filename,
         blank = True,
         admin_variation = 'admin_thumbnail',

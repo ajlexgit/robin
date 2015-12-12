@@ -9,13 +9,26 @@
   position: relative;
   z-index: 1;
   height: 500px;
+
+  .section-inner {
+    color: #FFFFFF;
+    text-align: center;
+  }
 }
 
-#test {
-  position: relative;
-  z-index: 1;
-  height: 1200px;
-  @include linear-gradient(to bottom, #808080, #d0d0d0);
+#gmap {
+  .map {
+    height: 800px;
+  }
+}
+
+#layer-sticky {
+  .area {
+    position: relative;
+    z-index: 1;
+    height: 1200px;
+    @include linear-gradient(to bottom, #808080, #d0d0d0);
+  }
 
   .layer {
     position: absolute;

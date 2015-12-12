@@ -17,8 +17,7 @@
 
 {% block content %}
 
-  <div class="grid-block">
-
+  <div class="block grid-block">
     <form>
       <fieldset>
         <input type="checkbox" id="chk1" value="one" name="chk" checked="checked">
@@ -54,15 +53,31 @@
     </form>
   </div>
 
-  <div id="parallax">
+  <div id="parallax" class="section">
     <img class="parallax" src="{% static 'main/img/bg.jpg' %}">
+
+    <div class="section-inner">
+      <div class="title-h1">Parallax</div>
+    </div>
   </div>
 
-  <div id="gmap" style="height: 800px"></div>
+  <div id="gmap" class="block">
+    <div class="grid-block">
+      <div class="title-h1">Google Map</div>
+    </div>
 
-  <div id="test">
-    <div class="layer"></div>
-    <div class="sticky"></div>
+    <div class="map"></div>
+  </div>
+
+  <div id="layer-sticky" class="block">
+    <div class="grid-block">
+      <div class="title-h1">Layer and Sticky</div>
+    </div>
+
+    <div class="area">
+      <div class="layer"></div>
+      <div class="sticky"></div>
+    </div>
   </div>
 
   {% render_attached_blocks config %}

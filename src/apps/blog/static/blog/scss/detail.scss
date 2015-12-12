@@ -1,3 +1,17 @@
 @import "mixins";
 
+#blog-post {
+  .date {
+    color: #A0A0A0;
+    @include fontsize_default;
+  }
 
+  .title {
+    margin: 20px 0;
+    text-transform: uppercase;
+  }
+
+  .preview {
+    margin-bottom: 20px;
+  }
+}

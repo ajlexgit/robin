@@ -27,7 +27,7 @@ class IndexView(TemplateExView):
             paginator = Paginator(
                 request,
                 object_list=posts,
-                per_page=5,
+                per_page=3,
                 page_neighbors=1,
                 side_neighbors=1,
                 allow_empty_first_page=False,

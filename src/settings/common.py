@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'suit_ckeditor',
 
     # Apps
+    'blog',
     'contacts',
     'main',
     'social',
@@ -94,9 +95,13 @@ SUIT_CONFIG = {
             'icon': 'icon-file',
         },
         {
-            'app': 'blocks',
+            'app': 'blog',
             'icon': 'icon-file',
-            'label': _('Blocks'),
+            'models': (
+                'BlogPost',
+                'Tag',
+                'BlogConfig',
+            )
         },
         {
             'app': 'contacts',
@@ -184,6 +189,19 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/contacts_page.css',
     },
+    'blog_page': {
+        'source_filenames': (
+            'paginator/scss/paginator.scss',
+            'blog/scss/index.scss',
+        ),
+        'output_filename': 'css/blog_page.css',
+    },
+    'blog_detail_page': {
+        'source_filenames': (
+            'blog/scss/detail.scss',
+        ),
+        'output_filename': 'css/blog_detail_page.css',
+    },
 }
 PIPELINE_JS = {
     'head_core': {
@@ -240,6 +258,18 @@ PIPELINE_JS = {
             'contacts/js/index.js',
         ),
         'output_filename': 'js/contacts_page.js',
+    },
+    'blog_page': {
+        'source_filenames': (
+            'blog/js/index.js',
+        ),
+        'output_filename': 'js/blog_page.js',
+    },
+    'blog_detail_page': {
+        'source_filenames': (
+            'blog/js/detail.js',
+        ),
+        'output_filename': 'js/blog_detail_page.js',
     },
 }
 

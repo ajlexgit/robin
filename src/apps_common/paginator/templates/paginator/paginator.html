@@ -2,31 +2,33 @@
 {% load paginator %}
 
 <div class="navigation">
-  {% if not page.has_next %}
-    <span class="nav-item next-item">{% trans 'Next' %}</span>
-  {% else %}
-    <a href="{% href paginator page.next_page_number anchor %}"
-       class="nav-item next-item link"
-       data-page="{{ page.next_page_number }}">{% trans 'Next' %}</a>
-  {% endif %}
-
   {% if not page.has_previous %}
-    <span class="nav-item prev-item">{% trans 'Previous' %}</span>
+    <span class="nav-item prev-page">{% trans 'Previous' %}</span>
   {% else %}
     <a href="{% href paginator page.previous_page_number anchor %}"
-       class="nav-item prev-item link"
+       class="nav-item prev-page link"
        data-page="{{ page.previous_page_number }}">{% trans 'Previous' %}</a>
   {% endif %}
 
-  {% for page_num in paginator.zipped_page_range %}
-    {% if page_num == None %}
-      <span class="item zip-item">...</span>
-    {% elif page.number == page_num %}
-      <span class="item active">{{ page_num }}</span>
-    {% else %}
-      <a href="{% href paginator page_num anchor %}"
-         class="item link {% if page.number == page_num %}active{% endif %}"
-         data-page="{{ page_num }}">{{ page_num }}</a>
-    {% endif %}
-  {% endfor %}
+  <div class="pages">
+    {% for page_num in paginator.zipped_page_range %}
+      {% if page_num == None %}
+        <span class="page zip-item">...</span>
+      {% elif page.number == page_num %}
+        <span class="page active">{{ page_num }}</span>
+      {% else %}
+        <a href="{% href paginator page_num anchor %}"
+           class="page link {% if page.number == page_num %}active{% endif %}"
+           data-page="{{ page_num }}">{{ page_num }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {% if not page.has_next %}
+    <span class="nav-item next-page">{% trans 'Next' %}</span>
+  {% else %}
+    <a href="{% href paginator page.next_page_number anchor %}"
+       class="nav-item next-page link"
+       data-page="{{ page.next_page_number }}">{% trans 'Next' %}</a>
+  {% endif %}
 </div>

@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 
-{% load staticfiles %}
 {% load pipeline %}
 {% load text %}
 {% load i18n %}
@@ -18,32 +17,27 @@
 
 {% block content %}
 
-  <div id="blog" class="content">
-    <div class="header grid-block">
+  <div id="blog" class="block">
+    <div class="grid-block">
       <h1 class="title-h1">{{ config.header }}</h1>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="grid-col-wide-6 grid-col-6 grid-col-alone">
 
       {% if tags %}
-        <div id="tags">
-          <div class="tag {% if not current_tag %}active{% endif %}">
-            <a href="{{ tag.get_absolute_url }}">{% trans 'All' %}</a>
-          </div>
+        <ul id="tags">
+          <li class="tag {% if not current_tag %}active{% endif %}">
+            <a href="{% url 'blog:index' %}">{% trans 'All' %}</a>
+          </li>
 
           {% for tag in tags %}
-            <div class="tag {% if current_tag.pk == tag.pk %}active{% endif %}">
+            <li class="tag {% if current_tag.pk == tag.pk %}active{% endif %}">
               <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
-            </div>
+            </li>
           {% endfor %}
-        </div>
+        </ul>
       {% endif %}
 
-      <div id="posts">
+      <ul id="posts">
         {% for post in paginator.page %}
-          <div class="post">
+          <li class="post">
             <div class="date">{{ post.date|date:"jS E Y" }}</div>
 
             <div class="title title-h2">
@@ -53,7 +47,7 @@
             {% if post.preview %}
               <a href="{{ post.get_absolute_url }}" class="preview">
                 <img srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
-                     src="{{ post.preview.normal.url }}" sizes="(min-width: 1024px) 75vw, 100vw">
+                     src="{{ post.preview.normal.url }}" sizes="100vw">
               </a>
             {% endif %}
 
@@ -62,9 +56,9 @@
                 {{ post.note|clean }}
               </div>
             {% endif %}
-          </div>
+          </li>
         {% endfor %}
-      </div>
+      </ul>
 
       {% if paginator.num_pages > 1 %}
         <div id="paginator">

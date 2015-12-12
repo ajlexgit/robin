@@ -1,18 +1,20 @@
 @import 'mixins';
 
 .navigation {
+  font-weight: bold;
   text-align: center;
-  @include clearfix;
+  @include fontsize_default;
+  @include flexbox;
+  @include flex-flow(row wrap);
+  @include align-items(center);
+  @include justify-content(space-between);
 
   .nav-item {
-    @include opacity(0.5);
+    text-transform: uppercase;
+    @include opacity(0.4);
 
-    &.next-item {
-      float: right;
-    }
-
-    &.prev-item {
-      float: left;
+    &.next-page {
+      @include align-self(flex-end);
     }
 
     &.link {
@@ -24,17 +26,23 @@
     }
   }
 
-  .item {
+  .pages {
+    margin: 0 20px;
+  }
+
+  .page {
     display: inline-block;
-    padding: 0 10px;
-    margin: 0 8px;
+    min-width: 1.8em;
+    margin: 0 0.3em;
+    text-align: center;
 
     &.zip-item {
-      padding: 0;
+      min-width: 1.2em;
+      margin: 0;
     }
 
     &.active {
-      color: #000000;
+      color: #00A000;
     }
 
     &.link:hover {

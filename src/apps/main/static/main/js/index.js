@@ -5,15 +5,15 @@
 
         $('.layer').layer({
             onInit: function() {
-                this.$ctnr = $('#test');
+                this.$container = $('#layer-sticky').find('.area');
             },
             calcOffset: function(win_scroll) {
-                var ctnr_top = this.$ctnr.offset().top;
-                var ctnr_height = this.$ctnr.outerHeight();
+                var container_top = this.$container.offset().top;
+                var container_height = this.$container.outerHeight();
                 var win_height = document.documentElement.clientHeight;
 
-                var from_point = ctnr_top - win_height;
-                var to_point = ctnr_top + ctnr_height;
+                var from_point = container_top - win_height;
+                var to_point = container_top + container_height;
 
                 if ((win_scroll >= from_point) && (win_scroll <= to_point)) {
                     return this._initial + parseInt(0.5 * (win_scroll - from_point));
@@ -27,10 +27,12 @@
             console.log('block became invisible');
         });
 
+        // sticky
         $('.sticky').sticky({
 
         });
 
+        // parallax
         $('#parallax').parallax({
 
         });
@@ -93,7 +95,7 @@
         ];
 
 
-        window.gmap = GMap('#gmap', {
+        window.gmap = GMap('#gmap .map', {
             center: GMapPoint(53.510171, 49.418785),
             styles: gmapStyles,
             zoom: 2

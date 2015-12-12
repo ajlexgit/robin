@@ -16,26 +16,24 @@
 
 {% block content %}
 
-  <div class="block grid" id="contacts">
-    <div class="gc">
-      <div class="title-h1">{{ config.title }}</div>
+  <div id="contacts" class="block grid-block">
+    <div class="title-h1">{{ config.title }}</div>
 
-      <form method="post" action="">
-        {% csrf_token %}
+    <form method="post" action="">
+      {% csrf_token %}
 
-        {% for field in form.visible_fields %}
-          <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
-            {{ field.label_tag }}
-            {{ field }}
-            <span>{{ field.errors }}</span>
-          </fieldset>
-        {% endfor %}
-
-        <fieldset class="buttons">
-          <button>Send</button>
+      {% for field in form.visible_fields %}
+        <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
+          {{ field.label_tag }}
+          {{ field }}
+          <span>{{ field.errors }}</span>
         </fieldset>
-      </form>
-    </div>
+      {% endfor %}
+
+      <fieldset class="buttons">
+        <button type="submit">Send</button>
+      </fieldset>
+    </form>
   </div>
 
   {% render_attached_blocks config %}

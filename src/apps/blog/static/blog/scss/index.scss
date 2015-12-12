@@ -1,2 +1,56 @@
 @import "mixins";
 
+#tags {
+  margin: 20px 0;
+  border-top: 1px solid #D0D0D0;
+  border-bottom: 1px solid #D0D0D0;
+  @include flexbox;
+  @include align-items(flex-start);
+  @include justify-content(flex-start);
+
+  .tag {
+    display: inline-block;
+    margin: 10px 20px 10px 0;
+    @include fontsize_default;
+
+    &.active {
+      font-weight: bold;
+    }
+  }
+}
+
+
+#posts {
+  .post {
+    margin-top: 60px;
+    &:nth-of-type(1) {
+      margin-top: 0;
+    }
+  }
+
+  .date {
+    color: #A0A0A0;
+    @include fontsize_default;
+  }
+
+  .title {
+    margin: 20px 0;
+    text-transform: uppercase;
+
+    a {
+      display: inline-block;
+    }
+  }
+
+  .preview {
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+}
+
+#paginator {
+  margin-top: 60px;
+  padding: 10px 0;
+  border-top: 1px solid #D0D0D0;
+  border-bottom: 1px solid #D0D0D0;
+}

@@ -10,7 +10,6 @@
             drop_element: editor.document.$.documentElement,
             chunk_size: '256kb',
             file_data_name: 'image',
-            resize: editor.config.SIMPLEPHOTOS_PHOTO_SIZE,
             headers: {
                 'X-CSRFToken': $.cookie('csrftoken'),
                 'X-Requested-With': 'XMLHttpRequest'

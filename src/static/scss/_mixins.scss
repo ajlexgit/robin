@@ -43,14 +43,19 @@
 // media-интервал
 //============================================
 @mixin media_styles($values, $styles...) {
+  // 1200+
   @each $style in $styles {
     #{$style}: nth($values, 1);
   }
+
+  // 1024 - 1200
   @include media_interval($media1024, $media1200) {
     @each $style in $styles {
       #{$style}: nth($values, 2);
     }
   }
+
+  // 768 - 1024
   @include media_interval($media768, $media1024) {
     @each $style in $styles {
       #{$style}: nth($values, 3);

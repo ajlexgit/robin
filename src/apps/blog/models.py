@@ -17,7 +17,7 @@ class BlogConfig(SingletonModel):
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
-        verbose_name = _("Settings")
+        verbose_name = _('Settings')
 
     def get_absolute_url(self):
         return resolve_url('blog:index')
@@ -38,8 +38,8 @@ class Tag(models.Model):
     objects = TagQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _("Tag")
-        verbose_name_plural = _("Tags")
+        verbose_name = _('Tag')
+        verbose_name_plural = _('Tags')
 
     def __str__(self):
         return self.title
@@ -100,9 +100,9 @@ class BlogPost(models.Model):
     objects = BlogPostQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _("Post")
-        verbose_name_plural = _("Posts")
-        ordering = ('-date',)
+        verbose_name = _('Post')
+        verbose_name_plural = _('Posts')
+        ordering = ('-date', '-id')
 
     def __str__(self):
         return self.title
