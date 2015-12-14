@@ -65,7 +65,7 @@ class SpriteImageField(models.CharField):
             ]
         else:
             for finder in get_finders():
-                result = finder.find(self.sprite, all=all)
+                result = finder.find(self.sprite, all=True)
                 if result:
                     return []
             else:
