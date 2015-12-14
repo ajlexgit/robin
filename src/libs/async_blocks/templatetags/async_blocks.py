@@ -27,7 +27,7 @@ def async_block(url_name, **kwargs):
             {% async_block 'news:block' id=new.id count=5 %}
     """
     params = filter(lambda x: x[1] is not None, kwargs.items())
-    return loader.render_to_string('async_block/async_block.html', {
+    return loader.render_to_string('async_blocks/async_block.html', {
         'id': url_name.replace(':', '-'),
         'url': reverse(url_name) + '?' + urlencode(tuple(params)),
     })

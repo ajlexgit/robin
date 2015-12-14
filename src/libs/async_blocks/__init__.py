@@ -5,7 +5,7 @@
         libs.views_ajax
 
     Требуется подключить скрипт:
-        async_block/js/async_block.js
+        async_blocks/js/async_blocks.js
 
     Пример использования:
         # views.py
@@ -19,7 +19,7 @@
             url(r'^async/$', views_ajax.AsyncHeader.as_view(), name='async'),
 
         # template.html
-            {% load async_block %}
+            {% load async_blocks %}
             ...
             {% if request.user.is_staff %}
                 {% async_block 'module:async' id=post.id %}
