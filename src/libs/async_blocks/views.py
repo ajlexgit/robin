@@ -4,7 +4,7 @@ from libs.views_ajax import AjaxViewMixin
 
 class AsyncBlockView(AjaxViewMixin, View):
     """ Родительский класс для асинхронных блоков """
-    referrer = ''
+    referer = ''
     allowed = ()    # Допустимые параметры
 
     def _filter_params(self, params):
@@ -21,13 +21,13 @@ class AsyncBlockView(AjaxViewMixin, View):
 
     def sync_render(self, request, **kwargs):
         """ Получение блока синхронно """
-        self.referrer = request.build_absolute_uri()
+        self.referer = request.build_absolute_uri()
         params = self._filter_params(kwargs)
         return self.render(request, **params)
 
-    def post(self, request):
+    def get(self, request):
         """ Получение блока асинхронно """
-        self.referrer = request.POST.get('referrer', '')
+        self.referer = request.GET.get('referer', '')
         params = self._filter_params(request.GET)
         return self.json_response({
             'html': self.render(request, **params),
