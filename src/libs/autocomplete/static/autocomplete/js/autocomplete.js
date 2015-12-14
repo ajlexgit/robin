@@ -1,5 +1,10 @@
 (function($) {
 
+    // собираем все ID при инициализации в один объект,
+    // чтобы запросить их одним махом.
+    var mass_requests = {};
+
+
     var formatResult = function(state) {
         if (!state.id) {
             return state.text;
@@ -139,24 +144,19 @@
                         return
                     }
 
-                    $.ajax(that.opts.url, {
-                        type: 'POST',
-                        dataType: "json",
-                        data: {
-                            q: id,
-                            values: that._parentValues(),
-                            expressions: that.opts.multiple ? 'pk__in' : 'pk'
-                        },
-                        success: function(response) {
-                            if (that.opts.multiple) {
-                                response = response.result;
-                            } else {
-                                response = response.result.shift();
-                            }
-                            that.$elem.select2("data", response);
-                            callback(response);
-                        }
-                    });
+                    var key = [that.opts.url].join('');
+                    var record = {
+                        id: id,
+                        elem: that.$elem,
+                        callback: callback,
+                        multiple: that.opts.multiple
+                    };
+
+                    if (key in mass_requests) {
+                        mass_requests[key].push(record);
+                    } else {
+                        mass_requests[key] = [record];
+                    }
                 },
                 escapeMarkup: function(m) {
                     return m;
@@ -174,6 +174,54 @@
                 Autocomplete(this, $this.data());
             }
         });
+
+        // Запрос собранных данных
+        $.each(mass_requests, function(url, records) {
+            var ids = $.unique(records.map(function(record) { return record.id }));
+
+            $.ajax(url, {
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    q: ids.join(','),
+                    expressions: 'pk__in'
+                },
+                success: function(response) {
+                    var data;
+                    var result = response.result;
+                    if (!result || !result.length) {
+                        return
+                    }
+
+                    // формирование словаря из результатов
+                    var result_dict = {};
+                    $.each(result, function(i, item) {
+                        result_dict[item.id] = item.text;
+                    });
+
+                    // обработка каждого поля
+                    $.each(records, function(i, record) {
+                        if (!record.multiple) {
+                            data = {
+                                id: record.id,
+                                text: result_dict[record.id]
+                            };
+                        } else {
+                            data = record.id.split(',').map($.trim).filter(Boolean).map(function(pk) {
+                                return {
+                                    id: pk,
+                                    text: result_dict[pk]
+                                }
+                            });
+                        }
+
+                        record.elem.select2("data", data);
+                        record.callback(data);
+                    });
+                }
+            });
+        });
+        mass_requests = null;
 
         if ($.attachRelatedWidgetSupport) {
             $.attachRelatedWidgetSupport('.autocomplete_widget');
