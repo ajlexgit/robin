@@ -2,12 +2,12 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
-from attachable_blocks import AttachedBlocksTabularInline
+from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from .models import ContactsConfig, MessageReciever
 
 
-class BlocksInline(AttachedBlocksTabularInline):
+class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
@@ -28,7 +28,7 @@ class ContactsConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
             ),
         }),
     )
-    inlines = (MessageRecieverAdmin, BlocksInline)
+    inlines = (MessageRecieverAdmin, ContactsConfigBlocksInline)
     suit_form_tabs = (
         ('general', _('General')),
         ('messages', _('Messages')),

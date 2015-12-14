@@ -2,9 +2,9 @@ from django import forms
 from django.apps import apps
 from django.core import checks
 from django.core.cache import cache
-from django.contrib.contenttypes.admin import BaseGenericInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.admin import BaseGenericInlineFormSet
 from suit.admin import SortableGenericTabularInline, SortableGenericStackedInline
 from project.admin import ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget

@@ -9,16 +9,20 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from solo.admin import SingletonModelAdmin
+from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs import admin_utils
 from libs.autocomplete import AutocompleteWidget
-from attachable_blocks import AttachedBlocksTabularInline
 from .models import EmailReciever, ShopConfig, ShopCategory, ShopProduct, ShopOrder
 from .signals import products_changed, categories_changed
 
 
-class ShopConfigBlocksInline(AttachedBlocksTabularInline):
+class ShopConfigBlocksInline(AttachedBlocksStackedInline):
+    suit_classes = 'suit-tab suit-tab-blocks'
+
+
+class ShopCategoryBlocksInline(AttachedBlocksStackedInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
@@ -81,6 +85,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
     )
     mptt_level_indent = 20
     form = ShopCategoryForm
+    inlines = (ShopCategoryBlocksInline, )
     actions = ('action_hide', 'action_show')
     list_display = ('view', 'title', 'is_visible', 'product_count', 'total_product_count')
     list_display_links = ('title',)

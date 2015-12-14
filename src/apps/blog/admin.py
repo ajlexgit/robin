@@ -5,10 +5,15 @@ from django.utils import dateformat
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
-from libs.autocomplete.widgets import AutocompleteWidget
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
+from attachable_blocks.admin import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
+from libs.autocomplete.widgets import AutocompleteWidget
 from .models import BlogConfig, BlogPost, Tag, PostTag
+
+
+class BlogConfigBlocksInline(AttachedBlocksStackedInline):
+    suit_classes = 'suit-tab suit-tab-blocks'
 
 
 @admin.register(BlogConfig)
@@ -19,8 +24,10 @@ class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
             'fields': ('header', ),
         }),
     )
+    inlines = (BlogConfigBlocksInline, )
     suit_form_tabs = (
         ('general', _('General')),
+        ('blocks', _('Blocks')),
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
