@@ -102,7 +102,7 @@ def softhyphen(value):
     cache = caches['default']
     language = settings.LANGUAGE_CODE
 
-    key = ':'.join((value, language))
+    key = ':'.join(map(str, (value, language)))
     if cache.has_key(key):
         return cache.get(key)
     else:
