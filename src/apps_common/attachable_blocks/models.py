@@ -96,6 +96,13 @@ class AttachableReference(models.Model):
     entity = GenericForeignKey('content_type', 'object_id')
 
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'), related_name='references')
+    noindex = models.BooleanField(_('noIndex'), default=True,
+        help_text=_('wraps block with &lt;!--noidex--&gt;')
+    )
+    ajax = models.BooleanField(_('AJAX load'), default=False,
+        help_text=_('load block with AJAX')
+    )
+
     set_name = models.CharField(_('set name'), max_length=32, default='default')
     sort_order = models.PositiveIntegerField(_('sort order'), default=0)
 
@@ -104,3 +111,6 @@ class AttachableReference(models.Model):
         verbose_name_plural = _('attached blocks')
         ordering = ('set_name', 'sort_order')
         index_together = (('content_type', 'object_id', 'set_name'), )
+
+    def __str__(self):
+        return str(self.block)

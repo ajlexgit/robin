@@ -30,7 +30,7 @@ def get_block_types():
 
 class AttachedBlocksForm(forms.ModelForm):
     block_type = forms.ChoiceField(
-        label=_('type'),
+        label=_('Type'),
         choices=get_block_types,
     )
 
@@ -76,7 +76,7 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
     form = AttachedBlocksForm
     formset = AttachedBlocksFormset
     model = AttachableReference
-    fields = ('block_type', 'block', 'set_name')
+    fields = ['block_type', 'block', 'noindex', 'ajax']
     readonly_fields = ('set_name',)
     extra = 0
     set_name = 'default'

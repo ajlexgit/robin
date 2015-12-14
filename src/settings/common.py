@@ -238,6 +238,7 @@ PIPELINE_JS = {
             'js/slider/plugins/drag.js',
             'js/text_styles.js',
 
+            'attachable_blocks/js/async_blocks.js',
             'menu/js/menu.js',
         ),
         'output_filename': 'js/core.js',

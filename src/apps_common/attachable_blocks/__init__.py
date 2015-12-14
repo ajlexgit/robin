@@ -6,6 +6,20 @@
     Зависит от:
         libs.autocomplete
 
+    Установка:
+        settings.py:
+            INSTALLED_APPS = (
+                ...
+                'attachable_blocks',
+                ...
+            )
+
+        urls.py:
+            ...
+            url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
+            ...
+
+
     1. Для каждого блока должна быть создана модель, зарегистрированная в админке.
     2. Для каждого блока должна быть создана функция рендеринга.
     3. Для массового вывода блоков нужно добавить inline в админскую модель страницы,

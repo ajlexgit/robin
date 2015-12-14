@@ -7,5 +7,11 @@ class Config(AppConfig):
     verbose_name = _('Attachable blocks')
 
     def ready(self):
+        from django.shortcuts import resolve_url
         from django.core.cache import cache
+        from libs.js_storage import JS_STORAGE
         cache.delete('attachable_block_types')
+
+        JS_STORAGE.update({
+            'async_block': resolve_url('blocks:async'),
+        })

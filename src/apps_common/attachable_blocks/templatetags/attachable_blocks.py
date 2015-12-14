@@ -21,11 +21,10 @@ def render_attached_blocks(context, entity, set_name=None):
     )
     if set_name:
         query &= models.Q(set_name=set_name)
-    block_ids = AttachableReference.objects.filter(query).values_list('block_id', flat=True)
 
     output = []
-    for block_id in block_ids:
-        block = get_block(block_id)
+    for blockref in AttachableReference.objects.filter(query):
+        block = get_block(blockref.block_id)
         if not block:
             continue
 
@@ -33,9 +32,22 @@ def render_attached_blocks(context, entity, set_name=None):
         if not block_view:
             continue
 
-        output.append(
-            block_view(request, block)
-        )
+        if blockref.ajax:
+            # Блок, загружаемый через AJAX
+            block_html = '<div class="async-block" data-id="%s"></div>' % blockref.block_id
+        else:
+            block_html = block_view(request, block)
+
+        if blockref.noindex:
+            output.extend((
+                '<!--noindex-->',
+                block_html,
+                '<!--/noindex-->',
+            ))
+        else:
+            output.append(
+                block_html
+            )
 
     return ''.join(output)
 
