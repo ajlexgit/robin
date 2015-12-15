@@ -27,6 +27,9 @@ class ShopConfig(SingletonModel):
     def get_absolute_url(self):
         return resolve_url('shop:index')
 
+    def __str__(self):
+        return self.header
+
 
 class EmailReciever(models.Model):
     config = models.ForeignKey(ShopConfig, related_name='recievers')
@@ -97,6 +100,9 @@ class ShopCategory(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ('sort_order', )
 
+    def __str__(self):
+        return self.title
+
     def save(self, *args, **kwargs):
         is_add = self.pk is None
         original = None if is_add else self.__class__.objects.select_related('parent').only(
@@ -141,9 +147,6 @@ class ShopCategory(MPTTModel):
             # категория скрыта
             self.get_descendants(include_self=True).update(total_product_count=0)
             categories_changed.send(self.__class__, categories=self.pk, include_self=False)
-
-    def __str__(self):
-        return self.title
 
     @cached_property
     def subcategories(self):

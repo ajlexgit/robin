@@ -22,6 +22,9 @@ class BlogConfig(SingletonModel):
     def get_absolute_url(self):
         return resolve_url('blog:index')
 
+    def __str__(self):
+        return self.header
+
 
 class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def active(self):

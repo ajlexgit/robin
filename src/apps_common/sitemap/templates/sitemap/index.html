@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% load pipeline %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'sitemap_page' %}
+{% endblock static_head %}
+
+
+{% block content %}
+
+  <div id="sitemap" class="block grid-block">
+    <div class="title-h1">{{ config.title }}</div>
+
+    <div class="map text-styles">
+      {% include 'sitemap/map.html' %}
+    </div>
+  </div>
+
+{% endblock content %}
+

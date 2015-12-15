@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
+    url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),
 
     url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^contacts/', include('contacts.urls', namespace='contacts')),

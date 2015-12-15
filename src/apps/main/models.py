@@ -1,6 +1,6 @@
 from django.db import models
 from django.shortcuts import resolve_url
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from gallery import *
 from libs.media_storage import MediaStorage
@@ -56,3 +56,5 @@ class MainPageConfig(SingletonModel):
     def get_absolute_url(self):
         return resolve_url('index')
 
+    def __str__(self):
+        return ugettext('Home')

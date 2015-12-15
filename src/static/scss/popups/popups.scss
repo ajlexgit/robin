@@ -10,7 +10,7 @@ $max_width: 70%, 80%, 80%, 90%;
 $background_color: #C0C0C0;
 
 // кнопка закрытия
-$close_btn_size: 30px;
+$close_btn_size: 21px;
 $close_btn_color: #F2F2F2;
 $close_btn_weight: 3px;
 
@@ -82,17 +82,17 @@ $close_btn_weight: 3px;
     &:before, &:after {
       content: '';
       position: absolute;
-      left: 0;
+      left: 50%;
       top: 50%;
-      width: 100%;
+      width: 80%;
       height: $close_btn_weight;
       background: $close_btn_color;
     }
     &:before {
-      @include transform(translate3d(0, -50%, 0) rotate(45deg));
+      @include transform(translate3d(-50%, -50%, 0) rotate(45deg));
     }
     &:after {
-      @include transform(translate3d(0, -50%, 0) rotate(-45deg));
+      @include transform(translate3d(-50%, -50%, 0) rotate(-45deg));
     }
   }
 }

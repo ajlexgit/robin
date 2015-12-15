@@ -15,6 +15,9 @@ class ContactsConfig(SingletonModel):
     def get_absolute_url(self):
         return resolve_url('contacts:index')
 
+    def __str__(self):
+        return self.header
+
 
 class MessageReciever(models.Model):
     config = models.ForeignKey(ContactsConfig, related_name='recievers')

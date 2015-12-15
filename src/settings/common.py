@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
+    'sitemap',
 
     # Libs
     'libs.autocomplete',
@@ -113,6 +114,13 @@ SUIT_CONFIG = {
             'models': (
                 'FollowUsBlock',
                 'SocialConfig',
+            )
+        },
+        {
+            'app': 'sitemap',
+            'icon': 'icon-list',
+            'models': (
+                'SitemapConfig',
             )
         },
         '-',
@@ -176,6 +184,12 @@ PIPELINE_CSS = {
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
+    },
+    'sitemap_page': {
+        'source_filenames': (
+            'sitemap/scss/index.scss',
+        ),
+        'output_filename': 'css/sitemap_page.css',
     },
     'error_page': {
         'source_filenames': (
