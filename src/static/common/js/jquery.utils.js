@@ -130,6 +130,7 @@
         ClassObj.prototype = Object.create(parent && parent.prototype);
         ClassObj.prototype.constructor = ClassObj;
         ClassObj.superclass = parent;
+        ClassObj.prototype.__name__ = class_constructor.name;
 
         // конструктор экземпляров
         ClassObj.create = function() {
@@ -155,10 +156,10 @@
 
         // Вывод ошибки в консоль
         ClassObj.prototype.error = function(message) {
-            console.error(class_constructor.name + ': ' + message);
+            console.error(this.__name__ + ': ' + message);
         };
         ClassObj.prototype.warn = function(message) {
-            console.warn(class_constructor.name + ': ' + message);
+            console.warn(this.__name__ + ': ' + message);
         };
 
         // вызов функции, добавляющей пользовательские методы и свойства

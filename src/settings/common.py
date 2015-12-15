@@ -174,6 +174,7 @@ PIPELINE_CSS = {
             'header/scss/header.scss',
             'footer/scss/footer.scss',
             'social/scss/block.scss',
+            'social_buttons/scss/social_buttons.scss',
         ),
         'output_filename': 'css/head_core.css',
     },
@@ -254,6 +255,7 @@ PIPELINE_JS = {
 
             'attachable_blocks/js/async_blocks.js',
             'menu/js/menu.js',
+            'social_buttons/js/social_buttons.js',
         ),
         'output_filename': 'js/core.js',
     },
