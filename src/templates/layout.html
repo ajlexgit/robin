@@ -40,7 +40,13 @@
     <div id="header-wrapper">
       <div id="header-cell">
         {% block header_content %}
+          {% if not is_main_page %}
+            <!--noindex-->
+          {% endif %}
           {% header %}
+          {% if not is_main_page %}
+            <!--/noindex-->
+          {% endif %}
         {% endblock header_content %}
       </div>
     </div>
@@ -56,7 +62,13 @@
     <div id="footer-wrapper">
       <div id="footer-cell">
         {% block footer_content %}
+          {% if not is_main_page %}
+            <!--noindex-->
+          {% endif %}
           {% footer %}
+          {% if not is_main_page %}
+            <!--/noindex-->
+          {% endif %}
         {% endblock footer_content %}
       </div>
     </div>
