@@ -20,8 +20,10 @@ class IndexView(TemplateExView):
 
         sitemap.add_child(MainPageConfig.get_solo())
 
-        blog = sitemap.add_child(BlogConfig.get_solo())
-        blog.add_childs(BlogPost.objects.filter(visible=True))
+        posts = BlogPost.objects.filter(visible=True)
+        if posts.exists():
+            blog = sitemap.add_child(BlogConfig.get_solo())
+            blog.add_childs(posts)
 
         sitemap.add_child(ContactsConfig.get_solo())
 
