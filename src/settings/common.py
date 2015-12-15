@@ -116,13 +116,6 @@ SUIT_CONFIG = {
                 'SocialConfig',
             )
         },
-        {
-            'app': 'sitemap',
-            'icon': 'icon-list',
-            'models': (
-                'SitemapConfig',
-            )
-        },
         '-',
         '-',
         'admin',
@@ -147,6 +140,13 @@ SUIT_CONFIG = {
                 'counter',
                 'seoconfig',
             ),
+        },
+        {
+            'app': 'sitemap',
+            'icon': 'icon-list',
+            'models': (
+                'SitemapConfig',
+            )
         },
         '-',
         '-',
