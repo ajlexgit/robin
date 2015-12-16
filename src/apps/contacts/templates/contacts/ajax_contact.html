@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<p class="title title-h1">{{ config.header }}</p>
+
+{{ form.media }}
+<form method="post" action="{% url 'contacts:index' %}" id="ajax-contact-form" autocomplete="off">
+  {% csrf_token %}
+
+  {{ form.non_field_errors.as_ul }}
+  {% for field in form.visible_fields %}
+    <fieldset class="{{ field.errors.classes }}">
+      {{ field.label_tag }}
+      {{ field }}
+      {{ field.errors }}
+    </fieldset>
+  {% endfor %}
+
+  <fieldset>
+    <button type="submit" class="btn">{% trans 'Send' %}</button>
+  </fieldset>
+</form>

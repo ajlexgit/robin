@@ -4,7 +4,7 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
-from .models import ContactsConfig, MessageReciever
+from .models import ContactsConfig, MessageReciever, ContactBlock
 
 
 class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
@@ -36,3 +36,21 @@ class ContactsConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
+
+
+@admin.register(ContactBlock)
+class ContactBlockAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('label', 'visible'),
+        }),
+        (_('Private'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('header', ),
+        }),
+    )
+    list_display = ('label', 'visible')
+    suit_form_tabs = (
+        ('general', _('General')),
+    )

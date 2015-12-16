@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
+from attachable_blocks.models import AttachableBlock
 
 
 class ContactsConfig(SingletonModel):
@@ -29,3 +30,16 @@ class MessageReciever(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class ContactBlock(AttachableBlock):
+    BLOCK_VIEW = 'contacts.views.contact_block_render'
+
+    header = models.CharField(_('header'), max_length=128, blank=True)
+
+    class Meta:
+        verbose_name = _('Contact block')
+        verbose_name_plural = _('Contact blocks')
+
+    def __str__(self):
+        return '%s (Contact Block)' % self.header

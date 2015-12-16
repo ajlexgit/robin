@@ -107,6 +107,10 @@ SUIT_CONFIG = {
         {
             'app': 'contacts',
             'icon': 'icon-file',
+            'models': (
+                'ContactBlock',
+                'ContactsConfig',
+            )
         },
         {
             'app': 'social',
@@ -253,6 +257,7 @@ PIPELINE_JS = {
             'js/text_styles.js',
 
             'attachable_blocks/js/async_blocks.js',
+            'contacts/js/block.js',
             'menu/js/menu.js',
         ),
         'output_filename': 'js/core.js',
