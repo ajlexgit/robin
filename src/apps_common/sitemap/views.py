@@ -3,6 +3,7 @@ from main.models import MainPageConfig
 from contacts.models import ContactsConfig
 from blog.models import BlogConfig, BlogPost
 from libs.views import TemplateExView
+from libs.cache import cached
 from .models import SitemapConfig
 from .map import Map
 
@@ -14,6 +15,7 @@ class IndexView(TemplateExView):
     def before_get(self, request):
         self.config = SitemapConfig.get_solo()
 
+    @cached(time=30*60)
     def _build_map(self):
         """ Генерация карты """
         sitemap = Map()
@@ -33,7 +35,7 @@ class IndexView(TemplateExView):
         # SEO
         seo = Seo()
         seo.set_data(self.config, defaults={
-            'title': self.config.title,
+            'title': self.config.header,
         })
         seo.save(request)
 

@@ -5,7 +5,7 @@ from solo.models import SingletonModel
 
 
 class SitemapConfig(SingletonModel):
-    title = models.CharField(_('title'), max_length=255)
+    header = models.CharField(_('header'), max_length=255)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
