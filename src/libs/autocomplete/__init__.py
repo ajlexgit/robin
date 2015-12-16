@@ -47,26 +47,8 @@
                         )
                     }
 
-
-    Пример текстового поля с автокомплитом:
-        # page/admin.py:
-            def get_object_choices():
-                return ('Pencil', 'Pen', 'Table', 'Chair')
-
-            class PostAdminForm(forms.ModelForm):
-
-                class Meta:
-                    widgets = {
-                        'producer': AutocompleteTextboxWidget(
-                            choices=get_object_choices,
-                            attrs={
-                                'style': 'width:50%',
-                            }
-                        )
-                    }
-
 """
 
-from .widgets import AutocompleteWidget, AutocompleteMultipleWidget, AutocompleteTextboxWidget
+from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
 
-__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget', 'AutocompleteTextboxWidget']
+__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget']

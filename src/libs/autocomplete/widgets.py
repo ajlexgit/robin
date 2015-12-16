@@ -2,6 +2,7 @@ import pickle
 from django.conf import settings
 from django.forms import widgets
 from django.core.cache import caches
+from django.forms.models import ModelChoiceIterator
 from django.forms.utils import flatatt
 from django.shortcuts import resolve_url
 from django.utils.encoding import force_text
@@ -47,7 +48,9 @@ class AutocompleteWidget(widgets.Widget):
             close_on_select: bool
                 Закрывать список после выбора элемента
     """
-    choices = ()
+    _choices = ()
+    app_label = ''
+    model_name = ''
 
     class Media:
         js = (
@@ -77,36 +80,67 @@ class AutocompleteWidget(widgets.Widget):
         self.minimum_input_length = int(minimum_input_length)
         self.close_on_select = int(bool(close_on_select))
 
-        # format_item
+        # модуль и имя функции, форматирующей каждый элемент
+        # выпадающего списка автокомплита
         if format_item is None:
             format_item = default_format_item
         self.format_item_module = format_item.__module__
         self.format_item_method = format_item.__qualname__
 
-        # expressions
+        # ключи фильтров выборки
         if isinstance(expressions, (list, tuple)):
             expressions = ','.join(expressions)
         self.expressions = expressions
 
-    def render(self, name, value, attrs=None):
-        queryset = self.choices.queryset
-        application = queryset.model._meta.app_label
-        model_name = queryset.model._meta.model_name
+    @property
+    def choices(self):
+        return self._choices
 
-        # Получаем имя без префикса формсета
-        if len(name.split('-')) > 1:
-            name_parts = name.split('-')
-            real_name = '-'.join((name_parts[0], name_parts[-1]))
+    @choices.setter
+    def choices(self, value):
+        """ Определение модели, по которой производится выборка """
+        self._choices = value
+        if isinstance(value, ModelChoiceIterator):
+            self.app_label = value.queryset.model._meta.app_label
+            self.model_name = value.queryset.model._meta.model_name
         else:
-            real_name = name
+            raise TypeError('choices for AutocompleteWidget must be an instance of ModelChoiceIterator')
 
-        # Сохраняем данные в Redis
-        cache.set('.'.join((application, model_name, real_name)), pickle.dumps({
-            'query': queryset.query,
+    def get_short_name(self, name):
+        """
+            Получение имени поля без индекса inline-формы,
+            которые добавляются от inline-форм.
+
+            Пример:
+                model-0-field -> model-field
+        """
+        if '-' in name:
+            name_parts = name.split('-')
+            return '-'.join((name_parts[0], name_parts[-1]))
+
+        return name
+
+    def _cache_data(self, cache_keys=()):
+        """ Сохранение некоторых данных в кэш """
+        cache_key = '.'.join(cache_keys)
+        cache.set(cache_key, pickle.dumps({
+            'query': self.choices.queryset.query,
             'format_item_module': self.format_item_module,
             'format_item_method': self.format_item_method,
             'dependencies': self.dependencies,
         }), timeout=1800)
+
+    def get_url(self, name):
+        """ Построение урла для запроса данных """
+        return resolve_url('autocomplete:autocomplete_widget',
+            application=self.app_label,
+            model_name=self.model_name,
+            name=name,
+        )
+
+    def render(self, name, value, attrs=None):
+        short_name = self.get_short_name(name)
+        self._cache_data((self.app_label, self.model_name, short_name))
 
         # Аттрибуты
         final_attrs = self.build_attrs(attrs, name=name, **{
@@ -114,18 +148,14 @@ class AutocompleteWidget(widgets.Widget):
             'data-expressions': self.expressions,
             'data-close_on_select': self.close_on_select,
             'data-depends': ','.join(item[1] for item in self.dependencies),
-            'data-url': resolve_url('autocomplete:autocomplete_widget',
-                application=application,
-                model_name=model_name,
-                name=real_name,
-            )
+            'data-url': self.get_url(short_name),
         })
 
         # Добавляем класс
         classes = final_attrs.get('class', '')
         final_attrs['class'] = classes + ' autocomplete_widget'
 
-        # Форматирование value
+        # Форматирование множественного значения
         if isinstance(value, (list, tuple)):
             value = ','.join(force_text(item) for item in value)
 
@@ -152,44 +182,3 @@ class AutocompleteMultipleWidget(AutocompleteWidget):
             value = value[0]
         return value.split(',') if value else None
 
-
-class AutocompleteTextboxWidget(widgets.Widget):
-    """
-        Виджет для текстового поля с автокомплитом.
-    """
-    class Media:
-        js = (
-            'autocomplete/js/autocomplete_textbox.js',
-        )
-        css = {
-            'all': (
-                'autocomplete/css/autocomplete_textbox.css',
-            )
-        }
-
-    def __init__(self, attrs=None, choices=(), template='autocomplete/autocomplete_textbox.html'):
-        default_attrs = {
-            'style': 'width: 250px',
-            'placeholder': _('Input value'),
-        }
-        default_attrs.update(attrs or {})
-
-        super().__init__(default_attrs)
-        self.template = template
-        self.choices = choices
-
-    def render(self, name, value, attrs=None):
-        # Аттрибуты
-        attrs = self.build_attrs(attrs, name=name)
-
-        if callable(self.choices):
-            choices = self.choices()
-        else:
-            choices = self.choices
-
-        return render_to_string(self.template, {
-            'attrs': flatatt(attrs),
-            'value': value or '',
-            'name': name,
-            'choices': choices,
-        })
