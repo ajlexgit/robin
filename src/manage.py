@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Social counters: https://github.com/ilyabirman/Likely/blob/master/source/button.js
 # Angular-like
 # виджет выбора ссылки на сущность
 

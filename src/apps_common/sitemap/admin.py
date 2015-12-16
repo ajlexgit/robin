@@ -12,7 +12,7 @@ class SitemapConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmi
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'title',
+                'header',
             ),
         }),
     )

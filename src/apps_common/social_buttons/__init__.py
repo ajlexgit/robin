@@ -8,11 +8,6 @@
                 'social_buttons',
                 ...
             )
-            MIDDLEWARE_CLASSES = (
-                ...
-                'opengraph.middleware.OpengraphMiddleware',
-                ...
-            )
 
     Получение данных по приоритетам:
         1) data-аттрибут кнопки
