@@ -174,6 +174,7 @@ PIPELINE_CSS = {
             'header/scss/header.scss',
             'footer/scss/footer.scss',
             'social/scss/block.scss',
+            'social_buttons/scss/social_buttons.scss',
         ),
         'output_filename': 'css/head_core.css',
     },
@@ -254,6 +255,7 @@ PIPELINE_JS = {
 
             'attachable_blocks/js/async_blocks.js',
             'menu/js/menu.js',
+            'social_buttons/js/social_buttons.js',
         ),
         'output_filename': 'js/core.js',
     },
@@ -429,8 +431,9 @@ CACHES = {
     'default': {
         "BACKEND": "redis_cache.cache.RedisCache",
         "LOCATION": "127.0.0.1:6379:0",
-        'OPTIONS': {
-            'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
+        "KEY_PREFIX": SHORT_LANGUAGE_CODE,
+        "OPTIONS": {
+            "CLIENT_CLASS": 'redis_cache.client.DefaultClient',
             "PASSWORD": "",
         }
     }
@@ -448,7 +451,7 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 
 # Locale
 LOCALE_PATHS = (
-    'static/locale',
+    'locale',
 )
 
 
@@ -603,37 +606,4 @@ CKEDITOR_CONFIG_MINI = {
             'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
         },
     ]
-}
-
-
-# Вывод ошибок в консоль
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class': 'django.utils.log.NullHandler',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['null'],
-            'propagate': True,
-            'level': 'INFO',
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        }
-    },
 }

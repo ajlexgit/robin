@@ -1,5 +1,6 @@
 from django.template import Library
 from django.utils.translation import ugettext_lazy as _
+from blog.models import BlogConfig, BlogPost
 from ..menu import Menu, MenuItem
 
 register = Library()
@@ -14,7 +15,11 @@ def main_menu(context, template='menu/menu.html'):
 
     menu = Menu(request)
     menu.append(
-        MenuItem(_('Blog'), 'blog:index'),
         MenuItem(_('Contacts'), 'contacts:index'),
     )
+
+    posts = BlogPost.objects.filter(visible=True)
+    if posts.exists():
+        menu.insert(0, MenuItem(_('Blog'), 'blog:index'))
+
     return menu.render(template)
