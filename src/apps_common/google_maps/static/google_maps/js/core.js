@@ -688,11 +688,12 @@
             });
 
             // Не даём скроллить слишком далеко по вертикали
-            var MAX_LATITUDE = 85.0511287798;
+            var MAX_LATITUDE = 83.675733;
+            var MIN_LATITUDE = -85.0511287798;
             this.on('idle', function() {
                 var center = this.center();
-                if (center.lat < -MAX_LATITUDE) {
-                    this.panTo(GMapPoint(-MAX_LATITUDE, center.lng));
+                if (center.lat < MIN_LATITUDE) {
+                    this.panTo(GMapPoint(MIN_LATITUDE, center.lng));
                 } else if (center.lat > MAX_LATITUDE) {
                     this.panTo(GMapPoint(MAX_LATITUDE, center.lng));
                 }
