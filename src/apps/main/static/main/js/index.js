@@ -76,31 +76,22 @@
             styles: gmapStyles,
             zoom: 2
         }).on('ready', function() {
-            var marker1 = GMapMarker({
+            var marker = GMapMarker({
                 map: this,
                 position: GMapPoint(62.281819, -150.287132),
-                hint: 'First',
-                balloon: '<p>Hello</p>'
+                hint: 'First'
             });
 
-            var marker2 = GMapMarker({
-                map: this,
-                position: GMapPoint(62.400471, -150.005608),
-                hint: 'second',
-                draggable: true,
-                balloon: '<p>Goodbay</p>'
-            });
-
-            var overlay = GMapOverlay({
+            var overlay = GMapImageTripleOverlay({
                 map: this,
                 src: 'http://kompozer.net/images/svg/Mozilla_Firefox.svg',
                 coords: {
                     bottomleft: GMapPoint(62.281819, -150.287132),
-                    topright: GMapPoint(62.400471, -150.005608)
+                    topright: GMapPoint(62.400471, -150.287132)
                 }
             });
 
-            this.center(GMapPoint(62.339889, -150.145683)).zoom(11);
+            this.center(GMapPoint(62.281819, -150.287132)).zoom(11);
         });
     });
 
