@@ -190,7 +190,7 @@
                 var that = this;
                 this.native_events.push(evt_name);
                 this.native.addListener(evt_name, function() {
-                    that.trigger(evt_name);
+                    that.trigger(evt_name, arguments);
                 });
             }
 
@@ -287,8 +287,8 @@
                 return this.native.getIcon();
             }
 
-            if (value && (typeof value != 'string')) {
-                this.error('value should be a string');
+            if (value && (typeof value != 'string') && (typeof value != 'object')) {
+                this.error('value should be a string or object');
                 return this;
             }
 
@@ -347,10 +347,14 @@
         Класс для всплывающего окна карты
      */
     window.GMapBalloon = Class(EventedObject, function GMapBalloon(cls, superclass) {
-        cls.prototype.init = function(map, content) {
+        cls.prototype.init = function(map, options) {
             superclass.prototype.init.call(this);
 
-            if (typeof content != 'string') {
+            var opts = $.extend({
+                content: ''
+            }, options);
+
+            if (typeof opts.content != 'string') {
                 return this.raise('content should be a string');
             }
 
@@ -362,7 +366,7 @@
 
             // нативный объект
             this.native = new google.maps.InfoWindow({
-                content: content
+                content: opts.content
             });
 
             this.opened = false;
@@ -442,7 +446,10 @@
 
 
     /*
-        Класс наложения на карту Google
+        Класс наложения на карту Google.
+
+        Координаты coords ДОЛЖНЫ описывать вертикальную черту, т.к.
+        определение точек Google-карты глючное из-за зацикленности по горизонтали
      */
     window.GMapOverlay = Class(EventedObject, function GMapOverlay(cls, superclass) {
         cls.prototype.layer = 'overlayLayer';
@@ -509,49 +516,102 @@
             Вызывается при добавлении оверлея на карту
          */
         cls.prototype.onAdd = function() {
-            this.container = document.createElement('div');
-            this.container.style.position = 'absolute';
+            this.$container = $('<div>').css({
+                position: 'absolute',
+                minWidth: '1px'
+            });
 
-            var img = document.createElement('img');
-            img.src = this.src;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.position = 'absolute';
-            this.container.appendChild(img);
+            this.$left = $('<img>', {
+                src: this.src
+            }).addClass('left-copy').css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                height: '100%'
+            });
+
+            this.$img = $('<img>', {
+                src: this.src
+            }).addClass('center-copy').css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                height: '100%'
+            });
+
+            this.$right = $('<img>', {
+                src: this.src
+            }).addClass('right-copy').css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                height: '100%'
+            });
+
+            this.$container.append(this.$left, this.$img, this.$right);
 
             // Add the element to the "overlayLayer" pane.
             var panes = this.native.getPanes();
-            panes[this.layer].appendChild(this.container);
+            panes[this.layer].appendChild(this.$container.get(0));
         };
 
         /*
             Отрисовка оверлея
          */
         cls.prototype.draw = function() {
-            // We use the south-west and north-east
-            // coordinates of the overlay to peg it to the correct position and size.
-            // To do this, we need to retrieve the projection from the overlay.
             var overlayProjection = this.native.getProjection();
 
-            // Retrieve the south-west and north-east coordinates of this overlay
-            // in LatLngs and convert them to pixel coordinates.
-            // We'll use these coordinates to resize the div.
-            var sw = overlayProjection.fromLatLngToDivPixel(this.bounds.getSouthWest());
-            var ne = overlayProjection.fromLatLngToDivPixel(this.bounds.getNorthEast());
+            var bottomleft = this.bounds.getSouthWest();
+            var righttop = this.bounds.getNorthEast();
+            var sw = overlayProjection.fromLatLngToDivPixel(bottomleft);
+            var ne = overlayProjection.fromLatLngToDivPixel(righttop);
 
-            // Resize the image's div to fit the indicated dimensions.
-            this.container.style.left = sw.x + 'px';
-            this.container.style.top = ne.y + 'px';
-            this.container.style.width = (ne.x - sw.x) + 'px';
-            this.container.style.height = (sw.y - ne.y) + 'px';
+            this.$container.css({
+                left: sw.x,
+                top: ne.y,
+                height: Math.abs(sw.y - ne.y)
+            });
+
+            // левая и правая копии
+            var worldWidth = overlayProjection.getWorldWidth();
+            this.$left.css({
+                left: -worldWidth
+            });
+            this.$right.css({
+                left: worldWidth
+            });
         };
+
+        /*
+
+         */
+        cls.prototype.getBounds = function() {
+            var left = parseInt(this.$container.css('left'));
+            var top = parseInt(this.$container.css('top'));
+            var width = parseInt(this.$container.outerWidth());
+            var height = parseInt(this.$container.outerHeight());
+
+            var overlayProjection = this.native.getProjection();
+            var bottomleft = overlayProjection.fromDivPixelToLatLng(
+                new google.maps.Point(left, top + height)
+            );
+            var righttop = overlayProjection.fromDivPixelToLatLng(
+                new google.maps.Point(left + width, top)
+            );
+
+            return {
+                bottomleft: [bottomleft.lat(), bottomleft.lng()],
+                righttop: [righttop.lat(), righttop.lng()]
+            }
+        };
+
 
         /*
             Вызывается при откреплении оверлея от карты
          */
         cls.prototype.onRemove = function() {
-            this.container.parentNode.removeChild(this.container);
-            this.container = null;
+            this.$container.remove();
+            this.$container = null;
         };
 
         /*
@@ -727,7 +787,7 @@
                 var that = this;
                 this.native_events.push(evt_name);
                 this.native.addListener(evt_name, function() {
-                    that.trigger(evt_name);
+                    that.trigger(evt_name, arguments);
                 });
             }
 

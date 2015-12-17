@@ -38,8 +38,8 @@
             this.center(point);
 
             // установка значения поля при двойном клике
-            this.on('dblclick', function(evt) {
-                var point = GMapPoint.fromNative(evt.latLng);
+            this.on('dblclick', function(evt, args) {
+                var point = GMapPoint.fromNative(args[0].latLng);
                 marker.position(point);
                 $field.val(point.toString());
             });
