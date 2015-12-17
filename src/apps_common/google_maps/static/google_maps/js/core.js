@@ -643,6 +643,7 @@
                 center: null,
                 mapType: 'roadmap',
                 dblClickZoom: false,
+                backgroundColor: '',
                 draggable: true,
                 wheel: false,
                 noClear: false,
@@ -687,6 +688,7 @@
                 that.native = new google.maps.Map(that.$root.get(0), {
                     center: opts.center,
                     noClear: opts.noClear,
+                    backgroundColor: opts.backgroundColor,
                     disableDoubleClickZoom: !opts.dblClickZoom,
                     disableDefaultUI: true,
                     zoomControl: opts.zoomControl
