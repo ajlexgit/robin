@@ -1,10 +1,12 @@
 from django.db import models
 from django.core import exceptions
+from .forms import GoogleCoordsFormsField
 from libs.coords import Coords
 
 
 class GoogleCoordsField(models.Field):
     def __init__(self, *args, **kwargs):
+        self.zoom = kwargs.pop('zoom', 14)
         kwargs['max_length'] = 32
         super().__init__(*args, **kwargs)
 
@@ -56,3 +58,11 @@ class GoogleCoordsField(models.Field):
             return self.get_prep_value(value)
         else:
             raise TypeError('Lookup type %r not supported.' % lookup_type)
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': GoogleCoordsFormsField,
+            'zoom': self.zoom,
+        }
+        defaults.update(kwargs)
+        return super().formfield(**defaults)

@@ -18,10 +18,12 @@
 
         // карта
         var gmap = GMap($map, {
-            zoom:16
+            zoom: parseInt(field_data.zoom) || 16
         }).on('ready', function() {
-            var point = GMapPoint.fromString($field.val());
-            if (!point) {
+            var coords_str = $field.val();
+            if (coords_str) {
+                var point = GMapPoint.fromString(coords_str);
+            } else {
                 point = GMapPoint(40.70583, -74.2588721);
             }
 
@@ -58,9 +60,14 @@
     }).on('change', '.google-map-field', function() {
         // Изменение карты при изменении координат в текстовом поле
         var $field = $(this);
+        var coords_str = $field.val();
+        if (!coords_str) {
+            return
+        }
+
         var gmap = $field.next('.google-map').data(GMap.dataParamName);
 
-        var point = GMapPoint.fromString($field.val());
+        var point = GMapPoint.fromString(coords_str);
         var marker = gmap.markers[0];
         if (marker) {
             marker.position(point);
