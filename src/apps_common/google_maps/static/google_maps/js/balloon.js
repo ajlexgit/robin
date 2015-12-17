@@ -4,6 +4,8 @@
 
      */
     window.GMapBalloon = Class(GMapOverlayBase, function GMapBalloon(cls, superclass) {
+        cls.prototype.layer = 'floatPane';
+
         cls.prototype.NATIVE_EVENTS = [
             'domready',
             'closeclick',
@@ -44,7 +46,7 @@
             Вызывается при добавлении оверлея на карту
          */
         cls.prototype.onAdd = function() {
-            this.$container = $('<div>').addClass('balloon');
+            this.$container = $('<div>').addClass('gmap-balloon');
 
             var panes = this.native.getPanes();
             panes[this.layer].appendChild(this.$container.get(0));
@@ -55,7 +57,7 @@
          */
         cls.prototype.draw = function() {
             var projection = this.native.getProjection();
-            var point = projection.fromLatLngToDivPixel(this.position());
+            var point = projection.fromLatLngToDivPixel(this.position().native);
 
             this.$container.css({
                 left: point.x,

@@ -1,0 +1,9 @@
+@import "mixins";
+
+.gmap-balloon {
+  position: absolute;
+  min-width: 40px;
+  min-height: 40px;
+  z-index: 100;
+  background: #FFFFFF;
+}

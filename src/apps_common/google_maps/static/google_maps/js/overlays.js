@@ -63,7 +63,7 @@
                 height: '100%'
             });
 
-            this.$left = this.$img.clone().addClass('right-copy');
+            this.$left = this.$img.clone().addClass('left-copy');
             this.$right = this.$img.clone().addClass('right-copy');
 
             this.$container.append(this.$left, this.$img, this.$right);
