@@ -442,6 +442,8 @@
         Класс наложения на карту Google
      */
     window.GMapOverlay = Class(EventedObject, function GMapOverlay(cls, superclass) {
+        cls.prototype.layer = 'overlayLayer';
+
         cls.prototype.init = function(options) {
             superclass.prototype.init.call(this);
 
@@ -516,7 +518,7 @@
 
             // Add the element to the "overlayLayer" pane.
             var panes = this.native.getPanes();
-            panes.overlayLayer.appendChild(this.container);
+            panes[this.layer].appendChild(this.container);
         };
 
         /*

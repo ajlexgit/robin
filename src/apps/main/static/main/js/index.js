@@ -43,7 +43,7 @@
     GMap.ready(function() {
         var gmapStyles = [
             {
-                "featureType": "administrative",
+                "featureType": "all",
                 "stylers": [
                     {"visibility": "off"}
                 ]
@@ -55,34 +55,10 @@
                 ]
             },
             {
-                "featureType": "landscape.man_made",
-                "stylers": [
-                    {"visibility": "off"}
-                ]
-            },
-            {
                 "featureType": "landscape.natural",
                 "stylers": [
                     {"visibility": "on"},
                     {"color": "#d3e5b6"}
-                ]
-            },
-            {
-                "featureType": "poi",
-                "stylers": [
-                    {"visibility": "off"}
-                ]
-            },
-            {
-                "featureType": "road",
-                "stylers": [
-                    {"visibility": "off"}
-                ]
-            },
-            {
-                "featureType": "transit",
-                "stylers": [
-                    {"visibility": "off"}
                 ]
             },
             {
@@ -117,7 +93,7 @@
 
             var overlay = GMapOverlay({
                 map: this,
-                src: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/talkeetna.png',
+                src: 'http://kompozer.net/images/svg/Mozilla_Firefox.svg',
                 coords: {
                     bottomleft: GMapPoint(62.281819, -150.287132),
                     topright: GMapPoint(62.400471, -150.005608)
