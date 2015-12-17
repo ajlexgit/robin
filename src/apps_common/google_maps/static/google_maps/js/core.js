@@ -74,7 +74,10 @@
             }
 
             // нативный объект
-            this.native = new google.maps.LatLng(this.lat, this.lng);
+            var that = this;
+            GMap.ready(function() {
+                that.native = new google.maps.LatLng(that.lat, that.lng);
+            });
         };
 
         cls.prototype._formatCoord = function(value) {
@@ -642,6 +645,7 @@
                 dblClickZoom: false,
                 draggable: true,
                 wheel: false,
+                noClear: false,
                 styles: [],
                 zoom: 14,
                 zoomControl: true
@@ -682,6 +686,7 @@
                 // нативный объект
                 that.native = new google.maps.Map(that.$root.get(0), {
                     center: opts.center,
+                    noClear: opts.noClear,
                     disableDoubleClickZoom: !opts.dblClickZoom,
                     disableDefaultUI: true,
                     zoomControl: opts.zoomControl
@@ -737,12 +742,13 @@
             }
 
             if (value) {
-                if (value instanceof GMapPoint == false) {
-                    this.error('value should be a GMapPoint instance');
-                    return this;
+                if (value instanceof GMapMarker) {
+                    this.native.setCenter(value.position().native);
+                } else if (value instanceof GMapPoint) {
+                    this.native.setCenter(value.native);
+                } else {
+                    this.error('value should be a GMapPoint or GMapMarker instance');
                 }
-
-                this.native.setCenter(value.native);
             }
 
             return this;
@@ -767,12 +773,14 @@
             Плавное перемещение к точке
          */
         cls.prototype.panTo = function(center) {
-            if (center instanceof GMapPoint == false) {
-                this.error('value should be a GMapPoint instance');
-                return this;
+            if (center instanceof GMapMarker) {
+                this.native.panTo(center.position().native);
+            } else if (center instanceof GMapPoint) {
+                this.native.panTo(center.native);
+            } else {
+                this.error('value should be a GMapPoint or GMapMarker instance');
             }
 
-            this.native.panTo(center);
             return this;
         };
 
