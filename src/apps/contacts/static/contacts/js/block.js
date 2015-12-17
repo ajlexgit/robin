@@ -28,13 +28,20 @@
         return false;
     }).on('submit', '#ajax-contact-form', function() {
         // Отправка Ajax-формы контактов
-        var form = $(this);
         $.preloader();
 
+        // Add referer
+        var $form = $(this);
+        var data = $form.serializeArray();
+        data.push({
+            name: 'referer',
+            value: location.href
+        });
+        
         $.ajax({
             url: window.js_storage.ajax_contact,
             type: 'POST',
-            data: form.serialize(),
+            data: data,
             dataType: 'json',
             success: function(response) {
                 if (response.errors) {

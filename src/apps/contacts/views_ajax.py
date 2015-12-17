@@ -25,6 +25,7 @@ class ContactView(AjaxViewMixin, TemplateExView):
                 template='contacts/mails/email.html',
                 context={
                     'data': form.cleaned_data,
+                    'referer': request.POST.get('referer'),
                 }
             )
 

@@ -15,3 +15,7 @@
 {% if data.message %}
   <p><b>{% trans 'Message' %}:</b> {{ data.message }}</p>
 {% endif %}
+
+{% if referer %}
+  <p><b>From page:</b> {{ referer }}</p>
+{% endif %}
