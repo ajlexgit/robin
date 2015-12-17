@@ -58,19 +58,22 @@
     /*
         Базовый класс объекта на карте
      */
-    window.GMapObject = Class(EventedObject, function GMapPoint(cls, superclass) {
+    window.GMapEventedObject = Class(EventedObject, function GMapPoint(cls, superclass) {
         cls.prototype.NATIVE_EVENTS = [];
 
         cls.prototype.init = function(options) {
             superclass.prototype.init.call(this);
 
-            this.opts = $.extend(true, this.getDefaultOpts(), options);
+            this.opts = $.extend(this.getDefaultOpts(), options);
 
             // массив событий, которые повешены на нативный маркер
             this.native_events = [];
 
             // создание реального объекта GoogleMap
-            this.native = this.makeNative();
+            var that = this;
+            GMap.ready(function() {
+                that.makeNative();
+            });
 
             this.onInit();
         };
@@ -79,30 +82,27 @@
             Настройки по умолчанию
          */
         cls.prototype.getDefaultOpts = function() {
-            return {
-                map: null
-            }
+            return {}
         };
 
         /*
             Создание нативного объекта
          */
         cls.prototype.makeNative = function() {
-
+            this.native = null;
         };
 
         /*
             Инициализация
          */
         cls.prototype.onInit = function() {
-            this.map(this.opts.map);
+
         };
 
         /*
             Освобождение ресурсов
          */
         cls.prototype.destroy = function() {
-            this.map(null);
             this.native_events = [];
             superclass.prototype.destroy.call(this);
         };
@@ -119,13 +119,48 @@
 
                 // вешаем обработчик на нативный маркер при первом обращении
                 var that = this;
-                this.native_events.push(evt_name);
-                this.native.addListener(evt_name, function() {
-                    that.trigger(evt_name, arguments);
+                GMap.ready(function() {
+                    that.native_events.push(evt_name);
+                    that.native.addListener(evt_name, function() {
+                        that.trigger(evt_name, arguments);
+                    });
                 });
             }
 
             return superclass.prototype.on.call(this, name, handler);
+        };
+    });
+
+
+    /*
+        Базовый класс объекта на карте
+     */
+    window.GMapObject = Class(GMapEventedObject, function GMapPoint(cls, superclass) {
+        cls.prototype.NATIVE_EVENTS = [];
+
+        /*
+            Настройки по умолчанию
+         */
+        cls.prototype.getDefaultOpts = function() {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+                map: null
+            });
+        };
+
+        /*
+            Инициализация
+         */
+        cls.prototype.onInit = function() {
+            superclass.prototype.onInit.call(this);
+            this.map(this.opts.map);
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.prototype.destroy = function() {
+            this.map(null);
+            superclass.prototype.destroy.call(this);
         };
 
         /*
@@ -211,7 +246,7 @@
          */
         cls.prototype.makeNative = function() {
             var native_class = this._nativeClass();
-            return new native_class;
+            this.native = new native_class;
         };
 
         /*
@@ -344,7 +379,7 @@
             Создание нативного объекта
          */
         cls.prototype.makeNative = function() {
-            return new google.maps.Marker();
+            this.native = new google.maps.Marker();
         };
 
         cls.prototype.onInit = function() {
@@ -529,7 +564,7 @@
     /*
         Класс карты Google
      */
-    window.GMap = Class(EventedObject, function GMap(cls, superclass) {
+    window.GMap = Class(GMapEventedObject, function GMap(cls, superclass) {
         cls.prototype.NATIVE_EVENTS = [
             'click',
             'dblclick',
@@ -569,9 +604,14 @@
                 return this.raise('root element not found');
             }
 
-            superclass.prototype.init.call(this);
+            superclass.prototype.init.call(this, options);
+        };
 
-            var opts = $.extend({
+        /*
+            Настройки по умолчанию
+         */
+        cls.prototype.getDefaultOpts = function() {
+            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
                 center: null,
                 mapType: 'roadmap',
                 dblClickZoom: false,
@@ -582,22 +622,55 @@
                 styles: [],
                 zoom: 14,
                 zoomControl: true
-            }, options);
+            });
+        };
 
-            // массив событий, которые повешены на нативный маркер
-            this.native_events = [];
+        /*
+            Создание нативного объекта
+         */
+        cls.prototype.makeNative = function() {
+            this.native = new google.maps.Map(this.$root.get(0), {
+                center: this.opts.center,
+                noClear: this.opts.noClear,
+                backgroundColor: this.opts.backgroundColor,
+                disableDoubleClickZoom: !this.opts.dblClickZoom,
+                disableDefaultUI: true,
+                zoomControl: this.opts.zoomControl
+            });
+
+            // Обработчик изменения размера экрана (например, для центрирования карты)
+            var that = this;
+            google.maps.event.addDomListener(window, 'resize', $.rared(function() {
+                that.trigger('resize');
+            }, 300));
+
+            this.draggable(this.opts.draggable);
+            this.mapType(this.opts.mapType);
+            this.wheel(this.opts.wheel);
+            this.styles(this.opts.styles);
+            this.zoom(this.opts.zoom);
+
+            setTimeout(function() {
+                that.trigger('ready');
+            }, 0);
+        };
+
+        /*
+            Инициализация
+         */
+        cls.prototype.onInit = function() {
+            superclass.prototype.onInit.call(this);
 
             // маркеры на карте
-            var that = this;
             this.markers = [];
             this.on('attach.marker', function(e, marker) {
                 // добавление маркера в массив
-                that.markers.push(marker);
+                this.markers.push(marker);
             }).on('detach.marker', function(e, marker) {
                 // удаление маркера из массива
-                var index = that.markers.indexOf(marker);
+                var index = this.markers.indexOf(marker);
                 if (index >= 0) {
-                    that.markers.splice(index, 1);
+                    this.markers.splice(index, 1);
                 }
             });
 
@@ -605,65 +678,27 @@
             this.overlays = [];
             this.on('attach.overlay', function(e, overlay) {
                 // добавление оверлея в массив
-                that.overlays.push(overlay);
+                this.overlays.push(overlay);
             }).on('detach.overlay', function(e, overlay) {
                 // удаление оверлея из массива
-                var index = that.overlays.indexOf(overlay);
+                var index = this.overlays.indexOf(overlay);
                 if (index >= 0) {
-                    that.overlays.splice(index, 1);
+                    this.overlays.splice(index, 1);
                 }
             });
 
-            // инициализация
-            cls.ready(function() {
-                // нативный объект
-                that.native = new google.maps.Map(that.$root.get(0), {
-                    center: opts.center,
-                    noClear: opts.noClear,
-                    backgroundColor: opts.backgroundColor,
-                    disableDoubleClickZoom: !opts.dblClickZoom,
-                    disableDefaultUI: true,
-                    zoomControl: opts.zoomControl
-                });
-
-                // Обработчик изменения размера экрана (например, для центрирования карты)
-                google.maps.event.addDomListener(window, 'resize', $.rared(function() {
-                    that.trigger('resize');
-                }, 300));
-
-                that.draggable(opts.draggable);
-                that.mapType(opts.mapType);
-                that.wheel(opts.wheel);
-                that.styles(opts.styles);
-                that.zoom(opts.zoom);
-
-                setTimeout(function() {
-                    that.trigger('ready');
-                }, 0);
+            // Не даём скроллить слишком далеко по вертикали
+            var MAX_LATITUDE = 85.0511287798;
+            this.on('idle', function() {
+                var center = this.center();
+                if (center.lat < -MAX_LATITUDE) {
+                    this.panTo(GMapPoint(-MAX_LATITUDE, center.lng));
+                } else if (center.lat > MAX_LATITUDE) {
+                    this.panTo(GMapPoint(MAX_LATITUDE, center.lng));
+                }
             });
 
             this.$root.data(cls.dataParamName, this);
-        };
-
-        /*
-            Отлов событий
-         */
-        cls.prototype.on = function(name, handler) {
-            var evt_info = this._formatEventName(name);
-            var evt_name = evt_info.name;
-            if (evt_name &&
-                (this.native_events.indexOf(evt_name) < 0) &&
-                (this.NATIVE_EVENTS.indexOf(evt_name) >= 0)) {
-
-                // вешаем обработчик на нативную карту при первом обращении
-                var that = this;
-                this.native_events.push(evt_name);
-                this.native.addListener(evt_name, function() {
-                    that.trigger(evt_name, arguments);
-                });
-            }
-
-            return superclass.prototype.on.call(this, name, handler);
         };
 
         /*
