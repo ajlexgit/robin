@@ -439,11 +439,15 @@
             }
 
             var icon = this._anchor.icon();
-            if (icon && icon.size) {
-                return icon.size.height;
-            } else {
-                return 40;
+            if (icon) {
+                if (icon.scaledSize) {
+                    return icon.scaledSize.height;
+                } else if (icon.size) {
+                    return icon.size.height;
+                }
             }
+
+            return 40;
         }
     });
 
