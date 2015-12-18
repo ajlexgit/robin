@@ -50,19 +50,6 @@
             });
      */
 
-    var gmaps_ready = false;
-    window.init_google_maps = function() {
-        gmaps_ready = true;
-        $(document).trigger('google-maps-ready');
-    };
-
-    $(document).ready(function() {
-        var lang = $(document.documentElement).attr('lang');
-        var script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&language=' + lang;
-        document.body.appendChild(script);
-    });
-
 
     /*
         Базовый класс объекта на карте
@@ -561,17 +548,6 @@
             'terrain'
         ];
 
-        /*
-            Выполнение callback, когда JS GoogleMaps загружен и готов
-         */
-        cls.ready = function(callback) {
-            if (gmaps_ready) {
-                callback()
-            } else {
-                $(document).one('google-maps-ready', callback);
-            }
-        };
-
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -868,5 +844,30 @@
             });
         };
     });
+
+
+    var gmaps_ready = false;
+    window.init_google_maps = function() {
+        gmaps_ready = true;
+        $(document).trigger('google-maps-ready');
+    };
+
+    $(document).ready(function() {
+        var lang = document.documentElement.getAttribute('lang');
+        var script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&language=' + lang;
+        document.body.appendChild(script);
+    });
+
+    /*
+        Выполнение callback, когда JS GoogleMaps загружен и готов
+     */
+    GMap.ready = function(callback) {
+        if (gmaps_ready) {
+            callback()
+        } else {
+            $(document).one('google-maps-ready', callback);
+        }
+    };
 
 })(jQuery);

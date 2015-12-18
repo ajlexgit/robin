@@ -163,7 +163,7 @@
         };
 
         // вызов функции, добавляющей пользовательские методы и свойства
-        class_constructor(ClassObj.prototype, parent.prototype);
+        class_constructor(ClassObj.prototype, parent && parent.prototype);
 
         return ClassObj;
     };
