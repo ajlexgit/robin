@@ -21,9 +21,19 @@
     bottom: -15px;
     left: 50%;
     z-index: 10;
-    border: 16px solid transparent;
-    border-top: 16px solid $white;
+    border: 18px solid transparent;
+    border-top: 18px solid rgba($gray, 0.5);
     @include transform(translateX(-50%));
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: -18px;
+      top: -19px;
+      z-index: 1;
+      border: 18px solid transparent;
+      border-top: 18px solid $white;
+    }
   }
 
   .gmap-balloon-close {
@@ -49,9 +59,9 @@
   }
 
   .gmap-balloon-arrow {
-    bottom: -9px;
+    bottom: -13px;
     @include media_interval(0, $media768) {
-      bottom: -15px;
+      bottom: -19px;
     }
   }
 
