@@ -20,7 +20,9 @@
                                   загрузке файла перед генерацией нового превью
      */
     window.StdImage = Class(null, function StdImage(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'stdimage';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -43,7 +45,7 @@
             }, options);
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -85,22 +87,22 @@
                 that.changeHandler($(this));
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$root.off('.stdimage');
             this.$input.off('.stdimage');
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Сброс на первоначальное превью, если оно было
          */
-        cls.prototype.resetPreview = function() {
+        cls.resetPreview = function() {
             this.$new_preview.removeAttr('src').hide();
             if (this._wasEmpty) {
                 this.$root.addClass(this.opts.emptyClass);
@@ -112,7 +114,7 @@
         /*
             Создание нового превью
          */
-        cls.prototype.setPreview = function(img) {
+        cls.setPreview = function(img) {
             // размер превью
             var size = this.$root.data('size').toString()
                 .split('x').map(function(item) {
@@ -141,7 +143,7 @@
         /*
             Событие изменения файла
          */
-        cls.prototype.changeHandler = function($input) {
+        cls.changeHandler = function($input) {
             var file = $input.prop('files');
             file = file && file.length && file[0];
             if (!file) {
@@ -166,7 +168,6 @@
             });
         };
     });
-    StdImage.dataParamName = 'stdimage';
 
 
     $(document).ready(function() {

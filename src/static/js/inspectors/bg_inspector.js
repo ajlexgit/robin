@@ -29,14 +29,11 @@
      */
 
     var BackgroundInspector = Class(Inspector, function BackgroundInspector(cls, superclass) {
-        cls.prototype.init = function() {
-            this._list = [];
-            this.STATE_DATA_KEY = 'bg_inspector_state';
-            this.OPTS_DATA_KEY = 'bg_inspector_opts';
-        };
+        cls.STATE_DATA_KEY = 'bg_inspector_state';
+        cls.OPTS_DATA_KEY = 'bg_inspector_opts';
 
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts(), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts(), {
                 getContainer: function($element) {
                     return $element.parent();
                 }
@@ -46,8 +43,8 @@
         /*
             Сохраняем inline-стили и сбрасываем размеры
          */
-        cls.prototype._beforeCheck = function($element, opts) {
-            superclass.prototype._beforeCheck.call(this, $element, opts);
+        cls._beforeCheck = function($element, opts) {
+            superclass._beforeCheck.call(this, $element, opts);
             $element.data('bginspector_inlines', $element.get(0).style.cssText);
             $element.css({
                 width: '',
@@ -55,7 +52,7 @@
             });
         };
 
-        cls.prototype._check = function($element, opts) {
+        cls._check = function($element, opts) {
             var $parent = opts.getContainer.call(this, $element);
 
             var elem_asp = $element.outerWidth() / $element.outerHeight();
@@ -69,9 +66,9 @@
         /*
             Восстановление inline-стилей
          */
-        cls.prototype._afterCheck = function($element, opts, state) {
+        cls._afterCheck = function($element, opts, state) {
             $element.get(0).style.cssText = $element.data('bginspector_inlines') || '';
-            superclass.prototype._afterCheck.call(this, $element, opts, state);
+            superclass._afterCheck.call(this, $element, opts, state);
         };
     });
 

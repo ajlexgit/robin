@@ -11,8 +11,8 @@
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 src: '',
                 coords: {
                     topright: null,
@@ -24,7 +24,7 @@
         /*
             Вызывается при добавлении оверлея на карту
          */
-        cls.prototype.onInit = function() {
+        cls.onInit = function() {
             if (!this.opts.src) {
                 return this.raise('src required');
             }
@@ -61,13 +61,13 @@
 
             this.$container.append(this.$left, this.$img, this.$right);
 
-            superclass.prototype.onInit.call(this);
+            superclass.onInit.call(this);
         };
 
         /*
             Отрисовка оверлея
          */
-        cls.prototype.draw = function() {
+        cls.draw = function() {
             var overlayProjection = this.native.getProjection();
 
             var bottomleft = this.bounds.getSouthWest();

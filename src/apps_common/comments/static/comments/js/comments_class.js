@@ -1,7 +1,9 @@
 (function($) {
 
     window.Comments = Class(null, function Comments(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'comments';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -24,11 +26,11 @@
             // Удаляем атрибуты, чтобы лишний раз не палить
             this.$root.removeAttr('data-content_type data-object_id');
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         // обработка ошибок ajax-запросов
-        cls.prototype.ajaxError = function(xhr, status, text) {
+        cls.ajaxError = function(xhr, status, text) {
             if (xhr.responseText) {
                 var json_response = $.parseJSON(xhr.responseText);
                 if (json_response.message) {
@@ -39,7 +41,7 @@
         };
 
         // Возвращает jQuery-коллекцию, содержащий ветку комментариев
-        cls.prototype.getBranch = function($parent_comment) {
+        cls.getBranch = function($parent_comment) {
             var that = this;
             var parent_comment_level = $parent_comment.data('level');
             return $parent_comment.nextUntil(function() {
@@ -49,7 +51,7 @@
         };
 
         // Удаление всех пустых форм
-        cls.prototype.removeEmptyForms = function() {
+        cls.removeEmptyForms = function() {
             var that = this;
             that.$root.find('.' + that.opts.comments_container_class + ' form').each(function() {
                 var $form = $(this);
@@ -62,7 +64,7 @@
         };
 
         // Обновление всего блока комментариев
-        cls.prototype.refresh = function() {
+        cls.refresh = function() {
             var that = this;
             var df = $.Deferred();
             $.ajax({
@@ -86,7 +88,7 @@
         };
 
         // Показ формы ответа на коммент
-        cls.prototype.replyForm = function($comment) {
+        cls.replyForm = function($comment) {
             var df = $.Deferred();
             this.removeEmptyForms();
             $comment.find('form').each(function() {
@@ -103,7 +105,7 @@
         };
 
         // Показ формы редактирования комментария
-        cls.prototype.editForm = function($comment) {
+        cls.editForm = function($comment) {
             var that = this;
             var df = $.Deferred();
             $.ajax({
@@ -135,7 +137,7 @@
         };
 
         // Удаление комментария
-        cls.prototype.remove = function($comment) {
+        cls.remove = function($comment) {
             var that = this;
             var df = $.Deferred();
             $.ajax({
@@ -160,7 +162,7 @@
         };
 
         // Восстановление комментария
-        cls.prototype.restore = function($comment) {
+        cls.restore = function($comment) {
             var that = this;
             var df = $.Deferred();
             $.ajax({
@@ -185,7 +187,7 @@
         };
 
         // Оценка комментария
-        cls.prototype.vote = function($comment, is_like) {
+        cls.vote = function($comment, is_like) {
             var that = this;
             var df = $.Deferred();
             $.ajax({
@@ -211,7 +213,7 @@
         };
 
         // Добавление комментария
-        cls.prototype.post = function($form) {
+        cls.post = function($form) {
             var that = this;
             var df = $.Deferred();
             $.ajax({
@@ -242,7 +244,7 @@
         };
 
         // Редактирование комментария
-        cls.prototype.edit = function($form) {
+        cls.edit = function($form) {
             var that = this;
             var df = $.Deferred();
             var $comment = $form.closest('.' + that.opts.comment_class);
@@ -269,6 +271,5 @@
             return df.promise();
         };
     });
-    Comments.dataParamName = 'comments';
 
 })(jQuery);

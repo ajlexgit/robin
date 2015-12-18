@@ -50,7 +50,9 @@
             })
      */
     window.CropDialog = Class(null, function CropDialog(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'cropdialog';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -60,7 +62,7 @@
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -71,13 +73,13 @@
                 return that.eventHandler($(this));
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
+        cls.getDefaultOpts = function() {
             return {
                 eventTypes: 'click',
                 buttonSelector: 'button',
@@ -98,16 +100,16 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$root.off(this.opts.eventTypes);
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Форматирует строку вида '120x120' в массив [120, 120].
             Если строка некорректна, вернет undefined
          */
-        cls.prototype.formatSize = function(value) {
+        cls.formatSize = function(value) {
             var arr = [];
 
             if ($.isArray(value)) {
@@ -134,7 +136,7 @@
             Форматирует строку аспектов вида '1.5|1.66' в массив [1.5, 1.66].
             Если строка некорректна, вернет undefined
          */
-        cls.prototype.formatAspects = function(value) {
+        cls.formatAspects = function(value) {
             var arr = [];
 
             if ($.isArray(value)) {
@@ -160,7 +162,7 @@
             Форматирует строку вида '50:50:150:150' в массив [50, 50, 150, 150].
             Если строка некорректна, вернет undefined
          */
-        cls.prototype.formatCoords = function(value) {
+        cls.formatCoords = function(value) {
             var arr = [];
 
             if ($.isArray(value)) {
@@ -186,7 +188,7 @@
         /*
             Обработчик целевого события eventTypes на кнопке
          */
-        cls.prototype.eventHandler = function($button) {
+        cls.eventHandler = function($button) {
             // callback
             if (this.opts.beforeOpen.call(this, $button) === false) {
                 return false;
@@ -209,7 +211,7 @@
             Получение настроек обрезки.
             Если настройки некорректны, должен вернуть false
          */
-        cls.prototype.collectCropOptions = function($button) {
+        cls.collectCropOptions = function($button) {
             var options = {};
 
             var image = this.opts.getImage.call(this, $button);
@@ -230,7 +232,7 @@
         /*
             Получение настроек диалогового окна
          */
-        cls.prototype.collectDialogOptions = function($button, crop_opts) {
+        cls.collectDialogOptions = function($button, crop_opts) {
             var that = this;
             return $.extend(true, {
                 title: gettext('Crop image'),
@@ -282,7 +284,7 @@
         /*
             Создание и открытие модального окна
          */
-        cls.prototype.openDialog = function(dialog_opts, crop_opts) {
+        cls.openDialog = function(dialog_opts, crop_opts) {
             var $template = $('<div/>').addClass('preload').appendTo('body');
             this.$dialog = $template.dialog(dialog_opts);
         };
@@ -290,7 +292,7 @@
         /*
             Инициализация плагина обрезки
          */
-        cls.prototype.initJCrop = function($image, crop_opts) {
+        cls.initJCrop = function($image, crop_opts) {
             // отношение реальных размеров картинки к размерам картинки в окне
             this.preview_relation_x = $image.prop('naturalWidth') / $image.width();
             this.preview_relation_y = $image.prop('naturalHeight') / $image.height();
@@ -351,7 +353,7 @@
         /*
             Рассчет области обрезки в окне, с учетом уменьшенного масштаба картинки
          */
-        cls.prototype.getCropCoords = function() {
+        cls.getCropCoords = function() {
             var coords = this.jcrop_api.tellSelect();
             var x = Math.max(0, coords.x);
             var y = Math.max(0, coords.y);
@@ -370,7 +372,7 @@
         /*
             Событие, возникающее когда диалоговое окно открылось
          */
-        cls.prototype.onDialogOpened = function(crop_opts) {
+        cls.onDialogOpened = function(crop_opts) {
             var that = this;
             $.loadImageDeferred(crop_opts.image).always(function() {
                 that.$dialog.removeClass('preload');
@@ -392,7 +394,7 @@
         /*
             Закрытие окна
          */
-        cls.prototype.closeDialog = function() {
+        cls.closeDialog = function() {
             if (this.$dialog && this.$dialog.length) {
                 this.$dialog.dialog('close');
             }
@@ -401,7 +403,7 @@
         /*
             Событие, возникающее при закрытии окна
          */
-        cls.prototype.onDialogClosed = function(crop_opts) {
+        cls.onDialogClosed = function(crop_opts) {
             if (this.jcrop_api) {
                 this.jcrop_api.destroy();
                 this.jcrop_api = null;
@@ -417,17 +419,16 @@
         /*
             Событие, возникающее при отмене обрезки
          */
-        cls.prototype.cropCancelled = function($button, coords) {
+        cls.cropCancelled = function($button, coords) {
             this.opts.onCancel.call(this, $button, coords);
         };
 
         /*
             Событие применения обрезки
          */
-        cls.prototype.applyCrop = function($button, coords) {
+        cls.applyCrop = function($button, coords) {
             this.opts.onCrop.call(this, $button, coords);
         };
     });
-    CropDialog.dataParamName = 'cropdialog';
 
 })(jQuery);

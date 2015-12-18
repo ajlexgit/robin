@@ -69,7 +69,9 @@
             });
      */
     window.Uploader = Class(null, function Uploader(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'uploader';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -81,13 +83,13 @@
             // инициализация загрузчика
             this.initPluploader();
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
+        cls.getDefaultOpts = function() {
             return {
                 url: '',
                 buttonSelector: '',
@@ -113,7 +115,7 @@
         /*
             Инициализация загрузчика
          */
-        cls.prototype.initPluploader = function() {
+        cls.initPluploader = function() {
             var that = this;
             var config = {
                 url: this.opts.url,
@@ -199,7 +201,7 @@
         /*
             Событие инициализации загрузчика
          */
-        cls.prototype.InitHandler = function() {
+        cls.InitHandler = function() {
             // добавление класса на $root при перетаскивании файлов
             this._initFileDrop();
 
@@ -215,7 +217,7 @@
         /*
             Добавление класса на $root при перетаскивании файлов
          */
-        cls.prototype._initFileDrop = function() {
+        cls._initFileDrop = function() {
             if (!this.uploader.features.dragdrop) {
                 return
             }
@@ -244,7 +246,7 @@
         /*
             Добавление z-index из-за косяка в режиме мобильной версии
          */
-        cls.prototype._fixZIndex = function() {
+        cls._fixZIndex = function() {
             this.$root.find('.moxie-shim').css({
                 zIndex: this.opts.zIndex
             }).find('input').css({
@@ -256,7 +258,7 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             if (this.uploader) {
                 this.uploader.destroy();
                 this.uploader = null;
@@ -266,13 +268,13 @@
                 this.$drop.off('.uploader');
             }
 
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Удаление файла из очереди
          */
-        cls.prototype.removeFile = function(file_id) {
+        cls.removeFile = function(file_id) {
             if (this.uploader && file_id) {
                 this.uploader.removeFile(file_id);
             }
@@ -281,7 +283,7 @@
         /*
             Событие добавления файлов в очередь
          */
-        cls.prototype.FilesAddedHandler = function(files) {
+        cls.FilesAddedHandler = function(files) {
             var that = this;
 
             plupload.each(files, function(file) {
@@ -295,14 +297,14 @@
         /*
             Событие перед началом загрузки файла
          */
-        cls.prototype.BeforeUploadHandler = function(file) {
+        cls.BeforeUploadHandler = function(file) {
             this.opts.onBeforeFileUpload.call(this, file);
         };
 
         /*
             Событие прогресса закачки файла
          */
-        cls.prototype.UploadProgressHandler = function(file) {
+        cls.UploadProgressHandler = function(file) {
             this.opts.onFileUploadProgress.call(this, file, file.percent);
         };
 
@@ -310,7 +312,7 @@
             Cобытие успешной загрузки файла.
             Ожидает ответ в формате JSON.
          */
-        cls.prototype.FileUploadedHandler = function(file, response) {
+        cls.FileUploadedHandler = function(file, response) {
             var json_response = $.parseJSON(response.response);
             this.opts.onFileUploaded.call(this, file, json_response);
         };
@@ -318,7 +320,7 @@
         /*
             Событие удаления файлов из очереди
          */
-        cls.prototype.FilesRemovedHandler = function(files) {
+        cls.FilesRemovedHandler = function(files) {
             var that = this;
 
             plupload.each(files, function(file) {
@@ -329,7 +331,7 @@
         /*
             Событие успешной загрузки всех файлов.
          */
-        cls.prototype.UploadCompleteHandler = function(files) {
+        cls.UploadCompleteHandler = function(files) {
             this.opts.onUploadComplete.call(this, files);
         };
 
@@ -337,7 +339,7 @@
             Событие ошибки загрузки файла.
             Ожидает ответ в формате JSON.
          */
-        cls.prototype.ErrorHandler = function(error) {
+        cls.ErrorHandler = function(error) {
             var json_response = error.response && $.parseJSON(error.response);
             var short_error = {
                 code: error.code,
@@ -347,6 +349,5 @@
             this.opts.onFileUploadError.call(this, error.file, short_error, json_response);
         };
     });
-    Uploader.dataParamName = 'uploader';
 
 })(jQuery);

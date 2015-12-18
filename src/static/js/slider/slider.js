@@ -76,7 +76,9 @@
     var sliders = [];
 
     window.Slider = Class(null, function Slider(cls, superclass) {
-        cls.prototype.init = function(list, options) {
+        cls.dataParamName = 'slider';
+
+        cls.init = function(list, options) {
             this.$list = $(list).first();
             if (!this.$list.length) {
                 return this.raise('list element not found');
@@ -160,7 +162,7 @@
             // callback
             this.opts.onInit.call(this);
 
-            this.$list.data(Slider.dataParamName, this);
+            this.$list.data(this.dataParamName, this);
 
             sliders.push(this);
         };
@@ -172,14 +174,14 @@
         /*
             Получение активного слайда
          */
-        cls.prototype.getCurrentSlide = function() {
+        cls.getCurrentSlide = function() {
             return this.$currentItem.closest('.' + this.opts.slideClass);
         };
 
         /*
             Изменение текущего слайда
          */
-        cls.prototype.setCurrentSlide = function($slide) {
+        cls.setCurrentSlide = function($slide) {
             if (!$slide || !$slide.length || (this.$slides.index($slide) < 0)) {
                 return false
             }
@@ -196,14 +198,14 @@
             return $slide;
         };
 
-        cls.prototype.beforeSetCurrentSlide = function($slide) {
+        cls.beforeSetCurrentSlide = function($slide) {
             // jQuery event
             this.$list.trigger('beforeSetCurrentSlide.slider', [$slide]);
 
             this.callPluginsMethod('beforeSetCurrentSlide', [$slide]);
         };
 
-        cls.prototype.afterSetCurrentSlide = function($slide) {
+        cls.afterSetCurrentSlide = function($slide) {
             this.callPluginsMethod('afterSetCurrentSlide', [$slide], true);
 
             // jQuery event
@@ -220,7 +222,7 @@
 
             В каждом плагине вызывает методы beforeSetItemsPerSlide и afterSetItemsPerSlide
          */
-        cls.prototype.setItemsPerSlide = function(itemsPerSlide) {
+        cls.setItemsPerSlide = function(itemsPerSlide) {
             // Прерывание анимации, если она запущена
             if (this._animated && this._animation) {
                 this._animation.stop(true)
@@ -273,7 +275,7 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед созданием слайдов.
          */
-        cls.prototype.beforeSetItemsPerSlide = function(itemsPerSlide) {
+        cls.beforeSetItemsPerSlide = function(itemsPerSlide) {
             // jQuery event
             this.$list.trigger('beforeSetItemsPerSlide.slider');
 
@@ -284,7 +286,7 @@
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после созданием слайдов.
          */
-        cls.prototype.afterSetItemsPerSlide = function(itemsPerSlide) {
+        cls.afterSetItemsPerSlide = function(itemsPerSlide) {
             this.callPluginsMethod('afterSetItemsPerSlide', null, true);
 
             // jQuery event
@@ -299,7 +301,7 @@
             Метод, возвращающий следующий слайд. Возможно указать количество
             слайдов, которые нужно пропустить.
          */
-        cls.prototype.getNextSlide = function($fromSlide, passCount) {
+        cls.getNextSlide = function($fromSlide, passCount) {
             if (!$fromSlide || !$fromSlide.length) {
                 $fromSlide = this.$currentSlide;
             }
@@ -321,7 +323,7 @@
             Метод, возвращающий предыдущий слайд. Возможно указать количество
             слайдов, которые нужно пропустить.
          */
-        cls.prototype.getPreviousSlide = function($fromSlide, passCount) {
+        cls.getPreviousSlide = function($fromSlide, passCount) {
             if (!$fromSlide || !$fromSlide.length) {
                 $fromSlide = this.$currentSlide;
             }
@@ -345,7 +347,7 @@
         /*
             Добавление текущего объекта к массиву аргументов.
          */
-        cls.prototype._argsWithThis = function(args) {
+        cls._argsWithThis = function(args) {
             var final_args = args || [];
             final_args = Array.prototype.slice.call(final_args);
             final_args.unshift(this);
@@ -355,7 +357,7 @@
         /*
             Подключение плагинов
          */
-        cls.prototype.attachPlugins = function(plugins) {
+        cls.attachPlugins = function(plugins) {
             if ($.isArray(plugins)) {
                 for (var i = 0; i < plugins.length; i++) {
                     var plugin = plugins[i];
@@ -376,7 +378,7 @@
         /*
             Поиск реализации метода анимации среди плагинов
          */
-        cls.prototype.getAnimationMethod = function(animationName, methodName) {
+        cls.getAnimationMethod = function(animationName, methodName) {
             methodName = methodName || 'slideTo';
             var index = this._plugins.length;
             while (index--) {
@@ -398,7 +400,7 @@
             Если reversed=true, обход плагинов будет в обратном порядке
             (от поключенных первыми)
          */
-        cls.prototype.callPluginsMethod = function(methodName, additionArgs, reversed) {
+        cls.callPluginsMethod = function(methodName, additionArgs, reversed) {
             var plugins = this._plugins.concat();
             if (reversed) {
                 plugins.reverse();
@@ -421,7 +423,7 @@
         /*
             Рассчет финальной высоты слайдера
          */
-        cls.prototype.calcListHeight = function() {
+        cls.calcListHeight = function() {
             if (this.opts.adaptiveHeight) {
                 return this.$currentSlide.outerHeight();
             }
@@ -443,7 +445,7 @@
             Обновление высоты slider.$list в зависимости от высоты слайдов
             и настройки adaptiveHeight
          */
-        cls.prototype.updateListHeight = function(animatedHeight) {
+        cls.updateListHeight = function(animatedHeight) {
             // прерываем анимация высоты, если она идёт
             if (this._adaptive_animation) {
                 this._adaptive_animation.stop();
@@ -486,7 +488,7 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед обновлением высоты списка.
          */
-        cls.prototype.beforeUpdateListHeight = function(current, final) {
+        cls.beforeUpdateListHeight = function(current, final) {
             // jQuery event
             this.$list.trigger('beforeUpdateListHeight.slider', arguments);
 
@@ -497,7 +499,7 @@
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после обновления высоты списка.
          */
-        cls.prototype.afterUpdateListHeight = function(current, final) {
+        cls.afterUpdateListHeight = function(current, final) {
             this.callPluginsMethod('afterUpdateListHeight', arguments, true);
 
             // jQuery event
@@ -520,7 +522,7 @@
 
             Объект анимации (если он есть) НЕОБХОДИМО сохранить в переменной slider._animation
          */
-        cls.prototype.slideTo = function($toSlide, animationName, animatedHeight) {
+        cls.slideTo = function($toSlide, animationName, animatedHeight) {
             if (!$toSlide || !$toSlide.length || (this.$slides.index($toSlide) < 0)) {
                 return
             }
@@ -541,7 +543,7 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед переходом к слайду.
          */
-        cls.prototype.beforeSlide = function($toSlide) {
+        cls.beforeSlide = function($toSlide) {
             // jQuery event
             this.$list.trigger('beforeSlide.slider', arguments);
 
@@ -554,7 +556,7 @@
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после перехода к слайду.
          */
-        cls.prototype.afterSlide = function($toSlide) {
+        cls.afterSlide = function($toSlide) {
             this._animated = false;
 
             this.callPluginsMethod('afterSlide', arguments, true);
@@ -563,29 +565,28 @@
             this.$list.trigger('afterSlide.slider', arguments);
         };
 
-        cls.prototype.slideNext = function(animationName, animatedHeight) {
+        cls.slideNext = function(animationName, animatedHeight) {
             var $next = this.getNextSlide();
             this.slideTo($next, animationName, animatedHeight);
         };
 
-        cls.prototype.slidePrevious = function(animationName, animatedHeight) {
+        cls.slidePrevious = function(animationName, animatedHeight) {
             var $prev = this.getPreviousSlide();
             this.slideTo($prev, animationName, animatedHeight);
         };
     });
-    Slider.dataParamName = 'slider';
 
 
     // ================================================
     //            Базовый класс плагина
     // ================================================
     window.SliderPlugin = Class(null, function SliderPlugin(cls, superclass) {
-        cls.prototype.init = function(settings) {
+        cls.init = function(settings) {
             this.opts = $.extend(true, this.getDefaultOpts(), settings);
         };
 
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
+        cls.getDefaultOpts = function() {
             return {
                 afterAttach: $.noop,
                 onResize: $.noop
@@ -593,17 +594,17 @@
         };
 
         // Инициализация
-        cls.prototype.onAttach = function(slider) {
+        cls.onAttach = function(slider) {
 
         };
 
         // Дополнительные действия после подключения
-        cls.prototype.afterAttach = function(slider) {
+        cls.afterAttach = function(slider) {
             this.opts.afterAttach.call(this, slider);
         };
 
         // Событие изменения размера окна
-        cls.prototype.onResize = function(slider) {
+        cls.onResize = function(slider) {
             this.opts.onResize.call(this, slider);
         };
     });
@@ -614,8 +615,8 @@
     // ================================================
     window.SliderInstantAnimation = Class(SliderPlugin, function SliderInstantAnimation(cls, superclass) {
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 name: 'instant'
             });
         };
@@ -623,7 +624,7 @@
         /*
             Реализация метода перехода от одного слайда к другому
          */
-        cls.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
+        cls.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }

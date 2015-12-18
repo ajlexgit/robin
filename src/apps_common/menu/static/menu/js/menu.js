@@ -21,7 +21,7 @@
     var menus = [];
 
     var Menu = Class(null, function Menu(cls, superclass) {
-        cls.prototype.init = function(options) {
+        cls.init = function(options) {
             // настройки
             this.opts = $.extend({
                 menuSelector: '#mobile-menu',
@@ -53,7 +53,7 @@
         /*
             Обработчик нажатия кнопки
          */
-        cls.prototype.onClick = function($button) {
+        cls.onClick = function($button) {
             var currently_active = $button.hasClass(this.opts.buttonActiveClass);
             if (currently_active) {
                 this.hide()
@@ -66,7 +66,7 @@
         /*
             Показ меню
          */
-        cls.prototype.show = function() {
+        cls.show = function() {
             if (this.opts.beforeShow.call(this) === false) {
                 return false;
             }
@@ -78,7 +78,7 @@
         /*
             Скрытие меню
          */
-        cls.prototype.hide = function() {
+        cls.hide = function() {
             if (this.opts.beforeHide.call(this) === false) {
                 return false;
             }
@@ -90,7 +90,7 @@
         /*
             Обновление при изменении размера окна
          */
-        cls.prototype.refresh = function(win_width) {
+        cls.refresh = function(win_width) {
             if (!this.$menu.hasClass(this.opts.menuActiveClass)) {
                 return
             }

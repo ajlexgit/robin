@@ -7,7 +7,9 @@
         var MAX_WIDTH_ERROR = gettext('Image should not be more than %(limit)spx in width');
         var MAX_HEIGHT_ERROR = gettext('Image should not be more than %(limit)spx in height');
 
-        cls.prototype.init = function(root) {
+        cls.dataParamName = 'stdimage';
+
+        cls.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -38,7 +40,7 @@
             this.opts = this.getOpts();
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -51,13 +53,13 @@
                 that.$input.click();
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Получение всех настроек поля
          */
-        cls.prototype.getOpts = function() {
+        cls.getOpts = function() {
             var opts = {};
             var data = this.$root.data();
 
@@ -140,15 +142,15 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.dropper.destroy();
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Показ прелоадера и блокировка кнопок
          */
-        cls.prototype._preloaderStart = function() {
+        cls._preloaderStart = function() {
             this.$root.addClass('preloader');
             this.$previews.show();
             this.$button.prop('disabled', true);
@@ -157,7 +159,7 @@
         /*
             Скрытие прелоадера и разблокировка кнопок
          */
-        cls.prototype._preloaderStop = function() {
+        cls._preloaderStop = function() {
             this.$root.removeClass('preloader');
             this.$button.prop('disabled', false);
         };
@@ -165,7 +167,7 @@
         /*
             Некорректная картинка
          */
-        cls.prototype._invalid = function(msg, data) {
+        cls._invalid = function(msg, data) {
             this.$input.val('');
             this._preloaderStop();
             this.$root.addClass('invalid');
@@ -185,7 +187,7 @@
         /*
             Очистка ошибки поля
          */
-        cls.prototype._clearInvalid = function() {
+        cls._clearInvalid = function() {
             this.$root.removeClass('invalid');
             this.$previews.find('.error').remove();
         };
@@ -193,7 +195,7 @@
         /*
             Загрузка файла для создания превью
          */
-        cls.prototype.readFile = function(success) {
+        cls.readFile = function(success) {
             // сброс обрезки
             this.$crop_btn_wrapper.find('input').val('');
 
@@ -235,7 +237,7 @@
         /*
             Показ превью картинки source, обрезанной по области coords
          */
-        cls.prototype.showPreview = function(img, coords) {
+        cls.showPreview = function(img, coords) {
             var canvas = $.previewCanvas({
                 source: img,
                 width: this.opts.target_size[0],
@@ -257,7 +259,7 @@
         /*
             Валидация размеров картинки
          */
-        cls.prototype.validate = function(source) {
+        cls.validate = function(source) {
             if (this.opts.min_dimensions[0] && (source.width < this.opts.min_dimensions[0])) {
                 this._invalid(MIN_WIDTH_ERROR, {
                     limit: this.opts.min_dimensions[0]
@@ -288,14 +290,13 @@
             }
         };
     });
-    StdImage.dataParamName = 'stdimage';
 
 
     /*
         Изменение файла в поле stdimage
      */
     $(document).on('change', '.stdimage .input-file', function() {
-        var stdimage = $(this).closest('.stdimage').data(StdImage.dataParamName);
+        var stdimage = $(this).closest('.stdimage').data(StdImage.prototype.dataParamName);
         if (!stdimage) {
             console.error('StdImage object not found');
             return false;
@@ -331,7 +332,7 @@
 
             beforeOpen: function($button) {
                 this.$field = $button.closest('.stdimage');
-                this.stdimage = this.$field.data(StdImage.dataParamName);
+                this.stdimage = this.$field.data(StdImage.prototype.dataParamName);
                 if (!this.stdimage) {
                     this.error('StdImage object not found');
                     return false;

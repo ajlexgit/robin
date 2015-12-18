@@ -32,7 +32,9 @@
     var parallaxes = [];
 
     window.Parallax = Class(null, function Parallax(cls, superclass) {
-        cls.prototype.init = function(block, options) {
+        cls.dataParamName = 'parallax';
+
+        cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
                 return this.raise('block not found');
@@ -57,7 +59,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(cls.dataParamName);
+            var old_instance = this.$block.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -126,7 +128,7 @@
             // Сохраняем объект в массив для использования в событиях
             parallaxes.push(this);
 
-            this.$block.data(cls.dataParamName, this);
+            this.$block.data(this.dataParamName, this);
 
             $.mediaInspector.check(this.$block);
 
@@ -140,11 +142,11 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.disable();
             $.bgInspector.ignore(this.$bg);
             $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(cls.dataParamName);
+            this.$block.removeData(this.dataParamName);
 
             var index = parallaxes.indexOf(this);
             if (index >= 0) {
@@ -155,7 +157,7 @@
         /*
             Включение параллакса
          */
-        cls.prototype.enable = function() {
+        cls.enable = function() {
             if (this._enabled) {
                 return
             } else{
@@ -173,7 +175,7 @@
         /*
             Отключение параллакса
          */
-        cls.prototype.disable = function() {
+        cls.disable = function() {
             if (!this._enabled) {
                 return
             } else {
@@ -190,7 +192,7 @@
         /*
             Расчет смещения картинки по текущему положению окна
          */
-        cls.prototype.process = function(win_scroll, win_height) {
+        cls.process = function(win_scroll, win_height) {
             if (!this._enabled) {
                 return
             }
@@ -217,7 +219,6 @@
             });
         };
     });
-    Parallax.dataParamName = 'parallax';
 
 
     var applyParallaxes = function() {

@@ -34,7 +34,9 @@
      */
 
     window.Expander = Class(null, function Expander(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'expander';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -67,7 +69,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -94,21 +96,21 @@
                 return false
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$root.off('.expander');
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Определение высот блоков перед сворачиванием / разворачиванием
          */
-        cls.prototype._prepare_resize = function() {
+        cls._prepare_resize = function() {
             if (this.$full.hasClass(this.opts.hiddenClass)) {
                 this._current_height = this.$short.height();
                 this.$full.removeClass(this.opts.hiddenClass);
@@ -127,7 +129,7 @@
         /*
             Разворачивание блока
          */
-        cls.prototype.expand = function($button) {
+        cls.expand = function($button) {
             if (this._expanded) {
                 return
             }
@@ -158,7 +160,7 @@
         /*
             Сворачивание блока
          */
-        cls.prototype.reduce = function($button) {
+        cls.reduce = function($button) {
             if (!this._expanded) {
                 return
             }
@@ -188,7 +190,6 @@
             })
         };
     });
-    Expander.dataParamName = 'expander';
 
 
     $.fn.expander = function(options) {

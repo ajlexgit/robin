@@ -108,15 +108,15 @@
     };
 
     window.Popup = Class(null, function Popup(cls, superclass) {
-        cls.prototype.CONTAINER_ID = 'popup-container';
-        cls.prototype.WRAPPER_CLASS = 'popup-wrapper';
-        cls.prototype.WINDOW_CLASS = 'popup-window';
-        cls.prototype.CONTENT_CLASS = 'popup-content';
+        cls.CONTAINER_ID = 'popup-container';
+        cls.WRAPPER_CLASS = 'popup-wrapper';
+        cls.WINDOW_CLASS = 'popup-window';
+        cls.CONTENT_CLASS = 'popup-content';
 
         // класс <body>, вешающийся при показе окна
-        cls.prototype.BODY_OPENED_CLASS = 'popup-opened';
+        cls.BODY_OPENED_CLASS = 'popup-opened';
 
-        cls.prototype.init = function(options) {
+        cls.init = function(options) {
             // настройки
             this.opts = $.extend(true, this.getDefaultOpts(), options);
 
@@ -152,7 +152,7 @@
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
+        cls.getDefaultOpts = function() {
             return {
                 classes: '',
                 content: '',
@@ -176,7 +176,7 @@
                 </div>
             </div>
          */
-        cls.prototype._createDom = function() {
+        cls._createDom = function() {
             $('#' + this.CONTAINER_ID).remove();
 
             // Создание DOM (изначально скрытого)
@@ -194,7 +194,7 @@
         /*
             Дополнительная обработка после создания DOM
          */
-        cls.prototype._postInit = function() {
+        cls._postInit = function() {
             // content
             var content;
             if ($.isFunction(this.opts.content)) {
@@ -216,12 +216,12 @@
         //=======================
 
         // Есть ли дефолтный скроллбар
-        cls.prototype._hasScrollBar = function() {
+        cls._hasScrollBar = function() {
             return document.body.scrollHeight > document.body.clientHeight;
         };
 
         // Скрытие дефолтного скроллбара
-        cls.prototype._hideScrollbar = function() {
+        cls._hideScrollbar = function() {
             var body_padding = parseInt($body.css('paddingRight')) || 0;
             document.body._popup_padding = body_padding;
 
@@ -235,7 +235,7 @@
         };
 
         // Показ дефолтного скроллбара
-        cls.prototype._showScrollbar = function() {
+        cls._showScrollbar = function() {
             if (document.body._popup_padding !== undefined) {
                 var body_padding = parseInt(document.body._popup_padding) || 0;
                 delete document.body._popup_padding;
@@ -257,7 +257,7 @@
 
             По умолчанию здесь происходит мгновенный показ окна, если прежнее окно было открыто.
          */
-        cls.prototype._replacePopup = function(old_popup) {
+        cls._replacePopup = function(old_popup) {
             if (old_popup.is_opened()) {
                 this._beforeShow();
                 this._showInstant();
@@ -271,7 +271,7 @@
         /*
             Установка содержимого. Может быть анимировано
          */
-        cls.prototype.setContent = function(content) {
+        cls.setContent = function(content) {
             this.$content.empty();
             this.$content.html(content);
         };
@@ -279,21 +279,21 @@
         /*
             Открыто ли окно (true до анимации)
          */
-        cls.prototype.is_opened = function() {
+        cls.is_opened = function() {
             return this._opened;
         };
 
         /*
             Видимо ли окно (true после анимации)
          */
-        cls.prototype.is_visible = function() {
+        cls.is_visible = function() {
             return this._visible;
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this._beforeHide();
             this._afterHide();
             this.$container.remove();
@@ -309,7 +309,7 @@
             Возвращает Deferred-объект, который "ресолвится" после
             завершения анимации показа окна.
          */
-        cls.prototype.show = function() {
+        cls.show = function() {
             this._deferredShow = $.Deferred();
 
             if (this.is_opened()) {
@@ -322,7 +322,7 @@
             return this._deferredShow;
         };
 
-        cls.prototype._beforeShow = function() {
+        cls._beforeShow = function() {
             this._opened = true;
             this._hideScrollbar();
 
@@ -333,7 +333,7 @@
         /*
             Анимация показа
          */
-        cls.prototype._show = function() {
+        cls._show = function() {
             var that = this;
             this.$container.stop(false, false).fadeIn({
                 duration: this.opts.speed,
@@ -348,12 +348,12 @@
             Мгновенный показ окна.
             Используется в случае замены уже существующего видимого окна.
          */
-        cls.prototype._showInstant = function() {
+        cls._showInstant = function() {
             this.$container.show();
             this._afterShow();
         };
 
-        cls.prototype._afterShow = function() {
+        cls._afterShow = function() {
             this._visible = true;
             this._deferredShow && this._deferredShow.resolve();
         };
@@ -367,7 +367,7 @@
             Возвращает Deferred-объект, который "ресолвится" после
             завершения анимации скрытия окна.
          */
-        cls.prototype.hide = function() {
+        cls.hide = function() {
             this._deferredHide = $.Deferred();
 
             if (!this.is_opened()) {
@@ -380,7 +380,7 @@
             return this._deferredHide;
         };
 
-        cls.prototype._beforeHide = function() {
+        cls._beforeHide = function() {
             this._visible = false;
 
             // callback
@@ -390,7 +390,7 @@
         /*
             Анимация скрытия
          */
-        cls.prototype._hide = function() {
+        cls._hide = function() {
             var that = this;
             this.$container.stop(false, false).fadeOut({
                 duration: this.opts.speed,
@@ -401,7 +401,7 @@
             });
         };
 
-        cls.prototype._afterHide = function() {
+        cls._afterHide = function() {
             this._showScrollbar();
             this._opened = false;
             this._deferredHide && this._deferredHide.resolve();
@@ -413,14 +413,14 @@
         Модальное окно с оверлеем, кнопкой закрытия
      */
     window.OverlayedPopup = Class(Popup, function OverlayedPopup(cls, superclass) {
-        cls.prototype.OVERLAY_ID = 'popup-overlay';
-        cls.prototype.CLOSE_BUTTON_CLASS = 'popup-close-button';
+        cls.OVERLAY_ID = 'popup-overlay';
+        cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
 
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(true, superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(true, superclass.getDefaultOpts.call(this), {
                 closeButton: true,
                 hideOnClick: true
             });
@@ -429,10 +429,10 @@
         /*
             Создание DOM
          */
-        cls.prototype._createDom = function() {
+        cls._createDom = function() {
             $('#' + this.OVERLAY_ID).remove();
 
-            superclass.prototype._createDom.call(this);
+            superclass._createDom.call(this);
 
             this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
             this.$container.before(this.$overlay);
@@ -452,16 +452,16 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
-            superclass.prototype.destroy.call(this);
+        cls.destroy = function() {
+            superclass.destroy.call(this);
             this.$overlay.remove();
         };
 
         /*
             Закрытие окна при клике вне модального окна
          */
-        cls.prototype._beforeShow = function() {
-            superclass.prototype._beforeShow.call(this);
+        cls._beforeShow = function() {
+            superclass._beforeShow.call(this);
 
             var that = this;
             if (this.opts.hideOnClick) {
@@ -477,7 +477,7 @@
         /*
             Анимация показа
          */
-        cls.prototype._show = function() {
+        cls._show = function() {
             var that = this;
             this.$overlay.stop(false, false).fadeIn({
                 duration: this.opts.speed,
@@ -495,7 +495,7 @@
         /*
             Показ окна в случае замены уже существующего
          */
-        cls.prototype._showInstant = function() {
+        cls._showInstant = function() {
             this.$overlay.show();
             this.$container.show();
             this._afterShow();
@@ -504,7 +504,7 @@
         /*
             Анимация скрытия
          */
-        cls.prototype._hide = function() {
+        cls._hide = function() {
             var that = this;
             this.$container.stop(false, false).fadeOut({
                 duration: this.opts.speed,
@@ -522,8 +522,8 @@
         /*
             Отвязывание обработчика закрытия окна при клике вне окна
          */
-        cls.prototype._beforeHide = function() {
-            superclass.prototype._beforeHide.call(this);
+        cls._beforeHide = function() {
+            superclass._beforeHide.call(this);
             $(document).off('click.popup');
         };
     });

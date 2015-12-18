@@ -77,7 +77,7 @@
     };
 
     window.ManagementForm = Class(null, function ManagementForm(cls, superclass) {
-        cls.prototype.init = function(root, prefix) {
+        cls.init = function(root, prefix) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -106,25 +106,27 @@
             }
         };
 
-        cls.prototype.getTotalFormCount = function() {
+        cls.getTotalFormCount = function() {
             return parseInt(this.$total_forms.val()) || 0;
         };
 
-        cls.prototype.getInitialFormCount = function() {
+        cls.getInitialFormCount = function() {
             return parseInt(this.$initial_forms.val()) || 0;
         };
 
-        cls.prototype.getMinFormCount = function() {
+        cls.getMinFormCount = function() {
             return parseInt(this.$min_num_forms.val()) || 0;
         };
 
-        cls.prototype.getMaxFormCount = function() {
+        cls.getMaxFormCount = function() {
             return parseInt(this.$max_num_forms.val()) || 1000;
         };
     });
 
     window.Formset = Class(null, function Formset(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'formset';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -182,7 +184,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -190,27 +192,27 @@
             // индекс следующей добавляемой формы
             this._nextFormIndex = this.$initial_forms.length;
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
-            this.$root.removeData(cls.dataParamName);
+        cls.destroy = function() {
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Получение всех форм
          */
-        cls.prototype.getForms = function() {
+        cls.getForms = function() {
             return this.$formContainer.find(this.opts.formSelector);
         };
 
         /*
             Получение поля удаления формы
          */
-        cls.prototype.getDeleteField = function(form) {
+        cls.getDeleteField = function(form) {
             var $form = $(form).first();
             if (!$form.length) {
                 this.error('form not found');
@@ -224,7 +226,7 @@
         /*
             Является ли форма начальной
          */
-        cls.prototype.isInitial = function(form) {
+        cls.isInitial = function(form) {
             var $form = $(form).first();
             if (!$form.length) {
                 this.error('form not found');
@@ -237,7 +239,7 @@
         /*
             Получение кол-ва активных форм
          */
-        cls.prototype.getFormCount = function() {
+        cls.getFormCount = function() {
             var that = this;
             var $forms = this.getForms();
             return $forms.filter(function(i, form) {
@@ -254,7 +256,7 @@
         /*
             Получение новой формы
          */
-        cls.prototype.getEmptyForm = function() {
+        cls.getEmptyForm = function() {
             var that = this;
             var $form = $(this.$template.html());
             $form.find('*').each(function() {
@@ -270,7 +272,7 @@
 
             Возвращает jQuery-объект новой формы или false
          */
-        cls.prototype.addForm = function() {
+        cls.addForm = function() {
             if (this.opts.beforeAddForm.call(this) === false) {
                 return false
             }
@@ -299,7 +301,7 @@
 
             Возвращает jQuery-объект удаленной формы или false
          */
-        cls.prototype.deleteForm = function(form) {
+        cls.deleteForm = function(form) {
             var $form = $(form).first();
             if (!$form.length) {
                 this.error('form not found');
@@ -342,6 +344,5 @@
             return $form;
         };
     });
-    Formset.dataParamName = 'formset';
 
 })(jQuery);

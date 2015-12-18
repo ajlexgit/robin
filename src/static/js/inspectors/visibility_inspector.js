@@ -38,14 +38,11 @@
      */
 
     var VisibilityInspector = Class(Inspector, function VisibilityInspector(cls, superclass) {
-        cls.prototype.init = function() {
-            this._list = [];
-            this.STATE_DATA_KEY = 'visibility_inspector_state';
-            this.OPTS_DATA_KEY = 'visibility_inspector_opts';
-        };
+        cls.STATE_DATA_KEY = 'visibility_inspector_state';
+        cls.OPTS_DATA_KEY = 'visibility_inspector_opts';
 
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts(), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts(), {
                 top: 1,
                 right: 1,
                 bottom: 1,
@@ -53,7 +50,7 @@
             })
         };
 
-        cls.prototype._check = function($element, opts) {
+        cls._check = function($element, opts) {
             var vpWidth = document.documentElement.clientWidth;
             var vpHeight = document.documentElement.clientHeight;
             var rect = $element.get(0).getBoundingClientRect();
@@ -66,7 +63,7 @@
             return visible;
         };
 
-        cls.prototype._afterCheck = function($element, opts, state) {
+        cls._afterCheck = function($element, opts, state) {
             var old_state = this.getState($element);
             if (old_state !== state) {
                 if (state) {
@@ -76,7 +73,7 @@
                 }
             }
 
-            superclass.prototype._afterCheck.call(this, $element, opts, state);
+            superclass._afterCheck.call(this, $element, opts, state);
         };
     });
 

@@ -28,12 +28,13 @@
                 <div class="social-button social-pn">Share</div>
             </div>
      */
-    var SocialProvider = Class(null, function SocialProvider(cls, superclass) {
-        cls.prototype.dataParamName = 'social';
-        cls.prototype.winWidth = 600;
-        cls.prototype.winHeight = 400;
 
-        cls.prototype.init = function(button, options) {
+    var SocialProvider = Class(null, function SocialProvider(cls, superclass) {
+        cls.dataParamName = 'social';
+        cls.winWidth = 600;
+        cls.winHeight = 400;
+
+        cls.init = function(button) {
             this.$button = $(button).first();
             if (!this.$button.length) {
                 return this.raise('button not found');
@@ -54,12 +55,12 @@
             this.getShareCount();
         };
 
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$button.off('.social');
             this.$button.removeData(this.dataParamName);
         };
 
-        cls.prototype.updateData = function() {
+        cls.updateData = function() {
             var data = this.$button.data();
             var parent_data = this.$button.parent().data();
 
@@ -111,17 +112,17 @@
             }
         };
 
-        cls.prototype.getShareUrl = function() {
+        cls.getShareUrl = function() {
             this.updateData();
             return '';
         };
 
-        cls.prototype.getShareCount = function() {
+        cls.getShareCount = function() {
             this.updateData();
             return '';
         };
 
-        cls.prototype._shareCountScript = function(url) {
+        cls._shareCountScript = function(url) {
             var script = document.createElement('script'),
                 head = document.head;
 
@@ -132,7 +133,7 @@
             head.removeChild(script);
         };
 
-        cls.prototype.shareCountFetched = function(count) {
+        cls.shareCountFetched = function(count) {
             if (typeof count != 'undefined') {
                 var $counter = this.$button.find('.counter');
                 if ($counter.length) {
@@ -145,7 +146,7 @@
             }
         };
 
-        cls.prototype.popup = function(url, winId, width, height) {
+        cls.popup = function(url, winId, width, height) {
             var browser_left = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft,
                 browser_top = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
                 browser_width = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth,
@@ -178,8 +179,8 @@
         Провайдер ВКонтакте
      */
     var VkProvider = Class(SocialProvider, function VkProvider(cls, superclass) {
-        cls.prototype.getShareUrl = function() {
-            superclass.prototype.getShareUrl.call(this);
+        cls.getShareUrl = function() {
+            superclass.getShareUrl.call(this);
 
             var params = '?';
             if (this.url) {
@@ -198,8 +199,8 @@
             return 'http://vk.com/share.php' + params;
         };
 
-        cls.prototype.getShareCount = function() {
-            superclass.prototype.getShareCount.call(this);
+        cls.getShareCount = function() {
+            superclass.getShareCount.call(this);
 
             var obj = window;
             var keys = ['VK', 'Share'];
@@ -224,8 +225,8 @@
         Провайдер Facebook
      */
     var FacebookProvider = Class(SocialProvider, function FacebookProvider(cls, superclass) {
-        cls.prototype.getShareUrl = function() {
-            superclass.prototype.getShareUrl.call(this);
+        cls.getShareUrl = function() {
+            superclass.getShareUrl.call(this);
 
             var params = '?';
             if (this.url) {
@@ -235,8 +236,8 @@
             return 'http://www.facebook.com/sharer/sharer.php' + params;
         };
 
-        cls.prototype.getShareCount = function() {
-            superclass.prototype.getShareCount.call(this);
+        cls.getShareCount = function() {
+            superclass.getShareCount.call(this);
 
             var that = this;
             window.social_facebook = function(data) {
@@ -251,11 +252,11 @@
         Провайдер Twitter
      */
     var TwitterProvider = Class(SocialProvider, function TwitterProvider(cls, superclass) {
-        cls.prototype.winWidth = 600;
-        cls.prototype.winHeight = 300;
+        cls.winWidth = 600;
+        cls.winHeight = 300;
 
-        cls.prototype.getShareUrl = function() {
-            superclass.prototype.getShareUrl.call(this);
+        cls.getShareUrl = function() {
+            superclass.getShareUrl.call(this);
 
             var params = '?';
             if (this.url) {
@@ -273,11 +274,11 @@
         Провайдер GooglePlus
      */
     var GooglePlusProvider = Class(SocialProvider, function GooglePlusProvider(cls, superclass) {
-        cls.prototype.winWidth = 600;
-        cls.prototype.winHeight = 500;
+        cls.winWidth = 600;
+        cls.winHeight = 500;
 
-        cls.prototype.getShareUrl = function() {
-            superclass.prototype.getShareUrl.call(this);
+        cls.getShareUrl = function() {
+            superclass.getShareUrl.call(this);
 
             var params = '?';
             if (this.url) {
@@ -287,8 +288,8 @@
             return 'https://plus.google.com/share' + params;
         };
 
-        cls.prototype.getShareCount = function() {
-            superclass.prototype.getShareCount.call(this);
+        cls.getShareCount = function() {
+            superclass.getShareCount.call(this);
 
             var obj = window;
             var keys = ['services', 'gplus'];
@@ -313,11 +314,11 @@
         Провайдер LinkedIn
     */
     var LinkedInProvider = Class(SocialProvider, function LinkedInProvider(cls, superclass) {
-        cls.prototype.winWidth = 600;
-        cls.prototype.winHeight = 500;
+        cls.winWidth = 600;
+        cls.winHeight = 500;
 
-        cls.prototype.getShareUrl = function() {
-            superclass.prototype.getShareUrl.call(this);
+        cls.getShareUrl = function() {
+            superclass.getShareUrl.call(this);
 
             var params = '?mini=true&';
             if (this.url) {
@@ -336,8 +337,8 @@
             return 'http://www.linkedin.com/shareArticle' + params;
         };
 
-        cls.prototype.getShareCount = function() {
-            superclass.prototype.getShareCount.call(this);
+        cls.getShareCount = function() {
+            superclass.getShareCount.call(this);
 
             var that = this;
             window.social_linkedIn = function(data) {
@@ -352,11 +353,11 @@
         Провайдер Pinterest
     */
     var PinterestProvider = Class(SocialProvider, function PinterestProvider(cls, superclass) {
-        cls.prototype.winWidth = 760;
-        cls.prototype.winHeight = 600;
+        cls.winWidth = 760;
+        cls.winHeight = 600;
 
-        cls.prototype.getShareUrl = function() {
-            superclass.prototype.getShareUrl.call(this);
+        cls.getShareUrl = function() {
+            superclass.getShareUrl.call(this);
 
             var params = '?';
             if (this.url) {
@@ -372,8 +373,8 @@
             return 'http://www.pinterest.com/pin/create/button/' + params;
         };
 
-        cls.prototype.getShareCount = function() {
-            superclass.prototype.getShareCount.call(this);
+        cls.getShareCount = function() {
+            superclass.getShareCount.call(this);
 
             var that = this;
             window.social_pinterest = function(data) {

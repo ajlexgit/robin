@@ -1,16 +1,16 @@
 (function($) {
 
     window.SliderNavigationPlugin = Class(SliderPlugin, function SliderNavigationPlugin(cls, superclass) {
-        cls.prototype.init = function(settings) {
-            superclass.prototype.init.call(this, settings);
+        cls.init = function(settings) {
+            superclass.init.call(this, settings);
             if (!this.opts.animationName) {
                 return this.raise('animationName required');
             }
         };
 
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 animationName: '',
                 animatedHeight: true,
 
@@ -27,8 +27,8 @@
         /*
             Создание кнопок при подключении плагина
          */
-        cls.prototype.onAttach = function(slider) {
-            superclass.prototype.onAttach.call(this, slider);
+        cls.onAttach = function(slider) {
+            superclass.onAttach.call(this, slider);
 
             this.createNavigation(slider);
             this.checkEnabled(slider);
@@ -37,14 +37,14 @@
         /*
             Установка активной кнопки после установки активного слайда
          */
-        cls.prototype.afterSetCurrentSlide = function(slider, $slide) {
+        cls.afterSetCurrentSlide = function(slider, $slide) {
             this.activateNavigationItemBySlide(slider, $slide);
         };
 
         /*
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
-        cls.prototype.afterSetItemsPerSlide = function(slider) {
+        cls.afterSetItemsPerSlide = function(slider) {
             this.createNavigation(slider);
             this.checkEnabled(slider);
         };
@@ -52,7 +52,7 @@
         /*
             Создание кнопок
          */
-        cls.prototype.createNavigation = function(slider) {
+        cls.createNavigation = function(slider) {
             if (this.opts.container) {
                 this.$container = slider.$root.find(this.opts.container).first();
             } else {
@@ -70,7 +70,7 @@
         /*
             Добавление кнопок в DOM
          */
-        cls.prototype.createNavigationItems = function(slider) {
+        cls.createNavigationItems = function(slider) {
             // удаление старых точек навигации
             this.$container.find('.' + this.opts.wrapperClass).remove();
 
@@ -97,7 +97,7 @@
         /*
             Активация соответствующей кнопки по объекту слайда
          */
-        cls.prototype.activateNavigationItemBySlide = function(slider, $slide) {
+        cls.activateNavigationItemBySlide = function(slider, $slide) {
             var slideIndex = slider.$slides.index($slide);
             if (this.$container.length) {
                 var $item = this.$container.find('.' + this.opts.itemClass).eq(slideIndex);
@@ -110,7 +110,7 @@
         /*
             Деактивация навигации когда в слайдере всего один слайд
          */
-        cls.prototype.checkEnabled = function(slider) {
+        cls.checkEnabled = function(slider) {
             if (!this.opts.dragOneSlide && (slider.$slides.length < 2)) {
                 this.$wrapper.addClass(this.opts.wrapperDisabledClass);
             } else {

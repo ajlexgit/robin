@@ -49,7 +49,7 @@
             // с функцией инициализации и методом print().
 
             var Point2D = Class(null, function Point2D(cls, superclass) {
-                cls.prototype.init = function(x, y) {
+                cls.init = function(x, y) {
                     this._x = parseInt(x);
                     if (isNaN(this._x)) {
                         return this.raise('invalid X');
@@ -61,7 +61,7 @@
                     }
                 }
 
-                cls.prototype.print = function() {
+                cls.print = function() {
                     return this._x + ':' + this._y
                 }
             });
@@ -69,8 +69,8 @@
         Пример 2:
             // создание дочернего класса Point3D, унаследованного от Point2D.
             var Point3D = Class(Point2D, function Point3D(cls, superclass) {
-                cls.prototype.init = function(x, y, z) {
-                    superclass.prototype.init.call(this, x, y);
+                cls.init = function(x, y, z) {
+                    superclass.init.call(this, x, y);
 
                     this._z = parseInt(z);
                     if (isNaN(this._z)) {
@@ -78,8 +78,8 @@
                     }
                 };
 
-                cls.prototype.print = function() {
-                    return superclass.prototype.print.call(this) + ':' + this._z
+                cls.print = function() {
+                    return superclass.print.call(this) + ':' + this._z
                 }
             });
 
@@ -163,7 +163,7 @@
         };
 
         // вызов функции, добавляющей пользовательские методы и свойства
-        class_constructor(ClassObj, parent);
+        class_constructor(ClassObj.prototype, parent.prototype);
 
         return ClassObj;
     };
@@ -181,21 +181,21 @@
     // ======================================================================================
 
     window.EventedObject = Class(null, function EventedObject(cls, superclass) {
-        cls.prototype.init = function() {
+        cls.init = function() {
             this._events = {};
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this._events = {};
         };
 
         /*
             Форматирование имени события
          */
-        cls.prototype._formatEventName = function(name) {
+        cls._formatEventName = function(name) {
             name = $.trim(name).toLowerCase();
             if (name.indexOf(' ') >= 0) {
                 this.raise('multiple events not allowed');
@@ -211,7 +211,7 @@
         /*
             Добавление обработчика события
          */
-        cls.prototype._addEventHandler = function(name, handler, options) {
+        cls._addEventHandler = function(name, handler, options) {
             var evt_info = this._formatEventName(name);
             if (!evt_info.name) {
                 this.error('event name not found: ' + name);
@@ -244,7 +244,7 @@
         /*
             Проверка, что все namespaces содержатся в record
          */
-        cls.prototype._isEveryNamespaces = function(record, namespaces) {
+        cls._isEveryNamespaces = function(record, namespaces) {
             if (!namespaces.length) return true;
             return namespaces.every(function(ns) {
                 return record.namespaces.indexOf(ns) >= 0;
@@ -254,7 +254,7 @@
         /*
             Проверка, что хоть один из namespaces содержатся в record
          */
-        cls.prototype._isSomeNamespaces = function(record, namespaces) {
+        cls._isSomeNamespaces = function(record, namespaces) {
             if (!namespaces.length) return true;
             return namespaces.some(function(ns) {
                 return record.namespaces.indexOf(ns) >= 0;
@@ -264,7 +264,7 @@
         /*
             Удаление из стека evt_list событий evt_name, подходящих под пространства имен.
          */
-        cls.prototype._removeEvents = function(evt_name, evt_list, evt_namespaces) {
+        cls._removeEvents = function(evt_name, evt_list, evt_namespaces) {
             if (!evt_list || !evt_list.length) {
                 return
             }
@@ -282,21 +282,21 @@
         /*
             Добавление обработчика события
          */
-        cls.prototype.on = function(name, handler) {
+        cls.on = function(name, handler) {
             return this._addEventHandler(name, handler, {once: false});
         };
 
         /*
             Добавление одноразового обработчика события
          */
-        cls.prototype.one = function(name, handler) {
+        cls.one = function(name, handler) {
             return this._addEventHandler(name, handler, {once: true});
         };
 
         /*
             Вызов обработчиков события
          */
-        cls.prototype.trigger = function() {
+        cls.trigger = function() {
             var args = Array.prototype.slice.call(arguments);
             var name = args.shift();
             var evt_info = this._formatEventName(name);
@@ -330,7 +330,7 @@
         /*
             Удаление обработчиков события
          */
-        cls.prototype.off = function(name) {
+        cls.off = function(name) {
             // удаление всех обработчиков
             name = $.trim(name);
             if (!name || (name == '*')) {
@@ -714,7 +714,7 @@
         при её пропорциональном ресайзе.
      */
     window.Size = Class(null, function Size(cls, superclass) {
-        cls.prototype.init = function(width, height) {
+        cls.init = function(width, height) {
             this.width = this.source_width = parseInt(width) || 0;
             if (width <= 0) {
                 return this.raise('width should be positive');
@@ -728,15 +728,15 @@
             this.aspect = this.width / this.height;
         };
 
-        cls.prototype._heightByWidth = function(width) {
+        cls._heightByWidth = function(width) {
             return Math.floor(width / this.aspect);
         };
 
-        cls.prototype._widthByHeight = function(height) {
+        cls._widthByHeight = function(height) {
             return Math.floor(height * this.aspect);
         };
 
-        cls.prototype.setWidth = function(value) {
+        cls.setWidth = function(value) {
             value = parseInt(value) || 0;
             if (value <= 0) {
                 return this.raise('width should be positive');
@@ -746,7 +746,7 @@
             this.height = this._heightByWidth(value);
         };
 
-        cls.prototype.setHeight = function(value) {
+        cls.setHeight = function(value) {
             value = parseInt(value) || 0;
             if (value <= 0) {
                 return this.raise('height should be positive');
@@ -759,7 +759,7 @@
         /*
             Установка ограничения по ширине
          */
-        cls.prototype.maxWidth = function(value) {
+        cls.maxWidth = function(value) {
             if (this.width > value) {
                 this.setWidth(value);
             }
@@ -768,7 +768,7 @@
         /*
             Установка ограничения по ширине
          */
-        cls.prototype.maxHeight = function(value) {
+        cls.maxHeight = function(value) {
             if (this.height > value) {
                 this.setHeight(value);
             }

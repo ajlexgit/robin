@@ -17,8 +17,10 @@
             drop.drag       - файлы переместили на область
      */
     window.FileDropper = Class(EventedObject, function Uploader(cls, superclass) {
-        cls.prototype.init = function(root, options) {
-            superclass.prototype.init.call(this);
+        cls.dataParamName = 'file_dropper';
+
+        cls.init = function(root, options) {
+            superclass.init.call(this);
 
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -70,22 +72,22 @@
                 }
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$root.off('.file_dropper');
-            this.$root.removeData(cls.dataParamName);
-            superclass.prototype.destroy.call(this);
+            this.$root.removeData(this.dataParamName);
+            superclass.destroy.call(this);
         };
 
         /*
             Получение переданных файлов
          */
-        cls.prototype.getFiles = function(transfer) {
+        cls.getFiles = function(transfer) {
             if (!transfer) {
                 this.warn('no transfer');
                 return [];
@@ -100,6 +102,5 @@
             return files;
         }
     });
-    FileDropper.dataParamName = 'file_dropper';
 
 })(jQuery);

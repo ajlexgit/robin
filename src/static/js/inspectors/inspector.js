@@ -8,13 +8,14 @@
      */
 
     window.Inspector = Class(null, function Inspector(cls, superclass) {
-        cls.prototype.init = function() {
+        cls.STATE_DATA_KEY = 'inspector_state';
+        cls.OPTS_DATA_KEY = 'inspector_opts';
+
+        cls.init = function() {
             this._list = [];
-            this.STATE_DATA_KEY = 'inspector_state';
-            this.OPTS_DATA_KEY = 'inspector_opts';
         };
 
-        cls.prototype.getDefaultOpts = function() {
+        cls.getDefaultOpts = function() {
             return {
                 beforeCheck: $.noop,
                 afterCheck: $.noop
@@ -24,7 +25,7 @@
         /*
             Удаление элемента из инспектирования, если он есть
          */
-        cls.prototype._ignoreElement = function($element) {
+        cls._ignoreElement = function($element) {
             var index = this._list.indexOf($element.get(0));
             if (index >= 0) {
                 $element.removeData(this.OPTS_DATA_KEY + ' ' + this.STATE_DATA_KEY);
@@ -35,36 +36,36 @@
         /*
             Получение настроек DOM-элемента
          */
-        cls.prototype.getOpts = function($element) {
+        cls.getOpts = function($element) {
             return $element.first().data(this.OPTS_DATA_KEY) || this.getDefaultOpts();
         };
 
         /*
             Сохранение настроек DOM-элемента
          */
-        cls.prototype._setOpts = function($element, opts) {
+        cls._setOpts = function($element, opts) {
             $element.first().data(this.OPTS_DATA_KEY, opts);
         };
 
         /*
             Сохранение состояния DOM-элемента
          */
-        cls.prototype._setState = function($element, state) {
+        cls._setState = function($element, state) {
             $element.first().data(this.STATE_DATA_KEY, state);
         };
 
 
         // ================================================================
 
-        cls.prototype._beforeCheck = function($element, opts) {
+        cls._beforeCheck = function($element, opts) {
             opts.beforeCheck.call(this, $element, opts);
         };
 
-        cls.prototype._check = function($element, opts) {
+        cls._check = function($element, opts) {
             throw Error('not implemented');
         };
 
-        cls.prototype._afterCheck = function($element, opts, state) {
+        cls._afterCheck = function($element, opts, state) {
             opts.afterCheck.call(this, $element, opts, state);
             this._setState($element, state);
         };
@@ -74,14 +75,14 @@
         /*
             Получение состояния DOM-элемента
          */
-        cls.prototype.getState = function($element) {
+        cls.getState = function($element) {
             return $element.first().data(this.STATE_DATA_KEY);
         };
 
         /*
             Функция, проверяющая некоторое условие на DOM-элементе
          */
-        cls.prototype.check = function($elements, options) {
+        cls.check = function($elements, options) {
             $elements = $($elements);
             if (!$elements.length) {
                 this.error('checking elements required');
@@ -107,7 +108,7 @@
         /*
             Добавление элементов для инспектирования изменения их пропорций
          */
-        cls.prototype.inspect = function($elements, options) {
+        cls.inspect = function($elements, options) {
             $elements = $($elements);
             if (!$elements.length) {
                 this.error('inspecting elements required');
@@ -138,7 +139,7 @@
         /*
             Удаление элементов из инспектирования
          */
-        cls.prototype.ignore = function($elements) {
+        cls.ignore = function($elements) {
             $elements = $($elements);
             if (!$elements.length) {
                 this.error('ignoring elements required');
@@ -154,7 +155,7 @@
         /*
             Добавление элементов для инспектирования изменения их пропорций
          */
-        cls.prototype.checkAll = function() {
+        cls.checkAll = function() {
             var i = 0;
             var element;
             while (element = this._list[i]) {
