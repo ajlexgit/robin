@@ -184,6 +184,7 @@ PIPELINE_CSS = {
     'main_page': {
         'source_filenames': (
             'scss/parallax.scss',
+            'google_maps/scss/balloon.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',

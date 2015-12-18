@@ -79,7 +79,10 @@
             var marker = GMapMarker({
                 map: this,
                 position: GMapPoint(62.281819, -150.287132),
-                hint: 'First'
+                hint: 'First',
+                balloonContent: '<h1>Hello</h1>'
+            }).on('click', function() {
+                this.openBalloon();
             });
 
             var overlay = GMapImageTripleOverlay({
@@ -91,7 +94,34 @@
                 }
             });
 
+            this.balloon = GMapBalloon({
+                map: this
+            });
+
+
+            var that = this;
+            $.mediaInspector.inspect(this.$root, {
+                point: 1024,
+                afterCheck: function($elem, opts, state) {
+                    if (state) {
+                        that.draggable(true);
+                    } else {
+                        that.draggable(false);
+                    }
+                }
+            });
+            $.mediaInspector.check(this.$root);
+
             this.center(GMapPoint(62.281819, -150.287132)).zoom(11);
+        }).on('resize', function() {
+            if (this.balloon && (this.balloon._opened)) {
+                this.balloon.updateSize();
+                this.balloon.updatePosition();
+
+                if (this.balloon.opts.autoPan) {
+                    this.balloon.panToView()
+                }
+            }
         });
     });
 
