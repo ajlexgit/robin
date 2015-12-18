@@ -42,13 +42,6 @@
                 )
             }
 
-            superclass.prototype.onInit.call(this);
-        };
-
-        /*
-            Вызывается при добавлении оверлея на карту
-         */
-        cls.prototype.onAdd = function() {
             this.$container = $('<div>').css({
                 position: 'absolute',
                 minWidth: '1px'
@@ -68,9 +61,7 @@
 
             this.$container.append(this.$left, this.$img, this.$right);
 
-            // Add the element to the "overlayLayer" pane.
-            var panes = this.native.getPanes();
-            panes[this.layer].appendChild(this.$container.get(0));
+            superclass.prototype.onInit.call(this);
         };
 
         /*
@@ -98,14 +89,6 @@
             this.$right.css({
                 left: worldWidth
             });
-        };
-
-        /*
-            Вызывается при откреплении оверлея от карты
-         */
-        cls.prototype.onRemove = function() {
-            this.$container.remove();
-            this.$container = null;
         };
     });
 

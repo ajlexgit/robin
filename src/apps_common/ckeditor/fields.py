@@ -24,6 +24,7 @@ class CKEditorField(models.Field):
         defaults = {
             'form_class': CKEditorFormField,
             'editor_options': self.editor_options,
+            'max_length': self.max_length,
         }
         defaults.update(kwargs)
         return super().formfield(**defaults)
@@ -50,6 +51,7 @@ class CKEditorUploadField(models.Field):
         defaults = {
             'form_class': CKEditorUploadFormField,
             'editor_options': self.editor_options,
+            'max_length': self.max_length,
             'upload_pagephoto_url': self.upload_pagephoto_url,
             'upload_simplephoto_url': self.upload_simplephoto_url,
             'model': self.model,

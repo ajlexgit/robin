@@ -6,7 +6,7 @@ from .widgets import CKEditorWidget, CKEditorUploadWidget
 class CKEditorFormField(forms.CharField):
     widget = CKEditorWidget
 
-    def __init__(self, max_length=None, **kwargs):
+    def __init__(self, **kwargs):
         editor_options = kwargs.pop('editor_options')
         super().__init__(**kwargs)
         self.widget.editor_options = editor_options
@@ -15,7 +15,7 @@ class CKEditorFormField(forms.CharField):
 class CKEditorUploadFormField(forms.Field):
     widget = CKEditorUploadWidget
 
-    def __init__(self, max_length=None, **kwargs):
+    def __init__(self, **kwargs):
         editor_options = kwargs.pop('editor_options')
         upload_pagephoto_url = kwargs.pop('upload_pagephoto_url')
         upload_simplephoto_url = kwargs.pop('upload_simplephoto_url')

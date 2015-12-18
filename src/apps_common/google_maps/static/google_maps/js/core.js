@@ -18,8 +18,21 @@
                 var marker1 = GMapMarker({
                     map: this,
                     position: GMapPoint(62.281819, -150.287132),
-                    hint: 'First'
-                });
+                    hint: 'First',
+                    balloonContent: '<h1>Hello</h1>'
+                }).on('click', function() {
+                    // открытие окна при клике
+                    var map = this.map();
+                    if (!map.balloon) {
+                        return;
+                    }
+
+                    map.balloon.close();
+                    if (this.opts.balloonContent) {
+                        map.balloon.content(this.opts.balloonContent);
+                        map.balloon.open(this);
+                    }
+                });;
 
                 var marker2 = GMapMarker({
                     map: this,
@@ -37,7 +50,12 @@
                     }
                 });
 
-                this.center(GMapPoint(62.339889, -150.145683)).zoom(11);
+                // всплывающее окно
+                this.balloon = GMapBalloon({
+                    map: this
+                });
+
+                this.center(GMapPoint(62.339889, -150.145683));
             });
      */
 
@@ -110,7 +128,7 @@
         /*
             Отлов событий
          */
-        cls.prototype.on = function(name, handler) {
+        cls.prototype._addEventHandler = function(name, handler, opts) {
             var evt_info = this._formatEventName(name);
             var evt_name = evt_info.name;
             if (evt_name &&
@@ -127,7 +145,7 @@
                 });
             }
 
-            return superclass.prototype.on.call(this, name, handler);
+            return superclass.prototype._addEventHandler.call(this, name, handler, opts);
         };
     });
 
@@ -253,7 +271,8 @@
             Вызывается при добавлении оверлея на карту
          */
         cls.prototype.onAdd = function() {
-
+            var panes = this.native.getPanes();
+            panes[this.layer].appendChild(this.$container.get(0));
         };
 
         /*
@@ -267,7 +286,8 @@
             Вызывается при откреплении оверлея от карты
          */
         cls.prototype.onRemove = function() {
-
+            this.$container.remove();
+            this.$container = null;
         };
 
         /*
@@ -494,69 +514,13 @@
          */
         cls.prototype._mapDetach = function() {
             // закрытие балуна, если он привязан к этому маркеру
-            if (this._map.balloon && (this._map.balloon.anchor == this)) {
+            if (this._map.balloon && (this._map.balloon._anchor == this)) {
                 this._map.balloon.close();
             }
 
             this._map.trigger('detach.marker', this);
             this.trigger('detached');
             this.native.setMap(null);
-        };
-    });
-
-
-    /*
-        Класс для всплывающего окна карты
-     */
-    window.GMapBalloon = Class(EventedObject, function GMapBalloon(cls, superclass) {
-
-        /*
-            Получение / установка содержимого всплывающего окна
-         */
-        cls.prototype.content = function(value) {
-            if (value === undefined) {
-                // получение содержимого
-                return this.native.getContent();
-            }
-
-            if (value && (typeof value != 'string')) {
-                this.error('value should be a string');
-                return this;
-            }
-
-            this.native.setContent(value);
-            return this;
-        };
-
-        /*
-            Открытие балуна
-         */
-        cls.prototype.open = function(marker_point) {
-            if (marker_point instanceof GMapMarker) {
-                this.native.open(this.map.native, marker_point.native);
-            } else if (marker_point instanceof GMapPoint) {
-                this.native.open(this.map.native);
-                this.position(marker_point);
-            } else {
-                this.error('marker should be a GMapMarker or GMapPoint instance');
-                return this;
-            }
-
-            this.opened = true;
-            this.anchor = marker_point;
-            this.trigger('opened');
-            return this;
-        };
-
-        /*
-            Закрытие балуна
-         */
-        cls.prototype.close = function() {
-            this.native.close();
-            this.opened = false;
-            this.anchor = null;
-            this.trigger('closed');
-            return this;
         };
     });
 
@@ -690,12 +654,13 @@
             // Не даём скроллить слишком далеко по вертикали
             var MAX_LATITUDE = 83.675733;
             var MIN_LATITUDE = -85.0511287798;
+            var AMPLITUDE = 2;
             this.on('idle', function() {
                 var center = this.center();
-                if (center.lat < MIN_LATITUDE) {
-                    this.panTo(GMapPoint(MIN_LATITUDE, center.lng));
-                } else if (center.lat > MAX_LATITUDE) {
-                    this.panTo(GMapPoint(MAX_LATITUDE, center.lng));
+                if (center.lat < (MIN_LATITUDE - AMPLITUDE)) {
+                    this.panTo(GMapPoint(MIN_LATITUDE, center.lng), 100);
+                } else if (center.lat > (MAX_LATITUDE + AMPLITUDE)) {
+                    this.panTo(GMapPoint(MAX_LATITUDE, center.lng), 100);
                 }
             });
 
@@ -742,16 +707,19 @@
         /*
             Плавное перемещение к точке
          */
-        cls.prototype.panTo = function(center) {
+        cls.prototype.panTo = function(center, speed) {
+            speed = parseInt(speed) || 500;
+
             if (center instanceof GMapMarker) {
-                this.native.panTo(center.position().native);
+                var target = center.position();
             } else if (center instanceof GMapPoint) {
-                this.native.panTo(center.native);
+                target = center;
             } else {
                 this.error('value should be a GMapPoint or GMapMarker instance');
+                return;
             }
 
-            return this;
+            this.native.panTo(target.native);
         };
 
         /*
