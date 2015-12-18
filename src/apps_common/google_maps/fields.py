@@ -1,5 +1,6 @@
 from django.db import models
 from django.core import exceptions
+from django.utils.translation import ugettext_lazy as _
 from .forms import GoogleCoordsFormsField
 from libs.coords import Coords
 
@@ -8,6 +9,7 @@ class GoogleCoordsField(models.Field):
     def __init__(self, *args, **kwargs):
         self.zoom = kwargs.pop('zoom', 14)
         kwargs['max_length'] = 32
+        kwargs.setdefault('help_text', _('Double click on the map places marker'))
         super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
