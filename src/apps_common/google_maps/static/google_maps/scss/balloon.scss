@@ -1,9 +1,9 @@
 @import "mixins";
 
 $balloon_background: #FFF;
-$balloon_border: #C0C0C0;
-$balloon_shadow: #C0C0C0;
-$balloon_close_color: #C0C0C0;
+$balloon_border: #CCC;
+$balloon_shadow: rgba(#CCC, 0.5);
+$balloon_close_color: #CCC;
 $arrow_height: 18px;
 $arrow_space: 6px;      // расстояние между маркером и стрелкой окна
 
@@ -13,7 +13,7 @@ $arrow_space: 6px;      // расстояние между маркером и �
   min-width: 40px;
   min-height: 40px;
   z-index: 100;
-  padding-bottom: #{(0.866 * $arrow_height) + $arrow_space};   // 0.866 ~= sqrt(3) / 2
+  padding-bottom: $arrow_height + $arrow_space;
   @include border-box;
 
   .gmap-balloon-content {
@@ -27,11 +27,11 @@ $arrow_space: 6px;      // расстояние между маркером и �
 
   .gmap-balloon-arrow {
     position: absolute;
-    bottom: #{-$arrow_height + $arrow_space};
+    bottom: -$arrow_height + $arrow_space;
     left: 50%;
     z-index: 10;
     border: $arrow_height solid transparent;
-    border-top: $arrow_height solid rgba($balloon_border, 0.5);
+    border-top: $arrow_height solid rgba($balloon_border, 0.6);
     @include transform(translateX(-50%));
 
     &:before {
@@ -66,7 +66,7 @@ $arrow_space: 6px;      // расстояние между маркером и �
   .gmap-balloon-content {
     width: 350px;
     padding: 20px;
-    @include box-shadow(8px 8px 10px rgba($balloon_border, 1));
+    @include box-shadow(8px 8px 10px $balloon_shadow);
     @include border_radius(10px);
     @include media_interval(0, $media768) {
       padding: 14px;
