@@ -419,21 +419,17 @@
             var centerPos = projection.fromLatLngToContainerPixel(map.center().native);
             var coords = projection.fromLatLngToContainerPixel(latLng);
 
-            // Find out how much space at the top is free
-            var spaceTop = centerPos.y - this._height - this._getAnchorHeight();
+//            // Find out how much space at the top is free
+//            var spaceTop = centerPos.y - this._height - this._getAnchorHeight();
+//
+//            // Fine out how much space at the bottom is free
+//            var spaceBottom = mapHeight - centerPos.y;
 
-            // Fine out how much space at the bottom is free
-            var spaceBottom = mapHeight - centerPos.y;
-
-            var needsTop = spaceTop < 0;
-            var deltaY = 0;
-
-            if (needsTop) {
-                spaceTop *= -1;
-                deltaY = (spaceTop + spaceBottom) / 2;
+            var totalHeight = this._height + this._getAnchorHeight();
+            if (totalHeight < mapHeight) {
+                coords.y -= totalHeight / 2;
             }
 
-            coords.y -= deltaY;
             latLng = projection.fromContainerPixelToLatLng(coords);
 
             map.panTo(GMapPoint.fromNative(latLng));
@@ -448,7 +444,11 @@
             }
 
             var icon = this._anchor.icon();
-            return icon.size.height
+            if (icon && icon.size) {
+                return icon.size.height;
+            } else {
+                return 40;
+            }
         }
     });
 

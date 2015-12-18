@@ -418,7 +418,8 @@
                 position: null,
                 icon: '',
                 hint: '',
-                draggable: false
+                draggable: false,
+                balloonContent: ''
             });
         };
 
@@ -428,6 +429,22 @@
         cls.prototype.destroy = function() {
             google.maps.event.clearInstanceListeners(this.native);
             superclass.prototype.destroy.call(this);
+        };
+
+        /*
+            Открытие окна, если оно есть
+         */
+        cls.prototype.openBalloon = function() {
+            var map = this.map();
+            if (!map.balloon) {
+                return;
+            }
+
+            map.balloon.close();
+            if (this.opts.balloonContent) {
+                map.balloon.content(this.opts.balloonContent);
+                map.balloon.open(this);
+            }
         };
 
         /*
