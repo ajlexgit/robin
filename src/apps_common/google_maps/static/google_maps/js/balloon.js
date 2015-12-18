@@ -21,9 +21,9 @@
     ];
 
     window.GMapBalloonBase = Class(GMapOverlayBase, function GMapBalloonBase(cls, superclass) {
-        cls.prototype.layer = 'floatPane';
+        cls.layer = 'floatPane';
 
-        cls.prototype.NATIVE_EVENTS = [
+        cls.NATIVE_EVENTS = [
             'domready',
             'closeclick',
             'content_changed',
@@ -33,8 +33,8 @@
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 content: '',
                 position: null
             });
@@ -43,14 +43,14 @@
         /*
             Инициализация
          */
-        cls.prototype.onInit = function() {
+        cls.onInit = function() {
             if (this.opts.position) {
                 if (this.opts.position instanceof GMapPoint == false) {
                     return this.raise('position should be a GMapPoint instance');
                 }
             }
 
-            superclass.prototype.onInit.call(this);
+            superclass.onInit.call(this);
 
             // точка
             this._position = this.opts.position;
@@ -68,7 +68,7 @@
         /*
             Построение DOM
          */
-        cls.prototype._buildDOM = function() {
+        cls._buildDOM = function() {
             this.$container = $('<div>').addClass('gmap-balloon').hide();
             this.$content = $('<div>').addClass('gmap-balloon-content');
             this.$closeBtn = $('<div>').addClass('gmap-balloon-close');
@@ -79,7 +79,7 @@
         /*
             Рассчет размеров окна
          */
-        cls.prototype.updateSize = function() {
+        cls.updateSize = function() {
             this.$container.css({
                 width: '',
                 height: ''
@@ -93,11 +93,10 @@
             });
         };
 
-
         /*
             Позиционирование окна
          */
-        cls.prototype.updatePosition = function() {
+        cls.updatePosition = function() {
             if (!this._opened) {
                 return
             }
@@ -112,11 +111,10 @@
             this._updatePosition(pos);
         };
 
-
         /*
             Позиционирование окна
          */
-        cls.prototype._updatePosition = function(pos) {
+        cls._updatePosition = function(pos) {
             this.$container.css({
                 left: pos.x - this._width / 2,
                 top: pos.y - this._height
@@ -126,8 +124,8 @@
         /*
             Вызывается при добавлении оверлея на карту
          */
-        cls.prototype.onAdd = function() {
-            superclass.prototype.onAdd.call(this);
+        cls.onAdd = function() {
+            superclass.onAdd.call(this);
 
             // закрытие окна при клике на крестик
             var that = this;
@@ -155,27 +153,27 @@
         /*
             Отрисовка оверлея
          */
-        cls.prototype.draw = function() {
+        cls.draw = function() {
             this.updatePosition();
         };
 
         /*
             Вызывается при откреплении оверлея от карты
          */
-        cls.prototype.onRemove = function() {
+        cls.onRemove = function() {
             // удаление обработчиков мыши на окне
             for (var i = 0, listener; listener = this._listeners[i]; i++) {
                 google.maps.event.removeListener(listener);
             }
 
             google.maps.event.removeListener(this._closeListener);
-            superclass.prototype.onRemove.call(this);
+            superclass.onRemove.call(this);
         };
 
         /*
             Событие загрузки картинки
          */
-        cls.prototype.onImageLoaded = function() {
+        cls.onImageLoaded = function() {
             this.updateSize();
             this.updatePosition()
         };
@@ -183,7 +181,7 @@
         /*
             Показ окна
          */
-        cls.prototype.open = function() {
+        cls.open = function() {
             if (this._opened) {
                 return false
             } else {
@@ -191,7 +189,7 @@
             }
 
             var that = this;
-            var args = Array.prototype.concat(arguments);
+            var args = Array.prototype.slice.call(arguments);
             setTimeout(function() {
                 that.updatePosition();
                 that._open.apply(that, args);
@@ -201,7 +199,7 @@
         /*
             Анимация показа окна
          */
-        cls.prototype._open = function() {
+        cls._open = function() {
             var that = this;
             this.$container.fadeIn({
                 duration: 100,
@@ -214,7 +212,7 @@
         /*
             Закрытие окна
          */
-        cls.prototype.close = function() {
+        cls.close = function() {
             if (!this._opened) {
                 return false
             } else {
@@ -227,7 +225,7 @@
         /*
             Анимация закрытия окна
          */
-        cls.prototype._close = function() {
+        cls._close = function() {
             var that = this;
             this.$container.fadeOut({
                 duration: 100,
@@ -240,7 +238,7 @@
         /*
             Получение / установка положения
          */
-        cls.prototype.position = function(value) {
+        cls.position = function(value) {
             if (value === undefined) {
                 // получение положения
                 return this._position;
@@ -263,7 +261,7 @@
         /*
             Получение / установка содержимого всплывающего окна
          */
-        cls.prototype.content = function(value) {
+        cls.content = function(value) {
             if (value === undefined) {
                 // получение содержимого
                 return this._content;
@@ -306,8 +304,8 @@
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 autoPan: true
             });
         };
@@ -315,8 +313,8 @@
         /*
             Инициализация
          */
-        cls.prototype.onInit = function() {
-            superclass.prototype.onInit.call(this);
+        cls.onInit = function() {
+            superclass.onInit.call(this);
 
             // привязка к маркеру
             this._anchor = null;
@@ -325,8 +323,8 @@
         /*
             Построение DOM
          */
-        cls.prototype._buildDOM = function() {
-            superclass.prototype._buildDOM.call(this);
+        cls._buildDOM = function() {
+            superclass._buildDOM.call(this);
 
             this.$arrow = $('<div>').addClass('gmap-balloon-arrow');
             this.$container.append(this.$arrow);
@@ -335,7 +333,7 @@
         /*
             Событие загрузки картинки
          */
-        cls.prototype.onImageLoaded = function() {
+        cls.onImageLoaded = function() {
             if (this.opts.autoPan) {
                 this.panToView()
             }
@@ -347,7 +345,7 @@
         /*
             Показ окна
          */
-        cls.prototype.open = function(marker) {
+        cls.open = function(marker) {
             if (!marker) {
                 this.error('marker required');
                 return
@@ -375,24 +373,24 @@
                 that.position(this.position());
             });
 
-            superclass.prototype.open.call(this);
+            superclass.open.call(this);
         };
 
         /*
             Анимация показа окна
          */
-        cls.prototype._open = function() {
+        cls._open = function() {
             if (this.opts.autoPan) {
                 this.panToView()
             }
 
-            superclass.prototype._open.call(this);
+            superclass._open.call(this);
         };
 
         /*
             Позиционирование окна
          */
-        cls.prototype._updatePosition = function(pos) {
+        cls._updatePosition = function(pos) {
             this.$container.css({
                 left: pos.x - this._width / 2,
                 top: pos.y - this._height - this._getAnchorHeight()
@@ -402,7 +400,7 @@
         /*
             Перемещение карты к окну
          */
-        cls.prototype.panToView = function() {
+        cls.panToView = function() {
             if (!this._opened) {
                 return
             }
@@ -433,7 +431,7 @@
         /*
             Получение высоты маркера
          */
-        cls.prototype._getAnchorHeight = function() {
+        cls._getAnchorHeight = function() {
             if (!this._anchor) {
                 return
             }

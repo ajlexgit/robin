@@ -1,16 +1,16 @@
 (function($) {
 
     window.SliderAutoscrollPlugin = Class(SliderPlugin, function SliderAutoscrollPlugin(cls, superclass) {
-        cls.prototype.init = function(settings) {
-            superclass.prototype.init.call(this, settings);
+        cls.init = function(settings) {
+            superclass.init.call(this, settings);
             if (!this.opts.animationName) {
                 return this.raise('animationName required');
             }
         };
 
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 animationName: '',
                 animatedHeight: true,
 
@@ -23,8 +23,8 @@
         /*
             Создание кнопок при подключении плагина
          */
-        cls.prototype.onAttach = function(slider) {
-            superclass.prototype.onAttach.call(this, slider);
+        cls.onAttach = function(slider) {
+            superclass.onAttach.call(this, slider);
 
             if (this.opts.direction == 'prev') {
                 this._timerHandler = $.proxy(
@@ -61,7 +61,7 @@
         /*
             Переустановка таймера при измеении кол-ва слайдов
          */
-        cls.prototype.afterSetItemsPerSlide = function(slider) {
+        cls.afterSetItemsPerSlide = function(slider) {
             if (this._timer) {
                 this.startTimer(slider);
             }
@@ -70,7 +70,7 @@
         /*
             Создание таймера
          */
-        cls.prototype.startTimer = function(slider) {
+        cls.startTimer = function(slider) {
             if (slider.$slides.length < 2) {
                 return
             }
@@ -85,7 +85,7 @@
         /*
             Остановка таймера
          */
-        cls.prototype.stopTimer = function() {
+        cls.stopTimer = function() {
             if (this._timer) {
                 clearInterval(this._timer);
                 this._timer = null;
@@ -95,7 +95,7 @@
         /*
             Скролл на рандом
          */
-        cls.prototype.slideToRandom = function(slider) {
+        cls.slideToRandom = function(slider) {
             var slides_count = slider.$slides.length;
             var random_index = Math.floor(Math.random() * (slides_count - 1));
             var current_index = slider.$slides.index(slider.$currentSlide);

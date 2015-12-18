@@ -2,8 +2,8 @@
 
     window.SliderFadeAnimation = Class(SliderPlugin, function SliderFadeAnimation(cls, superclass) {
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 name: 'fade',
                 speed: 800,
                 easing: 'linear'
@@ -14,7 +14,7 @@
             Реализация метода перехода от одного слайда к другому
             посредством исчезания
          */
-        cls.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
+        cls.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }

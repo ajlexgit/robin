@@ -4,6 +4,9 @@
         Корзина продуктов, хранящаюся в localStorage и
         отправляющая запросы на сохранение заказа в сессии.
 
+        Требует:
+            jquery.utils.js
+
         Пример:
             // добавить два товара с ID 78
             cart.addItem(78, 2).done(function() {
@@ -12,7 +15,7 @@
      */
 
     window.Cart = Class(null, function Cart(cls, superclass) {
-        cls.prototype.init = function(options) {
+        cls.init = function(options) {
             this.opts = $.extend({
                 prefix: 'cart',
                 onSave: $.noop,
@@ -38,7 +41,7 @@
         /*
             Очистка заказа
          */
-        cls.prototype.clear = function() {
+        cls.clear = function() {
             var that = this;
 
             localStorage.removeItem(this.opts.prefix);
@@ -64,7 +67,7 @@
         /*
             Получение хранилища заказа из localStorage
           */
-        cls.prototype.getStorage = function() {
+        cls.getStorage = function() {
             var json = localStorage.getItem(this.opts.prefix);
             try {
                 var storage = $.parseJSON(json);
@@ -77,7 +80,7 @@
         /*
             Сохранение заказа в localStorage
           */
-        cls.prototype.saveStorage = function(storage) {
+        cls.saveStorage = function(storage) {
             var json = JSON.stringify(storage || {});
             localStorage.setItem(this.opts.prefix, json);
         };
@@ -85,7 +88,7 @@
         /*
             Отправка localStorage на сервер для сохранения в сессии
           */
-        cls.prototype.sendStorage = function(storage, options) {
+        cls.sendStorage = function(storage, options) {
             var that = this;
 
             if (this._sendQuery) {
@@ -118,7 +121,7 @@
             Возвращает Deferred-объект, представляющий AJAX-запрос,
             сохраняющий весь заказ в сессию.
          */
-        cls.prototype.addItem = function(product_id, count) {
+        cls.addItem = function(product_id, count) {
             if (!product_id) {
                 this.error('product ID required');
                 return $.Deferred().reject();
@@ -142,7 +145,7 @@
             Возвращает Deferred-объект, представляющий AJAX-запрос,
             сохраняющий весь заказ в сессию.
          */
-        cls.prototype.removeItem = function(product_id) {
+        cls.removeItem = function(product_id) {
             var storage = this.getStorage();
             if (product_id in storage) {
                 delete storage[product_id];

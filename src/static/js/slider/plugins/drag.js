@@ -2,8 +2,8 @@
 
     window.SliderDragPlugin = Class(SliderPlugin, function SliderDragPlugin(cls, superclass) {
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 mouse: true,
                 touch: true,
                 ignoreDistanceX: 18,        // px
@@ -23,8 +23,8 @@
         /*
             Создание объекта Drager
          */
-        cls.prototype.onAttach = function(slider) {
-            superclass.prototype.onAttach.call(this, slider);
+        cls.onAttach = function(slider) {
+            superclass.onAttach.call(this, slider);
 
             var that = this;
             this.drager = Drager(slider.$listWrapper, {
@@ -71,7 +71,7 @@
         /*
             Перевод смещения в пикселях в смещение в процентах
          */
-        cls.prototype._dxToPercents = function(slider, evt) {
+        cls._dxToPercents = function(slider, evt) {
             var slider_width = slider.$list.outerWidth();
             return 100 * evt.dx / slider_width
         };
@@ -79,7 +79,7 @@
         /*
             Начало перетаскивания слайдов мышью или тачпадом
          */
-        cls.prototype.onStartDrag = function(slider) {
+        cls.onStartDrag = function(slider) {
             // Запоминаем слайд, с которого начали перетаскивание
             this.$startSlide = slider.$currentSlide;
 
@@ -90,7 +90,7 @@
         /*
             Перетаскивание слайдов мышью или тачпадом
          */
-        cls.prototype.onDrag = function(slider, evt) {
+        cls.onDrag = function(slider, evt) {
             var dxPercents = this._dxToPercents(slider, evt);
             var absDxPercents = Math.abs(dxPercents);
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -180,7 +180,7 @@
         /*
             Завершение перетаскивания слайдов мышью или тачпадом
          */
-        cls.prototype.onStopDrag = function(slider, evt) {
+        cls.onStopDrag = function(slider, evt) {
             if (!this._movedSlides || (this._movedSlides.length != 2)) {
                 return
             }

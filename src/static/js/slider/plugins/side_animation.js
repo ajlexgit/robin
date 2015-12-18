@@ -2,8 +2,8 @@
 
     window.SliderSideAnimation = Class(SliderPlugin, function SliderSideAnimation(cls, superclass) {
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 name: 'side',
                 speed: 800,
                 showIntermediate: true,
@@ -16,7 +16,7 @@
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        cls.prototype.slideTo = function(slider, $toSlide, animatedHeight) {
+        cls.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animated) {
                 return
             }
@@ -37,7 +37,7 @@
         /*
             Выбор направления анимации
          */
-        cls.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slide_info.toIndex > slide_info.fromIndex) {
@@ -52,7 +52,7 @@
         /*
             Появление нового слайда справа от текущего
          */
-        cls.prototype.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -125,7 +125,7 @@
         /*
             Появление нового слайда слева от текущего
          */
-        cls.prototype.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
             var slide_left = 100 + this.opts.slideMarginPercent;
@@ -203,8 +203,8 @@
     //========================================================
     window.SliderSideShortestAnimation = Class(SliderSideAnimation, function SliderSideShortestAnimation(cls, superclass) {
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 name: 'side-shortest'
             });
         };
@@ -212,7 +212,7 @@
         /*
             Выбор направления анимации
          */
-        cls.prototype.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slider.opts.loop) {

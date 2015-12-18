@@ -115,7 +115,7 @@
         Движение по инерции
      */
     var Momentum = Class(null, function Momentum(cls, superclass) {
-        cls.prototype.init = function(drager, event, momentumPoint) {
+        cls.init = function(drager, event, momentumPoint) {
             this.lightness = drager.settings.momentumLightness;
             this.easing = drager.settings.momentumEasing;
             this.startX = event.dx;
@@ -130,7 +130,7 @@
             this.setSpeed(dx / duration, dy / duration);
         };
 
-        cls.prototype.setSpeed = function(speedX, speedY) {
+        cls.setSpeed = function(speedX, speedY) {
             if (typeof speedX != 'undefined') {
                 this.speedX = speedX;
             }
@@ -142,20 +142,20 @@
             this.setDuration(speed * this.lightness);
         };
 
-        cls.prototype.setDuration = function(duration) {
+        cls.setDuration = function(duration) {
             this.duration = Math.abs(duration) || 0;
             this.endX = this.startX + this.speedX * this.duration;
             this.endY = this.startY + this.speedY * this.duration;
         };
 
-        cls.prototype.setLightness = function(lightness) {
+        cls.setLightness = function(lightness) {
             this.lightness = lightness;
 
             var speed = Math.max(Math.abs(this.speedX), Math.abs(this.speedY));
             this.setDuration(speed * this.lightness);
         };
 
-        cls.prototype.setEndPoint = function(endX, endY) {
+        cls.setEndPoint = function(endX, endY) {
             var dx = endX - this.startX;
             var dy = endY - this.startY;
             var tx = this.speedX ? Math.abs(dx / this.speedX) : 0;
@@ -166,7 +166,7 @@
             this.endY = endY;
         };
 
-        cls.prototype.setEasing = function(easing) {
+        cls.setEasing = function(easing) {
             this.easing = easing;
         };
     });
@@ -174,7 +174,7 @@
     // ===============================================
 
     var DragerEvent = Class(null, function DragerEvent(cls, superclass) {
-        cls.prototype.init = function(event, drager) {
+        cls.init = function(event, drager) {
             var mouseEvent = event;
             if (event.type.substr(0, 5) == 'touch') {
                 mouseEvent = getTouchPoint(event);
@@ -193,8 +193,8 @@
     });
 
     var MouseDownDragerEvent = Class(DragerEvent, function MouseDownDragerEvent(cls, superclass) {
-        cls.prototype.init = function(event, drager) {
-            superclass.prototype.init.call(this, event, drager);
+        cls.init = function(event, drager) {
+            superclass.init.call(this, event, drager);
 
             this.dx = 0;
             this.dy = 0;
@@ -204,8 +204,8 @@
     });
 
     var MouseMoveDragerEvent = Class(DragerEvent, function MouseMoveDragerEvent(cls, superclass) {
-        cls.prototype.init = function(event, drager) {
-            superclass.prototype.init.call(this, event, drager);
+        cls.init = function(event, drager) {
+            superclass.init.call(this, event, drager);
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
@@ -215,8 +215,8 @@
     });
 
     var MouseUpDragerEvent = Class(DragerEvent, function MouseUpDragerEvent(cls, superclass) {
-        cls.prototype.init = function(event, drager) {
-            superclass.prototype.init.call(this, event, drager);
+        cls.init = function(event, drager) {
+            superclass.init.call(this, event, drager);
 
             this.dx = getDx(drager.startPoint, this.point);
             this.dy = getDy(drager.startPoint, this.point);
@@ -229,7 +229,7 @@
 
     var dragerID = 0;
     window.Drager = Class(null, function Drager(cls, superclass) {
-        cls.prototype.init = function(element, options) {
+        cls.init = function(element, options) {
             this.$element = $(element).first();
             if (!this.$element.length) {
                 return this.raise('root element not found');
@@ -283,7 +283,7 @@
         /*
             Добавление точки вычисления инерции
          */
-        cls.prototype._addMomentumPoint = function(evt) {
+        cls._addMomentumPoint = function(evt) {
             if (this._momentumPoints.length) {
                 // Если недавно уже добавляли - выходим
                 var lastPoint = this._momentumPoints[this._momentumPoints.length - 1];
@@ -306,7 +306,7 @@
         /*
             Получение точки вычисления инерции
          */
-        cls.prototype._getMomentumPoint = function(evt) {
+        cls._getMomentumPoint = function(evt) {
             if (!this._momentumPoints.length) {
                 return
             }
@@ -323,7 +323,7 @@
         /*
             Запуск инерционного движения
           */
-        cls.prototype.startMomentum = function(evt, momentum) {
+        cls.startMomentum = function(evt, momentum) {
             var that = this;
             that._momentumAnimation = $.animate({
                 duration: momentum.duration,
@@ -348,7 +348,7 @@
         /*
             Остановка инерционного движения
           */
-        cls.prototype.stopMomentum = function(jumpToEnd) {
+        cls.stopMomentum = function(jumpToEnd) {
             if (this._momentumAnimation) {
                 this._momentumAnimation.stop(jumpToEnd);
                 this._momentumAnimation = null;
@@ -359,14 +359,14 @@
         /*
             Сброс начала отсчета передвижения
           */
-        cls.prototype.setStartPoint = function(evt) {
+        cls.setStartPoint = function(evt) {
             this.startPoint = evt.point;
         };
 
         /*
             Прекращения отслеживания текущего сеанса перемещения
           */
-        cls.prototype.stopCurrent = function(evt) {
+        cls.stopCurrent = function(evt) {
             var momentum;
             this._dragging_allowed = false;
 
@@ -403,7 +403,7 @@
         // === Handlers ===
         // ================
 
-        cls.prototype.mouseDownHandler = function(event) {
+        cls.mouseDownHandler = function(event) {
             var evt = MouseDownDragerEvent(event, this);
             this.wasDragged = false;
             this._dragging_allowed = true;
@@ -414,7 +414,7 @@
             return this.opts.onMouseDown.call(this, evt);
         };
 
-        cls.prototype.dragHandler = function(event) {
+        cls.dragHandler = function(event) {
             if (!this._dragging_allowed) return;
 
             var evt = MouseMoveDragerEvent(event, this);
@@ -435,7 +435,7 @@
             return this.opts.onDrag.call(this, evt);
         };
 
-        cls.prototype.mouseUpHandler = function(event) {
+        cls.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
             var evt = MouseUpDragerEvent(event, this);
@@ -447,14 +447,14 @@
         // ================
 
         // Удаление обработчиков событий
-        cls.prototype.detach = function() {
+        cls.detach = function() {
             // Отвязываем все события, связанные с объектом
             this.$element.off('.drager' + this.id);
             $(document).off('.drager' + this.id);
         };
 
         // Привязка обработчиков событий
-        cls.prototype.attach = function() {
+        cls.attach = function() {
             var that = this;
 
             this.detach();

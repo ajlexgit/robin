@@ -20,8 +20,10 @@
 
     */
     window.Gallery = Class(EventedObject, function Gallery(cls, superclass) {
-        cls.prototype.init = function(root, options) {
-            superclass.prototype.init.call(this);
+        cls.dataParamName = 'gallery';
+
+        cls.init = function(root, options) {
+            superclass.init.call(this);
 
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -85,7 +87,7 @@
                 this.initGallery(gallery_id);
             }
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
 
             // event
             this.trigger('create.gallery');
@@ -94,7 +96,7 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             // event
             this.trigger('destroy.gallery');
 
@@ -104,26 +106,26 @@
             if (this.uploader) {
                 this.uploader.destroy();
             }
-            this.$root.removeData(cls.dataParamName);
-            superclass.prototype.destroy.call(this);
+            this.$root.removeData(this.dataParamName);
+            superclass.destroy.call(this);
         };
 
-        cls.prototype.locked = function() {
+        cls.locked = function() {
             return this._locked;
         };
 
-        cls.prototype.lock = function() {
+        cls.lock = function() {
             this._locked = true;
         };
 
-        cls.prototype.unlock = function() {
+        cls.unlock = function() {
             this._locked = false;
         };
 
         /*
             Базовая обертка над AJAX-запросами
          */
-        cls.prototype.ajax = function(options) {
+        cls.ajax = function(options) {
             var that = this;
             var opts = $.extend(true, {
                 type: 'POST',
@@ -160,7 +162,7 @@
         /*
             Базовая обертка над AJAX-запросами для элемента галереи
          */
-        cls.prototype.ajaxItem = function($item, options) {
+        cls.ajaxItem = function($item, options) {
             var that = this;
             var item = $item.get(0);
 
@@ -203,7 +205,7 @@
         /*
             Создание галереи
          */
-        cls.prototype.createGallery = function() {
+        cls.createGallery = function() {
             if (this.locked()) {
                 return
             }
@@ -226,7 +228,7 @@
         /*
             Инициализация галереи
          */
-        cls.prototype.initGallery = function(gallery_id) {
+        cls.initGallery = function(gallery_id) {
             gallery_id = parseInt(gallery_id);
             if (!gallery_id) {
                 this.error('invalid gallery_id');
@@ -272,7 +274,7 @@
         /*
             Инициализация загрузчика файлов
          */
-        cls.prototype.initUploader = function() {
+        cls.initUploader = function() {
             // Клиентский ресайз
             var resize = this.$root.find('.max_source').val();
             if (resize) {
@@ -406,7 +408,7 @@
         /*
             Обновление значения счетчиков картинок
          */
-        cls.prototype.updateCounter = function() {
+        cls.updateCounter = function() {
             var $img_counter = this.$root.find('.gallery-image-counter');
             if ($img_counter.length) {
                 var $images = this.$list.find('.gallery-item-image');
@@ -427,7 +429,7 @@
         /*
             Удаление галереи
          */
-        cls.prototype.deleteGallery = function() {
+        cls.deleteGallery = function() {
             if (this.locked()) {
                 return
             }
@@ -461,7 +463,7 @@
         /*
             Добавление ссылки на видео
          */
-        cls.prototype.addVideo = function(link) {
+        cls.addVideo = function(link) {
             if (this.locked()) {
                 return
             }
@@ -539,7 +541,7 @@
         /*
             Удаление элемента галереи
          */
-        cls.prototype.deleteItem = function($item) {
+        cls.deleteItem = function($item) {
             if (!this.gallery_id) {
                 this.error('gallery_id required');
                 return;
@@ -600,7 +602,7 @@
         /*
             Поворот картинки
          */
-        cls.prototype.rotateItem = function($item, direction) {
+        cls.rotateItem = function($item, direction) {
             if (this.locked()) {
                 return
             }
@@ -630,7 +632,7 @@
         /*
             Обрезка картинки
          */
-        cls.prototype.cropItem = function($item, coords, extra) {
+        cls.cropItem = function($item, coords, extra) {
             if (this.locked()) {
                 return
             }
@@ -663,7 +665,7 @@
         /*
             Получение подписи к картинке
          */
-        cls.prototype.getItemDescription = function($item, extra) {
+        cls.getItemDescription = function($item, extra) {
             if (this.locked()) {
                 return
             }
@@ -690,7 +692,7 @@
         /*
             Установка подписи к картинке
          */
-        cls.prototype.setItemDescription = function($item, description, extra) {
+        cls.setItemDescription = function($item, description, extra) {
             if (this.locked()) {
                 return
             }
@@ -716,6 +718,5 @@
             });
         };
     });
-    Gallery.dataParamName = 'gallery';
 
 })(jQuery);

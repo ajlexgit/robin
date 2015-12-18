@@ -17,7 +17,7 @@
         $field.after($map);
 
         // карта
-        var gmap = GMap($map, {
+        GMap($map, {
             zoom: parseInt(field_data.zoom) || 16
         }).on('ready', function() {
             var coords_str = $field.val();
@@ -65,7 +65,11 @@
             return
         }
 
-        var gmap = $field.next('.google-map').data(GMap.dataParamName);
+        var gmap = $field.next('.google-map').data(GMap.prototype.dataParamName);
+        if (!gmap) {
+            console.error('GMap object not found');
+            return;
+        }
 
         var point = GMapPoint.fromString(coords_str);
         var marker = gmap.markers[0];

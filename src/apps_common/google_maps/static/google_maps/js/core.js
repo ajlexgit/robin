@@ -50,28 +50,15 @@
             });
      */
 
-    var gmaps_ready = false;
-    window.init_google_maps = function() {
-        gmaps_ready = true;
-        $(document).trigger('google-maps-ready');
-    };
-
-    $(document).ready(function() {
-        var lang = $(document.documentElement).attr('lang');
-        var script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&language=' + lang;
-        document.body.appendChild(script);
-    });
-
 
     /*
         Базовый класс объекта на карте
      */
     window.GMapEventedObject = Class(EventedObject, function GMapPoint(cls, superclass) {
-        cls.prototype.NATIVE_EVENTS = [];
+        cls.NATIVE_EVENTS = [];
 
-        cls.prototype.init = function(options) {
-            superclass.prototype.init.call(this);
+        cls.init = function(options) {
+            superclass.init.call(this);
 
             this.opts = $.extend(this.getDefaultOpts(), options);
 
@@ -90,36 +77,36 @@
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
+        cls.getDefaultOpts = function() {
             return {}
         };
 
         /*
             Создание нативного объекта
          */
-        cls.prototype.makeNative = function() {
+        cls.makeNative = function() {
             this.native = null;
         };
 
         /*
             Инициализация
          */
-        cls.prototype.onInit = function() {
+        cls.onInit = function() {
 
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.native_events = [];
-            superclass.prototype.destroy.call(this);
+            superclass.destroy.call(this);
         };
 
         /*
             Отлов событий
          */
-        cls.prototype._addEventHandler = function(name, handler, opts) {
+        cls._addEventHandler = function(name, handler, opts) {
             var evt_info = this._formatEventName(name);
             var evt_name = evt_info.name;
             if (evt_name &&
@@ -136,7 +123,7 @@
                 });
             }
 
-            return superclass.prototype._addEventHandler.call(this, name, handler, opts);
+            return superclass._addEventHandler.call(this, name, handler, opts);
         };
     });
 
@@ -145,13 +132,13 @@
         Базовый класс объекта на карте
      */
     window.GMapObject = Class(GMapEventedObject, function GMapPoint(cls, superclass) {
-        cls.prototype.NATIVE_EVENTS = [];
+        cls.NATIVE_EVENTS = [];
 
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 map: null
             });
         };
@@ -159,23 +146,23 @@
         /*
             Инициализация
          */
-        cls.prototype.onInit = function() {
-            superclass.prototype.onInit.call(this);
+        cls.onInit = function() {
+            superclass.onInit.call(this);
             this.map(this.opts.map);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.map(null);
-            superclass.prototype.destroy.call(this);
+            superclass.destroy.call(this);
         };
 
         /*
             Привязка к карте
          */
-        cls.prototype._mapAttach = function() {
+        cls._mapAttach = function() {
             this.native.setMap(this._map.native);
             this.trigger('attached');
             this._map.trigger('attach.overlay', this);
@@ -184,7 +171,7 @@
         /*
             Отвязывание от карты
          */
-        cls.prototype._mapDetach = function() {
+        cls._mapDetach = function() {
             this._map.trigger('detach.overlay', this);
             this.trigger('detached');
             this.native.setMap(null);
@@ -193,7 +180,7 @@
         /*
             Получение / установка карты
          */
-        cls.prototype.map = function(value) {
+        cls.map = function(value) {
             if (value === undefined) {
                 // получение карты
                 return this._map;
@@ -230,9 +217,9 @@
         Базовый класс наложения на карту Google.
      */
     window.GMapOverlayBase = Class(GMapObject, function GMapOverlayBase(cls, superclass) {
-        cls.prototype.layer = 'overlayLayer';
+        cls.layer = 'overlayLayer';
 
-        cls.prototype._nativeClass = function() {
+        cls._nativeClass = function() {
             var native_class = new Function();
             native_class.prototype = new google.maps.OverlayView();
 
@@ -253,7 +240,7 @@
         /*
             Создание нативного объекта
          */
-        cls.prototype.makeNative = function() {
+        cls.makeNative = function() {
             var native_class = this._nativeClass();
             this.native = new native_class;
         };
@@ -261,7 +248,7 @@
         /*
             Вызывается при добавлении оверлея на карту
          */
-        cls.prototype.onAdd = function() {
+        cls.onAdd = function() {
             var panes = this.native.getPanes();
             panes[this.layer].appendChild(this.$container.get(0));
         };
@@ -269,14 +256,14 @@
         /*
             Отрисовка оверлея
          */
-        cls.prototype.draw = function() {
+        cls.draw = function() {
 
         };
 
         /*
             Вызывается при откреплении оверлея от карты
          */
-        cls.prototype.onRemove = function() {
+        cls.onRemove = function() {
             this.$container.remove();
             this.$container = null;
         };
@@ -284,7 +271,7 @@
         /*
             Привязка к карте
          */
-        cls.prototype._mapAttach = function() {
+        cls._mapAttach = function() {
             this.native.setMap(this._map.native);
             this.trigger('attached');
             this._map.trigger('attach.overlay', this);
@@ -293,7 +280,7 @@
         /*
             Отвязывание от карты
          */
-        cls.prototype._mapDetach = function() {
+        cls._mapDetach = function() {
             this._map.trigger('detach.overlay', this);
             this.trigger('detached');
             this.native.setMap(null);
@@ -305,8 +292,8 @@
         Класс для пары координат
      */
     window.GMapPoint = Class(EventedObject, function GMapPoint(cls, superclass) {
-        cls.prototype.init = function(lat, lng) {
-            superclass.prototype.init.call(this);
+        cls.init = function(lat, lng) {
+            superclass.init.call(this);
 
             this.lat = this._formatCoord(lat);
             if (this.lat ===  false) {
@@ -325,7 +312,7 @@
             });
         };
 
-        cls.prototype._formatCoord = function(value) {
+        cls._formatCoord = function(value) {
             if (typeof value == 'string') {
                 value = parseFloat(value.replace(',', '.'));
             }
@@ -340,36 +327,36 @@
         /*
             Превращение в строку "lat, lng"
          */
-        cls.prototype.toString = function() {
+        cls.toString = function() {
             return [this.lat.toFixed(6), this.lng.toFixed(6)].join(', ');
         };
-
-        /*
-            Создание объекта из строки "lat, lng"
-         */
-        cls.fromString = function(str) {
-            var coords = str.toString().split(',');
-            if (coords.length != 2) {
-                console.error('invalid coords string: ' + str);
-                return;
-            }
-            return cls.create(coords[0], coords[1]);
-        };
-
-        /*
-            Создание объекта из нативного объекта
-         */
-        cls.fromNative = function(native) {
-            return cls.create(native.lat(), native.lng());
-        }
     });
+
+    // =========================================
+    //   Дополнительные конструкторы GMapPoint
+    // =========================================
+
+    // Создание объекта из строки "lat, lng"
+    GMapPoint.fromString = function(str) {
+        var coords = str.split(',');
+        if (coords.length != 2) {
+            console.error('invalid coords string: ' + str);
+            return;
+        }
+        return this.create(coords[0], coords[1]);
+    };
+
+    // Создание объекта из нативного объекта
+    GMapPoint.fromNative = function(native) {
+        return this.create(native.lat(), native.lng());
+    };
 
 
     /*
         Маркер на карте
      */
     window.GMapMarker = Class(GMapObject, function GMapMarker(cls, superclass) {
-        cls.prototype.NATIVE_EVENTS = [
+        cls.NATIVE_EVENTS = [
             'click',
             'dblclick',
             'rightclick',
@@ -389,12 +376,12 @@
         /*
             Создание нативного объекта
          */
-        cls.prototype.makeNative = function() {
+        cls.makeNative = function() {
             this.native = new google.maps.Marker();
         };
 
-        cls.prototype.onInit = function() {
-            superclass.prototype.onInit.call(this);
+        cls.onInit = function() {
+            superclass.onInit.call(this);
             this.position(this.opts.position);
             this.icon(this.opts.icon);
             this.hint(this.opts.hint);
@@ -404,8 +391,8 @@
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 position: null,
                 icon: '',
                 hint: '',
@@ -417,15 +404,15 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             google.maps.event.clearInstanceListeners(this.native);
-            superclass.prototype.destroy.call(this);
+            superclass.destroy.call(this);
         };
 
         /*
             Открытие окна, если оно есть
          */
-        cls.prototype.openBalloon = function() {
+        cls.openBalloon = function() {
             var map = this.map();
             if (!map.balloon) {
                 return;
@@ -441,7 +428,7 @@
         /*
             Получение / установка положения
          */
-        cls.prototype.position = function(value) {
+        cls.position = function(value) {
             if (value === undefined) {
                 // получение положения
                 return GMapPoint.fromNative(this.native.getPosition());
@@ -462,7 +449,7 @@
         /*
             Получение / установка подсказки
          */
-        cls.prototype.hint = function(value) {
+        cls.hint = function(value) {
             if (value === undefined) {
                 // получение подсказки
                 return this.native.getTitle();
@@ -480,7 +467,7 @@
         /*
             Получение / установка иконки
          */
-        cls.prototype.icon = function(value) {
+        cls.icon = function(value) {
             if (value === undefined) {
                 // получение иконки
                 return this.native.getIcon();
@@ -498,7 +485,7 @@
         /*
             Получение / установка возможности перетаскивания
          */
-        cls.prototype.draggable = function(value) {
+        cls.draggable = function(value) {
             if (value === undefined) {
                 // получение значения
                 return this.native.getDraggable();
@@ -511,7 +498,7 @@
         /*
             Привязка к карте
          */
-        cls.prototype._mapAttach = function() {
+        cls._mapAttach = function() {
             this.native.setMap(this._map.native);
             this.trigger('attached');
             this._map.trigger('attach.marker', this);
@@ -520,7 +507,7 @@
         /*
             Отвязывание от карты
          */
-        cls.prototype._mapDetach = function() {
+        cls._mapDetach = function() {
             // закрытие балуна, если он привязан к этому маркеру
             if (this._map.balloon && (this._map.balloon._anchor == this)) {
                 this._map.balloon.close();
@@ -537,7 +524,9 @@
         Класс карты Google
      */
     window.GMap = Class(GMapEventedObject, function GMap(cls, superclass) {
-        cls.prototype.NATIVE_EVENTS = [
+        cls.dataParamName = 'gmap';
+
+        cls.NATIVE_EVENTS = [
             'click',
             'dblclick',
             'rightclick',
@@ -552,38 +541,27 @@
             'zoom_changed'
         ];
 
-        cls.prototype.MAP_TYPES = [
+        cls.MAP_TYPES = [
             'hybrid',
             'roadmap',
             'satellite',
             'terrain'
         ];
 
-        /*
-            Выполнение callback, когда JS GoogleMaps загружен и готов
-         */
-        cls.ready = function(callback) {
-            if (gmaps_ready) {
-                callback()
-            } else {
-                $(document).one('google-maps-ready', callback);
-            }
-        };
-
-        cls.prototype.init = function(root, options) {
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
             }
 
-            superclass.prototype.init.call(this, options);
+            superclass.init.call(this, options);
         };
 
         /*
             Настройки по умолчанию
          */
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 center: null,
                 mapType: 'roadmap',
                 dblClickZoom: false,
@@ -600,7 +578,7 @@
         /*
             Создание нативного объекта
          */
-        cls.prototype.makeNative = function() {
+        cls.makeNative = function() {
             this.native = new google.maps.Map(this.$root.get(0), {
                 center: this.opts.center,
                 noClear: this.opts.noClear,
@@ -630,8 +608,8 @@
         /*
             Инициализация
          */
-        cls.prototype.onInit = function() {
-            superclass.prototype.onInit.call(this);
+        cls.onInit = function() {
+            superclass.onInit.call(this);
 
             // маркеры на карте
             this.markers = [];
@@ -672,13 +650,13 @@
                 }
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Получение / установка центра карты
          */
-        cls.prototype.center = function(value) {
+        cls.center = function(value) {
             if (value === undefined) {
                 // получение центра карты
                 return GMapPoint.fromNative(this.native.getCenter());
@@ -700,7 +678,7 @@
         /*
             Получение / установка возможности перетаскивания карты
          */
-        cls.prototype.draggable = function(value) {
+        cls.draggable = function(value) {
             if (value === undefined) {
                 // получение значения
                 return this.native.draggable;
@@ -715,9 +693,7 @@
         /*
             Плавное перемещение к точке
          */
-        cls.prototype.panTo = function(center, speed) {
-            speed = parseInt(speed) || 500;
-
+        cls.panTo = function(center) {
             if (center instanceof GMapMarker) {
                 var target = center.position();
             } else if (center instanceof GMapPoint) {
@@ -733,7 +709,7 @@
         /*
             Получение / установка зума карты через колесико
          */
-        cls.prototype.wheel = function(value) {
+        cls.wheel = function(value) {
             if (value === undefined) {
                 // получение значения
                 return this.native.scrollwheel;
@@ -748,7 +724,7 @@
         /*
             Получение / установка типа карты
          */
-        cls.prototype.mapType = function(value) {
+        cls.mapType = function(value) {
             if (value === undefined) {
                 // получение значения
                 return this.native.native.getMapTypeId();
@@ -767,7 +743,7 @@
         /*
             Получение / установка стилей карты
          */
-        cls.prototype.styles = function(value) {
+        cls.styles = function(value) {
             if (value === undefined) {
                 // получение значения
                 return this.native.get('styles');
@@ -785,7 +761,7 @@
         /*
             Получение / установка зума карты
          */
-        cls.prototype.zoom = function(value) {
+        cls.zoom = function(value) {
             if (value === undefined) {
                 // получение зума
                 return this.native.getZoom();
@@ -803,7 +779,7 @@
         /*
             Авторасчет зума и центра, чтобы были видны маркеры
          */
-        cls.prototype.fitBounds = function() {
+        cls.fitBounds = function() {
             var bounds = new google.maps.LatLngBounds();
 
             var items = arguments.length ? arguments : this.markers;
@@ -821,7 +797,7 @@
         /*
             Удаление всех маркеров
          */
-        cls.prototype.removeAllMarkers = function() {
+        cls.removeAllMarkers = function() {
             var marker;
             while (marker = this.markers[0]) {
                 marker.destroy();
@@ -831,7 +807,7 @@
         /*
             Удаление всех оверлеев
          */
-        cls.prototype.removeAllOverlays = function() {
+        cls.removeAllOverlays = function() {
             var overlay;
             while (overlay = this.overlays[0]) {
                 overlay.destroy();
@@ -850,7 +826,7 @@
                 alert('Error:', status)
             })
          */
-        cls.prototype.geocode = function(address, success, error) {
+        cls.geocode = function(address, success, error) {
             if (!this._geocoder) {
                 this._geocoder = new google.maps.Geocoder();
             }
@@ -868,6 +844,30 @@
             });
         };
     });
-    GMap.dataParamName = 'gmap';
+
+
+    var gmaps_ready = false;
+    window.init_google_maps = function() {
+        gmaps_ready = true;
+        $(document).trigger('google-maps-ready');
+    };
+
+    $(document).ready(function() {
+        var lang = document.documentElement.getAttribute('lang');
+        var script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&language=' + lang;
+        document.body.appendChild(script);
+    });
+
+    /*
+        Выполнение callback, когда JS GoogleMaps загружен и готов
+     */
+    GMap.ready = function(callback) {
+        if (gmaps_ready) {
+            callback()
+        } else {
+            $(document).one('google-maps-ready', callback);
+        }
+    };
 
 })(jQuery);

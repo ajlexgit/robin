@@ -5,8 +5,8 @@
         их массовое удаление, сортировку, обрезку картинки.
      */
     window.DefaultGallery = Class(Gallery, function DefaultGallery(cls, superclass) {
-        cls.prototype.init = function(root, options) {
-            superclass.prototype.init.call(this, root, options);
+        cls.init = function(root, options) {
+            superclass.init.call(this, root, options);
 
             this.on('init.gallery', function() {
                 this.initCropdialog();
@@ -36,7 +36,7 @@
             Проверка наличия выделенных картинок. Если такие есть - включаем
             кнопку удаления выделенных элементов
          */
-        cls.prototype.checkChecked = function() {
+        cls.checkChecked = function() {
             var $checked = this.$list.find('.gallery-item-checked');
             this.$root.find('.delete-checked-items').prop('disabled', $checked.length == 0);
         };
@@ -44,7 +44,7 @@
         /*
             Инициализация диалогового окна для обрезки картинок
          */
-        cls.prototype.initCropdialog = function() {
+        cls.initCropdialog = function() {
             var that = this;
             this.cropdialog = CropDialog(this.$root, {
                 eventTypes: 'click.gallery.cropdialog',
@@ -78,7 +78,7 @@
         /*
             Инициализация сортировки элементов
          */
-        cls.prototype.initSortable = function() {
+        cls.initSortable = function() {
             var sort_query;
 
             var that = this;
@@ -116,7 +116,7 @@
         /*
             Инициализация выделения элементов
          */
-        cls.prototype.initChecking = function() {
+        cls.initChecking = function() {
             var that = this;
             this.$list.on('change.gallery.checkitem', '.check-box', function() {
                 var $input = $(this);
@@ -135,7 +135,7 @@
         /*
             Инициализация удаления выделенных элементов
          */
-        cls.prototype.initMassDelete = function() {
+        cls.initMassDelete = function() {
             var that = this;
             this.$root.on('click.gallery.massdelete', '.delete-checked-items', function() {
                 var $checked = that.$list.find('.gallery-item-checked');

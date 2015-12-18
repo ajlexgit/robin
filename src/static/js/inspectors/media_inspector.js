@@ -30,20 +30,17 @@
      */
 
     var MediaInspector = Class(Inspector, function MediaInspector(cls, superclass) {
-        cls.prototype.init = function() {
-            this._list = [];
-            this.STATE_DATA_KEY = 'media_inspector_state';
-            this.OPTS_DATA_KEY = 'media_inspector_opts';
-        };
+        cls.STATE_DATA_KEY = 'media_inspector_state';
+        cls.OPTS_DATA_KEY = 'media_inspector_opts';
 
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts(), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts(), {
                 point: 0
             })
         };
 
 
-        cls.prototype._check = function($element, opts) {
+        cls._check = function($element, opts) {
             return window.innerWidth >= opts.point;
         };
     });

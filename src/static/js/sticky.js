@@ -27,7 +27,9 @@
 
 
     window.Sticky = Class(null, function Sticky(cls, superclass) {
-        cls.prototype.init = function(block, options) {
+        cls.dataParamName = 'sticky';
+
+        cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
                 return this.raise('block not found');
@@ -46,7 +48,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(cls.dataParamName);
+            var old_instance = this.$block.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -76,7 +78,7 @@
             // Сохраняем объект в массив для использования в событиях
             stickies.push(this);
 
-            this.$block.data(cls.dataParamName, this);
+            this.$block.data(this.dataParamName, this);
 
             $.mediaInspector.check(this.$block);
         };
@@ -84,10 +86,10 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.disable();
             $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(cls.dataParamName);
+            this.$block.removeData(this.dataParamName);
 
             var index = stickies.indexOf(this);
             if (index >= 0) {
@@ -98,7 +100,7 @@
         /*
             Включение ползания
          */
-        cls.prototype.enable = function() {
+        cls.enable = function() {
             this.updateWidth();
 
             if (this._enabled) {
@@ -113,7 +115,7 @@
         /*
             Выключение ползания
          */
-        cls.prototype.disable = function() {
+        cls.disable = function() {
             if (!this._enabled) {
                 return
             } else {
@@ -139,7 +141,7 @@
         /*
             Запоминаем ширину блока (для strategy = fixed)
          */
-        cls.prototype.updateWidth = function() {
+        cls.updateWidth = function() {
             if (this.opts.strategy != 'fixed') {
                 return ''
             }
@@ -160,7 +162,7 @@
         /*
             Обработка скролла
          */
-        cls.prototype.process = function(win_scroll) {
+        cls.process = function(win_scroll) {
             if (!this._enabled) {
                 return
             }
@@ -174,7 +176,7 @@
         /*
             Обработка скролла при стратегии fixed
          */
-        cls.prototype._processFixed = function(win_scroll) {
+        cls._processFixed = function(win_scroll) {
             var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
             var block_height = this.$block.outerHeight(true);
             var container_height = this.$container.height();
@@ -221,7 +223,7 @@
         /*
             Обработка скролла при стратегии margin
          */
-        cls.prototype._processMargin = function(win_scroll) {
+        cls._processMargin = function(win_scroll) {
             var container_top = this.$container.offset().top + (parseInt(this.$container.css('padding-top')) || 0);
             var block_height = this.$block.outerHeight();
             var container_height = this.$container.height();
@@ -254,7 +256,6 @@
             }
         };
     });
-    Sticky.dataParamName = 'sticky';
 
 
     var applyStickies = function() {

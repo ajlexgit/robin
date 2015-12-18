@@ -24,7 +24,9 @@
     */
 
     window.CustomCounter = Class(null, function CustomCounter(cls, superclass) {
-        cls.prototype.init = function(root, options) {
+        cls.dataParamName = 'counter';
+
+        cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -48,7 +50,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$input.data(cls.dataParamName);
+            var old_instance = this.$input.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -99,26 +101,26 @@
                 }
             });
 
-            this.$input.data(cls.dataParamName, this);
+            this.$input.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$decrBtn.remove();
             this.$incrBtn.remove();
             this.$input.removeClass(this.opts.inputClass);
             this.$input.prependTo(this.$root);
             this.$input.off('.counter');
             this.$wrapper.remove();
-            this.$input.removeData(cls.dataParamName);
+            this.$input.removeData(this.dataParamName);
         };
 
         /*
             Форматирование значения
          */
-        cls.prototype._formatted = function(value) {
+        cls._formatted = function(value) {
             value = parseInt(value);
             if (isNaN(value)) {
                 return value;
@@ -138,7 +140,7 @@
         /*
             Запись значения в input
          */
-        cls.prototype._set_value = function(value) {
+        cls._set_value = function(value) {
             this._value = this._formatted(value);
             this.$input.val(isNaN(this._value) ? '' : this._value);
         };
@@ -146,7 +148,7 @@
         /*
             Получение и установка значения
          */
-        cls.prototype.value = function(value) {
+        cls.value = function(value) {
             if (value === undefined) {
                 return this._formatted(this.$input.val());
             }
@@ -170,7 +172,7 @@
         /*
             Инкремент значения
          */
-        cls.prototype.increment = function() {
+        cls.increment = function() {
             var current = this._value || 0;
             this.value(current + 1);
         };
@@ -178,29 +180,28 @@
         /*
             Декремент значения
          */
-        cls.prototype.decrement = function() {
+        cls.decrement = function() {
             var current = this._value || 0;
             this.value(current - 1);
         };
     });
-    CustomCounter.dataParamName = 'counter';
 
 
     /*
         Скролл поля изменяет значение
      */
     $(document).on('mousewheel.counter', '.custom-counter-wrapper', function(e) {
-        var obj = $(this).find('input').data(CustomCounter.dataParamName);
-        if (!obj) {
+        var counter = $(this).find('input').data(CustomCounter.prototype.dataParamName);
+        if (!counter) {
             return
         }
 
         if (e.deltaY < 0) {
             // вниз
-            obj.decrement();
+            counter.decrement();
         } else {
             // вверх
-            obj.increment();
+            counter.increment();
         }
 
         return false

@@ -17,7 +17,7 @@
 
         Пример:
             // Двигаем блок внутри контейнера #ctnr.
-            // Перемещение начинается от точки, когда контейнер становится видмым
+            // Перемещение начинается от точки, когда контейнер становится видимым
 
             $('.layer').layer({
                 onInit: function() {
@@ -45,7 +45,9 @@
     var layers = [];
 
     window.Layer = Class(null, function Layer(cls, superclass) {
-        cls.prototype.init = function(block, options) {
+        cls.dataParamName = 'layer';
+
+        cls.init = function(block, options) {
             this.$block = $(block).first();
             if (!this.$block.length) {
                 return this.raise('block not found');
@@ -67,7 +69,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(cls.dataParamName);
+            var old_instance = this.$block.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -107,7 +109,7 @@
             // Сохраняем объект в массив для использования в событиях
             layers.push(this);
 
-            this.$block.data(cls.dataParamName, this);
+            this.$block.data(this.dataParamName, this);
 
             // callback
             this.opts.onInit.call(this);
@@ -118,10 +120,10 @@
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.disable();
             $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(cls.dataParamName);
+            this.$block.removeData(this.dataParamName);
 
             var index = layers.indexOf(this);
             if (index >= 0) {
@@ -132,7 +134,7 @@
         /*
             Включение параллакса
          */
-        cls.prototype.enable = function() {
+        cls.enable = function() {
             if (this._enabled) {
                 return
             } else{
@@ -145,7 +147,7 @@
         /*
             Отключение параллакса
          */
-        cls.prototype.disable = function() {
+        cls.disable = function() {
             if (!this._enabled) {
                 return
             } else {
@@ -162,7 +164,7 @@
         /*
             Расчет смещения картинки по текущему положению окна
          */
-        cls.prototype.process = function(win_scroll) {
+        cls.process = function(win_scroll) {
             if (!this._enabled) {
                 return
             }
@@ -182,7 +184,6 @@
             }
         };
     });
-    Layer.dataParamName = 'layer';
 
 
     /*

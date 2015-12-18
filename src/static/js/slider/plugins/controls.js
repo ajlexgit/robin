@@ -1,16 +1,16 @@
 (function($) {
 
     window.SliderControlsPlugin = Class(SliderPlugin, function SliderControlsPlugin(cls, superclass) {
-        cls.prototype.init = function(settings) {
-            superclass.prototype.init.call(this, settings);
+        cls.init = function(settings) {
+            superclass.init.call(this, settings);
             if (!this.opts.animationName) {
                 return this.raise('animationName required');
             }
         };
 
         // Настройки по умолчанию
-        cls.prototype.getDefaultOpts = function() {
-            return $.extend(superclass.prototype.getDefaultOpts.call(this), {
+        cls.getDefaultOpts = function() {
+            return $.extend(superclass.getDefaultOpts.call(this), {
                 animationName: '',
                 animatedHeight: true,
 
@@ -27,8 +27,8 @@
         /*
             Создание стрелок при подключении плагина
          */
-        cls.prototype.onAttach = function(slider) {
-            superclass.prototype.onAttach.call(this, slider);
+        cls.onAttach = function(slider) {
+            superclass.onAttach.call(this, slider);
 
             this.createControls(slider);
             this.checkAllowed(slider);
@@ -37,14 +37,14 @@
         /*
             Деактивируем стрелки на границах сладера
          */
-        cls.prototype.afterSetCurrentSlide = function(slider) {
+        cls.afterSetCurrentSlide = function(slider) {
             this.checkAllowed(slider);
         };
 
         /*
             Создание стрелок
          */
-        cls.prototype.createControls = function(slider) {
+        cls.createControls = function(slider) {
             if (this.opts.container) {
                 this.$container = slider.$root.find(this.opts.container).first();
             } else {
@@ -61,7 +61,7 @@
         /*
             Добавление стрелок в DOM
          */
-        cls.prototype.createControlItems = function(slider) {
+        cls.createControlItems = function(slider) {
             var that = this;
 
             this.$left = $('<div>')
@@ -94,7 +94,7 @@
         /*
             Проверка и деактивация кнопок на границах
          */
-        cls.prototype.checkAllowed = function(slider) {
+        cls.checkAllowed = function(slider) {
             var $curr = slider.$currentSlide;
             var $next = slider.getNextSlide($curr);
             var $prev = slider.getPreviousSlide($curr);

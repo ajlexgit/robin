@@ -21,7 +21,9 @@
 
     var event_ns = 1;
     window.Autocomplete = Class(null, function Autocomplete(cls, superclass) {
-        cls.prototype.init = function(element, options) {
+        cls.dataParamName = 'autocomplete';
+
+        cls.init = function(element, options) {
             this.$elem = $(element).first();
             if (!this.$elem.length) {
                 return this.raise('element not found');
@@ -48,7 +50,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$elem.data(cls.dataParamName);
+            var old_instance = this.$elem.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -84,21 +86,21 @@
             // инициализация select2
             this.initSelect2();
 
-            this.$elem.data(cls.dataParamName, this);
+            this.$elem.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$depends.off('.autocomplete' + this.event_ns);
-            this.$elem.removeData(cls.dataParamName);
+            this.$elem.removeData(this.dataParamName);
         };
 
         /*
             Возвращает значения, от которых зависит текущее поле
          */
-        cls.prototype._parentValues = function() {
+        cls._parentValues = function() {
             return Array.prototype.map.call(this.$depends, function(item) {
                 return $(item).val()
             }).join(';');
@@ -107,7 +109,7 @@
         /*
             Инициализация Select2
          */
-        cls.prototype.initSelect2 = function() {
+        cls.initSelect2 = function() {
             var that = this;
             this.$elem.select2({
                 minimumInputLength: this.opts.minimum_input_length,
@@ -164,7 +166,6 @@
             });
         };
     });
-    Autocomplete.dataParamName = 'autocomplete';
 
 
     $(document).ready(function() {

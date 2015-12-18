@@ -1,7 +1,9 @@
 (function($) {
 
     var SpriteImage = Class(null, function SpriteImage(cls, superclass) {
-        cls.prototype.init = function(root) {
+        cls.dataParamName = 'sprite_image';
+
+        cls.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -23,7 +25,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -40,21 +42,21 @@
                 that.closeDropdown(true);
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             this.$root.off('.sprite-image');
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Выбор элемента списка
          */
-        cls.prototype.selectItem = function($item) {
+        cls.selectItem = function($item) {
             $item.addClass('active').siblings('.active').removeClass('active');
             this.$preview.css({
                 backgroundPosition: $item.css('background-position')
@@ -65,7 +67,7 @@
         /*
             Открытие выпадающего списка
          */
-        cls.prototype.openDropdown = function() {
+        cls.openDropdown = function() {
             this.$root.addClass('opened');
             var margin = parseInt(this.$preview.width()) + 18;
             this.$dropdown.css('margin-left', margin).stop().slideDown(200);
@@ -82,7 +84,7 @@
         /*
             Закрытие выпадающего списка
          */
-        cls.prototype.closeDropdown = function(instant) {
+        cls.closeDropdown = function(instant) {
             this.$root.removeClass('opened');
 
             if (instant) {
@@ -94,7 +96,6 @@
             }
         };
     });
-    SpriteImage.dataParamName = 'sprite_image';
 
 
     $(document).ready(function() {

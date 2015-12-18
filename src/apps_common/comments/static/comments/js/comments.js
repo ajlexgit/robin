@@ -6,7 +6,7 @@
             switch (options) {
                 case 'object':
                     // Получение объекта комментариев
-                    return this.first().data(Comments.dataParamName);
+                    return this.first().data(Comments.prototype.dataParamName);
                 case 'destroy':
                     // Уничтожение объекта комментариев
                     return this.each(function() {

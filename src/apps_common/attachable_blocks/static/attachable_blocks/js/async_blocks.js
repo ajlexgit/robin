@@ -1,8 +1,22 @@
 (function($) {
 
+    /*
+        Загрузчик асинхронных блоков.
+
+        Требует:
+            jquery.utils.js
+
+        Ищет все элементы с классом "async-block",
+        отправляет для каждого блока AJAX-запрос на получение
+        HTML-кода блока. Результат заменяет исходный элемент.
+
+     */
+
     window.AsyncBlock = Class(EventedObject, function AsyncBlock(cls, superclass) {
-        cls.prototype.init = function($placeholder, options) {
-            superclass.prototype.init.call(this);
+        cls.dataParamName = 'async-block';
+
+        cls.init = function($placeholder, options) {
+            superclass.init.call(this);
 
             this.$placeholder = $($placeholder).first();
             if (!this.$placeholder.length) {
@@ -22,7 +36,7 @@
                 return this.raise('url is empty');
             }
 
-            this.$placeholder.data(cls.dataParamName, this);
+            this.$placeholder.data(this.dataParamName, this);
 
             this.ajax();
         };
@@ -30,7 +44,7 @@
         /*
             Запрос блока
          */
-        cls.prototype.ajax = function() {
+        cls.ajax = function() {
             if (this._query) {
                 this._query.abort();
             }
@@ -61,7 +75,7 @@
         /*
             Получение ответа с разметкой блока
          */
-        cls.prototype.ajaxSuccess = function(response) {
+        cls.ajaxSuccess = function(response) {
             if (response.html) {
                 var $new_block = $(response.html);
                 this.$placeholder.after($new_block);
@@ -74,12 +88,11 @@
         /*
             Ошибка получения блока
          */
-        cls.prototype.ajaxError = function(response) {
+        cls.ajaxError = function(response) {
             this.$placeholder.remove();
             this.trigger('error.asyncblock', response);
         };
     });
-    AsyncBlock.dataParamName = 'async-block';
 
 
     $(document).ready(function() {

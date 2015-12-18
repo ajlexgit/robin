@@ -17,7 +17,9 @@
     */
 
     window.Checkbox = Class(null, function Checkbox(cls, superclass) {
-        cls.prototype.init = function(input, options) {
+        cls.dataParamName = 'checkbox';
+
+        cls.init = function(input, options) {
             this.$root = $(input).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -28,7 +30,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(cls.dataParamName);
+            var old_instance = this.$root.data(this.dataParamName);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -74,26 +76,26 @@
                 return false;
             });
 
-            this.$root.data(cls.dataParamName, this);
+            this.$root.data(this.dataParamName, this);
         };
 
         /*
             Освобождение ресурсов
          */
-        cls.prototype.destroy = function() {
+        cls.destroy = function() {
             // восстановление CSS
             this.$root.get(0).style.cssText = this._initial_css;
 
             this.$elem.remove();
 
             this.$root.off('.checkbox');
-            this.$root.removeData(cls.dataParamName);
+            this.$root.removeData(this.dataParamName);
         };
 
         /*
             Установка состояния чекбокса
          */
-        cls.prototype._set_checked = function(checked) {
+        cls._set_checked = function(checked) {
             this._checked = Boolean(checked);
             if (this._checked) {
                 this.$elem.addClass(this.opts.checkedClass);
@@ -107,28 +109,28 @@
         /*
             Выделение
          */
-        cls.prototype.check = function() {
+        cls.check = function() {
             return this._set_checked(true)
         };
 
         /*
             Снятие выделения
          */
-        cls.prototype.uncheck = function() {
+        cls.uncheck = function() {
             return this._set_checked(false)
         };
 
         /*
             Получение состояния
          */
-        cls.prototype.isChecked = function() {
+        cls.isChecked = function() {
             return this._checked
         };
 
         /*
             Установка состояния включен / отключен
          */
-        cls.prototype._set_enabled = function(enabled) {
+        cls._set_enabled = function(enabled) {
             this._enabled = Boolean(enabled);
             if (this._enabled) {
                 this.$elem.removeClass(this.opts.disabledClass);
@@ -142,25 +144,24 @@
         /*
             Включение
          */
-        cls.prototype.enable = function() {
+        cls.enable = function() {
             return this._set_enabled(true)
         };
 
         /*
             Выключение
          */
-        cls.prototype.disable = function() {
+        cls.disable = function() {
             return this._set_enabled(false)
         };
 
         /*
             Получение состояния доступности
          */
-        cls.prototype.is_enabled = function() {
+        cls.is_enabled = function() {
             return this._enabled
         };
     });
-    Checkbox.dataParamName = 'checkbox';
 
 
     $.fn.checkbox = function(options) {
