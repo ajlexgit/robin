@@ -22,16 +22,7 @@
                     balloonContent: '<h1>Hello</h1>'
                 }).on('click', function() {
                     // открытие окна при клике
-                    var map = this.map();
-                    if (!map.balloon) {
-                        return;
-                    }
-
-                    map.balloon.close();
-                    if (this.opts.balloonContent) {
-                        map.balloon.content(this.opts.balloonContent);
-                        map.balloon.open(this);
-                    }
+                    this.openBalloon();
                 });;
 
                 var marker2 = GMapMarker({
