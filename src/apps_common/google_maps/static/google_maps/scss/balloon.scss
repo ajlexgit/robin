@@ -12,7 +12,7 @@
     position: relative;
     max-width: 100%;
     z-index: 1;
-    background: #FFF;
+    background: $white;
     @include border-box;
   }
 
@@ -22,7 +22,7 @@
     left: 50%;
     z-index: 10;
     border: 16px solid transparent;
-    border-top: 16px solid #FFF;
+    border-top: 16px solid $white;
     @include transform(translateX(-50%));
   }
 
@@ -86,7 +86,7 @@
       top: 50%;
       width: 100%;
       height: 2px;
-      background: #808080;
+      background: $gray;
       @include transition-property(background);
       @include transition-duration(0.2s);
       @include transition-timing-function(ease-in);

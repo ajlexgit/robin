@@ -419,15 +419,10 @@
             var centerPos = projection.fromLatLngToContainerPixel(map.center().native);
             var coords = projection.fromLatLngToContainerPixel(latLng);
 
-//            // Find out how much space at the top is free
-//            var spaceTop = centerPos.y - this._height - this._getAnchorHeight();
-//
-//            // Fine out how much space at the bottom is free
-//            var spaceBottom = mapHeight - centerPos.y;
-
-            var totalHeight = this._height + this._getAnchorHeight();
+            var anchorHeight = this._getAnchorHeight();
+            var totalHeight = this._height + anchorHeight;
             if (totalHeight < mapHeight) {
-                coords.y -= totalHeight / 2;
+                coords.y -= Math.min(totalHeight / 2, centerPos.y - anchorHeight);
             }
 
             latLng = projection.fromContainerPixelToLatLng(coords);
