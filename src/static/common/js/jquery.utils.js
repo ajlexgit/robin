@@ -404,8 +404,8 @@
             start()     - запуск анимации
             stop()      - приостановить анимацию
      */
-    var Animation = (function() {
-        function Animation(settings) {
+    window.Animation = Class(null, function Animation(cls, superclass) {
+        cls.init = function(options) {
             this.opts = $.extend({
                 duration: 1000,
                 delay: 20,
@@ -417,7 +417,7 @@
                 start: $.noop,
                 stop: $.noop,
                 complete: $.noop
-            }, settings);
+            }, options);
 
             this._progress = 0;
             this._paused = true;
@@ -430,10 +430,10 @@
             if (!this.opts.paused) {
                 this.start();
             }
-        }
+        };
 
         // Запуск анимации
-        Animation.prototype.start = function() {
+        cls.start = function() {
             if (this._paused && (this._progress < 1)) {
                 this._paused = false;
 
@@ -452,7 +452,7 @@
         };
 
         // Остановка анимации
-        Animation.prototype.stop = function(jumpToEnd) {
+        cls.stop = function(jumpToEnd) {
             if (!this._paused) {
                 this._paused = true;
                 clearInterval(this._timer);
@@ -470,7 +470,7 @@
         };
 
         // Shortcut для инициализации изменения свойства
-        Animation.prototype.autoInit = function(name, from, to) {
+        cls.autoInit = function(name, from, to) {
             this._info = this._info || {};
 
             this._info[name] = {
@@ -480,7 +480,7 @@
         };
 
         // Shortcut для расчета нового значения свойства
-        Animation.prototype.autoCalc = function(name, eProgress) {
+        cls.autoCalc = function(name, eProgress) {
             var info = this._info && this._info[name];
             if (!info) {
                 return null
@@ -490,7 +490,7 @@
         };
 
         // Применение шага анимации с вычислением that._progress
-        Animation.prototype._timerHandle = function() {
+        cls._timerHandle = function() {
             if (this._paused) {
                 return
             }
@@ -504,16 +504,14 @@
         };
 
         // Применение шага анимации (для уже установленного that._progress)
-        Animation.prototype._applyProgress = function() {
+        cls._applyProgress = function() {
             var easeProgress = $.easing[this.opts.easing](this._progress);
             this.opts.step.call(this, easeProgress);
         };
-
-        return Animation;
-    })();
+    });
 
     $.animate = function(options) {
-        return new Animation(options);
+        return Animation(options);
     };
 
     // ======================================================================================
