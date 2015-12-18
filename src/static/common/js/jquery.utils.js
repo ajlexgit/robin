@@ -313,8 +313,8 @@
                     if (this._isEveryNamespaces(record, evt_info.namespaces)) {
                         var result = record.handler.apply(this, [record].concat(args));
                         if (record.once) {
+                            i--;
                             evt_list.splice(i, 1);
-                            i--
                         }
 
                         // stop propagate
