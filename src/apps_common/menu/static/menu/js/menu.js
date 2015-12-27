@@ -21,18 +21,21 @@
     var menus = [];
 
     var Menu = Class(null, function Menu(cls, superclass) {
+        cls.defaults = {
+            menuSelector: '#mobile-menu',
+            menuActiveClass: 'active',
+            buttonSelector: '#mobile-menu-button',
+            buttonActiveClass: 'active',
+
+            beforeShow: $.noop,
+            beforeHide: $.noop,
+            onResize: $.noop
+        };
+
+
         cls.init = function(options) {
             // настройки
-            this.opts = $.extend({
-                menuSelector: '#mobile-menu',
-                menuActiveClass: 'active',
-                buttonSelector: '#mobile-menu-button',
-                buttonActiveClass: 'active',
-
-                beforeShow: $.noop,
-                beforeHide: $.noop,
-                onResize: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // элемент меню
             this.$menu = $(this.opts.menuSelector).first();

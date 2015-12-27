@@ -27,7 +27,15 @@
 
 
     window.Sticky = Class(null, function Sticky(cls, superclass) {
+        cls.defaults = {
+            strategy: 'fixed',
+            topOffset: 0,
+            bottomOffset: 0,
+            minEnabledWidth: 768
+        };
+
         cls.dataParamName = 'sticky';
+
 
         cls.init = function(block, options) {
             this.$block = $(block).first();
@@ -36,13 +44,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                strategy: 'fixed',
-                topOffset: 0,
-                bottomOffset: 0,
-                minEnabledWidth: 768
-            }, options);
-
+            this.opts = $.extend({}, this.defaults, options);
             if ((this.opts.strategy != 'margin') && (this.opts.strategy != 'fixed')) {
                 return this.raise('undefined strategy');
             }

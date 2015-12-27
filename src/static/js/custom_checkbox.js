@@ -17,7 +17,15 @@
     */
 
     window.Checkbox = Class(null, function Checkbox(cls, superclass) {
+        cls.defaults = {
+            className: 'custom-checkbox',
+            checkedClass: 'checked',
+            disabledClass: 'disabled',
+            onCheck: $.noop
+        };
+
         cls.dataParamName = 'checkbox';
+
 
         cls.init = function(input, options) {
             this.$root = $(input).first();
@@ -36,12 +44,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                className: 'custom-checkbox',
-                checkedClass: 'checked',
-                disabledClass: 'disabled',
-                onCheck: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // запоминаем CSS и скрываем чекбокс
             this._initial_css = this.$root.get(0).style.cssText;

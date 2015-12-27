@@ -13,7 +13,17 @@
      */
 
     window.AsyncBlock = Class(EventedObject, function AsyncBlock(cls, superclass) {
+        cls.defaults = {
+            url: window.js_storage.async_block,
+            extraData: function() {
+                return {
+                    block_id: this.$placeholder.data('id')
+                }
+            }
+        };
+
         cls.dataParamName = 'async-block';
+
 
         cls.init = function($placeholder, options) {
             superclass.init.call(this);
@@ -23,15 +33,7 @@
                 return this.raise('placeholder not found');
             }
 
-            this.opts = $.extend({
-                url: window.js_storage.async_block,
-                extraData: function() {
-                    return {
-                        block_id: this.$placeholder.data('id')
-                    }
-                }
-            }, options);
-
+            this.opts = $.extend({}, this.defaults, options);
             if (!this.opts.url) {
                 return this.raise('url is empty');
             }

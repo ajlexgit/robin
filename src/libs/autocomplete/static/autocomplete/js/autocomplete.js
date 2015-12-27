@@ -21,7 +21,17 @@
 
     var event_ns = 1;
     window.Autocomplete = Class(null, function Autocomplete(cls, superclass) {
+        cls.defaults = {
+            url: '',
+            depends: [],
+            expressions: 'title__icontains',
+            minimum_input_length: 2,
+            close_on_select: true,
+            multiple: false
+        };
+
         cls.dataParamName = 'autocomplete';
+
 
         cls.init = function(element, options) {
             this.$elem = $(element).first();
@@ -30,14 +40,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                url: '',
-                depends: [],
-                expressions: 'title__icontains',
-                minimum_input_length: 2,
-                close_on_select: true,
-                multiple: false
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             if (!this.opts.url) {
                 return this.raise('url required');

@@ -24,7 +24,18 @@
     */
 
     window.CustomCounter = Class(null, function CustomCounter(cls, superclass) {
+        cls.defaults = {
+            wrapperClass: 'custom-counter-wrapper',
+            buttonClass: 'custom-counter-button',
+            inputClass: 'custom-counter-input',
+            min: '',
+            max: '',
+            beforeChange: $.noop,
+            afterChange: $.noop
+        };
+
         cls.dataParamName = 'counter';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -33,15 +44,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                wrapperClass: 'custom-counter-wrapper',
-                buttonClass: 'custom-counter-button',
-                inputClass: 'custom-counter-input',
-                min: '',
-                max: '',
-                beforeChange: $.noop,
-                afterChange: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // поле
             this.$input = this.$root.find('input').first();

@@ -1,14 +1,11 @@
 (function($) {
 
     window.SliderFadeAnimation = Class(SliderPlugin, function SliderFadeAnimation(cls, superclass) {
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                name: 'fade',
-                speed: 800,
-                easing: 'linear'
-            });
-        };
+        cls.defaults = $.extend({}, superclass.defaults, {
+            name: 'fade',
+            speed: 800,
+            easing: 'linear'
+        });
 
         /*
             Реализация метода перехода от одного слайда к другому

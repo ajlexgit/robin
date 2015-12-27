@@ -9,6 +9,7 @@
 
         cls.dataParamName = 'stdimage';
 
+
         cls.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {

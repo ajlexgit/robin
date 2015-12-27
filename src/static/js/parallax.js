@@ -32,7 +32,15 @@
     var parallaxes = [];
 
     window.Parallax = Class(null, function Parallax(cls, superclass) {
+        cls.defaults = {
+            selector: '.parallax',
+            easing: 'easeInOutQuad',
+            bgHeight: 150,
+            minEnabledWidth: 768
+        };
+
         cls.dataParamName = 'parallax';
+
 
         cls.init = function(block, options) {
             this.$block = $(block).first();
@@ -41,13 +49,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                selector: '.parallax',
-                easing: 'easeInOutQuad',
-                bgHeight: 150,
-                minEnabledWidth: 768
-            }, options);
-
+            this.opts = $.extend({}, this.defaults, options);
             if (this.opts.bgHeight < 100) {
                 return this.raise('bgHeight should not be less than 100');
             }

@@ -108,6 +108,17 @@
     };
 
     window.Popup = Class(null, function Popup(cls, superclass) {
+        cls.defaults = {
+            classes: '',
+            content: '',
+            speed: 400,
+            easing: 'easeOutCubic',
+
+            onInit: $.noop,
+            beforeShow: $.noop,
+            beforeHide: $.noop
+        };
+
         cls.CONTAINER_ID = 'popup-container';
         cls.WRAPPER_CLASS = 'popup-wrapper';
         cls.WINDOW_CLASS = 'popup-window';
@@ -116,9 +127,10 @@
         // класс <body>, вешающийся при показе окна
         cls.BODY_OPENED_CLASS = 'popup-opened';
 
+
         cls.init = function(options) {
             // настройки
-            this.opts = $.extend(true, this.getDefaultOpts(), options);
+            this.opts = $.extend(true, {}, this.defaults, options);
 
             // уничтожение старого окна
             var old_popup = getCurrentPopup();
@@ -147,22 +159,6 @@
 
             // установка текущего окна
             currentPopup = this;
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return {
-                classes: '',
-                content: '',
-                speed: 400,
-                easing: 'easeOutCubic',
-
-                onInit: $.noop,
-                beforeShow: $.noop,
-                beforeHide: $.noop
-            }
         };
 
         /*
@@ -413,18 +409,14 @@
         Модальное окно с оверлеем, кнопкой закрытия
      */
     window.OverlayedPopup = Class(Popup, function OverlayedPopup(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            closeButton: true,
+            hideOnClick: true
+        });
+
         cls.OVERLAY_ID = 'popup-overlay';
         cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
 
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(true, superclass.getDefaultOpts.call(this), {
-                closeButton: true,
-                hideOnClick: true
-            });
-        };
 
         /*
             Создание DOM

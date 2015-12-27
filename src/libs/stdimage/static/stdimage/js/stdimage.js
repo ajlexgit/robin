@@ -20,7 +20,18 @@
                                   загрузке файла перед генерацией нового превью
      */
     window.StdImage = Class(null, function StdImage(cls, superclass) {
+        cls.defaults = {
+            previewsSelector: '.previews',
+            oldPreviewSelector: '.old-preview',
+            newPreviewSelector: '.new-preview',
+
+            emptyClass: 'empty',
+            dragOverClass: 'dragover',
+            preloaderClass: 'preloader'
+        };
+
         cls.dataParamName = 'stdimage';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -34,15 +45,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                previewsSelector: '.previews',
-                oldPreviewSelector: '.old-preview',
-                newPreviewSelector: '.new-preview',
-
-                emptyClass: 'empty',
-                dragOverClass: 'dragover',
-                preloaderClass: 'preloader'
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // отвязывание старого экземпляра
             var old_instance = this.$root.data(this.dataParamName);

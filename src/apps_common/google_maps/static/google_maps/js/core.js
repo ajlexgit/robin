@@ -55,12 +55,15 @@
         Базовый класс объекта на карте
      */
     window.GMapEventedObject = Class(EventedObject, function GMapPoint(cls, superclass) {
+        cls.defaults = {};
+
         cls.NATIVE_EVENTS = [];
+
 
         cls.init = function(options) {
             superclass.init.call(this);
 
-            this.opts = $.extend(this.getDefaultOpts(), options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // массив событий, которые повешены на нативный маркер
             this.native_events = [];
@@ -72,13 +75,6 @@
             });
 
             this.onInit();
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return {}
         };
 
         /*
@@ -132,16 +128,12 @@
         Базовый класс объекта на карте
      */
     window.GMapObject = Class(GMapEventedObject, function GMapPoint(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            map: null
+        });
+
         cls.NATIVE_EVENTS = [];
 
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                map: null
-            });
-        };
 
         /*
             Инициализация
@@ -356,6 +348,14 @@
         Маркер на карте
      */
     window.GMapMarker = Class(GMapObject, function GMapMarker(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            position: null,
+            icon: '',
+            hint: '',
+            draggable: false,
+            balloonContent: ''
+        });
+
         cls.NATIVE_EVENTS = [
             'click',
             'dblclick',
@@ -373,6 +373,7 @@
             'title_changed'
         ];
 
+
         /*
             Создание нативного объекта
          */
@@ -386,19 +387,6 @@
             this.icon(this.opts.icon);
             this.hint(this.opts.hint);
             this.draggable(this.opts.draggable);
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                position: null,
-                icon: '',
-                hint: '',
-                draggable: false,
-                balloonContent: ''
-            });
         };
 
         /*
@@ -524,6 +512,19 @@
         Класс карты Google
      */
     window.GMap = Class(GMapEventedObject, function GMap(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            center: null,
+            mapType: 'roadmap',
+            dblClickZoom: false,
+            backgroundColor: '',
+            draggable: true,
+            wheel: false,
+            noClear: false,
+            styles: [],
+            zoom: 14,
+            zoomControl: true
+        });
+
         cls.dataParamName = 'gmap';
 
         cls.NATIVE_EVENTS = [
@@ -548,6 +549,7 @@
             'terrain'
         ];
 
+
         cls.init = function(root, options) {
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -555,24 +557,6 @@
             }
 
             superclass.init.call(this, options);
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                center: null,
-                mapType: 'roadmap',
-                dblClickZoom: false,
-                backgroundColor: '',
-                draggable: true,
-                wheel: false,
-                noClear: false,
-                styles: [],
-                zoom: 14,
-                zoomControl: true
-            });
         };
 
         /*

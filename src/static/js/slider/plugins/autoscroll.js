@@ -1,23 +1,21 @@
 (function($) {
 
     window.SliderAutoscrollPlugin = Class(SliderPlugin, function SliderAutoscrollPlugin(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            animationName: '',
+            animatedHeight: true,
+
+            direction: 'next',  // next / prev / random
+            stopOnHover: true,
+            interval: 3000
+        });
+
+
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {
                 return this.raise('animationName required');
             }
-        };
-
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                animationName: '',
-                animatedHeight: true,
-
-                direction: 'next',  // next / prev / random
-                stopOnHover: true,
-                interval: 3000
-            });
         };
 
         /*

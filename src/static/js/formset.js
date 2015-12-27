@@ -124,7 +124,25 @@
     });
 
     window.Formset = Class(null, function Formset(cls, superclass) {
+        cls.defaults = {
+            prefix: '',
+            formsListSelector: '.forms',
+            formSelector: '.form',
+            formTemplate: '.empty-form',
+            showSpeed: 300,
+            hideSpeed: 300,
+            beforeAddForm: function() {
+                return this.getFormCount() < this.management.getMaxFormCount();
+            },
+            afterAddForm: $.noop,
+            beforeDeleteForm: function() {
+                return this.getFormCount() > this.management.getMinFormCount()
+            },
+            afterDeleteForm: $.noop
+        };
+
         cls.dataParamName = 'formset';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -132,23 +150,7 @@
                 return this.raise('root element not found');
             }
 
-            this.opts = $.extend({
-                prefix: '',
-                formsListSelector: '.forms',
-                formSelector: '.form',
-                formTemplate: '.empty-form',
-                showSpeed: 300,
-                hideSpeed: 300,
-                beforeAddForm: function() {
-                    return this.getFormCount() < this.management.getMaxFormCount();
-                },
-                afterAddForm: $.noop,
-                beforeDeleteForm: function() {
-                    return this.getFormCount() > this.management.getMinFormCount()
-                },
-                afterDeleteForm: $.noop
-            }, options);
-
+            this.opts = $.extend({}, this.defaults, options);
             if (!this.opts.prefix) {
                 return this.raise('prefix required');
             }

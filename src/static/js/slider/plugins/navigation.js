@@ -1,6 +1,20 @@
 (function($) {
 
     window.SliderNavigationPlugin = Class(SliderPlugin, function SliderNavigationPlugin(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            animationName: '',
+            animatedHeight: true,
+
+            wrapperClass: 'slider-navigation',
+            wrapperDisabledClass: 'slider-navigation-disabled',
+            itemClass: 'slider-navigation-item',
+            activeItemClass: 'active',
+
+            container: null,
+            dragOneSlide: false
+        });
+
+
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {
@@ -8,28 +22,11 @@
             }
         };
 
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                animationName: '',
-                animatedHeight: true,
-
-                wrapperClass: 'slider-navigation',
-                wrapperDisabledClass: 'slider-navigation-disabled',
-                itemClass: 'slider-navigation-item',
-                activeItemClass: 'active',
-
-                container: null,
-                dragOneSlide: false
-            });
-        };
-
         /*
             Создание кнопок при подключении плагина
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-
             this.createNavigation(slider);
             this.checkEnabled(slider);
         };
@@ -73,7 +70,6 @@
         cls.createNavigationItems = function(slider) {
             // удаление старых точек навигации
             this.$container.find('.' + this.opts.wrapperClass).remove();
-
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
             for (var i = 0; i < slider.$slides.length; i++) {

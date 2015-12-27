@@ -8,18 +8,14 @@
         Координаты coords ДОЛЖНЫ описывать вертикальную черту (lng1 == lng2)
      */
     window.GMapImageTripleOverlay = Class(GMapOverlayBase, function GMapImageTripleOverlay(cls, superclass) {
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                src: '',
-                coords: {
-                    topright: null,
-                    bottomleft: null
-                }
-            });
-        };
+        cls.defaults = $.extend({}, superclass.defaults, {
+            src: '',
+            coords: {
+                topright: null,
+                bottomleft: null
+            }
+        });
+
 
         /*
             Вызывается при добавлении оверлея на карту

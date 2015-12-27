@@ -21,6 +21,11 @@
     ];
 
     window.GMapBalloonBase = Class(GMapOverlayBase, function GMapBalloonBase(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            content: '',
+            position: null
+        });
+
         cls.layer = 'floatPane';
 
         cls.NATIVE_EVENTS = [
@@ -30,15 +35,6 @@
             'position_changed'
         ];
 
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                content: '',
-                position: null
-            });
-        };
 
         /*
             Инициализация
@@ -301,14 +297,9 @@
         Всплывающее окно, привязанное к маркеру
      */
     window.GMapBalloon = Class(GMapBalloonBase, function GMapBalloon(cls, superclass) {
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                autoPan: true
-            });
-        };
+        cls.defaults = $.extend({}, superclass.defaults, {
+            autoPan: true
+        });
 
         /*
             Инициализация

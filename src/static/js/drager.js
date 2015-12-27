@@ -229,35 +229,38 @@
 
     var dragerID = 0;
     window.Drager = Class(null, function Drager(cls, superclass) {
+        cls.defaults = {
+            preventDefault: true,
+
+            mouse: true,
+            touch: true,
+            ignoreDistanceX: 18,
+            ignoreDistanceY: 18,
+            momentum: true,
+            momentumLightness: 500,
+            momentumEasing: 'easeOutCubic',
+            minMomentumDuration: 100,
+
+            onMouseDown: $.noop,
+            onStartDrag: $.noop,
+            onDrag: $.noop,
+            onStopDrag: $.noop,
+            onSetMomentum: function(evt, momentum) {
+                return momentum
+            },
+            onMouseUp: $.noop,
+            onMomentumStarted: $.noop,
+            onMomentumStopped: $.noop
+        };
+
+
         cls.init = function(element, options) {
             this.$element = $(element).first();
             if (!this.$element.length) {
                 return this.raise('root element not found');
             }
 
-            this.opts = $.extend({
-                preventDefault: true,
-
-                mouse: true,
-                touch: true,
-                ignoreDistanceX: 18,
-                ignoreDistanceY: 18,
-                momentum: true,
-                momentumLightness: 500,
-                momentumEasing: 'easeOutCubic',
-                minMomentumDuration: 100,
-
-                onMouseDown: $.noop,
-                onStartDrag: $.noop,
-                onDrag: $.noop,
-                onStopDrag: $.noop,
-                onSetMomentum: function(evt, momentum) {
-                    return momentum
-                },
-                onMouseUp: $.noop,
-                onMomentumStarted: $.noop,
-                onMomentumStopped: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
 
             this.id = dragerID++;

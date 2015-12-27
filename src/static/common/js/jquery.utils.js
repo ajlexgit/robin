@@ -405,19 +405,22 @@
             stop()      - приостановить анимацию
      */
     window.Animation = Class(null, function Animation(cls, superclass) {
-        cls.init = function(options) {
-            this.opts = $.extend({
-                duration: 1000,
-                delay: 20,
-                easing: 'linear',
-                paused: false,
+        cls.defaults = {
+            duration: 1000,
+            delay: 20,
+            easing: 'linear',
+            paused: false,
 
-                init: $.noop,
-                step: $.noop,
-                start: $.noop,
-                stop: $.noop,
-                complete: $.noop
-            }, options);
+            init: $.noop,
+            step: $.noop,
+            start: $.noop,
+            stop: $.noop,
+            complete: $.noop
+        };
+
+
+        cls.init = function(options) {
+            this.opts = $.extend({}, this.defaults, options);
 
             this._progress = 0;
             this._paused = true;

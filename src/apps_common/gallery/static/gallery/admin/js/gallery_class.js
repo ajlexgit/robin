@@ -20,7 +20,28 @@
 
     */
     window.Gallery = Class(EventedObject, function Gallery(cls, superclass) {
+        cls.defaults = {
+            galleryInputSelector: '.gallery_id',
+            galleryWrapperSelector: '.gallery-wrapper',
+            galleryListSelector: '.gallery-items',
+
+            uploadButtonSelector: '.add-gallery-image',
+
+            previewSelector: '.item-preview',
+            preloaderSelector: '.item-preloader',
+            progressSelector: '.progress',
+            progressBarSelector: '.progress-bar',
+            controlsSelector: '.item-controls',
+
+            imageTemplateSelector: '.image-template',
+            videolinkTemplateSelector: '.videolink-template',
+
+            loadingClass: 'gallery-item-loading',
+            errorClass: 'gallery-item-error'
+        };
+
         cls.dataParamName = 'gallery';
+
 
         cls.init = function(root, options) {
             superclass.init.call(this);
@@ -31,25 +52,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                galleryInputSelector: '.gallery_id',
-                galleryWrapperSelector: '.gallery-wrapper',
-                galleryListSelector: '.gallery-items',
-
-                uploadButtonSelector: '.add-gallery-image',
-
-                previewSelector: '.item-preview',
-                preloaderSelector: '.item-preloader',
-                progressSelector: '.progress',
-                progressBarSelector: '.progress-bar',
-                controlsSelector: '.item-controls',
-
-                imageTemplateSelector: '.image-template',
-                videolinkTemplateSelector: '.videolink-template',
-
-                loadingClass: 'gallery-item-loading',
-                errorClass: 'gallery-item-error'
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // данные о галерее
             this.app_label = this.$root.data('applabel');

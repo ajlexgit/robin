@@ -50,7 +50,32 @@
             })
      */
     window.CropDialog = Class(null, function CropDialog(cls, superclass) {
+        cls.defaults = {
+            eventTypes: 'click',
+            buttonSelector: 'button',
+            dialogImageMaxSize: [600, 500],
+            dialogOptions: {},
+
+            beforeOpen: function($button) {
+            },
+            getImage: function($button) {
+            },
+            getMinSize: function($button) {
+            },
+            getMaxSize: function($button) {
+            },
+            getAspects: function($button) {
+            },
+            getCropCoords: function($button) {
+            },
+            onCrop: function($button, coords) {
+            },
+            onCancel: function($butoon, coords) {
+            }
+        };
+
         cls.dataParamName = 'cropdialog';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -59,7 +84,7 @@
             }
 
             // настройки
-            this.opts = $.extend(true, this.getDefaultOpts(), options);
+            this.opts = $.extend(true, {}, this.defaults, options);
 
             // отвязывание старого экземпляра
             var old_instance = this.$root.data(this.dataParamName);
@@ -74,27 +99,6 @@
             });
 
             this.$root.data(this.dataParamName, this);
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return {
-                eventTypes: 'click',
-                buttonSelector: 'button',
-                dialogImageMaxSize: [600, 500],
-                dialogOptions: {},
-
-                beforeOpen: function($button) {},
-                getImage: function($button) {},
-                getMinSize: function($button) {},
-                getMaxSize: function($button) {},
-                getAspects: function($button) {},
-                getCropCoords: function($button) {},
-                onCrop: function($button, coords) {},
-                onCancel: function($butoon, coords) {}
-            }
         };
 
         /*

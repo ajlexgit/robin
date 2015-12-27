@@ -69,7 +69,29 @@
             });
      */
     window.Uploader = Class(null, function Uploader(cls, superclass) {
+        cls.defaults = {
+            url: '',
+            buttonSelector: '',
+            dropSelector: '',
+            multiple: true,
+            fileName: 'image',
+            resize: {},
+            max_size: 0,
+            zIndex: 1,
+
+            onInit: $.noop,
+            getExtraData: $.noop,
+            onFileAdded: $.noop,
+            onBeforeFileUpload: $.noop,
+            onFileUploadProgress: $.noop,
+            onFileUploaded: $.noop,
+            onFileRemoved: $.noop,
+            onUploadComplete: $.noop,
+            onFileUploadError: $.noop
+        };
+
         cls.dataParamName = 'uploader';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -78,38 +100,15 @@
             }
 
             // настройки
-            this.opts = $.extend(true, this.getDefaultOpts(), options);
+            this.opts = $.extend(true, {}, this.defaults, options);
+            if (!this.opts.url) {
+                return this.raise('url required');
+            }
 
             // инициализация загрузчика
             this.initPluploader();
 
             this.$root.data(this.dataParamName, this);
-        };
-
-        /*
-            Настройки по умолчанию
-         */
-        cls.getDefaultOpts = function() {
-            return {
-                url: '',
-                buttonSelector: '',
-                dropSelector: '',
-                multiple: true,
-                fileName: 'image',
-                resize: {},
-                max_size: 0,
-                zIndex: 1,
-
-                onInit: $.noop,
-                getExtraData: $.noop,
-                onFileAdded: $.noop,
-                onBeforeFileUpload: $.noop,
-                onFileUploadProgress: $.noop,
-                onFileUploaded: $.noop,
-                onFileRemoved: $.noop,
-                onUploadComplete: $.noop,
-                onFileUploadError: $.noop
-            }
         };
 
         /*

@@ -45,7 +45,18 @@
     var layers = [];
 
     window.Layer = Class(null, function Layer(cls, superclass) {
+        cls.defaults = {
+            strategy: 'top',
+            minEnabledWidth: 768,
+
+            onInit: $.noop,
+            calcOffset: function(win_scroll) {
+                return this._initial + parseInt(0.5 * win_scroll)
+            }
+        };
+
         cls.dataParamName = 'layer';
+
 
         cls.init = function(block, options) {
             this.$block = $(block).first();
@@ -54,15 +65,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                strategy: 'top',
-                minEnabledWidth: 768,
-
-                onInit: $.noop,
-                calcOffset: function(win_scroll) {
-                    return this._initial + parseInt(0.5 * win_scroll)
-                }
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             if ((this.opts.strategy != 'top') && (this.opts.strategy != 'transform')) {
                 return this.raise('undefined strategy');

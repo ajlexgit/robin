@@ -1,27 +1,25 @@
 (function($) {
 
     window.SliderControlsPlugin = Class(SliderPlugin, function SliderControlsPlugin(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            animationName: '',
+            animatedHeight: true,
+
+            arrowClass: 'slider-arrow',
+            arrowLeftClass: 'slider-arrow-left',
+            arrowRightClass: 'slider-arrow-right',
+            arrowDisabledClass: 'slider-arrow-disabled',
+
+            container: null,
+            disableOnEnd: true
+        });
+
+
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {
                 return this.raise('animationName required');
             }
-        };
-
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                animationName: '',
-                animatedHeight: true,
-
-                arrowClass: 'slider-arrow',
-                arrowLeftClass: 'slider-arrow-left',
-                arrowRightClass: 'slider-arrow-right',
-                arrowDisabledClass: 'slider-arrow-disabled',
-
-                container: null,
-                disableOnEnd: true
-            });
         };
 
         /*

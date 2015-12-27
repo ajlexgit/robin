@@ -17,7 +17,15 @@
     */
 
     window.Radiobox = Class(null, function Radiobox(cls, superclass) {
+        cls.defaults = {
+            className: 'custom-radiobox',
+            checkedClass: 'checked',
+            disabledClass: 'disabled',
+            onCheck: $.noop
+        };
+
         cls.dataParamName = 'radiobox';
+
 
         cls.init = function(input, options) {
             this.$root = $(input).first();
@@ -36,12 +44,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                className: 'custom-radiobox',
-                checkedClass: 'checked',
-                disabledClass: 'disabled',
-                onCheck: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // запоминаем CSS и скрываем радиобокс
             this._initial_css = this.$root.get(0).style.cssText;

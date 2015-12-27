@@ -3,6 +3,7 @@
     var SpriteImage = Class(null, function SpriteImage(cls, superclass) {
         cls.dataParamName = 'sprite_image';
 
+
         cls.init = function(root) {
             this.$root = $(root).first();
             if (!this.$root.length) {

@@ -1,24 +1,21 @@
 (function($) {
 
     window.SliderDragPlugin = Class(SliderPlugin, function SliderDragPlugin(cls, superclass) {
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                mouse: true,
-                touch: true,
-                ignoreDistanceX: 18,        // px
-                ignoreDistanceY: 18,        // px
+        cls.defaults = $.extend({}, superclass.defaults, {
+            mouse: true,
+            touch: true,
+            ignoreDistanceX: 18,        // px
+            ignoreDistanceY: 18,        // px
 
-                slideThreshold: 10,         // %
-                maxSlideThreshold: 50,      // px
+            slideThreshold: 10,         // %
+            maxSlideThreshold: 50,      // px
 
-                speed: 800,
-                dragOneSlide: false,
-                easing: 'easeOutCubic',
-                animatedHeight: true,
-                slideMarginPercent: 0
-            });
-        };
+            speed: 800,
+            dragOneSlide: false,
+            easing: 'easeOutCubic',
+            animatedHeight: true,
+            slideMarginPercent: 0
+        });
 
         /*
             Создание объекта Drager

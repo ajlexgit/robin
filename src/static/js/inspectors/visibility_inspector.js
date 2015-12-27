@@ -38,17 +38,16 @@
      */
 
     var VisibilityInspector = Class(Inspector, function VisibilityInspector(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            top: 1,
+            right: 1,
+            bottom: 1,
+            left: 1
+        });
+
         cls.STATE_DATA_KEY = 'visibility_inspector_state';
         cls.OPTS_DATA_KEY = 'visibility_inspector_opts';
 
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts(), {
-                top: 1,
-                right: 1,
-                bottom: 1,
-                left: 1
-            })
-        };
 
         cls._check = function($element, opts) {
             var vpWidth = document.documentElement.clientWidth;

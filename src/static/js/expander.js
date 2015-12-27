@@ -34,7 +34,22 @@
      */
 
     window.Expander = Class(null, function Expander(cls, superclass) {
+        cls.defaults = {
+            shortBlockSelector: '.expander-short',
+            fullBlockSelector: '.expander-full',
+            buttonSelector: '.expander-btn',
+            hiddenClass: 'hidden',
+            speed: 400,
+            easing: 'easeOutQuad',
+
+            beforeExpand: $.noop,
+            afterExpand: $.noop,
+            beforeReduce: $.noop,
+            afterReduce: $.noop
+        };
+
         cls.dataParamName = 'expander';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -43,19 +58,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                shortBlockSelector: '.expander-short',
-                fullBlockSelector: '.expander-full',
-                buttonSelector: '.expander-btn',
-                hiddenClass: 'hidden',
-                speed: 400,
-                easing: 'easeOutQuad',
-
-                beforeExpand: $.noop,
-                afterExpand: $.noop,
-                beforeReduce: $.noop,
-                afterReduce: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // варианты текста
             this.$short = this.$root.find(this.opts.shortBlockSelector).first();

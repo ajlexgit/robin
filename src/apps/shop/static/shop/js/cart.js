@@ -15,13 +15,16 @@
      */
 
     window.Cart = Class(null, function Cart(cls, superclass) {
+        cls.defaults = {
+            prefix: 'cart',
+            onSave: $.noop,
+            onUpdate: $.noop,
+            onClear: $.noop
+        };
+
+
         cls.init = function(options) {
-            this.opts = $.extend({
-                prefix: 'cart',
-                onSave: $.noop,
-                onUpdate: $.noop,
-                onClear: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             var force_clean = $.cookie('clear_cart');
             if (force_clean) {

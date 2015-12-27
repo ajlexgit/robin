@@ -8,18 +8,17 @@
      */
 
     window.Inspector = Class(null, function Inspector(cls, superclass) {
+        cls.defaults = {
+            beforeCheck: $.noop,
+            afterCheck: $.noop
+        };
+
         cls.STATE_DATA_KEY = 'inspector_state';
         cls.OPTS_DATA_KEY = 'inspector_opts';
 
+
         cls.init = function() {
             this._list = [];
-        };
-
-        cls.getDefaultOpts = function() {
-            return {
-                beforeCheck: $.noop,
-                afterCheck: $.noop
-            }
         };
 
         /*
@@ -37,7 +36,7 @@
             Получение настроек DOM-элемента
          */
         cls.getOpts = function($element) {
-            return $element.first().data(this.OPTS_DATA_KEY) || this.getDefaultOpts();
+            return $element.first().data(this.OPTS_DATA_KEY) || this.defaults;
         };
 
         /*

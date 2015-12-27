@@ -29,16 +29,15 @@
      */
 
     var BackgroundInspector = Class(Inspector, function BackgroundInspector(cls, superclass) {
+        cls.defaults = $.extend({}, superclass.defaults, {
+            getContainer: function($element) {
+                return $element.parent();
+            }
+        });
+
         cls.STATE_DATA_KEY = 'bg_inspector_state';
         cls.OPTS_DATA_KEY = 'bg_inspector_opts';
 
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts(), {
-                getContainer: function($element) {
-                    return $element.parent();
-                }
-            })
-        };
 
         /*
             Сохраняем inline-стили и сбрасываем размеры
@@ -54,12 +53,10 @@
 
         cls._check = function($element, opts) {
             var $parent = opts.getContainer.call(this, $element);
-
             var elem_asp = $element.outerWidth() / $element.outerHeight();
             var parent_asp = $parent.outerWidth() / $parent.outerHeight();
             $element.data('bginspector_aspect', elem_asp);
             $parent.data('bginspector_aspect', parent_asp);
-
             return elem_asp >= parent_asp;
         };
 

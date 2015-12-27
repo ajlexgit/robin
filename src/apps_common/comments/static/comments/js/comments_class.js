@@ -1,7 +1,16 @@
 (function($) {
 
     window.Comments = Class(null, function Comments(cls, superclass) {
+        cls.defaults = {
+            comment_class: 'comment',
+            comments_container_class: 'comments',
+            form_container_class: 'comments-form-wrapper',
+            reply_template_class: 'comments-reply-template',
+            edit_template_class: 'comments-edit-template'
+        };
+
         cls.dataParamName = 'comments';
+
 
         cls.init = function(root, options) {
             this.$root = $(root).first();
@@ -10,13 +19,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                comment_class: 'comment',
-                comments_container_class: 'comments',
-                form_container_class: 'comments-form-wrapper',
-                reply_template_class: 'comments-reply-template',
-                edit_template_class: 'comments-edit-template'
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             this.content_type = this.$root.data('content_type');
             this.object_id = this.$root.data('object_id');

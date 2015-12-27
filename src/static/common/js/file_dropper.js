@@ -17,7 +17,13 @@
             drop.drag       - файлы переместили на область
      */
     window.FileDropper = Class(EventedObject, function Uploader(cls, superclass) {
+        cls.defaults = {
+            dragOverClass: 'dragover',
+            preventDefault: false
+        };
+
         cls.dataParamName = 'file_dropper';
+
 
         cls.init = function(root, options) {
             superclass.init.call(this);
@@ -28,10 +34,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                dragOverClass: 'dragover',
-                preventDefault: false
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             var that = this;
             var drag_counter = 0;

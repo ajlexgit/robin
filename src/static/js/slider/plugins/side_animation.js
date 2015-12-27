@@ -1,16 +1,14 @@
 (function($) {
 
     window.SliderSideAnimation = Class(SliderPlugin, function SliderSideAnimation(cls, superclass) {
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                name: 'side',
-                speed: 800,
-                showIntermediate: true,
-                slideMarginPercent: 0,
-                easing: 'easeOutCubic'
-            });
-        };
+        cls.defaults = $.extend({}, superclass.defaults, {
+            name: 'side',
+            speed: 800,
+            showIntermediate: true,
+            slideMarginPercent: 0,
+            easing: 'easeOutCubic'
+        });
+
 
         /*
             Реализация метода перехода от одного слайда к другому
@@ -202,12 +200,10 @@
     //  кратчайшему пути.
     //========================================================
     window.SliderSideShortestAnimation = Class(SliderSideAnimation, function SliderSideShortestAnimation(cls, superclass) {
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                name: 'side-shortest'
-            });
-        };
+        cls.defaults = $.extend({}, superclass.defaults, {
+            name: 'side-shortest'
+        });
+
 
         /*
             Выбор направления анимации

@@ -76,7 +76,30 @@
     var sliders = [];
 
     window.Slider = Class(null, function Slider(cls, superclass) {
+        cls.defaults = {
+            rootClass: 'slider-root',
+            listWrapperClass: 'slider-list-wrapper',
+            listClass: 'slider-list',
+            slideClass: 'slider-slide',
+            itemClass: 'slider-item',
+
+            initialActiveClass: 'active',
+            setItemsPerSlideAnimationName: 'instant',
+            setItemsPerSlideAnimatedHeight: false,
+
+            itemSelector: '.slide',
+            itemsPerSlide: 1,
+            loop: true,
+            adaptiveHeight: true,
+            adaptiveHeightTransition: 800,
+
+            onInit: $.noop,
+            onSetItemsPerSlide: $.noop,
+            onResize: $.noop
+        };
+
         cls.dataParamName = 'slider';
+
 
         cls.init = function(list, options) {
             this.$list = $(list).first();
@@ -85,27 +108,7 @@
             }
 
             // настройки
-            this.opts = $.extend({
-                rootClass: 'slider-root',
-                listWrapperClass: 'slider-list-wrapper',
-                listClass: 'slider-list',
-                slideClass: 'slider-slide',
-                itemClass: 'slider-item',
-
-                initialActiveClass: 'active',
-                setItemsPerSlideAnimationName: 'instant',
-                setItemsPerSlideAnimatedHeight: false,
-
-                itemSelector: '.slide',
-                itemsPerSlide: 1,
-                loop: true,
-                adaptiveHeight: true,
-                adaptiveHeightTransition: 800,
-
-                onInit: $.noop,
-                onSetItemsPerSlide: $.noop,
-                onResize: $.noop
-            }, options);
+            this.opts = $.extend({}, this.defaults, options);
 
             // плагины
             this._plugins = [
@@ -581,16 +584,14 @@
     //            Базовый класс плагина
     // ================================================
     window.SliderPlugin = Class(null, function SliderPlugin(cls, superclass) {
-        cls.init = function(settings) {
-            this.opts = $.extend(true, this.getDefaultOpts(), settings);
+        cls.defaults = {
+            afterAttach: $.noop,
+            onResize: $.noop
         };
 
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return {
-                afterAttach: $.noop,
-                onResize: $.noop
-            };
+
+        cls.init = function(settings) {
+            this.opts = $.extend(true, this.getDefaultOpts(), settings);
         };
 
         // Инициализация
@@ -614,12 +615,10 @@
     //          Плагин мгновенной анимации
     // ================================================
     window.SliderInstantAnimation = Class(SliderPlugin, function SliderInstantAnimation(cls, superclass) {
-        // Настройки по умолчанию
-        cls.getDefaultOpts = function() {
-            return $.extend(superclass.getDefaultOpts.call(this), {
-                name: 'instant'
-            });
-        };
+        cls.defaults = $.extend({}, superclass.defaults, {
+            name: 'instant'
+        });
+
 
         /*
             Реализация метода перехода от одного слайда к другому
