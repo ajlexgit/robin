@@ -114,7 +114,7 @@
                 return false;
             }
 
-            var opts = $.extend(this.getDefaultOpts(), options);
+            var opts = $.extend({}, this.defaults, options);
             if (!opts) {
                 this.error('inspecting options required');
                 return false;

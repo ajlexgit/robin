@@ -591,7 +591,7 @@
 
 
         cls.init = function(settings) {
-            this.opts = $.extend(true, this.getDefaultOpts(), settings);
+            this.opts = $.extend(true, {}, this.defaults, settings);
         };
 
         // Инициализация
