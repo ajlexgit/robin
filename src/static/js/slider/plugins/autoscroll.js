@@ -60,9 +60,7 @@
             Переустановка таймера при изменении кол-ва слайдов
          */
         cls.afterSetItemsPerSlide = function(slider) {
-            if (this._timer) {
-                this.startTimer(slider);
-            }
+            this.startTimer(slider);
         };
 
         /*
