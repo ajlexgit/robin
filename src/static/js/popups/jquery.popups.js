@@ -414,7 +414,7 @@
             hideOnClick: true
         });
 
-        cls.OVERLAY_ID = 'popup-overlay';
+        cls.OVERLAY_CLASS = 'popup-overlay';
         cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
 
 
@@ -422,16 +422,14 @@
             Создание DOM
          */
         cls._createDom = function() {
-            $('#' + this.OVERLAY_ID).remove();
-
             superclass._createDom.call(this);
 
-            this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
-            this.$container.before(this.$overlay);
+            this.$overlay = $('<div>').addClass(this.OVERLAY_CLASS).hide();
+            this.$container.prepend(this.$overlay);
 
             if (this.opts.closeButton) {
                 this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS);
-                this.$window.prepend(this.$closeBtn);
+                this.addCloseButton(this.$closeBtn);
 
                 var that = this;
                 this.$closeBtn.on('click.popup', function() {
@@ -442,11 +440,10 @@
         };
 
         /*
-            Освобождение ресурсов
+            Добавление кнопки закрытия в DOM
          */
-        cls.destroy = function() {
-            superclass.destroy.call(this);
-            this.$overlay.remove();
+        cls.prototype.addCloseButton = function($button) {
+            this.$window.prepend($button);
         };
 
         /*
