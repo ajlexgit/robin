@@ -57,7 +57,7 @@
 
 
         /*
-            Переустановка таймера при измеении кол-ва слайдов
+            Переустановка таймера при изменении кол-ва слайдов
          */
         cls.afterSetItemsPerSlide = function(slider) {
             if (this._timer) {
@@ -66,6 +66,20 @@
         };
 
         /*
+            Переустановка таймера при ручном перелистывании
+         */
+        cls.prototype.beforeSlide = function(slider) {
+            this.stopTimer();
+        };
+
+        /*
+            Переустановка таймера при ручном перелистывании
+         */
+        cls.prototype.afterSlide = function(slider) {
+            this.startTimer(slider);
+        };
+        
+        /*
             Создание таймера
          */
         cls.startTimer = function(slider) {
@@ -73,9 +87,7 @@
                 return
             }
 
-            if (this._timer) {
-                clearInterval(this._timer);
-            }
+            this.stopTimer();
 
             this._timer = setInterval(this._timerHandler, this.opts.interval);
         };
