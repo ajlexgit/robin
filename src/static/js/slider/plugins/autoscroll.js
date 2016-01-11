@@ -64,16 +64,16 @@
         };
 
         /*
-            Переустановка таймера при ручном перелистывании
+            Переустановка таймера при перетаскивании
          */
-        cls.prototype.beforeSlide = function(slider) {
+        cls.prototype.startDrag = function(slider) {
             this.stopTimer();
         };
 
         /*
-            Переустановка таймера при ручном перелистывании
+            Переустановка таймера при перетаскивании
          */
-        cls.prototype.afterSlide = function(slider) {
+        cls.prototype.stopDrag = function(slider) {
             this.startTimer(slider);
         };
         

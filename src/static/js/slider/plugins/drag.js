@@ -82,6 +82,11 @@
 
             this._dx = 0;
             this._movedSlides = [];
+            
+            // jQuery event
+            slider.$list.trigger('startDrag.slider');
+
+            slider.callPluginsMethod('startDrag');
         };
 
         /*
@@ -238,6 +243,11 @@
                     slider.afterSlide($currSlide);
                 }
             });
+            
+            slider.callPluginsMethod('stopDrag', null, true);
+
+            // jQuery event
+            slider.$list.trigger('stopDrag.slider');
         };
     });
 
