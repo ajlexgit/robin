@@ -522,6 +522,8 @@
             noClear: false,
             styles: [],
             zoom: 14,
+            minZoom: null,
+            maxZoom: null,
             zoomControl: true
         });
 
@@ -582,6 +584,8 @@
             this.dblClickZoom(this.opts.dblClickZoom);
             this.styles(this.opts.styles);
             this.zoom(this.opts.zoom);
+            this.maxZoom(this.opts.maxZoom);
+            this.minZoom(this.opts.minZoom);
             this.zoomControl(this.opts.zoomControl);
 
             setTimeout(function() {
@@ -772,6 +776,76 @@
             }
 
             this.native.setZoom(value);
+            return this;
+        };
+
+        /*
+            Получение / установка максимального зума карты
+         */
+        cls.prototype.maxZoom = function(value) {
+            if (value === undefined) {
+                // получение зума
+                return this._maxZoom;
+            }
+
+            if (value && (typeof value != 'number') && (value !== null)) {
+                this.error('value should be a number or null');
+                return this;
+            }
+
+            this._maxZoom = value;
+            if (this._maxZoom) {
+                var that = this;
+                this.on('zoom_changed.maxzoom', function() {
+                    var currentZoom = that.zoom();
+                    if (currentZoom > that._maxZoom) {
+                        that.zoom(that._maxZoom);
+                    }
+                });
+
+                var currentZoom = this.zoom();
+                if (currentZoom > this._maxZoom) {
+                    this.zoom(this._maxZoom);
+                }
+            } else {
+                this.off('zoom_changed.maxzoom');
+            }
+
+            return this;
+        };
+
+        /*
+            Получение / установка минимального зума карты
+         */
+        cls.prototype.minZoom = function(value) {
+            if (value === undefined) {
+                // получение зума
+                return this._minZoom;
+            }
+
+            if (value && (typeof value != 'number') && (value !== null)) {
+                this.error('value should be a number or null');
+                return this;
+            }
+
+            this._minZoom = value;
+            if (this._minZoom) {
+                var that = this;
+                this.on('zoom_changed.minzoom', function() {
+                    var currentZoom = that.zoom();
+                    if (currentZoom < that._minZoom) {
+                        that.zoom(that._minZoom);
+                    }
+                });
+
+                var currentZoom = this.zoom();
+                if (currentZoom < this._minZoom) {
+                    this.zoom(this._minZoom);
+                }
+            } else {
+                this.off('zoom_changed.minzoom');
+            }
+
             return this;
         };
 
