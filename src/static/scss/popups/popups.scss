@@ -32,6 +32,7 @@ $close_btn_weight: 3px;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 101;
+  @include font-size(20px);
 
   .popup-overlay {
     position: fixed;
@@ -44,6 +45,7 @@ $close_btn_weight: 3px;
   
   .popup-wrapper {
     height: 100%;
+    @include no_fontsize;
     @include valign_after;
   }
 
@@ -74,7 +76,9 @@ $close_btn_weight: 3px;
   }
 
   .popup-content {
+    position: relative;
     overflow: hidden;
+    z-index: 5;
     background-color: $background_color;
     @include border-box;
   }
