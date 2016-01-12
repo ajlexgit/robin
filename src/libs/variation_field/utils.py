@@ -411,13 +411,15 @@ def variation_resize(image, variation, target_format):
             if max_height:
                 image_size.max_height(max_height)
 
+        # если размер вычисляется автоматически и нет прозрачности - накладывать на фон не нужно
+        need_bg = target_size != (0, 0) or mode == 'RGBA'
+
         # Определение размера холста
         target_size = list(target_size)
         if target_size[0] == 0:
             target_size[0] = image_size.width
         if target_size[1] == 0:
             target_size[1] = image_size.height
-
 
         # Ресайз
         img_size = (image_size.width, image_size.height)
@@ -429,8 +431,9 @@ def variation_resize(image, variation, target_format):
             # OLD: INSRIBE
             image.thumbnail(img_size, resample=Image.ANTIALIAS)
 
-        masked = mode == 'RGBA'
-        image = put_on_bg(image, target_size, masked=masked, **bg_options)
+        if need_bg:
+            masked = mode == 'RGBA'
+            image = put_on_bg(image, target_size, masked=masked, **bg_options)
 
     image.format = image_format
     return image
