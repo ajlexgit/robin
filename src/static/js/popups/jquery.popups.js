@@ -447,16 +447,22 @@
         };
 
         /*
+            Определение того, что клик произошел вне окна и нужно его закрыть (если hideOnClick = true)
+         */
+        cls.prototype.isOutСlick = function($target) {
+            return $target.closest(this.$window).length == 0;
+        };
+
+        /*
             Закрытие окна при клике вне модального окна
          */
-        cls._beforeShow = function() {
-            superclass._beforeShow.call(this);
+        cls.prototype._beforeShow = function() {
+            superclass.prototype._beforeShow.call(this);
 
             var that = this;
             if (this.opts.hideOnClick) {
                 $(document).on('click.popup', function(evt) {
-                    var $target = $(evt.target);
-                    if (!$target.closest(that.$window).length) {
+                    if (that.isOutСlick($(evt.target))) {
                         that.hide();
                     }
                 });

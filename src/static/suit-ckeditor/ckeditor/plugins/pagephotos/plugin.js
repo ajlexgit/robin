@@ -39,6 +39,8 @@
             });
 
             CKEDITOR.dialog.add("pagephotos", this.path + "dialogs/dlg_upload.js");
+            CKEDITOR.dialog.add("image_description", this.path + "dialogs/dlg_description.js");
+            editor.addCommand("image_description", new CKEDITOR.dialogCommand("image_description"));
 
             editor.on('contentDom', function () {
                 // Установка callbacka закрытия окна изменения изображения
@@ -106,14 +108,14 @@
 
             editor.addMenuItems({
                 '_add_description' : {
-                    label : gettext('Add description'),
+                    label : gettext('Block description'),
                     icon: this.path + 'descr.png',
-                    command : 'AddDescription',
+                    command : 'BlockDescription',
                     group : 'images',
                     order : 0
                 }
             });
-            editor.addCommand("AddDescription", {
+            editor.addCommand("BlockDescription", {
                 canUndo: false,
                 modes: { wysiwyg:1 },
                 exec: function (editor) {
@@ -140,6 +142,16 @@
                 }
             });
 
+            editor.addMenuItems({
+                '_add_image_description' : {
+                    label : gettext('Image description'),
+                    icon: this.path + 'descr.png',
+                    command : 'image_description',
+                    group : 'images',
+                    order : 0
+                }
+            });
+
             editor.contextMenu.addListener(function (element) {
                 if (element) {
                     var isImage = element.is('img') && !element.isReadOnly(),
@@ -149,7 +161,8 @@
                     if (isImage && isInGallery) {
                         return {
                             '_crop_command' : CKEDITOR.TRISTATE_OFF,
-                            '_add_description' : CKEDITOR.TRISTATE_OFF
+                            '_add_description' : CKEDITOR.TRISTATE_OFF,
+                            '_add_image_description' : CKEDITOR.TRISTATE_OFF
                         }
                     } else if (isGallery) {
                         return {
