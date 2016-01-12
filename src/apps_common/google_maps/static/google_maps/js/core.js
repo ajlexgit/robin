@@ -567,9 +567,7 @@
                 center: this.opts.center,
                 noClear: this.opts.noClear,
                 backgroundColor: this.opts.backgroundColor,
-                disableDoubleClickZoom: !this.opts.dblClickZoom,
-                disableDefaultUI: true,
-                zoomControl: this.opts.zoomControl
+                disableDefaultUI: true
             });
 
             // Обработчик изменения размера экрана (например, для центрирования карты)
@@ -581,8 +579,10 @@
             this.draggable(this.opts.draggable);
             this.mapType(this.opts.mapType);
             this.wheel(this.opts.wheel);
+            this.dblClickZoom(this.opts.dblClickZoom);
             this.styles(this.opts.styles);
             this.zoom(this.opts.zoom);
+            this.zoomControl(this.opts.zoomControl);
 
             setTimeout(function() {
                 that.trigger('ready');
@@ -706,6 +706,21 @@
         };
 
         /*
+            Получение / установка разрешения на зум через двойной клик
+         */
+        cls.prototype.dblClickZoom = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return !this.native.disableDoubleClickZoom;
+            }
+
+            this.native.setOptions({
+                disableDoubleClickZoom: !Boolean(value)
+            });
+            return this;
+        };
+
+        /*
             Получение / установка типа карты
          */
         cls.mapType = function(value) {
@@ -757,6 +772,21 @@
             }
 
             this.native.setZoom(value);
+            return this;
+        };
+
+        /*
+            Получение / установка наличия зума карты
+         */
+        cls.prototype.zoomControl = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return this.native.zoomControl;
+            }
+
+            this.native.setOptions({
+                zoomControl: Boolean(value)
+            });
             return this;
         };
 
