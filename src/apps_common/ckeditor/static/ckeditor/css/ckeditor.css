@@ -35,6 +35,10 @@ p iframe {
     box-shadow: 1px 1px 3px #808080;
 }
 
+.page-video iframe {
+    max-width: 90%;
+}
+
 table {
     border: 0 !important;
     border-collapse: collapse;
