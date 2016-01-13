@@ -20,6 +20,12 @@
                     description += child.outerHTML;
                 }
                 element.removeChild(child);
+            } else if (child.tagName == 'SPAN') {
+                var text = cut_description(child);
+                if (text) {
+                    description += text;
+                }
+                element.removeChild(child);
             } else {
                 i++
             }
