@@ -54,7 +54,7 @@
         Admin Javascript:
             // Получение координат по адресу в другом поле
             $(document).on('change', '#id_address', function() {
-                var gmap = $('#id_coords').next('.google-map').data('map');
+                var gmap = $('#id_coords').next('.google-map').data('gmap');
                 gmap.geocode($(this).val(), function(point) {
                     var marker = this.markers[0];
                     if (marker) {

@@ -20,76 +20,45 @@
 
 
     CKEDITOR.plugins.add("pagephotos", {
+        icons: 'pagephotos',
         init: function (editor) {
-            var c = editor.addCommand("pagephotos", new CKEDITOR.dialogCommand("pagephotos", {
-                allowedContent: 'p(!page-images,single-image,multi-image); ' +
-                                'img(*)[!src,alt,width,height,title,data-id]'
-            }));
-            c.modes = {
-                wysiwyg: 1,
-                source: 0
-            };
-            c.canUndo = true;
-
             editor.ui.addButton("PagePhotos", {
                 label: gettext('Upload images'),
                 command: "pagephotos",
-                toolbar: 'insert',
-                icon: this.path + "doksoft_image_4.png"
+                toolbar: 'insert'
             });
+
+            // ======================================
+            //      DIALOGS
+            // ======================================
 
             CKEDITOR.dialog.add("pagephotos", this.path + "dialogs/dlg_upload.js");
-            CKEDITOR.dialog.add("image_description", this.path + "dialogs/dlg_description.js");
+            CKEDITOR.dialog.add("block_description", this.path + "dialogs/block_description.js");
+            CKEDITOR.dialog.add("image_description", this.path + "dialogs/image_description.js");
+
+
+            // ======================================
+            //      COMMANDS
+            // ======================================
+
+            // UPLOAD
+            editor.addCommand("pagephotos", new CKEDITOR.dialogCommand("pagephotos", {
+                allowedContent: 'p(!page-images,single-image,multi-image); ' +
+                                'img(*)[!src,alt,width,height,title,data-id]',
+                modes: {
+                    wysiwyg: 1,
+                    source: 0
+                },
+                canUndo: true
+            }));
+
+            // BLOCK DESCRIPTION
+            editor.addCommand("block_description", new CKEDITOR.dialogCommand("block_description"));
+
+            // IMAGE DESCRIPTION
             editor.addCommand("image_description", new CKEDITOR.dialogCommand("image_description"));
 
-            editor.on('contentDom', function () {
-                // Установка callbacka закрытия окна изменения изображения
-                editor.window.$.dismissPhotoChangePopup = function (win, newTag) {
-                    // Обновление тега изображения
-                    editor.insertHtml(newTag.trim());
-                    win.close()
-                };
-
-                // Обновление класса галереи при удалении картинок через Backspace и Delete
-                editor.on('key', function (evt) {
-                    if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
-                        if (editor.mode != "wysiwyg") {
-                            return
-                        }
-
-                        // if we call getStartElement too soon, we get the wrong element
-                        setTimeout(function () {
-                            var container = editor.getSelection().getStartElement();
-                            if (container.hasClass('page-images')) {
-                                if (container.getElementsByTag('img').count() > 1) {
-                                    container
-                                        .removeClass('single-image')
-                                        .addClass('multi-image')
-                                } else if (container.getElementsByTag('img').count() == 1) {
-                                    container
-                                        .removeClass('multi-image')
-                                        .addClass('single-image')
-                                } else {
-                                    container.remove()
-                                }
-                            }
-                        }, 10)
-                    }
-                })
-            });
-
-
-            // Добавление пунктов в контекстное меню
-            editor.addMenuGroup('images');
-            editor.addMenuItems({
-                '_crop_command' : {
-                    label : gettext('Edit'),
-                    icon: this.path + 'edit.png',
-                    command : 'ChangeImage',
-                    group : 'images',
-                    order : 1
-                }
-            });
+            // EDIT
             editor.addCommand("ChangeImage", {
                 canUndo: false,
                 modes: { wysiwyg:1 },
@@ -106,52 +75,36 @@
                 }
             });
 
+
+            // ======================================
+            //      CONTEXT MENU
+            // ======================================
+
+            // Добавление пунктов в контекстное меню
+            editor.addMenuGroup('images');
             editor.addMenuItems({
-                '_add_description' : {
+                _crop_command : {
+                    label : gettext('Edit'),
+                    icon: this.path + 'edit.png',
+                    command : 'ChangeImage',
+                    group : 'images',
+                    order : 1
+                },
+                _block_description : {
                     label : gettext('Block description'),
                     icon: this.path + 'descr.png',
-                    command : 'BlockDescription',
+                    command : 'block_description',
                     group : 'images',
-                    order : 0
-                }
-            });
-            editor.addCommand("BlockDescription", {
-                canUndo: false,
-                modes: { wysiwyg:1 },
-                exec: function (editor) {
-                    var element = editor.getSelection().getStartElement(),
-                        container = element.hasClass('page-images') ? element : element.getParent(),
-                        newRange = editor.createRange();
-
-                    // Chrome вставляет ZWS после каждой картинки :(
-                    var html = container.getHtml().replace(/\u200B/g, '');
-                    html = html.replace(/(&nbsp;|<br>|\s)+$/gi, '');
-                    container.setHtml(html);
-
-                    if (container.getText() == '') {
-                        container.appendHtml('<br>&nbsp;');
-                        newRange.setStart(container, container.getChildCount()-1);
-                        newRange.setEndAt(container, CKEDITOR.POSITION_BEFORE_END)
-                    } else {
-                        window.c = container;
-                        newRange.setStartAfter(container.getElementsByTag('br').getItem(0));
-                        newRange.setEndAt(container, CKEDITOR.POSITION_BEFORE_END)
-                    }
-
-                    editor.getSelection().selectRanges( [ newRange ] )
-                }
-            });
-
-            editor.addMenuItems({
-                '_add_image_description' : {
+                    order : 2
+                },
+                _image_description : {
                     label : gettext('Image description'),
                     icon: this.path + 'descr.png',
                     command : 'image_description',
                     group : 'images',
-                    order : 0
+                    order : 3
                 }
             });
-
             editor.contextMenu.addListener(function (element) {
                 if (element) {
                     var isImage = element.is('img') && !element.isReadOnly(),
@@ -161,18 +114,53 @@
                     if (isImage && isInGallery) {
                         return {
                             '_crop_command' : CKEDITOR.TRISTATE_OFF,
-                            '_add_description' : CKEDITOR.TRISTATE_OFF,
-                            '_add_image_description' : CKEDITOR.TRISTATE_OFF
+                            '_block_description' : CKEDITOR.TRISTATE_OFF,
+                            '_image_description' : CKEDITOR.TRISTATE_OFF
                         }
                     } else if (isGallery) {
                         return {
-                            '_add_description' : CKEDITOR.TRISTATE_OFF
+                            '_block_description' : CKEDITOR.TRISTATE_OFF
                         }
                     }
                 }
 
                 return null
-            })
+            });
+
+
+            editor.on('contentDom', function () {
+                // Обновление тега изображения при изменении
+                editor.window.$.dismissPhotoChangePopup = function(win, newTag, newId) {
+                    var element = editor.document.$.querySelector('img[data-id="' + newId + '"]');
+                    if (element) {
+                        element.outerHTML = newTag.trim();
+                    }
+                    win.close();
+                };
+
+                // Обновление класса галереи при удалении картинок через Backspace и Delete
+                editor.on('key', function (evt) {
+                    if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
+                        if (editor.mode != "wysiwyg") {
+                            return
+                        }
+
+                        // if we call getStartElement too soon, we get the wrong element
+                        setTimeout(function () {
+                            var container = editor.getSelection().getStartElement();
+                            if (container.hasClass('page-images')) {
+                                if (container.getElementsByTag('img').count() > 1) {
+                                    container.removeClass('single-image').addClass('multi-image');
+                                } else if (container.getElementsByTag('img').count() == 1) {
+                                    container.removeClass('multi-image').addClass('single-image');
+                                } else {
+                                    container.remove()
+                                }
+                            }
+                        }, 10)
+                    }
+                })
+            });
         }
     })
 

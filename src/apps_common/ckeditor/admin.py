@@ -46,6 +46,7 @@ class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
         if IS_POPUP_VAR in request.POST:
             return SimpleTemplateResponse('ckeditor/popup_response.html', {
                 'newTag': escapejs(pagephoto_tag(obj, nocache=True)),
+                'newId': obj.id,
             })
 
         return super(PagePhotoAdmin, self).response_change(request, obj)

@@ -106,7 +106,7 @@
                 }
 
                 // Инициализация загрузчика
-                InitPluploader(editor)
+                InitPluploader(editor);
             },
 
             onOk: function() {
