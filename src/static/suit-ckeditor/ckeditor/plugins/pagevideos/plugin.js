@@ -59,15 +59,13 @@
                     label : gettext('Edit'),
                     icon: this.path + 'edit.png',
                     command : 'ChangeVideo',
-                    group : 'videos',
-                    order : 1
+                    group : 'videos'
                 },
                 _block_description : {
                     label : gettext('Block description'),
                     icon: this.path + 'descr.png',
                     command : 'pagevideos_block_description',
-                    group : 'videos',
-                    order : 0
+                    group : 'videos'
                 }
             });
             editor.contextMenu.addListener(function (element) {

@@ -87,18 +87,23 @@
     };
 
     CKEDITOR.plugins.add("simplephotos", {
-        init: function (editor) {
-            var c = editor.addCommand("simplephotos", new CKEDITOR.dialogCommand("simplephotos", {
-                allowedContent: 'img(!simple-photo)[!src,alt,width,height,title,data-id]'
-            }));
-            c.modes = {
-                wysiwyg: 1,
-                source: 0
-            };
-            c.canUndo = true;
+        init: function(editor) {
+            // ======================================
+            //      COMMANDS
+            // ======================================
 
+            // UPLOAD
+            editor.addCommand("simplephotos", new CKEDITOR.dialogCommand("simplephotos", {
+                allowedContent: 'img(!simple-photo)[!src,alt,width,height,title,data-id]'
+                modes: {
+                    wysiwyg: 1,
+                    source: 0
+                },
+                canUndo: true
+            }));
+            
             var path = this.path;
-            editor.on('contentDom', function () {
+            editor.on('contentDom', function() {
                 InitUploader(editor, path);
             });
         }
