@@ -27,7 +27,6 @@
                 FilesAdded: function(up, files) {
                     plupload.each(files, function(file) {
                         var preloader = editor.document.createElement('img');
-                        preloader.addClass('simple-photo');
                         preloader.setAttribute('id', file.id);
                         preloader.setAttribute('src', path + 'preloader.gif');
                         editor.insertElement(preloader);
@@ -40,9 +39,10 @@
                 FileUploaded: function(up, file, data) {
                     // Файл загружен
                     var response = JSON.parse(data.response);
+                    var $tag = $(response.tag).addClass('simple-photo');
 
                     var $doc = $(editor.editable().$);
-                    $doc.find('#' + file.id).replaceWith(response.tag);
+                    $doc.find('#' + file.id).replaceWith($tag);
 
                     var text_field = $('#id_' + response.field);
                     if (text_field.length) {
@@ -89,6 +89,13 @@
     CKEDITOR.plugins.add("simplephotos", {
         init: function(editor) {
             // ======================================
+            //      DIALOGS
+            // ======================================
+
+            CKEDITOR.dialog.add("simplephotos_image_description", this.path + "dialogs/image_description.js");
+
+
+            // ======================================
             //      COMMANDS
             // ======================================
 
@@ -101,6 +108,33 @@
                 },
                 canUndo: true
             }));
+
+            // IMAGE DESCRIPTION
+            editor.addCommand("simplephotos_image_description", new CKEDITOR.dialogCommand("simplephotos_image_description"));
+
+
+            // ======================================
+            //      CONTEXT MENU
+            // ======================================
+
+            // Добавление пунктов в контекстное меню
+            editor.addMenuGroup('images');
+            editor.addMenuItems({
+                _image_description : {
+                    label : gettext('Image description'),
+                    icon: this.path + 'descr.png',
+                    command : 'simplephotos_image_description',
+                    group : 'images'
+                }
+            });
+            editor.contextMenu.addListener(function(element) {
+                if (element && element.is('img') && element.hasClass('simple-photo')) {
+                    return {
+                        _image_description : CKEDITOR.TRISTATE_OFF
+                    }
+                }
+                return null
+            });
 
             var path = this.path;
             editor.on('contentDom', function() {

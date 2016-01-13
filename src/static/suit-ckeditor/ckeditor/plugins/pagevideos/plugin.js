@@ -71,8 +71,8 @@
             editor.contextMenu.addListener(function (element) {
                 if (element && element.hasClass('page-video')) {
                     return {
-                        '_change_video' : CKEDITOR.TRISTATE_OFF,
-                        '_block_description' : CKEDITOR.TRISTATE_OFF
+                        _change_video : CKEDITOR.TRISTATE_OFF,
+                        _block_description : CKEDITOR.TRISTATE_OFF
                     }
                 }
 

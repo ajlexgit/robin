@@ -110,13 +110,13 @@
 
                     if (isImage && isInGallery) {
                         return {
-                            '_crop_command' : CKEDITOR.TRISTATE_OFF,
-                            '_block_description' : CKEDITOR.TRISTATE_OFF,
-                            '_image_description' : CKEDITOR.TRISTATE_OFF
+                            _crop_command : CKEDITOR.TRISTATE_OFF,
+                            _block_description : CKEDITOR.TRISTATE_OFF,
+                            _image_description : CKEDITOR.TRISTATE_OFF
                         }
                     } else if (isGallery) {
                         return {
-                            '_block_description' : CKEDITOR.TRISTATE_OFF
+                            _block_description : CKEDITOR.TRISTATE_OFF
                         }
                     }
                 }
