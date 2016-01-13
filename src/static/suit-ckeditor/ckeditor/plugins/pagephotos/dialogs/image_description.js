@@ -1,6 +1,6 @@
 (function() {
 
-    CKEDITOR.dialog.add("image_description", function (editor) {
+    CKEDITOR.dialog.add("pagephotos_image_description", function (editor) {
 		return {
             title: gettext('Set image description'),
             minWidth: 400,

@@ -7,7 +7,7 @@
         while (child = childs[i]) {
             if (child.nodeType != 1) {
                 element.removeChild(child);
-            } else if (child.tagName != 'IMG') {
+            } else if (child.tagName != 'IFRAME') {
                 element.removeChild(child);
             } else {
                 i++
@@ -15,7 +15,7 @@
         }
     };
 
-    CKEDITOR.dialog.add("pagephotos_block_description", function (editor) {
+    CKEDITOR.dialog.add("pagevideos_block_description", function (editor) {
 		return {
             title: gettext('Set block description'),
             minWidth: 400,
@@ -39,7 +39,7 @@
 
             onShow: function() {
                 var element = editor.getSelection().getStartElement();
-                var container = element.hasClass('page-images') ? element : element.getParent();
+                var container = element.hasClass('page-video') ? element : element.getParent();
 
                 var dialogElement = this.getContentElement('tab-basic', 'description').getElement();
                 var textarea = dialogElement.getElementsByTag('textarea').getItem(0);
@@ -51,7 +51,7 @@
 
             onOk: function() {
                 var element = editor.getSelection().getStartElement();
-                var container = element.hasClass('page-images') ? element : element.getParent();
+                var container = element.hasClass('page-video') ? element : element.getParent();
 
                 var dialogElement = this.getContentElement('tab-basic', 'description').getElement();
                 var textarea = dialogElement.getElementsByTag('textarea').getItem(0);

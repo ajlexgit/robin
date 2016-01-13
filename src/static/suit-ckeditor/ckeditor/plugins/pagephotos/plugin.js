@@ -33,8 +33,8 @@
             // ======================================
 
             CKEDITOR.dialog.add("pagephotos", this.path + "dialogs/dlg_upload.js");
-            CKEDITOR.dialog.add("block_description", this.path + "dialogs/block_description.js");
-            CKEDITOR.dialog.add("image_description", this.path + "dialogs/image_description.js");
+            CKEDITOR.dialog.add("pagephotos_block_description", this.path + "dialogs/block_description.js");
+            CKEDITOR.dialog.add("pagephotos_image_description", this.path + "dialogs/image_description.js");
 
 
             // ======================================
@@ -53,10 +53,10 @@
             }));
 
             // BLOCK DESCRIPTION
-            editor.addCommand("block_description", new CKEDITOR.dialogCommand("block_description"));
+            editor.addCommand("pagephotos_block_description", new CKEDITOR.dialogCommand("pagephotos_block_description"));
 
             // IMAGE DESCRIPTION
-            editor.addCommand("image_description", new CKEDITOR.dialogCommand("image_description"));
+            editor.addCommand("pagephotos_image_description", new CKEDITOR.dialogCommand("pagephotos_image_description"));
 
             // EDIT
             editor.addCommand("ChangeImage", {
@@ -93,14 +93,14 @@
                 _block_description : {
                     label : gettext('Block description'),
                     icon: this.path + 'descr.png',
-                    command : 'block_description',
+                    command : 'pagephotos_block_description',
                     group : 'images',
                     order : 2
                 },
                 _image_description : {
                     label : gettext('Image description'),
                     icon: this.path + 'descr.png',
-                    command : 'image_description',
+                    command : 'pagephotos_image_description',
                     group : 'images',
                     order : 3
                 }

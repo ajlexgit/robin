@@ -24,28 +24,31 @@
             }],
 
 			onShow: function() {
-				var container = editor.getSelection().getStartElement(),
-					element = $(container.$);
+				var element = editor.getSelection().getStartElement();
+                var embedCode = this.getContentElement('tab-basic', 'embedCode').getInputElement();
 
-				if (container.hasClass(CKEDITOR.config.pagevideos.classname)) {
-					this.setValueOf('tab-basic', 'embedCode', element.data('url'))
+                if (element.hasClass('page-video')) {
+					embedCode.setValue(element.data('url'));
 				}
+
+                embedCode.focus(true);
 			},
 
 			onOk: function() {
-				var url = this.getValueOf( 'tab-basic', 'embedCode' ),
-                    provider = $.fn.oembed.getOEmbedProvider(url),
-					container = editor.getSelection().getStartElement();
+				var element = editor.getSelection().getStartElement();
+				var url = this.getValueOf('tab-basic', 'embedCode');
+				var provider = $.fn.oembed.getOEmbedProvider(url);
+                var dialog = this;
 
 				// Вставка родительского контейнера
-				if (!container.hasClass(CKEDITOR.config.pagevideos.classname)) {
-                    container = editor.document.createElement('p');
-                    container.addClass(CKEDITOR.config.pagevideos.classname);
-					editor.insertElement(container)
+				if (!element.hasClass('page-video')) {
+                    element = editor.document.createElement('p');
+                    element.addClass('page-video');
+					editor.insertElement(element);
                 }
 
-                container.addClass(provider.name);
-                var $container = $(container.$);
+                element.addClass(provider.name);
+                var $element = $(element.$);
 
                 // Fix for instagram
                 if (provider.name == 'instagram') {
@@ -55,7 +58,7 @@
                         return
                     }
 
-                    $container.attr('data-url', url).data('url', url);
+                    $element.attr('data-url', url).data('url', url);
 
                     var iframe = editor.document.createElement('iframe');
                     var $iframe = $(iframe.$).attr({
@@ -66,29 +69,26 @@
                         scrolling: 'no',
                         allowtransparency: ''
                     });
-                    $container.html($iframe);
+                    $element.html($iframe);
 
                     var script = editor.document.createElement('script');
                     var $script = $(script.$).attr({
                         src: '//platform.instagram.com/en_US/embeds.js'
                     });
-                    $container.append($script);
+                    $element.append($script);
 
-                    var dialog = CKEDITOR.dialog.getCurrent();
-                    if (dialog) {
-                        dialog.hide();
-                    }
+                    dialog.hide();
                     return
                 }
 
-                $container.oembed(url, {
+                $element.oembed(url, {
                     embedMethod: 'editor',
                     onEmbed: function(e) {
                         if (typeof e.code === 'string') {
-                            $container.html(e.code);
+                            $element.html(e.code);
                         } else if (typeof e.code[0].outerHTML === 'string') {
                             // Вставка HTML-кода
-                            var video = $container.find('iframe');
+                            var video = $element.find('iframe');
 
                             // rel=0 for youtube
                             if (e.code[0].src.indexOf('?') >= 0) {
@@ -101,13 +101,13 @@
                                 if (video.length) {
                                     video.replaceWith(e.code)
                                 } else {
-                                    $container.html(e.code)
+                                    $element.html(e.code)
                                 }
                             } else if (typeof e.code[0].outerHTML === 'string') {
                                 if (video.length) {
                                     video.replaceWith(e.code[0].outerHTML)
                                 } else {
-                                    $container.html(e.code[0].outerHTML)
+                                    $element.html(e.code[0].outerHTML)
                                 }
                             } else {
                                 alert(gettext('Incorrect URL'))
@@ -139,7 +139,7 @@
 
                                         width = parseInt(width[1]);
                                         height = parseInt(height[1]);
-                                        $(container.$).find('iframe').attr({
+                                        $(element.$).find('iframe').attr({
                                             width: 425,
                                             height: Math.ceil((height / width) * 425) + 25
                                         });
@@ -150,11 +150,8 @@
                             alert('Unknown URL service');
                         }
 
-                        $container.attr('data-url', url).data('url', url);
-                        var dialog = CKEDITOR.dialog.getCurrent();
-                        if (dialog) {
-                            dialog.hide();
-                        }
+                        $element.attr('data-url', url).data('url', url);
+                        dialog.hide();
 					}
 				})
 			}
