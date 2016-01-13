@@ -94,14 +94,14 @@
 
             // UPLOAD
             editor.addCommand("simplephotos", new CKEDITOR.dialogCommand("simplephotos", {
-                allowedContent: 'img(!simple-photo)[!src,alt,width,height,title,data-id]'
+                allowedContent: 'img(!simple-photo)[!src,alt,width,height,title,data-id]',
                 modes: {
                     wysiwyg: 1,
                     source: 0
                 },
                 canUndo: true
             }));
-            
+
             var path = this.path;
             editor.on('contentDom', function() {
                 InitUploader(editor, path);
