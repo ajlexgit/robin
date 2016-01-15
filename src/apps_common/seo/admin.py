@@ -39,6 +39,9 @@ class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
         (_('SEO text'), {
             'fields': ('header', 'text',),
         }),
+        (_('Opengraph'), {
+            'fields': ('og_title', 'og_image', 'og_description'),
+        }),
     )
 
 

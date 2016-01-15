@@ -1,12 +1,17 @@
 from collections import deque
 from django.conf import settings
 from django.db.models import Model
+from django.utils.html import strip_tags
 from django.forms.models import model_to_dict
 from django.utils.safestring import mark_safe
+from django.db.models.fields.files import ImageFieldFile
 from django.contrib.contenttypes.models import ContentType
 from .models import SeoConfig, SeoData
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
+
+SEODATA_META = ('title', 'keywords', 'description')
+SEODATA_OPENGRAPH = ('og_title', 'og_image', 'og_description')
 
 
 class Seo:
@@ -34,58 +39,65 @@ class Seo:
         except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
             return None
 
-    @classmethod
-    def get_data_from(cls, entity, defaults=None):
-        """
-            Получение словаря данных для страницы entity
-        """
-        defaults = dict(defaults) if defaults else {}
+    @staticmethod
+    def get_or_create_for(entity):
+        """ Получение или создание SeoData для объекта """
+        ct = ContentType.objects.get_for_model(entity.__class__)
+        try:
+            return SeoData.objects.get(
+                content_type=ct,
+                object_id=entity.pk
+            )
+        except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
+            return SeoData(
+                content_type=ct,
+                object_id=entity.pk
+            )
 
-        seodata = cls.get_for(entity)
-        if seodata is None:
-            seodata = {}
-        else:
-            seodata = model_to_dict(seodata)
-
-        data = {}
-        for key in ('title', 'keywords', 'description'):
-            value = seodata.get(key) or defaults.get(key)
-            if value is not None:
-                data[key] = value
-
-        return data
-
-    def set(self, seodata):
+    def set(self, seodata, defaults=None):
         """
-            Установка title, keywords и description из экземпляра модели
-            или словаря
+            Установка SEO-данных из экземпляра модели или словаря
         """
-        if seodata is None:
-            return
-        elif isinstance(seodata, Model):
+        if isinstance(seodata, Model):
             seodata = model_to_dict(seodata)
         elif isinstance(seodata, dict):
             pass
         else:
             raise TypeError('seodata must be an instance of Model or dict')
 
-        # title
-        title = seodata.get('title')
-        if title is not None:
-            self.title_deque.appendleft(title)
+        for fieldname in SEODATA_META + SEODATA_OPENGRAPH:
+            default = defaults.get(fieldname) if isinstance(defaults, dict) else None
 
-        # keywords
-        keywords = seodata.get('keywords')
-        if keywords is not None:
-            self.keywords = str(keywords)
+            value = seodata.get(fieldname) or default
+            if value is None:
+                continue
 
-        # description
-        description = seodata.get('description')
-        if description is not None:
-            self.description = str(description)
+            if fieldname == 'title':
+                self.title_deque.appendleft(value)
+            else:
+                setattr(self, fieldname, value)
+
+    def set_title(self, entity, *args, default=None):
+        """
+            Алиас для упрощения добавления заголовков из родительских категорий.
+        """
+        seodata = self.get_for(entity) or {}
+        self.set(seodata, {
+            'title': default,
+        })
+
+    def set_data(self, entity, *args, defaults=None):
+        """
+            Алиас для упрощения добавления данных, которые не нужно модифицировать
+        """
+        seodata = self.get_for(entity) or {}
+        self.set(seodata, defaults)
+
+        # сохраняем для передачи в request.seodata
+        self._seodata = seodata
 
     def save(self, request):
-        """ Сохранение данных в request """
+        """ Сохранение данных в request, чтобы выводить их в шаблонах """
         # title
         title_parts = list(filter(bool, map(str, self.title_deque)))
         if TITLE_JOIN_WITH:
@@ -99,29 +111,26 @@ class Seo:
             'description': self.description,
         }
 
-        if self._seodata and not hasattr(request, 'seodata'):
-            request.seodata = self._seodata
+        # opengraph
+        og = getattr(request, 'opengraph', None)
+        if og is not None:
+            og_data = {
+                'url': request.build_absolute_uri(request.path_info)
+            }
 
-    def set_title(self, entity, *args, default=None):
-        """
-            Алиас для упрощения добавления заголовков из родительских категорий.
-        """
-        seodata = self.get_for(entity)
-        if seodata is None:
-            title = ''
-        else:
-            title = seodata.title
+            og_title = getattr(self, 'og_title', None)
+            if og_title:
+                og_data['title'] = og_title
 
-        title = title or default
-        if title is not None:
-            self.title_deque.appendleft(title)
+            og_image = getattr(self, 'og_image', None)
+            if og_image:
+                if isinstance(og_image, ImageFieldFile):
+                    og_data['image'] = request.build_absolute_uri(og_image.url)
+                elif isinstance(og_image, str) and not og_image.startswith('http'):
+                    og_data['image'] = request.build_absolute_uri(og_image)
 
-    def set_data(self, entity, *args, defaults=None):
-        """
-            Алиас для упрощения добавления данных, которые не нужно модифицировать
-        """
-        seodata = self.get_data_from(entity, defaults)
-        self.set(seodata)
+            og_description = getattr(self, 'og_description', None)
+            if og_description:
+                og_data['description'] = strip_tags(og_description)
 
-        # сохраняем для передачи в request.seodata
-        self._seodata = self.get_for(entity)
+            og.update(og_data)

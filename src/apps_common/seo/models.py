@@ -23,6 +23,11 @@ class SeoData(models.Model):
     keywords = models.TextField(_('keywords'), max_length=255, blank=True)
     description = models.TextField(_('description'), max_length=160, blank=True)
 
+    # opengraph
+    og_title = models.CharField(_('title'), max_length=255, blank=True)
+    og_image = models.ImageField(_('image'), blank=True)
+    og_description = models.TextField(_('description'), blank=True)
+
     header = models.CharField(_('header'), max_length=128, blank=True)
     text = models.TextField(_('text'), blank=True)
 

@@ -4,6 +4,7 @@
     Позволяет указывать значения title, keywords, desription и др. для экземпляров
     моделей и для сайта в целом.
 
+    Поддерживает указание некоторых OpenGraph-метаданных.
 
     Необязательные настройки:
         # Если не пустая строка - она будет объединять части дэка заголовков.
@@ -56,36 +57,20 @@
         views.py:
             from seo import Seo
 
-
             # Простейшая установка SEO-данных из объекта SeoData, привязанного к entity:
-                entity_data = Seo.get_data_from(entity, defaults={
-                    'title': entity.title,
-                })
                 seo = Seo()
-                seo.set(entity_data)
+                seo.set_data(instance, defaults={
+                    'title': entity.title,
+                    'keywords': 'Default keywords',
+                })
                 seo.save(request)
-
 
             # Установка цепочки заголовков:
-                shop_data = Seo.get_data_from(shop, defaults={
-                    'title': shop.title,
-                })
-                category_data = Seo.get_data_from(category, defaults={
-                    'title': category.title,
-                })
-                seo = Seo()
-                seo.set({
-                    'title': shop_data.get('title')
-                })
-                seo.set(category_data)
-                seo.save(request)
-
-            # Вышеприведенная ситуация случается часто, поэтому введены
-            # алиасы set_title и set_data для сокращения кода:
                 seo = Seo()
                 seo.set_title(shop, default=shop.title)
-                seo.set_data(category, defaults={
-                    'title': category.title,
+                seo.set_title(category, default=category.title)
+                seo.set_data(product, defaults={
+                    'title': product.title,
                 })
                 seo.save(request)
 
