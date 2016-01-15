@@ -104,6 +104,7 @@ class DetailView(TemplateExView):
         seo.set_title(self.category, default=self.category.title)
         seo.set_data(self.product, defaults={
             'title': self.product.title,
+            'og_image': self.product.photo,
         })
         seo.save(request)
 

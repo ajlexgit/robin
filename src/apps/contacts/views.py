@@ -24,7 +24,7 @@ class IndexView(TemplateExView):
         # SEO
         seo = Seo()
         seo.set_data(self.config, defaults={
-            'title': _('Contacts')
+            'title': _('Contacts'),
         })
         seo.save(request)
 
