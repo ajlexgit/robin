@@ -18,6 +18,11 @@ class LanguageRedirectMiddleware:
             disable_autoredirect(request)
             return
 
+        ua_string = request.META.get('HTTP_USER_AGENT').lower()
+        for pattern in options.ROBOTS_UA:
+            if pattern in ua_string:
+                return
+
         noredirect_session = request.session.get(options.NOREDIRECT_SESSION_KEY, None)
         if not noredirect_session:
             # авторедирект разрешен

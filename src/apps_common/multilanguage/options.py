@@ -1,3 +1,5 @@
+import re
+
 LANGUAGES = (
     {
         'code': 'en-US',
@@ -14,7 +16,7 @@ LANGUAGES = (
 LANGUAGES_DICT = {
     item['code']: item
     for item in LANGUAGES
-    }
+}
 LANGUAGE_CODES = tuple(item['code'] for item in LANGUAGES)
 
 
@@ -27,3 +29,22 @@ NOREDIRECT_GET_PARAM = 'noredirect'
 
 # Путь редиректа по умолчанию.
 DEFAULT_REDIRECT_URL = 'index'
+
+# Строки в User-Agent, которые не должны редиректиться
+ROBOTS_UA = tuple(map(str.lower, (
+    'Googlebot',
+    'Mail.RU_Bot',
+    'YandexBot',
+    'YandexImage',
+    'YandexMetrika',
+    'Applebot',
+    'facebookexternalhit',
+    'DuckDuckBot',
+    'SkypeUriPreview',
+    'Pinterest',
+    'Twitterbot',
+    'Slackbot',
+    'vkShare',
+    'Yahoo',
+    'W3C_Validator',
+)))
