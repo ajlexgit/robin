@@ -54,7 +54,7 @@
     /*
         Базовый класс объекта на карте
      */
-    window.GMapEventedObject = Class(EventedObject, function GMapPoint(cls, superclass) {
+    window.GMapEventedObject = Class(EventedObject, function GMapEventedObject(cls, superclass) {
         cls.defaults = {};
 
         cls.NATIVE_EVENTS = [];
@@ -127,7 +127,7 @@
     /*
         Базовый класс объекта на карте
      */
-    window.GMapObject = Class(GMapEventedObject, function GMapPoint(cls, superclass) {
+    window.GMapObject = Class(GMapEventedObject, function GMapObject(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             map: null
         });
@@ -712,7 +712,7 @@
         /*
             Получение / установка разрешения на зум через двойной клик
          */
-        cls.prototype.dblClickZoom = function(value) {
+        cls.dblClickZoom = function(value) {
             if (value === undefined) {
                 // получение значения
                 return !this.native.disableDoubleClickZoom;
@@ -782,7 +782,7 @@
         /*
             Получение / установка максимального зума карты
          */
-        cls.prototype.maxZoom = function(value) {
+        cls.maxZoom = function(value) {
             if (value === undefined) {
                 // получение зума
                 return this._maxZoom;
@@ -817,7 +817,7 @@
         /*
             Получение / установка минимального зума карты
          */
-        cls.prototype.minZoom = function(value) {
+        cls.minZoom = function(value) {
             if (value === undefined) {
                 // получение зума
                 return this._minZoom;
@@ -852,7 +852,7 @@
         /*
             Получение / установка наличия зума карты
          */
-        cls.prototype.zoomControl = function(value) {
+        cls.zoomControl = function(value) {
             if (value === undefined) {
                 // получение значения
                 return this.native.zoomControl;

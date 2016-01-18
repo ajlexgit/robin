@@ -66,14 +66,14 @@
         /*
             Переустановка таймера при перетаскивании
          */
-        cls.prototype.startDrag = function(slider) {
+        cls.startDrag = function(slider) {
             this.stopTimer();
         };
 
         /*
             Переустановка таймера при перетаскивании
          */
-        cls.prototype.stopDrag = function(slider) {
+        cls.stopDrag = function(slider) {
             this.startTimer(slider);
         };
         
