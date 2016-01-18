@@ -55,7 +55,6 @@ INSTALLED_APPS = (
     'admin_dump',
     'admin_log',
     'attachable_blocks',
-    'breadcrumbs',
     'ckeditor',
     'files',
     'footer',
@@ -309,8 +308,6 @@ MIDDLEWARE_CLASSES = (
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
-
-    'breadcrumbs.middleware.BreadcrumbsMiddleware',
 )
 
 ALLOWED_HOSTS = ()
