@@ -5,12 +5,6 @@
 // This reset provides a basic reset for block html5 elements
 // so they are rendered correctly in browsers that don't recognize them
 // and reset in browsers that have default styles for them.
-@mixin reset-html5 {
-  #{elements-of-type(html5-block)} {
-    display: block;
-  }
-}
-
 @mixin global-reset {
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -92,9 +86,7 @@
   }
   textarea {
     resize: none;
-  }
-  button {
-    cursor: pointer;
+	  overflow: auto;
   }
   label {
     display: inline-block;
@@ -117,5 +109,51 @@
   picture {
     display: inline-block;
   }
-  @include reset-html5;
+
+
+	// Correct `block` display not defined for `details` or `summary` in IE 10/11
+	// Correct `block` display not defined for `main` in IE 11.
+	details, summary, main {
+		display: block;
+	}
+
+	// Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+	.progress {
+		vertical-align: baseline;
+	}
+
+	// Prevent modern browsers from displaying `audio` without controls.
+	// Remove excess height in iOS 5 devices.
+	audio:not([controls]) {
+	  display: none;
+	  height: 0;
+	}
+
+	// Correct overflow not hidden in IE 9/10/11.
+	svg:not(:root) {
+	  overflow: hidden;
+	}
+
+	/**
+	* 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+	*    and `video` controls.
+	* 2. Correct inability to style clickable `input` types in iOS.
+	* 3. Improve usability and consistency of cursor style between image-type
+	*    `input` and others.
+	*/
+	button,
+	html input[type="button"], /* 1 */
+	input[type="reset"],
+	input[type="submit"] {
+		-webkit-appearance: button; /* 2 */
+		cursor: pointer; /* 3 */
+	}
+
+	/**
+	* Re-set default cursor for disabled elements.
+	*/
+	button[disabled],
+	html input[disabled] {
+		cursor: default;
+	}
 }
