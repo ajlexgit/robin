@@ -1,6 +1,9 @@
 import os
 import sys
 
+# как-то упростить остановку видео при закрытии popup
+# destroy внутри beforeHide вызывает call stack
+# popup events
 # множественные модальные окна
 # Angular-like
 # виджет выбора ссылки на сущность
