@@ -70,7 +70,7 @@
 
             // создание реального объекта GoogleMap
             var that = this;
-            GMap.ready(function() {
+            window.GMap.ready(function() {
                 that.makeNative();
             });
 
@@ -111,7 +111,7 @@
 
                 // вешаем обработчик на нативный маркер при первом обращении
                 var that = this;
-                GMap.ready(function() {
+                window.GMap.ready(function() {
                     that.native_events.push(evt_name);
                     that.native.addListener(evt_name, function() {
                         that.trigger(evt_name, arguments);
@@ -299,7 +299,7 @@
 
             // нативный объект
             var that = this;
-            GMap.ready(function() {
+            window.GMap.ready(function() {
                 that.native = new google.maps.LatLng(that.lat, that.lng);
             });
         };
