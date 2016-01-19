@@ -12,7 +12,6 @@ $mobile_active_color: $active_color;
 
 #main-menu {
   display: inline-block;
-  height: auto !important;
   @include no_fontsize;
   @include media_interval(0, $mobile_menu_point) {
     display: none;

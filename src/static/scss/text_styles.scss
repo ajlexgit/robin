@@ -103,8 +103,8 @@
 
   .description {
     margin-top: 5px;
+    font-size: 0.8em;
     color: #808080;
-    @include font_size(12px, 14px);
   }
 
   // JS-слайдер с описанием

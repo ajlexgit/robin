@@ -13,8 +13,8 @@
                         autoplay: 1
                     },
                 }, function(player) {
-                    if (player.startVideo) {
-                        player.startVideo();
+                    if (player.playVideo) {
+                        player.playVideo();
                     }
                 })
             </script>

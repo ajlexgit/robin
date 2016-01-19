@@ -95,7 +95,7 @@ class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
 
     def date_format(self, obj):
         return dateformat.format(localtime(obj.date), settings.DATETIME_FORMAT)
-    date_format.short_description = _('Publish date')
+    date_format.short_description = _('Publication date')
     date_format.admin_order_field = 'date'
 
     def make_public_action(self, request, queryset):

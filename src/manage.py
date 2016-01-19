@@ -1,6 +1,9 @@
 import os
 import sys
 
+# Ckeditor: remove format address, ...
+# text_styles: $margin
+# подумать над плагином аля-слайдер с двумя вертикальными фотками
 # как-то упростить остановку видео при закрытии popup
 # destroy внутри beforeHide вызывает call stack
 # popup events
