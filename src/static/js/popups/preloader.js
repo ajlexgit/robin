@@ -17,7 +17,6 @@
                     that.$content.append(content);
                 });
             },
-            speed: 200,
             closeButton: false,
             hideOnClick: false
         }, options);

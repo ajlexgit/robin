@@ -3,11 +3,13 @@
     /*
         Плагин модальных окон.
 
-        Может существовать только одно окно.
-        Текущее окно можно получить через getCurrentPopup();
+        В один момент времени может существовать множество окон,
+        но видимо всегда только одно окно.
+        Текущее видимое окно можно получить через getCurrentPopup();
 
-        Высота окна динамическая и зависит от содержимого. Кроме того, окно всегда
-        находится в центре экрана.
+        После скрытия окна, оно удаляется из DOM.
+
+        Высота окна динамическая и зависит от содержимого.
 
         Параметры:
             // Классы контейнера окна
@@ -18,15 +20,6 @@
 
             // Скорость анимации показа и скрытия окна
             speed: 400
-
-            // Событие создания окна
-            onInit: function() {}
-
-            // Событие показа окна
-            beforeShow: function() {}
-
-            // Событие скрытия окна
-            beforeHide: function() {}
 
         Методы объекта окна:
             // Показ окна. Возвращает Deferred-объект
@@ -41,8 +34,13 @@
             // Мгновенное уничтожение окна
             popup.destroy()
 
+        События:
+            ready   - окно создано и готово к показу
+            show    - окно стало видимым
+            hide    - окно стало скрытым, но ещё присутствует в DOM
+
         Примеры:
-            // Уничтожение окна, открытого в данный момент
+            // Мгновенное уничтожение окна, открытого в данный момент
             var current_popup = getCurrentPopup();
             if (current_popup) {
                 current_popup.destroy()
@@ -62,17 +60,17 @@
 
 
             // Показ окна с выводом сообщения после окончания анимации
-            popup.show().done(function() {
+            popup.on('show', function() {
                 console.log('Окно показано')
-            });
+            }).show();
 
             // Замена содержимого окна
             popup.setContent('<h1 class="title-h1">Goodbay</h1>');
 
             // Скрытие окна и уничтожение после завершения анимации
-            popup.hide().done(function() {
-                popup.destroy();
-            });
+            popup.on('hide', function() {
+                console.log('Окно скрыто');
+            }).hide();
 
         Инфа для разработчика:
             Блок $content введен в $window из-за необходимости разных значений overflow.
@@ -107,16 +105,13 @@
         return currentPopup;
     };
 
-    window.Popup = Class(null, function Popup(cls, superclass) {
+    window.Popup = Class(EventedObject, function Popup(cls, superclass) {
         cls.defaults = {
             classes: '',
             content: '',
-            speed: 400,
-            easing: 'easeOutCubic',
-
-            onInit: $.noop,
-            beforeShow: $.noop,
-            beforeHide: $.noop
+            speed: 500,
+            easingShow: 'easeOutCubic',
+            easingHide: 'easeInCubic'
         };
 
         cls.CONTAINER_ID = 'popup-container';
@@ -129,52 +124,29 @@
 
 
         cls.init = function(options) {
+            superclass.init.call(this);
+
             // настройки
             this.opts = $.extend(true, {}, this.defaults, options);
 
-            // уничтожение старого окна
-            var old_popup = getCurrentPopup();
-            if (old_popup) {
-                // сохраняем старые параметры, т.к. они потеряются
-                old_popup.__opened = old_popup._opened;
-                old_popup.__visible = old_popup._visible;
-                old_popup.destroy();
-            }
-
-            this._createDom();
-            this._postInit();
-
             this._opened = false;
             this._visible = false;
-
-            // замена старого окна
-            if (old_popup) {
-                // восстанавливаем старые параметры
-                old_popup._opened = old_popup.__opened;
-                old_popup._visible = old_popup.__visible;
-                delete old_popup.__opened;
-                delete old_popup.__visible;
-                this._replacePopup(old_popup);
-            }
-
-            // установка текущего окна
-            currentPopup = this;
         };
 
         /*
-            Создание DOM:
+            Освобождение ресурсов
+         */
+        cls.destroy = function() {
+            this._beforeHide();
+            this._showScrollbar();
+            this._afterHide();
+            superclass.destroy.call(this);
+        };
 
-            <div id="container">
-                <div id="wrapper">
-                    <div id="window">
-                        <div id="content"></div>
-                    </div>
-                </div>
-            </div>
+        /*
+            Создание DOM
          */
         cls._createDom = function() {
-            $('#' + this.CONTAINER_ID).remove();
-
             // Создание DOM (изначально скрытого)
             this.$container = $('<div/>').attr('id', this.CONTAINER_ID).hide();
             this.$windowWrapper = $('<div/>').addClass(this.WRAPPER_CLASS);
@@ -185,6 +157,13 @@
             this.$windowWrapper.append(this.$window);
             this.$container.append(this.$windowWrapper);
             $body.append(this.$container);
+        };
+
+        /*
+            Удаление DOM
+         */
+        cls._removeDOM = function() {
+            $('#' + this.CONTAINER_ID).remove();
         };
 
         /*
@@ -203,8 +182,7 @@
             // classes
             this.$container.addClass(this.opts.classes);
 
-            // callback
-            this.opts.onInit.call(this);
+            this.trigger('ready');
         };
 
         //=======================
@@ -244,22 +222,6 @@
             $body.removeClass(this.BODY_OPENED_CLASS);
         };
 
-        /*
-            Вызывается при создании ногово Popup, когда
-            ещё не уничтожен старый.
-
-            На момент вызова, DOM старого окна уже удален,
-            а DOM нового уже создан.
-
-            По умолчанию здесь происходит мгновенный показ окна, если прежнее окно было открыто.
-         */
-        cls._replacePopup = function(old_popup) {
-            if (old_popup.is_opened()) {
-                this._beforeShow();
-                this._showInstant();
-            }
-        };
-
         //=======================
         // Методы
         //=======================
@@ -286,44 +248,41 @@
             return this._visible;
         };
 
-        /*
-            Освобождение ресурсов
-         */
-        cls.destroy = function() {
-            this._beforeHide();
-            this._afterHide();
-            this.$container.remove();
-            currentPopup = null;
-        };
-
         //=======================
         // Показ окна
         //=======================
 
         /*
             Показ готового окна.
-            Возвращает Deferred-объект, который "ресолвится" после
-            завершения анимации показа окна.
          */
         cls.show = function() {
-            this._deferredShow = $.Deferred();
-
+            // если уже открыто - выходим
             if (this.is_opened()) {
-                return this._deferredShow.resolve();
+                return;
             }
 
-            this._beforeShow();
-            this._show();
-
-            return this._deferredShow;
+            var current = getCurrentPopup();
+            if (current) {
+                // подмена старого (открытого) окна новым
+                current._beforeHide();
+                current._afterHide();
+                this._createDom();
+                this._postInit();
+                this._beforeShow();
+                this._showInstant();
+            } else {
+                // показ нового окна
+                this._hideScrollbar();
+                this._createDom();
+                this._postInit();
+                this._beforeShow();
+                this._show();
+            }
         };
 
         cls._beforeShow = function() {
+            currentPopup = this;
             this._opened = true;
-            this._hideScrollbar();
-
-            // callback
-            this.opts.beforeShow.call(this);
         };
 
         /*
@@ -333,7 +292,7 @@
             var that = this;
             this.$container.stop(false, false).fadeIn({
                 duration: this.opts.speed,
-                easing: this.opts.easing,
+                easing: this.opts.easingShow,
                 complete: function() {
                     that._afterShow();
                 }
@@ -351,7 +310,7 @@
 
         cls._afterShow = function() {
             this._visible = true;
-            this._deferredShow && this._deferredShow.resolve();
+            this.trigger('show');
         };
 
         //=======================
@@ -360,27 +319,19 @@
 
         /*
             Скрытие открытого окна.
-            Возвращает Deferred-объект, который "ресолвится" после
-            завершения анимации скрытия окна.
          */
         cls.hide = function() {
-            this._deferredHide = $.Deferred();
-
+            // если уже закрыто - выходим
             if (!this.is_opened()) {
-                return this._deferredHide.resolve();
+                return;
             }
 
             this._beforeHide();
             this._hide();
-
-            return this._deferredHide;
         };
 
         cls._beforeHide = function() {
             this._visible = false;
-
-            // callback
-            this.opts.beforeHide.call(this);
         };
 
         /*
@@ -390,17 +341,19 @@
             var that = this;
             this.$container.stop(false, false).fadeOut({
                 duration: this.opts.speed,
-                easing: this.opts.easing,
+                easing: this.opts.easingHide,
                 complete: function() {
+                    that._showScrollbar();
                     that._afterHide();
                 }
             });
         };
 
         cls._afterHide = function() {
-            this._showScrollbar();
             this._opened = false;
-            this._deferredHide && this._deferredHide.resolve();
+            currentPopup = null;
+            this.trigger('hide');
+            this._removeDOM();
         };
     });
 
@@ -476,11 +429,11 @@
             var that = this;
             this.$overlay.stop(false, false).fadeIn({
                 duration: this.opts.speed,
-                easing: this.opts.easing
+                easing: this.opts.easingShow
             });
             this.$container.stop(false, false).fadeIn({
                 duration: this.opts.speed,
-                easing: this.opts.easing,
+                easing: this.opts.easingShow,
                 complete: function() {
                     that._afterShow();
                 }
@@ -492,8 +445,7 @@
          */
         cls._showInstant = function() {
             this.$overlay.show();
-            this.$container.show();
-            this._afterShow();
+            superclass._showInstant.call(this);
         };
 
         /*
@@ -503,12 +455,13 @@
             var that = this;
             this.$container.stop(false, false).fadeOut({
                 duration: this.opts.speed,
-                easing: this.opts.easing
+                easing: this.opts.easingHide
             });
             this.$overlay.stop(false, false).fadeOut({
                 duration: this.opts.speed,
-                easing: this.opts.easing,
+                easing: this.opts.easingHide,
                 complete: function() {
+                    that._showScrollbar();
                     that._afterHide();
                 }
             });

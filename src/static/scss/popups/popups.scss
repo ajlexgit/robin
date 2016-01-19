@@ -42,7 +42,7 @@ $close_btn_weight: 3px;
     height: 100%;
     z-index: 1;
   }
-  
+
   .popup-wrapper {
     height: 100%;
     @include no_fontsize;
@@ -114,6 +114,10 @@ $close_btn_weight: 3px;
 // Theme
 //=======================
 #popup-container {
+
+  .popup-overlay {
+    background: rgba(0,0,0,0.4);
+  }
 
   .popup-content {
     padding: 36px 50px;
