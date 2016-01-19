@@ -23,7 +23,7 @@
                 }).on('click', function() {
                     // открытие окна при клике
                     this.openBalloon();
-                });;
+                });
 
                 var marker2 = GMapMarker({
                     map: this,
@@ -443,12 +443,15 @@
                 return this.native.getTitle();
             }
 
-            if (value && (typeof value != 'string')) {
-                this.error('value should be a string');
-                return this;
+            if (value) {
+                if (typeof value != 'string') {
+                    this.error('value should be a string');
+                    return this;
+                }
+
+                this.native.setTitle(value);
             }
 
-            this.native.setTitle(value);
             return this;
         };
 
@@ -461,12 +464,15 @@
                 return this.native.getIcon();
             }
 
-            if (value && (typeof value != 'string') && (typeof value != 'object')) {
-                this.error('value should be a string or object');
-                return this;
+            if (value) {
+                if ((typeof value != 'string') && (typeof value != 'object')) {
+                    this.error('value should be a string or object');
+                    return this;
+                }
+
+                this.native.setIcon(value);
             }
 
-            this.native.setIcon(value);
             return this;
         };
 

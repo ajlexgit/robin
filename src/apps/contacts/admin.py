@@ -39,7 +39,7 @@ class ContactsConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
 
 
 @admin.register(ContactBlock)
-class ContactBlockAdmin(admin.ModelAdmin):
+class ContactBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
