@@ -67,3 +67,18 @@ def render_attachable_block(context, block):
         return ''
 
     return block_view(request, real_block)
+
+
+@register.simple_tag(takes_context=True)
+def render_first_attachable_block(context, model_path):
+    if not '.' in model_path:
+        return ''
+
+    app_label, modelname = model_path.rsplit('.', 1)
+    try:
+        model = apps.get_model(app_label, modelname)
+    except LookupError:
+        return ''
+
+    return render_attachable_block(context, model.objects.first())
+

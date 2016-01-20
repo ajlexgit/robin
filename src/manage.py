@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Susy
+# Contacts: save messages.
 # Angular-like
 # виджет выбора ссылки на сущность
 # подумать над плагином "конструктор плагина"
