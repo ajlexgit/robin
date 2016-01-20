@@ -106,7 +106,11 @@
         $.each(menus, function() {
             this.refresh(window.innerWidth)
         })
-    }, 100));
+    }, 100)).on('load', function() {
+        $.each(menus, function() {
+            $.winHeight(this.$menu);
+        })
+    });
 
 
     // главное меню на мобиле

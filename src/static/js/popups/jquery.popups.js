@@ -109,7 +109,7 @@
         cls.defaults = {
             classes: '',
             content: '',
-            speed: 500,
+            speed: 400,
             easingShow: 'easeOutCubic',
             easingHide: 'easeInCubic'
         };
@@ -367,7 +367,7 @@
             hideOnClick: true
         });
 
-        cls.OVERLAY_CLASS = 'popup-overlay';
+        cls.OVERLAY_ID = 'popup-overlay';
         cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
 
 
@@ -377,8 +377,8 @@
         cls._createDom = function() {
             superclass._createDom.call(this);
 
-            this.$overlay = $('<div>').addClass(this.OVERLAY_CLASS).hide();
-            this.$container.prepend(this.$overlay);
+            this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
+            this.$container.before(this.$overlay);
 
             if (this.opts.closeButton) {
                 this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS);
@@ -390,6 +390,14 @@
                     return false;
                 });
             }
+        };
+
+        /*
+            Удаление DOM
+         */
+        cls._removeDOM = function() {
+            $('#' + this.OVERLAY_ID).remove();
+            superclass._removeDOM.call(this);
         };
 
         /*
