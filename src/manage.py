@@ -2,8 +2,8 @@ import os
 import sys
 
 # Susy
-# Contacts: save messages.
 # Angular-like
+# Parallax наизнанку
 # виджет выбора ссылки на сущность
 # подумать над плагином "конструктор плагина"
 

@@ -91,8 +91,10 @@
             {% load attached_blocks %}
 
             <!-- вывод конкретного блока -->
-            {% render_attachable_block block %}
+            {% render_attachable_block block noindex=True ajax=True %}
 
+            <!-- вывод первого попавшегося блока заданной модели -->
+            {% render_attachable_block 'module.BlockModel' noindex=True ajax=True %}
 
     Пример связи блоков с конкретной страницей через модель:
         # page/models.py:

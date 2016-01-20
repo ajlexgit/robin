@@ -19,12 +19,13 @@ class ContactView(AjaxViewMixin, TemplateExView):
     def post(self, request):
         form = ContactForm(request.POST, request.FILES)
         if form.is_valid():
+            message = form.save()
             recievers = MessageReciever.objects.all().values_list('email', flat=True)
             send(request, recievers,
                 subject=_('Message from {domain}'),
                 template='contacts/mails/email.html',
                 context={
-                    'data': form.cleaned_data,
+                    'data': message,
                     'referer': request.POST.get('referer'),
                 }
             )

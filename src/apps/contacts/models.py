@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
@@ -43,3 +44,24 @@ class ContactBlock(AttachableBlock):
 
     def __str__(self):
         return '%s (Contact Block)' % self.header
+
+
+class Message(models.Model):
+    name = models.CharField(_('name'), max_length=128)
+    phone = models.CharField(_('phone'), max_length=32, blank=True)
+    email = models.EmailField(_('e-mail'), blank=True)
+    message = models.TextField(_('message'), max_length=1536)
+    date = models.DateTimeField(_('date'), editable=False)
+
+    class Meta:
+        verbose_name = _('message')
+        verbose_name_plural = _('messages')
+        ordering = ('-date',)
+
+    def save(self, *args, **kwargs):
+        if not self.date:
+            self.date = now()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name

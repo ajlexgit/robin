@@ -4,7 +4,8 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
-from .models import ContactsConfig, MessageReciever, ContactBlock
+from libs.description import description
+from .models import ContactsConfig, MessageReciever, ContactBlock, Message
 
 
 class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
@@ -54,3 +55,41 @@ class ContactBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
     suit_form_tabs = (
         ('general', _('General')),
     )
+
+
+@admin.register(Message)
+class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('name', 'phone', 'email', 'date_fmt'),
+        }),
+        (_('Text'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('message',),
+        }),
+    )
+    readonly_fields = ('date_fmt',)
+    list_display = ('user', 'message_fmt', 'date_fmt')
+    suit_form_tabs = (
+        ('general', _('General')),
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def user(self, obj):
+        return str(obj)
+    user.short_description = _('User')
+    user.admin_order_field = 'name'
+
+    def message_fmt(self, obj):
+        return description(obj.message, 60, 80)
+    message_fmt.short_description = _('Message')
+    message_fmt.admin_order_field = 'message'
+
+    def date_fmt(self, obj):
+        return obj.date.strftime('%B %d, %Y %I:%M %p')
+    date_fmt.short_description = _('Date')
+    date_fmt.admin_order_field = 'date'
+
