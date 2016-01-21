@@ -11,6 +11,9 @@
             menuActiveClass     - класс меню, когда оно активно
             buttonSelector      - селектор кнопки, активирующей меню
             buttonActiveClass   - класс кнопки, когда меню активно
+
+            fullHeight          - должно ли меню быть на всю высоту
+
             beforeShow          - событие перед показом меню. Если вернёт false,
                                   меню не будет показано
             beforeHide          - событие перед скрытием меню. Если вернёт false,
@@ -21,21 +24,20 @@
     var menus = [];
 
     var Menu = Class(null, function Menu(cls, superclass) {
-        cls.defaults = {
-            menuSelector: '#mobile-menu',
-            menuActiveClass: 'active',
-            buttonSelector: '#mobile-menu-button',
-            buttonActiveClass: 'active',
-
-            beforeShow: $.noop,
-            beforeHide: $.noop,
-            onResize: $.noop
-        };
-
-
         cls.init = function(options) {
             // настройки
-            this.opts = $.extend({}, this.defaults, options);
+            this.opts = $.extend({
+                menuSelector: '#mobile-menu',
+                menuActiveClass: 'active',
+                buttonSelector: '#mobile-menu-button',
+                buttonActiveClass: 'active',
+
+                fullHeight: false,
+
+                beforeShow: $.noop,
+                beforeHide: $.noop,
+                onResize: $.noop
+            }, options);
 
             // элемент меню
             this.$menu = $(this.opts.menuSelector).first();
@@ -74,6 +76,11 @@
                 return false;
             }
 
+            if (this.opts.fullHeight) {
+                // на всю высоту окна
+                $.winHeight(this.$menu);
+            }
+
             $(this.opts.buttonSelector).addClass(this.opts.buttonActiveClass);
             this.$menu.addClass(this.opts.menuActiveClass);
         };
@@ -104,26 +111,25 @@
 
     $(window).on('resize.menu', $.rared(function() {
         $.each(menus, function() {
-            this.refresh(window.innerWidth)
+            if (this.opts.fullHeight) {
+                // на всю высоту окна
+                $.winHeight(this.$menu);
+            }
+
+            this.refresh(window.innerWidth);
         })
-    }, 100)).on('load', function() {
-        $.each(menus, function() {
-            $.winHeight(this.$menu);
-        })
-    });
+    }, 100));
 
 
     // главное меню на мобиле
     window.menu = Menu({
+        fullHeight: true,
         onResize: function(win_width) {
             if (win_width >= 1024) {
                 // скрытие на больших экранах
                 var $buttons = $(this.opts.buttonSelector);
                 $buttons.removeClass(this.opts.buttonActiveClass);
                 this.$menu.removeClass(this.opts.menuActiveClass);
-            } else {
-                // меню на всю высоту на мобилах
-                $.winHeight(this.$menu);
             }
         }
     });
