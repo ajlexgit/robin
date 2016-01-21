@@ -8,11 +8,13 @@ from .models import MainPageConfig
 
 
 class BlocksInline(AttachedBlocksStackedInline):
+    """ Подключаемые блоки """
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
 @admin.register(MainPageConfig)
 class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+    """ Главная страница """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -28,4 +30,3 @@ class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
         ('seo', _('SEO')),
     )
     suit_seo_tab = 'seo'
-

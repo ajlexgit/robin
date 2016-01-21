@@ -20,7 +20,9 @@ class JSONError(Exception):
 
 class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
     """
-        Представление для обработки AJAX-запросов.
+        Миксина для обработки AJAX-запросов.
+
+        Добавляет проверку request.is_ajax и метод json_response.
     """
     verify_ajax = True
 
@@ -49,4 +51,7 @@ class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
 
 
 class AjaxAdminViewMixin(AdminViewMixin, AjaxViewMixin):
+    """
+        Миксина для обработки AJAX-запросов в админке.
+    """
     pass

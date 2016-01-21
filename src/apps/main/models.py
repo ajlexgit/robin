@@ -30,6 +30,7 @@ class Gallery(GalleryBase):
 
 
 class MainPageConfig(SingletonModel):
+    """ Главная страница """
     preview = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('main'),
@@ -57,4 +58,4 @@ class MainPageConfig(SingletonModel):
         return resolve_url('index')
 
     def __str__(self):
-        return ugettext('Home')
+        return ugettext('Main page')

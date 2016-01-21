@@ -15,16 +15,13 @@ class IndexView(TemplateExView):
     def before_get(self, request):
         self.config = ContactsConfig.get_solo()
 
-    def before_post(self, request):
-        self.config = ContactsConfig.get_solo()
-
     def get(self, request):
         form = ContactForm()
 
         # SEO
         seo = Seo()
         seo.set_data(self.config, defaults={
-            'title': _('Contacts'),
+            'title': self.config.header,
         })
         seo.save(request)
 
@@ -33,13 +30,16 @@ class IndexView(TemplateExView):
             'form': form,
         })
 
+    def before_post(self, request):
+        self.config = ContactsConfig.get_solo()
+
     def post(self, request):
         form = ContactForm(request.POST, request.FILES)
         if form.is_valid():
             recievers = MessageReciever.objects.all().values_list('email', flat=True)
             send(request, recievers,
                 subject=_('Message from {domain}'),
-                template='contacts/mails/email.html',
+                template='contacts/mails/message.html',
                 context={
                     'data': form.cleaned_data,
                 }
@@ -54,8 +54,8 @@ class IndexView(TemplateExView):
 
 
 def contact_block_render(request, block):
+    """ Рендеринг подключаемого блока контактов """
     context = RequestContext(request, {
         'block': block,
     })
     return loader.render_to_string('contacts/block.html', context_instance=context)
-

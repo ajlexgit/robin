@@ -43,6 +43,7 @@ class ContactForm(PlainErrorFormMixin, forms.ModelForm):
         }
 
     def clean(self):
+        """ Требуем указать email ИЛИ телефон """
         if 'phone' in self.cleaned_data and 'email' in self.cleaned_data:
             phone = self.cleaned_data.get('phone')
             email = self.cleaned_data.get('email')

@@ -7,6 +7,7 @@ from attachable_blocks.models import AttachableBlock
 
 
 class ContactsConfig(SingletonModel):
+    """ Главная страница """
     header = models.CharField(_('header'), max_length=128)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
@@ -22,6 +23,7 @@ class ContactsConfig(SingletonModel):
 
 
 class MessageReciever(models.Model):
+    """ Получатели писем с информацией о отправленных сообщениях """
     config = models.ForeignKey(ContactsConfig, related_name='recievers')
     email = models.EmailField(_('e-mail'))
 
@@ -33,20 +35,8 @@ class MessageReciever(models.Model):
         return self.email
 
 
-class ContactBlock(AttachableBlock):
-    BLOCK_VIEW = 'contacts.views.contact_block_render'
-
-    header = models.CharField(_('header'), max_length=128, blank=True)
-
-    class Meta:
-        verbose_name = _('Contact block')
-        verbose_name_plural = _('Contact blocks')
-
-    def __str__(self):
-        return '%s (Contact Block)' % self.header
-
-
 class Message(models.Model):
+    """ Сообщение """
     name = models.CharField(_('name'), max_length=128)
     phone = models.CharField(_('phone'), max_length=32, blank=True)
     email = models.EmailField(_('e-mail'), blank=True)
@@ -65,3 +55,17 @@ class Message(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ContactBlock(AttachableBlock):
+    """ Подключаемый блок с контактной формой """
+    BLOCK_VIEW = 'contacts.views.contact_block_render'
+
+    header = models.CharField(_('header'), max_length=128, blank=True)
+
+    class Meta:
+        verbose_name = _('Contact block')
+        verbose_name_plural = _('Contact blocks')
+
+    def __str__(self):
+        return '%s (Contact Block)' % self.header

@@ -7,10 +7,10 @@ from django.views.generic.base import TemplateResponseMixin, View
 class DecoratableViewMixin:
     """
         Представление, добавляющее методы before_METHOD,
-        выполняющиеся перед вызовом обработчика.
+        выполняющиеся перед вызовом соответствующего обработчика.
 
         Эти методы могут устанавлисать данные, необходимые
-        для декораторов.
+        для декораторов, таких как condition.
     """
     method = ''
 
@@ -67,17 +67,18 @@ class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMi
 
         Пример:
             class IndexView(TemplateExView):
-                template_name = 'contacts/index.html'
+                config = None
+                template_name = 'module/index.html'
 
                 def before_get(self, request, *args, **kwargs):
-                    self.object =  ContactsConfig.get_solo()
+                    self.config =  ModuleConfig.get_solo()
 
                 def last_modified(self, *args, **kwargs):
-                    return self.object.updated
+                    return self.config.updated
 
                 def get(self, request):
                     return self.render_to_response({
-                        'config': self.object,
+                        'config': self.config,
                     })
     """
 

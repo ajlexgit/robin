@@ -12,6 +12,7 @@ from libs.stdimage.fields import StdImageField
 
 
 class BlogConfig(SingletonModel):
+    """ Главная страница """
     header = models.CharField(_('header'), max_length=255)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
@@ -28,6 +29,7 @@ class BlogConfig(SingletonModel):
 
 class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def active(self):
+        """ Выборка тэгов, в которых есть видимые посты """
         return self.filter(
             posts__status=BlogPost.STATUS_PUBLIC,
             posts__date__lte=now()
@@ -35,6 +37,7 @@ class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
 
 class Tag(models.Model):
+    """ Тэг """
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(_('slug'), populate_from=('title',), unique=True)
 
@@ -63,6 +66,7 @@ class BlogPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
 
 class BlogPost(models.Model):
+    """ Пост """
     STATUS_DRAFT = 1
     STATUS_PUBLIC = 2
     STATUS_CHOICES = (
@@ -115,6 +119,7 @@ class BlogPost(models.Model):
 
 
 class PostTag(models.Model):
+    """ Модель связи тэга и поста """
     post = models.ForeignKey(BlogPost, verbose_name=_('post'))
     tag = models.ForeignKey(Tag, verbose_name=_('tag'))
 

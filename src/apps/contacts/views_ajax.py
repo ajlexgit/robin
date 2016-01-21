@@ -23,7 +23,7 @@ class ContactView(AjaxViewMixin, TemplateExView):
             recievers = MessageReciever.objects.all().values_list('email', flat=True)
             send(request, recievers,
                 subject=_('Message from {domain}'),
-                template='contacts/mails/email.html',
+                template='contacts/mails/message.html',
                 context={
                     'data': message,
                     'referer': request.POST.get('referer'),

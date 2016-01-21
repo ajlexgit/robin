@@ -13,11 +13,13 @@ from .models import BlogConfig, BlogPost, Tag, PostTag
 
 
 class BlogConfigBlocksInline(AttachedBlocksStackedInline):
+    """ Подключаемые блоки """
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
 @admin.register(BlogConfig)
 class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+    """ Главная страница """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -35,6 +37,7 @@ class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(ModelAdminMixin, admin.ModelAdmin):
+    """ Тэг """
     fieldsets = (
         (None, {
             'fields': ('title', 'slug'),
@@ -45,6 +48,7 @@ class TagAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 
 class PostTagForm(forms.ModelForm):
+    """ Форма связи тэга и поста """
     class Meta:
         widgets = {
             'tag': AutocompleteWidget(
@@ -55,6 +59,7 @@ class PostTagForm(forms.ModelForm):
 
 
 class PostTagAdmin(ModelAdminInlineMixin, admin.TabularInline):
+    """ Инлайн тэгов поста """
     model = PostTag
     form = PostTagForm
     extra = 0
@@ -63,6 +68,7 @@ class PostTagAdmin(ModelAdminInlineMixin, admin.TabularInline):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
+    """ Пост """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -74,7 +80,7 @@ class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     inlines = (PostTagAdmin, )
-    list_display = ('view', 'title', 'tags_list', 'date_format', 'status')
+    list_display = ('view', 'title', 'tags_list', 'date_fmt', 'status')
     list_display_links = ('title',)
     list_filter = ('status', )
     search_fields = ('title',)
@@ -89,19 +95,17 @@ class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     suit_seo_tab = 'seo'
 
     def tags_list(self, obj):
-        tags = obj.tags.all()
-        return ' / '.join((str(item.title) for item in tags))
+        return ' / '.join((str(item.title) for item in obj.tags.all()))
     tags_list.short_description = _('tags')
 
-    def date_format(self, obj):
+    def date_fmt(self, obj):
         return dateformat.format(localtime(obj.date), settings.DATETIME_FORMAT)
-    date_format.short_description = _('Publication date')
-    date_format.admin_order_field = 'date'
+    date_fmt.short_description = _('Publication date')
+    date_fmt.admin_order_field = 'date'
 
     def make_public_action(self, request, queryset):
         queryset.update(status=BlogPost.STATUS_PUBLIC)
     make_public_action.short_description = 'Make public'
-
 
     def make_draft_action(self, request, queryset):
         queryset.update(status=BlogPost.STATUS_DRAFT)
