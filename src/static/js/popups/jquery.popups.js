@@ -378,6 +378,7 @@
             superclass._createDom.call(this);
 
             this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
+            this.$overlay.addClass(this.opts.classes);
             this.$container.before(this.$overlay);
 
             if (this.opts.closeButton) {

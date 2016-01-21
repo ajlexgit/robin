@@ -87,19 +87,22 @@
                     label : gettext('Edit'),
                     icon: this.path + 'edit.png',
                     command : 'ChangeImage',
-                    group : 'images'
+                    group : 'images',
+                    order: 1
                 },
                 _block_description : {
                     label : gettext('Block description'),
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_block_description',
-                    group : 'images'
+                    group : 'images',
+                    order: 2
                 },
                 _image_description : {
                     label : gettext('Image description'),
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_image_description',
-                    group : 'images'
+                    group : 'images',
+                    order: 3
                 }
             });
             editor.contextMenu.addListener(function (element) {

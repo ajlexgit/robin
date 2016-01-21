@@ -107,6 +107,7 @@ SUIT_CONFIG = {
             'app': 'contacts',
             'icon': 'icon-file',
             'models': (
+                'Message',
                 'ContactBlock',
                 'ContactsConfig',
             )

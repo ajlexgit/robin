@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.db import models
 from django.template import Library
 from django.contrib.contenttypes.models import ContentType
@@ -5,6 +6,23 @@ from ..models import AttachableReference
 from ..utils import get_block, get_block_view
 
 register = Library()
+
+
+def block_output(request, block, noindex=False, ajax=False):
+    block_view = get_block_view(block)
+    if not block_view:
+        return ''
+
+    if ajax:
+        # Блок, загружаемый через AJAX
+        block_html = '<div class="async-block" data-id="%s"></div>' % block.id
+    else:
+        block_html = block_view(request, block)
+
+    if noindex:
+        return ''.join(('<!--noindex-->', block_html, '<!--/noindex-->',))
+    else:
+        return block_html
 
 
 @register.simple_tag(takes_context=True)
@@ -28,32 +46,15 @@ def render_attached_blocks(context, entity, set_name=None):
         if not block:
             continue
 
-        block_view = get_block_view(block)
-        if not block_view:
-            continue
-
-        if blockref.ajax:
-            # Блок, загружаемый через AJAX
-            block_html = '<div class="async-block" data-id="%s"></div>' % blockref.block_id
-        else:
-            block_html = block_view(request, block)
-
-        if blockref.noindex:
-            output.extend((
-                '<!--noindex-->',
-                block_html,
-                '<!--/noindex-->',
-            ))
-        else:
-            output.append(
-                block_html
-            )
+        block_html = block_output(request, block, blockref.noindex, blockref.ajax)
+        if block_html:
+            output.append(block_html)
 
     return ''.join(output)
 
 
 @register.simple_tag(takes_context=True)
-def render_attachable_block(context, block):
+def render_attachable_block(context, block, noindex=False, ajax=False):
     request = context.get('request')
     if not request:
         return ''
@@ -62,23 +63,18 @@ def render_attachable_block(context, block):
     if not real_block or not real_block.visible:
         return ''
 
-    block_view = get_block_view(real_block)
-    if not block_view:
-        return ''
-
-    return block_view(request, real_block)
+    return block_output(request, real_block, noindex, ajax)
 
 
 @register.simple_tag(takes_context=True)
-def render_first_attachable_block(context, model_path):
-    if not '.' in model_path:
+def render_first_attachable_block(context, model, noindex=False, ajax=False):
+    if not '.' in model:
         return ''
 
-    app_label, modelname = model_path.rsplit('.', 1)
+    app, modelname = model.rsplit('.', 1)
     try:
-        model = apps.get_model(app_label, modelname)
+        model = apps.get_model(app, modelname)
     except LookupError:
         return ''
 
-    return render_attachable_block(context, model.objects.first())
-
+    return render_attachable_block(context, model.objects.first(), noindex, ajax)
