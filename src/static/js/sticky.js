@@ -34,7 +34,7 @@
             minEnabledWidth: 768
         };
 
-        cls.dataParamName = 'sticky';
+        cls.DATA_KEY = 'sticky';
 
 
         cls.init = function(block, options) {
@@ -50,7 +50,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(this.dataParamName);
+            var old_instance = this.$block.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -80,7 +80,7 @@
             // Сохраняем объект в массив для использования в событиях
             stickies.push(this);
 
-            this.$block.data(this.dataParamName, this);
+            this.$block.data(this.DATA_KEY, this);
 
             $.mediaInspector.check(this.$block);
         };
@@ -91,7 +91,7 @@
         cls.destroy = function() {
             this.disable();
             $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(this.dataParamName);
+            this.$block.removeData(this.DATA_KEY);
 
             var index = stickies.indexOf(this);
             if (index >= 0) {

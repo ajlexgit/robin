@@ -533,7 +533,7 @@
             zoomControl: true
         });
 
-        cls.dataParamName = 'gmap';
+        cls.DATA_KEY = 'gmap';
 
         cls.NATIVE_EVENTS = [
             'click',
@@ -644,7 +644,7 @@
                 }
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*

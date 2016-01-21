@@ -16,7 +16,7 @@
         }
     }).on('click.gallery', '.create-gallery', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;
@@ -30,7 +30,7 @@
         return false;
     }).on('click.gallery', '.delete-gallery', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;
@@ -48,7 +48,7 @@
         return false;
     }).on('click.gallery', '.add-gallery-video', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;
@@ -62,7 +62,7 @@
         return false;
     }).on('click.gallery', '.item-delete', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;
@@ -74,7 +74,7 @@
         return false;
     }).on('click.gallery', '.item-rotate-left', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;
@@ -88,7 +88,7 @@
         return false;
     }).on('click.gallery', '.item-rotate-right', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;
@@ -102,7 +102,7 @@
         return false;
     }).on('click.gallery', '.item-description', function() {
         var $button = $(this);
-        var gallery = $button.closest('.gallery').data(Gallery.prototype.dataParamName);
+        var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
             console.error('Gallery object not found');
             return false;

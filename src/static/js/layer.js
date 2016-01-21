@@ -7,7 +7,6 @@
             jquery.utils.js, media_inspector.js
 
         Параметры:
-            speed           - отношение пути перемещения блока к пути скролла
             strategy        - стратегия перемещения блока (top / transform)
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
@@ -55,7 +54,7 @@
             }
         };
 
-        cls.dataParamName = 'layer';
+        cls.DATA_KEY = 'layer';
 
 
         cls.init = function(block, options) {
@@ -72,7 +71,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(this.dataParamName);
+            var old_instance = this.$block.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -112,7 +111,7 @@
             // Сохраняем объект в массив для использования в событиях
             layers.push(this);
 
-            this.$block.data(this.dataParamName, this);
+            this.$block.data(this.DATA_KEY, this);
 
             // callback
             this.opts.onInit.call(this);
@@ -126,7 +125,7 @@
         cls.destroy = function() {
             this.disable();
             $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(this.dataParamName);
+            this.$block.removeData(this.DATA_KEY);
 
             var index = layers.indexOf(this);
             if (index >= 0) {
@@ -190,7 +189,7 @@
 
 
     /*
-        Применение положения всех блоков
+        Обновление положения всех блоков
      */
     var updateLayers = function() {
         var win_scroll = $window.scrollTop();

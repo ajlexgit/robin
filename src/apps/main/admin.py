@@ -7,7 +7,7 @@ from attachable_blocks import AttachedBlocksStackedInline
 from .models import MainPageConfig
 
 
-class BlocksInline(AttachedBlocksStackedInline):
+class MainPageBlocksInline(AttachedBlocksStackedInline):
     """ Подключаемые блоки """
     suit_classes = 'suit-tab suit-tab-blocks'
 
@@ -23,7 +23,7 @@ class MainPageConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
             ),
         }),
     )
-    inlines = (BlocksInline, )
+    inlines = (MainPageBlocksInline, )
     suit_form_tabs = (
         ('general', _('General')),
         ('blocks', _('Blocks')),

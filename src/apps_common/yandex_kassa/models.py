@@ -100,7 +100,7 @@ class Payment(models.Model):
         u'Время выполнение запроса', blank=True, null=True)
 
     @property
-    def is_payed(self):
+    def is_paid(self):
         return self.status == self.STATUS.SUCCESS
 
     def send_signals(self, request):

@@ -98,7 +98,7 @@
             onResize: $.noop
         };
 
-        cls.dataParamName = 'slider';
+        cls.DATA_KEY = 'slider';
 
 
         cls.init = function(list, options) {
@@ -165,7 +165,7 @@
             // callback
             this.opts.onInit.call(this);
 
-            this.$list.data(this.dataParamName, this);
+            this.$list.data(this.DATA_KEY, this);
 
             sliders.push(this);
         };

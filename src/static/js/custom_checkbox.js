@@ -24,7 +24,7 @@
             onCheck: $.noop
         };
 
-        cls.dataParamName = 'checkbox';
+        cls.DATA_KEY = 'checkbox';
 
 
         cls.init = function(input, options) {
@@ -38,7 +38,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.dataParamName);
+            var old_instance = this.$root.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -79,7 +79,7 @@
                 return false;
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -92,7 +92,7 @@
             this.$elem.remove();
 
             this.$root.off('.checkbox');
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*

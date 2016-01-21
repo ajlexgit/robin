@@ -39,7 +39,7 @@
             minEnabledWidth: 768
         };
 
-        cls.dataParamName = 'parallax';
+        cls.DATA_KEY = 'parallax';
 
 
         cls.init = function(block, options) {
@@ -61,7 +61,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(this.dataParamName);
+            var old_instance = this.$block.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -130,7 +130,7 @@
             // Сохраняем объект в массив для использования в событиях
             parallaxes.push(this);
 
-            this.$block.data(this.dataParamName, this);
+            this.$block.data(this.DATA_KEY, this);
 
             $.mediaInspector.check(this.$block);
 
@@ -148,7 +148,7 @@
             this.disable();
             $.bgInspector.ignore(this.$bg);
             $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(this.dataParamName);
+            this.$block.removeData(this.DATA_KEY);
 
             var index = parallaxes.indexOf(this);
             if (index >= 0) {

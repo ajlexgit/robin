@@ -29,6 +29,15 @@
             url(r'^shop/', include('shop.urls', namespace='shop')),
             ...
 
+    При конкретной реализации нужно вызывать Django-сигналы
+    для подтверждения, оплаты и отмены заказа:
+        from .signals import order_confirmed
+
+        ...
+        order_confirmed.send(sender=ShopOrder, order=order, request=request)
+        ...
+
+
 """
 
 default_app_config = 'shop.apps.Config'

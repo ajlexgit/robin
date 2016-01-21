@@ -1,7 +1,7 @@
 (function($) {
 
     var SpriteImage = Class(null, function SpriteImage(cls, superclass) {
-        cls.dataParamName = 'sprite_image';
+        cls.DATA_KEY = 'sprite_image';
 
 
         cls.init = function(root) {
@@ -26,7 +26,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.dataParamName);
+            var old_instance = this.$root.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -43,7 +43,7 @@
                 that.closeDropdown(true);
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -51,7 +51,7 @@
          */
         cls.destroy = function() {
             this.$root.off('.sprite-image');
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*

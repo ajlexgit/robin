@@ -24,7 +24,7 @@
             onCheck: $.noop
         };
 
-        cls.dataParamName = 'radiobox';
+        cls.DATA_KEY = 'radiobox';
 
 
         cls.init = function(input, options) {
@@ -38,7 +38,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.dataParamName);
+            var old_instance = this.$root.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -83,7 +83,7 @@
                 return false;
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -96,7 +96,7 @@
             this.$elem.remove();
 
             this.$root.off('.radiobox');
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*
@@ -113,7 +113,7 @@
                 var $grouped = $('input[type="radio"][name="' + name + '"]').not(this.$root);
                 $grouped.each(function(i, item) {
                     var $item = $(item);
-                    var radiobox_obj = $item.data(that.dataParamName);
+                    var radiobox_obj = $item.data(that.DATA_KEY);
                     if (radiobox_obj) {
                         radiobox_obj.uncheck()
                     }

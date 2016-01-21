@@ -22,7 +22,7 @@
             preventDefault: false
         };
 
-        cls.dataParamName = 'file_dropper';
+        cls.DATA_KEY = 'file_dropper';
 
 
         cls.init = function(root, options) {
@@ -75,7 +75,7 @@
                 }
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -83,7 +83,7 @@
          */
         cls.destroy = function() {
             this.$root.off('.file_dropper');
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
             superclass.destroy.call(this);
         };
 

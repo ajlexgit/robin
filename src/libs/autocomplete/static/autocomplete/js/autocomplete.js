@@ -30,7 +30,7 @@
             multiple: false
         };
 
-        cls.dataParamName = 'autocomplete';
+        cls.DATA_KEY = 'autocomplete';
 
 
         cls.init = function(element, options) {
@@ -53,7 +53,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$elem.data(this.dataParamName);
+            var old_instance = this.$elem.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -89,7 +89,7 @@
             // инициализация select2
             this.initSelect2();
 
-            this.$elem.data(this.dataParamName, this);
+            this.$elem.data(this.DATA_KEY, this);
         };
 
         /*
@@ -97,7 +97,7 @@
          */
         cls.destroy = function() {
             this.$depends.off('.autocomplete' + this.event_ns);
-            this.$elem.removeData(this.dataParamName);
+            this.$elem.removeData(this.DATA_KEY);
         };
 
         /*

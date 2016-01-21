@@ -65,7 +65,7 @@
             return
         }
 
-        var gmap = $field.next('.google-map').data(GMap.prototype.dataParamName);
+        var gmap = $field.next('.google-map').data(GMap.prototype.DATA_KEY);
         if (!gmap) {
             console.error('GMap object not found');
             return;

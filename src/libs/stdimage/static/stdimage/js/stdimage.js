@@ -30,7 +30,7 @@
             preloaderClass: 'preloader'
         };
 
-        cls.dataParamName = 'stdimage';
+        cls.DATA_KEY = 'stdimage';
 
 
         cls.init = function(root, options) {
@@ -48,7 +48,7 @@
             this.opts = $.extend({}, this.defaults, options);
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.dataParamName);
+            var old_instance = this.$root.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -90,7 +90,7 @@
                 that.changeHandler($(this));
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -99,7 +99,7 @@
         cls.destroy = function() {
             this.$root.off('.stdimage');
             this.$input.off('.stdimage');
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*

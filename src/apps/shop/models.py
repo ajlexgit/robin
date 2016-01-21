@@ -18,7 +18,9 @@ from .signals import products_changed, categories_changed
 
 
 class ShopConfig(SingletonModel):
+    """ Главная страница """
     header = models.CharField(_('header'), max_length=128)
+
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
@@ -29,18 +31,6 @@ class ShopConfig(SingletonModel):
 
     def __str__(self):
         return self.header
-
-
-class EmailReciever(models.Model):
-    config = models.ForeignKey(ShopConfig, related_name='recievers')
-    email = models.EmailField(_('e-mail'))
-
-    class Meta:
-        verbose_name = _('e-mail reciever')
-        verbose_name_plural = _('e-mail recievers')
-
-    def __str__(self):
-        return self.email
 
 
 class ShopCategoryQuerySet(AliasedQuerySetMixin, MPTTQuerySet):
@@ -73,8 +63,7 @@ class ShopCategory(MPTTModel):
     title = models.CharField(_('title'), max_length=128)
     alias = AutoSlugField(_('alias'),
         populate_from=('title',),
-        unique=True,
-        help_text=_('Leave it blank to auto generate it')
+        unique=True
     )
     is_visible = models.BooleanField(_('visible'), default=False, db_index=True)
     product_count = models.PositiveIntegerField(
@@ -196,6 +185,7 @@ class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
 
 class ShopProductGalleryImageItem(GalleryImageItem):
+    """ Элемент галереи продукта """
     STORAGE_LOCATION = 'shop/product/gallery'
     MIN_DIMENSIONS = (100, 60)
     ADMIN_CLIENT_RESIZE = True
@@ -225,11 +215,12 @@ class ShopProductGalleryImageItem(GalleryImageItem):
 
 
 class ShopProductGallery(GalleryBase):
+    """ Галерея продукта """
     IMAGE_MODEL = ShopProductGalleryImageItem
 
 
 class ShopProduct(models.Model):
-    """ Товар """
+    """ Продукт """
     category = models.ForeignKey(ShopCategory,
         verbose_name=_('category'),
         related_name='immediate_products'
@@ -403,23 +394,17 @@ class ShopOrder(models.Model):
         editable=False,
     )
 
-    date = models.DateTimeField(_('create date'), editable=False)
+    created = models.DateTimeField(_('create date'), default=now, editable=False)
 
     objects = ShopOrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('order')
         verbose_name_plural = _('orders')
-        ordering = ('-date', )
+        ordering = ('-created', )
 
     def __str__(self):
         return 'Order #%s' % self.pk
-
-    def save(self, *args, **kwargs):
-        if not self.date:
-            self.date = now()
-
-        super().save(*args, **kwargs)
 
     def clean(self):
         errors = {}
@@ -458,3 +443,15 @@ class OrderProduct(models.Model):
     def __str__(self):
         return '%s (x%s)' % (self.product.title, self.count)
 
+
+class NotifyReciever(models.Model):
+    """ Получаети писем о новом оплаченном заказе """
+    config = models.ForeignKey(ShopConfig, related_name='recievers')
+    email = models.EmailField(_('e-mail'))
+
+    class Meta:
+        verbose_name = _('notify reciever')
+        verbose_name_plural = _('notify recievers')
+
+    def __str__(self):
+        return self.email

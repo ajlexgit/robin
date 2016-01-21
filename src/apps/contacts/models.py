@@ -41,17 +41,12 @@ class Message(models.Model):
     phone = models.CharField(_('phone'), max_length=32, blank=True)
     email = models.EmailField(_('e-mail'), blank=True)
     message = models.TextField(_('message'), max_length=1536)
-    date = models.DateTimeField(_('date'), editable=False)
+    date = models.DateTimeField(_('date'), default=now, editable=False)
 
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
         ordering = ('-date',)
-
-    def save(self, *args, **kwargs):
-        if not self.date:
-            self.date = now()
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

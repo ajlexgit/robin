@@ -90,7 +90,7 @@
             onFileUploadError: $.noop
         };
 
-        cls.dataParamName = 'uploader';
+        cls.DATA_KEY = 'uploader';
 
 
         cls.init = function(root, options) {
@@ -108,7 +108,7 @@
             // инициализация загрузчика
             this.initPluploader();
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -267,7 +267,7 @@
                 this.$drop.off('.uploader');
             }
 
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*

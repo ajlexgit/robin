@@ -6,6 +6,8 @@
         Не следует создавать экземпляры класса VisibilityInspector.
         Следует пользоваться уже созданным экземпляром $.visibilityInspector.
 
+        Возбуждает события appear / disappear на инспектируемых элементах.
+
         Требует:
             jquery.utils.js, inspector.js
 

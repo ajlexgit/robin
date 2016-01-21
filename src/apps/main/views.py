@@ -18,5 +18,5 @@ class IndexView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
-            'is_main_page': True,
+            'is_main_page': True,       # отменяет <noindex> шапки и подвала
         })

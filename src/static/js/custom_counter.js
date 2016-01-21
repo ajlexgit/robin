@@ -34,7 +34,7 @@
             afterChange: $.noop
         };
 
-        cls.dataParamName = 'counter';
+        cls.DATA_KEY = 'counter';
 
 
         cls.init = function(root, options) {
@@ -53,7 +53,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$input.data(this.dataParamName);
+            var old_instance = this.$input.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -104,7 +104,7 @@
                 }
             });
 
-            this.$input.data(this.dataParamName, this);
+            this.$input.data(this.DATA_KEY, this);
         };
 
         /*
@@ -117,7 +117,7 @@
             this.$input.prependTo(this.$root);
             this.$input.off('.counter');
             this.$wrapper.remove();
-            this.$input.removeData(this.dataParamName);
+            this.$input.removeData(this.DATA_KEY);
         };
 
         /*
@@ -194,7 +194,7 @@
         Скролл поля изменяет значение
      */
     $(document).on('mousewheel.counter', '.custom-counter-wrapper', function(e) {
-        var counter = $(this).find('input').data(CustomCounter.prototype.dataParamName);
+        var counter = $(this).find('input').data(CustomCounter.prototype.DATA_KEY);
         if (!counter) {
             return
         }

@@ -48,7 +48,7 @@
             afterReduce: $.noop
         };
 
-        cls.dataParamName = 'expander';
+        cls.DATA_KEY = 'expander';
 
 
         cls.init = function(root, options) {
@@ -72,7 +72,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.dataParamName);
+            var old_instance = this.$root.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -99,7 +99,7 @@
                 return false
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -107,7 +107,7 @@
          */
         cls.destroy = function() {
             this.$root.off('.expander');
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*

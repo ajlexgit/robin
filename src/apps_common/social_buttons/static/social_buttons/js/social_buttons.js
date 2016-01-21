@@ -30,9 +30,9 @@
      */
 
     var SocialProvider = Class(null, function SocialProvider(cls, superclass) {
-        cls.dataParamName = 'social';
-        cls.winWidth = 600;
-        cls.winHeight = 400;
+        cls.DATA_KEY = 'social';
+        cls.WINDOW_WIDTH = 600;
+        cls.WINDOW_HEIGHT = 400;
 
         cls.init = function(button) {
             this.$button = $(button).first();
@@ -41,7 +41,7 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$button.data(this.dataParamName);
+            var old_instance = this.$button.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -57,7 +57,7 @@
 
         cls.destroy = function() {
             this.$button.off('.social');
-            this.$button.removeData(this.dataParamName);
+            this.$button.removeData(this.DATA_KEY);
         };
 
         cls.updateData = function() {
@@ -151,8 +151,8 @@
                 browser_top = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
                 browser_width = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth,
                 browser_height = typeof window.outerHeight != 'undefined' ? window.outerHeight : document.body.clientHeight,
-                popup_width = width || this.winWidth,
-                popup_height = height || this.winHeight,
+                popup_width = width || this.WINDOW_WIDTH,
+                popup_height = height || this.WINDOW_HEIGHT,
                 top_position = browser_top + Math.round((browser_height - popup_height) / 2),
                 left_position = browser_left + Math.round((browser_width - popup_width) / 2);
 
@@ -252,8 +252,8 @@
         Провайдер Twitter
      */
     var TwitterProvider = Class(SocialProvider, function TwitterProvider(cls, superclass) {
-        cls.winWidth = 600;
-        cls.winHeight = 300;
+        cls.WINDOW_WIDTH = 600;
+        cls.WINDOW_HEIGHT = 300;
 
         cls.getShareUrl = function() {
             superclass.getShareUrl.call(this);
@@ -274,8 +274,8 @@
         Провайдер GooglePlus
      */
     var GooglePlusProvider = Class(SocialProvider, function GooglePlusProvider(cls, superclass) {
-        cls.winWidth = 600;
-        cls.winHeight = 500;
+        cls.WINDOW_WIDTH = 600;
+        cls.WINDOW_HEIGHT = 500;
 
         cls.getShareUrl = function() {
             superclass.getShareUrl.call(this);
@@ -314,8 +314,8 @@
         Провайдер LinkedIn
     */
     var LinkedInProvider = Class(SocialProvider, function LinkedInProvider(cls, superclass) {
-        cls.winWidth = 600;
-        cls.winHeight = 500;
+        cls.WINDOW_WIDTH = 600;
+        cls.WINDOW_HEIGHT = 500;
 
         cls.getShareUrl = function() {
             superclass.getShareUrl.call(this);
@@ -353,8 +353,8 @@
         Провайдер Pinterest
     */
     var PinterestProvider = Class(SocialProvider, function PinterestProvider(cls, superclass) {
-        cls.winWidth = 760;
-        cls.winHeight = 600;
+        cls.WINDOW_WIDTH = 760;
+        cls.WINDOW_HEIGHT = 600;
 
         cls.getShareUrl = function() {
             superclass.getShareUrl.call(this);

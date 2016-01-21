@@ -7,7 +7,7 @@
         var MAX_WIDTH_ERROR = gettext('Image should not be more than %(limit)spx in width');
         var MAX_HEIGHT_ERROR = gettext('Image should not be more than %(limit)spx in height');
 
-        cls.dataParamName = 'stdimage';
+        cls.DATA_KEY = 'stdimage';
 
 
         cls.init = function(root) {
@@ -41,7 +41,7 @@
             this.opts = this.getOpts();
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.dataParamName);
+            var old_instance = this.$root.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -54,7 +54,7 @@
                 that.$input.click();
             });
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -145,7 +145,7 @@
          */
         cls.destroy = function() {
             this.dropper.destroy();
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
         };
 
         /*
@@ -297,7 +297,7 @@
         Изменение файла в поле stdimage
      */
     $(document).on('change', '.stdimage .input-file', function() {
-        var stdimage = $(this).closest('.stdimage').data(StdImage.prototype.dataParamName);
+        var stdimage = $(this).closest('.stdimage').data(StdImage.prototype.DATA_KEY);
         if (!stdimage) {
             console.error('StdImage object not found');
             return false;
@@ -333,7 +333,7 @@
 
             beforeOpen: function($button) {
                 this.$field = $button.closest('.stdimage');
-                this.stdimage = this.$field.data(StdImage.prototype.dataParamName);
+                this.stdimage = this.$field.data(StdImage.prototype.DATA_KEY);
                 if (!this.stdimage) {
                     this.error('StdImage object not found');
                     return false;

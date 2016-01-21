@@ -26,6 +26,7 @@
         cls.init = function(options) {
             this.opts = $.extend({}, this.defaults, options);
 
+            // очистка корзины в localStorage, если стоит кука
             var force_clean = $.cookie('clear_cart');
             if (force_clean) {
                 localStorage.removeItem(this.opts.prefix);
@@ -42,7 +43,7 @@
         };
 
         /*
-            Очистка заказа
+            Очистка заказа в localStorage и сессии
          */
         cls.clear = function() {
             var that = this;

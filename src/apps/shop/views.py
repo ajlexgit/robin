@@ -14,7 +14,7 @@ class IndexView(TemplateExView):
 
     def get(self, request):
         # Breadcrumbs
-        request.breadcrumbs.add(self.config.title)
+        request.breadcrumbs.add(self.config.header)
 
         # SEO
         seo = Seo()
@@ -70,8 +70,8 @@ class CategoryView(TemplateExView):
 
 class DetailView(TemplateExView):
     config = None
-    product = None
     category = None
+    product = None
     template_name = 'shop/detail.html'
 
     def before_get(self, request, *args, **kwargs):

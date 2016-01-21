@@ -1,5 +1,4 @@
 ﻿SESSION_CART_NAME = 'cart'
-LOCALSTORAGE_PREFIX = 'cart'
 
-# Максимальное кол-во одной единицы товара
+# Максимальное кол-во каждой единицы товара в заказе
 MAX_PRODUCT_COUNT = 99

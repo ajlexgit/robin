@@ -40,7 +40,7 @@
             errorClass: 'gallery-item-error'
         };
 
-        cls.dataParamName = 'gallery';
+        cls.DATA_KEY = 'gallery';
 
 
         cls.init = function(root, options) {
@@ -90,7 +90,7 @@
                 this.initGallery(gallery_id);
             }
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
 
             // event
             this.trigger('create.gallery');
@@ -109,7 +109,7 @@
             if (this.uploader) {
                 this.uploader.destroy();
             }
-            this.$root.removeData(this.dataParamName);
+            this.$root.removeData(this.DATA_KEY);
             superclass.destroy.call(this);
         };
 

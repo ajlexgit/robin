@@ -22,7 +22,7 @@
             }
         };
 
-        cls.dataParamName = 'async-block';
+        cls.DATA_KEY = 'async-block';
 
 
         cls.init = function($placeholder, options) {
@@ -38,7 +38,7 @@
                 return this.raise('url is empty');
             }
 
-            this.$placeholder.data(this.dataParamName, this);
+            this.$placeholder.data(this.DATA_KEY, this);
 
             this.ajax();
         };

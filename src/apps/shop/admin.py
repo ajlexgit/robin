@@ -14,26 +14,30 @@ from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs import admin_utils
 from libs.autocomplete import AutocompleteWidget
-from .models import EmailReciever, ShopConfig, ShopCategory, ShopProduct, ShopOrder
+from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder, NotifyReciever
 from .signals import products_changed, categories_changed
 
 
 class ShopConfigBlocksInline(AttachedBlocksStackedInline):
+    """ Подключаемые блоки главной страницы """
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
 class ShopCategoryBlocksInline(AttachedBlocksStackedInline):
+    """ Подключаемые блоки страницы категории """
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
-class EmailRecieverAdmin(ModelAdminInlineMixin, admin.TabularInline):
-    model = EmailReciever
+class NotifyRecieverAdmin(ModelAdminInlineMixin, admin.TabularInline):
+    """ Инлайн получателей уведомлений о новых заказах """
+    model = NotifyReciever
     extra = 0
     suit_classes = 'suit-tab suit-tab-managers'
 
 
 @admin.register(ShopConfig)
 class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+    """ Главная страница """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -42,7 +46,7 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
             ),
         }),
     )
-    inlines = (ShopConfigBlocksInline, EmailRecieverAdmin)
+    inlines = (ShopConfigBlocksInline, NotifyRecieverAdmin)
     suit_form_tabs = (
         ('general', _('General')),
         ('managers', _('Managers')),
@@ -53,6 +57,7 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
 
 
 class ShopCategoryForm(forms.ModelForm):
+    """ Форма категории """
     class Meta:
         model = ShopCategory
         fields = '__all__'
@@ -69,6 +74,7 @@ class ShopCategoryForm(forms.ModelForm):
 
 @admin.register(ShopCategory)
 class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAdmin):
+    """ Категория """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -120,7 +126,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
 
 
 class StatusShopProductCategoryFilter(SimpleListFilter):
-    """ Фильтр по категории """
+    """ Фильтр продуктов по категории """
     title = _('Category')
     parameter_name = 'category'
 
@@ -147,6 +153,7 @@ class StatusShopProductCategoryFilter(SimpleListFilter):
 
 
 class ShopProductForm(forms.ModelForm):
+    """ Форма продукта """
     class Meta:
         model = ShopProduct
         fields = '__all__'
@@ -163,6 +170,7 @@ class ShopProductForm(forms.ModelForm):
 
 @admin.register(ShopProduct)
 class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
+    """ Продукт """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -229,7 +237,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
 
 
 class StatusShopOrderFilter(SimpleListFilter):
-    """ Фильтр по статусу """
+    """ Фильтр заказов по статусу """
     title = _('Status')
     parameter_name = 'status'
     template = 'admin/button_filter.html'
@@ -279,6 +287,7 @@ class StatusShopOrderFilter(SimpleListFilter):
 
 
 class ShopOrderForm(forms.ModelForm):
+    """ Форма заказа """
     DATED_FLAGS = (
         ('is_confirmed', 'confirm_date'),
         ('is_cancelled', 'cancel_date'),
@@ -308,12 +317,12 @@ class ShopOrderForm(forms.ModelForm):
 
 @admin.register(ShopOrder)
 class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
+    """ Заказ """
     fieldsets = (
         (_('Cost'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('fmt_products_cost', 'fmt_total_cost', ),
         }),
-
 
         (_('Cancelled'), {
             'classes': ('suit-tab', 'suit-tab-status'),
@@ -348,22 +357,22 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         (_('Created'), {
             'classes': ('suit-tab', 'suit-tab-status'),
             'fields': (
-                'date',
+                'created',
             ),
         }),
     )
     form = ShopOrderForm
-    date_hierarchy = 'date'
+    date_hierarchy = 'created'
     readonly_fields = (
-        'fmt_products_cost', 'fmt_total_cost', 'date',
+        'fmt_products_cost', 'fmt_total_cost', 'created',
         'is_confirmed', 'confirm_date',
         'cancel_date', 'check_date', 'pay_date', 'archivation_date',
     )
     list_display = (
-        '__str__', 'fmt_total_cost', 'is_cancelled', 'is_checked', 'is_paid', 'pay_date', 'date',
+        '__str__', 'fmt_total_cost', 'is_cancelled', 'is_checked', 'is_paid', 'pay_date', 'created',
     )
     actions = ('action_set_checked', 'action_set_cancelled', 'action_set_paid', 'action_set_archived')
-    list_filter = (StatusShopOrderFilter, 'date')
+    list_filter = (StatusShopOrderFilter, 'created')
     suit_form_tabs = (
         ('general', _('General')),
         ('status', _('Status')),

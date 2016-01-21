@@ -9,7 +9,7 @@
             edit_template_class: 'comments-edit-template'
         };
 
-        cls.dataParamName = 'comments';
+        cls.DATA_KEY = 'comments';
 
 
         cls.init = function(root, options) {
@@ -29,7 +29,7 @@
             // Удаляем атрибуты, чтобы лишний раз не палить
             this.$root.removeAttr('data-content_type data-object_id');
 
-            this.$root.data(this.dataParamName, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         // обработка ошибок ajax-запросов

@@ -5,8 +5,8 @@ from django.db.models.expressions import RawSQL
 from django.db.models.signals import post_delete
 from django.db.models.query import ValuesListQuerySet
 from django.utils.translation import ugettext_lazy as _
-from ..models import ShopCategory, ShopProduct, ShopOrder
-from ..utils import mail_managers
+from libs.email import send
+from ..models import ShopCategory, ShopProduct, ShopOrder, NotifyReciever
 from . import products_changed, categories_changed, order_confirmed, order_cancelled, order_paid
 
 
@@ -14,7 +14,9 @@ from . import products_changed, categories_changed, order_confirmed, order_cance
 def products_changed_handler(sender, **kwargs):
     """
         Обработчик события изменения кол-ва видимых продуктов,
-        привязанных непосредственно к категории
+        привязанных непосредственно к категории.
+
+        Используется для обновления счетчиков товаров в каждой категории.
     """
     categories = kwargs.get('categories')
     if isinstance(categories, ShopCategory):
@@ -53,7 +55,9 @@ def products_changed_handler(sender, **kwargs):
 def categories_changed_handler(sender, **kwargs):
     """
         Обработчик события изменения кол-ва видимых продуктов,
-        привязанных к категории и её подкатегориям
+        привязанных к категории и её подкатегориям.
+
+        Используется для обновления счетчиков товаров в каждой категории.
     """
     categories = kwargs.get('categories')
     include_self = kwargs.get('include_self', True)
@@ -95,8 +99,8 @@ def categories_changed_handler(sender, **kwargs):
 @receiver(post_delete, sender=ShopProduct)
 def post_delete_handler(sender, **kwargs):
     """
-        Удаление продукта.
-        Если продукт был видимый - вызываем сигнал изменения кол-ва видимых продуктов
+        Обработчик события удаления продукта.
+        Если продукт был видимый - вызываем сигнал изменения кол-ва видимых продуктов.
     """
     instance = kwargs.get('instance')
     if isinstance(instance, ShopProduct) and instance.is_visible:
@@ -106,20 +110,15 @@ def post_delete_handler(sender, **kwargs):
 @receiver(order_confirmed, sender=ShopOrder)
 def order_confirmed_handler(sender, **kwargs):
     """
-        Обработчик сигнала подтверждения заказа пользователем
+        Обработчик сигнала подтверждения заказа пользователем.
     """
     order = kwargs.get('order')
     if not order or not isinstance(order, ShopOrder):
         return
 
-    mail_managers(
-        subject=_('New order'),
-        message_template='shop/mails/new_order.html',
-        message_context={
-            'site': kwargs.get('site'),
-            'order': order,
-        }
-    )
+    request = kwargs.get('request')
+
+    pass
 
 
 @receiver(order_paid, sender=ShopOrder)
@@ -131,16 +130,28 @@ def order_paid_handler(sender, **kwargs):
     if not order or not isinstance(order, ShopOrder):
         return
 
-    pass
+    request = kwargs.get('request')
+
+    recievers = NotifyReciever.objects.all().values_list('email', flat=True)
+    if recievers:
+        send(request, recievers,
+            subject=_('New order at {domain}'),
+            template='shop/mails/new_order.html',
+            context={
+                'data': order,
+            }
+        )
 
 
 @receiver(order_cancelled, sender=ShopOrder)
 def order_cancelled_handler(sender, **kwargs):
     """
-        Обработчик сигнала отмены заказа пользователем
+        Обработчик сигнала отмены заказа пользователем.
     """
     order = kwargs.get('order')
     if not order or not isinstance(order, ShopOrder):
         return
+
+    request = kwargs.get('request')
 
     pass
