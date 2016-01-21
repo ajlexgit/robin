@@ -7,10 +7,16 @@ from .models import SocialConfig, FollowUsBlock
 
 @admin.register(SocialConfig)
 class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
+    """ Настройки соцкнопок """
     fieldsets = (
         (None, {
             'fields': (
-                'header', 'facebook', 'twitter', 'youtube',
+                'header',
+            ),
+        }),
+        (_('Networks'), {
+            'fields': (
+                'facebook', 'twitter', 'youtube',
             ),
         }),
     )
@@ -18,6 +24,7 @@ class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
 
 @admin.register(FollowUsBlock)
 class FollowUsBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
+    """ Подключаемый блок соцкнопок """
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -28,4 +35,3 @@ class FollowUsBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
     suit_form_tabs = (
         ('general', _('General')),
     )
-

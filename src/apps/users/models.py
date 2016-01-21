@@ -8,6 +8,7 @@ from . import options
 
 
 class CustomUser(AbstractUser):
+    """ Пользователь """
     avatar = StdImageField(_('avatar'),
         storage = MediaStorage(options.AVATAR_PATH),
         blank = True,

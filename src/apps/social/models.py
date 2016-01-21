@@ -5,6 +5,7 @@ from attachable_blocks.models import AttachableBlock
 
 
 class SocialConfig(SingletonModel):
+    """ Настройки соц-кнопок """
     header = models.CharField(_('header'), max_length=128, blank=True)
     facebook = models.URLField(_('facebook'), blank=True)
     twitter = models.URLField(_('twitter'), blank=True)
@@ -15,6 +16,7 @@ class SocialConfig(SingletonModel):
 
 
 class FollowUsBlock(AttachableBlock):
+    """ Подключаемый блок соцкнопок """
     BLOCK_VIEW = 'social.views.follow_us_render'
 
     class Meta:

@@ -10,6 +10,7 @@ UserModel = get_user_model()
 
 
 class LoginForm(PlainErrorFormMixin, AuthenticationForm):
+    """ Форма авторизации """
     error_messages = {
         'invalid_login': _('Login or password incorrect'),
         'inactive': _('Account blocked'),
@@ -32,6 +33,7 @@ class LoginForm(PlainErrorFormMixin, AuthenticationForm):
 
 
 class RegisterForm(PlainErrorFormMixin, UserCreationForm):
+    """ Форма регистрации """
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }
@@ -96,6 +98,7 @@ class RegisterForm(PlainErrorFormMixin, UserCreationForm):
 
 
 class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
+    """ Форма сброса пароля. Указание e-mail """
     error_messages = {
         'unregistered_email': _('E-mail is not registered'),
     }
@@ -119,6 +122,7 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
 
 
 class SetPasswordForm(PlainErrorFormMixin, DefaultSetPasswordForm):
+    """ Форма сброса пароля. Указание нового пароля """
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }

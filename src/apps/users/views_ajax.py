@@ -24,7 +24,7 @@ def user_to_dict(user):
 
 
 class LoginView(AjaxViewMixin, FormView):
-    """ AJAX login """
+    """ AJAX авторизация """
     form_class = LoginForm
     template_name = 'users/ajax_login.html'
 
@@ -45,14 +45,14 @@ class LoginView(AjaxViewMixin, FormView):
 
 
 class LogoutView(AjaxViewMixin, View):
-    """ AJAX logout """
+    """ AJAX вызод из профиля """
     def post(self, request):
         auth_logout(request)
         return self.json_response()
 
 
 class RegisterView(AjaxViewMixin, FormView):
-    """ AJAX register """
+    """ AJAX регистрация """
     form_class = RegisterForm
     template_name = 'users/ajax_register.html'
 
@@ -87,7 +87,7 @@ class RegisterView(AjaxViewMixin, FormView):
 
 
 class PasswordResetView(AjaxViewMixin, FormView):
-    """ AJAX reset password """
+    """ AJAX сброс пароля. Указание e-mail """
     email = ''
     form_class = PasswordResetForm
     template_name = 'users/ajax_reset.html'
@@ -128,7 +128,7 @@ class PasswordResetView(AjaxViewMixin, FormView):
 
 
 class ResetConfirmView(AjaxViewMixin, FormView):
-    """ AJAX reset password """
+    """ AJAX сброс пароля. Указание нового пароля """
     form_class = SetPasswordForm
     template_name = 'users/ajax_reset_confirm.html'
 
@@ -163,7 +163,6 @@ class ResetConfirmView(AjaxViewMixin, FormView):
 class AvatarUploadView(AjaxViewMixin, View):
     """ Загрузка аватара """
     def post(self, request):
-        """ Загрузка автарки """
         if not request.user.is_authenticated():
             return self.json_response({
                 'message': _('Authentication required'),

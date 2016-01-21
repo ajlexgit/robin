@@ -15,6 +15,9 @@ UserModel = get_user_model()
 
 
 def get_redirect_url(request, default=settings.LOGIN_REDIRECT_URL):
+    """
+        Получение адреса для редиректа из POST, GET или settings
+    """
     redirect_to = request.POST.get(
         REDIRECT_FIELD_NAME,
         request.GET.get(REDIRECT_FIELD_NAME, '')
@@ -95,7 +98,13 @@ class RegisterView(FormView):
 
 
 class PasswordResetView(TemplateView):
-    """ Страница с формой ввода email для сброса пароля """
+    """
+        Страница с формой ввода email для сброса пароля, если
+        текущий пользователь не авторизован.
+
+        Если пользователь авторизован, сразу будет показана форма
+        установки нового пароля.
+    """
     template_name = 'users/reset_confirm.html'
 
     def get(self, request, *args, **kwargs):
@@ -168,7 +177,10 @@ class ResetDoneView(TemplateView):
 
 
 class ResetConfirmView(TemplateView):
-    """ Страница с формой ввода нового пароля """
+    """
+        Страница с формой ввода нового пароля
+        для неавторизованного пользователя.
+    """
     template_name = 'users/reset_confirm.html'
 
     def get(self, request, uidb64=None, token=None):

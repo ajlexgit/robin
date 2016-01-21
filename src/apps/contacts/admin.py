@@ -91,7 +91,7 @@ class ContactBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('label', 'visible'),
         }),
-        (_('Customize'), {
+        (_('Customization'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('header',),
         }),

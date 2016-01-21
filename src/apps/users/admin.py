@@ -1,4 +1,3 @@
-from django import forms
 from django.contrib import admin
 from django.shortcuts import resolve_url
 from django.contrib.auth.admin import UserAdmin
@@ -9,6 +8,7 @@ from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
+    """ Форма создания пользователя """
     class Meta:
         model = CustomUser
         fields = ("username",)
@@ -27,6 +27,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdminMixin, UserAdmin):
+    """ Пользователь """
     model = CustomUser
     add_form = CustomUserCreationForm
     fieldsets = (
@@ -57,5 +58,3 @@ class CustomUserAdmin(ModelAdminMixin, UserAdmin):
         return '<a href="{0}" class="btn btn-success btn-mini" target="_blank">{1}</a>'.format(url, caption)
     login_as.short_description = _('Login as')
     login_as.allow_tags = True
-
-
