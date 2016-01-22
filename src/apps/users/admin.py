@@ -52,6 +52,16 @@ class CustomUserAdmin(ModelAdminMixin, UserAdmin):
     avatar_username.admin_order_field = 'username'
     avatar_username.allow_tags = True
 
+    def get_list_display(self, request):
+        """ Login as только для суперюзеров """
+        default = super().get_list_display(request)
+        if not request.user.is_superuser:
+            default = list(default)
+            default.remove('login_as')
+            return tuple(default)
+
+        return default
+    
     def login_as(self, obj):
         url = resolve_url('admin_users:login_as', user_id=obj.pk)
         caption = _('Login as %(username)s') % {'username': obj.username}

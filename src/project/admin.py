@@ -99,4 +99,7 @@ class ModelAdminMixin(ModelAdminInlineMixin):
 @admin.site.admin_view
 def redirect_admin(request):
     """ Редирект на редактирование главной страницы """
+    if not request.user.has_perm('main.change_mainpageconfig'):
+        logout(request)
+        return redirect('admin:index')
     return redirect('admin:main_mainpageconfig_change')

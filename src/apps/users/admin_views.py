@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.contrib.auth import get_backends, get_user_model, login, logout
 
+LOGIN_AS_REDIRECT_URL = getattr(settings, 'LOGIN_AS_REDIRECT_URL', 'index')
+
 
 @admin.site.admin_view
 def login_as(request, user_id):
@@ -20,4 +22,4 @@ def login_as(request, user_id):
                 break
 
         login(request, user)
-        return redirect(settings.LOGIN_REDIRECT_URL)
+        return redirect(LOGIN_AS_REDIRECT_URL)
