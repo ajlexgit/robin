@@ -535,83 +535,38 @@ CKEDITOR_CONFIG_DEFAULT = {
     'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
     'autoGrow_maxHeight': '540',
     'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
-    'plugins': 'basicstyles,blockquote,clipboard,undo,contextmenu,'
+    'plugins': 'basicstyles,undo,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
                'format,htmlwriter,justify,link,list,liststyle,'
-               'pastefromword,pastetext,removeformat,resize,'
-               'showborders,sourcearea,specialchar,tab,table,'
-               'tabletools,toolbar,wsc,wysiwygarea',
-    'toolbar': [
-        {
-            'name': 'document',
-            'items': ['Source']
-        },
-        {
-            'name': 'clipboard',
-            'items': ['Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']
-        },
-        {
-            'name': 'insert',
-            'items': ['PagePhotos', 'PageVideos', 'Table', 'SpecialChar', 'Blockquote']
-        },
-        {
-            'name': 'links',
-            'items': ['Link', 'Unlink']
-        },
-        '/',
-        {
-            'name': 'basicstyles',
-            'items': ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat']
-        },
-        {
-            'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
-                      'JustifyBlock']
-        },
-        {
-            'name': 'styles',
-            'items': ['Format']
-        },
-    ]
-}
-CKEDITOR_CONFIG_MEDIUM = {
-    'language': SHORT_LANGUAGE_CODE,
-    'height': 220,
-    'forcePasteAsPlainText': True,
-    'extraPlugins': 'autogrow,textlen,enterfix',
-    'autoGrow_maxHeight': '540',
-    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
-    'plugins': 'basicstyles,clipboard,undo,contextmenu,'
-               'elementspath,enterkey,entities,floatingspace,'
-               'format,htmlwriter,link,list,'
-               'pastefromword,pastetext,removeformat,resize,'
+               'removeformat,resize,'
                'showborders,sourcearea,tab,'
                'toolbar,wsc,wysiwygarea',
     'toolbar': [
-        {
-            'name': 'document',
-            'items': ['Source']
-        },
-        {
-            'name': 'clipboard',
-            'items': ['Undo', 'Redo']
-        },
-        {
-            'name': 'links',
-            'items': ['Link', 'Unlink']
-        },
-        '/',
         {
             'name': 'basicstyles',
             'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
         },
         {
             'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList']
+            'items': ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
+                      'JustifyBlock']
+        },
+        '/',
+        {
+            'name': 'insert',
+            'items': ['PagePhotos', 'PageVideos']
+        },
+        {
+            'name': 'links',
+            'items': ['Link', 'Unlink']
         },
         {
             'name': 'styles',
             'items': ['Format']
+        },
+        {
+            'name': 'document',
+            'items': ['Source']
         },
     ]
 }
