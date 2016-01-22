@@ -138,7 +138,7 @@ def order_paid_handler(sender, **kwargs):
             subject=_('New order at {domain}'),
             template='shop/mails/new_order.html',
             context={
-                'data': order,
+                'order': order,
             }
         )
 

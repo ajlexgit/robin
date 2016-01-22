@@ -41,6 +41,7 @@ INSTALLED_APPS = (
 
     'admin_honeypot',
     'pipeline',
+    'mptt',
     'solo',
     'suit_ckeditor',
 
@@ -48,6 +49,7 @@ INSTALLED_APPS = (
     'blog',
     'contacts',
     'main',
+    'shop',
     'social',
     'users',
 
@@ -55,6 +57,7 @@ INSTALLED_APPS = (
     'admin_dump',
     'admin_log',
     'attachable_blocks',
+    'breadcrumbs',
     'ckeditor',
     'files',
     'footer',
@@ -93,6 +96,16 @@ SUIT_CONFIG = {
         {
             'app': 'main',
             'icon': 'icon-file',
+        },
+        {
+            'app': 'shop',
+            'icon': 'icon-shopping-cart',
+            'models': (
+                'ShopOrder',
+                'ShopProduct',
+                'ShopCategory',
+                'ShopConfig',
+            )
         },
         {
             'app': 'blog',
@@ -220,6 +233,24 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/blog_detail_page.css',
     },
+    'shop_index': {
+        'source_filenames': (
+            'shop/scss/index.scss',
+        ),
+        'output_filename': 'css/shop_index.css',
+    },
+    'shop_category': {
+        'source_filenames': (
+            'shop/scss/category.scss',
+        ),
+        'output_filename': 'css/shop_category.css',
+    },
+    'shop_detail': {
+        'source_filenames': (
+            'shop/scss/detail.scss',
+        ),
+        'output_filename': 'css/shop_detail.css',
+    },
 }
 PIPELINE_JS = {
     'head_core': {
@@ -309,6 +340,8 @@ MIDDLEWARE_CLASSES = (
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
+
+    'breadcrumbs.middleware.BreadcrumbsMiddleware',
 )
 
 ALLOWED_HOSTS = ()

@@ -63,7 +63,7 @@ class CategoryView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
-            'current_category': self.category,
+            'category': self.category,
             'root_categories': ShopCategory.objects.root_categories(),
         })
 
@@ -110,7 +110,7 @@ class DetailView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
-            'current_category': self.category,
-            'current_product': self.product,
+            'category': self.category,
+            'product': self.product,
         })
 

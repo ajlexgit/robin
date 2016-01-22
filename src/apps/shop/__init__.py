@@ -5,6 +5,7 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
+                'mptt',
                 'shop',
                 ...
             )

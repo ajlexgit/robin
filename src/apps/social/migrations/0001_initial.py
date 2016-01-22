@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FollowUsBlock',
             fields=[
-                ('attachableblock_ptr', models.OneToOneField(to='attachable_blocks.AttachableBlock', parent_link=True, auto_created=True, primary_key=True, serialize=False)),
+                ('attachableblock_ptr', models.OneToOneField(parent_link=True, to='attachable_blocks.AttachableBlock', auto_created=True, serialize=False, primary_key=True)),
             ],
             options={
                 'verbose_name': 'Follow us',
@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SocialConfig',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', auto_created=True, serialize=False)),
-                ('header', models.CharField(verbose_name='header', max_length=128, blank=True)),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('header', models.CharField(max_length=128, verbose_name='header', blank=True)),
                 ('facebook', models.URLField(verbose_name='facebook', blank=True)),
                 ('twitter', models.URLField(verbose_name='twitter', blank=True)),
                 ('youtube', models.URLField(verbose_name='youtube', blank=True)),

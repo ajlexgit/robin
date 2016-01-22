@@ -353,10 +353,6 @@ class ShopOrder(models.Model):
     """ Заказ """
     uuid = models.UUIDField(_('UUID'), default=uuid.uuid4, unique=True, editable=False)
     session = models.CharField(_('session'), max_length=64, editable=False)
-    products_cost = ValuteField(_('products cost'),
-        validators=[MinValueValidator(0)],
-        editable=False,
-    )
 
     # Подтвержден плательщиком
     is_confirmed = models.BooleanField(_('confirmed'), default=False, editable=False,
@@ -420,15 +416,47 @@ class ShopOrder(models.Model):
             raise ValidationError(errors)
 
     @property
+    def products_cost(self):
+        """ Стоимость товаров """
+        return sum(item.order_price * item.count for item in self.records.all())
+
+    @property
     def total_cost(self):
+        """
+            Метод получения полной стоимости заказа,
+            которая может включать доставку / налог / ...
+        """
         return self.products_cost
 
+    def add_product(self, product, count=1):
+        """
+            Добавление товара в заказ.
+            Метод предназначен для отладки. Реальные товары добавляются через корзину.
+        """
+        if isinstance(product, ShopProduct):
+            pass
+        else:
+            product = ShopProduct.objects.get(id=product)
 
-class OrderProduct(models.Model):
+        try:
+            ordered = self.records.get(product=product)
+        except OrderRecord.DoesNotExist:
+            order_product = OrderRecord(
+                product=product,
+                order_price=product.price,
+                count=count,
+            )
+            self.records.add(order_product)
+        else:
+            ordered.count += count
+            ordered.save()
+
+
+class OrderRecord(models.Model):
     """ Продукты заказа """
-    order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='order_products')
+    order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='records')
     product = models.ForeignKey(ShopProduct, verbose_name=_('product'))
-    order_price = ValuteField(_('price per item'), validators=[MinValueValidator(0)])
+    order_price = ValuteField(_('price per unit'), validators=[MinValueValidator(0)])
     count = models.PositiveSmallIntegerField(_('count'))
 
     class Meta:

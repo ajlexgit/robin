@@ -16,6 +16,16 @@
 
 {% block content %}
 
+  <div class="block grid-block">
+    <h1 class="title-h1">{{ config.header }}</h1>
 
+    <ul class="list">
+      {% for category in root_categories %}
+        <li>
+          <a href="{{ category.get_absolute_url }}" class="category-link">{{ category.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 
 {% endblock content %}

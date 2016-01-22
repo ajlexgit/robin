@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% load pipeline %}
-
+{% load text %}
 
 {% block static_head %}
   {{ block.super }}
@@ -16,6 +16,16 @@
 
 {% block content %}
 
+  <div class="block grid-block">
+    <h1 class="title-h1">{{ product.title }}</h1>
 
+    <img src="{{ product.photo.normal.url }}" class="photo">
+
+    <div class="price">Price: {{ product.price.utf }}</div>
+
+    <div class="text-styles">
+      {{ product.description|clean }}
+    </div>
+  </div>
 
 {% endblock content %}

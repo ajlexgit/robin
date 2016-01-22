@@ -324,16 +324,16 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
             'fields': ('fmt_products_cost', 'fmt_total_cost', ),
         }),
 
-        (_('Cancelled'), {
-            'classes': ('suit-tab', 'suit-tab-status'),
-            'fields': (
-                'is_cancelled', 'cancel_date',
-            ),
-        }),
         (_('Checked'), {
             'classes': ('suit-tab', 'suit-tab-status'),
             'fields': (
                 'is_checked', 'check_date',
+            ),
+        }),
+        (_('Cancelled'), {
+            'classes': ('suit-tab', 'suit-tab-status'),
+            'fields': (
+                'is_cancelled', 'cancel_date',
             ),
         }),
         (_('Paid'), {

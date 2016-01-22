@@ -1,2 +1,11 @@
 @import "mixins";
 
+.photo {
+	margin: 20px 0;
+}
+
+.price {
+	margin: 20px 0;
+	font-weight: bold;
+	@include fontsize_default;
+}

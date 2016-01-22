@@ -135,7 +135,7 @@ class CartProducts:
         cart = cls()
 
         cart._unformatted = {}
-        data = {order_item.product_id: order_item.count for order_item in order.order_products.all()}
+        data = {order_item.product_id: order_item.count for order_item in order.records.all()}
         for product_id, count in data.items():
             try:
                 product_id = int(product_id)

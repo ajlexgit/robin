@@ -3,8 +3,37 @@
 <p>
   {% blocktrans %}New order at the <a href="http://{{ domain }}/" target="_blank">{{ domain }}</a>{% endblocktrans %}
 </p>
+
+<table border="1" cellpadding="10" cellspacing="0">
+  <tr>
+    <th style="background: #EAEAEA; text-align: left" colspan="3">{% trans 'Products' %}</th>
+  </tr>
+
+  {% for record in order.records.all %}
+    <tr>
+      <td>{{ record.product.title }}</td>
+      <td>{{ record.order_price.alternate }} x {{ record.count }}</td>
+      <td>{{ record.total_cost.alternate }}</td>
+    </tr>
+  {% endfor %}
+
+  <tr>
+    <th style="background: #EAEAEA; text-align: left" colspan="3">{% trans 'Cost' %}</th>
+  </tr>
+
+  <tr>
+    <td>{% trans 'Products cost' %}</td>
+    <td colspan="2">{{ order.products_cost.alternate }}</td>
+  </tr>
+
+  <tr>
+    <td><em>{% trans 'Total cost' %}</em></td>
+    <td colspan="2"><b><em>{{ order.total_cost.alternate }}</em></b></td>
+  </tr>
+</table>
+
 <p>
-  <a href="http://{{ domain }}{% url 'admin:shop_shoporder_change' data.pk %}" target="_blank">
+  <a href="http://{{ domain }}{% url 'admin:shop_shoporder_change' order.pk %}" target="_blank">
     {% trans 'See details' %}
   </a>
 </p>
