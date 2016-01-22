@@ -15,22 +15,6 @@
 {% endblock extrahead %}
 
 
-{% if not is_popup %}
-  {% block breadcrumbs %}
-    {% trans 'Backups' as header %}
-
-    <ul class="breadcrumb">
-      <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-        <span class="divider">&raquo;</span></li>
-      <li>
-        <a href="{% url 'admin_dump:index' %}">{{ header|capfirst }}</a>
-        <span class="divider">&raquo;</span></li>
-      <li class="active">{{ header|capfirst }}</li>
-    </ul>
-  {% endblock %}
-{% endif %}
-
-
 {% block content %}
   <h2>{% trans 'Backups' %}</h2>
 
@@ -54,12 +38,12 @@
             <span>{{ file.1|filesizeformat }}</span>
           </th>
           <th>
-            <a href="{% url 'admin_dump:download' file.0 %}" class="btn btn-success">
+            <a href="download/{{ file.0 }}" class="btn btn-success">
               {% trans 'Download' %}
             </a>
           </th>
           <th>
-            <a href="{% url 'admin_dump:delete' file.0 %}" class="btn btn-danger btn-small"
+            <a href="delete/{{ file.0 }}" class="btn btn-danger btn-small"
                 onclick="return confirm('{% trans 'Are you sure?' %}')">
               {% trans 'Delete' %}
             </a>
@@ -69,7 +53,6 @@
     </tbody>
   </table>
 
-  <a href="{% url 'admin_dump:create' %}" class="btn btn-info"
-      style="margin-top: 20px;">{% trans 'Create' %}</a>
+  <a href="create/" class="btn btn-info" style="margin-top: 20px;">{% trans 'Create' %}</a>
 
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.core import management
 
 
@@ -24,13 +25,19 @@ class Command(management.BaseCommand):
         )
 
     def handle(self, *args, **options):
-        apps = options.pop('app')
+        dumped_apps = options.pop('app')
         database = options.pop('database')
 
+        # exclude unmanaged models
+        exclude = ['contenttypes', 'auth.Permission', 'admin.logentry']
+        for model in apps.get_models():
+            if not model._meta.managed:
+                exclude.append('%s.%s' % (model._meta.app_label, model._meta.model_name))
+
         management.call_command('dumpdata',
-            *apps,
+            *dumped_apps,
             use_natural_foreign_keys=True,
-            exclude=('contenttypes', 'auth.Permission', 'admin.logentry'),
+            exclude=exclude,
             database=database,
             **options
         )

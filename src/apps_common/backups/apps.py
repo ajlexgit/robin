@@ -3,5 +3,5 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Config(AppConfig):
-    name = 'admin_dump'
+    name = 'backups'
     verbose_name = _('Backups')

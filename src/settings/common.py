@@ -53,10 +53,10 @@ INSTALLED_APPS = (
     'users',
 
     # Apps common
-    'admin_dump',
     'admin_honeypot',
     'admin_log',
     'attachable_blocks',
+    'backups',
     'breadcrumbs',
     'ckeditor',
     'footer',
@@ -141,11 +141,7 @@ SUIT_CONFIG = {
                 'users.customuser',
             )
         },
-        {
-            'icon': 'icon-hdd',
-            'label': _('Backups'),
-            'url': 'admin_dump:index',
-        },
+        'backups',
         'sites',
         {
             'app': 'seo',

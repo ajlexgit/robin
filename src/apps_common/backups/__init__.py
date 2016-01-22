@@ -9,7 +9,7 @@
 
             INSTALLED_APPS = (
                 ...
-                'admin_dump',
+                'backups',
                 ...
             )
 
@@ -18,7 +18,7 @@
                 {
                     'icon': 'icon-hdd',
                     'label': 'backups',
-                    'url': 'admin_dump:index',
+                    'url': 'backups:index',
                 },
                 ...
             }
@@ -27,9 +27,9 @@
 
         urls.py:
             ...
-            url(r'^dladmin/dump/', include('admin_dump.admin_urls', namespace='admin_dump')),
+            url(r'^dladmin/dump/', include('backups.admin_urls', namespace='backups')),
             ...
 
 """
 
-default_app_config = 'admin_dump.apps.Config'
+default_app_config = 'backups.apps.Config'
