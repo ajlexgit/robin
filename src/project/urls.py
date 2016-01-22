@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from admin_honeypot.admin import honeypot_site
 from main import views as main_views
 from .sitemaps import site_sitemaps
 
@@ -10,14 +11,14 @@ urlpatterns = [
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
-    url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),
 
     url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^contacts/', include('contacts.urls', namespace='contacts')),
     url(r'^users/', include('users.urls', namespace='users')),
+    url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),
 
-    url(r'^admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    url(r'^admin/', include(honeypot_site.urls)),
 
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),

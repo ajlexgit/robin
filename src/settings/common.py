@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sites',
 
-    'admin_honeypot',
     'pipeline',
     'mptt',
     'solo',
@@ -55,11 +54,11 @@ INSTALLED_APPS = (
 
     # Apps common
     'admin_dump',
+    'admin_honeypot',
     'admin_log',
     'attachable_blocks',
     'breadcrumbs',
     'ckeditor',
-    'files',
     'footer',
     'gallery',
     'google_maps',
@@ -72,11 +71,9 @@ INSTALLED_APPS = (
     # Libs
     'libs.autocomplete',
     'libs.away',
-    'libs.color_field',
     'libs.js_storage',
     'libs.management',
     'libs.opengraph',
-    'libs.sprite_image',
     'libs.stdimage',
     'libs.templatetags',
     'libs.variation_field',

@@ -1,5 +1,4 @@
 Django==1.8.6
-django-admin-honeypot==0.4.0
 django-model-utils==2.3.1
 django-mptt==0.7.4
 django-pipeline==1.5.4
