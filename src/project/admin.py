@@ -1,7 +1,5 @@
 from django import forms
 from django.db import models
-from django.contrib import admin
-from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from suit.widgets import AutosizedTextarea
 from google_maps import GoogleCoordsField, GoogleCoordsAdminWidget
@@ -94,12 +92,3 @@ class ModelAdminMixin(ModelAdminInlineMixin):
                 )
             }
         )
-
-
-@admin.site.admin_view
-def redirect_admin(request):
-    """ Редирект на редактирование главной страницы """
-    if not request.user.has_perm('main.change_mainpageconfig'):
-        logout(request)
-        return redirect('admin:index')
-    return redirect('admin:main_mainpageconfig_change')

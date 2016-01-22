@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from project.admin import redirect_admin
 from main import views as main_views
 from .sitemaps import site_sitemaps
 
@@ -23,7 +22,6 @@ urlpatterns = [
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
     url(r'^dladmin/dump/', include('admin_dump.admin_urls', namespace='admin_dump')),
-    url(r'^dladmin/$', redirect_admin),
     url(r'^dladmin/', include(admin.site.urls)),
 
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),

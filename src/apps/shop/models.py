@@ -238,7 +238,7 @@ class ShopProduct(models.Model):
     )
     gallery = GalleryField(ShopProductGallery, verbose_name=_('gallery'), blank=True, null=True)
     description = CKEditorField(_('description'),
-        editor_options=settings.CKEDITOR_CONFIG_MEDIUM,
+        editor_options=settings.CKEDITOR_CONFIG_DEFAULT,
         blank=True
     )
     price = ValuteField(_('price'), validators=[MinValueValidator(0)])

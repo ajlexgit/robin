@@ -1,7 +1,6 @@
 <!-- Updated jQuery -->
 <!-- added script "admin_jsi18n" -->
 <!-- added favicon -->
-<!-- removed "Home" from menu -->
 
 {% load admin_static %}{% load suit_tags %}{% load url from suit_compat %}<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
@@ -180,7 +179,7 @@
                 {% endwith %}
               {% endblock %}
 
-              {% include 'admin/menu.html' %}
+              {% include 'suit/menu.html' %}
 
             </div>
           {% endif %}
