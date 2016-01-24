@@ -1,6 +1,7 @@
 import os
 import sys
 
+# разделение прав
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
