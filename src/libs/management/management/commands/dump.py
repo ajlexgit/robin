@@ -7,6 +7,7 @@ class Command(management.BaseCommand):
         Алиас для команды
             pm dumpdata --natural-foreign
                         --exclude=contenttypes
+                        --exclude=auth.Permission
                         --exclude=admin.logentry
     """
     help = 'Dump database data'
@@ -28,7 +29,7 @@ class Command(management.BaseCommand):
         database = options.pop('database')
 
         # exclude unmanaged models
-        exclude = ['contenttypes', 'admin.logentry']
+        exclude = ['contenttypes', 'auth.Permission', 'admin.logentry']
         for model in apps.get_models():
             if not model._meta.managed:
                 exclude.append('%s.%s' % (model._meta.app_label, model._meta.model_name))
