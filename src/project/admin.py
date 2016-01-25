@@ -65,7 +65,7 @@ class ModelAdminMixin(ModelAdminInlineMixin):
 
     def get_suit_form_tabs(self, request, add=False):
         """ Получение вкладок для модели админки Suit """
-        return self.suit_form_tabs
+        return getattr(self, 'suit_form_tabs', ())
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         """ Получаем вкладки Suit и передаем их в шаблон """

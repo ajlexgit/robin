@@ -25,7 +25,7 @@ class MessageRecieverAdmin(admin.TabularInline):
 
 
 @admin.register(ContactsConfig)
-class ContactsConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+class ContactsConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
     """ Главная страница """
     fieldsets = (
         (None, {
@@ -40,9 +40,7 @@ class ContactsConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdm
         ('general', _('General')),
         ('messages', _('Messages')),
         ('blocks', _('Blocks')),
-        ('seo', _('SEO')),
     )
-    suit_seo_tab = 'seo'
 
 
 @admin.register(Message)

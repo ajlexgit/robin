@@ -36,7 +36,7 @@ class NotifyRecieverAdmin(ModelAdminInlineMixin, admin.TabularInline):
 
 
 @admin.register(ShopConfig)
-class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+class ShopConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
     """ Главная страница """
     fieldsets = (
         (None, {
@@ -51,9 +51,7 @@ class ShopConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
         ('general', _('General')),
         ('managers', _('Managers')),
         ('blocks', _('Blocks')),
-        ('seo', _('SEO')),
     )
-    suit_seo_tab = 'seo'
 
 
 class ShopCategoryForm(forms.ModelForm):
@@ -73,7 +71,7 @@ class ShopCategoryForm(forms.ModelForm):
 
 
 @admin.register(ShopCategory)
-class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAdmin):
+class ShopCategoryAdmin(SeoModelAdminMixin, SortableMPTTModelAdmin):
     """ Категория """
     fieldsets = (
         (None, {
@@ -99,9 +97,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, ModelAdminMixin, SortableMPTTModelAd
     sortable = 'sort_order'
     suit_form_tabs = (
         ('general', _('General')),
-        ('seo', _('SEO')),
     )
-    suit_seo_tab = 'seo'
 
     def action_hide(self, request, queryset):
         descentants = queryset.get_descendants(include_self=True)
@@ -169,7 +165,7 @@ class ShopProductForm(forms.ModelForm):
 
 
 @admin.register(ShopProduct)
-class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
+class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     """ Продукт """
     fieldsets = (
         (None, {
@@ -195,9 +191,7 @@ class ShopProductAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     }
     suit_form_tabs = (
         ('general', _('General')),
-        ('seo', _('SEO')),
     )
-    suit_seo_tab = 'seo'
 
     def micropreview(self, obj):
         if not obj.photo:

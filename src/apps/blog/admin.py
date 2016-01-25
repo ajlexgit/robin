@@ -18,7 +18,7 @@ class BlogConfigBlocksInline(AttachedBlocksStackedInline):
 
 
 @admin.register(BlogConfig)
-class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
+class BlogConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
     """ Главная страница """
     fieldsets = (
         (None, {
@@ -30,9 +30,7 @@ class BlogConfigAdmin(SeoModelAdminMixin, ModelAdminMixin, SingletonModelAdmin):
     suit_form_tabs = (
         ('general', _('General')),
         ('blocks', _('Blocks')),
-        ('seo', _('SEO')),
     )
-    suit_seo_tab = 'seo'
 
 
 @admin.register(Tag)
@@ -67,7 +65,7 @@ class PostTagAdmin(ModelAdminInlineMixin, admin.TabularInline):
 
 
 @admin.register(BlogPost)
-class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
+class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     """ Пост """
     fieldsets = (
         (None, {
@@ -90,9 +88,7 @@ class BlogPostAdmin(SeoModelAdminMixin, ModelAdminMixin, admin.ModelAdmin):
     suit_form_tabs = (
         ('general', _('General')),
         ('tags', _('Tags')),
-        ('seo', _('SEO')),
     )
-    suit_seo_tab = 'seo'
 
     def tags_list(self, obj):
         return ' / '.join((str(item.title) for item in obj.tags.all()))

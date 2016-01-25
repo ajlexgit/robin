@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-18 19:11+0400\n"
+"POT-Creation-Date: 2016-01-25 15:05+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,90 +19,98 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:33
+#: admin.py:39
 msgid "SEO common"
 msgstr "Общие SEO-настройки"
 
-#: admin.py:36
+#: admin.py:42
 msgid "SEO text"
 msgstr "SEO-текст"
 
-#: apps.py:7
+#: admin.py:45
+msgid "Opengraph"
+msgstr "Opengraph"
+
+#: admin.py:66 apps.py:7
 msgid "SEO"
 msgstr "SEO"
 
-#: models.py:19
+#: models.py:9
 msgid "site title"
 msgstr "название сайта"
 
-#: models.py:20
+#: models.py:10
 msgid "site keywords"
 msgstr "ключевые слова"
 
-#: models.py:21
+#: models.py:11
 msgid "site description"
 msgstr "описание сайта"
 
-#: models.py:24
+#: models.py:14
 msgid "Site config"
 msgstr "Настройки сайта"
 
-#: models.py:32 models.py:57
+#: models.py:22 models.py:27
 msgid "title"
 msgstr "заголовок"
 
-#: models.py:33
+#: models.py:23
 msgid "keywords"
 msgstr "ключевые слова"
 
-#: models.py:34
+#: models.py:24 models.py:29
 msgid "description"
 msgstr "описание"
 
-#: models.py:36
+#: models.py:28
+msgid "image"
+msgstr "изображение"
+
+#: models.py:31
 msgid "header"
 msgstr "заголовок"
 
-#: models.py:37
+#: models.py:32
 msgid "text"
 msgstr "текст"
 
-#: models.py:42 models.py:43
+#: models.py:36 models.py:37
 msgid "SEO data"
 msgstr "SEO-данные"
 
-#: models.py:52
+#: models.py:46
 msgid "Inside <head>"
 msgstr "Внутри <head>"
 
-#: models.py:53
+#: models.py:47
 msgid "Start of <body>"
 msgstr "В начале <body>"
 
-#: models.py:54
+#: models.py:48
 msgid "End of <body>"
 msgstr "В конце <body>"
 
-#: models.py:58
+#: models.py:51
+msgid "label"
+msgstr "метка"
+
+#: models.py:52
 msgid "position"
 msgstr "положение"
 
-#: models.py:59
+#: models.py:53
 msgid "content"
 msgstr "содержимое"
 
-#: models.py:62
+#: models.py:56
 msgid "counter"
 msgstr "счетчик"
 
-#: models.py:63
+#: models.py:57
 msgid "counters"
 msgstr "счетчики"
 
-#: templates/seo/admin/admin_include.html:6
+#: templates/seo/admin/admin_include.html:5
 msgid "Attention! Errors in SEO form will not prevent saving of main form"
 msgstr "Внимание! Ошибки в SEO-форме не предотвратят сохранение основной формы"
-
-#: templates/seo/admin/admin_include.html:11
-msgid "You should create instance first"
-msgstr "Сначала вы должны создать экземпляр объекта"

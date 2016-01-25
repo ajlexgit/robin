@@ -42,6 +42,9 @@ class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
             )
         }
 
+    def has_add_permission(self, request):
+        return False
+
     def response_change(self, request, obj):
         if IS_POPUP_VAR in request.POST:
             return SimpleTemplateResponse('ckeditor/popup_response.html', {
