@@ -23,9 +23,7 @@
                 )
                 suit_form_tabs = (
                     ('general', _('General')),
-                    ('seo', _('SEO')),
                 )
-                suit_seo_tab = 'seo'
             ...
 
     Счетчики и SEO-текст:
