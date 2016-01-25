@@ -41,6 +41,7 @@ class PagePhoto(models.Model):
     class Meta:
         verbose_name = _('image')
         verbose_name_plural = _('images')
+        default_permissions = ('change', )
 
     def __str__(self):
         return _('Image #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s') % {
@@ -80,6 +81,7 @@ class SimplePhoto(models.Model):
     class Meta:
         verbose_name = _('image')
         verbose_name_plural = _('images')
+        default_permissions = ('change', )
 
     def __str__(self):
         return _('Image #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s') % {

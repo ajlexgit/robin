@@ -7,3 +7,4 @@ class DummyModel(models.Model):
         managed = False
         verbose_name = _('backup')
         verbose_name_plural = _('backups')
+        default_permissions = ()

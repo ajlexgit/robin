@@ -9,6 +9,9 @@ class MapAndAddress(models.Model):
     longitude = models.FloatField(_('longitude'))
     latitude = models.FloatField(_('latitude'))
 
+    class Meta:
+        default_permissions = ()
+
     def save(self, *args, **kwargs):
         # Определяет координаты, если они не определены или редактирование
         if self.pk or (self.longitude is None) or (self.latitude is None):
