@@ -1,12 +1,12 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import helpers
-from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from .models import SeoConfig, SeoData, Counter
+from .seo import Seo
 
 SEO_TAB_NAME = 'seo'
 SEO_FORM_PREFIX = 'seo'
@@ -60,58 +60,89 @@ class SeoModelAdminMixin(ModelAdminMixin):
         )
 
     def get_suit_form_tabs(self, request, add=False):
+        """ Показываем вкладку SEO, если есть права """
         default = super().get_suit_form_tabs(request, add)
-        if not add and request.user.has_perm('seo.change_seodata'):
+        if request.user.has_perm('seo.change_seodata'):
             default = default + ((SEO_TAB_NAME, _('SEO')), )
         return default
 
-    def change_view(self, request, object_id, *args, **kwargs):
-        if object_id is None:
-            entity = None
-        else:
-            entity = self.get_object(request, unquote(object_id))
-
-        model = SeoData
-        model_admin = SeoDataAdmin(model, admin.site)
+    def get_seo_form(self, request, obj=None, change=False):
+        """ Получение формы SeoData, связанной с сущностью """
         content_type = ContentType.objects.get_for_model(self.model)
+        seo_model_admin = SeoDataAdmin(SeoData, self.admin_site)
+        seo_instance = None
+        seo_model_form_initial = {}
 
-        try:
-            seo_data = model.objects.get(
-                content_type=content_type,
-                object_id=object_id,
-            )
-        except (model.DoesNotExist, model.MultipleObjectsReturned):
-            seo_data = None
+        if change:
+            try:
+                seo_instance = SeoData.objects.get(
+                    content_type=content_type,
+                    object_id=obj.id,
+                )
+            except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
+                pass
 
-        add = seo_data is None
-        ModelForm = model_admin.get_form(request, seo_data)
+        seo_model_form = seo_model_admin.get_form(request, seo_instance)
+        seo_model_form_initial.update(seo_model_admin.get_changeform_initial_data(request))
+
         if request.method == 'POST':
-            form = ModelForm(request.POST, request.FILES, instance=seo_data, prefix=SEO_FORM_PREFIX)
-            if form.has_changed():
-                if form.is_valid():
-                    new_object = model_admin.save_form(request, form, change=not add)
-                    new_object.title = new_object.title.strip()
-                    new_object.keywords = new_object.keywords.strip()
-                    new_object.description = new_object.description.strip()
-                    new_object.entity = entity
-                    model_admin.save_model(request, new_object, form, not add)
+            return seo_model_form(
+                request.POST,
+                request.FILES,
+                instance=seo_instance,
+                initial=seo_model_form_initial,
+                prefix=SEO_FORM_PREFIX
+            )
         else:
-            initial = {
-                'content_type': content_type,
-                'object_id': object_id,
-            }
-            initial.update(model_admin.get_changeform_initial_data(request))
-            form = ModelForm(instance=seo_data, initial=initial, prefix=SEO_FORM_PREFIX)
+            return seo_model_form(
+                instance=seo_instance,
+                initial=seo_model_form_initial,
+                prefix=SEO_FORM_PREFIX
+            )
 
-        seoDataForm = helpers.AdminForm(
-            form,
-            list(model_admin.get_fieldsets(request, seo_data)),
-            model_admin.get_prepopulated_fields(request, seo_data),
-            model_admin.get_readonly_fields(request, seo_data),
-            model_admin=model_admin)
+    def save_seo_form(self, request, obj, change=False):
+        """ Сохранение формы SeoData, связанной с сущностью """
+        seo_model_admin = SeoDataAdmin(SeoData, self.admin_site)
+        seo_form = self.get_seo_form(request, obj, change=change)
 
-        extra_context = kwargs.pop('extra_context', None) or {}
-        kwargs['extra_context'] = dict(extra_context, **{
-            'seoDataForm': seoDataForm,
-        })
-        return super().change_view(request, object_id, *args, **kwargs)
+        if seo_form.is_valid() and seo_form.has_changed():
+            is_add = seo_form.instance.pk is None
+            content_type = ContentType.objects.get_for_model(self.model)
+
+            seo_instance = seo_model_admin.save_form(request, seo_form, change=not is_add)
+            seo_instance.content_type = content_type
+            seo_instance.object_id = obj.id
+            seo_model_admin.save_model(request, seo_instance, seo_form, change=not is_add)
+
+    def response_add(self, request, obj, *args, **kwargs):
+        self.save_seo_form(request, obj, change=False)
+        return super().response_add(request, obj, *args, **kwargs)
+
+    def response_change(self, request, obj, *args, **kwargs):
+        self.save_seo_form(request, obj, change=True)
+        return super().response_change(request, obj, *args, **kwargs)
+
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        seo_model_admin = SeoDataAdmin(SeoData, self.admin_site)
+        seo_form = self.get_seo_form(request, obj, change=change)
+
+        context['seoDataForm'] = helpers.AdminForm(
+            seo_form,
+            list(seo_model_admin.get_fieldsets(request, seo_form.instance)),
+            seo_model_admin.get_prepopulated_fields(request, seo_form.instance),
+            seo_model_admin.get_readonly_fields(request, seo_form.instance),
+            model_admin=seo_model_admin
+        )
+        return super().render_change_form(request, context, add, change, form_url, obj)
+
+    def delete_model(self, request, obj):
+        """ Удаление SeoData при удалении сущности """
+        content_type = ContentType.objects.get_for_model(self.model)
+        seo_data = SeoData.objects.filter(
+            content_type=content_type,
+            object_id=obj.id,
+        )
+
+        super().delete_model(request, obj)
+        seo_data.delete()
+
