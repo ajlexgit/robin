@@ -32,6 +32,7 @@ class SeoData(models.Model):
     text = models.TextField(_('text'), blank=True)
 
     class Meta:
+        default_permissions = ('change', )
         verbose_name = _('SEO data')
         verbose_name_plural = _('SEO data')
         unique_together = ('content_type', 'object_id')

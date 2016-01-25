@@ -60,6 +60,19 @@ class ModelAdminMixin(ModelAdminInlineMixin):
     actions_on_top = True
     actions_on_bottom = True
 
+    add_form_template = 'suit/change_form.html'
+    change_form_template = 'suit/change_form.html'
+
+    def get_suit_form_tabs(self, request, add=False):
+        """ Получение вкладок для модели админки Suit """
+        return self.suit_form_tabs
+
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        """ Получаем вкладки Suit и передаем их в шаблон """
+        suit_tabs = self.get_suit_form_tabs(request, add)
+        context['suit_tabs'] = suit_tabs
+        return super().render_change_form(request, context, add, change, form_url, obj)
+
     def view(self, obj):
         """ Ссылка просмотра на сайте для отображения в списке сущностей """
         if hasattr(obj, 'get_absolute_url'):

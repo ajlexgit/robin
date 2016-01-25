@@ -8,6 +8,9 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from .models import SeoConfig, SeoData, Counter
 
+SEO_TAB_NAME = 'seo'
+SEO_FORM_PREFIX = 'seo'
+
 
 @admin.register(SeoConfig)
 class SeoConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
@@ -21,7 +24,7 @@ class CounterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prefix = 'seo'
+        self.prefix = SEO_FORM_PREFIX
 
 
 @admin.register(Counter)
@@ -45,19 +48,22 @@ class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
     )
 
 
-class SeoModelAdminMixin:
+class SeoModelAdminMixin(ModelAdminMixin):
     """
         Модель админки, добавляющая к форме блок сео-текстов
     """
-    suit_seo_position = 'top'
-    suit_seo_tab = None
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         default_includes = getattr(self, 'suit_form_includes', ())
         self.suit_form_includes = default_includes + (
-            ('seo/admin/admin_include.html', self.suit_seo_position, self.suit_seo_tab),
+            ('seo/admin/admin_include.html', 'top', SEO_TAB_NAME),
         )
+
+    def get_suit_form_tabs(self, request, add=False):
+        default = super().get_suit_form_tabs(request, add)
+        if not add and request.user.has_perm('seo.change_seodata'):
+            default = default + ((SEO_TAB_NAME, _('SEO')), )
+        return default
 
     def change_view(self, request, object_id, *args, **kwargs):
         if object_id is None:
@@ -70,17 +76,17 @@ class SeoModelAdminMixin:
         content_type = ContentType.objects.get_for_model(self.model)
 
         try:
-            obj = model.objects.get(
+            seo_data = model.objects.get(
                 content_type=content_type,
                 object_id=object_id,
             )
         except (model.DoesNotExist, model.MultipleObjectsReturned):
-            obj = None
+            seo_data = None
 
-        add = obj is None
-        ModelForm = model_admin.get_form(request, obj)
+        add = seo_data is None
+        ModelForm = model_admin.get_form(request, seo_data)
         if request.method == 'POST':
-            form = ModelForm(request.POST, request.FILES, instance=obj, prefix='seo')
+            form = ModelForm(request.POST, request.FILES, instance=seo_data, prefix=SEO_FORM_PREFIX)
             if form.has_changed():
                 if form.is_valid():
                     new_object = model_admin.save_form(request, form, change=not add)
@@ -90,21 +96,18 @@ class SeoModelAdminMixin:
                     new_object.entity = entity
                     model_admin.save_model(request, new_object, form, not add)
         else:
-            if obj is None:
-                initial = {
-                    'content_type': content_type,
-                    'object_id': object_id,
-                }
-                initial.update(model_admin.get_changeform_initial_data(request))
-                form = ModelForm(initial=initial, prefix='seo')
-            else:
-                form = ModelForm(instance=obj, prefix='seo')
+            initial = {
+                'content_type': content_type,
+                'object_id': object_id,
+            }
+            initial.update(model_admin.get_changeform_initial_data(request))
+            form = ModelForm(instance=seo_data, initial=initial, prefix=SEO_FORM_PREFIX)
 
         seoDataForm = helpers.AdminForm(
             form,
-            list(model_admin.get_fieldsets(request, obj)),
-            model_admin.get_prepopulated_fields(request, obj),
-            model_admin.get_readonly_fields(request, obj),
+            list(model_admin.get_fieldsets(request, seo_data)),
+            model_admin.get_prepopulated_fields(request, seo_data),
+            model_admin.get_readonly_fields(request, seo_data),
             model_admin=model_admin)
 
         extra_context = kwargs.pop('extra_context', None) or {}

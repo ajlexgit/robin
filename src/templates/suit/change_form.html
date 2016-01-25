@@ -1,0 +1,13 @@
+{% extends 'admin/change_form.html' %}
+
+{% block suit_form_tabs %}
+
+  {% if suit_tabs %}
+    <ul id="suit_form_tabs" class="nav nav-tabs nav-tabs-suit" data-tab-prefix="suit-tab">
+      {% for tab in suit_tabs %}
+        <li><a href="#{{ tab.0 }}">{{ tab.1 }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+{% endblock %}
