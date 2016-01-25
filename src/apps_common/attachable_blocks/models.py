@@ -32,6 +32,7 @@ class AttachableBlock(models.Model):
         verbose_name = _('attachable block')
         verbose_name_plural = _('attachable blocks')
         ordering = ('label', )
+        default_permissions = ()
 
     def save(self, *args, **kwargs):
         if not self.created:
