@@ -48,6 +48,9 @@ class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def has_module_permission(self, request):
+        return False
+
     def response_change(self, request, obj):
         if IS_POPUP_VAR in request.POST:
             return SimpleTemplateResponse('ckeditor/popup_response.html', {
