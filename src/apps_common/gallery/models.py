@@ -68,6 +68,7 @@ class GalleryItemBase(models.Model):
         verbose_name_plural = _('gallery items')
         ordering = ('object_id', 'sort_order', 'created', )
         index_together = (('content_type', 'object_id'), )
+        default_permissions = ()
 
     def save(self, *args, **kwargs):
         is_add = not self.pk
