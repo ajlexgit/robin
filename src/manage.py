@@ -1,7 +1,7 @@
 import os
 import sys
 
-# разделение прав
+# BlockModelAdminMixin
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
@@ -9,7 +9,6 @@ import sys
 # виджет выбора ссылки на сущность
 # подумать над плагином "конструктор плагина"
 
-# Blocks - ссылка на создание блока
 # Слайдер - блокировка при некотром условии
 # AJAX-авторизация на странице регистрации
 # Очередь анимаций JS
