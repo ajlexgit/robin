@@ -6,7 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from .models import SeoConfig, SeoData, Counter
-from .seo import Seo
 
 SEO_TAB_NAME = 'seo'
 SEO_FORM_PREFIX = 'seo'
@@ -59,10 +58,14 @@ class SeoModelAdminMixin(ModelAdminMixin):
             ('seo/admin/admin_include.html', 'top', SEO_TAB_NAME),
         )
 
+    def has_seo_permissions(self, request):
+        """ Проверка, есть ли права на редактирование SEO """
+        return request.user.has_perm('seo.change_seodata')
+
     def get_suit_form_tabs(self, request, add=False):
         """ Показываем вкладку SEO, если есть права """
         default = super().get_suit_form_tabs(request, add)
-        if request.user.has_perm('seo.change_seodata'):
+        if self.has_seo_permissions(request):
             default = default + ((SEO_TAB_NAME, _('SEO')), )
         return default
 
@@ -102,6 +105,9 @@ class SeoModelAdminMixin(ModelAdminMixin):
 
     def save_seo_form(self, request, obj, change=False):
         """ Сохранение формы SeoData, связанной с сущностью """
+        if not self.has_seo_permissions(request):
+            return 
+
         seo_model_admin = SeoDataAdmin(SeoData, self.admin_site)
         seo_form = self.get_seo_form(request, obj, change=change)
 
