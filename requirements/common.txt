@@ -4,7 +4,7 @@ django-mptt==0.7.4
 django-pipeline==1.5.4
 django-redis==3.5.1
 django-softhyphen==1.0.2
-django-solo==1.1.0
+django-solo==1.1.1
 django-suit==0.2.15
 django-suit-ckeditor==0.0.2
 beautifulsoup4==4.4.1
