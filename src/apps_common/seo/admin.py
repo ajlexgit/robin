@@ -100,7 +100,7 @@ class SeoModelAdminMixin:
             else:
                 form = ModelForm(instance=obj, prefix='seo')
 
-        adminForm = helpers.AdminForm(
+        seoDataForm = helpers.AdminForm(
             form,
             list(model_admin.get_fieldsets(request, obj)),
             model_admin.get_prepopulated_fields(request, obj),
@@ -109,7 +109,6 @@ class SeoModelAdminMixin:
 
         extra_context = kwargs.pop('extra_context', None) or {}
         kwargs['extra_context'] = dict(extra_context, **{
-            'entity': entity,
-            'adminForm': adminForm,
+            'seoDataForm': seoDataForm,
         })
         return super().change_view(request, object_id, *args, **kwargs)
