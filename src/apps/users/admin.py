@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.shortcuts import resolve_url
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin as DefaultGroupAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from project.admin import ModelAdminMixin
@@ -61,10 +62,18 @@ class CustomUserAdmin(ModelAdminMixin, UserAdmin):
             return tuple(default)
 
         return default
-    
+
     def login_as(self, obj):
         url = resolve_url('admin_users:login_as', user_id=obj.pk)
         caption = _('Login as %(username)s') % {'username': obj.username}
         return '<a href="{0}" class="btn btn-success btn-mini" target="_blank">{1}</a>'.format(url, caption)
     login_as.short_description = _('Login as')
     login_as.allow_tags = True
+
+
+class GroupAdmin(ModelAdminMixin, DefaultGroupAdmin):
+    pass
+
+
+admin.site.unregister(Group)
+admin.site.register(Group, GroupAdmin)

@@ -117,3 +117,8 @@ input[type=number] {
 .cke_panel {
     overflow: hidden !important;
 }
+
+
+.form-horizontal .control-group .controls .selector .selector-available select {
+    min-height: 200px;
+}
