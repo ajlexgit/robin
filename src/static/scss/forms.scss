@@ -5,30 +5,13 @@ form {
 }
 
 input[type="text"], input[type="password"], input[type="email"],
-input[type="number"], input[type="time"], textarea, select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-  @include border_radius(0);
-}
-
-input[type="text"], input[type="password"], input[type="email"],
-input[type="number"], input[type="time"], input[type="button"],
-input[type="submit"], select, textarea, button {
-  width: 200px;
+input[type="number"], textarea, select {
+	width: 200px;
   padding: 5px 6px;
   border: 1px solid #808080;
-  @include font_default;
+	@include font_default;
   @include font-size(16px);
   @include border_radius(4px);
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-
-  &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
 }
 
 fieldset {

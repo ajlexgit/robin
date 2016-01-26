@@ -39,15 +39,17 @@
   {% block header %}
     <div id="header-wrapper">
       <div id="header-cell">
+        {% if not is_main_page %}
+          <!--noindex-->
+        {% endif %}
+
         {% block header_content %}
-          {% if not is_main_page %}
-            <!--noindex-->
-          {% endif %}
           {% header %}
-          {% if not is_main_page %}
-            <!--/noindex-->
-          {% endif %}
         {% endblock header_content %}
+
+        {% if not is_main_page %}
+          <!--/noindex-->
+        {% endif %}
       </div>
     </div>
   {% endblock header %}
@@ -61,15 +63,17 @@
   {% block footer %}
     <div id="footer-wrapper">
       <div id="footer-cell">
+        {% if not is_main_page %}
+          <!--noindex-->
+        {% endif %}
+
         {% block footer_content %}
-          {% if not is_main_page %}
-            <!--noindex-->
-          {% endif %}
           {% footer %}
-          {% if not is_main_page %}
-            <!--/noindex-->
-          {% endif %}
         {% endblock footer_content %}
+
+        {% if not is_main_page %}
+          <!--/noindex-->
+        {% endif %}
       </div>
     </div>
   {% endblock footer %}
