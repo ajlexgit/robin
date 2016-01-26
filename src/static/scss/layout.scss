@@ -124,7 +124,10 @@ body {
 
 // Контентный блок
 .block {
-  @include block-paddings(margin-top, margin-bottom);
+  @include vpad(60px);
+  @include media_interval(0, $media768) {
+    @include vpad(40px);
+  }
 }
 
 // Заголовки
@@ -133,13 +136,5 @@ body {
   @include font-size(40px, 46px);
   @include media_interval(0, $media768) {
     @include font-size(28px);
-  }
-}
-
-.title-h2 {
-  font-weight: bold;
-  @include font-size(28px, 32px);
-  @include media_interval(0, $media768) {
-    @include font-size(20px);
   }
 }

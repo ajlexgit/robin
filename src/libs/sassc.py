@@ -1,4 +1,6 @@
 import os
+import subprocess
+from django.utils.encoding import smart_bytes
 from pipeline.conf import settings
 from pipeline.compilers import SubProcessCompiler
 from pipeline.exceptions import CompilerError
@@ -22,6 +24,26 @@ class SASSCCompiler(SubProcessCompiler):
 
     def match_file(self, filename):
         return filename.endswith('.scss')
+
+    def execute_command(self, command, content=None, cwd=None):
+        pipe = subprocess.Popen(command, shell=True, cwd=cwd,
+                                stdout=subprocess.PIPE, stdin=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        if content:
+            content = smart_bytes(content)
+        stdout, stderr = pipe.communicate(content)
+        if isinstance(stderr, bytes):
+            try:
+                stderr = stderr.decode()
+            except UnicodeDecodeError:
+                pass
+        if stderr.strip():
+            raise CompilerError(stderr)
+        if self.verbose:
+            print(stderr)
+        if pipe.returncode != 0:
+            raise CompilerError("Command '{0}' returned non-zero exit status {1}".format(command, pipe.returncode))
+        return stdout
 
     def compile_file(self, infile, outfile, outdated=False, force=False):
         command = "%s %s %s > %s" % (

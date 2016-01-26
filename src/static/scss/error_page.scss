@@ -9,7 +9,6 @@
 
 .inner {
   display: inline-block;
-  @include block-paddings(padding-top, padding-bottom);
 
   .code {
     color: #000000;

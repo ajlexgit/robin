@@ -16,6 +16,8 @@ header {
   }
 
   .logo-box {
+    @include flex(0 0 auto);
+
     a {
       display: inline-block;
       width: $logo_width;
@@ -33,14 +35,14 @@ header {
       }
 
       &:hover {
-        @include opacity(0.8);
+        @include opacity(0.75);
       }
     }
   }
 
   .menu-box {
     text-align: center;
-    @include flex(1 0 auto);
+    @include flex(1 1 auto);
     @include media_interval(0, $mobile_menu_point) {
       text-align: right;
     }

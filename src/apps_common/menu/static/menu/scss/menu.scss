@@ -1,6 +1,6 @@
 @import 'mixins';
 
-$text_color: #404040;
+$normal_color: #404040;
 $hover_color: #82BD36;
 $active_color: #82BD36;
 
@@ -20,7 +20,7 @@ $mobile_active_color: $active_color;
   li {
     display: inline-block;
     margin-right: 10px;
-    color: $text_color;
+    color: $normal_color;
     &:nth-last-of-type(1) {
       margin-right: 0;
     }
@@ -50,18 +50,23 @@ $mobile_active_color: $active_color;
 #mobile-menu {
   display: none;
   position: absolute;
-  padding: 0 70px;
+  padding: 0 70px 0 40px;
   right: -100%;
   top: 0;
   width: 80%;
   height: 100vh;
   z-index: 50;
+  text-align: right;
   background: $mobile_background;
   @include border-box;
   @include transition(right 0.4s);
   @include media_interval(0, $mobile_menu_point) {
     display: block;
   }
+  @include media_interval($media480, $mobile_menu_point) {
+		width: 60%;
+		text-align: left;
+	}
 
   ul {
     position: relative;

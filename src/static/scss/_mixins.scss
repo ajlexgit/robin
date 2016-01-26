@@ -10,6 +10,7 @@
 @import 'mixins/font_size';
 @import 'mixins/linear_gradient';
 @import 'mixins/opacity';
+@import 'mixins/padding';
 @import 'mixins/placeholder';
 @import 'mixins/reset';
 @import 'mixins/transition';
@@ -100,10 +101,6 @@
   $grid_padding_mobile + $grid_space,
   $grid_padding_micro + $grid_space);
   @include media_styles($values, $args...);
-}
-
-@mixin block-paddings($args...) {
-  @include media_styles($block_paddings, $args...);
 }
 
 @mixin fontsize_default() {
