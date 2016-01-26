@@ -11,7 +11,7 @@
             type: 'GET',
             success: function(response) {
                 $.popup({
-                    classes: 'contacts-popup',
+                    classes: 'contact-popup',
                     content: response
                 }).show();
             },
@@ -22,7 +22,7 @@
         });
     };
 
-    $(document).on('click', '.contact-popup', function() {
+    $(document).on('click', '.open-contact-popup', function() {
         // Открытие окна контактов
         contactPopup();
         return false;
@@ -47,7 +47,7 @@
                 if (response.errors) {
                     // ошибки формы
                     $.popup({
-                        classes: 'contacts-popup',
+                        classes: 'contact-popup',
                         content: response.form
                     }).show();
                 } else {

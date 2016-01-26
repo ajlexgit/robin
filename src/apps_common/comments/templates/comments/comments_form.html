@@ -16,7 +16,7 @@
   {% else %}
     <div class="auth-needed text-styles">
       {% url 'users:login' as login_href %}
-      {% blocktrans %}You must <a href="{{ login_href }}" class="login-popup">login</a> to post a comment{% endblocktrans %}
+      {% blocktrans %}You must <a href="{{ login_href }}" class="open-login-popup">login</a> to post a comment{% endblocktrans %}
     </div>
   {% endif %}
 </div>

@@ -138,3 +138,12 @@ body {
     @include font-size(28px);
   }
 }
+
+// кнопка
+.btn {
+  max-width: 100%;
+  font-weight: bold;
+  text-align: center;
+  @include border-box;
+  @include fontsize_default;
+}
