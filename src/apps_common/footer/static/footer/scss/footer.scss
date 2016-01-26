@@ -7,9 +7,10 @@ $dl_logo_height: 32px;
 // точка перехода к вертикальному подвалу
 $column_footer: $media480;
 
+
 footer {
-  padding: 30px 0;
   background-color: #D0D0D0;
+  @include vpad(40px);
 
   .grid-block {
     @include flexbox;

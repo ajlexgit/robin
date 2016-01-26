@@ -40,7 +40,7 @@
             var description = cut_description(this);
             if (description) {
                 $(this).append(
-                    $('<div>').addClass('description').html(description)
+                    $('<div>').addClass('object-description').html(description)
                 )
             }
         });
