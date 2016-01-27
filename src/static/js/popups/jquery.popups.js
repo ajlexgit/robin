@@ -7,8 +7,7 @@
         но видимо всегда только одно окно.
         Текущее видимое окно можно получить через getCurrentPopup();
 
-        Любые элементы с классом, заданным в поле CLOSE_BUTTON_CLASS,
-        при клике будут закрывать окно.
+        Любые элементы с классом Popup.CLOSE_BUTTON_CLASS при клике будут закрывать окно.
 
         После скрытия окна, оно удаляется из DOM.
 
@@ -121,7 +120,7 @@
         cls.WRAPPER_CLASS = 'popup-wrapper';
         cls.WINDOW_CLASS = 'popup-window';
         cls.CONTENT_CLASS = 'popup-content';
-        cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
+        cls.CLOSE_BUTTON_CLASS = 'close-popup';
 
         // класс <body>, вешающийся при показе окна
         cls.BODY_OPENED_CLASS = 'popup-opened';
@@ -409,7 +408,7 @@
             this.$container.before(this.$overlay);
 
             if (this.opts.closeButton) {
-                this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS);
+                this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS).addClass('popup-close-button');
                 this.addCloseButton(this.$closeBtn);
             }
         };

@@ -11,7 +11,7 @@
             type: 'GET',
             success: function(response) {
                 $.popup({
-                    classes: 'contact-popup',
+                    classes: 'contact-popup contact-form-popup',
                     content: response
                 }).show();
             },
@@ -47,7 +47,7 @@
                 if (response.errors) {
                     // ошибки формы
                     $.popup({
-                        classes: 'contact-popup',
+                        classes: 'contact-popup contact-form-popup',
                         content: response.form
                     }).show();
                 } else {

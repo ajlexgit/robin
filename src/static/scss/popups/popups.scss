@@ -120,7 +120,6 @@ $close_btn_weight: 3px;
 #popup-container {
   .popup-content {
     padding: 36px 50px;
-    color: #FFF;
     @include media_interval($media480, $media640) {
       padding: 36px;
     }

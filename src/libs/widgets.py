@@ -30,7 +30,8 @@ class URLWidget(forms.URLInput):
     def append(self, value):
         if value:
             output = '<a href="{href}" class="add-on" target="_blank"><i class="icon-globe"></i></a>'
-            return format_html(output, href=smart_urlquote(value))
+            href = force_str(value)
+            return format_html(output, href=smart_urlquote(href))
         else:
             output = '<span class="add-on"><i class="icon-globe"></i></span>'
             return format_html(output)

@@ -1,7 +1,7 @@
 import os
 import sys
 
-# BlockModelAdminMixin
+# Success popup
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
