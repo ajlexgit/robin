@@ -3,6 +3,10 @@
     /*
         Модуль слайдера с подключаемыми плагинами.
 
+        Для упрощения стилизации кода слайдера для случаев, когда JS отключен
+        или ещё не загружен, списку можно поставить класс "no-slider".
+        Этот класс будет удален, когда слайдер будет готов.
+
         Требует:
             jquery.utils.js
 
@@ -99,6 +103,7 @@
         };
 
         cls.DATA_KEY = 'slider';
+        cls.REMOVABLE_CLASS = 'no-slider';
 
 
         cls.init = function(list, options) {
@@ -165,6 +170,7 @@
             // callback
             this.opts.onInit.call(this);
 
+            this.$list.removeClass(this.REMOVABLE_CLASS);
             this.$list.data(this.DATA_KEY, this);
 
             sliders.push(this);
