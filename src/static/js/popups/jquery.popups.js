@@ -439,8 +439,8 @@
         /*
             Закрытие окна при клике вне модального окна
          */
-        cls._beforeShow = function() {
-            superclass._beforeShow.call(this);
+        cls._afterShow = function() {
+            superclass._afterShow.call(this);
 
             var that = this;
             if (this.opts.hideOnClick) {
