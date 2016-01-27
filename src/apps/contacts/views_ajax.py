@@ -18,7 +18,9 @@ class ContactView(AjaxViewMixin, TemplateExView):
         }, template='contacts/ajax_contact.html')
 
     def post(self, request):
+        config = ContactsConfig.get_solo()
         form = ContactForm(request.POST, request.FILES)
+
         if form.is_valid():
             message = form.save(commit=False)
             referer = request.POST.get('referer')
@@ -34,9 +36,12 @@ class ContactView(AjaxViewMixin, TemplateExView):
                 }
             )
 
-            return self.json_response()
+            return self.json_response({
+                'success_message': self.render_to_string('contacts/ajax_contact_success.html', {
+                    'config': config,
+                })
+            })
         else:
-            config = ContactsConfig.get_solo()
             return self.json_response({
                 'errors': form.error_dict_full,
                 'form': self.render_to_string('contacts/ajax_contact.html', {

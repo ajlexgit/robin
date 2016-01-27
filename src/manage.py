@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Success popup
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like

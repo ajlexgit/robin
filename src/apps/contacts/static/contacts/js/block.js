@@ -30,14 +30,14 @@
         // Отправка Ajax-формы контактов
         $.preloader();
 
-        // Add referer
+        // Добавляем адрес страницы, с которой отправили сообщение
         var $form = $(this);
         var data = $form.serializeArray();
         data.push({
             name: 'referer',
             value: location.href
         });
-        
+
         $.ajax({
             url: window.js_storage.ajax_contact,
             type: 'POST',
@@ -49,6 +49,12 @@
                     $.popup({
                         classes: 'contact-popup contact-form-popup',
                         content: response.form
+                    }).show();
+                } else if (response.success_message) {
+                    // сообщение о успешной отправке
+                    $.popup({
+                        classes: 'contact-popup contact-success-popup',
+                        content: response.success_message
                     }).show();
                 } else {
                     $.popup().hide();
