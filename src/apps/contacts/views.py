@@ -1,3 +1,4 @@
+from django.utils.html import escape
 from django.shortcuts import redirect
 from django.template import loader, RequestContext
 from django.utils.translation import ugettext_lazy as _
@@ -36,12 +37,17 @@ class IndexView(TemplateExView):
     def post(self, request):
         form = ContactForm(request.POST, request.FILES)
         if form.is_valid():
+            message = form.save(commit=False)
+            referer = request.POST.get('referer', request.build_absolute_uri(request.path_info))
+            message.referer = escape(referer)
+            message.save()
+
             recievers = MessageReciever.objects.all().values_list('email', flat=True)
             send(request, recievers,
                 subject=_('Message from {domain}'),
                 template='contacts/mails/message.html',
                 context={
-                    'data': form.cleaned_data,
+                    'message': message,
                 }
             )
 

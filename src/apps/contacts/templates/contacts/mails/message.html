@@ -1,21 +1,21 @@
 {% load i18n %}
 
-{% if data.name %}
-  <p><b>{% trans 'Name' %}:</b> {{ data.name }}</p>
+{% if message.name %}
+  <p><b>{% trans 'Name' %}:</b> {{ message.name }}</p>
 {% endif %}
 
-{% if data.phone %}
-  <p><b>{% trans 'Phone' %}:</b> {{ data.phone }}</p>
+{% if message.phone %}
+  <p><b>{% trans 'Phone' %}:</b> {{ message.phone }}</p>
 {% endif %}
 
-{% if data.email %}
-  <p><b>{% trans 'E-mail' %}:</b> {{ data.email }}</p>
+{% if message.email %}
+  <p><b>{% trans 'E-mail' %}:</b> {{ message.email }}</p>
 {% endif %}
 
-{% if data.message %}
-  <p><b>{% trans 'Message' %}:</b> {{ data.message }}</p>
+{% if message.message %}
+  <p><b>{% trans 'Message' %}:</b> {{ message.message }}</p>
 {% endif %}
 
-{% if referer %}
-  <p><b>From page:</b> {{ referer }}</p>
+{% if message.referer %}
+  <p><b>From page:</b> {{ message.referer }}</p>
 {% endif %}

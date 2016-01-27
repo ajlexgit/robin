@@ -21,7 +21,7 @@
                 ...
                 request.opengraph.update({
                     'fb:app_id': '229798780479496',
-                    'url': request.build_absolute_uri(),
+                    'url': request.build_absolute_uri(request.path_info),
                     'title': post.title,
                     'image': request.build_absolute_uri(post.preview.url),
                     'description': description(strip_tags(post.text), 50, 150),

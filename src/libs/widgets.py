@@ -1,5 +1,6 @@
 from datetime import time
 from django import forms
+from django.utils.encoding import force_str
 from django.utils.html import format_html, smart_urlquote
 from django.forms.utils import flatatt, to_current_timezone
 from suit.widgets import SuitDateWidget, HTML5Input
@@ -7,17 +8,20 @@ from suit.widgets import SuitDateWidget, HTML5Input
 
 class LinkWidget(forms.Widget):
     """ Виджет простой ссылки """
-    def __init__(self, href, text, attrs=None):
+    def __init__(self, text='', attrs=None):
         super().__init__(attrs=attrs)
-        self.text = text
-        self.attrs['href'] = smart_urlquote(href)
+        self.text = str(text)
         self.attrs.setdefault('target', '_self')
 
     def render(self, name, value, attrs=None):
         final_attrs = self.build_attrs(attrs)
+        href = smart_urlquote(value)
+        text = self.text or href
         return format_html(
-            '<a {0}>{1}</a>',
-            flatatt(final_attrs), self.text
+            '<a href="{href}" {attrs}>{text}</a>',
+            href=href,
+            attrs=flatatt(final_attrs),
+            text=force_str(text),
         )
 
 

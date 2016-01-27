@@ -173,7 +173,7 @@ class ResetDoneView(TemplateView):
 
     @staticmethod
     def post(request):
-        return redirect(request.build_absolute_uri())
+        return redirect(request.build_absolute_uri(request.path_info))
 
 
 class ResetConfirmView(TemplateView):

@@ -49,14 +49,14 @@ class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('name', 'phone', 'email', 'date_fmt'),
+            'fields': ('name', 'phone', 'email', 'date_fmt', 'referer'),
         }),
         (_('Text'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('message',),
         }),
     )
-    readonly_fields = ('date_fmt',)
+    readonly_fields = ('date_fmt', 'referer')
     list_display = ('user', 'message_fmt', 'date_fmt')
     suit_form_tabs = (
         ('general', _('General')),

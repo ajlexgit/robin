@@ -110,8 +110,8 @@
             classes: '',
             content: '',
             speed: 400,
-            easingShow: 'easeOutCubic',
-            easingHide: 'easeInCubic'
+            easingShow: 'easeInCubic',
+            easingHide: 'easeOutCubic'
         };
 
         cls.CONTAINER_ID = 'popup-container';

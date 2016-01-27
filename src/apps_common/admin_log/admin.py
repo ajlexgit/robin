@@ -21,12 +21,14 @@ ACTION_CHOICES = (
 class LogEntryAdminForm(forms.ModelForm):
     object_link = forms.Field(
         required=False,
-        label=_('Entry')
+        label=_('Entry'),
+        widget=LinkWidget,
     )
 
     user_link = forms.Field(
         required=False,
-        label=_('User')
+        label=_('User'),
+        widget=LinkWidget,
     )
 
     class Meta:
@@ -46,14 +48,13 @@ class LogEntryAdminForm(forms.ModelForm):
             self.fields['object_link'].widget = forms.HiddenInput()
             self.fields['object_link'].help_text = '--//--'
         else:
-            self.fields['object_link'].widget = LinkWidget(self.instance.get_admin_url(), obj)
+            self.initial['object_link'] = self.instance.get_admin_url()
+            self.fields['object_link'].widget.text = str(obj)
 
         if self.instance.user:
             admin_user_model = settings.AUTH_USER_MODEL.lower().replace('.', '_')
-            self.fields['user_link'].widget = LinkWidget(
-                resolve_url('admin:{}_change'.format(admin_user_model), self.instance.user.pk),
-                self.instance.user
-            )
+            self.initial['user_link'] = resolve_url('admin:{}_change'.format(admin_user_model), self.instance.user.pk)
+            self.fields['user_link'].widget.text = str(self.instance.user)
         else:
             self.fields['user_link'].widget = forms.HiddenInput()
             self.fields['user_link'].help_text = '--//--'

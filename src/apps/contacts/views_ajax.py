@@ -1,3 +1,4 @@
+from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
 from libs.views import TemplateExView
 from libs.views_ajax import AjaxViewMixin
@@ -19,14 +20,17 @@ class ContactView(AjaxViewMixin, TemplateExView):
     def post(self, request):
         form = ContactForm(request.POST, request.FILES)
         if form.is_valid():
-            message = form.save()
+            message = form.save(commit=False)
+            referer = request.POST.get('referer')
+            message.referer = escape(referer)
+            message.save()
+
             recievers = MessageReciever.objects.all().values_list('email', flat=True)
             send(request, recievers,
                 subject=_('Message from {domain}'),
                 template='contacts/mails/message.html',
                 context={
-                    'data': message,
-                    'referer': request.POST.get('referer'),
+                    'message': message,
                 }
             )
 
