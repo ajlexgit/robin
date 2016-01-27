@@ -7,6 +7,9 @@
         но видимо всегда только одно окно.
         Текущее видимое окно можно получить через getCurrentPopup();
 
+        Любые элементы с классом, заданным в поле CLOSE_BUTTON_CLASS,
+        при клике будут закрывать окно.
+
         После скрытия окна, оно удаляется из DOM.
 
         Высота окна динамическая и зависит от содержимого.
@@ -118,6 +121,7 @@
         cls.WRAPPER_CLASS = 'popup-wrapper';
         cls.WINDOW_CLASS = 'popup-window';
         cls.CONTENT_CLASS = 'popup-content';
+        cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
 
         // класс <body>, вешающийся при показе окна
         cls.BODY_OPENED_CLASS = 'popup-opened';
@@ -258,14 +262,14 @@
         cls.show = function() {
             // если уже открыто - выходим
             if (this.is_opened()) {
-                return;
+                return this;
             }
 
             var current = getCurrentPopup();
             if (current) {
                 // подмена старого (открытого) окна новым
                 current._beforeHide();
-                current._afterHide();
+                current._hideInstant();
                 this._createDom();
                 this._postInit();
                 this._beforeShow();
@@ -278,6 +282,8 @@
                 this._beforeShow();
                 this._show();
             }
+
+            return this;
         };
 
         cls._beforeShow = function() {
@@ -304,12 +310,20 @@
             Используется в случае замены уже существующего видимого окна.
          */
         cls._showInstant = function() {
-            this.$container.show();
+            this.$container.stop(false, false).show();
             this._afterShow();
         };
 
         cls._afterShow = function() {
             this._visible = true;
+
+            // кнопки закрытия окна
+            var that = this;
+            $(document).off('.popup.close').on('click.popup.close', '.' + this.CLOSE_BUTTON_CLASS, function() {
+                that.hide();
+                return false;
+            });
+
             this.trigger('show');
         };
 
@@ -323,15 +337,20 @@
         cls.hide = function() {
             // если уже закрыто - выходим
             if (!this.is_opened()) {
-                return;
+                return this;
             }
 
             this._beforeHide();
             this._hide();
+
+            return this;
         };
 
         cls._beforeHide = function() {
             this._visible = false;
+
+            // кнопки закрытия окна
+            $(document).off('click.popup');
         };
 
         /*
@@ -347,6 +366,15 @@
                     that._afterHide();
                 }
             });
+        };
+
+        /*
+            Мгновенное скрытие окна.
+            Используется в случае замены уже существующего видимого окна.
+         */
+        cls._hideInstant = function() {
+            this.$container.stop(false, false).hide();
+            this._afterHide();
         };
 
         cls._afterHide = function() {
@@ -368,7 +396,6 @@
         });
 
         cls.OVERLAY_ID = 'popup-overlay';
-        cls.CLOSE_BUTTON_CLASS = 'popup-close-button';
 
 
         /*
@@ -384,12 +411,6 @@
             if (this.opts.closeButton) {
                 this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS);
                 this.addCloseButton(this.$closeBtn);
-
-                var that = this;
-                this.$closeBtn.on('click.popup', function() {
-                    that.hide();
-                    return false;
-                });
             }
         };
 
@@ -453,7 +474,7 @@
             Показ окна в случае замены уже существующего
          */
         cls._showInstant = function() {
-            this.$overlay.show();
+            this.$overlay.stop(false, false).show();
             superclass._showInstant.call(this);
         };
 
@@ -462,11 +483,11 @@
          */
         cls._hide = function() {
             var that = this;
-            this.$container.stop(false, false).fadeOut({
+            this.$overlay.stop(false, false).fadeOut({
                 duration: this.opts.speed,
                 easing: this.opts.easingHide
             });
-            this.$overlay.stop(false, false).fadeOut({
+            this.$container.stop(false, false).fadeOut({
                 duration: this.opts.speed,
                 easing: this.opts.easingHide,
                 complete: function() {
@@ -477,11 +498,11 @@
         };
 
         /*
-            Отвязывание обработчика закрытия окна при клике вне окна
+            Скрытие окна в случае замены уже существующего
          */
-        cls._beforeHide = function() {
-            superclass._beforeHide.call(this);
-            $(document).off('click.popup');
+        cls._hideInstant = function() {
+            this.$overlay.stop(false, false).hide();
+            superclass._hideInstant.call(this);
         };
     });
 
