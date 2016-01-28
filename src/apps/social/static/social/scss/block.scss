@@ -22,19 +22,19 @@ $button_size: 32px;
         display: block;
         padding-bottom: 100%;
         background: $sprite_url no-repeat;
-        background-size: rel-background-size($button_size, $button_size, $sprite_width, $sprite_height);
+        background-size: rel-background-size($button_size, $button_size);
       }
 
       &.fb:before {
-        background-position: rel-background-position($button_size, $button_size, $sprite_width, $sprite_height, -188px, -56px);
+        background-position: rel-background-position($button_size, $button_size, -188px, -56px);
       }
 
       &.tw:before {
-        background-position: rel-background-position($button_size, $button_size, $sprite_width, $sprite_height, -221px, -56px);
+        background-position: rel-background-position($button_size, $button_size, -221px, -56px);
       }
 
       &.yt:before {
-        background-position: rel-background-position($button_size, $button_size, $sprite_width, $sprite_height, -254px, -56px);
+        background-position: rel-background-position($button_size, $button_size, -254px, -56px);
       }
 
       &:hover{
