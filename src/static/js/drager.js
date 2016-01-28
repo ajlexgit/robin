@@ -231,6 +231,7 @@
     window.Drager = Class(null, function Drager(cls, superclass) {
         cls.defaults = {
             preventDrag: true,
+            preventClick: true,
 
             mouse: true,
             touch: true,
@@ -441,6 +442,12 @@
         cls.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
+            if (this.opts.preventClick && this.wasDragged) {
+                this.$element.one('click.drager.prevent' + this.id, function(event) {
+                    event.preventDefault();
+                });
+            }
+
             var evt = MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
         };
@@ -468,7 +475,7 @@
             if (this.opts.mouse) {
                 // Блокируем дефолтовый Drag'n'Drop браузера
                 if (this.opts.preventDrag) {
-                    this.$element.on('dragstart.drager' + this.id, function() {
+                    this.$element.on('dragstart.drager.prevent' + this.id, function() {
                         return false;
                     });
                 }
