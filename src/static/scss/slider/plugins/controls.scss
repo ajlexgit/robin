@@ -1,5 +1,8 @@
 @import "mixins";
 
+$arrow_width: 40px;
+$arrow_height: 40px;
+
 
 // Controls
 .slider-arrow {
@@ -10,9 +13,7 @@
   height: 100%;
   z-index: 10;
   cursor: pointer;
-  @include opacity(0.5);
   @include unselectable;
-  @include transition(opacity 0.5s);
 
   &.slider-arrow-left {
     left: 0;
@@ -27,28 +28,23 @@
   }
 
   &.slider-arrow-disabled {
-    cursor: default;
-    @include opacity(0.2);
-  }
-
-  &:hover {
-    @include opacity(1);
+    display: none;
   }
 
   span {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 40px;
+    width: $arrow_width;
     @include transform(translate3d(-50%, -50%, 0));
 
     &:before {
       content: '';
       display: block;
       height: 0;
-      padding-bottom: 100%;
-      background: url(../../../img/arrows.png) no-repeat 100% 0;
-      background-size: 200% 100%;
+      padding-bottom: #{100 * ($arrow_height / $arrow_width) + "%"};
+      background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, $sprite_width, $sprite_height, 0px, 0px);
+      background-size: rel-background-size($arrow_width, $arrow_height, $sprite_width, $sprite_height);
     }
   }
 }

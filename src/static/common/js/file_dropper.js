@@ -9,7 +9,7 @@
         Параметры:
             dragOverClass   - класс, который вешается на DOM-элемент
                               при перетаскивании над ним файла
-            preventDefault  - предотвращать поведение drop по умолчанию
+            preventDrop     - предотвращать поведение drop по умолчанию
 
         События:
             start.drag      - начало перетаскивания над областью
@@ -19,7 +19,7 @@
     window.FileDropper = Class(EventedObject, function Uploader(cls, superclass) {
         cls.defaults = {
             dragOverClass: 'dragover',
-            preventDefault: false
+            preventDrop: false
         };
 
         cls.DATA_KEY = 'file_dropper';
@@ -70,7 +70,7 @@
                     that.trigger('drop.drag', files);
                 }
 
-                if (that.opts.preventDefault) {
+                if (that.opts.preventDrop) {
                     return false;
                 }
             });

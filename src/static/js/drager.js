@@ -10,7 +10,7 @@
             jquery.utils.js
 
         Параметры:
-            preventDefaultDrag: true/false    - предотвратить событие drag по-умолчанию
+            preventDrag: true/false           - предотвратить событие drag по-умолчанию
             mouse: true                       - разрешить перетаскивание мышью
             touch: true                       - разрешить перетаскивание тачпадом
             ignoreDistanceX: 18               - игнорировать краткие движения по оси X
@@ -230,7 +230,7 @@
     var dragerID = 0;
     window.Drager = Class(null, function Drager(cls, superclass) {
         cls.defaults = {
-            preventDefault: true,
+            preventDrag: true,
 
             mouse: true,
             touch: true,
@@ -467,7 +467,7 @@
             // ====================
             if (this.opts.mouse) {
                 // Блокируем дефолтовый Drag'n'Drop браузера
-                if (this.opts.preventDefault) {
+                if (this.opts.preventDrag) {
                     this.$element.on('dragstart.drager' + this.id, function() {
                         return false;
                     });

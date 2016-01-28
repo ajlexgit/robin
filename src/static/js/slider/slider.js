@@ -44,21 +44,16 @@
         JS пример:
             Slider('#slider', {
                 loop: false,
-                adaptiveHeight: true,
-                adaptiveHeightTransition: 800,
+                itemSelector: '.slide',
                 itemsPerSlide: 2
             }).attachPlugins([
                 SliderSideAnimation({
-                    speed: 800,
-                    slideMarginPercent: 5
+                    slideMarginPercent: 2
                 }),
                 SliderSideShortestAnimation({
-                    speed: 800,
-                    slideMarginPercent: 5
+                    slideMarginPercent: 2
                 }),
-                SliderFadeAnimation({
-                    speed: 800
-                }),
+                SliderFadeAnimation(),
                 SliderControlsPlugin({
                     animationName: 'side-shortest'
                 }),
@@ -66,8 +61,7 @@
                     animationName: 'side'
                 }),
                 SliderDragPlugin({
-                    speed: 800,
-                    slideMarginPercent: 5
+                    slideMarginPercent: 2
                 }),
                 SliderAutoscrollPlugin({
                     animationName: 'fade',
@@ -167,10 +161,11 @@
 
             $images.on('load', loadHandle);
 
+            this.$list.removeClass(this.REMOVABLE_CLASS);
+
             // callback
             this.opts.onInit.call(this);
 
-            this.$list.removeClass(this.REMOVABLE_CLASS);
             this.$list.data(this.DATA_KEY, this);
 
             sliders.push(this);
