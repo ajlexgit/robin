@@ -443,9 +443,16 @@
             if (!this._dragging_allowed) return;
 
             if (this.opts.preventClick && this.wasDragged) {
+                // предотвращаем событие click после перемещения.
+                var that = this;
                 this.$element.one('click.drager.prevent' + this.id, function(event) {
                     event.preventDefault();
                 });
+
+                // гарантия отключения перехватчика, если mouseup был вызван через trigger
+                setTimeout(function() {
+                    that.$element.off('click.drager.prevent' + that.id);
+                }, 0);
             }
 
             var evt = MouseUpDragerEvent(event, this);
