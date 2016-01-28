@@ -15,22 +15,6 @@ $arrow_height: 40px;
   cursor: pointer;
   @include unselectable;
 
-  &.slider-arrow-left {
-    left: 0;
-
-    span:before {
-      @include transform(rotate(180deg));
-    }
-  }
-
-  &.slider-arrow-right {
-    right: 0;
-  }
-
-  &.slider-arrow-disabled {
-    display: none;
-  }
-
   span {
     position: absolute;
     left: 50%;
@@ -46,5 +30,31 @@ $arrow_height: 40px;
       background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, $sprite_width, $sprite_height, 0px, 0px);
       background-size: rel-background-size($arrow_width, $arrow_height, $sprite_width, $sprite_height);
     }
+  }
+
+  &.slider-arrow-left {
+    left: 0;
+
+	  span {
+		  // фикс оптической иллюзии, что стрелка не по центру
+      @include transform(translate3d(-60%, -50%, 0));
+    }
+  }
+
+  &.slider-arrow-right {
+    right: 0;
+
+	  span {
+		  // фикс оптической иллюзии, что стрелка не по центру
+      @include transform(translate3d(-40%, -50%, 0));
+
+		  &:before {
+        @include transform(rotate(180deg));
+      }
+    }
+  }
+
+  &.slider-arrow-disabled {
+    display: none;
   }
 }
