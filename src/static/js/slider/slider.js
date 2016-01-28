@@ -74,10 +74,10 @@
         Пример динамического количества элементов в слайде
             Slider($list, {
                 itemsPerSlide: function() {
-                    if (window.innerWidth < 1200)  {
-                        return 3
-                    } else {
+                    if (window.innerWidth >= 1200)  {
                         return 4
+                    } else {
+                        return 3
                     }
                 },
 

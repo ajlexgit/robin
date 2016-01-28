@@ -27,8 +27,8 @@ $arrow_height: 40px;
       display: block;
       height: 0;
       padding-bottom: #{100 * ($arrow_height / $arrow_width) + "%"};
-      background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, $sprite_width, $sprite_height, 0px, 0px);
-      background-size: rel-background-size($arrow_width, $arrow_height, $sprite_width, $sprite_height);
+      background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, 0px, 0px);
+      background-size: rel-background-size($arrow_width, $arrow_height);
     }
   }
 

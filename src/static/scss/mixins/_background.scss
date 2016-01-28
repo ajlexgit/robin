@@ -1,3 +1,5 @@
+@import "conf";
+
 //  background-image: url(img.png);
 //  @include pixelRatio(2) {
 //    background-image: url(img2x.png);
@@ -10,12 +12,25 @@
   }
 }
 
-@function rel-background-size($img_w, $img_h, $sprite_w, $sprite_h) {
-  $list: "#{100 * $sprite_w / $img_w}% #{100 * $sprite_h / $img_h}%";
-  @return #{$list}
+@function rel-background-size($img_w, $img_h, $sprite_w:$sprite_width, $sprite_h:$sprite_height) {
+  $offset_left: 100 * $sprite_w / $img_w;
+	$offset_top: 100 * $sprite_h / $img_h;
+
+	@return #{$offset_left + "%"} #{$offset_top + "%"}
 }
 
-@function rel-background-position($img_w, $img_h, $sprite_w, $sprite_h, $offset_x, $offset_y) {
-  $list: "#{100 * $offset_x / ($img_w - $sprite_w)}% #{100 * $offset_y / ($img_h - $sprite_h)}%";
-  @return #{$list}
+@function rel-background-position($img_w, $img_h, $offset_x, $offset_y, $sprite_w:$sprite_width, $sprite_h:$sprite_height) {
+  @if ($img_w >= $sprite_w) {
+	  $offset_left: 0;
+  } @else {
+	  $offset_left: 100 * $offset_x / ($img_w - $sprite_w);
+  }
+
+	@if ($img_h >= $sprite_h) {
+	  $offset_top: 0;
+  } @else {
+	  $offset_top: 100 * $offset_y / ($img_h - $sprite_h);
+  }
+
+  @return #{$offset_left + "%"} #{$offset_top + "%"}
 }

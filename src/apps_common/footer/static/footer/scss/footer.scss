@@ -41,9 +41,9 @@ footer {
         display: block;
         padding-bottom: #{100 * $dl_logo_height/$dl_logo_width + "%"};
         background: $sprite_url no-repeat rel-background-position(
-            $dl_logo_width, $dl_logo_height, $sprite_width, $sprite_height, -86px, -56px
+            $dl_logo_width, $dl_logo_height, -86px, -56px
         );
-        background-size: rel-background-size($dl_logo_width, $dl_logo_height, $sprite_width, $sprite_height);
+        background-size: rel-background-size($dl_logo_width, $dl_logo_height);
       }
 
       &:hover {
