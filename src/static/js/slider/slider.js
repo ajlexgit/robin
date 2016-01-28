@@ -69,6 +69,30 @@
                     interval: 3000
                 })
             ]);
+
+
+        Пример динамического количества элементов в слайде
+            Slider($list, {
+                itemsPerSlide: function() {
+                    if (window.innerWidth < 1200)  {
+                        return 3
+                    } else {
+                        return 4
+                    }
+                },
+
+                onSetItemsPerSlide: function(itemsPerSlide) {
+                    // сохранение текущего значения
+                    this._itemsPerSlide = itemsPerSlide;
+                },
+                onResize: function() {
+                    // обновление, если значение изменилось
+                    var itemsPerSlide = this.opts.itemsPerSlide.call(this);
+                    if (this._itemsPerSlide != itemsPerSlide) {
+                        this.setItemsPerSlide(itemsPerSlide);
+                    }
+                }
+            })
     */
 
     var sliders = [];
