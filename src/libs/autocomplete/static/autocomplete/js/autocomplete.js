@@ -78,12 +78,11 @@
             }
             this.$depends = $(depends.filter(Boolean));
 
-
             // при изменении зависимости вызываем событие изменения на текущем элементе
             var that = this;
             this.event_ns = event_ns++;
             this.$depends.on('change.autocomplete' + this.event_ns, function() {
-                that.$elem.change();
+                that.$elem.select2('data', null);
             });
 
             // инициализация select2
@@ -225,7 +224,7 @@
                 }
             });
         });
-        mass_requests = null;
+        mass_requests = {};
 
         if ($.attachRelatedWidgetSupport) {
             $.attachRelatedWidgetSupport('.autocomplete_widget');
