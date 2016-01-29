@@ -1,6 +1,7 @@
 import os
 import sys
 
+# drager: блокируется вертикальный скролл
 # slider: dynamic margin
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy

@@ -460,7 +460,7 @@
                         that.$element.off('click.drager.prevent' + that.id);
                     }, 0);
                 }
-            } else {
+            } else if (event.type != 'mouseup') {
                 // preventDefault на touchstart предотвращает click. Вызываем его сами
                 $(event.target).trigger('click');
             }
