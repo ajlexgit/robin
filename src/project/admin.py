@@ -63,6 +63,15 @@ class ModelAdminMixin(ModelAdminInlineMixin):
     add_form_template = 'suit/change_form.html'
     change_form_template = 'suit/change_form.html'
 
+    def suit_cell_attributes(self, obj, column):
+        """ Классы для ячеек списка """
+        if column == 'view':
+            return {
+                'class': 'mini-column'
+            }
+        else:
+            return {}
+
     def get_suit_form_tabs(self, request, add=False):
         """ Получение вкладок для модели админки Suit """
         return getattr(self, 'suit_form_tabs', ())

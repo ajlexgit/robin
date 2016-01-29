@@ -19,8 +19,8 @@ input[type=number] {
     background-color: #D0D0D0;
 }
 
-.column-view {
-    width: 33px;
+td.mini-column, th.mini-column {
+    width: 1%;
 }
 
 /* Admin table */
