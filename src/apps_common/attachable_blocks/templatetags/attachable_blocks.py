@@ -8,7 +8,7 @@ from ..utils import get_block, get_block_view
 register = Library()
 
 
-def block_output(request, block, noindex=False, ajax=False):
+def block_output(request, block, noindex=False, ajax=False, **kwargs):
     block_view = get_block_view(block)
     if not block_view:
         return ''
@@ -17,7 +17,7 @@ def block_output(request, block, noindex=False, ajax=False):
         # Блок, загружаемый через AJAX
         block_html = '<div class="async-block" data-id="%s"></div>' % block.id
     else:
-        block_html = block_view(request, block)
+        block_html = block_view(request, block, **kwargs)
 
     if noindex:
         return ''.join(('<!--noindex-->', block_html, '<!--/noindex-->',))
@@ -54,7 +54,7 @@ def render_attached_blocks(context, entity, set_name=None):
 
 
 @register.simple_tag(takes_context=True)
-def render_attachable_block(context, block, noindex=False, ajax=False):
+def render_attachable_block(context, block, noindex=False, ajax=False, **kwargs):
     request = context.get('request')
     if not request:
         return ''
@@ -63,11 +63,11 @@ def render_attachable_block(context, block, noindex=False, ajax=False):
     if not real_block or not real_block.visible:
         return ''
 
-    return block_output(request, real_block, noindex, ajax)
+    return block_output(request, real_block, noindex, ajax, **kwargs)
 
 
 @register.simple_tag(takes_context=True)
-def render_first_attachable_block(context, model, noindex=False, ajax=False):
+def render_first_attachable_block(context, model, noindex=False, ajax=False, **kwargs):
     if not '.' in model:
         return ''
 
@@ -77,4 +77,4 @@ def render_first_attachable_block(context, model, noindex=False, ajax=False):
     except LookupError:
         return ''
 
-    return render_attachable_block(context, model.objects.first(), noindex, ajax)
+    return render_attachable_block(context, model.objects.first(), noindex, ajax, **kwargs)

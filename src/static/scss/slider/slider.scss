@@ -28,15 +28,14 @@
   z-index: 2;
   @include transform(translateZ(0));
 
-  // Скрытие всех слайдов, кроме первого
-  & ~ .slider-slide {
-    display: none;
-  }
-  @at-root .slider-root & ~ .slider-slide {
-    display: block;
-  }
-
   img {
     @include unselectable;
+  }
+}
+
+.no-slider {
+	// Скрытие всех слайдов, кроме первого
+	.slider-slide ~ .slider-slide {
+    display: none;
   }
 }
