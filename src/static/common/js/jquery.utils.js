@@ -829,7 +829,7 @@
             df.reject('can not read');
         };
         reader.readAsDataURL(file);
-        return df.promise();
+        return df;
     };
 
 
@@ -854,7 +854,7 @@
             df.reject('can not read');
         };
         xhr.send();
-        return df.promise();
+        return df;
     };
 
 
@@ -871,7 +871,7 @@
             df.reject('Not image');
         };
         img.src = src;
-        return df.promise();
+        return df;
     };
 
 
@@ -976,7 +976,7 @@
             }, 0);
         })();
 
-        return df.promise();
+        return df;
     };
 
 

@@ -11,6 +11,7 @@
 
         Параметры:
             preventDrag: true/false           - предотвратить событие drag по-умолчанию
+            preventClick: true/false          - предотвратить событие click при перетаскивании
             mouse: true                       - разрешить перетаскивание мышью
             touch: true                       - разрешить перетаскивание тачпадом
             ignoreDistanceX: 18               - игнорировать краткие движения по оси X
@@ -445,8 +446,8 @@
             if (this.opts.preventClick && this.wasDragged) {
                 // предотвращаем событие click после перемещения.
                 var that = this;
-                this.$element.one('click.drager.prevent' + this.id, function(event) {
-                    event.preventDefault();
+                this.$element.one('click.drager.prevent' + this.id, function() {
+                    return false;
                 });
 
                 // гарантия отключения перехватчика, если mouseup был вызван через trigger
