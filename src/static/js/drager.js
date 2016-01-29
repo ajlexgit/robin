@@ -83,6 +83,10 @@
             });
     */
 
+    var touchstart = window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart';
+    var touchmove = window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove';
+    var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';
+
     var getDx = function(fromPoint, toPoint) {
         var clientDx = toPoint.clientX - fromPoint.clientX;
         var pageDx = toPoint.pageX - fromPoint.pageX;
@@ -443,18 +447,24 @@
         cls.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
-            if (this.opts.preventClick && this.wasDragged) {
-                // предотвращаем событие click после перемещения.
-                var that = this;
-                this.$element.one('click.drager.prevent' + this.id, function() {
-                    return false;
-                });
+            if (this.wasDragged) {
+                // предотвращаем событие click при перемещении.
+                if (this.opts.preventClick) {
+                    var that = this;
+                    this.$element.one('click.drager.prevent' + this.id, function() {
+                        return false
+                    });
 
-                // гарантия отключения перехватчика, если mouseup был вызван через trigger
-                setTimeout(function() {
-                    that.$element.off('click.drager.prevent' + that.id);
-                }, 0);
+                    // гарантия отключения перехватчика, если mouseup был вызван через trigger
+                    setTimeout(function() {
+                        that.$element.off('click.drager.prevent' + that.id);
+                    }, 0);
+                }
+            } else {
+                // preventDefault на touchstart предотвращает click. Вызываем его сами
+                $(event.target).trigger('click');
             }
+
 
             var evt = MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
@@ -505,19 +515,17 @@
             if (this.opts.touch) {
                 var ns = 'drager' + this.id;
 
-                var touchstart = window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart';
-                var touchmove = window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove';
-                var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';
-
                 this.$element.on(touchstart + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
+                    event.preventDefault();
                     return that.mouseDownHandler.call(that, event);
                 });
                 $(document).on(touchmove + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.dragHandler.call(that, event);
-                }).on(touchend + '.' + ns , function(event) {
+                }).on(touchend + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
+                    event.preventDefault();
                     return that.mouseUpHandler.call(that, event);
                 });
             }
