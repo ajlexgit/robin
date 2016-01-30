@@ -42,7 +42,7 @@
 
         // Обрезка аватара
         CropDialog($profile, {
-            eventTypes: 'click.cropdialog',
+            eventTypes: touchClick + '.cropdialog',
             buttonSelector: '#crop-avatar',
             dialogOptions: {
                 classes: 'popup-crop-avatar'
@@ -76,7 +76,7 @@
         });
 
         // Клик на кнопку удаления аватара
-        $profile.on('click', '.delete-avatar', function() {
+        $profile.on(touchClick, '.delete-avatar', function() {
             if (!confirm(gettext('Are you sure that you want to delete this avatar?'))) {
                 return false;
             }

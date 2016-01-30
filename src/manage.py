@@ -1,7 +1,8 @@
 import os
 import sys
 
-# drager: блокируется вертикальный скролл
+# gallery client
+# drager: блокируется вертикальный скролл Android
 # slider: dynamic margin
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy

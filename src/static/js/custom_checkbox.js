@@ -61,7 +61,7 @@
 
             // клик на новый элемент
             var that = this;
-            this.$elem.on('click.checkbox', function() {
+            this.$elem.on(touchClick + '.checkbox', function() {
                 that.$root.triggerHandler('change');
                 return false;
             });

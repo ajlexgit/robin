@@ -61,7 +61,7 @@
 
             // клик на новый элемент
             var that = this;
-            this.$elem.on('click.radiobox', function() {
+            this.$elem.on(touchClick + '.radiobox', function() {
                 that.$root.triggerHandler('change');
                 return false;
             });

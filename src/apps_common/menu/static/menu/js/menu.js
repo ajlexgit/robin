@@ -48,7 +48,7 @@
             var that = this;
 
             // клик на кнопку
-            $(document).off('.menu').on('click.menu', this.opts.buttonSelector, function() {
+            $(document).off('.menu').on(touchClick + '.menu', this.opts.buttonSelector, function() {
                 return that.onClick($(this));
             });
 

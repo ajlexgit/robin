@@ -524,14 +524,14 @@
                     // Баг двухсекундной задержки на Android
                     if (isAndroid) event.preventDefault();
 
-                    return that.mouseDownHandler.call(that, event, true);
+                    return that.mouseDownHandler.call(that, event);
                 });
                 $(document).on(touchmove + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.dragHandler.call(that, event);
                 }).on(touchend + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
-                    return that.mouseUpHandler.call(that, event);
+                    return that.mouseUpHandler.call(that, event, true);
                 });
             }
         };

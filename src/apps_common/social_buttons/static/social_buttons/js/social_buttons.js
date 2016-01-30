@@ -47,7 +47,7 @@
             }
 
             var that = this;
-            this.$button.on('click.social', function() {
+            this.$button.on(touchClick + '.social', function() {
                 var url = that.getShareUrl();
                 that.popup(url);
             });

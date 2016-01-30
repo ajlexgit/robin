@@ -22,7 +22,7 @@
         });
     };
 
-    $(document).on('click', '.open-contact-popup', function() {
+    $(document).on(touchClick, '.open-contact-popup', function() {
         // Открытие окна контактов
         contactPopup();
         return false;

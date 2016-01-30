@@ -318,7 +318,7 @@
 
             // кнопки закрытия окна
             var that = this;
-            $(document).off('.popup.close').on('click.popup.close', '.' + this.CLOSE_BUTTON_CLASS, function() {
+            $(document).off('.popup.close').on(touchClick + '.popup.close', '.' + this.CLOSE_BUTTON_CLASS, function() {
                 that.hide();
                 return false;
             });
@@ -349,7 +349,7 @@
             this._visible = false;
 
             // кнопки закрытия окна
-            $(document).off('click.popup');
+            $(document).off('.popup');
         };
 
         /*
@@ -443,7 +443,7 @@
 
             var that = this;
             if (this.opts.hideOnClick) {
-                $(document).on('click.popup', function(evt) {
+                $(document).on(touchClick + '.popup', function(evt) {
                     if (that.isOutСlick($(evt.target))) {
                         that.hide();
                     }
