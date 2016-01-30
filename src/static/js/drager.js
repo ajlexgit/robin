@@ -3,8 +3,8 @@
     /*
         Генерирует события перетаскивания. Реального перемещения не делает.
         Это только интерфейс для реализации разных штук.
-        Есть настройки для реализации продолжения движения по инерции
-        при отпускании кнопки мыши.
+
+        Возможность продолжения движения по инерции при отпускании кнопки мыши.
 
         Требует:
             jquery.utils.js
@@ -18,7 +18,7 @@
             ignoreDistanceY: 18               - игнорировать краткие движения по оси Y
             momentum: true                    - добавлять движение по инерции
             momentumLightness: 500            - "легкость" инерции (0 - нет инерции)
-            momentumEasing: 'easeOutCubic'    - функция сглаживания иенрционного движения
+            momentumEasing: 'easeOutCubic'    - функция сглаживания инерционного движения
 
             onMouseDown(event)                - нажатие мышью или тачпадом
             onStartDrag(event)                - начало перемещения. Если вернет false, перемещение не начнется
@@ -86,6 +86,9 @@
     var touchstart = window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart';
     var touchmove = window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove';
     var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';
+
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
 
     var getDx = function(fromPoint, toPoint) {
         var clientDx = toPoint.clientX - fromPoint.clientX;
@@ -444,7 +447,7 @@
             return this.opts.onDrag.call(this, evt);
         };
 
-        cls.mouseUpHandler = function(event) {
+        cls.mouseUpHandler = function(event, isTouch) {
             if (!this._dragging_allowed) return;
 
             if (this.wasDragged) {
@@ -460,11 +463,11 @@
                         that.$element.off('click.drager.prevent' + that.id);
                     }, 0);
                 }
-            } else if (event.type != 'mouseup') {
-                // preventDefault на touchstart предотвращает click. Вызываем его сами
+            } else if (isTouch && isAndroid) {
+                // Из-за бага на Android, предотвращение touchstart блокирует
+                // событие click. Вызываем его сами.
                 $(event.target).trigger('click');
             }
-
 
             var evt = MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
@@ -517,15 +520,17 @@
 
                 this.$element.on(touchstart + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
-                    event.preventDefault();
-                    return that.mouseDownHandler.call(that, event);
+
+                    // Баг двухсекундной задержки на Android
+                    if (isAndroid) event.preventDefault();
+
+                    return that.mouseDownHandler.call(that, event, true);
                 });
                 $(document).on(touchmove + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
                     return that.dragHandler.call(that, event);
                 }).on(touchend + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
-                    event.preventDefault();
                     return that.mouseUpHandler.call(that, event);
                 });
             }
