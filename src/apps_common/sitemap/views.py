@@ -1,7 +1,5 @@
 from seo import Seo
 from main.models import MainPageConfig
-from contacts.models import ContactsConfig
-from blog.models import BlogConfig, BlogPost
 from libs.views import TemplateExView
 from libs.cache import cached
 from .models import SitemapConfig
@@ -21,13 +19,6 @@ class IndexView(TemplateExView):
         sitemap = Map()
 
         sitemap.add_child(MainPageConfig.get_solo())
-
-        posts = BlogPost.objects.filter(visible=True)
-        if posts.exists():
-            blog = sitemap.add_child(BlogConfig.get_solo())
-            blog.add_childs(posts)
-
-        sitemap.add_child(ContactsConfig.get_solo())
 
         return sitemap
 

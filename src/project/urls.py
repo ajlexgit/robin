@@ -16,10 +16,8 @@ urlpatterns = [
     url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^contacts/', include('contacts.urls', namespace='contacts')),
     url(r'^users/', include('users.urls', namespace='users')),
-    url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),
 
     url(r'^admin/', include(honeypot_site.urls)),
-
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
     url(r'^dladmin/', include(admin.site.urls)),

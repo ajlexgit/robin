@@ -18,7 +18,7 @@ class MainPageConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'preview', 'gallery',
+                'gallery',
             ),
         }),
     )

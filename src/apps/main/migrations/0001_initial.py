@@ -2,52 +2,50 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import libs.stdimage.fields
-import gallery.models
-import libs.media_storage
 import django.db.models.deletion
+import libs.media_storage
+import gallery.models
 import gallery.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '__first__'),
+        ('gallery', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Gallery',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
             ],
             options={
                 'verbose_name': 'gallery',
-                'verbose_name_plural': 'galleries',
                 'abstract': False,
+                'verbose_name_plural': 'galleries',
             },
         ),
         migrations.CreateModel(
             name='ImageItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(parent_link=True, to='gallery.GalleryItemBase', auto_created=True, serialize=False, primary_key=True)),
-                ('image', gallery.fields.GalleryImageField(upload_to=gallery.models.generate_filepath, verbose_name='image', storage=libs.media_storage.MediaStorage())),
-                ('image_crop', models.CharField(max_length=32, verbose_name='stored_crop', editable=False, blank=True)),
+                ('galleryitembase_ptr', models.OneToOneField(parent_link=True, primary_key=True, to='gallery.GalleryItemBase', auto_created=True, serialize=False)),
+                ('image', gallery.fields.GalleryImageField(verbose_name='image', storage=libs.media_storage.MediaStorage(), upload_to=gallery.models.generate_filepath)),
+                ('image_crop', models.CharField(verbose_name='stored_crop', editable=False, blank=True, max_length=32)),
             ],
             options={
                 'verbose_name': 'image item',
-                'verbose_name_plural': 'image items',
                 'abstract': False,
+                'verbose_name_plural': 'image items',
             },
             bases=('gallery.galleryitembase',),
         ),
         migrations.CreateModel(
             name='MainPageConfig',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('preview', libs.stdimage.fields.StdImageField(upload_to='', min_dimensions=(800, 600), storage=libs.media_storage.MediaStorage('main'), variations={'admin': {'size': (280, 280)}, 'normal': {'size': (800, 600)}}, verbose_name='preview', aspects=('normal',), blank=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
                 ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
-                ('gallery', gallery.fields.GalleryField(on_delete=django.db.models.deletion.SET_NULL, to='main.Gallery', null=True, verbose_name='gallery', blank=True)),
+                ('gallery', gallery.fields.GalleryField(verbose_name='gallery', on_delete=django.db.models.deletion.SET_NULL, null=True, blank=True, to='main.Gallery')),
             ],
             options={
                 'verbose_name': 'settings',

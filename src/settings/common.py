@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 
     'pipeline',
-    'mptt',
     'solo',
     'suit_ckeditor',
 
@@ -48,8 +47,6 @@ INSTALLED_APPS = (
     'blog',
     'contacts',
     'main',
-    'shop',
-    'social',
     'users',
 
     # Apps common
@@ -57,7 +54,6 @@ INSTALLED_APPS = (
     'admin_log',
     'attachable_blocks',
     'backups',
-    'breadcrumbs',
     'ckeditor',
     'footer',
     'gallery',
@@ -66,7 +62,6 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
-    'sitemap',
 
     # Libs
     'libs.autocomplete',
@@ -95,16 +90,6 @@ SUIT_CONFIG = {
             'icon': 'icon-file',
         },
         {
-            'app': 'shop',
-            'icon': 'icon-shopping-cart',
-            'models': (
-                'ShopOrder',
-                'ShopProduct',
-                'ShopCategory',
-                'ShopConfig',
-            )
-        },
-        {
             'app': 'blog',
             'icon': 'icon-file',
             'models': (
@@ -122,26 +107,26 @@ SUIT_CONFIG = {
                 'ContactsConfig',
             )
         },
-        {
-            'app': 'social',
-            'icon': 'icon-bullhorn',
-            'models': (
-                'FollowUsBlock',
-                'SocialConfig',
-            )
-        },
         '-',
         '-',
-        'admin',
         {
             'app': 'auth',
-            'icon': 'icon-lock',
+            'icon': 'icon-user',
+            'label': _('Users'),
             'models': (
                 'group',
                 'users.customuser',
             )
         },
-        'backups',
+        {
+            'app': 'backups',
+            'icon': 'icon-hdd',
+        },
+        {
+            'app': 'admin',
+            'icon': 'icon-list-alt',
+            'label': _('History'),
+        },
         'sites',
         {
             'app': 'seo',
@@ -150,13 +135,6 @@ SUIT_CONFIG = {
                 'counter',
                 'seoconfig',
             ),
-        },
-        {
-            'app': 'sitemap',
-            'icon': 'icon-list',
-            'models': (
-                'SitemapConfig',
-            )
         },
         '-',
         '-',
@@ -169,7 +147,6 @@ PIPELINE_CSS = {
     'head_core': {
         'source_filenames': (
             'scss/grid.scss',
-            'scss/row.scss',
             'scss/layout.scss',
             'scss/forms.scss',
             'scss/text_styles.scss',
@@ -180,26 +157,18 @@ PIPELINE_CSS = {
             'scss/slider/plugins/controls.scss',
             'scss/slider/plugins/navigation.scss',
 
-            'menu/scss/menu.scss',
-            'header/scss/header.scss',
+            'contacts/scss/block.scss',
             'footer/scss/footer.scss',
-            'social/scss/block.scss',
+            'header/scss/header.scss',
+            'menu/scss/menu.scss',
         ),
         'output_filename': 'css/head_core.css',
     },
     'main_page': {
         'source_filenames': (
-            'scss/parallax.scss',
-            'google_maps/scss/balloon.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
-    },
-    'sitemap_page': {
-        'source_filenames': (
-            'sitemap/scss/index.scss',
-        ),
-        'output_filename': 'css/sitemap_page.css',
     },
     'error_page': {
         'source_filenames': (
@@ -225,24 +194,6 @@ PIPELINE_CSS = {
             'blog/scss/detail.scss',
         ),
         'output_filename': 'css/blog_detail_page.css',
-    },
-    'shop_index': {
-        'source_filenames': (
-            'shop/scss/index.scss',
-        ),
-        'output_filename': 'css/shop_index.css',
-    },
-    'shop_category': {
-        'source_filenames': (
-            'shop/scss/category.scss',
-        ),
-        'output_filename': 'css/shop_category.css',
-    },
-    'shop_detail': {
-        'source_filenames': (
-            'shop/scss/detail.scss',
-        ),
-        'output_filename': 'css/shop_detail.css',
     },
 }
 PIPELINE_JS = {
@@ -288,13 +239,6 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/layer.js',
-            'js/sticky.js',
-            'js/parallax.js',
-
-            'google_maps/js/core.js',
-            'google_maps/js/balloon.js',
-            'google_maps/js/overlays.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',
@@ -333,8 +277,6 @@ MIDDLEWARE_CLASSES = (
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
-
-    'breadcrumbs.middleware.BreadcrumbsMiddleware',
 )
 
 ALLOWED_HOSTS = ()

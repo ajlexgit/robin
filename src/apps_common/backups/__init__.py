@@ -16,9 +16,8 @@
             SUIT_CONFIG = {
                 ...
                 {
+                    'app': 'backups',
                     'icon': 'icon-hdd',
-                    'label': 'backups',
-                    'url': 'backups:index',
                 },
                 ...
             }

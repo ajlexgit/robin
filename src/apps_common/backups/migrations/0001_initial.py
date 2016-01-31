@@ -11,14 +11,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='MapAndAddress',
+            name='DummyModel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
-                ('address', models.CharField(verbose_name='address', db_index=True, max_length=255)),
-                ('longitude', models.FloatField(verbose_name='longitude')),
-                ('latitude', models.FloatField(verbose_name='latitude')),
             ],
             options={
+                'verbose_name': 'backup',
+                'managed': False,
+                'verbose_name_plural': 'backups',
                 'default_permissions': (),
             },
         ),
