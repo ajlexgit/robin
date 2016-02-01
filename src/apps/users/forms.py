@@ -46,7 +46,7 @@ class RegisterForm(PlainErrorFormMixin, UserCreationForm):
         error_messages={
             'required': _('Please enter your login'),
             'unique': _('This login is already taken'),
-            'invalid': _('Login must contain only letters, numbers ans sumbols @+-_'),
+            'invalid': _('Login must contain only letters, numbers ans symbols @+-_'),
             'min_length': _('Login must be at least %(limit_value)s characters long'),
             'max_length': _('Login should not be longer than %(limit_value)s characters'),
         }

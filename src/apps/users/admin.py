@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.shortcuts import resolve_url
 from django.contrib.auth.models import Group
-from django.contrib.auth.admin import UserAdmin, GroupAdmin as DefaultGroupAdmin
-from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.admin import UserAdmin, GroupAdmin as DefaultGroupAdmin
 from project.admin import ModelAdminMixin
 from .models import CustomUser
 

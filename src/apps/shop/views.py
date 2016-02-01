@@ -1,4 +1,4 @@
-﻿from django.http.response import Http404
+from django.http.response import Http404
 from django.shortcuts import resolve_url
 from seo import Seo
 from libs.views import TemplateExView
