@@ -27,7 +27,7 @@ class DecoratableViewMixin:
             return self.http_method_not_allowed(request, *args, **kwargs)
 
         # метод, вызываемый перед вызовом обработчика
-        before_handler = getattr(self, 'before_%s' % self.method, None)
+        before_handler = getattr(self, 'before_%s' % handler.__name__, None)
         if before_handler:
             before_handler(request, *args, **kwargs)
 
