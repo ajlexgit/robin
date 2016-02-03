@@ -1,6 +1,7 @@
 import os
 import sys
 
+# dynamic menu, std pages
 # gallery client
 # drager: блокируется вертикальный скролл Android
 # slider: dynamic margin
