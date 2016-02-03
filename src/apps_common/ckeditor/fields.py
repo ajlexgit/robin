@@ -33,8 +33,8 @@ class CKEditorUploadField(models.Field):
     """ Текстовое поле с WISYWIG редактором и возможностью загрузки картинок """
     def __init__(self, *args, editor_options=None, upload_pagephoto_url='', upload_simplephoto_url='', **kwargs):
         self.editor_options = editor_options or {}
-        self.upload_pagephoto_url = upload_pagephoto_url or '/ckeditor/upload_pagephoto/'
-        self.upload_simplephoto_url = upload_simplephoto_url or '/ckeditor/upload_simplephoto/'
+        self.upload_pagephoto_url = upload_pagephoto_url or '/dladmin/ckeditor/upload_pagephoto/'
+        self.upload_simplephoto_url = upload_simplephoto_url or '/dladmin/ckeditor/upload_simplephoto/'
         super().__init__(*args, **kwargs)
 
     def get_internal_type(self):

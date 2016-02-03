@@ -58,7 +58,7 @@
 
         urls.py:
             ...
-            url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
+            url(r'^dladmin/ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
             ...
 
 

@@ -4,6 +4,7 @@ import importlib
 from django.apps import apps
 from django.db.models import Q
 from django.conf import settings
+from django.contrib import admin
 from django.core.cache import caches
 from django.http import Http404, JsonResponse
 
@@ -11,6 +12,7 @@ CACHE_BACKEND = getattr(settings,  'AUTOCOMPLETE_CACHE_BACKEND', 'default')
 cache = caches[CACHE_BACKEND]
 
 
+@admin.site.admin_view
 def autocomplete_widget(request, application, model_name, name):
     if not request.is_ajax():
         raise Http404

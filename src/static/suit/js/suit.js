@@ -143,10 +143,12 @@
                     found_error = $link;
                 }
             });
-            if (!found_error) {
-                $tab_links.first().trigger('click');
-            } else {
+            if (found_error) {
                 $tab_links.filter('.error').first().trigger('click');
+            } else if (window.location.hash) {
+                $tabs.find('a[href=' + window.location.hash + ']').click();
+            } else {
+                $tab_links.first().trigger('click');
             }
         }
 
