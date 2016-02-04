@@ -255,7 +255,7 @@
             // перемещение файлов
             var that = this;
             this.dropper = FileDropper(this.$wrapper, {
-                preventDefault: true
+                preventDrop: true
             }).on('drop.drag', function(e, files) {
                 if (!that.uploader) {
                     return
