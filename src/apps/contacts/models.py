@@ -42,7 +42,7 @@ class Message(models.Model):
     email = models.EmailField(_('e-mail'), blank=True)
     message = models.TextField(_('message'), max_length=1536)
     date = models.DateTimeField(_('date'), default=now, editable=False)
-    referer = models.CharField(_('referer'), max_length=255, blank=True, editable=False)
+    referer = models.CharField(_('from page'), max_length=255, blank=True, editable=False)
 
     class Meta:
         verbose_name = _('message')

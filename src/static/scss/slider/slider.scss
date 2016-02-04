@@ -35,6 +35,10 @@
 
 .no-slider {
 	// Скрытие всех слайдов, кроме первого
+	.slider-item ~ .slider-item {
+    display: none;
+  }
+
 	.slider-slide ~ .slider-slide {
     display: none;
   }

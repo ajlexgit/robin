@@ -67,7 +67,7 @@ class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def user(self, obj):
         return str(obj)
-    user.short_description = _('User')
+    user.short_description = _('Name')
     user.admin_order_field = 'name'
 
     def message_fmt(self, obj):
