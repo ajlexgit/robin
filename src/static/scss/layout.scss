@@ -37,7 +37,9 @@ body {
 
 #header-cell {
   display: table-cell;
+  position: relative;
   height: 0;
+  z-index: 2;
   vertical-align: top;
 }
 
@@ -60,7 +62,9 @@ body {
 
 #footer-cell {
   display: table-cell;
+  position: relative;
   height: 0;
+  z-index: 2;
   vertical-align: top;
 }
 
