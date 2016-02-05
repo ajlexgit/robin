@@ -23,6 +23,10 @@
   </script>
   <script src="{% url 'jsi18n' %}"></script>
 
+  <!--[if lte IE 9]>
+    <script type="text/javascript" src="/static/js/polyfills/es5_polyfill.js"></script>
+  <![endif]-->
+
   {% opengraph %}
 
   {% javascript 'head_core' %}
@@ -83,6 +87,11 @@
   {% js_storage_out %}
   {% javascript 'core' %}
 {% endblock static_js %}
+
+<!--[if lte IE 9]>
+  <script type="text/javascript" src="/static/js/polyfills/flexie.min.js"></script>
+  <script type="text/javascript" src="/static/js/polyfills/respond.min.js"></script>
+<![endif]-->
 
 {% seo_counters 'body_bottom' %}
 </body>
