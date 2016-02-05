@@ -116,7 +116,7 @@
                 $.winHeight(this.$menu);
             }
 
-            this.refresh(window.innerWidth);
+            this.refresh($(window).width());
         })
     }, 100));
 

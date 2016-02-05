@@ -39,7 +39,7 @@
 
 
         cls._check = function($element, opts) {
-            return window.innerWidth >= opts.point;
+            return $(window).width() >= opts.point;
         };
     });
 
