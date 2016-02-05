@@ -19,10 +19,10 @@
                     content: response
                 }).show();
             },
-            error: function() {
-                alert(gettext('Connection error'));
+            error: $.parseError(function() {
+                alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
-            }
+            })
         });
     };
 
@@ -32,31 +32,31 @@
         return false;
     }).on('submit', '#ajax-login-form', function() {
         // Отправка Ajax-формы авторизации
-        var form = $(this);
+        var $form = $(this);
         $.preloader();
 
         $.ajax({
             url: window.js_storage.ajax_login,
             type: 'POST',
-            data: form.serialize(),
+            data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                $(document).trigger('login.auth.users', response);
+                $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
+                $.popup().hide();
+            },
+            error: $.parseError(function(response) {
+                if (response && response.form) {
                     // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
                     }).show();
                 } else {
-                    $(document).trigger('login.auth.users', response);
-                    $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
+                    alert(window.DEFAULT_AJAX_ERROR);
                     $.popup().hide();
                 }
-            },
-            error: function() {
-                alert(gettext('Connection error'));
-                $.popup().hide();
-            }
+            })
         });
         return false;
     });
@@ -81,10 +81,10 @@
                     content: response
                 }).show();
             },
-            error: function() {
-                alert(gettext('Connection error'));
+            error: $.parseError(function() {
+                alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
-            }
+            })
         });
     };
 
@@ -94,32 +94,32 @@
         return false;
     }).on('submit', '#ajax-register-form', function() {
         // Отправка Ajax-формы регистрации
-        var form = $(this);
+        var $form = $(this);
         $.preloader();
 
         $.ajax({
             url: window.js_storage.ajax_register,
             type: 'POST',
-            data: form.serialize(),
+            data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                $(document).trigger('register.auth.users', response);
+                $(document).trigger('login.auth.users', response);
+                $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
+                $.popup().hide();
+            },
+            error: $.parseError(function(response) {
+                if (response && response.form) {
                     // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
                     }).show();
                 } else {
-                    $(document).trigger('register.auth.users', response);
-                    $(document).trigger('login.auth.users', response);
-                    $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
+                    alert(window.DEFAULT_AJAX_ERROR);
                     $.popup().hide();
                 }
-            },
-            error: function() {
-                alert(gettext('Connection error'));
-                $.popup().hide();
-            }
+            })
         });
         return false;
     });
@@ -143,10 +143,10 @@
                     content: response
                 }).show();
             },
-            error: function() {
-                alert(gettext('Connection error'));
+            error: $.parseError(function() {
+                alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
-            }
+            })
         });
     };
 
@@ -156,33 +156,33 @@
         return false;
     }).on('submit', '#ajax-reset-password-form', function() {
         // Отправка Ajax-формы сброса пароля
-        var form = $(this);
+        var $form = $(this);
         $.preloader();
 
         $.ajax({
             url: window.js_storage.ajax_reset,
             type: 'POST',
-            data: form.serialize(),
+            data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                $(document).trigger('reset-password.auth.users', response);
+                $.popup({
+                    classes: 'users-popup',
+                    content: response.done
+                }).show();
+            },
+            error: $.parseError(function(response) {
+                if (response && response.form) {
                     // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
                     }).show();
                 } else {
-                    $(document).trigger('reset-password.auth.users');
-                    $.popup({
-                        classes: 'users-popup',
-                        content: response.done
-                    });
+                    alert(window.DEFAULT_AJAX_ERROR);
+                    $.popup().hide();
                 }
-            },
-            error: function() {
-                alert(gettext('Connection error'));
-                $.popup().hide();
-            }
+            })
         });
         return false;
     });
@@ -203,10 +203,10 @@
                     content: response
                 }).show();
             },
-            error: function() {
-                alert(gettext('Connection error'));
+            error: $.parseError(function() {
+                alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
-            }
+            })
         });
     };
 
@@ -216,33 +216,33 @@
         return false;
     }).on('submit', '#ajax-reset-confirm-form', function() {
         // Отправка Ajax-формы установки пароля
-        var form = $(this);
+        var $form = $(this);
         $.preloader();
 
         $.ajax({
             url: window.js_storage.ajax_reset_confirm,
             type: 'POST',
-            data: form.serialize(),
+            data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
+                $(document).trigger('reset-confirm.auth.users', response);
+                $.popup({
+                    classes: 'users-popup',
+                    content: response.done
+                }).show();
+            },
+            error: $.parseError(function(response) {
+                if (response && response.form) {
                     // ошибки формы
                     $.popup({
                         classes: 'users-popup',
                         content: response.form
                     }).show();
                 } else {
-                    $(document).trigger('reset-confirm.auth.users');
-                    $.popup({
-                        classes: 'users-popup',
-                        content: response.done
-                    });
+                    alert(window.DEFAULT_AJAX_ERROR);
+                    $.popup().hide();
                 }
-            },
-            error: function() {
-                alert(gettext('Connection error'));
-                $.popup().hide();
-            }
+            })
         });
         return false;
     });
@@ -264,10 +264,10 @@
                 $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
                 $.popup().hide();
             },
-            error: function() {
-                alert(gettext('Connection error'));
+            error: $.parseError(function() {
+                alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
-            }
+            })
         });
     };
 

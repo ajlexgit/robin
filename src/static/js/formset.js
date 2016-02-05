@@ -76,7 +76,7 @@
         }
     };
 
-    window.ManagementForm = Class(null, function ManagementForm(cls, superclass) {
+    window.ManagementForm = Class(Object, function ManagementForm(cls, superclass) {
         cls.init = function(root, prefix) {
             this.$root = $(root).first();
             if (!this.$root.length) {
@@ -123,7 +123,7 @@
         };
     });
 
-    window.Formset = Class(null, function Formset(cls, superclass) {
+    window.Formset = Class(Object, function Formset(cls, superclass) {
         cls.defaults = {
             prefix: '',
             formsListSelector: '.forms',
@@ -156,7 +156,7 @@
             }
 
             // management form
-            this.management = ManagementForm(this.$root, this.opts.prefix);
+            this.management = window.ManagementForm(this.$root, this.opts.prefix);
             if (!this.management) {
                 return false;
             }

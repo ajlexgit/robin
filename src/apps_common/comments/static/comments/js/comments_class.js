@@ -1,6 +1,6 @@
 (function($) {
 
-    window.Comments = Class(null, function Comments(cls, superclass) {
+    window.Comments = Class(Object, function Comments(cls, superclass) {
         cls.defaults = {
             comment_class: 'comment',
             comments_container_class: 'comments',
@@ -30,17 +30,6 @@
             this.$root.removeAttr('data-content_type data-object_id');
 
             this.$root.data(this.DATA_KEY, this);
-        };
-
-        // обработка ошибок ajax-запросов
-        cls.ajaxError = function(xhr, status, text) {
-            if (xhr.responseText) {
-                var json_response = $.parseJSON(xhr.responseText);
-                if (json_response.message) {
-                    return json_response.message;
-                }
-            }
-            return text
         };
 
         // Возвращает jQuery-коллекцию, содержащий ветку комментариев
@@ -83,9 +72,9 @@
                     that.$root.find('.' + that.opts.form_container_class).replaceWith(response.initial_form);
                     df.resolve();
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };
@@ -132,9 +121,9 @@
                     $edit_form.find('textarea').val(response.text).keyup().focus();
                     df.resolve($edit_form);
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };
@@ -157,9 +146,9 @@
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };
@@ -182,9 +171,9 @@
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };
@@ -208,9 +197,9 @@
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };
@@ -239,9 +228,9 @@
                     }
                     df.resolve($comment, $parent_comment);
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };
@@ -267,9 +256,9 @@
                     $comment.replaceWith($new_comment);
                     df.resolve($new_comment);
                 },
-                error: function(xhr, status, text) {
-                    df.reject(that.ajaxError(xhr, status, text));
-                }
+                error: $.parseError(function(response) {
+                    df.reject(response && response.message);
+                })
             });
             return df.promise();
         };

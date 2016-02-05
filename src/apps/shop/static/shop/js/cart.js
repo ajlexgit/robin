@@ -14,7 +14,7 @@
             })
      */
 
-    window.Cart = Class(null, function Cart(cls, superclass) {
+    window.Cart = Class(Object, function Cart(cls, superclass) {
         cls.defaults = {
             prefix: 'cart',
             onSave: $.noop,
@@ -60,11 +60,7 @@
                 success: function(response) {
                     that.opts.onClear.call(that, response);
                 },
-                error: function(xhr, status, error) {
-                    if (status != 'abort') {
-                        console.error('Error: ' + error + ' (status: ' + status + ')');
-                    }
-                }
+                error: $.parseError()
             });
         };
 
@@ -109,11 +105,7 @@
                 success: function(response) {
                     that.opts.onSave.call(that, response);
                 },
-                error: function(xhr, status, error) {
-                    if (status != 'abort') {
-                        console.error('Error: ' + error + ' (status: ' + status + ')');
-                    }
-                }
+                error: $.parseError()
             }, options);
 
             return this._sendQuery = $.ajax(ajax_options);

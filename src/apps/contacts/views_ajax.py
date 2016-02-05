@@ -48,4 +48,4 @@ class ContactView(AjaxViewMixin, TemplateExView):
                     'config': config,
                     'form': form,
                 }),
-            })
+            }, status=400)

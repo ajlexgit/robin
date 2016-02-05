@@ -26,7 +26,7 @@
     };
 
 
-    window.Sticky = Class(null, function Sticky(cls, superclass) {
+    window.Sticky = Class(Object, function Sticky(cls, superclass) {
         cls.defaults = {
             strategy: 'fixed',
             topOffset: 0,
@@ -274,7 +274,7 @@
 
     $.fn.sticky = function(options) {
         return this.each(function() {
-            Sticky(this, options);
+            window.Sticky(this, options);
         })
     }
 

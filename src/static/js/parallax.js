@@ -31,7 +31,7 @@
     var $window = $(window);
     var parallaxes = [];
 
-    window.Parallax = Class(null, function Parallax(cls, superclass) {
+    window.Parallax = Class(Object, function Parallax(cls, superclass) {
         cls.defaults = {
             selector: '.parallax',
             easing: 'easeInOutQuad',
@@ -239,7 +239,7 @@
 
     $.fn.parallax = function(options) {
         return this.each(function() {
-            Parallax(this, options);
+            window.Parallax(this, options);
         })
     }
 

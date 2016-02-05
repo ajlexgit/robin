@@ -33,7 +33,7 @@
             });
      */
 
-    window.Expander = Class(null, function Expander(cls, superclass) {
+    window.Expander = Class(Object, function Expander(cls, superclass) {
         cls.defaults = {
             shortBlockSelector: '.expander-short',
             fullBlockSelector: '.expander-full',
@@ -197,7 +197,7 @@
 
     $.fn.expander = function(options) {
         return this.each(function() {
-            Expander(this, options);
+            window.Expander(this, options);
         })
     }
 

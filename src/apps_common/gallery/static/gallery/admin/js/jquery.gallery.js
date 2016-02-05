@@ -107,7 +107,12 @@
                             model_name: that.model_name,
                             gallery_id: that.gallery_id,
                             item_ids: item_ids.join(',')
-                        }
+                        },
+                        error: $.parseError(function(response) {
+                            if (response && response.message) {
+                                alert(response.message);
+                            }
+                        })
                     })
                 }
             }).disableSelection();

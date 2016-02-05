@@ -69,7 +69,8 @@
                         coords: coords_str
                     },
                     dataType: 'json',
-                    success: change_avatar
+                    success: change_avatar,
+                    error: $.parseError()
                 });
                 $button.data('crop', coords_str);
             }
@@ -85,7 +86,8 @@
                 url: window.js_storage.avatar_delete,
                 type: 'POST',
                 dataType: 'json',
-                success: change_avatar
+                success: change_avatar,
+                error: $.parseError()
             });
 
             return false;

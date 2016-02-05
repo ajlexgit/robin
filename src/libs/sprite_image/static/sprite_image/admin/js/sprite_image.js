@@ -1,6 +1,6 @@
 (function($) {
 
-    var SpriteImage = Class(null, function SpriteImage(cls, superclass) {
+    var SpriteImage = Class(Object, function SpriteImage(cls, superclass) {
         cls.DATA_KEY = 'sprite_image';
 
 

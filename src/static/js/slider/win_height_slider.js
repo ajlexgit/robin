@@ -6,7 +6,7 @@
      */
 
     window.WinHeightSlider = Class(Slider, function WinHeightSlider(cls, superclass) {
-        cls.defaults = $.extend(superclass.defaults, {
+        cls.defaults = $.extend({}, superclass.defaults, {
             adaptiveHeight: false,
             adaptiveHeightTransition: 0
         });

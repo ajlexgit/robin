@@ -3,9 +3,61 @@
     var $window = $(window);
 
     // ======================================================================================
-    //      Событие click для браузеров и touchend для мобилок
+    //      Событие click для браузеров и touchend для мобилок.
+    //      Создано из-зи того, что на мобилах есть пауза между
+    //      реальным тапом на кнопку и вызовом события click.
     // ======================================================================================
     window.touchClick = ('ontouchstart' in window) ? 'touchend' : 'click';
+
+
+    // ======================================================================================
+    //      Обработчик AJAX-ошибок.
+    //      Ничего не делает, если запрос был прерван (aborted).
+    //      Иначе, вызывает callback с ответом в виде JSON-объекта
+    //      (если удалось этот объект распарсить).
+    // ======================================================================================
+
+    /*
+            Пример:
+                $.ajax({
+                    ...
+                    error: $.parseError(function(response) {
+                        if (response && response.message) {
+                            console.error(response.message);
+                        }
+                    })
+                })
+     */
+    window.DEFAULT_AJAX_ERROR = gettext('Connection error');
+    $.parseError = function(callback) {
+        var final_callback = callback || function(response, status) {
+            if (response && response.message) {
+                alert(response.message);
+            } else {
+                alert(window.DEFAULT_AJAX_ERROR);
+            }
+        };
+
+        return function(xhr, status) {
+            // AJAX прерван - ничего не делать
+            if (xhr.statusText == 'abort') {
+                return
+            }
+
+            if (xhr.responseText) {
+                try {
+                    var response = $.parseJSON(xhr.responseText + "");
+                    final_callback.call(xhr, response, status);
+                } catch (err) {
+                    // ответ - не JSON
+                    final_callback.call(xhr, '', status);
+                }
+            } else {
+                final_callback.call(xhr, xhr.responseText, status);
+            }
+        };
+    };
+
 
     // ======================================================================================
     //      ANIMATION MAGIC
@@ -185,7 +237,7 @@
     //      Имена событий и пространств имен не чувствительны к регистру
     // ======================================================================================
 
-    window.EventedObject = Class(null, function EventedObject(cls, superclass) {
+    window.EventedObject = Class(Object, function EventedObject(cls, superclass) {
         cls.init = function() {
             this._events = {};
         };
@@ -409,7 +461,7 @@
             start()     - запуск анимации
             stop()      - приостановить анимацию
      */
-    window.Animation = Class(null, function Animation(cls, superclass) {
+    window.Animation = Class(Object, function Animation(cls, superclass) {
         cls.defaults = {
             duration: 1000,
             delay: 20,
@@ -519,7 +571,7 @@
     });
 
     $.animate = function(options) {
-        return Animation(options);
+        return window.Animation(options);
     };
 
     // ======================================================================================
@@ -719,7 +771,7 @@
         Класс, помогающий рассчитать размеры картинки
         при её пропорциональном ресайзе.
      */
-    window.Size = Class(null, function Size(cls, superclass) {
+    window.Size = Class(Object, function Size(cls, superclass) {
         cls.init = function(width, height) {
             this.width = this.source_width = parseInt(width) || 0;
             if (width <= 0) {

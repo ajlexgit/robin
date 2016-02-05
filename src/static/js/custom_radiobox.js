@@ -16,7 +16,7 @@
             $('input[type="radio"]').radiobox()
     */
 
-    window.Radiobox = Class(null, function Radiobox(cls, superclass) {
+    window.Radiobox = Class(Object, function Radiobox(cls, superclass) {
         cls.defaults = {
             className: 'custom-radiobox',
             checkedClass: 'checked',
@@ -184,7 +184,7 @@
 
     $.fn.radiobox = function(options) {
         return this.each(function() {
-            Radiobox(this, options);
+            window.Radiobox(this, options);
         })
     }
 

@@ -29,7 +29,7 @@
             </div>
      */
 
-    var SocialProvider = Class(null, function SocialProvider(cls, superclass) {
+    var SocialProvider = Class(Object, function SocialProvider(cls, superclass) {
         cls.DATA_KEY = 'social';
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 400;
@@ -178,7 +178,7 @@
     /*
         Провайдер ВКонтакте
      */
-    var VkProvider = Class(SocialProvider, function VkProvider(cls, superclass) {
+    window.VkProvider = Class(SocialProvider, function VkProvider(cls, superclass) {
         cls.getShareUrl = function() {
             superclass.getShareUrl.call(this);
 
@@ -224,7 +224,7 @@
     /*
         Провайдер Facebook
      */
-    var FacebookProvider = Class(SocialProvider, function FacebookProvider(cls, superclass) {
+    window.FacebookProvider = Class(SocialProvider, function FacebookProvider(cls, superclass) {
         cls.getShareUrl = function() {
             superclass.getShareUrl.call(this);
 
@@ -251,7 +251,7 @@
     /*
         Провайдер Twitter
      */
-    var TwitterProvider = Class(SocialProvider, function TwitterProvider(cls, superclass) {
+    window.TwitterProvider = Class(SocialProvider, function TwitterProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 300;
 
@@ -273,7 +273,7 @@
     /*
         Провайдер GooglePlus
      */
-    var GooglePlusProvider = Class(SocialProvider, function GooglePlusProvider(cls, superclass) {
+    window.GooglePlusProvider = Class(SocialProvider, function GooglePlusProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 500;
 
@@ -313,7 +313,7 @@
     /*
         Провайдер LinkedIn
     */
-    var LinkedInProvider = Class(SocialProvider, function LinkedInProvider(cls, superclass) {
+    window.LinkedInProvider = Class(SocialProvider, function LinkedInProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 500;
 
@@ -352,7 +352,7 @@
     /*
         Провайдер Pinterest
     */
-    var PinterestProvider = Class(SocialProvider, function PinterestProvider(cls, superclass) {
+    window.PinterestProvider = Class(SocialProvider, function PinterestProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 760;
         cls.WINDOW_HEIGHT = 600;
 
@@ -386,12 +386,12 @@
     });
 
     $(document).ready(function() {
-        VkProvider('.social-vk');
-        FacebookProvider('.social-fb');
-        TwitterProvider('.social-tw');
-        GooglePlusProvider('.social-gp');
-        LinkedInProvider('.social-li');
-        PinterestProvider('.social-pn');
+        window.VkProvider('.social-vk');
+        window.FacebookProvider('.social-fb');
+        window.TwitterProvider('.social-tw');
+        window.GooglePlusProvider('.social-gp');
+        window.LinkedInProvider('.social-li');
+        window.PinterestProvider('.social-pn');
     });
 
 })(jQuery);

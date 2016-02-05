@@ -43,7 +43,7 @@
     var $window = $(window);
     var layers = [];
 
-    window.Layer = Class(null, function Layer(cls, superclass) {
+    window.Layer = Class(Object, function Layer(cls, superclass) {
         cls.defaults = {
             strategy: 'top',
             minEnabledWidth: 768,
@@ -206,7 +206,7 @@
 
     $.fn.layer = function(options) {
         return this.each(function() {
-            Layer(this, options);
+            window.Layer(this, options);
         })
     }
 

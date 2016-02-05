@@ -127,7 +127,7 @@
     /*
         Базовый класс объекта на карте
      */
-    window.GMapObject = Class(GMapEventedObject, function GMapObject(cls, superclass) {
+    window.GMapObject = Class(window.GMapEventedObject, function GMapObject(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             map: null
         });
@@ -191,7 +191,7 @@
 
             if (value !== null) {
                 // подключение к новой карте
-                if (value instanceof GMap == false) {
+                if (value instanceof window.GMap == false) {
                     this.error('value should be a GMap instance');
                     return this;
                 }
@@ -208,7 +208,7 @@
     /*
         Базовый класс наложения на карту Google.
      */
-    window.GMapOverlayBase = Class(GMapObject, function GMapOverlayBase(cls, superclass) {
+    window.GMapOverlayBase = Class(window.GMapObject, function GMapOverlayBase(cls, superclass) {
         cls.layer = 'overlayLayer';
 
         cls._nativeClass = function() {
@@ -329,7 +329,7 @@
     // =========================================
 
     // Создание объекта из строки "lat, lng"
-    GMapPoint.fromString = function(str) {
+    window.GMapPoint.fromString = function(str) {
         var coords = str.split(',');
         if (coords.length != 2) {
             console.error('invalid coords string: ' + str);
@@ -339,7 +339,7 @@
     };
 
     // Создание объекта из нативного объекта
-    GMapPoint.fromNative = function(native) {
+    window.GMapPoint.fromNative = function(native) {
         return this.create(native.lat(), native.lng());
     };
 
@@ -347,7 +347,7 @@
     /*
         Маркер на карте
      */
-    window.GMapMarker = Class(GMapObject, function GMapMarker(cls, superclass) {
+    window.GMapMarker = Class(window.GMapObject, function GMapMarker(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             position: null,
             icon: '',
@@ -419,11 +419,11 @@
         cls.position = function(value) {
             if (value === undefined) {
                 // получение положения
-                return GMapPoint.fromNative(this.native.getPosition());
+                return window.GMapPoint.fromNative(this.native.getPosition());
             }
 
             if (value) {
-                if (value instanceof GMapPoint == false) {
+                if (value instanceof window.GMapPoint == false) {
                     this.error('value should be a GMapPoint instance');
                     return this;
                 }
@@ -517,7 +517,7 @@
     /*
         Класс карты Google
      */
-    window.GMap = Class(GMapEventedObject, function GMap(cls, superclass) {
+    window.GMap = Class(window.GMapEventedObject, function GMap(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             center: null,
             mapType: 'roadmap',
@@ -638,9 +638,9 @@
             this.on('idle', function() {
                 var center = this.center();
                 if (center.lat < (MIN_LATITUDE - AMPLITUDE)) {
-                    this.panTo(GMapPoint(MIN_LATITUDE, center.lng), 100);
+                    this.panTo(window.GMapPoint(MIN_LATITUDE, center.lng), 100);
                 } else if (center.lat > (MAX_LATITUDE + AMPLITUDE)) {
-                    this.panTo(GMapPoint(MAX_LATITUDE, center.lng), 100);
+                    this.panTo(window.GMapPoint(MAX_LATITUDE, center.lng), 100);
                 }
             });
 
@@ -653,13 +653,13 @@
         cls.center = function(value) {
             if (value === undefined) {
                 // получение центра карты
-                return GMapPoint.fromNative(this.native.getCenter());
+                return window.GMapPoint.fromNative(this.native.getCenter());
             }
 
             if (value) {
-                if (value instanceof GMapMarker) {
+                if (value instanceof window.GMapMarker) {
                     this.native.setCenter(value.position().native);
-                } else if (value instanceof GMapPoint) {
+                } else if (value instanceof window.GMapPoint) {
                     this.native.setCenter(value.native);
                 } else {
                     this.error('value should be a GMapPoint or GMapMarker instance');
@@ -681,6 +681,7 @@
             this.native.setOptions({
                 draggable: Boolean(value)
             });
+
             return this;
         };
 
@@ -688,9 +689,9 @@
             Плавное перемещение к точке
          */
         cls.panTo = function(center) {
-            if (center instanceof GMapMarker) {
+            if (center instanceof window.GMapMarker) {
                 var target = center.position();
-            } else if (center instanceof GMapPoint) {
+            } else if (center instanceof window.GMapPoint) {
                 target = center;
             } else {
                 this.error('value should be a GMapPoint or GMapMarker instance');
@@ -712,6 +713,7 @@
             this.native.setOptions({
                 scrollwheel: Boolean(value)
             });
+
             return this;
         };
 
@@ -727,6 +729,7 @@
             this.native.setOptions({
                 disableDoubleClickZoom: !Boolean(value)
             });
+
             return this;
         };
 
@@ -867,6 +870,7 @@
             this.native.setOptions({
                 zoomControl: Boolean(value)
             });
+
             return this;
         };
 
@@ -878,9 +882,9 @@
 
             var items = arguments.length ? arguments : this.markers;
             $.each(items, function(i, item) {
-                if (item instanceof GMapPoint) {
+                if (item instanceof window.GMapPoint) {
                     bounds.extend(item.native);
-                } else if (item instanceof GMapMarker) {
+                } else if (item instanceof window.GMapMarker) {
                     bounds.extend(item.position().native);
                 }
             });
@@ -931,7 +935,7 @@
             }, function(results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                     var native_point = results[0].geometry.location;
-                    success.call(that, GMapPoint.fromNative(native_point));
+                    success.call(that, window.GMapPoint.fromNative(native_point));
                 } else {
                     error.call(that, status, results);
                 }
@@ -956,7 +960,7 @@
     /*
         Выполнение callback, когда JS GoogleMaps загружен и готов
      */
-    GMap.ready = function(callback) {
+    window.GMap.ready = function(callback) {
         if (gmaps_ready) {
             callback()
         } else {

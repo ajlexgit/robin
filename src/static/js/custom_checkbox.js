@@ -16,7 +16,7 @@
             $('input[type="checkbox"]').checkbox()
     */
 
-    window.Checkbox = Class(null, function Checkbox(cls, superclass) {
+    window.Checkbox = Class(Object, function Checkbox(cls, superclass) {
         cls.defaults = {
             className: 'custom-checkbox',
             checkedClass: 'checked',
@@ -169,7 +169,7 @@
 
     $.fn.checkbox = function(options) {
         return this.each(function() {
-            Checkbox(this, options);
+            window.Checkbox(this, options);
         })
     }
 

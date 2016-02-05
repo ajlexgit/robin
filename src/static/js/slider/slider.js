@@ -97,7 +97,7 @@
 
     var sliders = [];
 
-    window.Slider = Class(null, function Slider(cls, superclass) {
+    window.Slider = Class(Object, function Slider(cls, superclass) {
         cls.defaults = {
             rootClass: 'slider-root',
             listWrapperClass: 'slider-list-wrapper',
@@ -608,7 +608,7 @@
     // ================================================
     //            Базовый класс плагина
     // ================================================
-    window.SliderPlugin = Class(null, function SliderPlugin(cls, superclass) {
+    window.SliderPlugin = Class(Object, function SliderPlugin(cls, superclass) {
         cls.defaults = {
             afterAttach: $.noop,
             onResize: $.noop
@@ -639,7 +639,7 @@
     // ================================================
     //          Плагин мгновенной анимации
     // ================================================
-    window.SliderInstantAnimation = Class(SliderPlugin, function SliderInstantAnimation(cls, superclass) {
+    window.SliderInstantAnimation = Class(window.SliderPlugin, function SliderInstantAnimation(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             name: 'instant'
         });

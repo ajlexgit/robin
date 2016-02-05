@@ -41,7 +41,7 @@ class LoginView(AjaxViewMixin, FormView):
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        })
+        }, status=400)
 
 
 class LogoutView(AjaxViewMixin, View):
@@ -83,7 +83,7 @@ class RegisterView(AjaxViewMixin, FormView):
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        })
+        }, status=400)
 
 
 class PasswordResetView(AjaxViewMixin, FormView):
@@ -124,7 +124,7 @@ class PasswordResetView(AjaxViewMixin, FormView):
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        })
+        }, status=400)
 
 
 class ResetConfirmView(AjaxViewMixin, FormView):
@@ -157,7 +157,7 @@ class ResetConfirmView(AjaxViewMixin, FormView):
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        })
+        }, status=400)
 
 
 class AvatarUploadView(AjaxViewMixin, View):

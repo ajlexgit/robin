@@ -20,7 +20,7 @@
     };
 
     var event_ns = 1;
-    window.Autocomplete = Class(null, function Autocomplete(cls, superclass) {
+    window.Autocomplete = Class(Object, function Autocomplete(cls, superclass) {
         cls.defaults = {
             url: '',
             depends: [],
@@ -174,7 +174,7 @@
         $('.autocomplete_widget').each(function() {
             var $this = $(this);
             if (!$this.closest('.empty-form').length) {
-                Autocomplete(this, $this.data());
+                window.Autocomplete(this, $this.data());
             }
         });
 
@@ -221,7 +221,8 @@
                         record.elem.select2("data", data);
                         record.callback(data);
                     });
-                }
+                },
+                error: $.parseError()
             });
         });
         mass_requests = {};
@@ -233,7 +234,7 @@
         if (window.Suit) {
             Suit.after_inline.register('autocomplete_widget', function(inline_prefix, row) {
                 row.find('.autocomplete_widget').each(function() {
-                    Autocomplete(this, $(this).data());
+                    window.Autocomplete(this, $(this).data());
                 });
             });
         }

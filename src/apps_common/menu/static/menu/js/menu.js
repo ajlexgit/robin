@@ -23,7 +23,7 @@
 
     var menus = [];
 
-    var Menu = Class(null, function Menu(cls, superclass) {
+    var Menu = Class(Object, function Menu(cls, superclass) {
         cls.init = function(options) {
             // настройки
             this.opts = $.extend({
@@ -65,6 +65,7 @@
             } else {
                 this.show()
             }
+
             return false;
         };
 

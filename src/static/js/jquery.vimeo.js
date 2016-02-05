@@ -194,7 +194,7 @@
     /*
         Выполнение callback, когда JS Vimeo загружен и готов
      */
-    Vimeo.ready = function(callback) {
+    window.Vimeo.ready = function(callback) {
         if (vimeo_ready) {
             callback()
         } else {

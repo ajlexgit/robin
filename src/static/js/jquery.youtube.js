@@ -287,7 +287,7 @@
     /*
         Выполнение callback, когда JS Youtube загружен и готов
      */
-    YouTube.ready = function(callback) {
+    window.YouTube.ready = function(callback) {
         if (youtube_ready) {
             callback()
         } else {

@@ -1,6 +1,7 @@
 (function($) {
 
     $(document).on('click', '.comment-delete', function() {
+        // Ссылка удаления комментария
         var button = $(this);
         $.ajax({
             url: window.admin_comments_delete,
@@ -8,11 +9,7 @@
             data: {
                 id: button.data('id')
             },
-            success: function(response) {
-                if (response.error) {
-                    alert(response.error);
-                    return;
-                }
+            success: function() {
                 button
                     .addClass('disabled')
                     .prop('disabled', true)
@@ -21,13 +18,12 @@
                     .find('button')
                     .removeClass('disabled')
                     .prop('disabled', false);
-            }
+            },
+            error: $.parseError()
         });
         return false;
-    });
-
-
-    $(document).on('click', '.comment-restore', function() {
+    }).on('click', '.comment-restore', function() {
+        // Ссылка восстановления комментария
         var button = $(this);
         $.ajax({
             url: window.admin_comments_restore,
@@ -35,11 +31,7 @@
             data: {
                 id: button.data('id')
             },
-            success: function(response) {
-                if (response.error) {
-                    alert(response.error);
-                    return;
-                }
+            success: function() {
                 button
                     .addClass('disabled')
                     .prop('disabled', true)
@@ -49,9 +41,7 @@
                     .removeClass('disabled')
                     .prop('disabled', false);
             },
-            error: function(xhr, status, text) {
-                console.log(arguments)
-            }
+            error: $.parseError()
         });
         return false;
     })

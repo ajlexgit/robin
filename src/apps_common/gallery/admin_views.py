@@ -298,7 +298,9 @@ class SortItems(GalleryViewMixin, AjaxAdminViewMixin, View):
             try:
                 item = self.gallery.items.model.objects.get(pk=item_id)
             except self.gallery.items.model.DoesNotExist:
-                raise Http404
+                return self.json_response({
+                    'message': _('Gallery item #%s not found' % item_id)
+                }, status=400)
             else:
                 item.sort_order = order
                 item.save()

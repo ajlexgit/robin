@@ -142,18 +142,7 @@
                 beforeSend: function() {
                     that.lock();
                 },
-                error: function(xhr) {
-                    if (xhr.responseText) {
-                        try {
-                            var response = $.parseJSON(xhr.responseText);
-                            if (response && response.message) {
-                                alert(response.message);
-                            }
-                        } catch (err) {
-
-                        }
-                    }
-                },
+                error: $.parseError(),
                 complete: function() {
                     that.unlock();
                 }
@@ -185,18 +174,7 @@
                 beforeSend: function() {
                     $item.addClass(that.opts.loadingClass);
                 },
-                error: function(xhr) {
-                    if (xhr.responseText) {
-                        try {
-                            var response = $.parseJSON(xhr.responseText);
-                            if (response && response.message) {
-                                alert(response.message);
-                            }
-                        } catch (err) {
-
-                        }
-                    }
-                },
+                error: $.parseError(),
                 complete: function() {
                     $item.removeClass(that.opts.loadingClass);
                 }
@@ -224,7 +202,8 @@
                 success: function(response) {
                     that.$wrapper.html(response.html);
                     that.initGallery(response.gallery_id);
-                }
+                },
+                error: $.parseError()
             });
         };
 
@@ -392,11 +371,11 @@
                     $preview.show();
                     $controls.show();
 
-                    if (json_response) {
+                    if (json_response && json_response.message) {
                         $preview.append(
                             $('<span>').html(formatError(file, json_response.message, true))
                         );
-                    } else {
+                    } else if (error && error.message) {
                         $preview.append(
                             $('<span>').html(formatError(file, error.message, true))
                         );
@@ -459,7 +438,8 @@
 
                     // event
                     that.trigger('delete.gallery');
-                }
+                },
+                error: $.parseError()
             });
         };
 
@@ -512,29 +492,20 @@
                     // event
                     that.trigger('item-add.gallery', $item, response);
                 },
-                error: function(xhr) {
+                error: $.parseError(function(response) {
                     var $preview = $item.find(that.opts.previewSelector);
-
                     $item.addClass(that.opts.errorClass);
-
                     $preview.show();
 
-                    if (xhr.responseText) {
-                        try {
-                            var response = $.parseJSON(xhr.responseText);
-                            if (response && response.message) {
-                                $preview.append(
-                                    $('<span>').html(response.message)
-                                );
-                            }
-                        } catch (err) {
-
-                        }
+                    if (response && response.message) {
+                        $preview.append(
+                            $('<span>').html(response.message)
+                        );
                     }
 
                     // event
                     that.trigger('item-error.gallery', $item, response);
-                },
+                }),
                 complete: function() {
                     $item.removeClass(that.opts.loadingClass);
                 }

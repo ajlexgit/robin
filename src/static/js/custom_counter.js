@@ -23,7 +23,7 @@
             $('.custom-counter').counter()
     */
 
-    window.CustomCounter = Class(null, function CustomCounter(cls, superclass) {
+    window.CustomCounter = Class(Object, function CustomCounter(cls, superclass) {
         cls.defaults = {
             wrapperClass: 'custom-counter-wrapper',
             buttonClass: 'custom-counter-button',
@@ -213,7 +213,7 @@
 
     $.fn.counter = function(options) {
         return this.each(function() {
-            CustomCounter(this, options);
+            window.CustomCounter(this, options);
         })
     }
 

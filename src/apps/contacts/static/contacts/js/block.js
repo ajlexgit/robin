@@ -16,7 +16,7 @@
                 }).show();
             },
             error: function() {
-                alert(gettext('Connection error'));
+                alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
             }
         });
@@ -44,26 +44,26 @@
             data: data,
             dataType: 'json',
             success: function(response) {
-                if (response.errors) {
-                    // ошибки формы
-                    $.popup({
-                        classes: 'contact-popup contact-form-popup',
-                        content: response.form
-                    }).show();
-                } else if (response.success_message) {
+                if (response.success_message) {
                     // сообщение о успешной отправке
                     $.popup({
                         classes: 'contact-popup contact-success-popup',
                         content: response.success_message
                     }).show();
-                } else {
-                    $.popup().hide();
                 }
             },
-            error: function() {
-                alert(gettext('Connection error'));
-                $.popup().hide();
-            }
+            error: $.parseError(function(response) {
+                if (response && response.form) {
+                    // ошибки формы
+                    $.popup({
+                        classes: 'contact-popup contact-form-popup',
+                        content: response.form
+                    }).show();
+                } else {
+                    alert(window.DEFAULT_AJAX_ERROR);
+                    $.popup().hide();
+                }
+            })
         });
         return false;
     });

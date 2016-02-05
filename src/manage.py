@@ -1,7 +1,6 @@
 import os
 import sys
 
-# scripts window.
 # dynamic menu, std pages
 # gallery client
 # drager: блокируется вертикальный скролл Android

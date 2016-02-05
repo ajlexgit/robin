@@ -19,7 +19,7 @@
             preloaderClass      - класс, который вешается на обертку при
                                   загрузке файла перед генерацией нового превью
      */
-    window.StdImage = Class(null, function StdImage(cls, superclass) {
+    window.StdImage = Class(Object, function StdImage(cls, superclass) {
         cls.defaults = {
             previewsSelector: '.previews',
             oldPreviewSelector: '.old-preview',
@@ -61,28 +61,9 @@
             // значение не установлено изначально
             this._wasEmpty = this.$root.hasClass(this.opts.emptyClass) || !this.$old_preview.length;
 
-
-            // вешаем класс при перетаскивании файла над полем
-            var that = this;
-            var drag_counter = 0;
-            this.$root.on('dragenter.stdimage', function() {
-                drag_counter++;
-                if (drag_counter == 1) {
-                    $(this).addClass(that.opts.dragOverClass);
-                }
-                return false;
-            }).on('dragleave.stdimage', function() {
-                drag_counter--;
-                if (drag_counter === 0) {
-                    $(this).removeClass(that.opts.dragOverClass);
-                }
-                return false;
-            }).on('drop.stdimage', function() {
-                drag_counter = 0;
-                var $this = $(this);
-                setTimeout(function() {
-                    $this.removeClass(that.opts.dragOverClass);
-                }, 0);
+            // обработчик перетаскивания файлов
+            this.dropper = FileDropper(this.$root, {
+                dragOverClass: this.opts.dragOverClass
             });
 
             // Изменение файла
@@ -97,6 +78,7 @@
             Освобождение ресурсов
          */
         cls.destroy = function() {
+            this.dropper.destroy();
             this.$root.off('.stdimage');
             this.$input.off('.stdimage');
             this.$root.removeData(this.DATA_KEY);
@@ -175,7 +157,7 @@
 
     $(document).ready(function() {
         $('.stdimage').each(function() {
-            StdImage(this);
+            window.StdImage(this);
         })
     })
 

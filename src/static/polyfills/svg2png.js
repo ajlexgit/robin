@@ -1,11 +1,16 @@
 (function() {
 
+    /*
+        Полифилл, подменяющий в стилях "background" и "background-image"
+        расширение ".svg" на ".png".
+     */
+
     var background_url = /url\((.*\.svg)\)/i;
     var svg = /\.svg/i;
 
 
     // получение абсолютного пути по относительному
-    function absolute(base, relative) {
+    var absolute = function(base, relative) {
         var stack = base.split("/"),
             parts = relative.split("/");
 
@@ -25,7 +30,7 @@
                 stack.push(parts[i]);
         }
         return stack.join("/");
-    }
+    };
 
 
     function doMatched(rules) {

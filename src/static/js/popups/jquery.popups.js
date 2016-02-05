@@ -388,7 +388,7 @@
     /*
         Модальное окно с оверлеем, кнопкой закрытия
      */
-    window.OverlayedPopup = Class(Popup, function OverlayedPopup(cls, superclass) {
+    window.OverlayedPopup = Class(window.Popup, function OverlayedPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             closeButton: true,
             hideOnClick: true
@@ -513,7 +513,7 @@
         if (options === undefined) {
             return getCurrentPopup();
         } else {
-            return OverlayedPopup(options);
+            return window.OverlayedPopup(options);
         }
     };
 

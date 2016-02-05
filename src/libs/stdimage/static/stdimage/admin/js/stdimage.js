@@ -1,7 +1,7 @@
 (function($) {
 
 
-    var StdImage = Class(null, function StdImage(cls, superclass) {
+    var StdImage = Class(Object, function StdImage(cls, superclass) {
         var MIN_WIDTH_ERROR = gettext('Image should not be less than %(limit)spx in width');
         var MIN_HEIGHT_ERROR = gettext('Image should not be less than %(limit)spx in height');
         var MAX_WIDTH_ERROR = gettext('Image should not be more than %(limit)spx in width');

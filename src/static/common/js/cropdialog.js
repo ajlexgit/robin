@@ -49,7 +49,7 @@
                 buttonSelector: 'button.crop'
             })
      */
-    window.CropDialog = Class(null, function CropDialog(cls, superclass) {
+    window.CropDialog = Class(Object, function CropDialog(cls, superclass) {
         cls.defaults = {
             eventTypes: touchClick,
             buttonSelector: 'button',

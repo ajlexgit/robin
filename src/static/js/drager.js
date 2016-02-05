@@ -122,7 +122,7 @@
     /*
         Движение по инерции
      */
-    var Momentum = Class(null, function Momentum(cls, superclass) {
+    var Momentum = Class(Object, function Momentum(cls, superclass) {
         cls.init = function(drager, event, momentumPoint) {
             this.lightness = drager.settings.momentumLightness;
             this.easing = drager.settings.momentumEasing;
@@ -181,7 +181,7 @@
 
     // ===============================================
 
-    var DragerEvent = Class(null, function DragerEvent(cls, superclass) {
+    var DragerEvent = Class(Object, function DragerEvent(cls, superclass) {
         cls.init = function(event, drager) {
             var mouseEvent = event;
             if (event.type.substr(0, 5) == 'touch') {
@@ -236,7 +236,7 @@
     // ===============================================
 
     var dragerID = 0;
-    window.Drager = Class(null, function Drager(cls, superclass) {
+    window.Drager = Class(Object, function Drager(cls, superclass) {
         cls.defaults = {
             preventDrag: true,
             preventClick: true,

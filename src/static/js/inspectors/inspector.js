@@ -7,7 +7,7 @@
             jquery.utils.js
      */
 
-    window.Inspector = Class(null, function Inspector(cls, superclass) {
+    window.Inspector = Class(Object, function Inspector(cls, superclass) {
         cls.defaults = {
             beforeCheck: $.noop,
             afterCheck: $.noop

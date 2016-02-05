@@ -9,7 +9,6 @@
         Ищет все элементы с классом "async-block",
         отправляет для каждого блока AJAX-запрос на получение
         HTML-кода блока. Результат заменяет исходный элемент.
-
      */
 
     window.AsyncBlock = Class(EventedObject, function AsyncBlock(cls, superclass) {
@@ -25,10 +24,10 @@
         cls.DATA_KEY = 'async-block';
 
 
-        cls.init = function($placeholder, options) {
+        cls.init = function(placeholder, options) {
             superclass.init.call(this);
 
-            this.$placeholder = $($placeholder).first();
+            this.$placeholder = $(placeholder).first();
             if (!this.$placeholder.length) {
                 return this.raise('placeholder not found');
             }
@@ -38,21 +37,21 @@
                 return this.raise('url is empty');
             }
 
-            this.$placeholder.data(this.DATA_KEY, this);
+            this.getBlock();
 
-            this.ajax();
+            this.$placeholder.data(this.DATA_KEY, this);
         };
 
         /*
             Запрос блока
          */
-        cls.ajax = function() {
+        cls.getBlock = function() {
             if (this._query) {
                 this._query.abort();
             }
 
             var data = $.extend({
-                referer: location.toString()
+                referer: location.href
             }, this.opts.extraData.call(this));
 
             var that = this;
@@ -62,15 +61,11 @@
                 data: data,
                 dataType: 'json',
                 success: function(response) {
-                    that.ajaxSuccess.call(that, response);
+                    that.ajaxSuccess(response);
                 },
-                error: function(xhr) {
-                    var response = {};
-                    if (xhr.responseText) {
-                        response = $.parseJSON(response.responseText);
-                    }
-                    that.ajaxError.call(that, response);
-                }
+                error: $.parseError(function(response) {
+                    that.ajaxError(response)
+                })
             });
         };
 
@@ -91,15 +86,15 @@
             Ошибка получения блока
          */
         cls.ajaxError = function(response) {
-            this.$placeholder.remove();
             this.trigger('error.asyncblock', response);
+            this.$placeholder.remove();
         };
     });
 
 
     $(document).ready(function() {
         $('.async-block').each(function() {
-            AsyncBlock(this);
+            window.AsyncBlock(this);
         });
     });
 

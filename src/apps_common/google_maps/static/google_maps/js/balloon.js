@@ -296,7 +296,7 @@
     /*
         Всплывающее окно, привязанное к маркеру
      */
-    window.GMapBalloon = Class(GMapBalloonBase, function GMapBalloon(cls, superclass) {
+    window.GMapBalloon = Class(window.GMapBalloonBase, function GMapBalloon(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             autoPan: true
         });

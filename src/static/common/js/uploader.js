@@ -68,7 +68,7 @@
                 onFileUploadError:      function(file, error, json_response) {},
             });
      */
-    window.Uploader = Class(null, function Uploader(cls, superclass) {
+    window.Uploader = Class(Object, function Uploader(cls, superclass) {
         cls.defaults = {
             url: '',
             buttonSelector: '',
@@ -182,11 +182,10 @@
             // область перетаскивания файлов
             if (this.opts.dropSelector) {
                 if (this.opts.dropSelector == 'self') {
-                    this.$drop = this.$root;
+                    config['drop_element'] = this.$root.get(0);
                 } else {
-                    this.$drop = this.$root.find(this.opts.dropSelector).first();
+                    config['drop_element'] = this.$root.find(this.opts.dropSelector).get(0);
                 }
-                config['drop_element'] = this.$drop.get(0);
             }
 
             // удаляем старый загрузчик и создаем новый
@@ -201,9 +200,6 @@
             Событие инициализации загрузчика
          */
         cls.InitHandler = function() {
-            // добавление класса на $root при перетаскивании файлов
-            this._initFileDrop();
-
             this.opts.onInit.call(this);
 
             // установка дополнительных данных загрузки
@@ -211,35 +207,6 @@
             if (extra_data) {
                 this.uploader.setOption('multipart_params', extra_data);
             }
-        };
-
-        /*
-            Добавление класса на $root при перетаскивании файлов
-         */
-        cls._initFileDrop = function() {
-            if (!this.uploader.features.dragdrop) {
-                return
-            }
-
-            var that = this;
-            var drag_counter = 0;
-            this.$drop.off('.uploader')
-                .on('dragenter.uploader', function() {
-                    drag_counter++;
-                    if (drag_counter == 1) {
-                        that.$root.addClass('dragover');
-                    }
-                }).on('dragleave.uploader', function() {
-                    drag_counter--;
-                    if (drag_counter === 0) {
-                        that.$root.removeClass('dragover');
-                    }
-                }).on('drop.uploader', function() {
-                    drag_counter = 0;
-                    setTimeout(function() {
-                        that.$root.removeClass('dragover');
-                    }, 0);
-                });
         };
 
         /*
@@ -261,10 +228,6 @@
             if (this.uploader) {
                 this.uploader.destroy();
                 this.uploader = null;
-            }
-
-            if (this.$drop && this.$drop.length) {
-                this.$drop.off('.uploader');
             }
 
             this.$root.removeData(this.DATA_KEY);
