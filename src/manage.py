@@ -1,7 +1,7 @@
 import os
 import sys
 
-# ie required picturefill
+# scripts window.
 # dynamic menu, std pages
 # gallery client
 # drager: блокируется вертикальный скролл Android
