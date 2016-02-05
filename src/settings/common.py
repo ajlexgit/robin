@@ -201,7 +201,7 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/jquery-2.1.4.min.js',
             'js/jquery-ui-effects.js',
-            'js/jquery.picturefill.min.js',
+            'polyfills/jquery.picturefill.min.js',
         ),
         'output_filename': 'js/head_core.js',
     },

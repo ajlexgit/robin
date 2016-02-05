@@ -24,7 +24,7 @@
   <script src="{% url 'jsi18n' %}"></script>
 
   <!--[if lte IE 9]>
-    <script type="text/javascript" src="/static/js/polyfills/es5_polyfill.js"></script>
+    <script type="text/javascript" src="/static/polyfills/es5_polyfill.js"></script>
   <![endif]-->
 
   {% opengraph %}
@@ -89,8 +89,8 @@
 {% endblock static_js %}
 
 <!--[if lte IE 9]>
-  <script type="text/javascript" src="/static/js/polyfills/flexie.min.js"></script>
-  <script type="text/javascript" src="/static/js/polyfills/respond.min.js"></script>
+  <script type="text/javascript" src="/static/polyfills/flexie.min.js"></script>
+  <script type="text/javascript" src="/static/polyfills/respond.min.js"></script>
 <![endif]-->
 
 {% seo_counters 'body_bottom' %}
