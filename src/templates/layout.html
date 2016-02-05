@@ -24,13 +24,13 @@
   <script src="{% url 'jsi18n' %}"></script>
 
   <!--[if lte IE 9]>
-    <script type="text/javascript" src="/static/polyfills/es5_polyfill.js"></script>
+    <script type="text/javascript" src="{% static 'polyfills/es5_polyfill.js' %}"></script>
   <![endif]-->
   <script>
       // for Picturefill.js
       document.createElement( "picture" );
   </script>
-  <script src="/static/polyfills/jquery.picturefill.min.js" async></script>
+  <script src="{% static 'polyfills/jquery.picturefill.min.js' %}" async></script>
 
   {% opengraph %}
 
@@ -94,10 +94,10 @@
 {% endblock static_js %}
 
 <!--[if lte IE 9]>
-  <script type="text/javascript" src="/static/polyfills/flexie.min.js"></script>
-  <script type="text/javascript" src="/static/polyfills/respond.min.js"></script>
-  <script type="text/javascript" src="/static/polyfills/polyfill.min.js"></script>
-  <script type="text/javascript" src="/static/polyfills/svg_to_png.js"></script>
+  <script type="text/javascript" src="{% static 'polyfills/flexie.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'polyfills/respond.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'polyfills/polyfill.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'polyfills/svg2png.js' %}"></script>
 <![endif]-->
 
 {% seo_counters 'body_bottom' %}
