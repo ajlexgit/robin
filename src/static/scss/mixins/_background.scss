@@ -36,3 +36,16 @@
 
   @return #{$offset_left + "%"} #{$offset_top + "%"}
 }
+
+/*
+  Полифилл для IE8-9.
+  Поддерживает только cover / contain.
+*/
+@mixin background-size($value) {
+	$polyfilled: (cover, contain);
+
+	background-size: $value;
+	@if ($value in $polyfilled) {
+		-ms-behavior: url(/static/polyfills/backgroundsize.min.htc);
+	}
+}
