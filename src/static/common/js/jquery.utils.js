@@ -130,7 +130,7 @@
 
         // установка прототипа, унаследованного от родительского
         var ClassObj = function() {
-            return ClassObj.create.apply(null, arguments);
+            return ClassObj.prototype.create.apply(null, arguments);
         };
         ClassObj.prototype = Object.create(parent && parent.prototype);
         ClassObj.prototype.constructor = ClassObj;
@@ -138,7 +138,7 @@
         ClassObj.prototype.__name__ = class_constructor.name;
 
         // конструктор экземпляров
-        ClassObj.create = function() {
+        ClassObj.prototype.create = function() {
             var obj = Object.create(ClassObj.prototype);
             obj.constructor = ClassObj;
 

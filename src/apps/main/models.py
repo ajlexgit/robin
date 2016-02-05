@@ -11,7 +11,7 @@ class ImageItem(GalleryImageItem):
     ADMIN_CLIENT_RESIZE = True
 
     SHOW_VARIATION = 'normal'
-    ADMIN_VARIATION = 'normal'
+    ADMIN_VARIATION = 'admin'
     ASPECTS = 'normal'
     VARIATIONS = dict(
         wide=dict(
@@ -25,7 +25,7 @@ class ImageItem(GalleryImageItem):
             size=(800, 600),
         ),
         admin=dict(
-            size=(200, 150),
+            size=(160, 120),
         ),
     )
 

@@ -127,9 +127,7 @@
         onResize: function(win_width) {
             if (win_width >= 1024) {
                 // скрытие на больших экранах
-                var $buttons = $(this.opts.buttonSelector);
-                $buttons.removeClass(this.opts.buttonActiveClass);
-                this.$menu.removeClass(this.opts.menuActiveClass);
+                this.hide();
             }
         }
     });
