@@ -42,9 +42,8 @@
 
         // замена SVG на PNG
         rules.each(function(rule) {
-            console.log(rule);
             var declarations = rule.getDeclaration();
-            var match, old_url, new_url;
+            var match, new_url;
 
             if ('background' in declarations) {
                 match = background_url.exec(declarations['background']);
