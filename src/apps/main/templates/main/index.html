@@ -17,6 +17,22 @@
 
 {% block content %}
 
+  <div class="section section-slider section-full-height">
+    <div class="section-inner">
+      <div class="slider no-slider">
+        {% for item in config.gallery.image_items %}
+          <img class="slider-item" src="{{ item.image.normal.url }}">
+        {% endfor %}
+
+        <div class="overlay">
+          <div class="grid-block">
+            <div class="title title-h1">Example title</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   {% render_attached_blocks config %}
 

@@ -166,6 +166,7 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
+            'scss/section_slider.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -211,11 +212,6 @@ PIPELINE_JS = {
             'common/js/jquery.ajax_csrf.js',
             'common/js/jquery.mousewheel.js',
 
-            'js/inspectors/inspector.js',
-            'js/inspectors/bg_inspector.js',
-            'js/inspectors/media_inspector.js',
-            'js/inspectors/visibility_inspector.js',
-
             'js/jquery.fitvids.js',
             'js/drager.js',
 
@@ -238,6 +234,7 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
+            'js/slider/win_height_slider.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

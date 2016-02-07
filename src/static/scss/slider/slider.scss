@@ -3,34 +3,48 @@
 
 .slider-root {
   position: relative;
+  height: inherit;
+  min-height: inherit;
   z-index: 1;
   @include no_fontsize;
 }
 
 .slider-list-wrapper {
   position: relative;
+  height: inherit;
+  min-height: inherit;
   z-index: 1;
 }
 
 .slider-list {
   position: relative;
   overflow: hidden;
+  height: inherit;
+  min-height: inherit;
   z-index: 1;
+  @include valign_after;
 }
 
 .slider-slide {
   position: absolute;
   overflow: hidden;
-  max-width: 100%;
-  top: 0;
-  left: -500%;
+  min-height: inherit;
   width: 100%;
+  left: -500%;
+  top: 0;
   z-index: 2;
-  @include transform(translateZ(0));
+}
 
-  img {
-    @include unselectable;
-  }
+.slider-item {
+  position: relative;
+  max-width: none;
+  min-width: 100%;
+  min-height: 100%;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  @include unselectable;
+  @include transform(translate(-50%, -50%));
 }
 
 .no-slider {
