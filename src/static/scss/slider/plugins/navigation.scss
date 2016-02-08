@@ -1,8 +1,12 @@
 @import "mixins";
 
-$item_size: 20px;
-$item_gap: 10px;
-$dot_size: 12px;
+$item_size: 16px;
+$dot_size: 10px;
+$item_gap: 4px;
+$dot_color: rgba($white, 0.3);
+$dot_hover_color: rgba($white, 0.6);
+$dot_active_color: rgba($white, 1);
+
 
 // Navigation
 .slider-navigation {
@@ -32,29 +36,25 @@ $dot_size: 12px;
 
     // dot
     span {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      display: inline-block;
       width: $dot_size;
       height: $dot_size;
-      z-index: 1;
       vertical-align: middle;
-      background-color: rgba(#3B91CA, 0.3);
+      background-color: $dot_color;
       @include border_radius(50%);
-      @include transform(translate(-50%, -50%));
-      @include transition-property(-webkit-transform, transform, color);
+      @include transition-property(background);
       @include transition-duration(0.3s);
     }
 
     &:hover {
       span {
-        background-color: rgba(#3B91CA, 0.5);
+        background-color: $dot_hover_color;
       }
     }
 
     &.active {
       span {
-        background-color: rgba(#3B91CA, 1);
+        background-color: $dot_active_color;
       }
     }
   }

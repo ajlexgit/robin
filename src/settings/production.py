@@ -17,7 +17,6 @@ ALLOWED_HOSTS = (
 )
 
 DEBUG = False
-
 TEMPLATE_DEBUG = False
 
 # настройки статики
@@ -47,6 +46,8 @@ SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS_HOST = 'localhost'
 SESSION_REDIS_PORT = 6379
 SESSION_REDIS_PREFIX = 'session'
+
+PIPELINE_SASS_ARGUMENTS = '-t compressed'
 
 LOGGING = {
     'version': 1,

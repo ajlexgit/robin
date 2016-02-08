@@ -21,21 +21,17 @@ $cols_mobile: 4;
 // Максимальная ширина сетки
 $grid_max_width: 1400px;
 
-// Боковые границы сетки
-$grid_padding_wide: 60px;
-$grid_padding: 40px;
-$grid_padding_tablet: 30px;
-$grid_padding_mobile: 16px;
-$grid_padding_micro: 10px;
-
 // Боковые границы каждого столбца
-$grid_space: 14px;
+$grid_column_gap: 14px;
 
-
-//=======================
-// Контентые блоки
-//=======================
-$block_paddings: 84px, 84px, 54px, 42px;
+// Боковые границы сетки
+$grid_paddings: (
+		($media1200, 0): 60px,
+		($media1024, $media1200): 40px,
+		($media768, $media1024): 30px,
+		($media640, $media768): 16px,
+		(0, $media640): 16px,
+);
 
 
 //=======================

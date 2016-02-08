@@ -19,6 +19,8 @@
 @import 'mixins/unselectable';
 @import 'conf';
 
+
+// Алиас для "@media screen and (min-width: $from) and (max-width: $to)"
 @mixin media_interval($from, $to) {
   $line: "";
 
@@ -39,69 +41,30 @@
   }
 }
 
-//============================================
-// Установка стилей из списка на каждый
-// media-интервал
-//============================================
-@mixin media_styles($values, $styles...) {
-  // 1200+
-  @each $style in $styles {
-    #{$style}: nth($values, 1);
-  }
 
-  // 1024 - 1200
-  @include media_interval($media1024, $media1200) {
-    @each $style in $styles {
-      #{$style}: nth($values, 2);
-    }
-  }
-
-  // 768 - 1024
-  @include media_interval($media768, $media1024) {
-    @each $style in $styles {
-      #{$style}: nth($values, 3);
-    }
-  }
-
-  @if length($values) <= 4 {
-    // 0 - 768
-    @include media_interval(0, $media768) {
-      @each $style in $styles {
-        #{$style}: nth($values, 4);
-      }
-    }
-  } @else {
-    // 0 - 640, 640 - 768
-    @include media_interval($media640, $media768) {
-      @each $style in $styles {
-        #{$style}: nth($values, 4);
-      }
-    }
-    @include media_interval(0, $media640) {
-      @each $style in $styles {
-        #{$style}: nth($values, 5);
-      }
-    }
-  }
+//===================================================
+//	Установка стилей CSS-свойства $property
+//  на основании карты вида:
+//
+//    (
+//      ($media768, $media1024): 80px,
+//      (0, $media768): 60px,
+//    )
+//===================================================
+@mixin media_map($property, $values) {
+	$type: type_of($values);
+	@if ($type == map) {
+		@each $media, $value in $values {
+			@include media_interval($media...) {
+				#{$property}: #{$value};
+			}
+		}
+	} @else {
+		#{$property}: #{$values};
+	}
 }
 
-@mixin grid-paddings($args...) {
-  $values: ($grid_padding_wide,
-  $grid_padding,
-  $grid_padding_tablet,
-  $grid_padding_mobile,
-  $grid_padding_micro);
-  @include media_styles($values, $args...);
-}
 
-@mixin grid-full-paddings($args...) {
-  $values: ($grid_padding_wide + $grid_space,
-  $grid_padding + $grid_space,
-  $grid_padding_tablet + $grid_space,
-  $grid_padding_mobile + $grid_space,
-  $grid_padding_micro + $grid_space);
-  @include media_styles($values, $args...);
-}
 
 @mixin fontsize_default() {
   @include font-size(16px);

@@ -1,11 +1,27 @@
 @import 'mixins';
 
-// размеры окна (1024+, 640-1024, 480-640, 0-480)
-$width: 260px, 250px, 200px, 150px;
-$height: 180px, 160px, 120px, 100px;
 
-// размеры прелоадера (1024+, 640-1024, 480-640, 0-480)
-$image_size: 80px, 70px, 60px, 50px;
+// размеры окна
+$window_width: (
+		($media1024, 0): 260px,
+		($media640, $media1024): 250px,
+		($media480, $media640): 200px,
+		(0, $media480): 150px,
+);
+$window_height: (
+		($media1024, 0): 180px,
+		($media640, $media1024): 160px,
+		($media480, $media640): 120px,
+		(0, $media480): 100px,
+);
+
+// размеры прелоадера
+$image_size: (
+		($media1024, 0): 80px,
+		($media640, $media1024): 70px,
+		($media480, $media640): 60px,
+		(0, $media480): 50px,
+);
 
 // цвет прелоадера
 $image_color: #82BD36;
@@ -19,40 +35,16 @@ $image_color: #82BD36;
   .popup-content {
     padding: 0;
     min-height: 0;
-    width: nth($width, 1);
-    height: nth($height, 1);
     text-align: center;
     @include valign_after;
-    @include media_interval($media640, $media1024) {
-      width: nth($width, 2);
-      height: nth($height, 2);
-    }
-    @include media_interval($media480, $media640) {
-      width: nth($width, 3);
-      height: nth($height, 3);
-    }
-    @include media_interval(0, $media480) {
-      width: nth($width, 4);
-      height: nth($height, 4);
-    }
+	  @include media_map(width, $window_width);
+	  @include media_map(height, $window_height);
   }
 
   svg {
-    width: nth($image_size, 1);
-    height: nth($image_size, 1);
     fill: $image_color;
     vertical-align: middle;
-    @include media_interval($media640, $media1024) {
-      width: nth($image_size, 2);
-      height: nth($image_size, 2);
-    }
-    @include media_interval($media480, $media640) {
-      width: nth($image_size, 3);
-      height: nth($image_size, 3);
-    }
-    @include media_interval(0, $media480) {
-      width: nth($image_size, 4);
-      height: nth($image_size, 4);
-    }
+	  @include media_map(width, $image_size);
+	  @include media_map(height, $image_size);
   }
 }

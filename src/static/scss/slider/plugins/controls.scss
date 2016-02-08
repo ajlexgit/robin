@@ -19,6 +19,7 @@ $arrow_height: 50px;
     position: absolute;
     left: 50%;
     top: 50%;
+	  max-width: 60%;
     width: $arrow_width;
     @include transform(translate3d(-50%, -50%, 0));
 

@@ -1,10 +1,19 @@
 @import 'mixins';
 
-// отступы сверху (1024+, 640-1024, 480-640, 0-480)
-$window_vertical_margin: 60px, 50px, 40px, 40px;
+// вертикальные отступы окна
+$window_margin: (
+		($media1024, 0): 60px,
+		($media640, $media1024): 50px,
+		($media480, $media640): 40px,
+		(0, $media480): 40px,
+);
 
-// максимальная ширина окна (1024+, 640-1024, 480-640, 0-480)
-$max_width: 70%, 80%, 80%, 90%;
+// максимальная ширина окна
+$window_max_width: (
+		($media1024, 0): 70%,
+		($media480, $media1024): 80%,
+		(0, $media480): 90%,
+);
 
 // цвет фона
 $background_color: #C0C0C0;
@@ -52,27 +61,14 @@ $close_btn_weight: 3px;
   .popup-window {
     display: inline-block;
     position: relative;
-    max-width: nth($max_width, 1);
-    margin: nth($window_vertical_margin, 1) auto;
+	  margin: 0 auto;
     z-index: 1;
     text-align: left;
     vertical-align: middle;
     @include border-box;
-    @include media_interval($media640, $media1024) {
-      max-width: nth($max_width, 2);
-      margin-top: nth($window_vertical_margin, 2);
-      margin-bottom: nth($window_vertical_margin, 2);
-    }
-    @include media_interval($media480, $media640) {
-      max-width: nth($max_width, 3);
-      margin-top: nth($window_vertical_margin, 3);
-      margin-bottom: nth($window_vertical_margin, 3);
-    }
-    @include media_interval(0, $media480) {
-      max-width: nth($max_width, 4);
-      margin-top: nth($window_vertical_margin, 4);
-      margin-bottom: nth($window_vertical_margin, 4);
-    }
+	  @include media_map(margin-top, $window_margin);
+	  @include media_map(margin-bottom, $window_margin);
+	  @include media_map(max-width, $window_max_width);
   }
 
   .popup-content {

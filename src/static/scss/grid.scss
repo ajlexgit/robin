@@ -5,21 +5,23 @@
   width: 100%;
   max-width: $grid_max_width;
   @include border-box;
-  @include grid-full-paddings(padding-left, padding-right);
+	@include media_map(padding-left, $grid_paddings);
+	@include media_map(padding-right, $grid_paddings);
   @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
   }
 }
 
 .grid {
-  @extend .grid-block;
   @include clearfix;
-  @include grid-paddings(padding-left, padding-right);
+  @extend .grid-block;
+  @include media_map(padding-left, $grid_paddings);
+	@include media_map(padding-right, $grid_paddings);
 }
 
 .gc {
   min-height: 1px;
-  padding: 0 $grid_space;
+  padding: 0 $grid_column_gap;
   @include border-box;
 }
 
