@@ -42,63 +42,63 @@
   {% seo_counters 'head' %}
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
-{% seo_counters 'body_top' %}
+  {% seo_counters 'body_top' %}
 
-<div id="wrapper">
-  {% block header %}
-    <div id="header-wrapper">
-      <div id="header-cell">
-        {% if not is_main_page %}
-          <!--noindex-->
-        {% endif %}
+  <div id="wrapper">
+    {% block header %}
+      <div id="header-wrapper">
+        <div id="header-cell">
+          {% if not is_main_page %}
+            <!--noindex-->
+          {% endif %}
 
-        {% block header_content %}
-          {% header %}
-        {% endblock header_content %}
+          {% block header_content %}
+            {% header %}
+          {% endblock header_content %}
 
-        {% if not is_main_page %}
-          <!--/noindex-->
-        {% endif %}
+          {% if not is_main_page %}
+            <!--/noindex-->
+          {% endif %}
+        </div>
+      </div>
+    {% endblock header %}
+
+    <div id="content-wrapper">
+      <div id="content">
+        {% block content %}{% endblock content %}
       </div>
     </div>
-  {% endblock header %}
 
-  <div id="content-wrapper">
-    <div id="content">
-      {% block content %}{% endblock content %}
-    </div>
+    {% block footer %}
+      <div id="footer-wrapper">
+        <div id="footer-cell">
+          {% if not is_main_page %}
+            <!--noindex-->
+          {% endif %}
+
+          {% block footer_content %}
+            {% footer %}
+          {% endblock footer_content %}
+
+          {% if not is_main_page %}
+            <!--/noindex-->
+          {% endif %}
+        </div>
+      </div>
+    {% endblock footer %}
   </div>
 
-  {% block footer %}
-    <div id="footer-wrapper">
-      <div id="footer-cell">
-        {% if not is_main_page %}
-          <!--noindex-->
-        {% endif %}
+  {% block static_js %}
+    {% js_storage_out %}
+    {% javascript 'core' %}
+  {% endblock static_js %}
 
-        {% block footer_content %}
-          {% footer %}
-        {% endblock footer_content %}
+  <!--[if lte IE 9]>
+    <script type="text/javascript" src="{% static 'polyfills/respond.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'polyfills/polyfill.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'polyfills/svg2png.js' %}"></script>
+  <![endif]-->
 
-        {% if not is_main_page %}
-          <!--/noindex-->
-        {% endif %}
-      </div>
-    </div>
-  {% endblock footer %}
-</div>
-
-{% block static_js %}
-  {% js_storage_out %}
-  {% javascript 'core' %}
-{% endblock static_js %}
-
-<!--[if lte IE 9]>
-  <script type="text/javascript" src="{% static 'polyfills/respond.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'polyfills/polyfill.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'polyfills/svg2png.js' %}"></script>
-<![endif]-->
-
-{% seo_counters 'body_bottom' %}
+  {% seo_counters 'body_bottom' %}
 </body>
 </html>

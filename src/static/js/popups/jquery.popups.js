@@ -99,6 +99,7 @@
 
     // текущее окно
     var currentPopup = null;
+    var isIPhone = navigator.userAgent.match(/(iPhone|iPod|iPad)/i);
 
     /*
         Получение текущего окна
@@ -199,10 +200,21 @@
 
         // Скрытие дефолтного скроллбара
         cls._hideScrollbar = function() {
+            var body_data = $body.data();
             var body_padding = parseInt($body.css('paddingRight')) || 0;
-            document.body._popup_padding = body_padding;
+            body_data._popup_padding = body_padding;
+
+            if (isIPhone) {
+                // fix for iOs
+                body_data._popup_scroll = $body.scrollTop();
+                $('#wrapper').css({
+                    position: 'fixed',
+                    transform: 'translateY(' + (-body_data._popup_scroll) + 'px)'
+                })
+            }
 
             $body.addClass(this.BODY_OPENED_CLASS);
+
 
             if (this._hasScrollBar()) {
                 $body.css({
@@ -213,9 +225,9 @@
 
         // Показ дефолтного скроллбара
         cls._showScrollbar = function() {
-            if (document.body._popup_padding !== undefined) {
-                var body_padding = parseInt(document.body._popup_padding) || 0;
-                delete document.body._popup_padding;
+            var body_data = $body.data();
+            if (body_data._popup_padding !== undefined) {
+                var body_padding = parseInt(body_data._popup_padding) || 0;
 
                 $body.css({
                     paddingRight: body_padding
@@ -223,6 +235,17 @@
             }
 
             $body.removeClass(this.BODY_OPENED_CLASS);
+
+            if (isIPhone) {
+                // fix for iOs
+                $('#wrapper').css({
+                    position: '',
+                    transform: ''
+                });
+                $body.scrollTop(body_data._popup_scroll || 0);
+            }
+
+            $body.removeData('_popup_padding _popup_scroll');
         };
 
         //=======================
@@ -388,7 +411,7 @@
     /*
         Модальное окно с оверлеем, кнопкой закрытия
      */
-    window.OverlayedPopup = Class(window.Popup, function OverlayedPopup(cls, superclass) {
+    window.OverlayedPopup = Class(Popup, function OverlayedPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             closeButton: true,
             hideOnClick: true
@@ -513,7 +536,7 @@
         if (options === undefined) {
             return getCurrentPopup();
         } else {
-            return window.OverlayedPopup(options);
+            return OverlayedPopup(options);
         }
     };
 
