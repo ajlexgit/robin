@@ -20,12 +20,12 @@
 
             var $fromSlide = slider.$currentSlide.css({
                 left: '0',
-                zIndex: 4
+                zIndex: 7
             });
             $toSlide.css({
                 left: '0',
                 opacity: 0,
-                zIndex: 3
+                zIndex: 6
             });
             slider.setCurrentSlide($toSlide);
 

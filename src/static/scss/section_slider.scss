@@ -55,15 +55,15 @@
     }
   }
 
+	.slider-item {
+    position: absolute;
+  }
+
   // до загрузки JS
   .no-slider {
     height: 100%;
     min-height: inherit;
     @include valign_after;
-
-    .slider-item:nth-of-type(1) {
-      position: absolute;
-    }
   }
 
   // после загрузки JS

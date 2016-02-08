@@ -1,7 +1,7 @@
 @import "mixins";
 
-$arrow_width: 40px;
-$arrow_height: 40px;
+$arrow_width: 26px;
+$arrow_height: 50px;
 
 
 // Controls
@@ -27,7 +27,7 @@ $arrow_height: 40px;
       display: block;
       height: 0;
       padding-bottom: #{100 * ($arrow_height / $arrow_width) + "%"};
-      background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, 0px, 0px);
+      background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, 0px, -56px);
       background-size: rel-background-size($arrow_width, $arrow_height);
     }
   }

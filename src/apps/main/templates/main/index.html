@@ -21,7 +21,10 @@
     <div class="section-inner">
       <div class="slider no-slider">
         {% for item in config.gallery.image_items %}
-          <img class="slider-item" src="{{ item.image.normal.url }}">
+          <img class="slider-item" src="{{ item.image.wide.url }}"
+               srcset="{{ item.image.wide.srcset }},
+                       {{ item.image.normal.srcset }},
+                       {{ item.image.mobile.srcset }}" sizes="100vw">
         {% endfor %}
 
         <div class="overlay">

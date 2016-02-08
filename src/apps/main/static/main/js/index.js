@@ -8,6 +8,8 @@
         }).attachPlugins([
             SliderSideAnimation({}),
             SliderSideShortestAnimation({}),
+            SliderFadeAnimation({}),
+            SliderDragPlugin({}),
             SliderControlsPlugin({
                 animationName: 'side-shortest'
             }),
