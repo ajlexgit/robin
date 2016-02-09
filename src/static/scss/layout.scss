@@ -88,14 +88,7 @@ body {
   }
 
   .section-video {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    min-width: 100.2%;
-    min-height: 100.2%;
-    z-index: 3;
-    @include backface-visibility(hidden);
-    @include transform(translate3d(-50%, -50%, 0));
+    @include centrizeImage($zIndex: 3);
 
     &::-webkit-media-controls {
       display: none;

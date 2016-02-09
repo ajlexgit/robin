@@ -1,41 +1,41 @@
 @import 'mixins';
 
 /*
-  Для случая слайдера фоток на фоне блока с единым контентом под все слайды.
+    Для случая слайдера фоток на фоне блока с единым контентом под все слайды.
 
-  Если блок должен быть на всю высоту, то в JS следует создавать
-  WinHeightSlider вместо обычного Slider.
+    Если блок должен быть на всю высоту, то в JS следует создавать
+    WinHeightSlider вместо обычного Slider.
 
-  <div class="section section-slider section-full-height">
-    <div class="section-inner">
-      <div class="slider no-slider">
-        <img class="slider-item" src="{% static 'pic1.jpg' %}">
-        <img class="slider-item" src="{% static 'pic2.jpg' %}">
+    <div class="section section-slider section-full-height">
+      <div class="section-inner">
+        <div class="slider no-slider">
+          <img class="slider-item" src="{% static 'pic1.jpg' %}">
+          <img class="slider-item" src="{% static 'pic2.jpg' %}">
 
-        <div class="overlay">
-          <div class="grid-block">
-            ...
+          <div class="overlay">
+            <div class="grid-block">
+              ...
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  JS:
-    WinHeightSlider('.top-section .slider', {
-      loop: true,
-      itemSelector: '.slider-item'
-    }).attachPlugins([
-      SliderSideAnimation({}),
-      SliderSideShortestAnimation({}),
-      SliderControlsPlugin({
-        animationName: 'side-shortest'
-      }),
-      SliderNavigationPlugin({
-        animationName: 'side',
-        container: '.slider-list-wrapper'
-      })
-    ]);
+    JS:
+      WinHeightSlider('.top-section .slider', {
+          loop: true,
+          itemSelector: '.slider-item'
+      }).attachPlugins([
+          SliderSideAnimation({}),
+          SliderSideShortestAnimation({}),
+          SliderControlsPlugin({
+              animationName: 'side-shortest'
+          }),
+          SliderNavigationPlugin({
+              animationName: 'side',
+              container: '.slider-list-wrapper'
+          })
+      ]);
 */
 
 .section-slider {

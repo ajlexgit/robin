@@ -37,7 +37,7 @@
             popup.destroy()
 
         События:
-            ready   - окно создано и готово к показу
+            ready   - окно создано и готово к показу (метод show() уже вызван)
             show    - окно стало видимым
             hide    - окно стало скрытым, но ещё присутствует в DOM
 
@@ -60,6 +60,10 @@
                 content: '<h1 class="title-h1">Overlayed popup</h1>'
             }).show()
 
+            // Динамическое содержимое окна
+            $.popup({}).on('ready', function() {
+                this.$content.prepend('<h1>Hello</h1>')
+            }).show()
 
             // Показ окна с выводом сообщения после окончания анимации
             popup.on('show', function() {

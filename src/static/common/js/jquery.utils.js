@@ -13,7 +13,7 @@
     // ======================================================================================
     //      Обработчик AJAX-ошибок.
     //      Ничего не делает, если запрос был прерван (aborted).
-    //      Иначе, вызывает callback с ответом в виде JSON-объекта
+    //      Иначе, вызывает callback с ответом сервера в виде JSON-объекта
     //      (если удалось этот объект распарсить).
     // ======================================================================================
 
@@ -234,7 +234,7 @@
     // ======================================================================================
     //      Класс с событиями.
     //
-    //      Имена событий и пространств имен не чувствительны к регистру
+    //      Имена событий и пространств имен не чувствительны к регистру.
     // ======================================================================================
 
     window.EventedObject = Class(Object, function EventedObject(cls, superclass) {
@@ -362,25 +362,29 @@
                 return this;
             }
 
+            // получаем массив обработчиков
             var evt_list = this._events[evt_info.name];
-            if (evt_list) {
-                var i = 0;
-                var record;
-                while (record = evt_list[i++]) {
-                    if (this._isEveryNamespaces(record, evt_info.namespaces)) {
-                        var result = record.handler.apply(this, [record].concat(args));
-                        if (record.once) {
-                            i--;
-                            evt_list.splice(i, 1);
-                        }
+            if (!evt_list) {
+                return this;
+            }
 
-                        // stop propagate
-                        if (result === false) {
-                            break
-                        }
+            var i = 0;
+            var record;
+            while (record = evt_list[i++]) {
+                if (this._isEveryNamespaces(record, evt_info.namespaces)) {
+                    var result = record.handler.apply(this, [record].concat(args));
+                    if (record.once) {
+                        i--;
+                        evt_list.splice(i, 1);
+                    }
+
+                    // stop propagate
+                    if (result === false) {
+                        break
                     }
                 }
             }
+
             return this;
         };
 
@@ -413,6 +417,7 @@
                     }
                 }
             }
+
             return this;
         };
     });

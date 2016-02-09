@@ -17,8 +17,9 @@
 
 {% block content %}
 
-  <div class="section section-slider section-full-height">
+  <div id="main-slider" class="section section-slider section-full-height">
     <div class="section-inner">
+
       <div class="slider no-slider">
         {% for item in config.gallery.image_items %}
           <img class="slider-item" src="{{ item.image.wide.url }}"
@@ -33,6 +34,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
