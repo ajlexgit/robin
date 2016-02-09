@@ -65,6 +65,21 @@
 }
 
 
+//=========================================
+//  Вертикальное и горизонтальное
+//  центрирование картинки.
+//=========================================
+@mixin centrizeImage($zIndex: 1) {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	min-width: 100.2%;    // учет погрешности округления
+	min-height: 100.2%;
+	max-width: none;
+	z-index: #{$zIndex};
+	@include transform(translate(-50%, -50%));
+}
+
 
 @mixin fontsize_default() {
   @include font-size(16px);

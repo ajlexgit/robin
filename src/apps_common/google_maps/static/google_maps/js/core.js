@@ -702,6 +702,23 @@
         };
 
         /*
+            Смещение центра на заданное расстояние
+         */
+        cls.panBy = function(dx, dy) {
+            dx = parseFloat(dx);
+            dy = parseFloat(dy);
+
+            if (isNaN(dx)) {
+                this.raise('dx should be a number');
+            }
+            if (isNaN(dy)) {
+                this.raise('dy should be a number');
+            }
+
+            this.native.panBy(dx, dy);
+        };
+
+        /*
             Получение / установка зума карты через колесико
          */
         cls.wheel = function(value) {

@@ -45,7 +45,7 @@ def process_tag(tag, valid_tags=()):
 @register.filter(is_safe=True, name="striptags_except")
 def strip_tags_except_filter(html, args):
     """
-        Удаление HTML-тэгов, кроме перечисленных в valid_tags.
+        Удаление HTML-тэгов, кроме перечисленных в аргументе.
 
         Пример:
             {{ text|striptags_except:"a, p" }}
@@ -75,15 +75,36 @@ def typograf(html):
     return soup.body.decode_contents().replace('\xa0', '&nbsp;')
 
 
-@register.filter(is_safe=True)
-def paragraphs(text):
+@register.filter(is_safe=True, needs_autoescape=True)
+def paragraphs(text, autoescape=True):
     """
         Разбивка текста на параграфы в местах переносов строк
     """
     text = re_clean_newlines.sub('\n', text)
     text = re_many_newlines.sub('\n', text)
-    result = '<p>%s</p>' % '</p><p>'.join(text.strip().split('\n'))
-    return result
+    text_lines = text.strip().split('\n')
+
+    if autoescape:
+        text_lines = map(escape, text_lines)
+
+    result = '<p>%s</p>' % '</p><p>'.join(text_lines)
+    return mark_safe(result)
+
+
+@register.filter(is_safe=True, needs_autoescape=True)
+def lines(text, autoescape=True):
+    """
+        Разбивка текста на список по строкам
+    """
+    text = re_clean_newlines.sub('\n', text)
+    text = re_many_newlines.sub('\n', text)
+    text_lines = text.strip().split('\n')
+
+    if autoescape:
+        text_lines = map(escape, text_lines)
+
+    result = '<li>%s</li>' % '</li><li>'.join(text_lines)
+    return mark_safe(result)
 
 
 @register.filter(needs_autoescape=True)
@@ -99,6 +120,9 @@ def clean(html, autoescape=None):
 
 @register.filter(is_safe=True)
 def softhyphen(value):
+    """
+        Вставка невидимых переносов в слова
+    """
     cache = caches['default']
     language = settings.LANGUAGE_CODE
 
