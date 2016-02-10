@@ -5,8 +5,8 @@
   width: 100%;
   max-width: $grid_max_width;
   @include border-box;
-	@include media_map(padding-left, $grid_paddings);
-	@include media_map(padding-right, $grid_paddings);
+  @include media_map(padding-left, $grid_paddings);
+  @include media_map(padding-right, $grid_paddings);
   @include media_interval($grid_max_width, 0) {
     margin: 0 auto;
   }
@@ -16,7 +16,7 @@
   @include clearfix;
   @extend .grid-block;
   @include media_map(padding-left, $grid_paddings);
-	@include media_map(padding-right, $grid_paddings);
+  @include media_map(padding-right, $grid_paddings);
 }
 
 .gc {

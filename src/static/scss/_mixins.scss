@@ -19,7 +19,6 @@
 @import 'mixins/unselectable';
 @import 'conf';
 
-
 // Алиас для "@media screen and (min-width: $from) and (max-width: $to)"
 @mixin media_interval($from, $to) {
   $line: "";
@@ -41,7 +40,6 @@
   }
 }
 
-
 //===================================================
 //	Установка стилей CSS-свойства $property
 //  на основании карты вида:
@@ -52,34 +50,32 @@
 //    )
 //===================================================
 @mixin media_map($property, $values) {
-	$type: type_of($values);
-	@if ($type == map) {
-		@each $media, $value in $values {
-			@include media_interval($media...) {
-				#{$property}: #{$value};
-			}
-		}
-	} @else {
-		#{$property}: #{$values};
-	}
+  $type: type_of($values);
+  @if ($type == map) {
+    @each $media, $value in $values {
+      @include media_interval($media...) {
+        #{$property}: #{$value};
+      }
+    }
+  } @else {
+    #{$property}: #{$values};
+  }
 }
-
 
 //=========================================
 //  Вертикальное и горизонтальное
 //  центрирование картинки.
 //=========================================
 @mixin centrizeImage($zIndex: 1, $minSize: 100%) {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	min-width: #{$minSize};
-	min-height: #{$minSize};
-	max-width: none;
-	z-index: #{$zIndex};
-	@include transform(translate(-50%, -50%));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  min-width: #{$minSize};
+  min-height: #{$minSize};
+  max-width: none;
+  z-index: #{$zIndex};
+  @include transform(translate(-50%, -50%));
 }
-
 
 @mixin fontsize_default() {
   @include font-size(16px);
