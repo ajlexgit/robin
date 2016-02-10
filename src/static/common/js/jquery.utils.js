@@ -905,7 +905,9 @@
         xhr.open('GET', url, true);
 
         // Hack to pass bytes through unprocessed.
-        xhr.overrideMimeType('text/plain; charset=x-user-defined');
+        if (xhr.overrideMimeType) {
+            xhr.overrideMimeType('text/plain; charset=x-user-defined');
+        }
 
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {

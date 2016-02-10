@@ -29,7 +29,7 @@ class ModelAdminInlineMixin:
         models.TextField: {
             'widget': AutosizedTextarea(attrs={
                 'class': 'full-width',
-                'rows': 3,
+                'rows': 2,
             })
         },
         models.DateTimeField: {

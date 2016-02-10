@@ -69,12 +69,12 @@
 //  Вертикальное и горизонтальное
 //  центрирование картинки.
 //=========================================
-@mixin centrizeImage($zIndex: 1) {
+@mixin centrizeImage($zIndex: 1, $minSize: 100%) {
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	min-width: 100%;
-	min-height: 100%;
+	min-width: #{$minSize};
+	min-height: #{$minSize};
 	max-width: none;
 	z-index: #{$zIndex};
 	@include transform(translate(-50%, -50%));
