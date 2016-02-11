@@ -24,6 +24,8 @@ STATIC_ROOT = '/home/webapp/%s/static/' % VZ_DIRECTORY
 MEDIA_ROOT = '/home/webapp/%s/media/' % VZ_DIRECTORY
 BACKUP_ROOT = '/home/webapp/%s/backup/' % VZ_DIRECTORY
 
+PIPELINE_SASS_ARGUMENTS = '-t compressed'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
