@@ -1,9 +1,7 @@
 import os
 import sys
 
-# flex-basis 0 -> 0px
 # popups: creade DOM early
-# transition -webkit-transform
 # dynamic menu, std pages
 # gallery client
 # drager: блокируется вертикальный скролл Android

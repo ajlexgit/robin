@@ -1,3 +1,5 @@
+@import "__lists";
+
 @mixin flexbox() {
   display: -webkit-box;
   display: -moz-box;
@@ -89,6 +91,11 @@
 
 // length | auto
 @mixin flex-basis($basis) {
+  @if ($basis == 0) {
+    // IE fix
+    $basis: 0%;
+  }
+
   -webkit-box-flex-basis: $basis;
   -moz-box-flex-basis: $basis;
   -webkit-flex-basis: $basis;
@@ -107,9 +114,19 @@
 
 // none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
 @mixin flex($args...) {
-  -webkit-box-flex: $args;
-  -moz-box-flex: $args;
-  -webkit-flex: $args;
-  -ms-flex: $args;
-  flex: $args;
+  $result: ();
+  $params: nth($args, 1);
+
+  // IE fix
+  @if ((length($params) == 3) and (nth($params, 3) == 0)) {
+    $result: replace-nth($params, 3, 0%);
+  } @else {
+    $result: $params;
+  }
+
+  -webkit-box-flex: $result;
+  -moz-box-flex: $result;
+  -webkit-flex: $result;
+  -ms-flex: $result;
+  flex: $result;
 }

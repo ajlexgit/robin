@@ -18,8 +18,7 @@ header {
     padding: 0 0 3px 0;
     background-color: rgba(0, 0, 0, 0.7);
     @include transform(translateY(100%));
-    @include transition-property(-webkit-transform, transform);
-    @include transition-duration(0.2s);
+    @include transition(transform 0.2s);
 
     a {
       display: block;

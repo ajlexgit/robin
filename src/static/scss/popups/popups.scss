@@ -129,8 +129,7 @@ $close_btn_weight: 3px;
     top: 10px;
     right: 10px;
     @include transform(scale(0.8));
-    @include transition-property(-webkit-transform, transform);
-    @include transition-duration(0.2s);
+    @include transition(transform 0.2s);
 
     &:hover {
       @include transform(scale(1));

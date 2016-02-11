@@ -89,9 +89,7 @@ $arrow_space: 6px;      // расстояние между маркером и �
     width: 18px;
     height: 18px;
     @include transform(scale(0.75));
-    @include transition-property(-webkit-transform, transform);
-    @include transition-duration(0.2s);
-    @include transition-timing-function(ease-in);
+    @include transition(transform 0.2s ease-in);
 
     &:before, &:after {
       height: 2px;
