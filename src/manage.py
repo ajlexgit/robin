@@ -1,17 +1,16 @@
 import os
 import sys
 
-# popups: creade DOM early
-# dynamic menu, std pages
 # gallery client
-# drager: блокируется вертикальный скролл Android
+# dynamic menu, std pages
 # slider: dynamic margin
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
 # Parallax наизнанку
 # виджет выбора ссылки на сущность
-# подумать над плагином "конструктор плагина"
+# drager: блокируется вертикальный скролл Android
+# подумать над плагином "конструктор галереи"
 
 # Слайдер - блокировка при некотром условии
 # AJAX-авторизация на странице регистрации
