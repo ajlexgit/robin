@@ -18,18 +18,7 @@
 
 
         cls.init = function() {
-            this._list = [];
-        };
-
-        /*
-            Удаление элемента из инспектирования, если он есть
-         */
-        cls._ignoreElement = function($element) {
-            var index = this._list.indexOf($element.get(0));
-            if (index >= 0) {
-                $element.removeData(this.OPTS_DATA_KEY + ' ' + this.STATE_DATA_KEY);
-                this._list.splice(index, 1);
-            }
+            this._selectors = [];
         };
 
         /*
@@ -44,6 +33,13 @@
          */
         cls._setOpts = function($element, opts) {
             $element.first().data(this.OPTS_DATA_KEY, opts);
+        };
+
+        /*
+            Получение состояния DOM-элемента
+         */
+        cls.getState = function($element) {
+            return $element.first().data(this.STATE_DATA_KEY);
         };
 
         /*
@@ -72,23 +68,12 @@
         // ================================================================
 
         /*
-            Получение состояния DOM-элемента
+            Функция, проверяющая условие инспектирования на элементах или селекторе
          */
-        cls.getState = function($element) {
-            return $element.first().data(this.STATE_DATA_KEY);
-        };
-
-        /*
-            Функция, проверяющая некоторое условие на DOM-элементе
-         */
-        cls.check = function($elements, options) {
-            $elements = $($elements);
-            if (!$elements.length) {
-                this.error('checking elements required');
-                return false;
-            }
-
+        cls.check = function(elements, options) {
             var that = this;
+
+            var $elements = $(elements);
             $elements.each(function(i, elem) {
                 var $elem = $(elem);
 
@@ -105,61 +90,52 @@
         };
 
         /*
-            Добавление элементов для инспектирования изменения их пропорций
+            Добавление селекора элементов для инспектирования
          */
-        cls.inspect = function($elements, options) {
-            $elements = $($elements);
-            if (!$elements.length) {
-                this.error('inspecting elements required');
-                return false;
-            }
-
+        cls.inspect = function(selector, options) {
             var opts = $.extend({}, this.defaults, options);
             if (!opts) {
-                this.error('inspecting options required');
-                return false;
+                return this.error('inspecting options required');
             }
 
             var that = this;
+            var $elements = $(selector);
+
+            // если селектор уже инспектируется - удаляем его
+            this.ignore(selector);
+
+            // инициализация состояния элементов
             $elements.each(function(i, elem) {
                 var $elem = $(elem);
-
-                // если элемент уже испектируется - удаляем его
-                that._ignoreElement($elem);
-
-                // инициализация состояния
                 that._setOpts($elem, opts);
                 that._setState($elem, null);
-
-                that._list.push($elem.get(0));
             });
+
+            this._selectors.push(selector.toLocaleLowerCase());
+
+            // сразу проверяем элементы
+            this.check(selector);
         };
 
         /*
-            Удаление элементов из инспектирования
+            Удаление селектора из инспектирования
          */
-        cls.ignore = function($elements) {
-            $elements = $($elements);
-            if (!$elements.length) {
-                this.error('ignoring elements required');
-                return false;
+        cls.ignore = function(selector) {
+            var index = this._selectors.indexOf(selector);
+            if (index >= 0) {
+                $(selector).removeData(this.OPTS_DATA_KEY + ' ' + this.STATE_DATA_KEY);
+                this._selectors.splice(index, 1);
             }
-
-            var that = this;
-            $elements.each(function(i, elem) {
-                that._ignoreElement($(elem));
-            });
         };
 
         /*
-            Добавление элементов для инспектирования изменения их пропорций
+            Проверка всех инспектируемых элементов
          */
         cls.checkAll = function() {
             var i = 0;
-            var element;
-            while (element = this._list[i]) {
-                this.check(element);
-                i++;
+            var selector;
+            while (selector = this._selectors[i++]) {
+                this.check(selector);
             }
         };
     });

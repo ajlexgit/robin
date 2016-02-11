@@ -32,6 +32,19 @@
         cls.defaults = $.extend({}, superclass.defaults, {
             getContainer: function($element) {
                 return $element.parent();
+            },
+            afterCheck: function($elem, opts, state) {
+                if (state) {
+                    $elem.css({
+                        width: 'auto',
+                        height: '100.6%'
+                    });
+                } else {
+                    $elem.css({
+                        width: '100.6%',
+                        height: 'auto'
+                    });
+                }
             }
         });
 
@@ -52,6 +65,15 @@
         };
 
         cls._check = function($element, opts) {
+            // если проверяется картинка и она еще не загружена,
+            // повторяем проверку после загрузки.
+            if (($element.prop('tagName') == 'IMG') && !$element.prop('naturalWidth')) {
+                var that = this;
+                $element.onLoaded(function() {
+                    that.check($element);
+                });
+            }
+
             var $parent = opts.getContainer.call(this, $element);
             var elem_asp = $element.outerWidth() / $element.outerHeight();
             var parent_asp = $parent.outerWidth() / $parent.outerHeight();

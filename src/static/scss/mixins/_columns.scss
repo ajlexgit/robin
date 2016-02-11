@@ -31,3 +31,10 @@
   -webkit-column-span: $span;
   column-span: $span;
 }
+
+// @include column-break-inside(avoid)
+@mixin column-break-inside($value) {
+  -webkit-column-break-inside: $value;
+  page-break-inside: $value;
+  break-inside: $value;
+}
