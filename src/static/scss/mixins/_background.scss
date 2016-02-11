@@ -1,15 +1,23 @@
 @import "conf";
 
-//  background-image: url(img.png);
-//  @include pixelRatio(2) {
-//    background-image: url(img2x.png);
-//  }
-@mixin pixelRatio($ratio) {
-  @media (-webkit-min-device-pixel-ratio: $ratio),
-         (min-resolution: #{$ratio}dppx),
-         (min-resolution: #{$ratio * 96}dpi) {
-    @content;
-  }
+
+// @include background-clip(border-box);
+@mixin background-clip($value) {
+  $conversion-map: (
+    border-box: border,
+    padding-box: padding,
+    content-box: content,
+  );
+
+  @function legacy-value($value) {
+    @if map-has-key($conversion-map, $value) {
+      @return map-get($conversion-map, $value);
+    }
+  };
+
+  -webkit-background-clip: legacy-value($value);
+  -moz-background-clip: legacy-value($value);
+  background-clip: $value;
 }
 
 // background-size: rel-background-size(30px, 30px);
@@ -37,10 +45,8 @@
   @return #{$offset_left + "%"} #{$offset_top + "%"}
 }
 
-/*
-  Полифилл для IE8-9.
-  Поддерживает только cover / contain.
-*/
+// Полифилл для IE8-9.
+// Поддерживает только cover / contain.
 @mixin background-size($value) {
 	$polyfilled: (cover, contain);
 

@@ -1,8 +1,5 @@
-/*
-		Вертикальный padding:
-			@include vpad(40px);
-			@include vpad(40px 30px);
-*/
+// @include vpad(40px);
+// @include vpad(40px 30px);
 @mixin vpad($vals...) {
 	@if length($vals) == 1 {
 		padding-top: $vals;
@@ -16,11 +13,8 @@
 }
 
 
-/*
-		Горизонтальные padding:
-			@include hpad(40px);
-			@include hpad(40px 30px);
-*/
+// @include hpad(40px);
+// @include hpad(40px 30px);
 @mixin hpad($vals...) {
 	@if length($vals) == 1 {
 		padding-left: $vals;
