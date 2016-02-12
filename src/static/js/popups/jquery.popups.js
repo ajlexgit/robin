@@ -306,7 +306,7 @@
                 this._hideScrollbar();
                 this._createDOM();
                 this._beforeShow();
-                this._show();
+                this._showAnimation();
             }
 
             return this;
@@ -320,7 +320,7 @@
         /*
             Анимация показа
          */
-        cls._show = function() {
+        cls._showAnimation = function() {
             var that = this;
             this.$container.stop(false, false).fadeIn({
                 duration: this.opts.speed,
@@ -367,7 +367,7 @@
             }
 
             this._beforeHide();
-            this._hide();
+            this._hideAnimation();
 
             return this;
         };
@@ -382,7 +382,7 @@
         /*
             Анимация скрытия
          */
-        cls._hide = function() {
+        cls._hideAnimation = function() {
             var that = this;
             this.$container.stop(false, false).fadeOut({
                 duration: this.opts.speed,
@@ -481,7 +481,7 @@
         /*
             Анимация показа
          */
-        cls._show = function() {
+        cls._showAnimation = function() {
             var that = this;
             this.$overlay.stop(false, false).fadeIn({
                 duration: this.opts.speed,
@@ -507,7 +507,7 @@
         /*
             Анимация скрытия
          */
-        cls._hide = function() {
+        cls._hideAnimation = function() {
             var that = this;
             this.$overlay.stop(false, false).fadeOut({
                 duration: this.opts.speed,
