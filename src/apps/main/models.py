@@ -38,15 +38,16 @@ class VideoItem(GalleryVideoLinkItem):
     ADMIN_VARIATION = 'admin'
     VARIATIONS = dict(
         wide=dict(
-            size=(1024, 576),
+            size=(1280, 720),
             stretch=True,
         ),
         normal=dict(
-            size=(640, 480),
+            size=(1024, 576),
             stretch=True,
         ),
         mobile=dict(
-            size=(480, 360),
+            size=(800, 450),
+            stretch=True,
         ),
         preview=dict(
             size=(200, 150),

@@ -19,8 +19,9 @@
         У превью-элементов картинок обязателен атрибут data-src.
         Опционально, можно указать атрибуты data-srcset и data-sizes.
 
-        У превью-элементов видео обязательны атрибуты data-provider и data-key.
+        У превью-элементов видео обязательны атрибуты data-src, data-provider и data-key.
         Поддерживаются только провайдеры "youtube" и "vimeo".
+        Опционально, можно указать атрибуты data-srcset и data-sizes.
 
 
         Пример HTML:
@@ -29,7 +30,7 @@
                     <img src="...">
                 </div>
 
-                <div class="item" data-provider="youtube" data-key="...">
+                <div class="item" data-src="..." data-provider="youtube" data-key="...">
                     <img src="...">
                 </div>
 
@@ -49,6 +50,10 @@
 
     window.GalleryPopup = Class(OverlayedPopup, function GalleryPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
+            imageItemClass: 'image-item',
+            videoItemClass: 'video-item',
+            videoPlayingClass: 'playing',
+
             previews: '',
             activePreview: 0
         });
@@ -76,37 +81,50 @@
             Создание элемента окна галереи из элемента превью
          */
         cls._buildItem = function($preview) {
-            var $item;
+            var $image;
             var preview_data = $preview.data();
+
+            // картинка (для всех типов)
             if (preview_data.src) {
                 // картинка
-                $item = $('<img>').addClass('image-item').attr('src', preview_data.src);
+                $image = $('<img>').attr('src', preview_data.src);
 
                 // атрибуты srcset и sizes
                 if (preview_data.srcset) {
-                    $item.attr({
+                    $image.attr({
                         srcset: preview_data.srcset,
                         sizes: preview_data.sizes || '100vw'
                     })
                 }
+            }
 
-                return $item;
-            } else if (preview_data.provider && preview_data.key) {
+            // проверка наличия картинки
+            if (!$image || ($image.length != 1)) {
+                return
+            }
+
+            if (preview_data.provider && preview_data.key) {
                 // видео
-                var $player = $('<div>');
-                $item = $('<div>').addClass('video-item').append($player);
+                var $video = $('<div/>').addClass(this.opts.videoItemClass);
+                $video.append($image);
 
-                if (preview_data.provider == 'youtube') {
-                    YouTube($player, {
-                        video: preview_data.key
-                    });
-                } else if (preview_data.provider == 'vimeo') {
-                    Vimeo($player, {
-                        video: preview_data.key
-                    });
-                }
+                // кнопка воспроизведения
+                var $playBtn = $('<div/>').addClass('play-btn');
+                $video.append($playBtn);
 
-                return $item;
+                var that = this;
+                $playBtn.on(touchClick, function() {
+                    that.playVideo($(this).closest('.' + that.opts.videoItemClass));
+                });
+
+                $video.data({
+                    provider: preview_data.provider,
+                    key: preview_data.key
+                });
+                return $video;
+            } else {
+                // картинка
+                return $image.addClass(this.opts.imageItemClass);
             }
         };
 
@@ -202,7 +220,6 @@
                 this.warn('active preview not found', this.opts.activePreview);
             }
 
-
             var $activeSlide = this.slider.$slides.eq(active_index);
             this.slider.slideTo($activeSlide, 'instant');
         };
@@ -216,8 +233,67 @@
                 this.slider = null;
             }
 
+            if (this._player) {
+                this._player.destroy();
+                this._player = null;
+            }
+
             superclass._removeDOM.call(this);
-        }
+        };
+
+        cls.playVideo = function($item) {
+            var item_data = $item.data();
+
+            if (this._player) {
+                this._player.destroy();
+                this._player = null;
+            }
+
+            var that = this;
+            var $player = $('<div>');
+            $item.append($player);
+            if (item_data.provider == 'youtube') {
+                this._player = YouTube($player, {
+                    video: item_data.key,
+                    autoplay: true
+                }).on('ready', function() {
+                    $item.addClass(that.opts.videoPlayingClass);
+                });
+            } else if (item_data.provider == 'vimeo') {
+                this._player = Vimeo($player, {
+                    video: item_data.key,
+                    autoplay: true
+                }).on('ready', function() {
+                    $item.addClass(that.opts.videoPlayingClass);
+                });
+            }
+
+            // остановка видео при переходе на другой слайд и закрытии окна
+            if (this._player) {
+                this.on('before_hide.video', function() {
+                    that.stopVideo($item);
+                });
+
+                this.slider.on('before_change.video', function() {
+                    that.stopVideo($item);
+                });
+            }
+        };
+
+        cls.stopVideo = function($item) {
+            if (this._player) {
+                this._player.destroy();
+                this._player = null;
+            }
+
+            $item.removeClass(this.opts.videoPlayingClass);
+            $item.find('iframe').remove();
+
+            this.off('.video');
+            if (this.slider) {
+                this.slider.off('.video');
+            }
+        };
     });
 
 

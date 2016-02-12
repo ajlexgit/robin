@@ -53,7 +53,9 @@
           {% elif item.is_video_link %}
             <div class="item video-item"
                  data-provider="{{ item.video.provider.name }}"
-                 data-key="{{ item.video.key }}">
+                 data-key="{{ item.video.key }}"
+                 data-src="{{ item.video_preview.wide.url }}"
+                 data-srcset="{{ item.video_preview.wide.srcset }}, {{ item.video_preview.normal.srcset }}, {{ item.video_preview.mobile.srcset }}">
               <img src="{{ item.video_preview.preview.url }}">
             </div>
           {% endif %}

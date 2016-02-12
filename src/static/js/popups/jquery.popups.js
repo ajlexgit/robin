@@ -35,8 +35,10 @@
 
         События:
             ready   - окно создано и готово к показу (метод show() уже вызван)
-            show    - окно стало видимым
-            hide    - окно стало скрытым, но ещё присутствует в DOM
+            before_show     - перед показом окна
+            after_show      - после показа окна
+            before_hide     - перед скрытием окна
+            after_hide      - окно стало скрытым, но ещё присутствует в DOM
 
         Примеры:
             // Мгновенное уничтожение окна, открытого в данный момент
@@ -68,7 +70,7 @@
             }).show();
 
             // Скрытие окна и уничтожение после завершения анимации
-            popup.on('hide', function() {
+            popup.on('after_hide', function() {
                 console.log('Окно скрыто');
             }).hide();
 
@@ -346,6 +348,7 @@
         cls._beforeShow = function() {
             currentPopup = this;
             this._opened = true;
+            this.trigger('before_show');
         };
 
         /*
@@ -381,7 +384,7 @@
                 return false;
             });
 
-            this.trigger('show');
+            this.trigger('after_show');
         };
 
         //=======================
@@ -408,6 +411,8 @@
 
             // кнопки закрытия окна
             $(document).off('.popup');
+
+            this.trigger('before_hide');
         };
 
         /*
@@ -437,7 +442,7 @@
         cls._afterHide = function() {
             this._opened = false;
             currentPopup = null;
-            this.trigger('hide');
+            this.trigger('after_hide');
             this._removeDOM();
         };
     });

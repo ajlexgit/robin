@@ -2,7 +2,7 @@
 
     $(document).ready(function() {
 
-        window.slider = WinHeightSlider('.section-slider .slider', {
+        WinHeightSlider('.section-slider .slider', {
             loop: true,
             itemSelector: '.slider-item'
         }).attachPlugins([

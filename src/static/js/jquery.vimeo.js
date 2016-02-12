@@ -67,6 +67,7 @@
             Освобождение ресурсов
          */
         cls.destroy = function() {
+            this.stop();
             if (this.native) {
                 this.$frame.replaceWith(this._containerHTML);
                 this.native = null;

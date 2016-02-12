@@ -83,6 +83,7 @@
             Освобождение ресурсов
          */
         cls.destroy = function() {
+            this.stop();
             if (this.native) {
                 this.native.destroy();
                 this.native = null;
