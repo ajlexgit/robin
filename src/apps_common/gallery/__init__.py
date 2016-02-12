@@ -39,8 +39,29 @@
                     ),
                 )
 
+            class PostGalleryVideoLinkItem(GalleryVideoLinkItem):
+                STORAGE_LOCATION = 'module/gallery'
+                ADMIN_VARIATION = 'admin'
+                VARIATIONS = dict(
+                    wide=dict(
+                        size=(1024, 576),
+                        stretch=True,
+                    ),
+                    normal=dict(
+                        size=(640, 480),
+                        stretch=True,
+                    ),
+                    mobile=dict(
+                        size=(480, 360),
+                    ),
+                    admin=dict(
+                        size=(160, 120),
+                    ),
+                )
+
             class PostGallery(GalleryBase):
                 IMAGE_MODEL = PostGalleryImageItem
+                VIDEO_LINK_MODEL = PostGalleryVideoLinkItem
 
             class MyModel(models.Model):
                 ...

@@ -22,3 +22,16 @@
   }
 }
 
+
+#gallery {
+
+  .list {
+    @include flexbox;
+    @include flex-flow(row wrap);
+  }
+
+  .item {
+    margin: 0 20px 20px 0;
+    cursor: pointer;
+  }
+}

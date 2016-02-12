@@ -39,6 +39,26 @@
   </div>
 
 
+  <div id="gallery" class="block">
+    <div class="grid-block">
+
+      <div class="list">
+        {% for item in config.gallery.items.all %}
+          {% if item.is_image %}
+            <div class="item image-item">
+              <img src="{{ item.image.preview.url }}">
+            </div>
+          {% elif item.is_video_link %}
+            <div class="item video-item">
+              <img src="{{ item.video_preview.preview.url }}">
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+
   {% render_attached_blocks config %}
 
 {% endblock content %}
