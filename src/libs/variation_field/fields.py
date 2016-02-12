@@ -85,7 +85,7 @@ class VariationField(ImageFile):
     def target_height(self):
         """
             Целевая высота вариации.
-            Для задания атрибута "width" у тэга "img".
+            Для задания атрибута "height" у тэга "img".
         """
         return self.variation_size[1] or self.dimensions[1]
 
