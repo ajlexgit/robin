@@ -1,20 +1,20 @@
 @import "conf";
 
 
-// @include background-clip(border-box);
-@mixin background-clip($value) {
+@function legacy-value($value) {
   $conversion-map: (
     border-box: border,
     padding-box: padding,
     content-box: content,
   );
 
-  @function legacy-value($value) {
-    @if map-has-key($conversion-map, $value) {
-      @return map-get($conversion-map, $value);
-    }
-  };
+  @if map-has-key($conversion-map, $value) {
+    @return map-get($conversion-map, $value);
+  }
+};
 
+// @include background-clip(border-box);
+@mixin background-clip($value) {
   -webkit-background-clip: legacy-value($value);
   -moz-background-clip: legacy-value($value);
   background-clip: $value;
@@ -30,15 +30,13 @@
 
 // background: $sprite_url no-repeat rel-background-position(30px, 30px, 0px -60px);
 @function rel-background-position($img_w, $img_h, $offset_x, $offset_y, $sprite_w:$sprite_width, $sprite_h:$sprite_height) {
-  @if ($img_w >= $sprite_w) {
-	  $offset_left: 0;
-  } @else {
+  $offset_left: 0;
+  @if ($img_w < $sprite_w) {
 	  $offset_left: 100 * $offset_x / ($img_w - $sprite_w);
   }
 
-	@if ($img_h >= $sprite_h) {
-	  $offset_top: 0;
-  } @else {
+  $offset_top: 0;
+	@if ($img_h < $sprite_h) {
 	  $offset_top: 100 * $offset_y / ($img_h - $sprite_h);
   }
 

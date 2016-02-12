@@ -45,11 +45,15 @@
       <div class="list">
         {% for item in config.gallery.items.all %}
           {% if item.is_image %}
-            <div class="item image-item">
-              <img src="{{ item.image.preview.url }}">
+            <div class="item image-item"
+                 data-src="{{ item.image.wide.url }}"
+                 data-srcset="{{ item.image.wide.srcset }}, {{ item.image.normal.srcset }}, {{ item.image.mobile.srcset }}">
+              <img src="{{ item.image.preview.url }}" width="{{ item.image.preview.target_width }}" height="{{ item.image.preview.target_height }}">
             </div>
           {% elif item.is_video_link %}
-            <div class="item video-item">
+            <div class="item video-item"
+                 data-provider="{{ item.video.provider.name }}"
+                 data-key="{{ item.video.key }}">
               <img src="{{ item.video_preview.preview.url }}">
             </div>
           {% endif %}

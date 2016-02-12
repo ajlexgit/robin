@@ -167,6 +167,7 @@ PIPELINE_CSS = {
     'main_page': {
         'source_filenames': (
             'scss/section_slider.scss',
+            'gallery/scss/gallery_popup.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css/main_page.css',
@@ -235,6 +236,7 @@ PIPELINE_JS = {
     'main_page': {
         'source_filenames': (
             'js/slider/win_height_slider.js',
+            'gallery/js/gallery_popup.js',
             'main/js/index.js',
         ),
         'output_filename': 'js/main_page.js',

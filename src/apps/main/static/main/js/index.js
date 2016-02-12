@@ -19,6 +19,13 @@
             })
         ]);
 
+
+        $('#gallery').find('.item').on('click', function() {
+            // gallery popup
+            $.gallery({
+                items: '#gallery .item'
+            });
+        });
     });
 
 })(jQuery);
