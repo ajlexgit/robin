@@ -131,7 +131,7 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         response = {
             'id': item.pk,
             'preview_url': item.admin_variation.url,
-            'show_url': item.show_url,
+            'show_url': item.admin_show_url,
             'source_url': item.image.url_nocache,
             'source_size': ','.join(map(str, item.image.dimensions)),
         }
@@ -163,7 +163,7 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         return self.json_response({
             'id': item.pk,
             'preview_url': item.admin_variation.url,
-            'show_url': item.show_url,
+            'show_url': item.admin_show_url,
         })
 
 

@@ -108,6 +108,13 @@ class GalleryItemBase(models.Model):
     def is_video_link(self):
         return isinstance(self, GalleryVideoLinkItem)
 
+    @property
+    def admin_show_url(self):
+        """
+            Ссылка на просмотр в админке
+        """
+        return ''
+
     def after_copy(self, **kwargs):
         """
             Пост-обработка скопированного элемента.
@@ -387,7 +394,10 @@ class GalleryImageItem(GalleryItemBase):
         return getattr(self.image, self.ADMIN_VARIATION, self.image)
 
     @property
-    def show_url(self):
+    def admin_show_url(self):
+        """
+            Ссылка на просмотр в админке
+        """
         if self.SHOW_VARIATION is None:
             return ''
         else:
@@ -602,7 +612,10 @@ class GalleryVideoLinkItem(GalleryItemBase):
             return None
 
     @property
-    def show_url(self):
+    def admin_show_url(self):
+        """
+            Ссылка на просмотр в админке
+        """
         return self.video.url
 
     def copy_for(self, dest_gallery, **kwargs):
