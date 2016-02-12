@@ -1,55 +1,67 @@
 @import "mixins";
 
-$arrow_width: 26px;
-$arrow_height: 50px;
+// размеры области нажатия
+$arrow_area_width: (
+    ($media768, 0px): 80px,
+    ($media480, $media768): 60px,
+    (0px, $media480): 50px,
+);
 
+// размеры стрелки
+$arrow_image_width: 26px;
+$arrow_image_height: 50px;
+$arrow_image_maxwidth: (
+    ($media768, 0px): 50%,
+    (0px, $media768): 40%,
+);
 
 // Controls
 .slider-arrow {
   position: absolute;
   overflow: hidden;
-  top: 0;
-  width: 80px;
+  top: 50%;
   height: 100%;
   z-index: 10;
   cursor: pointer;
   @include unselectable;
+  @include transform(translateY(-50%));
+  @include media_map(width, $arrow_area_width);
 
   span {
     position: absolute;
     left: 50%;
     top: 50%;
-	  max-width: 60%;
-    width: $arrow_width;
+    width: $arrow_image_width;
+    @include media_map(max-width, $arrow_image_maxwidth);
     @include transform(translate3d(-50%, -50%, 0));
 
     &:before {
       content: '';
       display: block;
       height: 0;
-      padding-bottom: #{100 * ($arrow_height / $arrow_width) + "%"};
-      background: $sprite_url no-repeat rel-background-position($arrow_width, $arrow_height, 0px, -56px);
-      background-size: rel-background-size($arrow_width, $arrow_height);
+      padding-bottom: #{100 * ($arrow_image_height / $arrow_image_width) + "%"};
+      background: $sprite_url no-repeat rel-background-position($arrow_image_width, $arrow_image_height, 0px, -56px);
+      background-size: rel-background-size($arrow_image_width, $arrow_image_height);
     }
   }
 
   &.slider-arrow-left {
     left: 0;
 
-	  span {
-		  // фикс оптической иллюзии, что стрелка не по центру
-      @include transform(translate3d(-60%, -50%, 0));
+    span {
+      // фикс оптической иллюзии, что стрелка не по центру
+      @include transform(translate3d(-62%, -50%, 0));
     }
   }
 
   &.slider-arrow-right {
     right: 0;
 
-	  span {
-		  // фикс оптической иллюзии, что стрелка не по центру
-      @include transform(translate3d(-40%, -50%, 0));
+    span {
+      // фикс оптической иллюзии, что стрелка не по центру
+      @include transform(translate3d(-38%, -50%, 0));
 
-		  &:before {
+      &:before {
         @include transform(rotate(180deg));
       }
     }

@@ -66,7 +66,7 @@
                 SliderAutoscrollPlugin({
                     animationName: 'fade',
                     direction: 'random',
-                    interval: 3000
+                    interval: 6000
                 })
             ]);
 
@@ -542,8 +542,8 @@
         /*
             Метод смены текущего слайда на $toSlide.
 
-            В реализации этого метода НЕОБХОДИМО вызывать методы слайдера
-            beforeSlide и afterSlide:
+            При реализации этого метода в плагинах, НЕОБХОДИМО вызывать
+            методы слайдера beforeSlide и afterSlide:
                 slider.beforeSlide($toSlide);
                 ....
                 slider.afterSlide($toSlide);

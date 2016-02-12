@@ -20,10 +20,11 @@
         ]);
 
 
+        // gallery popup
         $('#gallery').find('.item').on('click', function() {
-            // gallery popup
             $.gallery({
-                items: '#gallery .item'
+                previews: '#gallery .item',
+                activePreview: this
             });
         });
     });

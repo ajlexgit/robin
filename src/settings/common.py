@@ -236,6 +236,8 @@ PIPELINE_JS = {
     'main_page': {
         'source_filenames': (
             'js/slider/win_height_slider.js',
+            'js/jquery.youtube.js',
+            'js/jquery.vimeo.js',
             'gallery/js/gallery_popup.js',
             'main/js/index.js',
         ),

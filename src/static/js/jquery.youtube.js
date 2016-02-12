@@ -116,6 +116,10 @@
                 }
             }
 
+            if (!window.YT) {
+                return this.raise('YT is undefined');
+            }
+
             var that = this;
             this.native = new YT.Player(this.$container.get(0), {
                 videoId: this.opts.video,

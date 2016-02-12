@@ -7,7 +7,7 @@ from gallery import *
 
 class ImageItem(GalleryImageItem):
     STORAGE_LOCATION = 'main/gallery'
-    MIN_DIMENSIONS = (1400, 1050)
+    MIN_DIMENSIONS = (1200, 900)
     ADMIN_CLIENT_RESIZE = True
 
     SHOW_VARIATION = 'normal'
@@ -19,7 +19,7 @@ class ImageItem(GalleryImageItem):
             stretch=True,
         ),
         normal=dict(
-            size=(1200 , 900),
+            size=(1200, 900),
         ),
         mobile=dict(
             size=(800, 600),

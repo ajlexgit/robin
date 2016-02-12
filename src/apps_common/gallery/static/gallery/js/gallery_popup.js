@@ -5,10 +5,15 @@
         в модальном окне.
 
         Требует:
-            jquery.utils.js, jquery.popups.js, slider.js
+            jquery.utils.js,
+            jquery.popups.js,
+            slider.js,
+            jquery.youtube.js,
+            jquery.vimeo.js
 
         Параметры:
             previews: str / jquery       - превью-элементы галереи
+            activePreview: DOM / index   - DOM-элемент или индекс начальной картинки
 
 
         У превью-элементов картинок обязателен атрибут data-src.
@@ -16,8 +21,36 @@
 
         У превью-элементов видео обязательны атрибуты data-provider и data-key.
         Поддерживаются только провайдеры "youtube" и "vimeo".
+
+
+        Пример HTML:
+            <div id="gallery">
+                <div class="item" data-src="...">
+                    <img src="...">
+                </div>
+
+                <div class="item" data-provider="youtube" data-key="...">
+                    <img src="...">
+                </div>
+
+                ...
+            </div>
+
+
+
+            $('#gallery').find('.item').on('click', function() {
+                $.gallery({
+                    previews: '#gallery .item',
+                    activePreview: this
+                });
+            });
+
      */
 
+
+    /*
+        Подкласс слайдера галереи, отменяющий задание высоты слайдера
+     */
     var GallerySlider = Class(Slider, function GallerySlider(cls, superclass) {
         cls.calcListHeight = function() {
 
@@ -25,10 +58,10 @@
     });
 
 
-
     window.GalleryPopup = Class(OverlayedPopup, function GalleryPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
-            previews: ''
+            previews: '',
+            activePreview: 0
         });
 
         cls.OVERLAY_ID = 'gallery-popup-overlay';
@@ -37,7 +70,7 @@
         cls.init = function(options) {
             superclass.init.call(this, options);
 
-            this.$previews = this.opts.items;
+            this.$previews = this.opts.previews;
             if (!this.$previews) {
                 return this.raise('previews required');
             }
@@ -54,11 +87,11 @@
             Создание элемента окна галереи из элемента превью
          */
         cls._buildItem = function($preview) {
+            var $item;
             var preview_data = $preview.data();
-
             if (preview_data.src) {
                 // картинка
-                var $item = $('<img>').attr('src', preview_data.src);
+                $item = $('<img>').addClass('image-item').attr('src', preview_data.src);
 
                 // атрибуты srcset и sizes
                 if (preview_data.srcset) {
@@ -71,6 +104,20 @@
                 return $item;
             } else if (preview_data.provider && preview_data.key) {
                 // видео
+                var $player = $('<div>');
+                $item = $('<div>').addClass('video-item').append($player);
+
+                if (preview_data.provider == 'youtube') {
+                    YouTube($player, {
+                        video: preview_data.key
+                    });
+                } else if (preview_data.provider == 'vimeo') {
+                    Vimeo($player, {
+                        video: preview_data.key
+                    });
+                }
+
+                return $item;
             }
         };
 
@@ -81,8 +128,6 @@
             var that = this;
             var $items = this.$previews.map(function(i, preview) {
                 var $preview = $(preview);
-
-                // создание элемента галереи
                 var $item = that._buildItem($preview);
 
                 if (!$item || !$item.length) {
@@ -112,12 +157,10 @@
         };
 
         /*
-            Дополнительные элементы
+            Создание объекта слайдера
          */
-        cls.extraDOM = function() {
-            superclass.extraDOM.call(this);
-
-            this.slider = GallerySlider(this.$content.find('.slider'), {
+        cls.makeSlider = function() {
+            return GallerySlider(this.$content.find('.slider'), {
                 itemSelector: '.slider-item'
             }).attachPlugins([
                 SliderSideAnimation({}),
@@ -133,6 +176,54 @@
                 })
             ])
         };
+
+        /*
+            Дополнительные элементы
+         */
+        cls.extraDOM = function() {
+            superclass.extraDOM.call(this);
+
+            this.slider = this.makeSlider();
+            if (!this.slider) {
+                this.error('slider wasn\'t created');
+                return;
+            }
+
+            // выделение выбранного слайда
+            var preview;
+            var active_index = 0;
+
+            if (this.opts.activePreview.jquery) {
+                // jQuery-селектор с превью-элементом
+                preview = this.opts.activePreview.get(0);
+                active_index = this.$previews.toArray().indexOf(preview);
+            } else if (this.opts.activePreview.nodeType == 1) {
+                // DOM-элемент превью-элемента
+                preview = this.opts.activePreview;
+                active_index = this.$previews.toArray().indexOf(preview);
+            } else {
+                // индекс активного слайда
+                active_index = this.opts.activePreview;
+            }
+
+            // проверка индекса
+            if ((active_index < 0) || (active_index >= this.slider.$slides.length)) {
+                active_index = 0;
+                this.warn('active preview not found', this.opts.activePreview);
+            }
+
+
+            var $activeSlide = this.slider.$slides.eq(active_index);
+            this.slider.slideTo($activeSlide, 'instant');
+        };
+
+        /*
+            Уничтожение слайдера
+         */
+        cls._afterShow = function() {
+            superclass._afterShow.call(this);
+            // TODO: destroy slider
+        }
     });
 
 

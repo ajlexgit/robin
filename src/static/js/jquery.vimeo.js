@@ -93,9 +93,12 @@
             this._containerHTML = this.$container.prop('outerHTML');
             this.$container.replaceWith(this.$frame);
 
-            this.native = $f(this.$frame.get(0));
+            if (!window.$f) {
+                return this.raise('$f is undefined');
+            }
 
             var that = this;
+            this.native = $f(this.$frame.get(0));
             this.native.addEvent('ready', function() {
                 that.trigger('ready');
             });

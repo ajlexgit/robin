@@ -1,9 +1,9 @@
 import os
 import sys
 
-# gallery client
+# gallery client: stop video on slide
 # dynamic menu, std pages
-# slider: dynamic margin
+# slider: dynamic margin, destroy, events
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
