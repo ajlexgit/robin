@@ -40,6 +40,9 @@ class DummyAdmin(admin.ModelAdmin):
         if not request.user.is_superuser:
             raise PermissionDenied
 
+        if not os.path.isdir(settings.BACKUP_ROOT):
+            os.mkdir(settings.BACKUP_ROOT, 0o755)
+
         zip_archives = []
         for file in sorted(os.listdir(settings.BACKUP_ROOT)):
             absfile = os.path.abspath(os.path.join(settings.BACKUP_ROOT, file))
