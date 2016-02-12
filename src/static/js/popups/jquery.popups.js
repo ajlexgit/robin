@@ -154,7 +154,7 @@
         /*
             Создание DOM
          */
-        cls._createDom = function() {
+        cls._createDOM = function() {
             // Создание DOM (изначально скрытого)
             this.$container = $('<div/>').attr('id', this.CONTAINER_ID).hide();
             this.$windowWrapper = $('<div/>').addClass(this.WRAPPER_CLASS);
@@ -165,6 +165,14 @@
             this.$windowWrapper.append(this.$window);
             this.$container.append(this.$windowWrapper);
             $body.append(this.$container);
+
+            // classes
+            this.$container.addClass(this.opts.classes);
+
+            // content
+            this._fillDOM();
+
+            this.trigger('ready');
         };
 
         /*
@@ -175,22 +183,19 @@
         };
 
         /*
-            Дополнительная обработка после создания DOM
+            Добавление содержимого или дополнительных элементов
          */
-        cls._postInit = function() {
-            // content
+        cls._fillDOM = function() {
             var content;
             if ($.isFunction(this.opts.content)) {
                 content = this.opts.content.call(this);
             } else {
                 content = this.opts.content;
             }
-            this.$content.html(content);
 
-            // classes
-            this.$container.addClass(this.opts.classes);
-
-            this.trigger('ready');
+            if (content) {
+                this.$content.html(content);
+            }
         };
 
         //=======================
@@ -296,15 +301,13 @@
                 // подмена старого (открытого) окна новым
                 current._beforeHide();
                 current._hideInstant();
-                this._createDom();
-                this._postInit();
+                this._createDOM();
                 this._beforeShow();
                 this._showInstant();
             } else {
                 // показ нового окна
                 this._hideScrollbar();
-                this._createDom();
-                this._postInit();
+                this._createDOM();
                 this._beforeShow();
                 this._show();
             }
@@ -425,10 +428,10 @@
 
 
         /*
-            Создание DOM
+            Дополнительные элементы DOM
          */
-        cls._createDom = function() {
-            superclass._createDom.call(this);
+        cls._fillDOM = function() {
+            superclass._fillDOM.call(this);
 
             this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
             this.$overlay.addClass(this.opts.classes);
