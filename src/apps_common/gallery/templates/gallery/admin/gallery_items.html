@@ -19,7 +19,7 @@
            data-source_size="{{ item.image.dimensions|join:',' }}"
           {% endif %}>
 
-        <a {% if item.show_url %}href="{{ item.show_url }}"{% endif %} target="_blank" class="item-preview">
+        <a {% if item.admin_show_url %}href="{{ item.admin_show_url }}"{% endif %} target="_blank" class="item-preview">
           <img src="{{ item.admin_variation.url }}">
         </a>
 
@@ -35,7 +35,7 @@
       </div>
     {% elif item.is_video_link %}
       <div class="gallery-item gallery-item-video-link" data-id="{{ item.id }}">
-        <a href="{{ item.show_url }}" target="_blank" class="item-preview">
+        <a href="{{ item.admin_show_url }}" target="_blank" class="item-preview">
           <span class="inner">
             <img src="{{ item.admin_variation.url }}">
           </span>
