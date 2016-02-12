@@ -15,11 +15,11 @@ from .utils import (put_on_bg, limited_size, variation_crop, variation_resize,
 
 
 class VariationField(ImageFile):
-    _file = None
-
     """
         Класс вариации у поля экземпляра модели.
     """
+    _file = None
+
     def __init__(self, name, storage=None, variation_size=(0, 0)):
         super().__init__(None, name)
         self.storage = storage or default_storage
@@ -72,6 +72,22 @@ class VariationField(ImageFile):
     def clear_dimensions(self):
         if hasattr(self, '_dimensions_cache'):
             del self._dimensions_cache
+
+    @property
+    def target_width(self):
+        """
+            Целевая ширина вариации.
+            Для задания атрибута "width" у тэга "img".
+        """
+        return self.variation_size[0] or self.dimensions[0]
+
+    @property
+    def target_height(self):
+        """
+            Целевая высота вариации.
+            Для задания атрибута "width" у тэга "img".
+        """
+        return self.variation_size[1] or self.dimensions[1]
 
     @property
     def path(self):

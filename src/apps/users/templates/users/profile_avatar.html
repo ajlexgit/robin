@@ -3,8 +3,8 @@
 
 <div id="profile-avatar">
   <img src="{{ profile_user.normal_avatar }}"
-       width="{{ profile_user.avatar.variations.normal.size.0 }}"
-       height="{{ profile_user.avatar.variations.normal.size.1 }}">
+       width="{{ profile_user.avatar.normal.target_width }}"
+       height="{{ profile_user.avatar.normal.target_height }}">
 
   {% if profile_user == request.user %}
     <a href="#" class="delete-avatar" title="{% trans 'Delete avatar' %}">{% trans 'Delete avatar' %}</a>

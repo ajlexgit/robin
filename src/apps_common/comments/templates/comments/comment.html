@@ -17,8 +17,8 @@
     <a class="avatar" href="{% url 'users:profile' comment.user.username %}">
       <img alt=""
            src="{{ comment.user.micro_avatar }}"
-           width="{{ comment.user.avatar.variations.micro.size.0 }}"
-           height="{{ comment.user.avatar.variations.micro.size.1 }}">
+           width="{{ comment.user.avatar.micro.target_width }}"
+           height="{{ comment.user.avatar.micro.target_height }}">
     </a>
     <a class="nickname" href="{% url 'users:profile' comment.user.username %}">{{ comment.user.username }}</a>
     <time datetime="{{ comment.created|date:"Y-m-d H:i:sO" }}">{{ comment.created|shortdate }}</time>
