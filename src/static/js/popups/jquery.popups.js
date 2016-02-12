@@ -161,7 +161,7 @@
             $body.append(this.$container);
 
             // classes
-            this.$container.addClass(this.opts.classes);
+            this.$container.addClass('popup ' + this.opts.classes);
 
             // content
             this.resetContent();
@@ -468,6 +468,16 @@
             if (this.opts.closeButton) {
                 this.$closeBtn = $('<div>').addClass(this.CLOSE_BUTTON_CLASS).addClass('popup-close-button');
                 this.addCloseButton(this.$closeBtn);
+            }
+
+            // Esc press
+            if (this.opts.closeButton || this.opts.hideOnClick) {
+                var that = this;
+                $(document).on('keyup.popup', function(event) {
+                    if (event.which == 27) {
+                        that.hide();
+                    }
+                });
             }
         };
 

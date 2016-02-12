@@ -1,4 +1,4 @@
-@import 'mixins';
+@import "popups_core";
 
 
 // вертикальные отступы окна
@@ -28,9 +28,6 @@ $close_btn_weight: 3px;
 //=======================
 // CORE
 //=======================
-.popup-opened {
-  overflow: hidden !important;
-}
 
 #popup-overlay {
   position: fixed;
@@ -39,55 +36,26 @@ $close_btn_weight: 3px;
   width: 100%;
   height: 100%;
   z-index: 100;
+  background: rgba(0,0,0,0.4);
 }
 
 #popup-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  overflow-y: auto;
-  overflow-x: hidden;
-  z-index: 101;
-  @include font-size(20px);
-
-  .popup-wrapper {
-    height: 100%;
-    @include no_fontsize;
-    @include valign_after;
-  }
-
   .popup-window {
-    display: inline-block;
-    position: relative;
-	  margin: 0 auto;
-    z-index: 1;
-    text-align: left;
-    vertical-align: middle;
-    @include border-box;
-	  @include media_map(margin-top, $window_margin);
-	  @include media_map(margin-bottom, $window_margin);
-	  @include media_map(max-width, $window_max_width);
-  }
-
-  .popup-content {
-    position: relative;
-    overflow: hidden;
-    z-index: 5;
-    background-color: $background_color;
-    @include border-box;
+    @include media_map(margin-top, $window_margin);
+    @include media_map(margin-bottom, $window_margin);
+    @include media_map(max-width, $window_max_width);
   }
 
   .popup-close-button {
     position: absolute;
-    right: 0;
-    top: 0;
+    top: 10px;
+    right: 10px;
     width: $close_btn_size;
     height: $close_btn_size;
     z-index: 6;
     cursor: pointer;
+    @include transform(scale(0.8));
+    @include transition(transform 0.2s);
 
     &:before, &:after {
       content: '';
@@ -104,35 +72,20 @@ $close_btn_weight: 3px;
     &:after {
       @include transform(translate3d(-50%, -50%, 0) rotate(-45deg));
     }
+
+    &:hover {
+      @include transform(scale(1));
+    }
   }
-}
 
-//=======================
-// Theme
-//=======================
-#popup-overlay {
-  background: rgba(0,0,0,0.4);
-}
-
-#popup-container {
   .popup-content {
     padding: 36px 50px;
+    background-color: $background_color;
     @include media_interval($media480, $media640) {
       padding: 36px;
     }
     @include media_interval(0, $media480) {
       padding: 20px 20px 36px;
-    }
-  }
-
-  .popup-close-button {
-    top: 10px;
-    right: 10px;
-    @include transform(scale(0.8));
-    @include transition(transform 0.2s);
-
-    &:hover {
-      @include transform(scale(1));
     }
   }
 }
