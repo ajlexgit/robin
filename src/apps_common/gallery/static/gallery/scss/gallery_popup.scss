@@ -95,6 +95,7 @@ $close_btn_weight: 2px;
 
       .video-item {
         position: relative;
+        overflow: hidden;
         height: 100%;
         z-index: 1;
         @include valign_after;
@@ -104,6 +105,17 @@ $close_btn_weight: 2px;
           max-height: 100%;
         }
 
+        &:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+          background: rgba(0, 0, 0, 0.2);
+        }
+
         .play-btn {
           position: absolute;
           left: 50%;
@@ -111,6 +123,7 @@ $close_btn_weight: 2px;
           width: 10%;
           min-width: 60px;
           max-width: 100px;
+          z-index: 2;
           cursor: pointer;
           @include transform(translate(-50%, -50%));
 
@@ -129,6 +142,10 @@ $close_btn_weight: 2px;
             display: none;
           }
 
+          &:before {
+            display: none;
+          }
+
           .play-btn {
             display: none;
           }
@@ -141,7 +158,7 @@ $close_btn_weight: 2px;
             vertical-align: middle;
           }
         }
-      };
+      }
     }
 
     .slider-arrow {
