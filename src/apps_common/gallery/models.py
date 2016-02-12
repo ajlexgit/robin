@@ -485,7 +485,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
         }
 
     def save(self, *args, **kwargs):
-        if self.video and self.video.info:
+        if self.video and self.video.info and not self.video_preview:
             preview_url = self.video.info['preview_url']
             try:
                 uploaded_file = upload_file(preview_url)
