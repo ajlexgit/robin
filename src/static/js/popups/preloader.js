@@ -22,7 +22,7 @@
         }, options);
 
         var popup = OverlayedPopup(opts);
-        return popup.show();
+        return popup && popup.show();
     };
 
 })(jQuery);

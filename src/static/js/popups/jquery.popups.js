@@ -298,13 +298,44 @@
                 // подмена старого (открытого) окна новым
                 current._beforeHide();
                 current._hideInstant();
-                this._createDOM();
+
+                try {
+                    this._createDOM();
+                } catch (err) {
+                    this._showScrollbar();
+                    this._removeDOM();
+
+                    if (err instanceof ClassError) {
+                        this.error(err.message);
+                    } else {
+                        throw err;
+                    }
+
+
+                    return this;
+                }
+
                 this._beforeShow();
                 this._showInstant();
             } else {
                 // показ нового окна
                 this._hideScrollbar();
-                this._createDOM();
+
+                try {
+                    this._createDOM();
+                } catch (err) {
+                    this._showScrollbar();
+                    this._removeDOM();
+
+                    if (err instanceof ClassError) {
+                        this.error(err.message);
+                    } else {
+                        throw err;
+                    }
+
+                    return this;
+                }
+
                 this._beforeShow();
                 this._showAnimation();
             }

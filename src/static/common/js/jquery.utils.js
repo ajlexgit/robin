@@ -212,11 +212,15 @@
         };
 
         // Вывод ошибки в консоль
-        ClassObj.prototype.error = function(message) {
-            console.error(this.__name__ + ': ' + message);
+        ClassObj.prototype.error = function() {
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(this.__name__ + ':');
+            console.error.apply(console, args);
         };
         ClassObj.prototype.warn = function(message) {
-            console.warn(this.__name__ + ': ' + message);
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(this.__name__ + ':');
+            console.warn.apply(console, args);
         };
 
         // вызов функции, добавляющей пользовательские методы и свойства
@@ -225,10 +229,10 @@
         return ClassObj;
     };
 
-    function ClassError(message) {
+    window.ClassError = function ClassError(message) {
         this.message = message;
-    }
-    ClassError.prototype = new Error();
+    };
+    window.ClassError.prototype = new Error();
 
 
     // ======================================================================================

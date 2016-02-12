@@ -196,3 +196,82 @@ if (!Array.prototype.map) {
         return A;
     };
 }
+
+
+// ==================
+//  Array.forEach
+// ==================
+if (!Array.prototype.forEach) {
+    Array.prototype.forEach = function(callback, thisArg) {
+        var T, k;
+        if (this == null) {
+            throw new TypeError(' this is null or not defined');
+        }
+
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + ' is not a function');
+        }
+
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+
+        k = 0;
+        while (k < len) {
+            var kValue;
+            if (k in O) {
+                kValue = O[k];
+                callback.call(T, kValue, k, O);
+            }
+            k++;
+        }
+    };
+}
+
+// ==================
+//  Function.bind
+// ==================
+if (!Function.prototype.bind) {
+    Function.prototype.bind = function(oThis) {
+        if (typeof this !== 'function') {
+            throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+        }
+
+        var aArgs = Array.prototype.slice.call(arguments, 1),
+            fToBind = this,
+            fNOP = function() {},
+            fBound = function() {
+                return fToBind.apply(this instanceof fNOP && oThis
+                        ? this
+                        : oThis,
+                    aArgs.concat(Array.prototype.slice.call(arguments)));
+            };
+
+        fNOP.prototype = this.prototype;
+        fBound.prototype = new fNOP();
+
+        return fBound;
+    };
+}
+
+
+// ===================
+//  console.XXX.apply
+// ===================
+if (Function.prototype.bind && window.console && typeof console.log == "object") {
+    [
+        "log",
+        "info",
+        "warn",
+        "error",
+        "assert",
+        "dir",
+        "clear",
+        "profile",
+        "profileEnd"
+    ].forEach(function(method) {
+        console[method] = this.bind(console[method], console);
+    }, Function.prototype.call);
+}
