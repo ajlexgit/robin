@@ -16,23 +16,74 @@
             listClass                       - класс, добавляемый списку
             slideClass                      - класс, добавляемый слайду
             itemClass                       - класс, добавляемый элементу списка
-
             initialActiveClass              - класс начально активного элемента
-            setItemsPerSlideAnimationName   - анимация выбора текущего слайда при изменении кол-ва
-                                              элементов в каждом слайде
-            setItemsPerSlideAnimatedHeight  - анимировать или нет высоту слайдера при изменении
-                                              кол-ва элементов в каждом слайде
 
-            itemSelector                    - селектор элементов списка
-            itemsPerSlide                   - кол-во элментов на каждый слайд (может быть функцией)
-            loop                            - зациклить слайдер
-            adaptiveHeight                  - менять высоту слайдера в зависимости от высоты
-                                              текущего слайда
-            adaptiveHeightTransition        - длительность анимации высоты слайдера
+            itemSelector: str               - селектор элементов слайдера
+            itemsPerSlide: number / func    - кол-во элементов на каждый слайд
+            loop: bool                      - зацикленный слайдер
 
-            onInit                          - событие инициализации
-            onSetItemsPerSlide              - событие установки кол-ва элементов слайда
-            onResize                        - событие изменения размера окна
+            // вариант установки высоты слайдера
+            sliderHeight: str
+                'current'  - по высоте текущего слайда
+                'max'      - по высоте максимального слайда
+                'none'     - не задавать высоту
+
+            sliderHeightTransition: number  - длительность анимации высоты слайдера
+
+        Методы:
+            // получение текущего слайда
+            getCurrentSlide()
+
+            // установка кол-ва элементов на слайд
+            setItemsPerSlide(ips)
+
+            // получение следующего слайда
+            getNextSlide()
+
+            // получение предыдущего слайда
+            getPreviousSlide()
+
+            // подключение плагинов
+            attachPlugins(plugins)
+
+            // перерасчет высоты слайдера
+            updateListHeight(animated)
+
+            // переход к слайду $toSlide с анимацией animationName
+            slideTo($toSlide, animationName, animatedHeight)
+
+            // переход к следующему слайду
+            slideNext(animationName, animatedHeight)
+
+            // переход к предыдущему слайду
+            slidePrevious(animationName, animatedHeight)
+
+        События:
+            before_change                   - перед установкой текущего слайда
+            after_change                    - после установкой текущего слайда
+
+            before_set_ips                  - перед установкой itemsPerSlide
+            after_set_ips                   - после установки itemsPerSlide
+
+            before_animate                  - перед анимацией перехода к слайду
+            after_animate                   - после анимации перехода к слайду
+
+            start_drag                      - начало перетаскивания слайда
+            stop_drag                       - завершение перетаскивания слайда
+
+            resize                          - изменение размера окна
+
+        Примечания по событиям:
+            1) при инициализации события не вызываются, т.к. их
+               обработчики вы ещё не повесили :)
+
+            2) before_animate / after_animate могут вызываться когда
+               текущий слайд не меняется. Например, при перетаскивании слайда
+               мышкой на короткое расстояние.
+
+            3) before_change / after_change могут вызываться без before_animate.
+               Например, при перетаскивании слайда мышкой на большое расстояние.
+
 
         HTML input:
             <div id="slider">
@@ -43,6 +94,7 @@
 
         JS пример:
             Slider('#slider', {
+                sliderHeight: Slider.prototype.HEIGHT_MAX,
                 loop: false,
                 itemSelector: '.slide',
                 itemsPerSlide: 2
@@ -71,7 +123,7 @@
             ]);
 
 
-        Пример динамического количества элементов в слайде
+        Пример динамического количества элементов в слайде:
             Slider($list, {
                 itemsPerSlide: function() {
                     if ($(window).width() >= 1200)  {
@@ -79,52 +131,53 @@
                     } else {
                         return 3
                     }
-                },
-
-                onSetItemsPerSlide: function(itemsPerSlide) {
-                    // сохранение текущего значения
-                    this._itemsPerSlide = itemsPerSlide;
-                },
-                onResize: function() {
-                    // обновление, если значение изменилось
-                    var itemsPerSlide = this.opts.itemsPerSlide.call(this);
-                    if (this._itemsPerSlide != itemsPerSlide) {
-                        this.setItemsPerSlide(itemsPerSlide);
-                    }
                 }
-            })
+            }).on('after_set_ips', function(new_ips) {
+                // сохранение текущего значения
+                this._ips = new_ips;
+            }).on('resize', function() {
+                // обновление, если значение изменилось
+                var itemsPerSlide = this.opts.itemsPerSlide.call(this);
+                if (this._ips != itemsPerSlide) {
+                    this.setItemsPerSlide(itemsPerSlide);
+                }
+            });
     */
 
     var sliders = [];
 
-    window.Slider = Class(Object, function Slider(cls, superclass) {
+    window.Slider = Class(EventedObject, function Slider(cls, superclass) {
+        // варианты установки высоты слайдера
+        cls.HEIGHT_CURRENT = 'current';    // по высоте текущего слайда
+        cls.HEIGHT_MAX = 'max';            // по высоте максимального слайда
+        cls.HEIGHT_NONE = 'none';          // не устанавливать высоту
+        cls.HEIGHT_TYPES = [
+            cls.HEIGHT_CURRENT,
+            cls.HEIGHT_MAX,
+            cls.HEIGHT_NONE
+        ];
+
         cls.defaults = {
             rootClass: 'slider-root',
             listWrapperClass: 'slider-list-wrapper',
             listClass: 'slider-list',
             slideClass: 'slider-slide',
             itemClass: 'slider-item',
-
             initialActiveClass: 'active',
-            setItemsPerSlideAnimationName: 'instant',
-            setItemsPerSlideAnimatedHeight: false,
 
             itemSelector: '.slide',
             itemsPerSlide: 1,
             loop: true,
-            adaptiveHeight: true,
-            adaptiveHeightTransition: 800,
-
-            onInit: $.noop,
-            onSetItemsPerSlide: $.noop,
-            onResize: $.noop
+            sliderHeight: cls.HEIGHT_CURRENT,
+            sliderHeightTransition: 800
         };
 
         cls.DATA_KEY = 'slider';
         cls.REMOVABLE_CLASS = 'no-slider';
 
-
         cls.init = function(list, options) {
+            superclass.init.call(this);
+
             this.$list = $(list).first();
             if (!this.$list.length) {
                 return this.raise('list element not found');
@@ -158,8 +211,7 @@
                 return this.raise('there are no items in list');
             }
 
-            // флаг анимации и объект анимации
-            this._animated = false;
+            // объект анимации
             this._animation = null;
 
             // текущий элемент
@@ -172,27 +224,44 @@
             this.setItemsPerSlide(this.opts.itemsPerSlide);
 
             // обновление высоты по мере загрузки картинок
-            if (this.opts.adaptiveHeight) {
-                var $images = this.$currentSlide.find('img');
-            } else {
+            var $images;
+            if (this.opts.sliderHeight == this.HEIGHT_CURRENT) {
+                $images = this.$currentSlide.find('img');
+            } else if (this.opts.sliderHeight == this.HEIGHT_MAX) {
                 $images = this.$list.find('img');
+            } else if (this.opts.sliderHeight == this.HEIGHT_NONE) {
+                $images = $();
+            } else {
+                return this.raise('unknown sliderHeight');
             }
 
-            var that = this;
-            var loadHandle = $.rared(function() {
-                that.updateListHeight();
-            }, 100);
+            if ($images && $images.length) {
+                var that = this;
+                var loadHandle = $.rared(function() {
+                    that.updateListHeight();
+                }, 100);
 
-            $images.on('load', loadHandle);
+                $images.on('load', loadHandle);
+            }
 
             this.$list.removeClass(this.REMOVABLE_CLASS);
-
-            // callback
-            this.opts.onInit.call(this);
-
             this.$list.data(this.DATA_KEY, this);
 
             sliders.push(this);
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.destroy = function() {
+            // Прерывание анимации, если она запущена
+            if (this._animation) {
+                this._animation.stop(true);
+                this._animation = null;
+            }
+
+            this.callPluginsMethod('destroy');
+            superclass.destroy.call(this);
         };
 
         // ===============================================
@@ -209,7 +278,7 @@
         /*
             Изменение текущего слайда
          */
-        cls.setCurrentSlide = function($slide) {
+        cls._setCurrentSlide = function($slide) {
             if (!$slide || !$slide.length || (this.$slides.index($slide) < 0)) {
                 return false
             }
@@ -227,17 +296,13 @@
         };
 
         cls.beforeSetCurrentSlide = function($slide) {
-            // jQuery event
-            this.$list.trigger('beforeSetCurrentSlide.slider', [$slide]);
-
+            this.trigger('before_change', $slide);
             this.callPluginsMethod('beforeSetCurrentSlide', [$slide]);
         };
 
         cls.afterSetCurrentSlide = function($slide) {
             this.callPluginsMethod('afterSetCurrentSlide', [$slide], true);
-
-            // jQuery event
-            this.$list.trigger('afterSetCurrentSlide.slider', [$slide]);
+            this.trigger('after_change', $slide);
         };
 
         // ===============================================
@@ -252,8 +317,9 @@
          */
         cls.setItemsPerSlide = function(itemsPerSlide) {
             // Прерывание анимации, если она запущена
-            if (this._animated && this._animation) {
-                this._animation.stop(true)
+            if (this._animation) {
+                this._animation.stop(true);
+                this._animation = null;
             }
 
             // если функция
@@ -287,16 +353,9 @@
             this.$slides.addClass(this.opts.slideClass);
 
             // переход к активному слайду
-            this.slideTo(
-                this.getCurrentSlide(),
-                this.opts.setItemsPerSlideAnimationName,
-                this.opts.setItemsPerSlideAnimatedHeight
-            );
+            this.slideTo(this.getCurrentSlide(), 'instant', false);
 
             this.afterSetItemsPerSlide(itemsPerSlide);
-
-            // callback
-            this.opts.onSetItemsPerSlide.call(this, itemsPerSlide);
         };
 
         /*
@@ -304,9 +363,7 @@
             перед созданием слайдов.
          */
         cls.beforeSetItemsPerSlide = function(itemsPerSlide) {
-            // jQuery event
-            this.$list.trigger('beforeSetItemsPerSlide.slider');
-
+            this.trigger('before_set_ips', itemsPerSlide);
             this.callPluginsMethod('beforeSetItemsPerSlide');
         };
 
@@ -316,9 +373,7 @@
          */
         cls.afterSetItemsPerSlide = function(itemsPerSlide) {
             this.callPluginsMethod('afterSetItemsPerSlide', null, true);
-
-            // jQuery event
-            this.$list.trigger('afterSetItemsPerSlide.slider');
+            this.trigger('after_set_ips', itemsPerSlide);
         };
 
         // ===============================================
@@ -449,50 +504,53 @@
         // ===============================================
 
         /*
-            Рассчет финальной высоты слайдера
+            Рассчет высоты слайдера
          */
         cls.calcListHeight = function() {
-            if (this.opts.adaptiveHeight) {
+            if (this.opts.sliderHeight == cls.HEIGHT_CURRENT) {
                 return this.$currentSlide.outerHeight();
+            } else if (this.opts.sliderHeight == cls.HEIGHT_MAX) {
+                var final_height = 0;
+                this.$slides.height('auto');
+                $.each(this.$slides, function(i, slide) {
+                    var $slide = $(slide);
+                    var height = $slide.outerHeight();
+                    if (height > final_height) {
+                        final_height = height;
+                    }
+                });
+                this.$slides.height('');
+                return final_height;
             }
-
-            var final_height = 0;
-            this.$slides.height('auto');
-            $.each(this.$slides, function(i, slide) {
-                var $slide = $(slide);
-                var height = $slide.outerHeight();
-                if (height > final_height) {
-                    final_height = height;
-                }
-            });
-            this.$slides.height('');
-            return final_height;
         };
 
         /*
             Обновление высоты slider.$list в зависимости от высоты слайдов
-            и настройки adaptiveHeight
          */
-        cls.updateListHeight = function(animatedHeight) {
-            // прерываем анимация высоты, если она идёт
+        cls.updateListHeight = function(animated) {
+            // прерываем анимацию высоты, если она идёт
             if (this._adaptive_animation) {
                 this._adaptive_animation.stop();
+                this._adaptive_animation = null;
             }
 
-            var final_height = this.calcListHeight();
-            var current_height = this.$list.outerHeight();
+            var final_height = parseInt(this.calcListHeight());
+            if (isNaN(final_height)) {
+                return;
+            }
 
             // высота не меняется - выходим
+            var current_height = this.$list.outerHeight();
             if (current_height == final_height) {
                 return
             }
 
             this.beforeUpdateListHeight(current_height, final_height);
-            if (animatedHeight && this.opts.adaptiveHeightTransition) {
+            if (animated && this.opts.sliderHeightTransition) {
                 // с анимацией
                 var that = this;
                 this._adaptive_animation = $.animate({
-                    duration: this.opts.adaptiveHeightTransition,
+                    duration: this.opts.sliderHeightTransition,
                     delay: 40,
                     easing: 'easeOutCubic',
                     init: function() {
@@ -517,9 +575,6 @@
             перед обновлением высоты списка.
          */
         cls.beforeUpdateListHeight = function(current, final) {
-            // jQuery event
-            this.$list.trigger('beforeUpdateListHeight.slider', arguments);
-
             this.callPluginsMethod('beforeUpdateListHeight', arguments);
         };
 
@@ -529,9 +584,6 @@
          */
         cls.afterUpdateListHeight = function(current, final) {
             this.callPluginsMethod('afterUpdateListHeight', arguments, true);
-
-            // jQuery event
-            this.$list.trigger('afterUpdateListHeight.slider', arguments);
         };
 
 
@@ -572,12 +624,8 @@
             перед переходом к слайду.
          */
         cls.beforeSlide = function($toSlide) {
-            // jQuery event
-            this.$list.trigger('beforeSlide.slider', arguments);
-
+            this.trigger('before_animate', $toSlide);
             this.callPluginsMethod('beforeSlide', arguments);
-
-            this._animated = true;
         };
 
         /*
@@ -585,12 +633,9 @@
             после перехода к слайду.
          */
         cls.afterSlide = function($toSlide) {
-            this._animated = false;
-
+            this._animation = null;
             this.callPluginsMethod('afterSlide', arguments, true);
-
-            // jQuery event
-            this.$list.trigger('afterSlide.slider', arguments);
+            this.trigger('after_animate', $toSlide);
         };
 
         cls.slideNext = function(animationName, animatedHeight) {
@@ -610,8 +655,7 @@
     // ================================================
     window.SliderPlugin = Class(Object, function SliderPlugin(cls, superclass) {
         cls.defaults = {
-            afterAttach: $.noop,
-            onResize: $.noop
+            afterAttach: $.noop
         };
 
 
@@ -619,19 +663,23 @@
             this.opts = $.extend(true, {}, this.defaults, settings);
         };
 
+        cls.destroy = function() {
+
+        };
+
         // Инициализация
         cls.onAttach = function(slider) {
 
         };
 
-        // Дополнительные действия после подключения
+        // Дополнительные действия после подключения плагина к слайдеру
         cls.afterAttach = function(slider) {
             this.opts.afterAttach.call(this, slider);
         };
 
         // Событие изменения размера окна
         cls.onResize = function(slider) {
-            this.opts.onResize.call(this, slider);
+
         };
     });
 
@@ -644,12 +692,11 @@
             name: 'instant'
         });
 
-
         /*
             Реализация метода перехода от одного слайда к другому
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animated) {
+            if (slider._animation) {
                 return
             }
 
@@ -660,7 +707,7 @@
             $toSlide.css({
                 left: '0'
             });
-            slider.setCurrentSlide($toSlide);
+            slider._setCurrentSlide($toSlide);
             slider.afterSlide($toSlide);
 
             slider.updateListHeight(animatedHeight);
@@ -674,7 +721,7 @@
         });
     }).on('resize.slider', $.rared(function() {
         $.each(sliders, function(i, slider) {
-            slider.opts.onResize.call(slider);
+            slider.trigger('resize');
             slider.callPluginsMethod('onResize');
             slider.updateListHeight();
         });

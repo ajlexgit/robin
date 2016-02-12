@@ -18,6 +18,11 @@
             }
         };
 
+        cls.destroy = function() {
+            this.stopTimer();
+            superclass.destroy.call(this);
+        };
+
         /*
             Создание кнопок при подключении плагина
          */
@@ -76,7 +81,7 @@
         cls.stopDrag = function(slider) {
             this.startTimer(slider);
         };
-        
+
         /*
             Создание таймера
          */

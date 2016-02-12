@@ -2,6 +2,8 @@
 
     window.SliderDragPlugin = Class(SliderPlugin, function SliderDragPlugin(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
+            animatedHeight: true,
+
             mouse: true,
             touch: true,
             ignoreDistanceX: 18,        // px
@@ -13,9 +15,16 @@
             speed: 800,
             dragOneSlide: false,
             easing: 'easeOutCubic',
-            animatedHeight: true,
             slideMarginPercent: 0
         });
+
+        cls.destroy = function() {
+            if (this.drager) {
+                this.drager.destroy();
+                this.drager = null;
+            }
+            superclass.destroy.call(this);
+        };
 
         /*
             Создание объекта Drager
@@ -40,12 +49,10 @@
 
                     that.onStartDrag(slider, evt);
 
-                    if (slider._animated) {
-                        // если идет анимация - прекращаем её
-                        if (slider._animation) {
-                            slider._animation.stop(true);
-                            slider._animation = null;
-                        }
+                    // если идет анимация - прекращаем её
+                    if (slider._animation) {
+                        slider._animation.stop(true);
+                        slider._animation = null;
                     }
                 },
                 onDrag: function(evt) {
@@ -83,9 +90,7 @@
             this._dx = 0;
             this._movedSlides = [];
 
-            // jQuery event
-            slider.$list.trigger('startDrag.slider');
-
+            slider.trigger('start_drag');
             slider.callPluginsMethod('startDrag');
         };
 
@@ -164,9 +169,7 @@
 
             // выделяем активный слайд
             if (slider.$currentSlide.get(0) != $newCurrentSlide.get(0)) {
-                slider.beforeSlide($newCurrentSlide);
-                slider.setCurrentSlide($newCurrentSlide);
-                slider.afterSlide($newCurrentSlide);
+                slider._setCurrentSlide($newCurrentSlide);
                 slider.updateListHeight(this.opts.animatedHeight);
             }
 
@@ -204,7 +207,6 @@
                 easing: this.opts.easing,
                 init: function() {
                     this.autoInit('current_slide', currSlidePosition, 0);
-
 
                     if ($currSlide.get(0) == leftSlide) {
                         // второй слайд - правый
@@ -245,9 +247,7 @@
             });
 
             slider.callPluginsMethod('stopDrag', null, true);
-
-            // jQuery event
-            slider.$list.trigger('stopDrag.slider');
+            slider.trigger('stop_drag');
         };
     });
 

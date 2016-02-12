@@ -22,12 +22,25 @@
             }
         };
 
+        cls.destroy = function() {
+            if (this.$left) {
+                this.$left.remove();
+                this.$left = null;
+            }
+
+            if (this.$right) {
+                this.$right.remove();
+                this.$right = null;
+            }
+
+            superclass.destroy.call(this);
+        };
+
         /*
             Создание стрелок при подключении плагина
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-
             this.createControls(slider);
             this.checkAllowed(slider);
         };

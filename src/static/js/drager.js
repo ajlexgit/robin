@@ -290,6 +290,10 @@
             this.attach();
         };
 
+        cls.destroy = function() {
+            this.detach();
+        };
+
         // ================================================
 
         /*
@@ -337,7 +341,7 @@
           */
         cls.startMomentum = function(evt, momentum) {
             var that = this;
-            that._momentumAnimation = $.animate({
+            this._momentumAnimation = $.animate({
                 duration: momentum.duration,
                 easing: momentum.easing,
                 init: function() {
@@ -376,7 +380,7 @@
         };
 
         /*
-            Прекращения отслеживания текущего сеанса перемещения
+            Прекращение отслеживания текущего сеанса перемещения
           */
         cls.stopCurrent = function(evt) {
             var momentum;

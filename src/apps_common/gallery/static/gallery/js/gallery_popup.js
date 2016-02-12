@@ -47,17 +47,6 @@
 
      */
 
-
-    /*
-        Подкласс слайдера галереи, отменяющий задание высоты слайдера
-     */
-    var GallerySlider = Class(Slider, function GallerySlider(cls, superclass) {
-        cls.calcListHeight = function() {
-
-        }
-    });
-
-
     window.GalleryPopup = Class(OverlayedPopup, function GalleryPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             previews: '',
@@ -160,7 +149,8 @@
             Создание объекта слайдера
          */
         cls.makeSlider = function() {
-            return GallerySlider(this.$content.find('.slider'), {
+            return Slider(this.$content.find('.slider'), {
+                sliderHeight: Slider.prototype.HEIGHT_NONE,
                 itemSelector: '.slider-item'
             }).attachPlugins([
                 SliderSideAnimation({}),
@@ -178,7 +168,7 @@
         };
 
         /*
-            Дополнительные элементы
+            Добавление слайдера
          */
         cls.extraDOM = function() {
             superclass.extraDOM.call(this);
@@ -220,9 +210,13 @@
         /*
             Уничтожение слайдера
          */
-        cls._afterShow = function() {
-            superclass._afterShow.call(this);
-            // TODO: destroy slider
+        cls._removeDOM = function() {
+            if (this.slider) {
+                this.slider.destroy();
+                this.slider = null;
+            }
+
+            superclass._removeDOM.call(this);
         }
     });
 

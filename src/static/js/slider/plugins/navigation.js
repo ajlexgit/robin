@@ -22,6 +22,14 @@
             }
         };
 
+        cls.destroy = function() {
+            if (this.$wrapper) {
+                this.$wrapper.remove();
+                this.$wrapper = null;
+            }
+            superclass.destroy.call(this);
+        };
+
         /*
             Создание кнопок при подключении плагина
          */

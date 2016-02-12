@@ -15,7 +15,7 @@
             посредством выдвигания с края слайдера
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animated) {
+            if (slider._animation) {
                 return
             }
 
@@ -87,7 +87,7 @@
                 });
             }
 
-            slider.setCurrentSlide($toSlide);
+            slider._setCurrentSlide($toSlide);
 
             slider._animation = $.animate({
                 duration: this.opts.speed,
@@ -160,7 +160,7 @@
                 });
             }
 
-            slider.setCurrentSlide($toSlide);
+            slider._setCurrentSlide($toSlide);
 
             slider._animation = $.animate({
                 duration: this.opts.speed,

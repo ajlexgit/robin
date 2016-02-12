@@ -38,7 +38,6 @@ $close_btn_weight: 2px;
     right: 10px;
     z-index: 6;
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.1);
     @include opacity(0.5);
     @include transition(opacity 0.2s);
     @include media_map(width, $close_btn_size);
@@ -73,7 +72,14 @@ $close_btn_weight: 2px;
   .slider-root {
     .slider-slide {
       height: 100%;
+      padding: 0 80px;
       @include valign_after;
+      @include media_interval($media480, $media768) {
+        padding: 0 60px;
+      }
+      @include media_interval(0, $media480) {
+        padding: 0 50px;
+      }
 
       .slider-item {
         position: static;
@@ -98,8 +104,6 @@ $close_btn_weight: 2px;
     }
 
     .slider-arrow {
-      height: 50%;
-      background: rgba(0, 0, 0, 0.1);
       @include opacity(0.4);
       @include transition(opacity 0.2s);
 

@@ -12,7 +12,7 @@
             посредством исчезания
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animated) {
+            if (slider._animation) {
                 return
             }
 
@@ -27,7 +27,7 @@
                 opacity: 0,
                 zIndex: 6
             });
-            slider.setCurrentSlide($toSlide);
+            slider._setCurrentSlide($toSlide);
 
             slider._animation = $.animate({
                 duration: this.opts.speed,

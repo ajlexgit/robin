@@ -50,8 +50,7 @@
             var description = cut_description(this);
 
             var slider = Slider(this, {
-                itemSelector: 'img',
-                adaptiveHeight: false
+                itemSelector: 'img'
             }).attachPlugins([
                 SliderSideAnimation({}),
                 SliderSideShortestAnimation({}),

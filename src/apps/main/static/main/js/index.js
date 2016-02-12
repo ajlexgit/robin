@@ -2,7 +2,7 @@
 
     $(document).ready(function() {
 
-        WinHeightSlider('.section-slider .slider', {
+        window.slider = WinHeightSlider('.section-slider .slider', {
             loop: true,
             itemSelector: '.slider-item'
         }).attachPlugins([
@@ -18,7 +18,6 @@
                 container: '.slider-list-wrapper'
             })
         ]);
-
 
         // gallery popup
         $('#gallery').find('.item').on('click', function() {
