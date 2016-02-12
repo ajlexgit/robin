@@ -200,7 +200,6 @@
             // выделение выбранного слайда
             var preview;
             var active_index = 0;
-
             if (this.opts.activePreview.jquery) {
                 // jQuery-селектор с превью-элементом
                 preview = this.opts.activePreview.get(0);
@@ -241,6 +240,9 @@
             superclass._removeDOM.call(this);
         };
 
+        /*
+            Инициализация видеоплеера
+         */
         cls.playVideo = function($item) {
             var item_data = $item.data();
 
@@ -280,6 +282,9 @@
             }
         };
 
+        /*
+            Уничтожение видеоплеера
+         */
         cls.stopVideo = function($item) {
             if (this._player) {
                 this._player.destroy();
