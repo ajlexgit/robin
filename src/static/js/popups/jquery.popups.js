@@ -27,9 +27,6 @@
             // Показ окна. Возвращает Deferred-объект
             popup.show()
 
-            // Изменение содержимого
-            popup.setContent('<h1>Hello</h1>')
-
             // Скрытие окна. Возвращает Deferred-объект
             popup.hide()
 
@@ -69,9 +66,6 @@
             popup.on('show', function() {
                 console.log('Окно показано')
             }).show();
-
-            // Замена содержимого окна
-            popup.setContent('<h1 class="title-h1">Goodbay</h1>');
 
             // Скрытие окна и уничтожение после завершения анимации
             popup.on('hide', function() {
@@ -170,7 +164,10 @@
             this.$container.addClass(this.opts.classes);
 
             // content
-            this._fillDOM();
+            this.resetContent();
+
+            // дополнительные элементы
+            this.extraDOM();
 
             this.trigger('ready');
         };
@@ -183,9 +180,9 @@
         };
 
         /*
-            Добавление содержимого или дополнительных элементов
+            Установка содержимого $content
          */
-        cls._fillDOM = function() {
+        cls.resetContent = function() {
             var content;
             if ($.isFunction(this.opts.content)) {
                 content = this.opts.content.call(this);
@@ -194,8 +191,16 @@
             }
 
             if (content) {
+                this.$content.empty();
                 this.$content.html(content);
             }
+        };
+
+        /*
+            Добавление в окно дополнительных элементов
+         */
+        cls.extraDOM = function() {
+
         };
 
         //=======================
@@ -260,14 +265,6 @@
         //=======================
         // Методы
         //=======================
-
-        /*
-            Установка содержимого. Может быть анимировано
-         */
-        cls.setContent = function(content) {
-            this.$content.empty();
-            this.$content.html(content);
-        };
 
         /*
             Открыто ли окно (true до анимации)
@@ -430,8 +427,8 @@
         /*
             Дополнительные элементы DOM
          */
-        cls._fillDOM = function() {
-            superclass._fillDOM.call(this);
+        cls.extraDOM = function() {
+            superclass.extraDOM.call(this);
 
             this.$overlay = $('<div>').attr('id', this.OVERLAY_ID).hide();
             this.$overlay.addClass(this.opts.classes);
