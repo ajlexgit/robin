@@ -38,7 +38,6 @@
             </div>
 
 
-
             $('#gallery').find('.item').on('click', function() {
                 $.gallery({
                     previews: '#gallery .item',
@@ -52,6 +51,7 @@
         cls.defaults = $.extend({}, superclass.defaults, {
             imageItemClass: 'image-item',
             videoItemClass: 'video-item',
+            videoLoadingClass: 'loading',
             videoPlayingClass: 'playing',
 
             previews: '',
@@ -60,6 +60,8 @@
 
         cls.OVERLAY_ID = 'gallery-popup-overlay';
         cls.CONTAINER_ID = 'gallery-popup-container';
+        cls.YOUTUBE_VIDEO = 'youtube';
+        cls.VIMEO_VIDEO = 'vimeo';
 
         cls.init = function(options) {
             superclass.init.call(this, options);
@@ -105,23 +107,19 @@
 
             if (preview_data.provider && preview_data.key) {
                 // видео
-                var $video = $('<div/>').addClass(this.opts.videoItemClass);
-                $video.append($image);
-
-                // кнопка воспроизведения
+                var $item = $('<div/>').addClass(this.opts.videoItemClass);
                 var $playBtn = $('<div/>').addClass('play-btn');
-                $video.append($playBtn);
+                $item.append($image, $playBtn);
 
                 var that = this;
-                $playBtn.on(touchClick, function() {
+                $item.on(touchClick, '.play-btn', function() {
                     that.playVideo($(this).closest('.' + that.opts.videoItemClass));
-                });
-
-                $video.data({
+                }).data({
                     provider: preview_data.provider,
                     key: preview_data.key
                 });
-                return $video;
+
+                return $item;
             } else {
                 // картинка
                 return $image.addClass(this.opts.imageItemClass);
@@ -241,12 +239,6 @@
                 this.slider.destroy();
                 this.slider = null;
             }
-
-            if (this._player) {
-                this._player.destroy();
-                this._player = null;
-            }
-
             superclass._removeDOM.call(this);
         };
 
@@ -255,54 +247,82 @@
          */
         cls.playVideo = function($item) {
             var item_data = $item.data();
-
-            if (this._player) {
-                this._player.destroy();
-                this._player = null;
-            }
-
-            var that = this;
-            var $player = $('<div>');
-            $item.append($player);
-            if (item_data.provider == 'youtube') {
-                this._player = YouTube($player, {
-                    video: item_data.key,
-                    autoplay: true
-                }).on('ready', function() {
-                    $item.addClass(that.opts.videoPlayingClass);
-                });
-            } else if (item_data.provider == 'vimeo') {
-                this._player = Vimeo($player, {
-                    video: item_data.key,
-                    autoplay: true
-                }).on('ready', function() {
-                    $item.addClass(that.opts.videoPlayingClass);
-                });
+            if (item_data.provider == this.YOUTUBE_VIDEO) {
+                this._playYoutube($item, item_data);
+            } else if (item_data.provider == this.VIMEO_VIDEO) {
+                this._playVimeo($item, item_data);
+            } else {
+                this.warn('undefined video type:', item_data.provider);
+                return
             }
 
             // остановка видео при переходе на другой слайд и закрытии окна
-            if (this._player) {
-                this.on('before_hide.video', function() {
-                    that.stopVideo($item);
-                });
+            var that = this;
+            this.on('before_hide.video', function() {
+                that.stopVideo($item);
+            });
 
+            if (this.slider) {
                 this.slider.on('before_change.video', function() {
                     that.stopVideo($item);
                 });
             }
         };
 
+        cls._playYoutube = function($item, item_data) {
+            if (item_data.player) {
+                // плеер уже есть
+                $item.addClass(this.opts.videoPlayingClass);
+                item_data.player.play();
+                return
+            } else {
+                var $player = $('<div>');
+                $item.append($player).addClass(this.opts.videoLoadingClass);
+            }
+
+            var that = this;
+            item_data.player = YouTube($player, {
+                video: item_data.key,
+                autoplay: true
+            }).on('ready', function() {
+                $item.removeClass(that.opts.videoLoadingClass);
+                $item.addClass(that.opts.videoPlayingClass);
+            });
+        };
+
+        cls._playVimeo = function($item, item_data) {
+            if (item_data.player) {
+                // плеер уже есть
+                $item.addClass(this.opts.videoPlayingClass);
+                item_data.player.play();
+                return
+            } else {
+                var $player = $('<div>');
+                $item.append($player).addClass(this.opts.videoLoadingClass);
+            }
+
+            var that = this;
+            item_data.player = Vimeo($player, {
+                video: item_data.key,
+                autoplay: true
+            }).on('ready', function() {
+                $item.removeClass(that.opts.videoLoadingClass);
+                $item.addClass(that.opts.videoPlayingClass);
+            });
+        };
+
         /*
             Уничтожение видеоплеера
          */
         cls.stopVideo = function($item) {
-            if (this._player) {
-                this._player.destroy();
-                this._player = null;
+            var item_data = $item.data();
+            if (item_data.player) {
+                item_data.player.pause();
+                item_data.player.position(0);
             }
 
+            $item.removeClass(this.opts.videoLoadingClass);
             $item.removeClass(this.opts.videoPlayingClass);
-            $item.find('iframe').remove();
 
             this.off('.video');
             if (this.slider) {

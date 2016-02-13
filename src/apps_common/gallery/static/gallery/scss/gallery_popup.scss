@@ -100,12 +100,8 @@ $close_btn_weight: 2px;
         z-index: 1;
         @include valign_after;
 
-        img {
-          max-width: 100%;
-          max-height: 100%;
-        }
-
         &:before {
+          // shadow
           content: '';
           position: absolute;
           left: 0;
@@ -116,6 +112,11 @@ $close_btn_weight: 2px;
           background: rgba(0, 0, 0, 0.2);
         }
 
+        img {
+          max-width: 100%;
+          max-height: 100%;
+        }
+
         .play-btn {
           position: absolute;
           left: 50%;
@@ -123,7 +124,7 @@ $close_btn_weight: 2px;
           width: 10%;
           min-width: 60px;
           max-width: 100px;
-          z-index: 2;
+          z-index: 5;
           cursor: pointer;
           @include transform(translate(-50%, -50%));
 
@@ -136,13 +137,30 @@ $close_btn_weight: 2px;
           }
         }
 
+        iframe {
+          display: none;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          max-height: 100%;
+          vertical-align: middle;
+        }
+
+        // в процессе загрузки
+        &.loading {
+          .play-btn {
+            @include opacity(0);
+            @include transition(opacity 0.3s);
+          }
+        }
+
         // в процессе воспроизведения
         &.playing {
-          img {
+          &:before {
             display: none;
           }
 
-          &:before {
+          img {
             display: none;
           }
 
@@ -151,11 +169,7 @@ $close_btn_weight: 2px;
           }
 
           iframe {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            vertical-align: middle;
+            display: block;
           }
         }
       }

@@ -14,29 +14,23 @@
 
             fullHeight          - должно ли меню быть на всю высоту
 
-            beforeShow          - событие перед показом меню. Если вернёт false,
-                                  меню не будет показано
-            beforeHide          - событие перед скрытием меню. Если вернёт false,
-                                  меню не будет скрыто
-            onResize            - событие изменения размера окна браузера
+        События:
+            //
     */
 
     var menus = [];
 
-    var Menu = Class(Object, function Menu(cls, superclass) {
+    var Menu = Class(EventedObject, function Menu(cls, superclass) {
         cls.init = function(options) {
-            // настройки
+            superclass.init.call(this);
+
             this.opts = $.extend({
                 menuSelector: '#mobile-menu',
                 menuActiveClass: 'active',
                 buttonSelector: '#mobile-menu-button',
                 buttonActiveClass: 'active',
 
-                fullHeight: false,
-
-                beforeShow: $.noop,
-                beforeHide: $.noop,
-                onResize: $.noop
+                fullHeight: false
             }, options);
 
             // элемент меню
@@ -73,7 +67,7 @@
             Показ меню
          */
         cls.show = function() {
-            if (this.opts.beforeShow.call(this) === false) {
+            if (this.trigger('before_show') === false) {
                 return false;
             }
 
@@ -90,46 +84,37 @@
             Скрытие меню
          */
         cls.hide = function() {
-            if (this.opts.beforeHide.call(this) === false) {
+            if (this.trigger('before_hide') === false) {
                 return false;
             }
 
             $(this.opts.buttonSelector).removeClass(this.opts.buttonActiveClass);
             this.$menu.removeClass(this.opts.menuActiveClass);
         };
-
-        /*
-            Обновление при изменении размера окна
-         */
-        cls.refresh = function(win_width) {
-            if (!this.$menu.hasClass(this.opts.menuActiveClass)) {
-                return
-            }
-
-            this.opts.onResize.call(this, win_width);
-        };
     });
 
     $(window).on('resize.menu', $.rared(function() {
+        var winWidth = $(window).width();
         $.each(menus, function() {
-            if (this.opts.fullHeight) {
-                // на всю высоту окна
-                $.winHeight(this.$menu);
-            }
+            if (this.$menu.hasClass(this.opts.menuActiveClass)) {
+                if (this.opts.fullHeight) {
+                    // на всю высоту окна
+                    $.winHeight(this.$menu);
+                }
 
-            this.refresh($(window).width());
+                this.trigger('refresh', winWidth);
+            }
         })
     }, 100));
 
 
     // главное меню на мобиле
     window.menu = Menu({
-        fullHeight: true,
-        onResize: function(win_width) {
-            if (win_width >= 1024) {
-                // скрытие на больших экранах
-                this.hide();
-            }
+        fullHeight: true
+    }).on('resize', function(winWidth) {
+        // скрытие на больших экранах
+        if (winWidth >= 1024) {
+            this.hide();
         }
     });
 
