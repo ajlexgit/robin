@@ -261,6 +261,7 @@
             }
 
             this.callPluginsMethod('destroy');
+            this.$list.removeData(this.DATA_KEY);
             superclass.destroy.call(this);
         };
 

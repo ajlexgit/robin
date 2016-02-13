@@ -44,8 +44,15 @@
     var layers = [];
 
     window.Layer = Class(Object, function Layer(cls, superclass) {
+        cls.STRATEGY_TOP = 'top';
+        cls.STRATEGY_TRANSFORM = 'transform';
+        cls.STRATEGIES = [
+            cls.STRATEGY_TOP,
+            cls.STRATEGY_TRANSFORM
+        ];
+
         cls.defaults = {
-            strategy: 'top',
+            strategy: cls.STRATEGY_TOP,
             minEnabledWidth: 768,
 
             onInit: $.noop,
@@ -65,8 +72,7 @@
 
             // настройки
             this.opts = $.extend({}, this.defaults, options);
-
-            if ((this.opts.strategy != 'top') && (this.opts.strategy != 'transform')) {
+            if (cls.STRATEGIES.indexOf(this.opts.strategy) < 0) {
                 return this.raise('undefined strategy');
             }
 
