@@ -12,8 +12,13 @@
             inputClass       - класс, добавляемый полю
             min              - минимальное значение поля (перезапишет аттрибут)
             max              - максимальное значение поля (перезапишет аттрибут)
-            beforeChange     - событие перед изменением значения
-            afterChange      - событие после изменения значения
+
+        События:
+            // Перед изменение значения. Если вернет false - значение не изменится.
+            before_change(new_value)
+
+            // После изменения значения
+            after_change
 
         Пример:
             <div class="custom-counter">
@@ -23,21 +28,23 @@
             $('.custom-counter').counter()
     */
 
-    window.CustomCounter = Class(Object, function CustomCounter(cls, superclass) {
+    window.CustomCounter = Class(EventedObject, function CustomCounter(cls, superclass) {
         cls.defaults = {
             wrapperClass: 'custom-counter-wrapper',
             buttonClass: 'custom-counter-button',
             inputClass: 'custom-counter-input',
+
             min: '',
             max: '',
-            beforeChange: $.noop,
-            afterChange: $.noop
+            step: 1
         };
 
         cls.DATA_KEY = 'counter';
 
 
         cls.init = function(root, options) {
+            superclass.init.call(this);
+
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -70,17 +77,23 @@
             this.$incrBtn.addClass(this.opts.buttonClass + ' incr');
 
             // границы значений
-            this.min = Number($.isNumeric(this.opts.min) ? this.opts.min : this.$input.prop('min'));
-            this.max = Number($.isNumeric(this.opts.max) ? this.opts.max : this.$input.prop('max'));
+            this.min = $.isNumeric(this.opts.min) ? this.opts.min : this.$input.prop('min');
+            this.max = $.isNumeric(this.opts.max) ? this.opts.max : this.$input.prop('max');
+            this.step = $.isNumeric(this.opts.step) ? this.opts.step : this.$input.prop('step');
             if (this.$input.prop('type') == 'number') {
-                this.$input.prop('min', this.min);
-                this.$input.prop('max', this.max);
-                this.$input.prop('step', 1);
+                if (this.min) {
+                    this.$input.prop('min', this.min);
+                }
+                if (this.min) {
+                    this.$input.prop('max', this.max);
+                }
+                if (this.step) {
+                    this.$input.prop('step', this.step);
+                }
             }
 
             // форматируем текущее значение
-            this._set_value(this.$input.val());
-
+            this._format();
 
             // уменьшение значения
             var that = this;
@@ -95,16 +108,27 @@
                 return false;
             });
 
-            // форматирование значения при потере фокуса
+
             this.$input.on('blur.counter', function() {
-                that.value(that.$input.val());
+                // форматирование значения при потере фокуса
+                that._format();
             }).on('keypress.counter', function(e) {
+                // форматирование значения при нажатии Enter
                 if (e.which == 13) {
-                    that.value(that.$input.val());
+                    that._format();
                 }
+            }).on('mousewheel.counter', function(e) {
+                // Прокрутка колеса на поле изменяет его значение
+                if (e.deltaY < 0) {
+                    that.decrement();
+                } else {
+                    that.increment();
+                }
+
+                return false
             });
 
-            this.$input.data(this.DATA_KEY, this);
+            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -117,7 +141,8 @@
             this.$input.prependTo(this.$root);
             this.$input.off('.counter');
             this.$wrapper.remove();
-            this.$input.removeData(this.DATA_KEY);
+            this.$root.removeData(this.DATA_KEY);
+            superclass.destroy.call(this);
         };
 
         /*
@@ -141,11 +166,15 @@
         };
 
         /*
-            Запись значения в input
+            Форматирование текущего значения input
          */
-        cls._set_value = function(value) {
-            this._value = this._formatted(value);
-            this.$input.val(isNaN(this._value) ? '' : this._value);
+        cls._format = function() {
+            var value = this._formatted(this.$input.val());
+            if (isNaN(value)) {
+                this.$input.val('');
+            } else {
+                this.$input.val(value);
+            }
         };
 
         /*
@@ -153,61 +182,56 @@
          */
         cls.value = function(value) {
             if (value === undefined) {
+                // получение значения
                 return this._formatted(this.$input.val());
             }
 
+
             value = this._formatted(value);
-            if (isNaN(value) && isNaN(this._value)) {
-                this._set_value(value);
-            } else if (value !== this._value) {
-                if (this.opts.beforeChange.call(this, value) === false) {
-                    return
-                }
-
-                this._set_value(value);
-
-                this.opts.afterChange.call(this, value);
-            } else {
-                this._set_value(value);
+            var current = this._formatted(this.$input.val());
+            if ((value == current) || (isNaN(value) && isNaN(current))) {
+                return this;
             }
+
+            if (this.trigger('before_change', value) === false) {
+                return this;
+            }
+            this.$input.val(value);
+            this.trigger('after_change', value, current);
+            return this;
         };
 
         /*
             Инкремент значения
          */
         cls.increment = function() {
-            var current = this._value || 0;
-            this.value(current + 1);
+            var result;
+            var current = this._formatted(this.$input.val());
+            if (isNaN(current)) {
+                result = this.min || this.step;
+            } else {
+                result = current + this.step;
+            }
+
+            this.$input.val(this._formatted(result));
+            return this;
         };
 
         /*
             Декремент значения
          */
         cls.decrement = function() {
-            var current = this._value || 0;
-            this.value(current - 1);
+            var result;
+            var current = this._formatted(this.$input.val());
+            if (isNaN(current)) {
+                result = this.max || -this.step;
+            } else {
+                result = current - this.step;
+            }
+
+            this.$input.val(this._formatted(result));
+            return this;
         };
-    });
-
-
-    /*
-        Скролл поля изменяет значение
-     */
-    $(document).on('mousewheel.counter', '.custom-counter-wrapper', function(e) {
-        var counter = $(this).find('input').data(CustomCounter.prototype.DATA_KEY);
-        if (!counter) {
-            return
-        }
-
-        if (e.deltaY < 0) {
-            // вниз
-            counter.decrement();
-        } else {
-            // вверх
-            counter.increment();
-        }
-
-        return false
     });
 
 

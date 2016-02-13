@@ -34,11 +34,20 @@
             popup.destroy()
 
         События:
-            ready   - окно создано и готово к показу (метод show() уже вызван)
-            before_show     - перед показом окна
-            after_show      - после показа окна
-            before_hide     - перед скрытием окна
-            after_hide      - окно стало скрытым, но ещё присутствует в DOM
+            // Окно создано и готово к показу (метод show() уже вызван)
+            ready
+
+            // Перед показом окна. Если вернет false - показ будет отменен.
+            before_show
+
+            // После завершения анимации показа
+            after_show
+
+            // Перед скрытием окна. Если вернет false - скрытие будет отменено.
+            before_hide
+
+            // После завершения анимации скрытия.
+            after_hide
 
         Примеры:
             // Мгновенное уничтожение окна, открытого в данный момент
@@ -55,17 +64,19 @@
 
             // Создание и показ окна с оверлеем через jQuery-алиас
             $.popup({
-                classes: 'overlayed-popup',
+                classes: 'my-popup',
                 content: '<h1 class="title-h1">Overlayed popup</h1>'
             }).show()
 
             // Динамическое содержимое окна
-            $.popup({}).on('ready', function() {
-                this.$content.prepend('<h1>Hello</h1>')
+            $.popup({
+                classes: 'my-popup',
+            }).on('ready', function() {
+                this.$content.prepend('<h1>Hello</h1>');
             }).show()
 
             // Показ окна с выводом сообщения после окончания анимации
-            popup.on('show', function() {
+            popup.on('after_show', function() {
                 console.log('Окно показано')
             }).show();
 
@@ -295,6 +306,10 @@
                 return this;
             }
 
+            if (this.trigger('before_show') === false) {
+                return this;
+            }
+
             var current = getCurrentPopup();
             if (current) {
                 // подмена старого (открытого) окна новым
@@ -312,7 +327,6 @@
                     } else {
                         throw err;
                     }
-
 
                     return this;
                 }
@@ -348,7 +362,6 @@
         cls._beforeShow = function() {
             currentPopup = this;
             this._opened = true;
-            this.trigger('before_show');
         };
 
         /*
@@ -400,9 +413,12 @@
                 return this;
             }
 
+            if (this.trigger('before_hide') === false) {
+                return this;
+            }
+
             this._beforeHide();
             this._hideAnimation();
-
             return this;
         };
 
@@ -411,8 +427,6 @@
 
             // кнопки закрытия окна
             $(document).off('.popup');
-
-            this.trigger('before_hide');
         };
 
         /*

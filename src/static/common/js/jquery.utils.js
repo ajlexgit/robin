@@ -363,33 +363,35 @@
             var evt_info = this._formatEventName(name);
             if (!evt_info.name) {
                 this.error('event name not found: ' + name);
-                return this;
+                return;
             }
 
             // получаем массив обработчиков
             var evt_list = this._events[evt_info.name];
             if (!evt_list) {
-                return this;
+                return;
             }
 
             var i = 0;
             var record;
+            var result;
             while (record = evt_list[i++]) {
                 if (this._isEveryNamespaces(record, evt_info.namespaces)) {
-                    var result = record.handler.apply(this, [record].concat(args));
+                    var ret = record.handler.apply(this, [record].concat(args));
+                    if (ret === false) {
+                        // если один из обработчиков вернул false,
+                        // trigger тоже вернет false.
+                        result = false;
+                    }
+
                     if (record.once) {
                         i--;
                         evt_list.splice(i, 1);
                     }
-
-                    // stop propagate
-                    if (result === false) {
-                        break
-                    }
                 }
             }
 
-            return this;
+            return result;
         };
 
         /*

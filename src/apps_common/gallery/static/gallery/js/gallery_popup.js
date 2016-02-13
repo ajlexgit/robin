@@ -221,6 +221,16 @@
 
             var $activeSlide = this.slider.$slides.eq(active_index);
             this.slider.slideTo($activeSlide, 'instant');
+
+            // нажатие стрелок на клавиатуре
+            var that = this;
+            $(document).on('keyup.popup', function(event) {
+                if (event.which == 39) {
+                    that.slider.slideNext('side');
+                } else if (event.which == 37) {
+                    that.slider.slidePrevious('side');
+                }
+            });
         };
 
         /*

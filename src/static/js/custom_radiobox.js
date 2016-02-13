@@ -10,24 +10,36 @@
             className       - класс, который добавляется на новый элемент, представляющий радиобокс
             checkedClass    - класс, который добавляется на новый элемент, когда он выделен
             disabledClass   - класс, который добавляется на новый элемент, когда он отключен
-            onCheck         - событие, вызываемое после включения радиобокса
+
+        События:
+            // Перед изменением состояния. Если вернет false - состояние не изменится
+            before_change
+
+            // После изменения состояния
+            after_change
+
+            // Состояние изменилоь на "выделен"
+            check
+
+            // Состояние изменилоь на "не выделен"
+            uncheck
 
         Пример:
             $('input[type="radio"]').radiobox()
     */
 
-    window.Radiobox = Class(Object, function Radiobox(cls, superclass) {
+    window.Radiobox = Class(EventedObject, function Radiobox(cls, superclass) {
         cls.defaults = {
             className: 'custom-radiobox',
             checkedClass: 'checked',
-            disabledClass: 'disabled',
-            onCheck: $.noop
+            disabledClass: 'disabled'
         };
 
         cls.DATA_KEY = 'radiobox';
 
 
         cls.init = function(input, options) {
+            superclass.init.call(this);
             this.$root = $(input).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -46,7 +58,7 @@
             // настройки
             this.opts = $.extend({}, this.defaults, options);
 
-            // запоминаем CSS и скрываем радиобокс
+            // запоминаем CSS и скрываем стандартный радиобокс
             this._initial_css = this.$root.get(0).style.cssText;
             this.$root.hide();
 
@@ -67,23 +79,18 @@
             });
 
             this.$root.on('change.radiobox', function() {
-                if (!that.is_enabled()) {
-                    return false
+                if (that.isEnabled()) {
+                    if (that.isChecked()) {
+                        that.uncheck();
+                    } else {
+                        that.check();
+                    }
                 }
-
-                var is_checked = that.isChecked();
-                if (is_checked) {
-                    return false
-                }
-
-                that._set_checked(!is_checked);
-                that.opts.onCheck.call(that);
-                that.$root.trigger('check.radiobox', [that]);
 
                 return false;
             });
 
-            this.$root.data(this.DATA_KEY, this);
+            this.$elem.data(this.DATA_KEY, this);
         };
 
         /*
@@ -94,9 +101,8 @@
             this.$root.get(0).style.cssText = this._initial_css;
 
             this.$elem.remove();
-
             this.$root.off('.radiobox');
-            this.$root.removeData(this.DATA_KEY);
+            superclass.destroy.call(this);
         };
 
         /*
@@ -128,14 +134,32 @@
             Выделение
          */
         cls.check = function() {
-            return this._set_checked(true)
+            if (!this.isChecked()) {
+                if (this.trigger('before_change') === false) {
+                    return this;
+                }
+
+                this._set_checked(true);
+                this.trigger('check');
+                this.trigger('after_change');
+            }
+            return this;
         };
 
         /*
             Снятие выделения
          */
         cls.uncheck = function() {
-            return this._set_checked(false)
+            if (this.isChecked()) {
+                if (this.trigger('before_change') === false) {
+                    return this;
+                }
+
+                this._set_checked(false);
+                this.trigger('uncheck');
+                this.trigger('after_change');
+            }
+            return this;
         };
 
         /*
@@ -176,7 +200,7 @@
         /*
             Получение состояния доступности
          */
-        cls.is_enabled = function() {
+        cls.isEnabled = function() {
             return this._enabled
         };
     });
