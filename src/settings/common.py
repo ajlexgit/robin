@@ -166,7 +166,6 @@ PIPELINE_CSS = {
     },
     'main_page': {
         'source_filenames': (
-            'scss/custom_checkbox.scss',
             'scss/section_slider.scss',
             'gallery/scss/gallery_popup.scss',
             'main/scss/index.scss',
@@ -236,7 +235,6 @@ PIPELINE_JS = {
     },
     'main_page': {
         'source_filenames': (
-            'js/custom_checkbox.js',
             'js/slider/win_height_slider.js',
             'js/jquery.youtube.js',
             'js/jquery.vimeo.js',

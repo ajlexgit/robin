@@ -26,8 +26,6 @@
                 activePreview: this
             });
         });
-
-        $('input[type="checkbox"]').checkbox()
     });
 
 })(jQuery);

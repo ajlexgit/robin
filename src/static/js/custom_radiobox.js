@@ -40,17 +40,18 @@
 
         cls.init = function(input, options) {
             superclass.init.call(this);
-            this.$root = $(input).first();
-            if (!this.$root.length) {
+
+            this.$input = $(input).first();
+            if (!this.$input.length) {
                 return this.raise('root element not found');
             }
 
-            if (this.$root.prop('tagName') != 'INPUT') {
+            if (this.$input.prop('tagName') != 'INPUT') {
                 return this.raise('root element is not an input');
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.DATA_KEY);
+            var old_instance = this.$input.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
@@ -59,38 +60,35 @@
             this.opts = $.extend({}, this.defaults, options);
 
             // запоминаем CSS и скрываем стандартный радиобокс
-            this._initial_css = this.$root.get(0).style.cssText;
-            this.$root.hide();
+            this._initial_css = this.$input.get(0).style.cssText;
+            this.$input.hide();
 
             // новый радиобокс
-            this.$elem = $('<div>').insertAfter(this.$root);
+            this.$elem = $('<div>').insertAfter(this.$input).append(this.$input);
             this.$elem.addClass(this.opts.className);
 
             // начальное состояние
-            this._set_checked(this.$root.prop('checked'));
-            this._set_enabled(!this.$root.prop('disabled'));
+            this._set_checked(this.$input.prop('checked'));
+            this._set_enabled(!this.$input.prop('disabled'));
 
 
             // клик на новый элемент
             var that = this;
             this.$elem.on(touchClick + '.radiobox', function() {
-                that.$root.triggerHandler('change');
+                that.$input.triggerHandler('change');
                 return false;
             });
 
-            this.$root.on('change.radiobox', function() {
-                if (that.isEnabled()) {
-                    if (that.isChecked()) {
-                        that.uncheck();
-                    } else {
-                        that.check();
-                    }
+            this.$input.on('change.radiobox', function() {
+                if (that.isEnabled() && !that.isChecked()) {
+                    that.check();
                 }
 
                 return false;
             });
 
             this.$elem.data(this.DATA_KEY, this);
+            this.$input.data(this.DATA_KEY, this);
         };
 
         /*
@@ -98,25 +96,27 @@
          */
         cls.destroy = function() {
             // восстановление CSS
-            this.$root.get(0).style.cssText = this._initial_css;
+            this.$input.get(0).style.cssText = this._initial_css;
 
+            this.$input.off('.radiobox');
+            this.$input.removeData(this.DATA_KEY);
+            this.$input.insertBefore(this.$elem);
             this.$elem.remove();
-            this.$root.off('.radiobox');
             superclass.destroy.call(this);
         };
 
         /*
-            Установка состояния чекбокса
+            Установка состояния радиобокса
          */
         cls._set_checked = function(checked) {
             this._checked = Boolean(checked);
             if (this._checked) {
                 this.$elem.addClass(this.opts.checkedClass);
-                this.$root.prop('checked', true);
+                this.$input.prop('checked', true);
 
                 var that = this;
-                var name = this.$root.attr('name');
-                var $grouped = $('input[type="radio"][name="' + name + '"]').not(this.$root);
+                var name = this.$input.attr('name');
+                var $grouped = $('input[type="radio"][name="' + name + '"]').not(this.$input);
                 $grouped.each(function(i, item) {
                     var $item = $(item);
                     var radiobox_obj = $item.data(that.DATA_KEY);
@@ -126,7 +126,7 @@
                 });
             } else {
                 this.$elem.removeClass(this.opts.checkedClass);
-                this.$root.prop('checked', false);
+                this.$input.prop('checked', false);
             }
         };
 
@@ -176,10 +176,10 @@
             this._enabled = Boolean(enabled);
             if (this._enabled) {
                 this.$elem.removeClass(this.opts.disabledClass);
-                this.$root.prop('disabled', false);
+                this.$input.prop('disabled', false);
             } else {
                 this.$elem.addClass(this.opts.disabledClass);
-                this.$root.prop('disabled', true);
+                this.$input.prop('disabled', true);
             }
         };
 
