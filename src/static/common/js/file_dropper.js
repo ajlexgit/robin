@@ -12,11 +12,12 @@
             preventDrop     - предотвращать поведение drop по умолчанию
 
         События:
-            start.drag      - начало перетаскивания над областью
-            stop.drag       - завершение перетаскивания над областью
-            drop.drag       - файлы переместили на область
+            dragstart       - начало перетаскивания над областью
+            dragend         - завершение перетаскивания над областью
+            drop            - файлы переместили на область
+
      */
-    window.FileDropper = Class(EventedObject, function Uploader(cls, superclass) {
+    window.FileDropper = Class(EventedObject, function FileDropper(cls, superclass) {
         cls.defaults = {
             dragOverClass: 'dragover',
             preventDrop: false
@@ -44,7 +45,7 @@
                     $(this).addClass(that.opts.dragOverClass);
 
                     // callback
-                    that.trigger('start.drag');
+                    that.trigger('dragstart');
                 }
             }).on('dragstart.file_dropper', function() {
                 return false;
@@ -56,18 +57,18 @@
                     $(this).removeClass(that.opts.dragOverClass);
 
                     // callback
-                    that.trigger('stop.drag');
+                    that.trigger('dragend');
                 }
             }).on('drop.file_dropper', function(event) {
                 drag_counter = 0;
                 $(this).removeClass(that.opts.dragOverClass);
 
                 // callback
-                that.trigger('stop.drag');
+                that.trigger('dragend');
 
                 var files = that.getFiles(event.originalEvent.dataTransfer);
                 if (files.length) {
-                    that.trigger('drop.drag', files);
+                    that.trigger('drop', files);
                 }
 
                 if (that.opts.preventDrop) {

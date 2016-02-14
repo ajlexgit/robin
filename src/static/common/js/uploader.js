@@ -234,6 +234,15 @@
         };
 
         /*
+            Добавление файла в очередь
+         */
+        cls.addFile = function(file) {
+            if (this.uploader) {
+                this.uploader.addFile(file);
+            }
+        };
+
+        /*
             Удаление файла из очереди
          */
         cls.removeFile = function(file_id) {

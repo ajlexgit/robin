@@ -377,7 +377,7 @@
             var result;
             while (record = evt_list[i++]) {
                 if (this._isEveryNamespaces(record, evt_info.namespaces)) {
-                    var ret = record.handler.apply(this, [record].concat(args));
+                    var ret = record.handler.apply(this, args);
                     if (ret === false) {
                         // если один из обработчиков вернул false,
                         // trigger тоже вернет false.
@@ -503,6 +503,35 @@
             }
         };
 
+        cls.destroy = function() {
+            if (!this._paused) {
+                this._paused = true;
+                clearInterval(this._timer);
+            }
+
+            this._deferred.reject();
+        };
+
+        // Применение шага анимации с вычислением that._progress
+        cls._timerHandle = function() {
+            if (this._paused) {
+                return
+            }
+
+            this._progress = ($.now() - this._startTime) / this._duration;
+            if (this._progress >= 1) {
+                this.stop(true);
+            } else {
+                this._applyProgress();
+            }
+        };
+
+        // Применение шага анимации (для уже установленного that._progress)
+        cls._applyProgress = function() {
+            var easeProgress = $.easing[this.opts.easing](this._progress);
+            this.opts.step.call(this, easeProgress);
+        };
+
         // Запуск анимации
         cls.start = function() {
             if (this._paused && (this._progress < 1)) {
@@ -519,6 +548,7 @@
 
                 this.opts.start.call(this);
             }
+
             return this
         };
 
@@ -537,6 +567,7 @@
                     this.opts.stop.call(this);
                 }
             }
+
             return this
         };
 
@@ -558,26 +589,6 @@
             }
 
             return info.from + info.diff * eProgress;
-        };
-
-        // Применение шага анимации с вычислением that._progress
-        cls._timerHandle = function() {
-            if (this._paused) {
-                return
-            }
-
-            this._progress = ($.now() - this._startTime) / this._duration;
-            if (this._progress >= 1) {
-                this.stop(true);
-            } else {
-                this._applyProgress();
-            }
-        };
-
-        // Применение шага анимации (для уже установленного that._progress)
-        cls._applyProgress = function() {
-            var easeProgress = $.easing[this.opts.easing](this._progress);
-            this.opts.step.call(this, easeProgress);
         };
     });
 

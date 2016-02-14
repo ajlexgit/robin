@@ -20,7 +20,7 @@
                 this.$list.sortable('destroy');
                 this.$list.off('.checkitem');
                 this.$root.off('.massdelete');
-            }).on('item-add.gallery', function(e, $item, response) {
+            }).on('item-add.gallery', function($item, response) {
                 // установка ссылки на просмотр полноразмерной картинки
                 if (response && response.show_url) {
                     $item.find('.item-preview').attr('href', response.show_url);

@@ -148,6 +148,11 @@ $close_btn_weight: 2px;
 
         // в процессе загрузки
         &.loading {
+          &:before {
+            @include opacity(0);
+            @include transition(opacity 0.3s);
+          }
+
           .play-btn {
             @include opacity(0);
             @include transition(opacity 0.3s);

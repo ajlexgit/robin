@@ -114,7 +114,9 @@
                 window.GMap.ready(function() {
                     that.native_events.push(evt_name);
                     that.native.addListener(evt_name, function() {
-                        that.trigger(evt_name, arguments);
+                        var args = Array.prototype.slice.call(arguments);
+                        args.unshift(evt_name);
+                        that.trigger.apply(that, args);
                     });
                 });
             }
@@ -607,10 +609,10 @@
 
             // маркеры на карте
             this.markers = [];
-            this.on('attach.marker', function(e, marker) {
+            this.on('attach.marker', function(marker) {
                 // добавление маркера в массив
                 this.markers.push(marker);
-            }).on('detach.marker', function(e, marker) {
+            }).on('detach.marker', function(marker) {
                 // удаление маркера из массива
                 var index = this.markers.indexOf(marker);
                 if (index >= 0) {
@@ -620,10 +622,10 @@
 
             // оверлеи на карте
             this.overlays = [];
-            this.on('attach.overlay', function(e, overlay) {
+            this.on('attach.overlay', function(overlay) {
                 // добавление оверлея в массив
                 this.overlays.push(overlay);
-            }).on('detach.overlay', function(e, overlay) {
+            }).on('detach.overlay', function(overlay) {
                 // удаление оверлея из массива
                 var index = this.overlays.indexOf(overlay);
                 if (index >= 0) {

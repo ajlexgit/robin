@@ -235,7 +235,7 @@
             var that = this;
             this.dropper = FileDropper(this.$wrapper, {
                 preventDrop: true
-            }).on('drop.drag', function(e, files) {
+            }).on('drop', function(files) {
                 if (!that.uploader) {
                     return
                 }
@@ -243,7 +243,7 @@
                 var i = 0;
                 var file;
                 while (file = files[i++]) {
-                    that.uploader.uploader.addFile(file);
+                    that.uploader.addFile(file);
                 }
             });
 

@@ -20,67 +20,54 @@
             momentumLightness: 500            - "легкость" инерции (0 - нет инерции)
             momentumEasing: 'easeOutCubic'    - функция сглаживания инерционного движения
 
-            onMouseDown(event)                - нажатие мышью или тачпадом
-            onStartDrag(event)                - начало перемещения. Если вернет false, перемещение не начнется
-            onDrag(event)                     - процесс перемещения
-            onSetMomentum(event, momentum)    - для модификации параметров инерции
-            onStopDrag(event)                 - конец перемещения
-            onMouseUp(event)                  - отпускание элемента
-            onMomentumStarted(momentum)       - инерция запущена
-            onMomentumStopped(completed)      - остановка инерции
+        События:
+            // Нажатие кнопки мыши (касание пальцем)
+            mousedown(evt)
+
+            // Начало перетаскивания. Если вернет false - перетаскивание не начнется
+            dragstart(evt)
+
+            // Процесс перетаскивания.
+            drag(evt)
+
+            // Завершение перетаскивания.
+            dragend(evt)
+
+            // Отпускание кнопки мыши (пальца)
+            mouseup(evt)
+
+            // Начало инерционного движения. Если вернет false - инерционное движение отменяется
+            start_momentum(momentum)
+
+            // Окончание инерционного движения
+            stop_momentum()
 
         Примеры:
             var drager = Drager(element, {
-                onMouseDown: function(evt) {
-                    var $element = $(evt.target);
 
-                    console.log('current point =', evt.point);
+            }).on('mousedown', function(evt) {
 
-                    // блокировка всплытия события mousedown или touchstart
-                    return false
-                },
-                onStartDrag: function(evt) {
-                    var $element = $(evt.target);
+                // блокировка всплытия события mousedown или touchstart
+                return false;
+            }).on('drag', function(evt) {
 
-                    console.log('Diff X =', evt.abs_dx);
-                    console.log('Diff Y =', evt.abs_dy);
-                    console.log('current point =', evt.point);
+                // блокировка всплытия события mousemove или touchmove
+                return false;
+            }).on('start_momentum', function(momentum) {
+                // Модификация параметров инерционного движения
+                momentum.setSpeed(undefined, 1);
+                momentum.setLightness(600);
+                momentum.setEndPoint(200, 400);
+                momentum.setDuration(2000);
+                momentum.setEasing('linear');
 
-                    // отмена перемещения
-                    return false
-                },
-                onDrag: function(evt) {
-                    // тоже что в onStartDrag
+                // отмена инерционного движения
+                return false;
+            }).on('mouseup', function(evt) {
 
-                    // блокировка всплытия события mousemove или touchmove
-                    return false
-                },
-                onSetMomentum: function(evt, momentum) {
-                    // предотвращение инерционного движения
-                    return false;
-
-                    // Модификация параметров инерционного движения
-                    momentum.setSpeed(undefined, 1);
-                    momentum.setLightness(600);
-                    momentum.setEndPoint(200, 400);
-                    momentum.setDuration(2000);
-                    momentum.setEasing('linear');
-                    return momentum;
-                },
-                onStopDrag: function(evt, momentum) {
-                    if (!momentum) {
-                        // не будет инерции
-                    }
-                },
-                onMouseUp: function(evt, momentum) {
-                    if (!momentum) {
-                        // не будет инерции
-                    }
-
-                    // блокировка всплытия события mouseup или touchend
-                    return false
-                },
-            });
+                // блокировка всплытия события mouseup или touchend
+                return false;
+            })
     */
 
     var touchstart = window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart';
@@ -236,7 +223,7 @@
     // ===============================================
 
     var dragerID = 0;
-    window.Drager = Class(Object, function Drager(cls, superclass) {
+    window.Drager = Class(EventedObject, function Drager(cls, superclass) {
         cls.defaults = {
             preventDrag: true,
             preventClick: true,
@@ -248,22 +235,13 @@
             momentum: true,
             momentumLightness: 500,
             momentumEasing: 'easeOutCubic',
-            minMomentumDuration: 100,
-
-            onMouseDown: $.noop,
-            onStartDrag: $.noop,
-            onDrag: $.noop,
-            onStopDrag: $.noop,
-            onSetMomentum: function(evt, momentum) {
-                return momentum
-            },
-            onMouseUp: $.noop,
-            onMomentumStarted: $.noop,
-            onMomentumStopped: $.noop
+            minMomentumDuration: 100
         };
 
 
         cls.init = function(element, options) {
+            superclass.init.call(this);
+
             this.$element = $(element).first();
             if (!this.$element.length) {
                 return this.raise('root element not found');
@@ -292,6 +270,7 @@
 
         cls.destroy = function() {
             this.detach();
+            superclass.destroy.call(this);
         };
 
         // ================================================
@@ -339,24 +318,32 @@
         /*
             Запуск инерционного движения
           */
-        cls.startMomentum = function(evt, momentum) {
+        cls.startMomentum = function(evt) {
+            if (!(evt.momentum instanceof Momentum)) {
+                return
+            }
+
+            if (this.trigger('start_momentum', evt.momentum) === false) {
+                return
+            }
+
             var that = this;
             this._momentumAnimation = $.animate({
-                duration: momentum.duration,
-                easing: momentum.easing,
+                duration: evt.momentum.duration,
+                easing: evt.momentum.easing,
                 init: function() {
-                    this.autoInit('x', momentum.startX, momentum.endX);
-                    this.autoInit('y', momentum.startY, momentum.endY);
+                    this.autoInit('x', evt.momentum.startX, evt.momentum.endX);
+                    this.autoInit('y', evt.momentum.startY, evt.momentum.endY);
                 },
                 step: function(eProgress) {
                     evt.dx = this.autoCalc('x', eProgress);
                     evt.dy = this.autoCalc('y', eProgress);
                     evt.timeStamp = $.now();
-                    that.opts.onDrag.call(that, evt);
+                    that.trigger('drag', evt);
                 },
                 complete: function() {
                     that._momentumAnimation = null;
-                    that.opts.onMomentumStopped.call(that, true);
+                    that.trigger('stop_momentum');
                 }
             });
         };
@@ -368,7 +355,7 @@
             if (this._momentumAnimation) {
                 this._momentumAnimation.stop(jumpToEnd);
                 this._momentumAnimation = null;
-                this.opts.onMomentumStopped.call(this, false);
+                this.trigger('stop_momentum');
             }
         };
 
@@ -383,7 +370,6 @@
             Прекращение отслеживания текущего сеанса перемещения
           */
         cls.stopCurrent = function(evt) {
-            var momentum;
             this._dragging_allowed = false;
 
             if (this.wasDragged) {
@@ -393,26 +379,20 @@
                 if (this.opts.momentum) {
                     var lastPoint = this._getMomentumPoint(evt);
                     if (lastPoint) {
-                        momentum = Momentum(this, evt, lastPoint);
-                        momentum = this.opts.onSetMomentum.call(this, evt, momentum);
-                        if (!momentum || (momentum.duration < this.opts.minMomentumDuration)) {
-                            momentum = null;
-                        }
+                        evt.momentum = Momentum(this, evt, lastPoint);
                     }
                 }
 
-                this.opts.onStopDrag.call(this, evt, momentum);
+                this.trigger('dragend', evt);
             }
-
-            var result = this.opts.onMouseUp.call(this, evt, momentum);
 
             // запуск инерции
-            if (momentum) {
-                this.startMomentum(evt, momentum);
-                this.opts.onMomentumStarted.call(this, momentum);
+            if ((evt.momentum instanceof Momentum) &&
+                (evt.momentum.duration >= this.opts.minMomentumDuration)) {
+                this.startMomentum(evt);
             }
 
-            return result;
+            return this.trigger('mouseup', evt);
         };
 
         // ================
@@ -427,7 +407,7 @@
             this._addMomentumPoint(evt);
 
             this.setStartPoint(evt);
-            return this.opts.onMouseDown.call(this, evt);
+            return this.trigger('mousedown', evt);
         };
 
         cls.dragHandler = function(event) {
@@ -438,8 +418,7 @@
 
             if (!this.wasDragged) {
                 if ((evt.abs_dx > this.opts.ignoreDistanceX) || (evt.abs_dy > this.opts.ignoreDistanceY)) {
-                    var allowed = this.opts.onStartDrag.call(this, evt);
-                    if (allowed === false) {
+                    if (this.trigger('dragstart', evt) === false) {
                         return
                     }
                     this.wasDragged = true;
@@ -448,7 +427,7 @@
                 }
             }
 
-            return this.opts.onDrag.call(this, evt);
+            return this.trigger('drag', evt);
         };
 
         cls.mouseUpHandler = function(event, isTouch) {

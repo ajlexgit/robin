@@ -15,7 +15,14 @@
             fullHeight          - должно ли меню быть на всю высоту
 
         События:
-            //
+            // Перед показом мобильного меню
+            before_show
+
+            // Перед скрытием мобильного меню
+            before_hide
+
+            // Изменение размера окна
+            resize
     */
 
     var menus = [];
@@ -102,7 +109,7 @@
                     $.winHeight(this.$menu);
                 }
 
-                this.trigger('refresh', winWidth);
+                this.trigger('resize', winWidth);
             }
         })
     }, 100));

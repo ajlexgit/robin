@@ -38,38 +38,34 @@
                 touch: that.opts.touch,
                 ignoreDistanceX: that.opts.ignoreDistanceX,
                 ignoreDistanceY: that.opts.ignoreDistanceY,
-                momentum: false,
-
-                onStartDrag: function(evt) {
-                    if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
-                        // если один слайд - выходим
-                        this.setStartPoint(evt);
-                        return false;
-                    }
-
-                    that.onStartDrag(slider, evt);
-
-                    // если идет анимация - прекращаем её
-                    if (slider._animation) {
-                        slider._animation.stop(true);
-                        slider._animation = null;
-                    }
-                },
-                onDrag: function(evt) {
-                    if (evt.dx == that._dx) {
-                        return false;
-                    }
-
-                    if (evt.abs_dx > evt.abs_dy) {
-                        // по X движение больше
-                        that.onDrag(slider, evt);
-                        return false
-                    }
-                },
-                onStopDrag: function(evt) {
-                    that.onStopDrag(slider, evt);
+                momentum: false
+            }).on('dragstart', function(evt) {
+                // если один слайд - выходим
+                if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
+                    this.setStartPoint(evt);
+                    return false;
                 }
-            })
+
+                // если идет анимация - прекращаем её
+                if (slider._animation) {
+                    slider._animation.stop(true);
+                    slider._animation = null;
+                }
+
+                that.onStartDrag(slider, evt);
+            }).on('drag', function(evt) {
+                if (evt.dx == that._dx) {
+                    return false;
+                }
+
+                if (evt.abs_dx > evt.abs_dy) {
+                    // по X движение больше
+                    that.onDrag(slider, evt);
+                    return false
+                }
+            }).on('dragend', function(evt) {
+                that.onStopDrag(slider, evt);
+            });
         };
 
         /*
