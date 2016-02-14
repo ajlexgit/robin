@@ -53,6 +53,8 @@
 
 
         cls.init = function(root, options) {
+            superclass.init.call(this);
+
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -109,6 +111,7 @@
         cls.destroy = function() {
             this.$root.off('.expander');
             this.$root.removeData(this.DATA_KEY);
+            superclass.destroy.call(this);
         };
 
         /*
