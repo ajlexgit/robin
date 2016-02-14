@@ -14,12 +14,18 @@
             speed               - скорость сворачивания / разворачивания
             easing              - функция сглаживания сворачивания
 
-            beforeExpand        - событие перед разворачиванием блока.
-                                  Если вернёт false, блок не будет развернут.
-            afterExpand         - событие после разворачивания блока
-            beforeReduce        - событие перед сворачиванием блока.
-                                  Если вернёт false, блок не будет свернут.
-            afterReduce         - событие после сворачивания блока
+        События:
+            // Перед разворачиванием блока. Если вернёт false, блок не будет развернут.
+            before_expand($button)
+
+            // После разворачивания блока
+            after_expand($button)
+
+            // Перед сворачиванием блока. Если вернёт false, блок не будет свернут.
+            before_reduce($button)
+
+            // После сворачивания блока
+            after_reduce($button)
 
         Пример:
             <div id="text-block">
@@ -33,19 +39,14 @@
             });
      */
 
-    window.Expander = Class(Object, function Expander(cls, superclass) {
+    window.Expander = Class(EventedObject, function Expander(cls, superclass) {
         cls.defaults = {
             shortBlockSelector: '.expander-short',
             fullBlockSelector: '.expander-full',
             buttonSelector: '.expander-btn',
             hiddenClass: 'hidden',
             speed: 400,
-            easing: 'easeOutQuad',
-
-            beforeExpand: $.noop,
-            afterExpand: $.noop,
-            beforeReduce: $.noop,
-            afterReduce: $.noop
+            easing: 'easeOutQuad'
         };
 
         cls.DATA_KEY = 'expander';
@@ -137,7 +138,7 @@
                 return
             }
 
-            if (this.opts.beforeExpand.call(this, $button) === false) {
+            if (this.trigger('before_expand', $button) === false) {
                 return
             }
 
@@ -155,7 +156,7 @@
                 easing: this.opts.easing,
                 complete: function() {
                     that.$full.height('');
-                    that.opts.afterExpand.call(this, $button);
+                    that.trigger('after_expand', $button);
                 }
             })
         };
@@ -168,7 +169,7 @@
                 return
             }
 
-            if (this.opts.beforeReduce.call(this, $button) === false) {
+            if (this.trigger('before_reduce', $button) === false) {
                 return
             }
 
@@ -188,7 +189,7 @@
                     that.$full.height('');
                     that.$full.addClass(that.opts.hiddenClass);
                     that.$short.removeClass(that.opts.hiddenClass);
-                    that.opts.afterReduce.call(this, $button);
+                    that.trigger('after_reduce', $button);
                 }
             })
         };

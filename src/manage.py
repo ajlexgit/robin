@@ -1,7 +1,7 @@
 import os
 import sys
 
-# multi events .on
+# contacts address
 # gallery client: stop video on slide, init video on play
 # dynamic menu, std pages
 # slider: dynamic margin
