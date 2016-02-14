@@ -10,18 +10,18 @@
             strategy        - стратегия перемещения блока (top / transform)
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
-            onInit          - функция, выполняемая после инициализации объекта
             calcOffset      - функция, рассчитывающая смещение блока.
                               Если вернет false - блок останется на месте.
+
+        События:
+            // Инициализация объекта
+            init
 
         Пример:
             // Двигаем блок внутри контейнера #ctnr.
             // Перемещение начинается от точки, когда контейнер становится видимым
 
             $('.layer').layer({
-                onInit: function() {
-                    this.$ctnr = $('#ctnr');
-                },
                 calcOffset: function(win_scroll) {
                     var ctnr_top = this.$ctnr.offset().top;
                     var ctnr_height = this.$ctnr.outerHeight();
@@ -36,6 +36,8 @@
                         return false;
                     }
                 }
+            }).on('init', function() {
+                this.$ctnr = $('#ctnr');
             })
 
      */
@@ -43,7 +45,7 @@
     var $window = $(window);
     var layers = [];
 
-    window.Layer = Class(Object, function Layer(cls, superclass) {
+    window.Layer = Class(EventedObject, function Layer(cls, superclass) {
         cls.STRATEGY_TOP = 'top';
         cls.STRATEGY_TRANSFORM = 'transform';
         cls.STRATEGIES = [
@@ -55,7 +57,6 @@
             strategy: cls.STRATEGY_TOP,
             minEnabledWidth: 768,
 
-            onInit: $.noop,
             calcOffset: function(win_scroll) {
                 return this._initial + parseInt(0.5 * win_scroll)
             }
@@ -65,6 +66,8 @@
 
 
         cls.init = function(block, options) {
+            superclass.init.call(this);
+
             this.$block = $(block).first();
             if (!this.$block.length) {
                 return this.raise('block not found');
@@ -119,8 +122,7 @@
 
             this.$block.data(this.DATA_KEY, this);
 
-            // callback
-            this.opts.onInit.call(this);
+            this.trigger('init');
 
             $.mediaInspector.check(this.$block);
         };
@@ -137,6 +139,8 @@
             if (index >= 0) {
                 layers.splice(index, 1);
             }
+
+            superclass.destroy.call(this);
         };
 
         /*

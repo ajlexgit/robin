@@ -13,6 +13,10 @@
             bgHeight        - высота фоновой картинки в процентах относительно высоты блока (>= 100)
             minEnabledWidth - минимальная ширина экрана, при которой элемент перемещается
 
+        События:
+            // Инициализация объекта
+            init
+
         Пример:
             <div id="block">
                 <img class="parallax" src="/img/bg.jpg">
@@ -31,7 +35,7 @@
     var $window = $(window);
     var parallaxes = [];
 
-    window.Parallax = Class(Object, function Parallax(cls, superclass) {
+    window.Parallax = Class(EventedObject, function Parallax(cls, superclass) {
         cls.defaults = {
             selector: '.parallax',
             easing: 'easeInOutQuad',
@@ -43,6 +47,8 @@
 
 
         cls.init = function(block, options) {
+            superclass.init.call(this);
+
             this.$block = $(block).first();
             if (!this.$block.length) {
                 return this.raise('block not found');
@@ -132,6 +138,8 @@
 
             this.$block.data(this.DATA_KEY, this);
 
+            this.trigger('init');
+
             $.mediaInspector.check(this.$block);
 
             // Вызов инспектора после загрузки картинки
@@ -154,6 +162,8 @@
             if (index >= 0) {
                 parallaxes.splice(index, 1);
             }
+
+            superclass.destroy.call(this);
         };
 
         /*

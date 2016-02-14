@@ -13,6 +13,10 @@
             bottomOffset      - расстояние от низа родительского блока до ползающего блока
             minEnabledWidth   - минимальная ширина экрана, при которой блок перемещается
 
+        События:
+            // Инициализация объекта
+            init
+
         Пример:
             $('.block').sticky()
 
@@ -26,7 +30,7 @@
     };
 
 
-    window.Sticky = Class(Object, function Sticky(cls, superclass) {
+    window.Sticky = Class(EventedObject, function Sticky(cls, superclass) {
         cls.STRATEGY_MARGIN = 'margin';
         cls.STRATEGY_FIXED = 'fixed';
         cls.STRATEGIES = [
@@ -45,6 +49,8 @@
 
 
         cls.init = function(block, options) {
+            superclass.init.call(this);
+
             this.$block = $(block).first();
             if (!this.$block.length) {
                 return this.raise('block not found');
@@ -89,6 +95,8 @@
 
             this.$block.data(this.DATA_KEY, this);
 
+            this.trigger('init');
+
             $.mediaInspector.check(this.$block);
         };
 
@@ -104,6 +112,8 @@
             if (index >= 0) {
                 stickies.splice(index, 1);
             }
+
+            superclass.destroy.call(this);
         };
 
         /*
