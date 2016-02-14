@@ -2,6 +2,7 @@ import os
 import sys
 
 # contacts address
+# checkbox, radiobox, expander by jQuery + events
 # gallery client: stop video on slide, init video on play
 # dynamic menu, std pages
 # slider: dynamic margin

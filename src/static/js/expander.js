@@ -45,6 +45,7 @@
             fullBlockSelector: '.expander-full',
             buttonSelector: '.expander-btn',
             hiddenClass: 'hidden',
+
             speed: 400,
             easing: 'easeOutQuad'
         };
