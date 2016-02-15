@@ -110,11 +110,10 @@ SUIT_CONFIG = {
         '-',
         '-',
         {
-            'app': 'auth',
-            'icon': 'icon-user',
-            'label': _('Users'),
+            'icon': 'icon-lock',
+            'label': 'Authentication and Authorization',
             'models': (
-                'group',
+                'auth.group',
                 'users.customuser',
             )
         },
