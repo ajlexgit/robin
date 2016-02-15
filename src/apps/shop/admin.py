@@ -69,6 +69,12 @@ class ShopCategoryForm(forms.ModelForm):
             )
         }
 
+    def __init__(self, *args, **kwargs):
+        """ Exclude self """
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['parent'].queryset = self.fields['parent'].queryset.exclude(pk=self.instance.pk)
+
 
 @admin.register(ShopCategory)
 class ShopCategoryAdmin(SeoModelAdminMixin, SortableMPTTModelAdmin):

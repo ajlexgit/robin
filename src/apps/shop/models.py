@@ -65,7 +65,7 @@ class ShopCategory(MPTTModel):
         populate_from=('title',),
         unique=True
     )
-    is_visible = models.BooleanField(_('visible'), default=False, db_index=True)
+    is_visible = models.BooleanField(_('visible'), default=True, db_index=True)
     product_count = models.PositiveIntegerField(
         default=0,
         editable=False,
@@ -242,7 +242,7 @@ class ShopProduct(models.Model):
         blank=True
     )
     price = ValuteField(_('price'), validators=[MinValueValidator(0)])
-    is_visible = models.BooleanField(_('visible'), default=False)
+    is_visible = models.BooleanField(_('visible'), default=True)
     created = models.DateTimeField(_('create date'), default=now, editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
