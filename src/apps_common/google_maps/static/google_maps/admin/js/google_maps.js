@@ -43,6 +43,11 @@
                 marker.position(point);
                 $field.val(point.toString());
             });
+        }).on('resize', function() {
+            var marker = this.markers[0];
+            if (marker) {
+                this.center(marker);
+            }
         });
     };
 

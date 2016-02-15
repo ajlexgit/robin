@@ -4,11 +4,12 @@ from django.utils import dateformat
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
+from suit.admin import SortableModelAdmin
 from project.admin import ModelAdminMixin
 from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.description import description
-from .models import ContactsConfig, MessageReciever, ContactBlock, Message
+from .models import ContactsConfig, Address, MessageReciever, ContactBlock, Message
 
 
 class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
@@ -41,6 +42,27 @@ class ContactsConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
         ('messages', _('Messages')),
         ('blocks', _('Blocks')),
     )
+
+
+@admin.register(Address)
+class AddressAdmin(ModelAdminMixin, SortableModelAdmin):
+    """ Адрес """
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('city', 'address', 'phones', 'coords'),
+        }),
+    )
+    list_display = ('city', 'address')
+    sortable = 'sort_order'
+    suit_form_tabs = (
+        ('general', _('General')),
+    )
+
+    class Media:
+        js = (
+            'contacts/admin/js/coords.js',
+        )
 
 
 @admin.register(Message)

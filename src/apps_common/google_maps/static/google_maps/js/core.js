@@ -955,7 +955,7 @@
                 if (status === google.maps.GeocoderStatus.OK) {
                     var native_point = results[0].geometry.location;
                     success.call(that, window.GMapPoint.fromNative(native_point));
-                } else {
+                } else if ($.isFunction(error)) {
                     error.call(that, status, results);
                 }
             });

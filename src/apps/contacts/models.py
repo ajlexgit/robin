@@ -4,6 +4,7 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from attachable_blocks.models import AttachableBlock
+from google_maps.fields import GoogleCoordsField
 
 
 class ContactsConfig(SingletonModel):
@@ -20,6 +21,24 @@ class ContactsConfig(SingletonModel):
 
     def __str__(self):
         return self.header
+
+
+class Address(models.Model):
+    """ Адрес """
+    city = models.CharField(_('city'), max_length=255)
+    address = models.CharField(_('address'), max_length=255, blank=True)
+    phones = models.CharField(_('phones'), max_length=255, blank=True)
+    coords = GoogleCoordsField(_('coords'), blank=True)
+
+    sort_order = models.PositiveIntegerField(_('sort order'))
+
+    class Meta:
+        verbose_name = _('address')
+        verbose_name_plural = _('addresses')
+        ordering = ('sort_order', )
+
+    def __str__(self):
+        return self.city
 
 
 class MessageReciever(models.Model):
