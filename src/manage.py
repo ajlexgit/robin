@@ -2,8 +2,8 @@ import os
 import sys
 
 # contacts address
+# права на поля и блоки
 # checkbox, radiobox, expander by jQuery + events
-# gallery client: stop video on slide, init video on play
 # dynamic menu, std pages
 # slider: dynamic margin
 # text-ellipsis: https://css-tricks.com/line-clampin/
