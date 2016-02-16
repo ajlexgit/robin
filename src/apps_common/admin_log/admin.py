@@ -6,8 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
-from libs.widgets import LinkWidget
 from project.admin import ModelAdminMixin
+from libs.widgets import LinkWidget
 from .models import LogEntry
 
 

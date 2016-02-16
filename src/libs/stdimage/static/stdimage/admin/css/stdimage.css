@@ -4,7 +4,6 @@
     z-index: 1;
 }
 
-
 .stdimage .input-file {
     font-size: 0;
     opacity: 0;
@@ -20,7 +19,7 @@
 .stdimage .hint {
     margin-left: 10px;
     color: gray;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.4;
     font-weight: bold;
 }

@@ -1,9 +1,14 @@
-<!-- Updated jQuery -->
-<!-- added script "admin_jsi18n" -->
-<!-- added favicon -->
-<!-- hidden footer -->
+{# Updated jQuery #}
+{# added script "admin_jsi18n" #}
+{# added favicon #}
+{# custom footer #}
+{# hide time #}
 
-{% load admin_static %}{% load suit_tags %}{% load url from suit_compat %}<!DOCTYPE html>
+{% load admin_static %}
+{% load suit_tags %}
+{% load url from suit_compat %}
+{% load pipeline %}
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,7 +17,12 @@
   <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/bootstrap/css/bootstrap.min.css' %}" media="all"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/css/suit.css' %}" media="all">
+
+  {% stylesheet 'admin_customize' %}
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+
   {% block extrastyle %}{% endblock %}
+
   {% if LANGUAGE_BIDI %}
     <link rel="stylesheet" type="text/css"
           href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
@@ -30,15 +40,21 @@
       color: #ccc;
     }</style>
   {% endif %}
+
+  {# gettext #}
+  {% url 'jsi18n' as jsi18nurl %}
+  <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+
   {% block extrahead %}
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}"/>
   {% endblock %}
 
-  {% url 'jsi18n' as jsi18nurl %}
-  <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 
   {% block blockbots %}
-    <meta name="robots" content="NONE,NOARCHIVE"/>{% endblock %}
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+  {% endblock %}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 {% load i18n %}
 
@@ -61,15 +77,15 @@
             </div>
 
             {% block header_time %}
-              <div class="header-content header-content-first">
-                <div class="header-column icon">
-                  <i class="icon-time"></i>
-                </div>
-                <div class="header-column">
-                  <span class="date"> {% suit_date %}</span><br>
-                  <span class="time" id="clock">{% suit_time %}</span>
-                </div>
-              </div>
+{#              <div class="header-content header-content-first">#}
+{#                <div class="header-column icon">#}
+{#                  <i class="icon-time"></i>#}
+{#                </div>#}
+{#                <div class="header-column">#}
+{#                  <span class="date"> {% suit_date %}</span><br>#}
+{#                  <span class="time" id="clock">{% suit_time %}</span>#}
+{#                </div>#}
+{#              </div>#}
             {% endblock %}
 
             {% block header_content %}
@@ -86,10 +102,10 @@
             {% if user.is_active and user.is_staff %}
               <div id="user-tools">
                 {% block welcome-msg %}
-                  {% trans 'Welcome,' %}
+{#                  {% trans 'Welcome,' %}#}
                   <strong>
                     {% filter force_escape %}
-                      {% firstof user.first_name user.username %}{% endfilter %}</strong>.
+                      {% firstof user.first_name user.username %}{% endfilter %}</strong>
                 {% endblock %}
                 <span class="user-links">
                 {% block userlinks %}
@@ -196,6 +212,31 @@
   {% endif %}
 
 </div>
+
+{% if not is_popup %}
+  {% block footer %}
+    <div id="footer" class="footer">
+      <div class="content">
+        <div class="help-box">
+          <p>Please contact us if you have any problems</p>
+        </div>
+
+        <div class="phone-box">
+          <p>+1 267 626 2554</p>
+        </div>
+
+        <div class="email-box">
+          <p><a href="mailto:office@directlinedev.com">office@directlinedev.com</a></p>
+        </div>
+
+        <div class="logo-box">
+          <a href="http://directlinedev.com" target="_blank"></a>
+        </div>
+      </div>
+    </div>
+  {% endblock footer %}
+{% endif %}
+
 
 <script src="{% static 'suit/js/suit.js' %}"></script>
 {% block extrajs %}{% endblock %}

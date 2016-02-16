@@ -109,8 +109,6 @@ class ModelAdminMixin(ModelAdminInlineMixin):
             css = {
                 'all': (
                     'admin/css/jquery-ui/jquery-ui.min.css',
-                    'admin/css/admin_fixes.css',
-                    'admin/css/button_filter.css',
                 )
             }
         )

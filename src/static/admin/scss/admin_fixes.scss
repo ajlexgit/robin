@@ -1,0 +1,94 @@
+@import "mixins";
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  @include font-size(14px);
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+// не ограниченная высота textarea
+.autosize {
+    max-height: none;
+}
+
+// поля на всю ширину
+.full-width {
+    width: 90%;
+}
+
+// поле ссылки
+.url {
+  &.input-append {
+    display: block;
+    margin-right: 30px;
+  }
+
+  a:hover {
+    background-color: #D0D0D0;
+  }
+}
+
+// минимальная ширина столбца "view" в списке сущностей
+td, th {
+  &.mini-column {
+    width: 1%;
+  }
+
+  // минимальная ширина для столбца сортировки и чекбоксов
+  &.sorted, .action-checkbox-column {
+    width: 1%;
+    white-space: nowrap;
+  }
+}
+
+
+// не помню для чего, но что-то с CKEditor
+.cke_panel {
+  overflow: hidden !important;
+}
+
+
+// стандартное поле M2M
+.form-horizontal .control-group .controls .selector .selector-available select {
+  min-height: 200px;
+}
+
+// уменьшаем столбец с заголовками полей
+.form-horizontal .control-group .control-label {
+  min-width: 100px;
+}
+
+// правка из-за шрифта
+#changelist .actions span.all,
+#changelist .actions span.action-counter,
+#changelist .actions span.clear,
+#changelist .actions span.question {
+  vertical-align: middle;
+}
+
+// правка из-за шрифта
+[class^="icon-"], [class*=" icon-"] {
+  margin-top: 2px;
+}
+
+/*
+  Font-size
+*/
+.nav-tabs-suit li a {
+  @include font-size(14px);
+}
+
+label, button, select, textarea, input[type="text"], input[type="password"], input[type="datetime"],
+input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"],
+input[type="week"], input[type="number"], input[type="email"], input[type="url"],
+input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+  font-family: 'Source Sans Pro', sans-serif;
+  @include font-size(14px);
+}
+
+.btn {
+  @include font-size(14px);
+}
