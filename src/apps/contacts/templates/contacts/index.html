@@ -37,6 +37,23 @@
     </form>
   </div>
 
+  <div id="google-map">
+    <div class="map"></div>
+
+    <div class="overlay">
+      <div class="grid-block">
+        <ul class="address-list">
+          {% for addr in addresses %}
+            <li class="address" data-lat="{{ addr.coords.lat }}" data-lng="{{ addr.coords.lng }}">
+              <p>{{ addr }}</p>
+              <p>{{ addr.phones }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
   {% render_attached_blocks config %}
 
 {% endblock content %}

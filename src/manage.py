@@ -1,7 +1,6 @@
 import os
 import sys
 
-# contacts address
 # права на поля и блоки
 # checkbox, radiobox, expander by jQuery + events
 # dynamic menu, std pages

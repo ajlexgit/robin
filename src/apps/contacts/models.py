@@ -38,7 +38,7 @@ class Address(models.Model):
         ordering = ('sort_order', )
 
     def __str__(self):
-        return self.city
+        return ', '.join(filter(bool, (self.city, self.address)))
 
 
 class MessageReciever(models.Model):

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from seo import Seo
 from libs.email import send
 from libs.views import TemplateExView
-from .models import ContactsConfig, MessageReciever
+from .models import ContactsConfig, Address, MessageReciever
 from .forms import ContactForm
 
 
@@ -28,6 +28,7 @@ class IndexView(TemplateExView):
 
         return self.render_to_response({
             'config': self.config,
+            'addresses': Address.objects.all(),
             'form': form,
         })
 
@@ -55,6 +56,7 @@ class IndexView(TemplateExView):
         else:
             return self.render_to_response({
                 'config': self.config,
+                'addresses': Address.objects.all(),
                 'form': form,
             })
 

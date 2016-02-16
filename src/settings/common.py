@@ -245,6 +245,7 @@ PIPELINE_JS = {
     },
     'contacts_page': {
         'source_filenames': (
+            'google_maps/js/core.js',
             'contacts/js/index.js',
         ),
         'output_filename': 'js/contacts_page.js',

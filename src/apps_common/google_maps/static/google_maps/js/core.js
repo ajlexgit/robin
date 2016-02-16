@@ -12,7 +12,6 @@
         Пример:
             var gmap = GMap('#gmap', {
                 center: GMapPoint(53.510171, 49.418785),
-                styles: gmapStyles,
                 zoom: 2
             }).on('ready', function() {
                 var marker1 = GMapMarker({
