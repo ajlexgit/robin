@@ -43,13 +43,13 @@
             }
         }).attachPlugins([
             SliderSideAnimation({
-                slideMarginPercent: 2
+                margin: 20
             }),
             SliderSideShortestAnimation({
-                slideMarginPercent: 2
+                margin: 20
             }),
             SliderDragPlugin({
-                slideMarginPercent: 2
+                margin: 20
             }),
             SliderControlsPlugin({
                 animationName: 'side-shortest'

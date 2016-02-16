@@ -99,10 +99,10 @@
                 itemsPerSlide: 2
             }).attachPlugins([
                 SliderSideAnimation({
-                    slideMarginPercent: 2
+                    margin: 20
                 }),
                 SliderSideShortestAnimation({
-                    slideMarginPercent: 2
+                    margin: 20
                 }),
                 SliderFadeAnimation(),
                 SliderControlsPlugin({
@@ -112,7 +112,7 @@
                     animationName: 'side'
                 }),
                 SliderDragPlugin({
-                    slideMarginPercent: 2
+                    margin: 20
                 }),
                 SliderAutoscrollPlugin({
                     animationName: 'fade',

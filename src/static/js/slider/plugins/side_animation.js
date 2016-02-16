@@ -3,12 +3,24 @@
     window.SliderSideAnimation = Class(SliderPlugin, function SliderSideAnimation(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             name: 'side',
+
+            margin: 0,
             speed: 800,
             showIntermediate: true,
-            slideMarginPercent: 0,
             easing: 'easeOutCubic'
         });
 
+        /*
+            Перевод отступа в пикселях в отступ в процентах
+         */
+        cls._marginToPercents = function(slider) {
+            if (this.opts.margin.toString().indexOf('%') >= 0) {
+                return parseFloat(this.opts.margin);
+            } else {
+                var slider_width = slider.$list.outerWidth();
+                return 100 * parseFloat(this.opts.margin) / slider_width;
+            }
+        };
 
         /*
             Реализация метода перехода от одного слайда к другому
@@ -53,7 +65,7 @@
         cls.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slide_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this._marginToPercents(slider);
 
             slider.beforeSlide($toSlide);
 
@@ -126,7 +138,7 @@
         cls.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slide_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this._marginToPercents(slider);
 
             slider.beforeSlide($toSlide);
 

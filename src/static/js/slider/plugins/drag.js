@@ -12,10 +12,10 @@
             slideThreshold: 10,         // %
             maxSlideThreshold: 50,      // px
 
+            margin: 0,                  // "2%" или ("20px" / 20)
             speed: 800,
             dragOneSlide: false,
-            easing: 'easeOutCubic',
-            slideMarginPercent: 0
+            easing: 'easeOutCubic'
         });
 
         cls.destroy = function() {
@@ -77,6 +77,18 @@
         };
 
         /*
+            Перевод отступа в пикселях в отступ в процентах
+         */
+        cls._marginToPercents = function(slider) {
+            if (this.opts.margin.toString().indexOf('%') >= 0) {
+                return parseFloat(this.opts.margin);
+            } else {
+                var slider_width = slider.$list.outerWidth();
+                return 100 * parseFloat(this.opts.margin) / slider_width;
+            }
+        };
+
+        /*
             Начало перетаскивания слайдов мышью или тачпадом
          */
         cls.onStartDrag = function(slider) {
@@ -96,7 +108,7 @@
         cls.onDrag = function(slider, evt) {
             var dxPercents = this._dxToPercents(slider, evt);
             var absDxPercents = Math.abs(dxPercents);
-            var slide_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this._marginToPercents(slider);
 
             // метод перехода к соседнему слайду по направлению движения
             if (evt.dx > 0) {
@@ -190,7 +202,7 @@
             var rightSlide = this._movedSlides[1];
             var $currSlide = slider.$currentSlide;
 
-            var slide_left = 100 + this.opts.slideMarginPercent;
+            var slide_left = 100 + this._marginToPercents(slider);
             var currSlidePosition = parseFloat($currSlide.get(0).style.left);
             if (isNaN(currSlidePosition)) {
                 currSlidePosition = evt.dx > 0 ? slide_left : -slide_left;

@@ -3,8 +3,7 @@ import sys
 
 # права на поля и блоки
 # checkbox, radiobox, expander by jQuery + events
-# dynamic menu, std pages
-# slider: dynamic margin
+# std pages
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
