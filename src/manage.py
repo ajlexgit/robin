@@ -1,10 +1,10 @@
 import os
 import sys
 
+# dynamic admin menu
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # права на поля и блоки
 # checkbox, radiobox, expander by jQuery + events
-# dynamic admin menu
 # std pages
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy

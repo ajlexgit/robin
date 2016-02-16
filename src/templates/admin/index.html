@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n %}
+
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <h2>{% trans 'Welcome to the Directline Admin Web Application' %}</h2>
+{% endblock %}
+
