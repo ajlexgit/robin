@@ -86,9 +86,9 @@
 
 
         HTML input:
-            <div id="slider">
-                <img class="slide">
-                <img class="slide">
+            <div id="slider no-slider">
+                <img class="slider-item">
+                <img class="slider-item">
                 ...
             </div>
 
@@ -96,7 +96,6 @@
             Slider('#slider', {
                 sliderHeight: Slider.prototype.HEIGHT_MAX,
                 loop: false,
-                itemSelector: '.slide',
                 itemsPerSlide: 2
             }).attachPlugins([
                 SliderSideAnimation({
@@ -165,7 +164,7 @@
             itemClass: 'slider-item',
             initialActiveClass: 'active',
 
-            itemSelector: '.slide',
+            itemSelector: '.slider-item',
             itemsPerSlide: 1,
             loop: true,
             sliderHeight: cls.HEIGHT_CURRENT,

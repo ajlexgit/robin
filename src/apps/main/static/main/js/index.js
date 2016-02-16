@@ -8,7 +8,6 @@
         }).attachPlugins([
             SliderSideAnimation({}),
             SliderSideShortestAnimation({}),
-            SliderFadeAnimation({}),
             SliderDragPlugin({}),
             SliderControlsPlugin({
                 animationName: 'side-shortest'
@@ -20,11 +19,50 @@
         ]);
 
         // gallery popup
-        $('#gallery').find('.item').on('click', function() {
+        $(document).on('click', '#gallery .slider-item', function() {
             $.gallery({
-                previews: '#gallery .item',
+                previews: '#gallery .slider-item',
                 activePreview: this
             });
+        });
+
+        // gallery slider
+        Slider('#gallery .slider', {
+            loop: false,
+            itemsPerSlide: function() {
+                var winWidth = $(window).width();
+                if (winWidth >= 1024) {
+                    return 4;
+                } else if (winWidth >= 640) {
+                    return 3;
+                } else if (winWidth >= 400) {
+                    return 2;
+                } else {
+                    return 1;
+                }
+            }
+        }).attachPlugins([
+            SliderSideAnimation({
+                slideMarginPercent: 2
+            }),
+            SliderSideShortestAnimation({
+                slideMarginPercent: 2
+            }),
+            SliderDragPlugin({
+                slideMarginPercent: 2
+            }),
+            SliderControlsPlugin({
+                animationName: 'side-shortest'
+            })
+        ]).on('after_set_ips', function(ips) {
+            // сохранение текущего значения
+            this._ips = ips;
+        }).on('resize', function() {
+            // обновление, если значение изменилось
+            var itemsPerSlide = this.opts.itemsPerSlide.call(this);
+            if (this._ips != itemsPerSlide) {
+                this.setItemsPerSlide(itemsPerSlide);
+            }
         });
     });
 

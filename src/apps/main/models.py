@@ -25,7 +25,7 @@ class ImageItem(GalleryImageItem):
             size=(800, 600),
         ),
         preview=dict(
-            size=(200, 150),
+            size=(375, 250),
         ),
         admin=dict(
             size=(160, 120),
@@ -50,7 +50,7 @@ class VideoItem(GalleryVideoLinkItem):
             stretch=True,
         ),
         preview=dict(
-            size=(200, 150),
+            size=(375, 250),
         ),
         admin=dict(
             size=(160, 120),

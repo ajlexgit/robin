@@ -40,22 +40,14 @@
 .slider-item {
   position: relative;
   max-width: none;
-  min-width: 100%;
-  min-height: 100%;
-  top: 50%;
-  left: 50%;
   z-index: 1;
   @include unselectable;
-  @include transform(translate(-50%, -50%));
 }
 
 .no-slider {
 	// Скрытие всех слайдов, кроме первого
-	.slider-item ~ .slider-item {
-    display: none;
-  }
-
 	.slider-slide ~ .slider-slide {
     display: none;
   }
 }
+

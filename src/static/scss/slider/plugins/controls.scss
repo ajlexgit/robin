@@ -19,12 +19,11 @@ $arrow_image_maxwidth: (
 .slider-arrow {
   position: absolute;
   overflow: hidden;
-  top: 50%;
+  top: 0;
   height: 100%;
   z-index: 10;
   cursor: pointer;
   @include unselectable;
-  @include transform(translateY(-50%));
   @include media_map(width, $arrow_area_width);
 
   span {

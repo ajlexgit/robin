@@ -54,19 +54,28 @@
 
   .slider-item {
     position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+    top: 50%;
+    left: 50%;
+    @include transform(translate(-50%, -50%));
   }
 
   // до загрузки JS
   .no-slider {
-    height: 100%;
+    height: inherit;
     min-height: inherit;
     @include valign_after;
+
+    .slider-item ~ .slider-item {
+      display: none;
+    }
   }
 
   // после загрузки JS
   .slider-root {
     .slider-slide {
-      height: 100%;
+      height: inherit;
     }
   }
 }
