@@ -67,6 +67,7 @@ td, th {
 // стандартное поле M2M
 .form-horizontal .control-group .controls .selector .selector-available select {
   min-height: 200px;
+  @include font-size(12px);
 }
 
 // уменьшаем столбец с заголовками полей
@@ -87,6 +88,11 @@ td, th {
   margin-top: 2px;
 }
 
+// правка из-за шрифта
+input[type="radio"], input[type="checkbox"] {
+  margin: 2px 0 0;
+}
+
 /*
   Font-size
 */
@@ -94,7 +100,7 @@ td, th {
   @include font-size(14px);
 }
 
-label, button, select, textarea, input[type="text"], input[type="password"], input[type="datetime"],
+button, select, textarea, input[type="text"], input[type="password"], input[type="datetime"],
 input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"],
 input[type="week"], input[type="number"], input[type="email"], input[type="url"],
 input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
@@ -102,8 +108,16 @@ input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
   @include font-size(14px);
 }
 
+label {
+  @include font-size(12px);
+}
+
 .btn {
   @include font-size(14px);
+
+  &.btn-small {
+    @include font-size(12px);
+  }
 
   &.btn-mini {
     @include font-size(12px);

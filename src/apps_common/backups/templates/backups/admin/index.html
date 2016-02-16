@@ -26,23 +26,23 @@
     <tbody>
       {% for file in files %}
         <tr>
-          <th>
+          <td>
             <span>{{ file.0 }}</span>
-          </th>
-          <th>
+          </td>
+          <td>
             <span>{{ file.1|filesizeformat }}</span>
-          </th>
-          <th>
+          </td>
+          <td>
             <a href="download/{{ file.0 }}" class="btn btn-success">
               {% trans 'Download' %}
             </a>
-          </th>
-          <th>
+          </td>
+          <td>
             <a href="delete/{{ file.0 }}" class="btn btn-danger btn-small"
                 onclick="return confirm('{% trans 'Are you sure?' %}')">
               {% trans 'Delete' %}
             </a>
-          </th>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
