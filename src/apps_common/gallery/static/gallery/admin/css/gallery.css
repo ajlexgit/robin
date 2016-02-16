@@ -1,7 +1,9 @@
 /* Заголовок */
 .gallery .caption {
+    margin-top: 8px;
     color: gray;
     font-size: 12px;
+    line-height: 1.2;
 }
 
 /* Блок с кнопками */
