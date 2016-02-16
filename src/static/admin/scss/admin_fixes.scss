@@ -58,6 +58,11 @@ td, th {
   margin-bottom: 18px;
 }
 
+// правка отступа между действиями и кол-вом сущностей
+.pagination-info {
+  margin: 0;
+}
+
 // не помню для чего, но что-то с CKEditor
 .cke_panel {
   overflow: hidden !important;
