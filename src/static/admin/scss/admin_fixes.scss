@@ -31,19 +31,32 @@ input[type=number] {
   }
 }
 
-// минимальная ширина столбца "view" в списке сущностей
 td, th {
+  // минимальная ширина столбца "view" в списке сущностей
   &.mini-column {
     width: 1%;
   }
 
-  // минимальная ширина для столбца сортировки и чекбоксов
-  &.sorted, &.action-checkbox-column {
+  // минимальная ширина для столбца сортировки
+  &.sorted {
     width: 1%;
     white-space: nowrap;
   }
 }
 
+// минимальная ширина для столбца чекбоксов
+.table thead th {
+  line-height: 1.1;
+
+  &.action-checkbox-column {
+    width: 1%;
+  }
+}
+
+// правка отступа между действиями и списком
+.actions {
+  margin-bottom: 18px;
+}
 
 // не помню для чего, но что-то с CKEditor
 .cke_panel {
