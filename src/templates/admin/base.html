@@ -2,6 +2,7 @@
 {# added script "admin_jsi18n" #}
 {# added favicon #}
 {# custom footer #}
+{# hide time #}
 
 {% load admin_static %}
 {% load suit_tags %}
@@ -76,15 +77,15 @@
             </div>
 
             {% block header_time %}
-              <div class="header-content header-content-first">
-                <div class="header-column icon">
-                  <i class="icon-time"></i>
-                </div>
-                <div class="header-column">
-                  <span class="date"> {% suit_date %}</span><br>
-                  <span class="time" id="clock">{% suit_time %}</span>
-                </div>
-              </div>
+{#              <div class="header-content header-content-first">#}
+{#                <div class="header-column icon">#}
+{#                  <i class="icon-time"></i>#}
+{#                </div>#}
+{#                <div class="header-column">#}
+{#                  <span class="date"> {% suit_date %}</span><br>#}
+{#                  <span class="time" id="clock">{% suit_time %}</span>#}
+{#                </div>#}
+{#              </div>#}
             {% endblock %}
 
             {% block header_content %}
@@ -101,10 +102,10 @@
             {% if user.is_active and user.is_staff %}
               <div id="user-tools">
                 {% block welcome-msg %}
-                  {% trans 'Welcome,' %}
+{#                  {% trans 'Welcome,' %}#}
                   <strong>
                     {% filter force_escape %}
-                      {% firstof user.first_name user.username %}{% endfilter %}</strong>.
+                      {% firstof user.first_name user.username %}{% endfilter %}</strong>
                 {% endblock %}
                 <span class="user-links">
                 {% block userlinks %}
