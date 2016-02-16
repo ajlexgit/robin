@@ -75,10 +75,10 @@ $close_btn_weight: 2px;
       padding: 40px 80px;
       @include valign_after;
       @include media_interval($media480, $media768) {
-        padding: 40px 60px;
+        padding: 32px 60px;
       }
       @include media_interval(0, $media480) {
-        padding: 40px 0;
+        padding: 50px 0;
       }
 
       .slider-item {
