@@ -1,5 +1,10 @@
 @import "mixins";
 
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  @include font-size(14px);
+}
+
 input[type=number] {
     -moz-appearance: textfield;
 }
@@ -27,72 +32,17 @@ input[type=number] {
 }
 
 // минимальная ширина столбца "view" в списке сущностей
-td.mini-column, th.mini-column {
+td, th {
+  &.mini-column {
     width: 1%;
-}
-
-/*
-    Кастомная таблица. Например, для shop и для backup
-*/
-.admin-table {
-  position: relative;
-  overflow: hidden;
-  z-index: 2;
-  border-collapse: collapse;
-  @include border_radius(4px 0 0 4px);
-  @include box-shadow(0 0 0 1px rgba(0, 0, 0, 0.07));
-
-  thead, tfoot {
-    line-height: 34px;
-    background: no-repeat #e5e5e5;
-    @include linear-gradient(to bottom, #f3f3f3 0%, #e5e5e5 100%);
-    @include background-clip(padding-box);
   }
 
-  td, th {
-    padding-left: 10px;
-    padding-right: 10px;
-    min-width: 40px;
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-
-    &:nth-last-of-type(1) {
-      border-right: 0;
-    }
-  }
-
-  thead {
-    @include border_radius(4px 0 0 4px);
-
-    td, th {
-      text-align: left;
-    }
-  }
-
-  tbody {
-    tr {
-      background-color: #fff;
-      &:nth-last-of-type(1) {
-        td, th {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    td, th {
-      padding-top: 15px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-  }
-
-  tfoot {
-    td, th {
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
+  &.nowrap {
+    white-space: nowrap;
   }
 }
 
-
+// не помню для чего, но что-то с CKEditor
 .cke_panel {
   overflow: hidden !important;
 }
@@ -101,4 +51,33 @@ td.mini-column, th.mini-column {
 // стандартное поле M2M
 .form-horizontal .control-group .controls .selector .selector-available select {
   min-height: 200px;
+}
+
+// уменьшаем столбец с заголовками полей
+.form-horizontal .control-group .control-label {
+  min-width: 100px;
+}
+
+// правка из-за шрифта
+[class^="icon-"], [class*=" icon-"] {
+  margin-top: 2px;
+}
+
+/*
+  Font-size
+*/
+.nav-tabs-suit li a {
+  @include font-size(14px);
+}
+
+label, button, select, textarea, input[type="text"], input[type="password"], input[type="datetime"],
+input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"],
+input[type="week"], input[type="number"], input[type="email"], input[type="url"],
+input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+  font-family: 'Source Sans Pro', sans-serif;
+  @include font-size(14px);
+}
+
+.btn {
+  @include font-size(14px);
 }

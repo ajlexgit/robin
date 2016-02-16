@@ -32,7 +32,6 @@
       margin-bottom: 26px;
       color: #2C3035;
       text-align: center;
-      font-family: 'Source Sans Pro';
       background: none;
       @include font-size(24px, 28px);
       @include media_interval(0, $media768) {
@@ -66,7 +65,6 @@
         height: auto;
         color: black;
         text-align: center;
-        font-family: 'Source Sans Pro';
         border: none;
         background: #D9D9D9;
         @include border-box();
@@ -91,7 +89,6 @@
         max-width: 100%;
         color: #FFFFFF;
         text-shadow: none;
-        font-family: 'Source Sans Pro';
         border: 0;
         background: #3991C9;
         @include box-shadow(none);

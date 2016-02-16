@@ -1,13 +1,22 @@
 {% load i18n %}
 
 <div class="caption">
-  {% blocktrans with image_count=gallery.image_items.count video_count=gallery.video_link_items.count count counter=image_count %}
-    Gallery has <span class="gallery-image-counter">{{ image_count }}</span> image and
-    <span class="gallery-videolink-counter">{{ video_count }}</span> video
-  {% plural %}
-    Gallery has <span class="gallery-image-counter">{{ image_count }}</span> images and
-    <span class="gallery-videolink-counter">{{ video_count }}</span> video
-  {% endblocktrans %}
+  {% if gallery_model.VIDEO_LINK_MODEL %}
+    {% blocktrans with image_count=gallery.image_items.count video_count=gallery.video_link_items.count count counter=image_count %}
+      Gallery has <span class="gallery-image-counter">{{ image_count }}</span> image and
+      <span class="gallery-videolink-counter">{{ video_count }}</span> video
+    {% plural %}
+      Gallery has <span class="gallery-image-counter">{{ image_count }}</span> images and
+      <span class="gallery-videolink-counter">{{ video_count }}</span> video
+    {% endblocktrans %}
+  {% else %}
+    {% blocktrans with image_count=gallery.image_items.count count counter=image_count %}
+      Gallery has <span class="gallery-image-counter">{{ image_count }}</span> image
+    {% plural %}
+      Gallery has <span class="gallery-image-counter">{{ image_count }}</span> images
+    {% endblocktrans %}
+  {% endif %}
+
 </div>
 
 <div class="gallery-items" id="gallery-{{ name }}-items">

@@ -4,7 +4,6 @@ $footer_2col: $media768;
 $footer_1col: $media480;
 
 
-
 #footer {
   margin: 0;
   background: #F2F2F2;
@@ -24,7 +23,6 @@ $footer_1col: $media480;
 
     p {
       color: #2C3035;
-      font-family: 'Source Sans Pro';
       @include font-size(14px, 16px);
     }
 
@@ -45,7 +43,6 @@ $footer_1col: $media480;
       }
 
       a {
-        font-family: 'Source Sans Pro';
         @include font-size(14px, 16px);
       }
     }

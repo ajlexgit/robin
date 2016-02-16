@@ -168,6 +168,8 @@ PIPELINE_CSS = {
     'admin_customize': {
         'source_filenames': (
             'admin/scss/admin_fixes.scss',
+            'admin/scss/admin_table.scss',
+            'admin/scss/button_filter.scss',
             'admin/scss/dl_core.scss',
             'admin/scss/dl_login.scss',
         ),
@@ -479,7 +481,10 @@ CKEDITOR_CONFIG_DEFAULT = {
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
     'autoGrow_maxHeight': '540',
-    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
+    'contentsCss': (
+        'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
+        STATIC_URL + 'ckeditor/css/ckeditor.css',
+    ),
     'plugins': 'basicstyles,undo,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
                'format,htmlwriter,justify,link,list,liststyle,'
@@ -521,7 +526,10 @@ CKEDITOR_CONFIG_MINI = {
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix',
     'autoGrow_maxHeight': '500',
-    'contentsCss': (STATIC_URL + 'ckeditor/css/ckeditor.css',),
+    'contentsCss': (
+        'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
+        STATIC_URL + 'ckeditor/css/ckeditor.css',
+    ),
     'plugins': 'basicstyles,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
                'htmlwriter,link,pastefromword,pastetext,'

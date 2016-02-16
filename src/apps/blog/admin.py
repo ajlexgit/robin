@@ -90,6 +90,15 @@ class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         ('tags', _('Tags')),
     )
 
+    def suit_cell_attributes(self, obj, column):
+        """ Стилизация списка публикаций """
+        default = super().suit_cell_attributes(obj, column)
+        if column in ('date_fmt', 'status'):
+            default.update({
+                'class': 'mini-column nowrap',
+            })
+        return default
+
     def tags_list(self, obj):
         return ' / '.join((str(item.title) for item in obj.tags.all()))
     tags_list.short_description = _('tags')

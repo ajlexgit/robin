@@ -1,7 +1,7 @@
 /* Заголовок */
 .gallery .caption {
-    font-size: 14px;
-    font-weight: bold;
+    color: gray;
+    font-size: 12px;
 }
 
 /* Блок с кнопками */
