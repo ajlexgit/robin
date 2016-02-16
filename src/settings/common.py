@@ -303,10 +303,10 @@ SESSION_COOKIE_AGE = 30 * 24 * 3600
 
 # Email
 EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 25
+EMAIL_PORT = 465
 EMAIL_HOST_USER = 'noreply@asskicker.ru'
 EMAIL_HOST_PASSWORD = 'noreply66671301'
-EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@asskicker.ru'
 
 
