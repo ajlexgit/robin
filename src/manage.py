@@ -3,6 +3,7 @@ import sys
 
 # права на поля и блоки
 # checkbox, radiobox, expander by jQuery + events
+# dynamic admin menu
 # std pages
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy

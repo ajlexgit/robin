@@ -112,6 +112,7 @@ SUIT_CONFIG = {
         '-',
         {
             'icon': 'icon-lock',
+            'permissions': 'users.change_customuser',
             'label': 'Authentication and Authorization',
             'models': (
                 'auth.group',
