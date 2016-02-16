@@ -165,6 +165,12 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/head_core.css',
     },
+    'admin_login': {
+        'source_filenames': (
+            'admin/scss/dl_login.scss',
+        ),
+        'output_filename': 'admin/css/dl_login.css',
+    },
     'main_page': {
         'source_filenames': (
             'scss/section_slider.scss',

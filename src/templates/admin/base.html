@@ -12,6 +12,7 @@
   <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/bootstrap/css/bootstrap.min.css' %}" media="all"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/css/suit.css' %}" media="all">
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
   {% block extrastyle %}{% endblock %}
   {% if LANGUAGE_BIDI %}
     <link rel="stylesheet" type="text/css"
@@ -38,7 +39,10 @@
   <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 
   {% block blockbots %}
-    <meta name="robots" content="NONE,NOARCHIVE"/>{% endblock %}
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+  {% endblock %}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 {% load i18n %}
 
