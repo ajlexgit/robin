@@ -89,16 +89,62 @@
         padding: 10px 20px;
         width: 280px;
         max-width: 100%;
-        font-size: 16px;
-        font-family: 'Source Sans Pro';
-        border: 0;
         color: #FFFFFF;
         text-shadow: none;
+        font-family: 'Source Sans Pro';
+        border: 0;
         background: #3991C9;
         @include box-shadow(none);
+        @include font-size(16px, 16px);
         @include media_interval(0, $media480) {
           padding: 6px 12px 8px;
         }
+      }
+    }
+  }
+}
+
+
+#footer {
+  background: #F2F2F2;
+
+  .content {
+    margin: 0 auto;
+    padding: 20px 60px 0;
+    max-width: 1400px;
+    border: 0;
+    @include flexbox;
+
+    p {
+      color: #2C3035;
+      font-family: 'Source Sans Pro';
+      @include font-size(14px, 16px);
+    }
+
+    .help-box {
+      margin-right: 40px;
+    }
+
+    .phone-box {
+      margin-right: 40px;
+    }
+
+    .email-box {
+      a {
+        font-family: 'Source Sans Pro';
+        @include font-size(14px, 16px);
+      }
+    }
+
+    .logo-box {
+      text-align: right;
+      @include flex-grow(1);
+
+      a {
+        display: inline-block;
+        width: 66px;
+        height: 20px;
+        background: url(/static/admin/img/sprite.svg) no-repeat 0 0;
       }
     }
   }

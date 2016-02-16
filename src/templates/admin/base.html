@@ -201,6 +201,31 @@
 
 </div>
 
+{% if not is_popup %}
+  {% block footer %}
+    <div id="footer" class="footer">
+      <div class="content">
+        <div class="help-box">
+          <p>Please contact us if you have any problems</p>
+        </div>
+
+        <div class="phone-box">
+          <p>+1 267 626 2554</p>
+        </div>
+
+        <div class="email-box">
+          <a href="mailto:office@directlinedev.com">office@directlinedev.com</a>
+        </div>
+
+        <div class="logo-box">
+          <a href="http://directlinedev.com"></a>
+        </div>
+      </div>
+    </div>
+  {% endblock footer %}
+{% endif %}
+
+
 <script src="{% static 'suit/js/suit.js' %}"></script>
 {% block extrajs %}{% endblock %}
 
