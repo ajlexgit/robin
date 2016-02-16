@@ -1,9 +1,13 @@
-<!-- Updated jQuery -->
-<!-- added script "admin_jsi18n" -->
-<!-- added favicon -->
-<!-- hidden footer -->
+{# Updated jQuery #}
+{# added script "admin_jsi18n" #}
+{# added favicon #}
+{# custom footer #}
 
-{% load admin_static %}{% load suit_tags %}{% load url from suit_compat %}<!DOCTYPE html>
+{% load admin_static %}
+{% load suit_tags %}
+{% load url from suit_compat %}
+{% load pipeline %}
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,8 +16,12 @@
   <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% endblock %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/bootstrap/css/bootstrap.min.css' %}" media="all"/>
   <link rel="stylesheet" type="text/css" href="{% static 'suit/css/suit.css' %}" media="all">
+
+  {% stylesheet 'admin_customize' %}
   <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
+
   {% block extrastyle %}{% endblock %}
+
   {% if LANGUAGE_BIDI %}
     <link rel="stylesheet" type="text/css"
           href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
@@ -31,12 +39,15 @@
       color: #ccc;
     }</style>
   {% endif %}
+
+  {# gettext #}
+  {% url 'jsi18n' as jsi18nurl %}
+  <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+
   {% block extrahead %}
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}"/>
   {% endblock %}
 
-  {% url 'jsi18n' as jsi18nurl %}
-  <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 
   {% block blockbots %}
     <meta name="robots" content="NONE,NOARCHIVE"/>
@@ -214,11 +225,11 @@
         </div>
 
         <div class="email-box">
-          <a href="mailto:office@directlinedev.com">office@directlinedev.com</a>
+          <p><a href="mailto:office@directlinedev.com">office@directlinedev.com</a></p>
         </div>
 
         <div class="logo-box">
-          <a href="http://directlinedev.com"></a>
+          <a href="http://directlinedev.com" target="_blank"></a>
         </div>
       </div>
     </div>

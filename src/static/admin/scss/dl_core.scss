@@ -1,0 +1,65 @@
+@import "mixins";
+
+$footer_2col: $media768;
+$footer_1col: $media480;
+
+
+
+#footer {
+  margin: 0;
+  background: #F2F2F2;
+
+  .content {
+    margin: 0 auto;
+    padding: 20px 60px 0;
+    max-width: 1400px;
+    border: 0;
+    @include flexbox;
+    @include media_interval($footer_1col, $footer_2col) {
+      padding: 20px 20px 0;
+    }
+    @include media_interval(0, $footer_1col) {
+      padding: 20px 0 0;
+    }
+
+    p {
+      color: #2C3035;
+      font-family: 'Source Sans Pro';
+      @include font-size(14px, 16px);
+    }
+
+    .help-box {
+      margin-right: 4%;
+      @include media_interval(0, $footer_2col) {
+        display: none;
+      }
+    }
+
+    .phone-box {
+      margin-right: 4%;
+    }
+
+    .email-box {
+      @include media_interval(0, $media400) {
+        display: none;
+      }
+
+      a {
+        font-family: 'Source Sans Pro';
+        @include font-size(14px, 16px);
+      }
+    }
+
+    .logo-box {
+      text-align: right;
+      @include flex-grow(1);
+
+      a {
+        display: inline-block;
+        width: 66px;
+        height: 20px;
+        background: url(/static/admin/img/sprite.svg) no-repeat 0 0;
+      }
+    }
+  }
+}

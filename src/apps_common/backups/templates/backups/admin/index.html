@@ -9,11 +9,6 @@
   {{ block.super }}
 {% endblock title %}
 
-{% block extrahead %}
-  {{ block.super }}
-  <link rel="stylesheet" type="text/css" href="{% static "admin/css/admin_fixes.css" %}"/>
-{% endblock extrahead %}
-
 
 {% block content %}
   <h2>{% trans 'Backups' %}</h2>
