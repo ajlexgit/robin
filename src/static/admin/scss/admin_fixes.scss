@@ -38,7 +38,7 @@ td, th {
   }
 
   // минимальная ширина для столбца сортировки
-  &.sorted {
+  &.sort_order-column {
     width: 1%;
     white-space: nowrap;
   }
