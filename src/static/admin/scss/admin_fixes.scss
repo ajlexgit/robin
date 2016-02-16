@@ -38,7 +38,7 @@ td, th {
   }
 
   // минимальная ширина для столбца сортировки и чекбоксов
-  &.sorted, .action-checkbox-column {
+  &.sorted, &.action-checkbox-column {
     width: 1%;
     white-space: nowrap;
   }
