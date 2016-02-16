@@ -37,10 +37,13 @@ td, th {
     width: 1%;
   }
 
-  &.nowrap {
+  // минимальная ширина для столбца сортировки и чекбоксов
+  &.sorted, .action-checkbox-column {
+    width: 1%;
     white-space: nowrap;
   }
 }
+
 
 // не помню для чего, но что-то с CKEditor
 .cke_panel {
@@ -56,6 +59,14 @@ td, th {
 // уменьшаем столбец с заголовками полей
 .form-horizontal .control-group .control-label {
   min-width: 100px;
+}
+
+// правка из-за шрифта
+#changelist .actions span.all,
+#changelist .actions span.action-counter,
+#changelist .actions span.clear,
+#changelist .actions span.question {
+  vertical-align: middle;
 }
 
 // правка из-за шрифта
