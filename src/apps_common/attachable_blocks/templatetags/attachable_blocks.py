@@ -77,4 +77,8 @@ def render_first_attachable_block(context, model, noindex=False, ajax=False, **k
     except LookupError:
         return ''
 
-    return render_attachable_block(context, model.objects.first(), noindex, ajax, **kwargs)
+    block = model.objects.first()
+    if not block:
+        return ''
+
+    return render_attachable_block(context, block, noindex, ajax)
