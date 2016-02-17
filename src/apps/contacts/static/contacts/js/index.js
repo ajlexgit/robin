@@ -54,4 +54,72 @@
         }
     });
 
+
+    // Форма контактов
+    $(document).on('submit', '#contact-form', function() {
+        var preloader = $.preloader();
+
+        // Добавляем адрес страницы, с которой отправили сообщение
+        var $form = $(this);
+        var data = $form.serializeArray();
+        data.push({
+            name: 'referer',
+            value: location.href
+        });
+
+        $.ajax({
+            url: window.js_storage.ajax_contact,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            beforeSend: function() {
+                // сброс ошибок формы
+                $form.find('.errors').each(function() {
+                    this.className = this.className.replace(/\berror.*?\b/g, '');
+                });
+            },
+            success: function(response) {
+                if (response.success_message) {
+                    // сообщение о успешной отправке
+                    $.popup({
+                        classes: 'contact-popup contact-success-popup',
+                        content: response.success_message
+                    }).show();
+
+                    $form.get(0).reset();
+                } else {
+                    preloader.destroy();
+                }
+            },
+            error: $.parseError(function(response) {
+                preloader.destroy();
+                if (response && response.errors) {
+                    // ошибки формы
+                    var first_error;
+                    for (var i = 0, l = response.errors.length; i < l; i++) {
+                        var record = response.errors[i];
+                        var $field = $form.find('.field-' + record.field);
+                        if ($field.length) {
+                            if (!first_error) {
+                                first_error = $field.get(0);
+                            }
+                            $field.addClass(record.classes);
+                        }
+                    }
+
+                    if (first_error) {
+                        $.scrollTo(first_error, 400, {
+                            offset: {
+                                top: -20
+                            }
+                        });
+                    }
+                } else {
+                    alert(window.DEFAULT_AJAX_ERROR);
+                }
+            })
+        });
+        return false;
+    });
+
 })(jQuery);

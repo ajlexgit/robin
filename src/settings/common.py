@@ -225,6 +225,7 @@ PIPELINE_JS = {
             'common/js/jquery.mousewheel.js',
 
             'js/jquery.fitvids.js',
+            'js/jquery.scrollTo.js',
             'js/drager.js',
 
             'js/popups/jquery.popups.js',

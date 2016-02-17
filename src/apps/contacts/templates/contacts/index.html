@@ -20,14 +20,13 @@
   <div id="contacts" class="block grid-block">
     <div class="title-h1">{{ config.header }}</div>
 
-    <form method="post" action="">
+    <form method="post" action="" id="contact-form">
       {% csrf_token %}
 
       {% for field in form.visible_fields %}
         <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
           {{ field.label_tag }}
           {{ field }}
-          <span>{{ field.errors }}</span>
         </fieldset>
       {% endfor %}
 
