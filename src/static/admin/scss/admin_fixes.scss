@@ -74,6 +74,9 @@ td, th {
   min-height: 200px;
   @include font-size(12px);
 }
+.form-horizontal .control-group .controls .selector .selector-chosen select {
+  @include font-size(12px);
+}
 
 // уменьшаем столбец с заголовками полей
 .form-horizontal .control-group .control-label {
