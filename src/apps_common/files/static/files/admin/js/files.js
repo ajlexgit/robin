@@ -1,6 +1,6 @@
 (function($) {
 
-    $(document).on('change', '.file-on-page', function() {
+    $(document).on('input', '.file-on-page', function() {
         // генерация имени файла для отображения
         var self = $(this),
             short_name = /[^/\\]+$/.exec(self.val()),

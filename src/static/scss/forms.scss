@@ -27,6 +27,7 @@ fieldset {
     @include fontsize_default;
   }
 
+  // класс на fieldset с ошибочным полем
   &.errors {
     input, select, textarea {
       border: 2px solid red;
@@ -34,6 +35,7 @@ fieldset {
     }
   }
 
+  // класс текстового описания ошибки
   .error {
     margin-left: 10px;
     color: #FF0000;

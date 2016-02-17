@@ -109,7 +109,7 @@
             });
 
 
-            this.$input.on('blur.counter', function() {
+            this.$input.on('input.counter', function() {
                 // форматирование значения при потере фокуса
                 that._format();
             }).on('keypress.counter', function(e) {
