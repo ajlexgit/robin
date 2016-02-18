@@ -2,13 +2,14 @@
 
 
 // размеры окна
-$window_width: (
+$content_width: (
 		($media1024, 0): 260px,
 		($media640, $media1024): 250px,
 		($media480, $media640): 200px,
 		(0, $media480): 150px,
 );
-$window_height: (
+
+$content_height: (
 		($media1024, 0): 180px,
 		($media640, $media1024): 160px,
 		($media480, $media640): 120px,
@@ -37,8 +38,8 @@ $image_color: #82BD36;
     min-height: 0;
     text-align: center;
     @include valign_after;
-	  @include media_map(width, $window_width);
-	  @include media_map(height, $window_height);
+	  @include media_map(width, $content_width);
+	  @include media_map(height, $content_height);
   }
 
   svg {
