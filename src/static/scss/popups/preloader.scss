@@ -3,25 +3,25 @@
 
 // размеры окна
 $content_width: (
-		($media1024, 0): 260px,
-		($media640, $media1024): 250px,
-		($media480, $media640): 200px,
-		(0, $media480): 150px,
+    ($media1024, 0): 260px,
+    ($media640, $media1024): 250px,
+    ($media480, $media640): 200px,
+    (0, $media480): 150px,
 );
 
 $content_height: (
-		($media1024, 0): 180px,
-		($media640, $media1024): 160px,
-		($media480, $media640): 120px,
-		(0, $media480): 100px,
+    ($media1024, 0): 180px,
+    ($media640, $media1024): 160px,
+    ($media480, $media640): 120px,
+    (0, $media480): 100px,
 );
 
 // размеры прелоадера
 $image_size: (
-		($media1024, 0): 80px,
-		($media640, $media1024): 70px,
-		($media480, $media640): 60px,
-		(0, $media480): 50px,
+    ($media1024, 0): 80px,
+    ($media640, $media1024): 70px,
+    ($media480, $media640): 60px,
+    (0, $media480): 50px,
 );
 
 // цвет прелоадера

@@ -9,7 +9,6 @@ $media600: 600px;
 $media480: 480px;
 $media400: 400px;
 
-
 //=======================
 // Сетка
 //=======================
@@ -26,12 +25,11 @@ $grid_column_gap: 14px;
 
 // Боковые границы сетки
 $grid_paddings: (
-		($media1200, 0): 60px,
-		($media768, $media1200): 40px,
-		($media640, $media768): 30px,
-		(0, $media640): 20px,
+    ($media1200, 0): 60px,
+    ($media768, $media1200): 40px,
+    ($media640, $media768): 30px,
+    (0, $media640): 20px,
 );
-
 
 //=======================
 // Sprite
@@ -40,13 +38,11 @@ $sprite_url: url(/static/img/sprite_a.svg);
 $sprite_width: 300px;
 $sprite_height: 106px;
 
-
 //=======================
 // Цвета
 //=======================
 $white: #FFFFFF;
 $text_color: #2C3035;
-
 
 //=======================
 // Меню

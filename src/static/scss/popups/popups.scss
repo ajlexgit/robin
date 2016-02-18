@@ -3,17 +3,17 @@
 
 // вертикальные отступы окна
 $window_margin: (
-		($media1024, 0): 60px,
-		($media640, $media1024): 50px,
-		($media480, $media640): 40px,
-		(0, $media480): 40px,
+    ($media1024, 0): 60px,
+    ($media640, $media1024): 50px,
+    ($media480, $media640): 40px,
+    (0, $media480): 40px,
 );
 
 // максимальная ширина окна
 $window_max_width: (
-		($media1024, 0): 70%,
-		($media480, $media1024): 80%,
-		(0, $media480): 90%,
+    ($media1024, 0): 70%,
+	($media480, $media1024): 80%,
+    (0, $media480): 90%,
 );
 
 // поля контентной части окна
