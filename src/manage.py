@@ -1,10 +1,9 @@
 import os
 import sys
 
-# CSS checkbox / radiobox
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # права на поля и блоки
-# checkbox, radiobox, expander by jQuery + events
+# expander by jQuery + events
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Susy
 # Angular-like
