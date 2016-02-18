@@ -1,6 +1,6 @@
 @import "mixins";
 
-// размеры области нажатия
+// ширина области нажатия
 $arrow_area_width: (
     ($media768, 0px): 80px,
     ($media480, $media768): 60px,
@@ -15,7 +15,7 @@ $arrow_image_maxwidth: (
     (0px, $media768): 40%,
 );
 
-// Controls
+
 .slider-arrow {
   position: absolute;
   overflow: hidden;

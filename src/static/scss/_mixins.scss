@@ -20,9 +20,38 @@
 @import 'mixins/unselectable';
 @import 'conf';
 
-// Алиас для "@media screen and (min-width: $from) and (max-width: $to)"
-@mixin media_interval($from, $to) {
+//===================================================
+//  Алиас для "@media screen and (min-width: $from) and (max-width: $to)"
+//
+//  Пример:
+//    // красный фон при ширине окна от 768px включительно.
+//    div {
+//      @include media_interval($media768, 0) {
+//        background: red;
+//      }
+//    }
+//
+//
+//  Также можно использовать переменные со списками:
+//    $interval: (0, $media640);
+//    ...
+//    @include media_interval($interval) { ... }
+//
+//===================================================
+@mixin media_interval($args...) {
+  $from: 0;
+  $to: 0;
   $line: "";
+
+  $first: nth($args, 1);
+  @if (type_of($first) == list) {
+    // интервал в виде списка
+    $from: nth($first, 1);
+    $to: nth($first, 2);
+  } @else {
+    $from: nth($args, 1);
+    $to: nth($args, 2);
+  }
 
   @if $from > 0 {
     $line: "(min-width: #{$from})";
@@ -43,12 +72,15 @@
 
 //===================================================
 //	Установка стилей CSS-свойства $property
-//  на основании карты вида:
+//  на основании SCSS-карты.
 //
-//    (
+//  Пример:
+//    $width: (
 //      ($media768, $media1024): 80px,
 //      (0, $media768): 60px,
-//    )
+//    );
+//    ...
+//    @include media_map(width, $width);
 //===================================================
 @mixin media_map($property, $values) {
   $type: type_of($values);
@@ -65,7 +97,8 @@
 
 //=========================================
 //  Вертикальное и горизонтальное
-//  центрирование картинки.
+//  центрирование картинки + растягивание
+//  её на весь родительский блок (минимум).
 //=========================================
 @mixin centrizeImage($zIndex: 1, $minSize: 100%) {
   position: absolute;
@@ -78,6 +111,10 @@
   @include transform(translate(-50%, -50%));
 }
 
+
+//=========================================
+//  Размеры шрифта
+//=========================================
 @mixin fontsize_default() {
   @include font-size(16px);
   @include media_interval(0, $media768) {
@@ -85,7 +122,10 @@
   }
 }
 
+
+//=========================================
+//  Шрифты
+//=========================================
 @mixin font_default() {
-  letter-spacing: 0.1em;
   font-family: Arial, Helvetica, sans-serif;
 }

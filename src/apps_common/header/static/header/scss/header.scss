@@ -41,7 +41,7 @@ header {
   .menu-box {
     text-align: center;
     @include flex(1 1 auto);
-    @include media_interval(0, $mobile_menu_point) {
+    @include media_interval($mobile_menu_interval) {
       text-align: right;
     }
   }

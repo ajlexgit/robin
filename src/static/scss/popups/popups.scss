@@ -16,6 +16,13 @@ $window_max_width: (
 		(0, $media480): 90%,
 );
 
+// поля контентной части окна
+$content_paddings: (
+    ($media640, 0): 36px 50px,
+    ($media480, $media640): 36px,
+    (0, $media480): 20px 20px 36px,
+);
+
 // цвет фона
 $background_color: #C0C0C0;
 
@@ -79,13 +86,7 @@ $close_btn_weight: 3px;
   }
 
   .popup-content {
-    padding: 36px 50px;
     background-color: $background_color;
-    @include media_interval($media480, $media640) {
-      padding: 36px;
-    }
-    @include media_interval(0, $media480) {
-      padding: 20px 20px 36px;
-    }
+    @include media_map(padding, $content_paddings);
   }
 }

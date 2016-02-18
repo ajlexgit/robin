@@ -1,35 +1,35 @@
 @import 'mixins';
 
-$normal_color: #404040;
-$hover_color: #82BD36;
-$active_color: #82BD36;
+$menu_text_color: #404040;
+$menu_hover_color: #82BD36;
+$menu_active_color: #82BD36;
 
 $mobile_background: #5B3C2A;
 $mobile_text_color: #FFFFFF;
-$mobile_hover_color: $hover_color;
-$mobile_active_color: $active_color;
+$mobile_hover_color: $menu_hover_color;
+$mobile_active_color: $menu_active_color;
 
 
 #main-menu {
   display: inline-block;
   @include no_fontsize;
-  @include media_interval(0, $mobile_menu_point) {
+  @include media_interval($mobile_menu_interval) {
     display: none;
   }
 
   li {
     display: inline-block;
     margin-right: 10px;
-    color: $normal_color;
+    color: $menu_text_color;
     &:nth-last-of-type(1) {
       margin-right: 0;
     }
 
     &.active {
-      color: $active_color;
+      color: $menu_active_color;
 
       a:hover {
-        color: $active_color;
+        color: $menu_hover_color;
       }
     }
   }
@@ -41,7 +41,7 @@ $mobile_active_color: $active_color;
     @include font-size(18px, 20px);
 
     &:hover {
-      color: $hover_color;
+      color: $menu_hover_color;
     }
   }
 }
@@ -53,19 +53,19 @@ $mobile_active_color: $active_color;
   padding: 0 70px 0 40px;
   right: -100%;
   top: 0;
-  width: 80%;
+  width: 60%;
   height: 100vh;
   z-index: 50;
-  text-align: right;
+  text-align: left;
   background: $mobile_background;
   @include border-box;
   @include transition(right 0.4s);
-  @include media_interval(0, $mobile_menu_point) {
+  @include media_interval($mobile_menu_interval) {
     display: block;
   }
-  @include media_interval($media480, $mobile_menu_point) {
-		width: 60%;
-		text-align: left;
+  @include media_interval(0, $media480) {
+		width: 80%;
+		text-align: right;
 	}
 
   ul {
@@ -121,7 +121,7 @@ $mobile_active_color: $active_color;
   z-index: 55;
   vertical-align: middle;
   @include unselectable;
-  @include media_interval(0, $mobile_menu_point) {
+  @include media_interval($mobile_menu_interval) {
     display: inline-block;
   }
 

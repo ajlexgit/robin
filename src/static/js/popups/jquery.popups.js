@@ -232,7 +232,7 @@
             body_data._popup_padding = body_padding;
 
             if (isIPhone) {
-                // fix for iOs
+                // fix: на iOs не пропадает скролл
                 body_data._popup_scroll = $body.scrollTop();
                 $('#wrapper').css({
                     position: 'fixed',
@@ -264,7 +264,7 @@
             $body.removeClass(this.BODY_OPENED_CLASS);
 
             if (isIPhone) {
-                // fix for iOs
+                // fix: на iOs не пропадает скролл
                 $('#wrapper').css({
                     position: '',
                     transform: ''
