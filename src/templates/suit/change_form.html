@@ -1,7 +1,14 @@
 {% extends 'admin/change_form.html' %}
 
-{% block suit_form_tabs %}
+{% block field_sets %}
+  {% for fieldset in adminform %}
+    {% if fieldset.fields %}
+      {% include "admin/includes/fieldset.html" %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}
 
+{% block suit_form_tabs %}
   {% if suit_tabs %}
     <ul id="suit_form_tabs" class="nav nav-tabs nav-tabs-suit" data-tab-prefix="suit-tab">
       {% for tab in suit_tabs %}
@@ -9,5 +16,4 @@
       {% endfor %}
     </ul>
   {% endif %}
-
 {% endblock %}

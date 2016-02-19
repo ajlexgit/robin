@@ -3,14 +3,19 @@
 $footer_2col: $media768;
 $footer_1col: $media480;
 
+
 // новые стрелки
 .sortable-up {
+  line-height: 1;
+
   i {
     width: 16px;
     background: url(../img/sprite.svg) no-repeat -68px -3px;
   }
 }
 .sortable-down {
+  line-height: 1;
+
   i {
     width: 16px;
     background: url(../img/sprite.svg) no-repeat -88px -3px;
@@ -32,6 +37,7 @@ $footer_1col: $media480;
     margin-right: 0;
   }
 }
+
 
 #footer {
   margin: 0;
