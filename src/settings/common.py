@@ -109,7 +109,6 @@ SUIT_CONFIG = {
             )
         },
         '-',
-        '-',
         {
             'icon': 'icon-lock',
             'permissions': 'users.change_customuser',
@@ -137,8 +136,6 @@ SUIT_CONFIG = {
                 'seoconfig',
             ),
         },
-        '-',
-        '-',
     ),
 }
 

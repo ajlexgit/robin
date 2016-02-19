@@ -48,22 +48,35 @@ $footer_1col: $media480;
 // стилизация меню
 #wrap {
   background: #FAFAFA;
+  @include flexbox;
+  @include flex-flow(column nowrap);
+}
+
+#container {
+  @include flexbox;
+  @include flex-grow(1);
+  @include flex-flow(column nowrap);
+}
+
+.suit-columns {
+  padding-left: 0;
+  padding-right: 0;
+  @include flexbox;
+  @include flex-grow(1);
 }
 
 #suit-left {
   width: 220px;
-  right: 220px;
-}
-
-.suit-columns {
-  padding-left: 220px;
-  padding-right: 0;
+  float: none;
+  right: 0;
+  margin-left: 0;
+  background: #F5F9FC;
+  border-right: 1px solid #DADADA;
+  @include order(-1);
 }
 
 #left-nav {
   margin-top: 0;
-  background: #F5F9FC;
-  border-right: 1px solid #dadada;
   @include font-size(16px);
 
   ul {
@@ -128,7 +141,7 @@ $footer_1col: $media480;
       }
 
       &.separator {
-        background: #DADADA !important;
+        background: #E8E8E8 !important;
       }
     }
   }
@@ -216,6 +229,7 @@ $footer_1col: $media480;
 // стили контента
 #suit-center {
   padding: 0;
+  float: none;
 }
 
 #content {
