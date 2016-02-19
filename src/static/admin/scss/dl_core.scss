@@ -163,6 +163,7 @@ $footer_1col: $media480;
   text-shadow: none;
   @include font-size(14px);
   @include box-shadow(none);
+  @include border_radius(7px);
   @include linear-gradient(to bottom, #ECECEC, #D1D1D1);
 
   &.btn-small {
@@ -173,6 +174,7 @@ $footer_1col: $media480;
   &.btn-mini {
     padding: 4px 10px;
     @include font-size(12px);
+    @include border_radius(5px);
 
     [class^="icon-"], [class*=" icon-"] {
       margin: 1px;
