@@ -53,6 +53,12 @@ td, th {
   }
 }
 
+// не помню для чего, но что-то с CKEditor
+.cke_panel {
+  overflow: hidden !important;
+}
+
+
 // правка отступа между действиями и списком
 .actions {
   margin-bottom: 18px;
@@ -63,24 +69,19 @@ td, th {
   margin: 0;
 }
 
-// не помню для чего, но что-то с CKEditor
-.cke_panel {
-  overflow: hidden !important;
+// правка списков сущностей из-за шрифта
+.table.table-condensed tbody th, .table.table-condensed tbody td {
+  padding: 5px 10px 5px 10px;
 }
 
-
-// стандартное поле M2M
-.form-horizontal .control-group .controls .selector .selector-available select {
-  min-height: 200px;
-  @include font-size(12px);
-}
-.form-horizontal .control-group .controls .selector .selector-chosen select {
-  @include font-size(12px);
+// правка положения галочки булевых полей в списках
+.table img {
+  vertical-align: baseline;
 }
 
-// уменьшаем столбец с заголовками полей
-.form-horizontal .control-group .control-label {
-  min-width: 100px;
+// правка положения чекбоксов в сущностях и-за шрифта
+.table .action-select {
+  margin: -3px 0 0;
 }
 
 // правка из-за шрифта
@@ -89,6 +90,51 @@ td, th {
 #changelist .actions span.clear,
 #changelist .actions span.question {
   vertical-align: middle;
+}
+
+
+// увеличение стандартного поля M2M
+.form-horizontal .control-group .controls .selector {
+  .selector-available select {
+    min-height: 200px;
+    @include font-size(12px);
+  }
+
+  .selector-chosen select {
+    @include font-size(12px);
+  }
+}
+
+// уродливые белые линии в поле добавления инлайна
+.form-horizontal .inline-group .add-row,
+.inline-group .tabular table.table tr.add-row td {
+  @include box-shadow(none);
+}
+
+// уменьшаем столбец с заголовками полей
+.form-horizontal .control-group .control-label {
+  min-width: 100px;
+}
+.form-horizontal .inline-related h3 b {
+  min-width: 130px;
+}
+
+// увеличение нижнего отступа от заголовков
+.suit-tab > h2, .form-horizontal .suit-include > h2 {
+  margin-bottom: -3px;
+}
+.form-horizontal fieldset {
+  margin-top: 38px;
+
+  .legend {
+    margin: -33px 0 0 0;
+  }
+}
+
+// правка цвета текста autocomplete-поля в инлайне,
+// когда этот инлайн двигают.
+tr.selected .select2-chosen {
+  color: #444;
 }
 
 // правка из-за шрифта

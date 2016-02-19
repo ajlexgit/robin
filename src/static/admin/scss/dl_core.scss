@@ -3,6 +3,35 @@
 $footer_2col: $media768;
 $footer_1col: $media480;
 
+// новые стрелки
+.sortable-up {
+  i {
+    width: 16px;
+    background: url(../img/sprite.svg) no-repeat -68px -3px;
+  }
+}
+.sortable-down {
+  i {
+    width: 16px;
+    background: url(../img/sprite.svg) no-repeat -88px -3px;
+  }
+}
+.inline-sortable a {
+  padding: 2px;
+  margin-right: 8px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+.stacked-inline-sortable a {
+  padding: 2px;
+  margin-right: 4px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
 
 #footer {
   margin: 0;
