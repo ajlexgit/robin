@@ -103,9 +103,9 @@
               <div id="user-tools">
                 {% block welcome-msg %}
 {#                  {% trans 'Welcome,' %}#}
-                  <strong>
+                  <span class="username">
                     {% filter force_escape %}
-                      {% firstof user.first_name user.username %}{% endfilter %}</strong>
+                      {% firstof user.first_name user.username %}{% endfilter %}</span>
                 {% endblock %}
                 <span class="user-links">
                 {% block userlinks %}

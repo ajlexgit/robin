@@ -1,10 +1,230 @@
 @import "mixins";
 
+$blue: #3991C9;
 $footer_2col: $media768;
 $footer_1col: $media480;
 
 
-// новые стрелки
+// стилизация шапки
+.header {
+  height: 55px;
+  text-shadow: none;
+  background: $blue;
+
+  #branding {
+    height: 55px;
+    border-right: none;
+
+    h1 {
+      margin-top: 8px;
+      text-shadow: none;
+      font-weight: normal;
+      @include font-size(24px);
+
+    }
+  }
+
+  #user-tools {
+    padding-top: 17px;
+    @include font-size(16px);
+
+    .username {
+      color: #2C3035;
+    }
+
+    .separator {
+      color: white;
+    }
+  }
+
+
+
+  a {
+    color: white;
+  }
+}
+
+
+// стилизация меню
+#wrap {
+  background: #FAFAFA;
+}
+
+#suit-left {
+  width: 220px;
+  right: 220px;
+}
+
+.suit-columns {
+  padding-left: 220px;
+  padding-right: 0;
+}
+
+#left-nav {
+  margin-top: 0;
+  background: #F5F9FC;
+  border-right: 1px solid #dadada;
+  @include font-size(16px);
+
+  ul {
+    border-bottom: none;
+  }
+
+  li {
+    border: none;
+
+    a {
+      text-shadow: none;
+      border-bottom: none;
+      background: inherit;
+    }
+
+    &:hover {
+      background: rgba($blue, 0.1);
+    }
+  }
+
+  // меню первого уровня
+  & > ul {
+    padding: 14px 0;
+
+    & > li {
+      & > a {
+        padding: 8px 10px 8px 18px;
+
+        i {
+          display: none;
+        }
+      }
+
+      &.active {
+        & > a {
+          background: $blue;
+
+          &:after {
+            content: none;
+          }
+        }
+
+        & > ul > li > a {
+          padding: 6px 0 6px 27px;
+        }
+      }
+
+      // подменю в окне
+      &:not(.active):hover > ul {
+        a {
+          padding: 5px 25px 5px 15px;
+          @include font-size(14px);
+        }
+
+        li:first-child a {
+          padding-top: 7px;
+        }
+
+        li:last-child a {
+          padding-bottom: 7px;
+        }
+      }
+
+      &.separator {
+        background: #DADADA !important;
+      }
+    }
+  }
+}
+
+
+// стилизация хлебных крошек
+.breadcrumb {
+  padding: 20px;
+  margin: 0;
+  @include font-size(16px);
+}
+
+
+// стилизация кнопок
+.btn {
+  padding: 8px 16px;
+  border: none;
+  text-shadow: none;
+  @include font-size(14px);
+  @include box-shadow(none);
+  @include linear-gradient(to bottom, #ECECEC, #D1D1D1);
+
+  &.btn-small {
+    padding: 6px 14px;
+    @include font-size(12px);
+  }
+
+  &.btn-mini {
+    padding: 4px 10px;
+    @include font-size(12px);
+
+    [class^="icon-"], [class*=" icon-"] {
+      margin: 1px;
+    }
+  }
+
+
+  &:hover {
+    @include linear-gradient(to bottom, #EFEFEF, #D6D6D6);
+  }
+
+  &.btn-success {
+    @include linear-gradient(to bottom, #44B446, #1CA41C);
+
+    &:hover {
+      @include linear-gradient(to bottom, #5ABC59, #32AD31);
+    }
+  }
+
+  &.btn-info {
+    @include linear-gradient(to bottom, #60A7D3, #3B92C8);
+
+    &:hover {
+      @include linear-gradient(to bottom, #71B1D7, #4F9DCE);
+    }
+  }
+
+  &.btn-primary {
+    @include linear-gradient(to bottom, #5EC9FF, #36BBFC);
+
+    &:hover {
+      @include linear-gradient(to bottom, #6ECEFE, #4BC3FF);
+    }
+  }
+
+  &.btn-warning {
+    @include linear-gradient(to bottom, #FE8333, #FE6601);
+
+    &:hover {
+      @include linear-gradient(to bottom, #FF9048, #FF751C);
+    }
+  }
+
+  &.btn-danger {
+    @include linear-gradient(to bottom, #E33F40, #DC100F);
+
+    &:hover {
+      @include linear-gradient(to bottom, #E55354, #E02828);
+    }
+  }
+}
+
+
+// стили контента
+#suit-center {
+  padding: 0;
+}
+
+#content {
+  padding: 20px;
+  @include border-box;
+}
+
+
+// новые стрелки сортировки
 .sortable-up {
   line-height: 1;
 
@@ -39,6 +259,19 @@ $footer_1col: $media480;
 }
 
 
+// стили форм
+.form-horizontal .control-group .controls {
+  background: #F8F8F8;
+}
+
+// стили вкладок
+.nav-tabs-suit li.active a, .nav-tabs-suit li.active a:hover {
+  background: transparent;
+  border-bottom: 1px solid #F8F8F8;
+}
+
+
+// подвал
 #footer {
   margin: 0;
   background: #F2F2F2;

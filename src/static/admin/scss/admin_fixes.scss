@@ -5,23 +5,36 @@ body {
   @include font-size(14px);
 }
 
+input, button, select, textarea {
+  font-family: 'Source Sans Pro', sans-serif;
+  @include font-size(14px);
+}
+
+input[type="file"] {
+  @include font-size(12px);
+}
+
 // небольшое увеличение полей
 .input-mini {
   width: 70px;
 }
 
 input[type=number] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.controls .file-upload .clearable-file-input input {
+  margin: 7px 7px 0 0;
 }
 
 // не ограниченная высота textarea
 .autosize {
-    max-height: none;
+  max-height: none;
 }
 
 // поля на всю ширину
 .full-width {
-    width: 90%;
+  width: 90%;
 }
 
 // поле ссылки
@@ -75,7 +88,8 @@ td, th {
 }
 
 // правка списков сущностей из-за шрифта
-.table.table-condensed tbody th, .table.table-condensed tbody td {
+.table.table-condensed tbody th,
+.table.table-condensed tbody td {
   padding: 5px 10px 5px 10px;
 }
 
@@ -135,6 +149,9 @@ td, th {
     margin: -33px 0 0 0;
   }
 }
+.form-horizontal .inline-related.tabular fieldset > h2 {
+  margin: 0 0 3px 10px;
+}
 
 // правка цвета текста autocomplete-поля в инлайне,
 // когда этот инлайн двигают.
@@ -168,26 +185,8 @@ select, input[type="file"] {
   @include font-size(14px);
 }
 
-button, select, textarea, input[type="text"], input[type="password"], input[type="datetime"],
-input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"],
-input[type="week"], input[type="number"], input[type="email"], input[type="url"],
-input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
-  font-family: 'Source Sans Pro', sans-serif;
-  @include font-size(14px);
-}
 
 label {
   @include font-size(12px);
 }
 
-.btn {
-  @include font-size(14px);
-
-  &.btn-small {
-    @include font-size(12px);
-  }
-
-  &.btn-mini {
-    @include font-size(12px);
-  }
-}

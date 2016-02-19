@@ -27,7 +27,7 @@
 
   {% if crop_area %}
     <div class="crop-btn-wrapper {% if not value %}hide{% endif %}">
-      <button class="btn">
+      <button class="btn btn-mini btn-info">
         {% trans 'Crop image' %}
       </button>
       <input type="hidden" name="{{ name }}-croparea" value="{{ value.croparea|default:'' }}">
