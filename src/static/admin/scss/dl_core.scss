@@ -181,7 +181,12 @@ $footer_1col: $media480;
 
 
   &:hover {
+    background-position: 0 0;
     @include linear-gradient(to bottom, #EFEFEF, #D6D6D6);
+  }
+
+  &:focus {
+    background-position: 0 0;
   }
 
   &.btn-success {
