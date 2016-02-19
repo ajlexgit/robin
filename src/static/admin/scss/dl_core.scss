@@ -73,6 +73,7 @@ $footer_1col: $media480;
   background: #F5F9FC;
   border-right: 1px solid #DADADA;
   @include order(-1);
+  @include flex-basis(220px);
 }
 
 #left-nav {
@@ -172,7 +173,7 @@ $footer_1col: $media480;
   }
 
   &.btn-mini {
-    padding: 4px 10px;
+    padding: 2px 10px 3px;
     @include font-size(12px);
     @include border_radius(5px);
 
@@ -183,6 +184,7 @@ $footer_1col: $media480;
 
 
   &:hover {
+    text-decoration: none !important;
     background-position: 0 0;
     @include linear-gradient(to bottom, #EFEFEF, #D6D6D6);
   }

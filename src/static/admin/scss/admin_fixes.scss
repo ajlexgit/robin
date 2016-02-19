@@ -81,6 +81,10 @@ td, th {
 .table thead th {
   line-height: 1.1;
 
+  &.sorted {
+    @include linear-gradient(to bottom, #F0F0F0, #DADADA);
+  }
+
   &.action-checkbox-column {
     width: 1%;
   }
@@ -109,8 +113,12 @@ td, th {
 }
 
 // правка положения галочки булевых полей в списках
-.table img {
-  vertical-align: baseline;
+.table td > img {
+  vertical-align: text-bottom;
+
+  &:only-child {
+    vertical-align: baseline;
+  }
 }
 
 // правка положения чекбоксов в сущностях и-за шрифта
