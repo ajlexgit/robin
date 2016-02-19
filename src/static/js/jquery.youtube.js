@@ -19,6 +19,15 @@
             // Видео готово к воспроизведению
             ready
 
+            // Видео начало воспроизводиться
+            play
+
+            // Видео перестало воспроизводиться
+            pause
+
+            // Видео закончилось
+            ended
+
         Пример:
             <div id="player"></div>
 
@@ -90,6 +99,7 @@
             this.stop();
             if (this.native) {
                 this.native.destroy();
+                this.$iframe = null;
                 this.native = null;
             }
             superclass.destroy.call(this);
@@ -130,8 +140,19 @@
                 videoId: this.opts.video,
                 playerVars: playerVars,
                 events: {
-                    onReady: function() {
+                    onReady: function(event) {
+                        that.$iframe = $(event.target.getIframe());
                         that.trigger('ready');
+                    },
+                    onStateChange: function(event) {
+                        if (event.data == YT.PlayerState.PLAYING) {
+                            that.trigger('play');
+                        } else if (event.data == YT.PlayerState.PAUSED) {
+                            that.trigger('pause');
+                        } else if (event.data == YT.PlayerState.ENDED) {
+                            that.trigger('pause');
+                            that.trigger('end');
+                        }
                     }
                 }
             });

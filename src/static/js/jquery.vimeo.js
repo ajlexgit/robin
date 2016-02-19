@@ -14,6 +14,15 @@
             // Видео готово к воспроизведению
             ready
 
+            // Видео начало воспроизводиться
+            play
+
+            // Видео перестало воспроизводиться
+            pause
+
+            // Видео закончилось
+            ended
+
         Пример:
             <div id="player"></div>
 
@@ -73,7 +82,8 @@
         cls.destroy = function() {
             this.stop();
             if (this.native) {
-                this.$frame.replaceWith(this._containerHTML);
+                this.$iframe.replaceWith(this._containerHTML);
+                this.$iframe = null;
                 this.native = null;
             }
             superclass.destroy.call(this);
@@ -88,7 +98,7 @@
                 params += '&autoplay=1';
             }
 
-            this.$frame = $('<iframe>').attr({
+            this.$iframe = $('<iframe>').attr({
                 src: ('//player.vimeo.com/video/' + this.opts.video + '?api=1' + params),
                 frameborder: '0',
                 webkitallowfullscreen: '',
@@ -96,15 +106,28 @@
                 allowfullscreen: ''
             });
             this._containerHTML = this.$container.prop('outerHTML');
-            this.$container.replaceWith(this.$frame);
+            this.$container.replaceWith(this.$iframe);
 
             if (!window.$f) {
                 return this.raise('$f is undefined');
             }
 
             var that = this;
-            this.native = $f(this.$frame.get(0));
+            this.native = $f(this.$iframe.get(0));
             this.native.addEvent('ready', function() {
+                that.native.addEvent('play', function() {
+                    that.trigger('play');
+                });
+                that.native.addEvent('pause', function() {
+                    that.trigger('pause');
+                });
+                that.native.addEvent('finish', function() {
+                    that.trigger('ended');
+                });
+
+                if (that.opts.autoplay) {
+                    that.trigger('play');
+                }
                 that.trigger('ready');
             });
         };
