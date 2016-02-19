@@ -35,7 +35,7 @@
             </div>
 
             $(document).ready(function() {
-                $('#text-block').expander();
+                Expander('#text-block');
             });
      */
 
@@ -198,12 +198,5 @@
             })
         };
     });
-
-
-    $.fn.expander = function(options) {
-        return this.each(function() {
-            window.Expander(this, options);
-        })
-    }
 
 })(jQuery);

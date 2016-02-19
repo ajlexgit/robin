@@ -8,10 +8,12 @@
             jquery.utils.js, media_inspector.js
 
         Параметры:
-            strategy          - метод перемещения блока ("margin" или "fixed")
-            topOffset         - расстояние от верха окна до ползающего блока
-            bottomOffset      - расстояние от низа родительского блока до ползающего блока
-            minEnabledWidth   - минимальная ширина экрана, при которой блок перемещается
+            strategy        - метод перемещения блока ("margin" или "fixed")
+            topOffset       - расстояние от верха окна до ползающего блока
+            bottomOffset    - расстояние от низа родительского блока до ползающего блока
+            minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
+
+            onInit          - функция, выполняемая после инициализации объекта.
 
         События:
             // Инициализация объекта
@@ -42,7 +44,9 @@
             strategy: cls.STRATEGY_FIXED,
             topOffset: 0,
             bottomOffset: 0,
-            minEnabledWidth: 768
+            minEnabledWidth: 768,
+
+            onInit: $.noop
         };
 
         cls.DATA_KEY = 'sticky';
@@ -95,6 +99,7 @@
 
             this.$block.data(this.DATA_KEY, this);
 
+            this.opts.onInit.call(this);
             this.trigger('init');
 
             $.mediaInspector.check(this.$block);

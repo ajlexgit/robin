@@ -25,7 +25,9 @@
                 <input type="number" value="1">
             </div>
 
-            $('.custom-counter').counter()
+            $('.custom-counter').each(function() {
+                CustomCounter(this);
+            });
     */
 
     window.CustomCounter = Class(EventedObject, function CustomCounter(cls, superclass) {
@@ -233,12 +235,5 @@
             return this;
         };
     });
-
-
-    $.fn.counter = function(options) {
-        return this.each(function() {
-            window.CustomCounter(this, options);
-        })
-    }
 
 })(jQuery);

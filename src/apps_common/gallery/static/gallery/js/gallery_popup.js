@@ -14,6 +14,7 @@
         Параметры:
             previews: str / jquery       - превью-элементы галереи
             activePreview: DOM / index   - DOM-элемент или индекс начальной картинки
+            keyboard: true / false       - прокручивать галерею стрелками (плохо для видео)
 
 
         У превью-элементов картинок обязателен атрибут data-src.
@@ -55,7 +56,8 @@
             videoPlayingClass: 'playing',
 
             previews: '',
-            activePreview: 0
+            activePreview: 0,
+            keyboard: false
         });
 
         cls.OVERLAY_ID = 'gallery-popup-overlay';
@@ -221,14 +223,16 @@
             this.slider.slideTo($activeSlide, 'instant');
 
             // нажатие стрелок на клавиатуре
-            var that = this;
-            $(document).on('keyup.popup', function(event) {
-                if (event.which == 39) {
-                    that.slider.slideNext('side');
-                } else if (event.which == 37) {
-                    that.slider.slidePrevious('side');
-                }
-            });
+            if (this.opts.keyboard) {
+                var that = this;
+                $(document).on('keyup.popup', function(event) {
+                    if (event.which == 39) {
+                        that.slider.slideNext('side');
+                    } else if (event.which == 37) {
+                        that.slider.slidePrevious('side');
+                    }
+                });
+            }
         };
 
         /*

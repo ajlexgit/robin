@@ -10,6 +10,7 @@
             strategy        - стратегия перемещения блока (top / transform)
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
+            onInit          - функция, выполняемая после инициализации объекта.
             calcOffset      - функция, рассчитывающая смещение блока.
                               Если вернет false - блок останется на месте.
 
@@ -22,6 +23,9 @@
             // Перемещение начинается от точки, когда контейнер становится видимым
 
             $('.layer').layer({
+                onInit: function() {
+                    this.$ctnr = $('#ctnr');
+                },
                 calcOffset: function(win_scroll) {
                     var ctnr_top = this.$ctnr.offset().top;
                     var ctnr_height = this.$ctnr.outerHeight();
@@ -36,8 +40,6 @@
                         return false;
                     }
                 }
-            }).on('init', function() {
-                this.$ctnr = $('#ctnr');
             })
 
      */
@@ -57,6 +59,7 @@
             strategy: cls.STRATEGY_TOP,
             minEnabledWidth: 768,
 
+            onInit: $.noop,
             calcOffset: function(win_scroll) {
                 return this._initial + parseInt(0.5 * win_scroll)
             }
@@ -122,6 +125,7 @@
 
             this.$block.data(this.DATA_KEY, this);
 
+            this.opts.onInit.call(this);
             this.trigger('init');
 
             $.mediaInspector.check(this.$block);

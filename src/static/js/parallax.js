@@ -13,6 +13,8 @@
             bgHeight        - высота фоновой картинки в процентах относительно высоты блока (>= 100)
             minEnabledWidth - минимальная ширина экрана, при которой элемент перемещается
 
+            onInit          - функция, выполняемая после инициализации объекта.
+
         События:
             // Инициализация объекта
             init
@@ -40,7 +42,9 @@
             selector: '.parallax',
             easing: 'easeInOutQuad',
             bgHeight: 150,
-            minEnabledWidth: 768
+            minEnabledWidth: 768,
+
+            onInit: $.noop
         };
 
         cls.DATA_KEY = 'parallax';
@@ -138,6 +142,7 @@
 
             this.$block.data(this.DATA_KEY, this);
 
+            this.opts.onInit.call(this);
             this.trigger('init');
 
             $.mediaInspector.check(this.$block);
