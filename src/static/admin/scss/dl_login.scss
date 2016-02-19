@@ -33,6 +33,7 @@
       color: #2C3035;
       text-align: center;
       background: none;
+      text-shadow: none;
       @include font-size(24px, 28px);
       @include media_interval(0, $media768) {
         margin-bottom: 20px;
@@ -95,6 +96,10 @@
         @include font-size(16px, 16px);
         @include media_interval(0, $media480) {
           padding: 6px 12px 8px;
+        }
+
+        &:hover {
+          background: lighten(#3991C9, 5%);
         }
       }
     }

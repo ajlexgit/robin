@@ -1,6 +1,7 @@
 import os
 import sys
 
+# admin move inlines animation
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # права на поля и блоки
 # expander by jQuery + events

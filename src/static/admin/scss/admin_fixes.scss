@@ -5,6 +5,11 @@ body {
   @include font-size(14px);
 }
 
+// небольшое увеличение полей
+.input-mini {
+  width: 70px;
+}
+
 input[type=number] {
     -moz-appearance: textfield;
 }
@@ -152,7 +157,7 @@ select, input[type="file"] {
 }
 
 // правка Google-карты
-.gm-styles {
+.gm-style {
   line-height: normal;
 }
 
