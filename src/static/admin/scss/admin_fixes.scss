@@ -14,7 +14,7 @@ body {
     @include font-size(14px);
   }
 
-  select, textarea, input[type="text"], input[type="password"],
+  select, input[type="text"], input[type="password"],
   input[type="datetime"], input[type="datetime-local"],
   input[type="date"], input[type="month"], input[type="time"],
   input[type="week"], input[type="number"], input[type="email"],
@@ -146,9 +146,19 @@ td, th {
 }
 
 // уменьшаем столбец с заголовками полей
+label {
+  @include font-size(13px);
+}
+
+.form-horizontal .control-group:first-child .control-label,
+.form-horizontal .control-group:first-of-type .control-label {
+  padding-top: 16px;
+}
+
 .form-horizontal .control-group .control-label {
   min-width: 100px;
 }
+
 .form-horizontal .inline-related h3 b {
   min-width: 130px;
 }
@@ -198,10 +208,6 @@ select, input[type="file"] {
 */
 .nav-tabs-suit li a {
   @include font-size(14px);
-}
-
-
-label {
-  @include font-size(12px);
+  @include box-shadow(none);
 }
 
