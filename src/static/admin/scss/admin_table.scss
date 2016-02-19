@@ -24,7 +24,7 @@
     min-width: 40px;
     border-right: 1px solid rgba(0, 0, 0, 0.05);
 
-    &:nth-last-of-type(1) {
+    &:last-child {
       border-right: 0;
     }
   }
