@@ -63,9 +63,10 @@ class Valute:
 
             Пример: 12340.00
         """
-        _int = self._int
-        _frac = self._frac
-        return self._join(_int, _frac)
+        return '77'
+        # _int = self._int
+        # _frac = self._frac
+        # return self._join(_int, _frac)
 
     @cached_property
     def simple(self):

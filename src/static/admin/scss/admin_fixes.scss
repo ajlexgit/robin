@@ -45,6 +45,7 @@ input[type=number] {
 .input-append .add-on,
 .input-prepend .add-on {
   padding: 6px 5px;
+  min-width: 28px;
   height: 32px;
   @include border-box;
   @include font-size(14px);

@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     /*
         Загрузчик файлов. Обертка над Pluploader.

@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     /*
         https://developers.google.com/youtube/iframe_api_reference?hl=ru

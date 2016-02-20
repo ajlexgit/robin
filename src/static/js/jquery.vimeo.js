@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     /*
         https://developer.vimeo.com/player/js-api

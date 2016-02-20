@@ -3,6 +3,7 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from gallery import *
+from libs.valute_field.fields import ValuteField
 
 
 class ImageItem(GalleryImageItem):
@@ -66,6 +67,7 @@ class Gallery(GalleryBase):
 class MainPageConfig(SingletonModel):
     """ Главная страница """
     gallery = GalleryField(Gallery, verbose_name=_('gallery'), blank=True, null=True)
+    price = ValuteField(_('price'))
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 

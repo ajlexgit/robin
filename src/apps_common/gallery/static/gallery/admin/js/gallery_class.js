@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     var formatError = function(file, message, html) {
         var nl = html ? '<br>' : '\n';

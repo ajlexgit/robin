@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     window.SliderControlsPlugin = Class(SliderPlugin, function SliderControlsPlugin(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {

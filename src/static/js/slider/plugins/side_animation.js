@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     window.SliderSideAnimation = Class(SliderPlugin, function SliderSideAnimation(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {

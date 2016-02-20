@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     window.SliderAutoscrollPlugin = Class(SliderPlugin, function SliderAutoscrollPlugin(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {

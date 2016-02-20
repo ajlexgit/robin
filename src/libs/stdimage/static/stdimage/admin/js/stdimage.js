@@ -1,5 +1,5 @@
 (function($) {
-
+    'use strict';
 
     var StdImage = Class(Object, function StdImage(cls, superclass) {
         var MIN_WIDTH_ERROR = gettext('Image should not be less than %(limit)spx in width');

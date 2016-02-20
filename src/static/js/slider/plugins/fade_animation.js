@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     window.SliderFadeAnimation = Class(SliderPlugin, function SliderFadeAnimation(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {

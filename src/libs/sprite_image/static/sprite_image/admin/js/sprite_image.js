@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     var SpriteImage = Class(Object, function SpriteImage(cls, superclass) {
         cls.DATA_KEY = 'sprite_image';

@@ -1,4 +1,5 @@
 (function($) {
+    'use strict';
 
     window.SliderDragPlugin = Class(SliderPlugin, function SliderDragPlugin(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
