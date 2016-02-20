@@ -32,28 +32,37 @@ class SASSCCompiler(SubProcessCompiler):
         if content:
             content = smart_bytes(content)
         stdout, stderr = pipe.communicate(content)
+
         if isinstance(stderr, bytes):
             try:
                 stderr = stderr.decode()
             except UnicodeDecodeError:
                 pass
+
         if stderr.strip():
             raise CompilerError(stderr)
+
         if self.verbose:
             print(stderr)
+
         if pipe.returncode != 0:
             raise CompilerError("Command '{0}' returned non-zero exit status {1}".format(command, pipe.returncode))
+
         return stdout
 
     def compile_file(self, infile, outfile, outdated=False, force=False):
-        command = "%s %s %s > %s" % (
+        command = "%s %s %s" % (
             settings.PIPELINE_SASS_BINARY,
             settings.PIPELINE_SASS_ARGUMENTS,
-            infile,
-            outfile
+            infile
         )
         try:
-            return self.execute_command(command, cwd=os.path.dirname(infile))
+            output = self.execute_command(command, cwd=os.path.dirname(infile))
         except CompilerError:
             print('CompilerError at file: %s' % infile)
             raise
+        else:
+            output = output.decode('utf-8-sig')
+            with open(outfile, 'w+') as f:
+                f.write(output)
+
