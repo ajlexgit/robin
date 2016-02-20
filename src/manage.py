@@ -1,6 +1,7 @@
 import os
 import sys
 
+# valute __str__ utf
 # JS dates
 # admin move inlines animation
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU

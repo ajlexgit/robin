@@ -44,11 +44,10 @@ input[type=number] {
 // правка полей EnclosedInput
 .input-append .add-on,
 .input-prepend .add-on {
-  height: 22px;
-
-  i {
-    margin-top: 4px;
-  }
+  padding: 6px 5px;
+  height: 32px;
+  @include border-box;
+  @include font-size(14px);
 }
 
 // не ограниченная высота textarea
