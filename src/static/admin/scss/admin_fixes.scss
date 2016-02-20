@@ -41,6 +41,16 @@ input[type=number] {
   margin: 7px 7px 0 0;
 }
 
+// правка полей EnclosedInput
+.input-append .add-on,
+.input-prepend .add-on {
+  height: 22px;
+
+  i {
+    margin-top: 4px;
+  }
+}
+
 // не ограниченная высота textarea
 textarea.autosize {
   height: auto;
@@ -77,17 +87,22 @@ td, th {
   }
 }
 
-// минимальная ширина для столбца чекбоксов
+// минимальная ширина для столбца чекбоксов + смена фона
 .table thead th {
   line-height: 1.1;
+  @include linear-gradient(to bottom, #F4F4F4, #EAEAEA);
 
   &.sorted {
-    @include linear-gradient(to bottom, #F0F0F0, #DADADA);
+    @include linear-gradient(to bottom, #F2F2F2, #E0E0E0);
   }
 
   &.action-checkbox-column {
     width: 1%;
   }
+}
+
+.inline-group .tabular table.table tr.add-row td {
+  @include linear-gradient(to bottom, #F4F4F4, #EAEAEA);
 }
 
 // не помню для чего, но что-то с CKEditor
@@ -164,6 +179,7 @@ label {
 }
 
 .form-horizontal .control-group .control-label {
+  padding-top: 12px;
   min-width: 100px;
 }
 
