@@ -4,7 +4,6 @@ import sys
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # права на поля и блоки
 # text-ellipsis: https://css-tricks.com/line-clampin/
-# Susy
 # Angular-like
 # Parallax наизнанку
 # виджет выбора ссылки на сущность
