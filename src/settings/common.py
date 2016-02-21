@@ -207,15 +207,11 @@ PIPELINE_CSS = {
     },
 }
 PIPELINE_JS = {
-    'head_core': {
+    'core': {
         'source_filenames': (
             'js/jquery-2.1.4.min.js',
             'js/jquery-ui-effects.js',
-        ),
-        'output_filename': 'js/head_core.js',
-    },
-    'core': {
-        'source_filenames': (
+
             'common/js/jquery.cookie.js',
             'common/js/jquery.utils.js',
             'common/js/jquery.ajax_csrf.js',

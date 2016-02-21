@@ -13,31 +13,25 @@
   <meta name="keywords" content="{{ request.seo.keywords }}"/>
   <meta name="description" content="{{ request.seo.description }}"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% opengraph %}
   {% block extra_meta %}{% endblock extra_meta %}
+
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
+
+  {# === STYLES === #}
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
+  {% stylesheet 'head_core' %}
+
+  {# === SCRIPTS === #}
   <script>
     var docElement = document.documentElement;
     docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
-  </script>
-  <script src="{% url 'jsi18n' %}"></script>
-
-  <!--[if lte IE 9]>
-    <script type="text/javascript" src="{% static 'polyfills/es5_polyfill.js' %}"></script>
-  <![endif]-->
-  <script>
-      // for Picturefill.js
-      document.createElement( "picture" );
+    document.createElement("picture");
   </script>
   <script src="{% static 'polyfills/jquery.picturefill.min.js' %}" async></script>
 
-  {% opengraph %}
-
-  {% javascript 'head_core' %}
-  {% stylesheet 'head_core' %}
-  {% block static_head %}
-  {% endblock static_head %}
+  {% block static_head %}{% endblock static_head %}
 
   {% seo_counters 'head' %}
 </head>
@@ -88,15 +82,35 @@
     {% endblock footer %}
   </div>
 
+
+  <script>
+    window.loadJS = function(src, async) {
+      var script = document.createElement('script');
+      script.src = src;
+      script.async = async || false;
+      document.body.appendChild(script);
+    };
+
+    window.loadJS("{% url 'jsi18n' %}");
+  </script>
+
+  <!--[if lte IE 9]>
+    <script>
+        window.loadJS("{% static 'polyfills/es5_polyfill.js' %}");
+    </script>
+  <![endif]-->
+
   {% block static_js %}
     {% js_storage_out %}
     {% javascript 'core' %}
   {% endblock static_js %}
 
   <!--[if lte IE 9]>
-    <script type="text/javascript" src="{% static 'polyfills/respond.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'polyfills/polyfill.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'polyfills/svg2png.js' %}"></script>
+    <script>
+        window.loadJS("{% static 'polyfills/respond.min.js' %}");
+        window.loadJS("{% static 'polyfills/polyfill.min.js' %}");
+        window.loadJS("{% static 'polyfills/svg2png.js' %}");
+    </script>
   <![endif]-->
 
   {% seo_counters 'body_bottom' %}
