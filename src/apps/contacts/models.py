@@ -59,7 +59,7 @@ class Message(models.Model):
     name = models.CharField(_('name'), max_length=128)
     phone = models.CharField(_('phone'), max_length=32, blank=True)
     email = models.EmailField(_('e-mail'), blank=True)
-    message = models.TextField(_('message'), max_length=1536)
+    message = models.TextField(_('message'), max_length=2048)
     date = models.DateTimeField(_('date'), default=now, editable=False)
     referer = models.CharField(_('from page'), max_length=255, blank=True, editable=False)
 
