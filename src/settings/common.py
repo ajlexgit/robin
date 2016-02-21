@@ -142,7 +142,7 @@ SUIT_CONFIG = {
 
 # Pipeline
 PIPELINE_CSS = {
-    'head_core': {
+    'core': {
         'source_filenames': (
             'scss/grid.scss',
             'scss/layout.scss',
