@@ -101,7 +101,7 @@ class AttachableReference(models.Model):
         help_text=_('wraps block with &lt;!--noidex--&gt;')
     )
     ajax = models.BooleanField(_('AJAX load'), default=False,
-        help_text=_('load block with AJAX')
+        help_text=_('load block through AJAX')
     )
 
     set_name = models.CharField(_('set name'), max_length=32, default='default')

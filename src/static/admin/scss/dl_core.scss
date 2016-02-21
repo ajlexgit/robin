@@ -154,6 +154,10 @@ $footer_1col: $media480;
   @include font-size(16px);
 }
 
+// правка сообщений
+.alert {
+  margin: 10px 20px 0;
+}
 
 // стилизация кнопок
 .btn {

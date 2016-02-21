@@ -218,6 +218,7 @@
                 zIndex: this.opts.zIndex
             }).find('input').css({
                 zIndex: this.opts.zIndex,
+                textIndent: '100%',
                 cursor: 'pointer'
             });
         };
