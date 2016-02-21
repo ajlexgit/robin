@@ -70,12 +70,6 @@
     .slider-item ~ .slider-item {
       display: none;
     }
-
-    // чтоб не было видно уменьшение картинки
-    // до того, как отрабатывает JS
-    .slider-item:first-child {
-      max-width: 100%;
-    }
   }
 
   // после загрузки JS
