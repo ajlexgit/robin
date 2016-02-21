@@ -166,6 +166,7 @@ td, th {
 .form-horizontal .inline-group .add-row,
 .inline-group .tabular table.table tr.add-row td {
   @include box-shadow(none);
+  @include linear-gradient(to bottom, #F3F3F3, #E5E5E5);
 }
 
 // уменьшаем столбец с заголовками полей
