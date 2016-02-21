@@ -376,29 +376,30 @@ SCC_DISABLED_URLS = [
 ]
 
 #   Форматы вывода валют ValuteField в зависимости от языка
-#    decimal_places   - кол-во чисел после запятой
-#    decimal_mark     - разделитель целого и частного
-#    thousands        - разделитель тысячных разрядов
-#    utf_format       - формат с использованием UTF-символов
-#    alternate_format - формат без использования UTF-символов
+#    decimal_places     - кол-во чисел после запятой
+#    decimal_mark       - разделитель целого и частного
+#    thousands          - разделитель тысячных разрядов
+#    trail              - удалять дробные нули
+#    utf_format         - формат с использованием UTF-символов
+#    alternative_format - формат без использования UTF-символов
 VALUTE_FORMATS = {
     ('ru',): {
         'decimal_places': 2,
         'decimal_mark': '.',
         'thousands': ' ',
+        'trail': True,
 
-        'trailed_format': True,
         'utf_format': '{}\u20bd',
-        'alternate_format': '{} руб.',
+        'alternative_format': '{} руб.',
     },
     ('en',): {
         'decimal_places': 2,
         'decimal_mark': '.',
         'thousands': ',',
+        'trail': False,
 
-        'trailed_format': False,
         'utf_format': '${}',
-        'alternate_format': '${}',
+        'alternative_format': '${}',
     }
 }
 

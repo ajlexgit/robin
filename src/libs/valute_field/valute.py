@@ -55,13 +55,12 @@ class Valute:
     # ===========
 
     def __str__(self):
-        """
-            Без символа валюты,
-            без удаления финальных нулей,
-            без разделения на разряды
-            с разделителем целого и дробного
+        return self.utf
 
-            Пример: 12340.00
+    @cached_property
+    def as_string(self):
+        """
+            Для виджета
         """
         _int = self._int
         _frac = self._frac
@@ -73,7 +72,6 @@ class Valute:
             Без символа валюты,
             без удаления финальных нулей,
             с разделением на разряды
-            с разделителем целого и дробного
 
             Пример: 12 340.00
         """
@@ -87,7 +85,6 @@ class Valute:
             Без символа валюты,
             c удалением финальных нулей,
             с разделением на разряды
-            с разделителем целого и дробного
 
             Пример: 12 340
         """
@@ -101,11 +98,10 @@ class Valute:
             С символом валюты,
             c удалением финальных нулей (конфиг),
             с разделением на разряды
-            с разделителем целого и дробного
 
             Пример: 12,340.00 Р
         """
-        if self._formatter['trailed_format']:
+        if self._formatter['trail']:
             value = self.trailed
         else:
             value = self.simple
@@ -113,21 +109,20 @@ class Valute:
         return self._formatter['utf_format'].format(value)
 
     @cached_property
-    def alternate(self):
+    def alternative(self):
         """
             С символом валюты (без UTF),
             c удалением финальных нулей (конфиг),
             с разделением на разряды
-            с разделителем целого и дробного
 
             Пример: 12,340.00 руб
         """
-        if self._formatter['trailed_format']:
+        if self._formatter['trail']:
             value = self.trailed
         else:
             value = self.simple
 
-        return self._formatter['alternate_format'].format(value)
+        return self._formatter['alternative_format'].format(value)
 
 
     # ===========

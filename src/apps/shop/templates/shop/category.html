@@ -24,7 +24,7 @@
         <li>
           <a href="{{ product.get_absolute_url }}" class="product-link">
             <img src="{{ product.photo.admin_micro.url }}"/>
-            {{ product.title }} ({{ product.price.utf }})
+            {{ product.title }} ({{ product.price }})
           </a>
         </li>
       {% endfor %}

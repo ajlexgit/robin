@@ -12,8 +12,8 @@
   {% for record in order.records.all %}
     <tr>
       <td>{{ record.product.title }}</td>
-      <td>{{ record.order_price.alternate }} x {{ record.count }}</td>
-      <td>{{ record.total_cost.alternate }}</td>
+      <td>{{ record.order_price.alternative }} x {{ record.count }}</td>
+      <td>{{ record.total_cost.alternative }}</td>
     </tr>
   {% endfor %}
 
@@ -23,12 +23,12 @@
 
   <tr>
     <td>{% trans 'Products cost' %}</td>
-    <td colspan="2">{{ order.products_cost.alternate }}</td>
+    <td colspan="2">{{ order.products_cost.alternative }}</td>
   </tr>
 
   <tr>
     <td><em>{% trans 'Total cost' %}</em></td>
-    <td colspan="2"><b><em>{{ order.total_cost.alternate }}</em></b></td>
+    <td colspan="2"><b><em>{{ order.total_cost.alternative }}</em></b></td>
   </tr>
 </table>
 

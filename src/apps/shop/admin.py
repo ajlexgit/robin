@@ -186,7 +186,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     actions = ('action_hide', 'action_show')
     list_display = (
         'view', 'micropreview', '__str__', 'serial', 'category_link',
-        'price_alternate', 'is_visible',
+        'price_alternative', 'is_visible',
     )
     search_fields = ('title', 'category__title')
     list_display_links = ('micropreview', '__str__', )
@@ -214,10 +214,10 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     category_link.short_description = _('Category')
     category_link.allow_tags = True
 
-    def price_alternate(self, obj):
-        return '<nobr>%s</nobr>' % obj.price.alternate
-    price_alternate.allow_tags = True
-    price_alternate.short_description = _('Price')
+    def price_alternative(self, obj):
+        return '<nobr>%s</nobr>' % obj.price.alternative
+    price_alternative.allow_tags = True
+    price_alternative.short_description = _('Price')
 
     def action_hide(self, request, queryset):
         queryset.update(is_visible=False)
@@ -389,12 +389,12 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
             return {'class': 'success'}
 
     def fmt_products_cost(self, obj):
-        return obj.products_cost.alternate
+        return obj.products_cost.alternative
     fmt_products_cost.short_description = _('Products cost')
     fmt_products_cost.admin_order_field = 'products_cost'
 
     def fmt_total_cost(self, obj):
-        return obj.total_cost.alternate
+        return obj.total_cost.alternative
     fmt_total_cost.short_description = _('Total cost')
 
     def has_add_permission(self, request):

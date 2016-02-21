@@ -1,5 +1,6 @@
 from django.db import models
 from django.core import exceptions
+from django.core.validators import MinValueValidator
 from .valute import Valute
 
 DEFAULT_MAX_DIGITS = 18
@@ -7,6 +8,10 @@ DEFAULT_DECIMAL_PLACES = 2
 
 
 class ValuteField(models.DecimalField):
+    default_validators = [
+        MinValueValidator(0),
+    ]
+
     def __init__(self, *args, **kwargs):
         kwargs['default'] = 0
         kwargs['max_digits'] = DEFAULT_MAX_DIGITS

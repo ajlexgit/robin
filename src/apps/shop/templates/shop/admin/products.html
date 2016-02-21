@@ -27,13 +27,13 @@
             {{ order_product.product.serial }}
           </td>
           <td style="font-size: 14px; font-weight: bold; white-space: nowrap">
-            {{ order_product.order_price.alternate }}
+            {{ order_product.order_price.alternative }}
           </td>
           <td style="font-size: 14px; font-weight: bold;">
             {{ order_product.count }}
           </td>
           <td style="font-size: 14px; font-weight: bold; white-space: nowrap">
-            {{ order_product.total_cost.alternate }}
+            {{ order_product.total_cost.alternative }}
           </td>
         </tr>
       {% endfor %}
@@ -45,7 +45,7 @@
           {% trans 'Total cost of products' %}
         </td>
         <td style="font-size: 15px; font-weight: bold; color: green; white-space: nowrap">
-          {{ entity.products_cost.alternate }}
+          {{ entity.products_cost.alternative }}
         </td>
       </tr>
       <tr>
@@ -53,7 +53,7 @@
           {% trans 'Total' %}
         </td>
         <td style="font-size: 18px; font-weight: bold; color: green; white-space: nowrap">
-          {{ entity.total_cost.alternate }}
+          {{ entity.total_cost.alternative }}
         </td>
       </tr>
     </tfoot>
