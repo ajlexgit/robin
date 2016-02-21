@@ -236,7 +236,7 @@ html[dir="rtl"] .select2-container .select2-choice .select2-arrow b {
     width: 100%;
     height: auto !important;
     min-height: 26px;
-    padding: 4px 20px 4px 5px;
+    padding: 4px 20px 4px 5px !important;
     margin: 0;
 
     outline: 0;
