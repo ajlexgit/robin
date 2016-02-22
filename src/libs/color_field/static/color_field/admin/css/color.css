@@ -1,4 +1,4 @@
-.form-horizontal .colorfield-preview {
-    padding: 1px 3px;
-    height: 24px;
+body .form-horizontal .colorfield-preview {
+    padding: 0 2px;
+    height: 30px;
 }
