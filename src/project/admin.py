@@ -9,7 +9,7 @@ from libs.valute_field import ValuteField, ValuteFormField
 from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
 
 
-class ModelAdminInlineMixin:
+class BaseModelAdminMixin:
     formfield_overrides = {
         models.CharField: {
             'widget': forms.TextInput(attrs={
@@ -18,7 +18,7 @@ class ModelAdminInlineMixin:
         },
         models.EmailField: {
             'widget': forms.EmailInput(attrs={
-                'class': 'full-width',
+                'class': 'input-xlarge',
             })
         },
         models.URLField: {
@@ -55,13 +55,71 @@ class ModelAdminInlineMixin:
         },
     }
 
+    # поля, которые отображаются только для суперюзера
+    superuser_fields = ()
 
-class ModelAdminMixin(ModelAdminInlineMixin):
+    # поля, которые может редактировать только суперюзер.
+    # Для других, поля будут readonly
+    superuser_editable_fields = ()
+
+    def get_readonly_fields(self, request, obj=None):
+        """
+            Блокировка полей, перечисленных в superuser_editable
+        """
+        fields = super().get_readonly_fields(request, obj)
+        if not request.user.is_superuser:
+            fields = tuple(fields) + tuple(self.superuser_editable_fields)
+        return fields
+
+    def get_fields(self, request, obj=None):
+        """
+            Скрытие полей, перечисленных в superuser_fields
+        """
+        fields = super().get_fields(request, obj)
+        if not request.user.is_superuser:
+            fields = [field for field in fields if field not in self.superuser_fields]
+        return fields
+
+    def get_fieldsets(self, request, obj=None):
+        """
+            Скрытие полей, перечисленных в superuser_fields
+        """
+        fieldsets = super().get_fieldsets(request, obj)
+        if not request.user.is_superuser:
+            for name, opts in fieldsets:
+                opts['fields'] = tuple(field for field in opts['fields'] if field not in self.superuser_fields)
+        return fieldsets
+
+
+class ModelAdminInlineMixin(BaseModelAdminMixin):
+    pass
+
+
+class ModelAdminMixin(BaseModelAdminMixin):
     actions_on_top = True
     actions_on_bottom = True
 
     add_form_template = 'suit/change_form.html'
     change_form_template = 'suit/change_form.html'
+
+    @property
+    def media(self):
+        return super().media + forms.Media(
+            js=(
+                'admin/js/jquery-ui.min.js',
+                'common/js/jquery.cookie.js',
+                'common/js/jquery.ajax_csrf.js',
+                'common/js/jquery.mousewheel.js',
+                'common/js/jquery.utils.js',
+                'common/js/file_dropper.js',
+                'admin/js/button_filter.js',
+            ),
+            css={
+                'all': (
+                    'admin/css/jquery-ui/jquery-ui.min.css',
+                )
+            }
+        )
 
     def suit_cell_attributes(self, obj, column):
         """ Классы для ячеек списка """
@@ -93,22 +151,3 @@ class ModelAdminMixin(ModelAdminInlineMixin):
         return '<span>-//-</span>'
     view.short_description = '#'
     view.allow_tags = True
-
-    @property
-    def media(self):
-        return super().media + forms.Media(
-            js = (
-                'admin/js/jquery-ui.min.js',
-                'common/js/jquery.cookie.js',
-                'common/js/jquery.ajax_csrf.js',
-                'common/js/jquery.mousewheel.js',
-                'common/js/jquery.utils.js',
-                'common/js/file_dropper.js',
-                'admin/js/button_filter.js',
-            ),
-            css = {
-                'all': (
-                    'admin/css/jquery-ui/jquery-ui.min.css',
-                )
-            }
-        )

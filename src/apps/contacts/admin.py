@@ -5,7 +5,7 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
 from suit.admin import SortableModelAdmin
-from project.admin import ModelAdminMixin
+from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.description import description
@@ -17,7 +17,7 @@ class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
-class MessageRecieverAdmin(admin.TabularInline):
+class MessageRecieverAdmin(ModelAdminInlineMixin, admin.TabularInline):
     """ Инлайн получалей сообщений """
     model = MessageReciever
     extra = 0
