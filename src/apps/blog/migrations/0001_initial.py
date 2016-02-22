@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import ckeditor.fields
-import django.utils.timezone
 import libs.autoslug
+import django.utils.timezone
 import libs.media_storage
+import ckeditor.fields
 import libs.stdimage.fields
 
 
@@ -18,9 +18,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BlogConfig',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('header', models.CharField(verbose_name='header', max_length=255)),
-                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
+                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('header', models.CharField(max_length=255, verbose_name='header')),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
             ],
             options={
                 'verbose_name': 'Settings',
@@ -29,27 +29,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BlogPost',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('title', models.CharField(verbose_name='title', max_length=255)),
-                ('slug', libs.autoslug.AutoSlugField(unique=True, verbose_name='slug', populate_from=('title',))),
+                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=255, verbose_name='title')),
+                ('slug', libs.autoslug.AutoSlugField(unique=True, populate_from=('title',), verbose_name='slug')),
                 ('note', models.TextField(verbose_name='note')),
                 ('text', ckeditor.fields.CKEditorUploadField(verbose_name='text')),
                 ('date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='publication date')),
-                ('status', models.IntegerField(default=1, verbose_name='status', choices=[(1, 'Draft'), (2, 'Public')])),
-                ('preview', libs.stdimage.fields.StdImageField(aspects=('normal',), min_dimensions=(900, 500), variations={'admin': {'size': (450, 250)}, 'normal': {'size': (900, 500)}, 'mobile': {'size': (540, 300)}}, blank=True, storage=libs.media_storage.MediaStorage('blog/preview'), verbose_name='preview', upload_to='')),
-                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
+                ('status', models.IntegerField(choices=[(1, 'Draft'), (2, 'Public')], default=1, verbose_name='status')),
+                ('preview', libs.stdimage.fields.StdImageField(blank=True, upload_to='', aspects=('normal',), variations={'admin': {'size': (450, 250)}, 'normal': {'size': (900, 500)}, 'mobile': {'size': (540, 300)}}, min_dimensions=(900, 500), storage=libs.media_storage.MediaStorage('blog/preview'), verbose_name='preview')),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
             ],
             options={
+                'ordering': ('-date', '-id'),
                 'verbose_name_plural': 'Posts',
                 'verbose_name': 'Post',
-                'ordering': ('-date', '-id'),
             },
         ),
         migrations.CreateModel(
             name='PostTag',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('post', models.ForeignKey(verbose_name='post', to='blog.BlogPost')),
+                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('post', models.ForeignKey(to='blog.BlogPost', verbose_name='post')),
             ],
             options={
                 'verbose_name': 'Tag',
@@ -59,9 +59,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('title', models.CharField(verbose_name='title', max_length=255)),
-                ('slug', libs.autoslug.AutoSlugField(unique=True, verbose_name='slug', populate_from=('title',))),
+                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=255, verbose_name='title')),
+                ('slug', libs.autoslug.AutoSlugField(unique=True, populate_from=('title',), verbose_name='slug')),
             ],
             options={
                 'verbose_name_plural': 'Tags',
@@ -71,12 +71,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='posttag',
             name='tag',
-            field=models.ForeignKey(verbose_name='tag', to='blog.Tag'),
+            field=models.ForeignKey(to='blog.Tag', verbose_name='tag'),
         ),
         migrations.AddField(
             model_name='blogpost',
             name='tags',
-            field=models.ManyToManyField(through='blog.PostTag', verbose_name='tags', to='blog.Tag', related_name='posts'),
+            field=models.ManyToManyField(related_name='posts', through='blog.PostTag', to='blog.Tag', verbose_name='tags'),
         ),
         migrations.AlterUniqueTogether(
             name='posttag',
