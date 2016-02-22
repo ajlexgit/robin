@@ -185,6 +185,7 @@ class GalleryImageItem(GalleryItemBase):
     class Meta:
         verbose_name = _('image item')
         verbose_name_plural = _('image items')
+        default_permissions = ()
         abstract = True
 
     def __init__(self, *args, **kwargs):
@@ -470,6 +471,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
     class Meta:
         verbose_name = _('video item')
         verbose_name_plural = _('video items')
+        default_permissions = ()
         abstract = True
 
     def __init__(self, *args, **kwargs):
@@ -656,6 +658,7 @@ class GalleryBase(models.Model):
     class Meta:
         verbose_name = _('gallery')
         verbose_name_plural = _('galleries')
+        default_permissions = ()
         abstract = True
 
     @classmethod

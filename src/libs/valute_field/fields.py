@@ -63,5 +63,9 @@ class ValuteField(models.DecimalField):
         except (TypeError, ValueError) as e:
             raise exceptions.ValidationError(e)
 
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
+
     def run_validators(self, value):
         return super().run_validators(value.as_decimal)

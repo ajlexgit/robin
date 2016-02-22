@@ -39,8 +39,8 @@ class PagePhoto(models.Model):
         ))
 
     class Meta:
-        verbose_name = _('image')
-        verbose_name_plural = _('images')
+        verbose_name = _('page photo')
+        verbose_name_plural = _('page photos')
         default_permissions = ('change', )
 
     def __str__(self):
@@ -79,8 +79,8 @@ class SimplePhoto(models.Model):
     )
 
     class Meta:
-        verbose_name = _('image')
-        verbose_name_plural = _('images')
+        verbose_name = _('simple photo')
+        verbose_name_plural = _('simple photos')
         default_permissions = ('change', )
 
     def __str__(self):
