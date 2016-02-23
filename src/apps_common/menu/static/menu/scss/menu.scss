@@ -97,6 +97,7 @@ $mobile_active_color: $menu_active_color;
     display: inline-block;
     padding: 5px;
     font-weight: bold;
+    vertical-align: top;
     @include font-size(22px, 28px);
 
     &:hover {
