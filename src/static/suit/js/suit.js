@@ -121,17 +121,23 @@
      * Content tabs
      */
     $.fn.suit_form_tabs = function () {
-
         var $tabs = $(this);
         var tab_prefix = $tabs.data('tab-prefix');
         if (!tab_prefix)
             return;
 
-        var $tab_links = $tabs.find('a');
-
         function tab_contents($link) {
             return $('.' + tab_prefix + '-' + $link.attr('href').replace('#', ''));
         }
+
+        var $tab_links = $tabs.find('a').filter(function() {
+            var $link = $(this);
+            if (tab_contents($link).length) {
+                return true
+            } else {
+                $link.remove();
+            }
+        });
 
         function activate_tabs() {
             // Init tab by error, by url hash or init first tab

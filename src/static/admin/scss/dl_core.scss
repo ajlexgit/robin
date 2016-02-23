@@ -148,7 +148,7 @@ $footer_1col: $media480;
 
 
 // стилизация хлебных крошек
-.breadcrumb {
+.breadcrumb, .breadcrumbs {
   padding: 20px;
   margin: 0;
   @include font-size(16px);
