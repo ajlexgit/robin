@@ -91,12 +91,18 @@
       document.body.appendChild(script);
     };
 
-    window.loadJS("{% url 'jsi18n' %}");
+    window.loadOnloadJS = function(src, async) {
+      window.addEventListener("load", function() {
+        window.loadJS(src, async);
+      }, false);
+    };
+
+    window.loadOnloadJS("{% url 'jsi18n' %}");
   </script>
 
   <!--[if lte IE 9]>
     <script>
-        window.loadJS("{% static 'polyfills/es5_polyfill.js' %}");
+        window.loadOnloadJS("{% static 'polyfills/es5_polyfill.js' %}");
     </script>
   <![endif]-->
 
@@ -107,9 +113,9 @@
 
   <!--[if lte IE 9]>
     <script>
-        window.loadJS("{% static 'polyfills/respond.min.js' %}");
-        window.loadJS("{% static 'polyfills/polyfill.min.js' %}");
-        window.loadJS("{% static 'polyfills/svg2png.js' %}");
+        window.loadOnloadJS("{% static 'polyfills/respond.min.js' %}");
+        window.loadOnloadJS("{% static 'polyfills/polyfill.min.js' %}");
+        window.loadOnloadJS("{% static 'polyfills/svg2png.js' %}");
     </script>
   <![endif]-->
 
