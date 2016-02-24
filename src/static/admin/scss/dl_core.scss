@@ -38,6 +38,25 @@ $footer_1col: $media480;
     }
   }
 
+  .logout {
+    display: inline-block;
+    margin: 0;
+    vertical-align: bottom;
+
+    button {
+      display: inline;
+      padding: 0;
+      color: white;
+      border: none;
+      background: none;
+      font-size: inherit;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   a {
     color: white;
   }

@@ -116,7 +116,10 @@
                   {% endif %}
                   <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a>
                   <span class="separator">|</span>
-                  <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+                  <form method="post" action="{% url 'admin:logout' %}" class="logout">
+                    {% csrf_token %}
+                    <button type="submit">{% trans 'Log out' %}</button>
+                  </form>
                 {% endblock %}
                 </span>
               </div>

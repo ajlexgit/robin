@@ -8,6 +8,7 @@ VZ_DIRECTORY = 'directlinedev.com'
 HOSTNAME = '%HOSTNAME%'
 
 SESSION_COOKIE_DOMAIN = '.%s' % DOMAIN
+CSRF_COOKIE_DOMAIN = '.%s' % DOMAIN
 
 # Метка %SECRET_KEY% при развёртывании заменяется на нужный секретный ключ
 SECRET_KEY = '%SECRET_KEY%'
