@@ -1,32 +1,42 @@
 @import 'mixins';
 
-
 // размеры окна
 $content_width: (
     ($media1024, 0): 260px,
     ($media640, $media1024): 250px,
     ($media480, $media640): 200px,
-    (0, $media480): 150px,
+    (0, $media480): 180px,
 );
-
 $content_height: (
     ($media1024, 0): 180px,
     ($media640, $media1024): 160px,
-    ($media480, $media640): 120px,
-    (0, $media480): 100px,
+    (0, $media640): 120px,
 );
 
 // размеры прелоадера
-$image_size: (
-    ($media1024, 0): 80px,
-    ($media640, $media1024): 70px,
-    ($media480, $media640): 60px,
-    (0, $media480): 50px,
-);
+$image_size: 50px;
 
 // цвет прелоадера
 $image_color: #82BD36;
+$border_color: #FFFFFF;
 
+@keyframes loading {
+  0% {
+    border: 0 solid $border_color;
+  }
+
+  20% {
+    border: 8px solid $border_color;
+    width: 0;
+    height: 0;
+  }
+
+  100% {
+    border: 8px solid $border_color;
+    width: 100%;
+    height: 100%;
+  }
+}
 
 #popup-container.popup-preloader {
   .popup-window {
@@ -38,14 +48,29 @@ $image_color: #82BD36;
     min-height: 0;
     text-align: center;
     @include valign_after;
-	  @include media_map(width, $content_width);
-	  @include media_map(height, $content_height);
+    @include media_map(width, $content_width);
+    @include media_map(height, $content_height);
   }
 
-  svg {
-    fill: $image_color;
+  .preloader {
+    position: relative;
+    display: inline-block;
+    width: $image_size;
+    height: $image_size;
+    z-index: 1;
     vertical-align: middle;
-	  @include media_map(width, $image_size);
-	  @include media_map(height, $image_size);
+    background-color: $image_color;
+    @include border_radius(50%);
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 0 solid $border_color;
+      animation: loading 1000ms ease-out forwards infinite;
+      @include border_radius(50%);
+      @include transform(translate(-50%, -50%));
+    }
   }
 }
