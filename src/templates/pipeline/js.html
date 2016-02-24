@@ -1,1 +1,1 @@
-<script>window.loadOnloadJS("{{ url }}", {{ async|yesno:"1,0" }})</script>
+<script{% if async %} async{% endif %} defer type="{{ type }}" src="{{ url }}" charset="utf-8"></script>

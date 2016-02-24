@@ -82,28 +82,8 @@
     {% endblock footer %}
   </div>
 
-
-  <script>
-    window.loadJS = function(src, async) {
-      var script = document.createElement('script');
-      script.src = src;
-      script.async = async || false;
-      document.body.appendChild(script);
-    };
-
-    window.loadOnloadJS = function(src, async) {
-      window.addEventListener("load", function() {
-        window.loadJS(src, async);
-      }, false);
-    };
-
-    window.loadOnloadJS("{% url 'jsi18n' %}");
-  </script>
-
   <!--[if lte IE 9]>
-    <script>
-        window.loadOnloadJS("{% static 'polyfills/es5_polyfill.js' %}");
-    </script>
+    <script src="{% static 'polyfills/es5_polyfill.js' %}" defer></script>
   <![endif]-->
 
   {% block static_js %}
@@ -112,11 +92,9 @@
   {% endblock static_js %}
 
   <!--[if lte IE 9]>
-    <script>
-        window.loadOnloadJS("{% static 'polyfills/respond.min.js' %}");
-        window.loadOnloadJS("{% static 'polyfills/polyfill.min.js' %}");
-        window.loadOnloadJS("{% static 'polyfills/svg2png.js' %}");
-    </script>
+    <script src="{% static 'polyfills/respond.min.js' %}" defer></script>
+    <script src="{% static 'polyfills/polyfill.min.js' %}" defer></script>
+    <script src="{% static 'polyfills/svg2png.js' %}" defer></script>
   <![endif]-->
 
   {% seo_counters 'body_bottom' %}
