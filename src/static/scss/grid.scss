@@ -5,6 +5,7 @@
   width: 100%;
   max-width: $grid_max_width;
   @include border-box;
+  @include background-clip(content-box);
   @include media_map(padding-left, $grid_paddings);
   @include media_map(padding-right, $grid_paddings);
   @include media_interval($grid_max_width, 0) {
@@ -23,6 +24,7 @@
   min-height: 1px;
   padding: 0 $grid_column_gap;
   @include border-box;
+  @include background-clip(content-box);
 }
 
 .gc-center {
