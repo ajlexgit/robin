@@ -270,6 +270,12 @@
 
             select2_object.data(item);
         }
+    }).on('delete-related', 'input.autocomplete_widget', function(event, objId) {
+        var $input = $(this);
+        var select2_object = $input.data('select2');
+        if (select2_object) {
+            select2_object.data(null);
+        }
     });
 
 })(jQuery);
