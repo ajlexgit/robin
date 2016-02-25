@@ -1,5 +1,5 @@
-#!/bin/sh
-# Example: ./restore_backup.sh ../backup/18_09_2015.zip
+#!/bin/bash
+# Example: ./restore_backup.sh ../backup/18_09_2015.zip ../
 
 archive=$1
 directory=$2
