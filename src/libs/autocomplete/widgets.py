@@ -60,7 +60,6 @@ class AutocompleteWidget(widgets.Widget):
         )
         css = {
             'all': (
-                'autocomplete/css/select2-bootstrap.css',
                 'autocomplete/css/select2.css',
             )
         }
@@ -69,7 +68,7 @@ class AutocompleteWidget(widgets.Widget):
                  minimum_input_length=2, format_item=None, close_on_select=True,
                  template='autocomplete/autocomplete.html'):
         default_attrs = {
-            'style': 'width: 250px',
+            'style': 'width: 300px',
             'placeholder': _('Search element'),
         }
         default_attrs.update(attrs or {})
@@ -170,6 +169,7 @@ class AutocompleteWidget(widgets.Widget):
 class AutocompleteMultipleWidget(AutocompleteWidget):
     def render(self, name, value, attrs=None):
         default_attrs = {
+            'style': 'width: 300px',
             'data-multiple': 1,
         }
         default_attrs.update(attrs or {})

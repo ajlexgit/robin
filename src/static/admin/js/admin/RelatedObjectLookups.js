@@ -128,7 +128,7 @@ function dismissAddRelatedObjectPopup(win, newId, newRepr) {
         }
         // Trigger a change event to update related links if required.
         django.jQuery(elem).trigger('change');
-        jQuery(elem).trigger('add-related', newId, newRepr);
+        jQuery(elem).trigger('change').trigger('add-related', [newId, newRepr]);
     } else {
         var toId = name + "_to";
         o = new Option(newRepr, newId);
@@ -150,8 +150,8 @@ function dismissChangeRelatedObjectPopup(win, objId, newRepr, newId) {
             this.value = newId;
         }
     });
-    selects.trigger('change', newId);
-    jQuery(selectsSelector).trigger('change-related', objId, newId, newRepr);
+    selects.trigger('change');
+    jQuery(selectsSelector).trigger('change').trigger('change-related', [objId, newRepr, newId]);
     win.close();
 }
 
@@ -164,10 +164,9 @@ function dismissDeleteRelatedObjectPopup(win, objId) {
         if (this.value == objId) {
             django.jQuery(this).remove();
         }
-    }).trigger('change');
-
-    jQuery(selectsSelector).trigger('delete-related', objId);
-
+    });
+    selects.trigger('change');
+    jQuery(selectsSelector).trigger('change').trigger('delete-related', objId);
     win.close();
 }
 

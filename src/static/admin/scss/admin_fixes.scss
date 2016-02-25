@@ -51,6 +51,12 @@ input[type=number] {
   @include font-size(14px);
 }
 
+// правка иконки добавления related
+.control-group .add-related,
+.inline-group .add-related {
+  background-position: 6px -92px;
+}
+
 // не ограниченная высота textarea
 textarea.autosize {
   height: auto;

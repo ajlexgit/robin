@@ -242,12 +242,33 @@
     });
 
     // фикс для джанговских кнопок добавления / редактирования ForeignKey
-    $(document).on('change-related add-related', 'input.autocomplete_widget', function() {
+    $(document).on('add-related', 'input.autocomplete_widget', function(event, id, text) {
         var $input = $(this);
         var select2_object = $input.data('select2');
         if (select2_object) {
-            select2_object.val($input.val());
-            $input.trigger('change');
+            var item = {
+                id: id,
+                text: text
+            };
+
+            if (select2_object.opts.multiple) {
+                var data = select2_object.data();
+                data.push(item);
+                select2_object.data(data);
+            } else {
+                select2_object.data(item);
+            }
+        }
+    }).on('change-related', 'input.autocomplete_widget', function(event, objId, text, id) {
+        var $input = $(this);
+        var select2_object = $input.data('select2');
+        if (select2_object) {
+            var item = {
+                id: id,
+                text: text
+            };
+
+            select2_object.data(item);
         }
     });
 

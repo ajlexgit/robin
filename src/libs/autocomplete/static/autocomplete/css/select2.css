@@ -473,7 +473,9 @@ disabled look for disabled choices in the results dropdown
 
 
 /* multiselect */
-
+.select2-container-multi ~ .change-related {
+    display: none;
+}
 .select2-container-multi .select2-choices {
     height: auto !important;
     height: 1%;
