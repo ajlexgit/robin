@@ -149,7 +149,7 @@
                         return
                     }
 
-                    var key = [that.opts.url].join('');
+                    var key = that.opts.url;
                     var record = {
                         id: id,
                         elem: that.$elem,
