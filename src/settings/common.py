@@ -375,7 +375,7 @@ SCC_DISABLED_URLS = [
 #    decimal_places     - кол-во чисел после запятой
 #    decimal_mark       - разделитель целого и частного
 #    thousands          - разделитель тысячных разрядов
-#    trail              - удалять дробные нули
+#    trail              - не выводить дробную часть, если в ней только нули
 #    utf_format         - формат с использованием UTF-символов
 #    alternative_format - формат без использования UTF-символов
 VALUTE_FORMATS = {
