@@ -44,6 +44,11 @@ class AttachedBlocksForm(forms.ModelForm):
             ),
         }
 
+    class Media:
+        js = (
+            'attachable_blocks/admin/js/related.js',
+        )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
