@@ -25,10 +25,10 @@
   </div>
 
   {% if not page.has_next %}
-    <span class="nav-item next-page">{% trans 'Next' %}</span>
+    <span class="nav-item next-page disabled">{% trans 'Next' %}</span>
   {% else %}
     <a href="{% href paginator page.next_page_number anchor %}"
-       class="nav-item next-page link"
+       class="nav-item next-page"
        data-page="{{ page.next_page_number }}">{% trans 'Next' %}</a>
   {% endif %}
 </div>
