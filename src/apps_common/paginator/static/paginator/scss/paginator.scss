@@ -10,24 +10,42 @@
   @include justify-content(space-between);
 
   .nav-item {
-    text-transform: uppercase;
-    @include opacity(0.4);
+    @include media_interval(0, $media600) {
+      display: none;
+    }
+
+    &.prev-page {
+      &:before {
+        content: '←';
+        margin-right: 5px;
+        vertical-align: text-bottom;
+      }
+    }
 
     &.next-page {
       @include align-self(flex-end);
+
+      &:after {
+        content: '→';
+        margin-left: 5px;
+        vertical-align: text-bottom;
+      }
     }
 
-    &.link {
-      @include opacity(1);
+    &:hover {
+      @include opacity(0.75);
+    }
 
-      &:hover {
-        @include opacity(0.8);
-      }
+    &.disabled {
+      @include opacity(0.4);
     }
   }
 
   .pages {
     margin: 0 20px;
+    @include media_interval(0, $media600) {
+      margin: 0 auto;
+    }
   }
 
   .page {

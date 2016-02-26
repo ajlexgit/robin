@@ -3,10 +3,10 @@
 
 <div class="navigation">
   {% if not page.has_previous %}
-    <span class="nav-item prev-page">{% trans 'Previous' %}</span>
+    <span class="nav-item prev-page disabled">{% trans 'Previous' %}</span>
   {% else %}
     <a href="{% href paginator page.previous_page_number anchor %}"
-       class="nav-item prev-page link"
+       class="nav-item prev-page"
        data-page="{{ page.previous_page_number }}">{% trans 'Previous' %}</a>
   {% endif %}
 
