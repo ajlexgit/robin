@@ -55,7 +55,6 @@ class AttachableBlock(models.Model):
                     block_content_type=ContentType.objects.get_for_model(block)
                 )
 
-
     def __str__(self):
         return self.label
 

@@ -68,7 +68,7 @@ class AutocompleteWidget(widgets.Widget):
                  minimum_input_length=2, format_item=None, close_on_select=True,
                  template='autocomplete/autocomplete.html'):
         default_attrs = {
-            'style': 'width: 300px',
+            'style': 'width: 220px',
             'placeholder': _('Search element'),
         }
         default_attrs.update(attrs or {})

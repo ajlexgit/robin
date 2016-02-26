@@ -42,9 +42,6 @@
                     verbose_name = _('My block')
                     verbose_name_plural = _('My blocks')
 
-                def __str__(self):
-                    return '%s (Block)' % self.title
-
         # blocks/admin.py
             from .models import MyBlock
 

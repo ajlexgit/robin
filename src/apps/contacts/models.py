@@ -81,6 +81,3 @@ class ContactBlock(AttachableBlock):
     class Meta:
         verbose_name = _('Contact block')
         verbose_name_plural = _('Contact blocks')
-
-    def __str__(self):
-        return '%s (Contact Block)' % self.header
