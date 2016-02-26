@@ -1,17 +1,13 @@
 {% load text %}
 
-<div class="seo-text text-styles">
-  <div class="grid">
-    <div class="gc">
+<div class="seo-text">
+  <div class="grid-block">
+    {% if data.header %}
+      <div class="title title-h1">{{ data.header }}</div>
+    {% endif %}
 
-      {% if data.header %}
-        <div class="title title-h1">{{ data.header }}</div>
-      {% endif %}
-
-      <div class="text">
-        {{ data.text|paragraphs|typograf|safe }}
-      </div>
-
+    <div class="text text-styles">
+      {{ data.text|paragraphs|typograf|safe }}
     </div>
   </div>
 </div>

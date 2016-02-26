@@ -12,10 +12,8 @@
         var opts = $.extend(true, {
             classes: 'popup-preloader',
             content: function() {
-                var that = this;
-                $.urlReader('/static/scss/popups/preloader.svg').done(function(content) {
-                    that.$content.append(content);
-                });
+                var $preloader = $('<div>').addClass('preloader');
+                this.$content.append($preloader);
             },
             closeButton: false,
             hideOnClick: false
