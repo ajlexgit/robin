@@ -114,4 +114,9 @@ class AttachableReference(models.Model):
         index_together = (('content_type', 'object_id', 'set_name'), )
 
     def __str__(self):
-        return str(self.block)
+        instance = '%s.%s (#%s)' % (
+            self.content_type.app_label,
+            self.content_type.model,
+            self.object_id
+        )
+        return '%s -> %s' % (instance, self.block)

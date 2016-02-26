@@ -64,6 +64,7 @@ INSTALLED_APPS = (
     'seo',
 
     # Libs
+    'libs.admin_ctr',
     'libs.autocomplete',
     'libs.away',
     'libs.js_storage',

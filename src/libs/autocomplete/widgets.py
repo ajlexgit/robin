@@ -158,7 +158,6 @@ class AutocompleteWidget(widgets.Widget):
         if isinstance(value, (list, tuple)):
             value = ','.join(force_text(item) for item in value)
 
-        # render
         return render_to_string(self.template, {
             'attrs': flatatt(final_attrs),
             'value': value or '',

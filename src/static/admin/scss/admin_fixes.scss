@@ -59,6 +59,15 @@ input[type=number] {
 .control-group .change-related,
 .inline-group .change-related {
   padding: 4px;
+  @include opacity(0.2);
+
+  &:link {
+    @include opacity(0.6);
+
+    &:hover {
+      @include opacity(1);
+    }
+  }
 }
 
 .control-group .delete-related,
@@ -74,10 +83,14 @@ input[type=number] {
   vertical-align: middle;
   border: 1px solid transparent;
   background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -311px 4px;
-  @include opacity(0.6);
+  @include opacity(0.2);
 
-  &:hover {
-    @include opacity(1);
+  &:link {
+    @include opacity(0.6);
+
+    &:hover {
+      @include opacity(1);
+    }
   }
 }
 
