@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup as Soup, NavigableString
 from softhyphen.html import get_hyphenator_for_language, SOFT_HYPHEN
 from django.conf import settings
 from django.core.cache import caches
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
 from django.template import Library, defaultfilters
 

@@ -1,5 +1,6 @@
 // @include column-count(3)
 @mixin column-count($count) {
+  -webkit-perspective: 1;  // fix from http://caniuse.com/#search=column-count
   -webkit-column-count: $count;
   -moz-column-count: $count;
   column-count: $count;
