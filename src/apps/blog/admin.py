@@ -101,8 +101,8 @@ class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
 
     def make_public_action(self, request, queryset):
         queryset.update(status=BlogPost.STATUS_PUBLIC)
-    make_public_action.short_description = 'Make public'
+    make_public_action.short_description = _('Make public')
 
     def make_draft_action(self, request, queryset):
         queryset.update(status=BlogPost.STATUS_DRAFT)
-    make_draft_action.short_description = 'Make draft'
+    make_draft_action.short_description = _('Make draft')

@@ -16,6 +16,7 @@ class CKEditorUploadWidget(CKEditorWidget):
     class Media:
         js = CKEditorWidget.Media.js + (
             'common/js/plupload/plupload.full.min.js',
+            'common/js/plupload/jquery.ui.plupload.min.js',
             'common/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
         )
         css = CKEditorWidget.Media.css
