@@ -58,6 +58,7 @@
   animation-delay: $delay;
 }
 
+// none|forwards|backwards|both
 @mixin animation-fill-mode($fill...) {
   -o-animation-fill-mode: $fill;
   -moz-animation-fill-mode: $fill;
@@ -65,6 +66,7 @@
   animation-fill-mode: $fill;
 }
 
+// paused|running
 @mixin animation-play-state($state...) {
   -o-animation-play-state: $state;
   -moz-animation-play-state: $state;
