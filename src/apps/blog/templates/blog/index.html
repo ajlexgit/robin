@@ -34,10 +34,12 @@
           {% endfor %}
         </ul>
       {% endif %}
+    </div>
 
-      <ul id="posts">
-        {% for post in paginator.page %}
-          <li class="post">
+    <ul id="posts">
+      {% for post in paginator.page %}
+        <li class="post">
+          <div class="grid-block">
             <div class="date">{{ post.date|date:"jS E Y" }}</div>
 
             <div class="title title-h1">
@@ -56,17 +58,18 @@
                 {{ post.note|clean }}
               </div>
             {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
 
-      {% if paginator.num_pages > 1 %}
-        <div id="paginator">
+    {% if paginator.num_pages > 1 %}
+      <div id="paginator">
+        <div class="grid-block">
           {{ paginator }}
         </div>
-      {% endif %}
-
-    </div>
+      </div>
+    {% endif %}
   </div>
 
 {% endblock content %}

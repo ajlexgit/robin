@@ -1,6 +1,7 @@
 import os
 import sys
 
+# $.preview: notify when height = 0 and crop = True
 # nested inlines
 # stdimage: errors when min_dim == max_dim
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU

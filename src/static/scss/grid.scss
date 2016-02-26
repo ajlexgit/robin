@@ -18,6 +18,16 @@
   @extend .grid-block;
   @include media_map(padding-left, $grid_paddings);
   @include media_map(padding-right, $grid_paddings);
+  
+  .gc-center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .gc-alone {
+    float: none;
+    clear: both;
+  }
 }
 
 .gc {
@@ -25,16 +35,6 @@
   padding: 0 $grid_column_gap;
   @include border-box;
   @include background-clip(content-box);
-}
-
-.gc-center {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.gc-alone {
-  float: none;
-  clear: both;
 }
 
 // Wide-desktop (1200+)

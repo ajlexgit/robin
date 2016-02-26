@@ -74,6 +74,7 @@
   animation-play-state: $state;
 }
 
+// name duration timing-function delay iteration-count direction fill-mode play-state
 @mixin animation($animation...) {
   -o-animation: $animation;
   -moz-animation: $animation;

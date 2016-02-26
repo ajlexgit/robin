@@ -84,6 +84,9 @@ class StdImageAdminWidget(StdImageWidgetMixin, forms.FileInput):
             # False signals to clear any existing value, as opposed to just None
             return False
 
+        if not upload:
+            return None
+
         return (
             upload,
             data.get('%s-croparea' % name, None) or None
