@@ -12,7 +12,10 @@
         if (value) {
             siblings.each(function(){
                 var elm = $(this);
-                elm.attr('href', elm.attr('data-href-template').replace('__fk__', value));
+                var href = elm.attr('data-href-template');
+                if (href) {
+                    elm.attr('href', href.replace('__fk__', value));
+                }
             });
         } else siblings.removeAttr('href');
     }

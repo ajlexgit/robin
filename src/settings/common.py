@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'users',
 
     # Apps common
+    'admin_ctr',
     'admin_honeypot',
     'admin_log',
     'attachable_blocks',
@@ -64,7 +65,6 @@ INSTALLED_APPS = (
     'seo',
 
     # Libs
-    'libs.admin_ctr',
     'libs.autocomplete',
     'libs.away',
     'libs.js_storage',

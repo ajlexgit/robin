@@ -6,13 +6,14 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'libs.admin_ctr',
+                'admin_ctr',
                 ...
             )
 
         urls.py:
             ...
-            url(r'^dladmin/ctr/', include('libs.admin_ctr.urls', namespace='admin_ctr')),
+            url(r'^dladmin/ctr/', include('admin_ctr.urls', namespace='admin_ctr')),
             ...
 
 """
+default_app_config = 'admin_ctr.apps.Config'

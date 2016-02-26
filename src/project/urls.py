@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^dladmin/ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
-    url(r'^dladmin/ctr/', include('libs.admin_ctr.urls', namespace='admin_ctr')),
+    url(r'^dladmin/ctr/', include('admin_ctr.urls', namespace='admin_ctr')),
     url(r'^dladmin/', include(admin.site.urls)),
 
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),
