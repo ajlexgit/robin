@@ -26,8 +26,10 @@
   {% if LANGUAGE_BIDI %}
     <link rel="stylesheet" type="text/css"
           href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}"/>{% endif %}
-  <script
-      type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+  <script type="text/javascript">
+    window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";
+    window.is_superuser = {{ user.is_superuser|yesno:"true, false" }};
+  </script>
   <script src="{% static 'suit/js/jquery-1.10.2.min.js' %}"></script>
   <script type="text/javascript">var Suit = {$: $.noConflict()};
   if (!$) $ = Suit.$; </script>

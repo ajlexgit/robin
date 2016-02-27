@@ -1,15 +1,14 @@
 import os
 import sys
 
+# permissions for add / edit buttons
 # $.preview: notify when height = 0 and crop = True
 # nested inlines
 # stdimage: errors when min_dim == max_dim
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
-# права на блоки
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Angular-like
 # Parallax наизнанку
-# виджет выбора ссылки на сущность
 # drager: блокируется вертикальный скролл Android
 # подумать над плагином "конструктор галереи"
 

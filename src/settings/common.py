@@ -21,8 +21,14 @@ LANGUAGES = (
 )
 
 TIME_ZONE = 'America/New_York'
-TIME_FORMAT = 'H:i'
-DATE_FORMAT = 'E j, Y'
+TIME_FORMAT = 'P'
+DATE_FORMAT = 'N j, Y'
+TIME_INPUT_FORMATS = (
+    '%H:%M:%S',
+    '%H:%M:%S.%f',
+    '%H:%M',
+    '%I:%M %p'
+)
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
