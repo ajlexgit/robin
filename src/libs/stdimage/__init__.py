@@ -12,7 +12,24 @@
         preview = StdImageField(_('preview'),
             blank=True,
             storage=MediaStorage('main/header'),
-            admin_variation='square',
+            admin_variation='admin',
+            crop_area=True,
+            aspects=('normal', ),
+            variations=dict(
+                normal=dict(
+                    size=(800, 600),
+                ),
+                admin=dict(
+                    size=(200, 150),
+                ),
+            ),
+        )
+
+    Пример с сохранением области обрезки в отдельном поле:
+        preview = StdImageField(_('preview'),
+            blank=True,
+            storage=MediaStorage('main/header'),
+            admin_variation='admin',
             crop_area=True,
             crop_field='preview_crop',
             aspects=('normal', ),
@@ -20,8 +37,8 @@
                 normal=dict(
                     size=(800, 600),
                 ),
-                square=dict(
-                    size=(280, 280),
+                admin=dict(
+                    size=(200, 150),
                     mask='module/img/square_mask.png',
                     overlay='module/img/square_overlay.png',
                 ),

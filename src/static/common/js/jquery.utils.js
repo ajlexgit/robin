@@ -1123,6 +1123,14 @@
 
         if (settings.crop) {
             // --- можно обрезать ---
+
+            if (target_size[0] == 0) {
+                target_size[0] = settings.coords[2];
+            }
+            if (target_size[1] == 0) {
+                target_size[1] = settings.coords[3];
+            }
+
             if (settings.stretch) {
                 // можно растягивать
             } else {
