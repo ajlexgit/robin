@@ -22,7 +22,8 @@ LANGUAGES = (
 
 TIME_ZONE = 'America/New_York'
 TIME_FORMAT = 'P'
-DATE_FORMAT = 'N j, Y'
+DATE_FORMAT = 'jS E Y'
+DATETIME_FORMAT = 'jS E Y, P'
 TIME_INPUT_FORMATS = (
     '%H:%M:%S',
     '%H:%M:%S.%f',

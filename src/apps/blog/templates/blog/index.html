@@ -40,7 +40,7 @@
       {% for post in paginator.page %}
         <li class="post">
           <div class="grid-block">
-            <div class="date">{{ post.date|date:"jS E Y" }}</div>
+            <div class="date">{{ post.date|date }}</div>
 
             <div class="title title-h1">
               <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>

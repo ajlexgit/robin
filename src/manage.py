@@ -1,7 +1,6 @@
 import os
 import sys
 
-# permissions for add / edit buttons
 # $.preview: notify when height = 0 and crop = True
 # nested inlines
 # stdimage: errors when min_dim == max_dim
