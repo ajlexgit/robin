@@ -5,6 +5,7 @@
 
     var ADD_URL_TEMPLATE = '/dladmin/ctr/add/__ct__/?_to_field=id&_popup=1';
     var CHANGE_URL_TEMPLATE = '/dladmin/ctr/change/__ct__/__pk__/?_to_field=id&_popup=1';
+    var DELETE_URL_TEMPLATE = '/dladmin/ctr/delete/__ct__/__pk__/?_to_field=id&_popup=1';
 
     /*
         Создание DOM-элемента кнопки добавления
@@ -12,6 +13,7 @@
     var generate_add_button =function($field) {
         var $link = $('<a>').addClass('related-widget-wrapper-link add-related');
         $link.attr('id', 'add_id_' + $field.attr('name'));
+        $link.attr('title', gettext('Add another'));
         $link.attr(DATA_ATTR, ADD_URL_TEMPLATE);
         return $link;
     };
@@ -22,7 +24,19 @@
     var generate_change_button = function($field) {
         var $link = $('<a>').addClass('related-widget-wrapper-link change-related');
         $link.attr('id', 'change_id_' + $field.attr('name'));
+        $link.attr('title', gettext('Edit'));
         $link.attr(DATA_ATTR, CHANGE_URL_TEMPLATE);
+        return $link;
+    };
+
+    /*
+        Создание DOM-элемента кнопки удаления
+     */
+    var generate_delete_button = function($field) {
+        var $link = $('<a>').addClass('related-widget-wrapper-link delete-related');
+        $link.attr('id', 'change_id_' + $field.attr('name'));
+        $link.attr('title', gettext('Delete'));
+        $link.attr(DATA_ATTR, DELETE_URL_TEMPLATE);
         return $link;
     };
 
@@ -76,6 +90,7 @@
             update_add_button(object.$elem.siblings('.add-related'), content_type);
             if (block_id) {
                 update_change_button(object.$elem.siblings('.change-related'), content_type, block_id);
+                update_change_button(object.$elem.siblings('.delete-related'), content_type, block_id);
             }
         }
     };
@@ -93,6 +108,10 @@
         if (!obj || (obj.$depends.length != 1)) {
             return
         }
+
+        // кнопка удаления
+        var $delete_button = generate_delete_button($field);
+        $field.after($delete_button);
 
         // кнопка добавления
         var $add_button = generate_add_button($field);

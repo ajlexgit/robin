@@ -14,7 +14,7 @@
             storage=MediaStorage('main/header'),
             admin_variation='admin',
             crop_area=True,
-            aspects=('normal', ),
+            aspects='normal',
             variations=dict(
                 normal=dict(
                     size=(800, 600),
