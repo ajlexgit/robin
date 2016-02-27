@@ -2,16 +2,6 @@
 
 @include global-reset;
 
-// fontfix
-@include keyframes(fontfix) {
-  from {
-    @include opacity(1);
-  }
-  to {
-    @include opacity(1);
-  }
-}
-
 html, body {
   height: 100%;
 }
@@ -22,7 +12,6 @@ body {
   line-height: 1.2;
   @include no_fontsize;
   @include font_default;
-  @include animation(fontfix 0.1s linear 0.1s 1);
 }
 
 // Скрытый элемент
