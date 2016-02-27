@@ -1,12 +1,3 @@
-@-webkit-keyframes fontfix {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 // Based on [Eric Meyer's reset 2.0](http://meyerweb.com/eric/tools/css/reset/index.html)
 // Global reset rules.
 // For more specific resets, use the reset mixins provided below
@@ -50,13 +41,6 @@
     font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-weight: normal;
-
-    // fontfix Chrome
-    -webkit-animation-delay: 0.1s;
-    -webkit-animation-name: fontfix;
-    -webkit-animation-duration: 0.1s;
-    -webkit-animation-iteration-count: 1;
-    -webkit-animation-timing-function: linear;
 
     @media only screen and (-webkit-min-device-pixel-ratio: 1.25),
     only screen and (min-device-pixel-ratio: 1.25),
