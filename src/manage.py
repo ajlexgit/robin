@@ -1,6 +1,7 @@
 import os
 import sys
 
+# payment modules
 # nested inlines
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # text-ellipsis: https://css-tricks.com/line-clampin/
