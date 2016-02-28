@@ -2,8 +2,8 @@ from hashlib import md5
 from urllib.parse import urlencode, quote_plus
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from . import conf
 from .models import Log
+from . import conf
 
 
 class BaseRobokassaForm(forms.Form):
@@ -50,16 +50,15 @@ class BaseRobokassaForm(forms.Form):
         return hash_value
 
 
-
 class RobokassaForm(BaseRobokassaForm):
-    # Параметр с URL'ом, на который форма должны быть отправлена.
+    # Параметр с URL'ом, на который будет отправлена форма.
     # Может пригодиться для использования в шаблоне.
     target = conf.FORM_TARGET
 
     # login магазина в обменном пункте
     MrchLogin = forms.CharField(max_length=20, initial=conf.LOGIN)
 
-    # требуемая к получению сумма
+    # сумма к оплате
     OutSum = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
 
     # описание покупки. Эта информация отображается в интерфейсе ROBOKASSA и в Электронной квитанции

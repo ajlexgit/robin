@@ -60,7 +60,7 @@ def result(request):
             Log.objects.create(
                 inv_id=inv_id,
                 step=Log.STEP_RESULT,
-                status=Log.STATUS_ERROR,
+                status=Log.STATUS_EXCEPTION,
                 request=data.urlencode(),
                 message='Signal exception:\n{}: {}'.format(
                     e.__class__.__name__,
