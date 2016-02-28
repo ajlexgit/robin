@@ -2,7 +2,6 @@ from hashlib import md5
 from urllib.parse import urlencode
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import Log
 from . import conf
 
 
@@ -81,9 +80,9 @@ class GotobillingResultForm(BaseGotobillingForm):
     """
     SIGNATURE_FIELDS = ('x_trans_id', 'x_amount')
 
-    RESPONSE_CODE_APPROVED = 1
-    RESPONSE_CODE_DECLINED = 2
-    RESPONSE_CODE_ERROR = 3
+    RESPONSE_CODE_APPROVED = '1'
+    RESPONSE_CODE_DECLINED = '2'
+    RESPONSE_CODE_ERROR = '3'
     RESPONSE_CODES = (
         (RESPONSE_CODE_APPROVED, _('Approved')),
         (RESPONSE_CODE_DECLINED, _('Declined')),
@@ -93,6 +92,7 @@ class GotobillingResultForm(BaseGotobillingForm):
     x_response_code = forms.ChoiceField(choices=RESPONSE_CODES)
     x_response_reason_text = forms.CharField(max_length=255)
     x_type = forms.CharField(max_length=32)
+    x_trans_id = forms.CharField(max_length=10)
     x_invoice_num = forms.CharField(max_length=20)
     x_amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
     x_MD5_hash = forms.CharField(max_length=64)
@@ -105,9 +105,7 @@ class GotobillingResultForm(BaseGotobillingForm):
                 value = ''
             hash_params.append(str(value))
 
-        hash_params.append(self.PASSWD)
-
-        hash_data = ''.join(hash_params)
+        hash_data = ''.join(map(str, hash_params))
         hash_value = md5(hash_data.encode()).hexdigest().upper()
         return hash_value
 

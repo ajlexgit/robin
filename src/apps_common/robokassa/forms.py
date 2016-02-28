@@ -45,7 +45,7 @@ class BaseRobokassaForm(forms.Form):
             value = quote_plus(str(value))
             hash_params.append('%s=%s' % (key, value))
 
-        hash_data = ':'.join(hash_params)
+        hash_data = ':'.join(map(str, hash_params))
         hash_value = md5(hash_data.encode()).hexdigest().upper()
         return hash_value
 

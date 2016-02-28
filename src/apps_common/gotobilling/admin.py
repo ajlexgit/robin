@@ -10,14 +10,14 @@ class LogAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'status', 'message', 'request', 'created',
+                'inv_id', 'status', 'message', 'request', 'created',
             ),
         }),
     )
     list_filter = ('inv_id', 'status')
-    list_display = ('status', 'short_message', 'created')
+    list_display = ('inv_id', 'status', 'short_message', 'created')
     readonly_fields = ('status', 'message', 'request', 'created')
-    list_display_links = ('short_message', )
+    list_display_links = ('inv_id', 'status', )
     date_hierarchy = 'created'
 
     def suit_row_attributes(self, obj, request):

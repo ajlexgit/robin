@@ -36,7 +36,7 @@ def result(request):
         inv_id=inv_id,
         step=Log.STEP_RESULT,
         status=Log.STATUS_MESSAGE,
-        request=data.urlencode(),
+        request=data.urlencode().replace('&', '\n'),
     )
 
     form = ResultURLForm(data)
@@ -61,7 +61,7 @@ def result(request):
                 inv_id=inv_id,
                 step=Log.STEP_RESULT,
                 status=Log.STATUS_EXCEPTION,
-                request=data.urlencode(),
+                request=data.urlencode().replace('&', '\n'),
                 message='Signal exception:\n{}: {}'.format(
                     e.__class__.__name__,
                     ', '.join(e.args),
@@ -73,7 +73,7 @@ def result(request):
                 inv_id=inv_id,
                 step=Log.STEP_RESULT,
                 status=Log.STATUS_SUCCESS,
-                request=data.urlencode(),
+                request=data.urlencode().replace('&', '\n'),
             )
             return HttpResponse('OK%s' % inv_id)
     else:
@@ -82,7 +82,7 @@ def result(request):
             inv_id=inv_id,
             step=Log.STEP_RESULT,
             status=Log.STATUS_ERROR,
-            request=data.urlencode(),
+            request=data.urlencode().replace('&', '\n'),
             message='Invalid form:\n{}'.format(
                 _log_errors(form.errors),
             )
@@ -108,7 +108,7 @@ def success(request):
         inv_id=inv_id,
         step=Log.STEP_SUCCESS,
         status=Log.STATUS_MESSAGE,
-        request=data.urlencode(),
+        request=data.urlencode().replace('&', '\n'),
     )
 
     form = SuccessRedirectForm(data)
@@ -120,7 +120,7 @@ def success(request):
             inv_id=inv_id,
             step=Log.STEP_SUCCESS,
             status=Log.STATUS_SUCCESS,
-            request=data.urlencode(),
+            request=data.urlencode().replace('&', '\n'),
         )
     else:
         # log form error
@@ -128,7 +128,7 @@ def success(request):
             inv_id=inv_id,
             step=Log.STEP_SUCCESS,
             status=Log.STATUS_ERROR,
-            request=data.urlencode(),
+            request=data.urlencode().replace('&', '\n'),
             message='Invalid form:\n{}'.format(
                 _log_errors(form.errors),
             )
@@ -154,7 +154,7 @@ def fail(request):
         inv_id=inv_id,
         step=Log.STEP_FAIL,
         status=Log.STATUS_MESSAGE,
-        request=data.urlencode(),
+        request=data.urlencode().replace('&', '\n'),
     )
 
     form = FailRedirectForm(data)
@@ -166,7 +166,7 @@ def fail(request):
             inv_id=inv_id,
             step=Log.STEP_FAIL,
             status=Log.STATUS_SUCCESS,
-            request=data.urlencode(),
+            request=data.urlencode().replace('&', '\n'),
         )
     else:
         # log form error
@@ -174,7 +174,7 @@ def fail(request):
             inv_id=inv_id,
             step=Log.STEP_FAIL,
             status=Log.STATUS_ERROR,
-            request=data.urlencode(),
+            request=data.urlencode().replace('&', '\n'),
             message='Invalid form:\n{}'.format(
                 _log_errors(form.errors),
             )

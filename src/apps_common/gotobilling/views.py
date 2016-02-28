@@ -25,7 +25,7 @@ def result(request):
     Log.objects.create(
         inv_id=inv_id,
         status=Log.STATUS_MESSAGE,
-        request=data.urlencode(),
+        request=data.urlencode().replace('&', '\n'),
     )
 
     form = GotobillingResultForm(data)
@@ -49,7 +49,7 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_EXCEPTION,
-                    request=data.urlencode(),
+                    request=data.urlencode().replace('&', '\n'),
                     message='Signal exception:\n{}: {}'.format(
                         e.__class__.__name__,
                         ', '.join(e.args),
@@ -60,7 +60,7 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_SUCCESS,
-                    request=data.urlencode(),
+                    request=data.urlencode().replace('&', '\n'),
                 )
                 return redirect(conf.SUCCESS_REDIRECT_URL)
         else:
@@ -80,7 +80,7 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_EXCEPTION,
-                    request=data.urlencode(),
+                    request=data.urlencode().replace('&', '\n'),
                     message='Signal exception:\n{}: {}'.format(
                         e.__class__.__name__,
                         ', '.join(e.args),
@@ -91,7 +91,7 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_ERROR,
-                    request=data.urlencode(),
+                    request=data.urlencode().replace('&', '\n'),
                     message=reason,
                 )
     else:
@@ -99,7 +99,7 @@ def result(request):
         Log.objects.create(
             inv_id=inv_id,
             status=Log.STATUS_ERROR,
-            request=data.urlencode(),
+            request=data.urlencode().replace('&', '\n'),
             message='Invalid form:\n{}'.format(
                 _log_errors(form.errors),
             )

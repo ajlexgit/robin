@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^contacts/', include('contacts.urls', namespace='contacts')),
     url(r'^users/', include('users.urls', namespace='users')),
+    url(r'^gotobilling/', include('gotobilling.urls', namespace='gotobilling')),
 
     url(r'^admin/', include(honeypot_site.urls)),
     url(r'^dladmin/autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
