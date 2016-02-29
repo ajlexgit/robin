@@ -31,6 +31,14 @@ $grid_paddings: (
     (0, $media640): 20px,
 );
 
+// Боковые границы сетки с прибавлением границы столбца
+$grid_full_paddings: ();
+@each $key, $value in $grid_paddings {
+  $grid_full_paddings: map-merge($grid_full_paddings, (
+    $key: $value + $grid_column_gap
+  ))
+}
+
 //=======================
 // Sprite
 //=======================

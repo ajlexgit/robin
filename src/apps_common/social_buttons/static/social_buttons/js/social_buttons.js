@@ -38,7 +38,7 @@
         cls.init = function(button) {
             this.$button = $(button).first();
             if (!this.$button.length) {
-                return this.raise('button not found');
+                return false;
             }
 
             // отвязывание старого экземпляра
