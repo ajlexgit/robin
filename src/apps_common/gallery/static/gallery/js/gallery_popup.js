@@ -16,6 +16,7 @@
             previews: str / jquery       - превью-элементы галереи
             activePreview: DOM / index   - DOM-элемент или индекс начальной картинки
             keyboard: true / false       - прокручивать галерею стрелками (плохо для видео)
+            keyboardAnimation: str       - имя анимации при нажатии стрелок
 
 
         У превью-элементов картинок обязателен атрибут data-src.
@@ -58,7 +59,8 @@
 
             previews: '',
             activePreview: 0,
-            keyboard: false
+            keyboard: false,
+            keyboardAnimation: 'side'
         });
 
         cls.OVERLAY_ID = 'gallery-popup-overlay';
@@ -86,48 +88,59 @@
             Создание элемента окна галереи из элемента превью
          */
         cls._buildItem = function($preview) {
-            var $image;
+            var $item;
             var preview_data = $preview.data();
-
-            // картинка (для всех типов)
             if (preview_data.src) {
-                // картинка
-                $image = $('<img>').attr('src', preview_data.src);
+                if (preview_data.provider && preview_data.key) {
+                    // видео
+                    $item = this._buildVideoItem($preview, preview_data);
+                    $item.addClass(this.opts.videoItemClass);
+                } else {
+                    // картинка
+                    $item = this._buildImageItem($preview, preview_data);
+                    $item.addClass(this.opts.imageItemClass);
+                }
 
-                // атрибуты srcset и sizes
-                if (preview_data.srcset) {
-                    $image.attr({
-                        srcset: preview_data.srcset,
-                        sizes: preview_data.sizes || '100vw'
-                    })
+                // проверка наличия картинки
+                if ($item && ($item.length == 1)) {
+                    return $item
                 }
             }
-
-            // проверка наличия картинки
-            if (!$image || ($image.length != 1)) {
-                return
-            }
-
-            if (preview_data.provider && preview_data.key) {
-                // видео
-                var $item = $('<div/>').addClass(this.opts.videoItemClass);
-                var $playBtn = $('<div/>').addClass('play-btn');
-                $item.append($image, $playBtn);
-
-                var that = this;
-                $item.on(touchClick, '.play-btn', function() {
-                    that.playVideo($(this).closest('.' + that.opts.videoItemClass));
-                }).data({
-                    provider: preview_data.provider,
-                    key: preview_data.key
-                });
-
-                return $item;
-            } else {
-                // картинка
-                return $image.addClass(this.opts.imageItemClass);
-            }
         };
+
+
+        cls._buildImageItem = function($preview, data) {
+            var $item = $('<img>').attr('src', data.src);
+
+            // атрибуты srcset и sizes
+            if (data.srcset) {
+                $item.attr({
+                    srcset: data.srcset,
+                    sizes: data.sizes || '100vw'
+                })
+            }
+
+            return $item;
+        };
+
+
+        cls._buildVideoItem = function($preview, data) {
+            var $item = $('<div/>');
+            var $playBtn = $('<div/>').addClass('play-btn');
+            var $image = this._buildImageItem($preview, data);
+            $item.append($image, $playBtn);
+
+            var that = this;
+            $item.on(touchClick, '.play-btn', function() {
+                that.playVideo($(this).closest('.' + that.opts.videoItemClass));
+            }).data({
+                provider: data.provider,
+                key: data.key
+            });
+
+            return $item;
+        };
+
 
         /*
             Содержимое окна
@@ -226,11 +239,11 @@
             // нажатие стрелок на клавиатуре
             if (this.opts.keyboard) {
                 var that = this;
-                $(document).on('keyup.popup', function(event) {
+                $(document).on('keydown.popup', function(event) {
                     if (event.which == 39) {
-                        that.slider.slideNext('side');
+                        that.slider.slideNext(that.opts.keyboardAnimation);
                     } else if (event.which == 37) {
-                        that.slider.slidePrevious('side');
+                        that.slider.slidePrevious(that.opts.keyboardAnimation);
                     }
                 });
             }

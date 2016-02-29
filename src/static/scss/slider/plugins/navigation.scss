@@ -29,6 +29,7 @@ $dot_active_color: rgba($white, 1);
   bottom: 0;
   z-index: 9;
   text-align: center;
+  @include border-box;
   @include valign_after;
   @include unselectable;
 

@@ -1,6 +1,8 @@
 import os
 import sys
 
+# gallery: max photos, blank == no images
+# ajaxForm example
 # payment modules
 # nested inlines
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU

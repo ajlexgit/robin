@@ -79,18 +79,13 @@ class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     readonly_fields = ('date_fmt', 'referer')
-    list_display = ('user', 'message_fmt', 'date_fmt')
+    list_display = ('name', 'message_fmt', 'date_fmt')
     suit_form_tabs = (
         ('general', _('General')),
     )
 
     def has_add_permission(self, request):
         return False
-
-    def user(self, obj):
-        return str(obj)
-    user.short_description = _('Name')
-    user.admin_order_field = 'name'
 
     def message_fmt(self, obj):
         return description(obj.message, 60, 80)

@@ -62,7 +62,6 @@
                 }
             }).on('drop.file_dropper', function(event) {
                 drag_counter = 0;
-                $(this).removeClass(that.opts.dragOverClass);
 
                 // callback
                 that.trigger('dragend');
@@ -71,6 +70,8 @@
                 if (files.length) {
                     that.trigger('drop', files);
                 }
+
+                $(this).removeClass(that.opts.dragOverClass);
 
                 if (that.opts.preventDrop) {
                     return false;

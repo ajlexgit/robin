@@ -72,6 +72,7 @@ $close_btn_weight: 3px;
       width: 80%;
       height: $close_btn_weight;
       background: $close_btn_color;
+      @include border_radius($close_btn_weight);
     }
     &:before {
       @include transform(translate3d(-50%, -50%, 0) rotate(45deg));
