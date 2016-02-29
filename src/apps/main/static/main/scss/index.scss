@@ -84,7 +84,7 @@
 
     .slider-arrow {
       background: rgba(#000, 0.5);
-      @include media_map(width, $grid_paddings);
+      @include media_map(width, $grid_full_paddings);
       @include media_interval(0, $media640) {
         display: none;
       }

@@ -1,6 +1,5 @@
 @import "mixins";
 
-
 .slider-root {
   position: relative;
   height: inherit;
@@ -45,8 +44,8 @@
 }
 
 .no-slider {
-	// Скрытие всех слайдов, кроме первого
-	.slider-slide ~ .slider-slide {
+  // Скрытие всех слайдов, кроме первого
+  .slider-slide ~ .slider-slide {
     display: none;
   }
 }

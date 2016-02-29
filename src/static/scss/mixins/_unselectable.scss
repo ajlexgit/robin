@@ -1,11 +1,17 @@
-// Пример: @include unselectable();
-@mixin unselectable() {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-  -ms-user-select: none; /* IE 10+ */
+@mixin user-select($value) {
+  -webkit-touch-callout: $value;
+  -webkit-user-select: $value; /* Chrome all / Safari all */
+  -moz-user-select: $value; /* Firefox all */
+  -ms-user-select: $value; /* IE 10+ */
 
   /* No support for these yet, use at own risk */
-  -o-user-select: none;
-  user-select: none;
+  -o-user-select: $value;
+  user-select: $value;
 }
+
+// @include unselectable();
+@mixin unselectable() {
+  @include user-select(none);
+}
+
+

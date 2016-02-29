@@ -10,10 +10,12 @@
             url: window.js_storage.ajax_contact,
             type: 'GET',
             success: function(response) {
-                $.popup({
+                var popup = $.popup({
                     classes: 'contact-popup contact-form-popup',
                     content: response
                 }).show();
+
+                InitContactPopup(popup.$content.find('form'));
             },
             error: function() {
                 alert(window.DEFAULT_AJAX_ERROR);
@@ -22,27 +24,21 @@
         });
     };
 
-    $(document).on(touchClick, '.open-contact-popup', function() {
-        // Открытие окна контактов
-        contactPopup();
-        return false;
-    }).on('submit', '#ajax-contact-form', function() {
-        // Отправка Ajax-формы контактов
-        $.preloader();
-
-        // Добавляем адрес страницы, с которой отправили сообщение
-        var $form = $(this);
-        var data = $form.serializeArray();
-        data.push({
-            name: 'referer',
-            value: location.href
-        });
-
-        $.ajax({
+    /*
+        Инициализация окна контактов
+     */
+    var InitContactPopup = function($form) {
+        $form.ajaxForm({
             url: window.js_storage.ajax_contact,
-            type: 'POST',
-            data: data,
             dataType: 'json',
+            beforeSubmit: function(arr, $form, options) {
+                $.preloader();
+
+                arr.push({
+                    name: 'referer',
+                    value: location.href
+                });
+            },
             success: function(response) {
                 if (response.success_message) {
                     // сообщение о успешной отправке
@@ -55,16 +51,26 @@
             error: $.parseError(function(response) {
                 if (response && response.form) {
                     // ошибки формы
-                    $.popup({
+                    var popup = $.popup({
                         classes: 'contact-popup contact-form-popup',
                         content: response.form
                     }).show();
+
+                    InitContactPopup(popup.$content.find('form'));
                 } else {
                     alert(window.DEFAULT_AJAX_ERROR);
                     $.popup().hide();
                 }
             })
         });
+    };
+
+
+    /*
+        Открытие окна контактов при клике на кнопки
+     */
+    $(document).on(touchClick, '.open-contact-popup', function() {
+        contactPopup();
         return false;
     });
 
