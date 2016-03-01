@@ -23,12 +23,6 @@
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
   {% stylesheet 'core' %}
 
-  {# === SCRIPTS === #}
-  <script>
-    document.createElement("picture");
-  </script>
-  <script src="{% static 'polyfills/jquery.picturefill.min.js' %}" async></script>
-
   {% block static_head %}{% endblock static_head %}
 
   {% seo_counters 'head' %}
@@ -79,6 +73,7 @@
       </div>
     {% endblock footer %}
   </div>
+
 
   <script src="{% url 'jsi18n' %}"></script>
 
