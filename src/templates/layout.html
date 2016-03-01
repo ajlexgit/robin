@@ -25,8 +25,6 @@
 
   {# === SCRIPTS === #}
   <script>
-    var docElement = document.documentElement;
-    docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
     document.createElement("picture");
   </script>
   <script src="{% static 'polyfills/jquery.picturefill.min.js' %}" async></script>
@@ -82,21 +80,14 @@
     {% endblock footer %}
   </div>
 
-  <script src="{% url 'jsi18n' %}" defer></script>
-  <!--[if lte IE 9]>
-    <script src="{% static 'polyfills/es5_polyfill.js' %}" defer></script>
-  <![endif]-->
+  <script src="{% url 'jsi18n' %}"></script>
 
   {% block static_js %}
     {% js_storage_out %}
     {% javascript 'core' %}
   {% endblock static_js %}
 
-  <!--[if lte IE 9]>
-    <script src="{% static 'polyfills/respond.min.js' %}" defer></script>
-    <script src="{% static 'polyfills/polyfill.min.js' %}" defer></script>
-    <script src="{% static 'polyfills/svg2png.js' %}" defer></script>
-  <![endif]-->
+  <script src="{% static 'polyfills/loader.js' %}"></script>
 
   {% seo_counters 'body_bottom' %}
 </body>

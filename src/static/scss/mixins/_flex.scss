@@ -10,6 +10,16 @@
 
 // row | row-reverse | column | column-reverse
 @mixin flex-direction($direction) {
+  $old_map: (
+    row: normal,
+    row-reverse: reverse,
+    column: normal,
+    column-reverse: reverse,
+  );
+  @if map_has_key($old_map, $direction) {
+    -webkit-box-direction: map_get($old_map, $direction);
+  }
+
   -webkit-box-flex-direction: $direction;
   -moz-box-flex-direction: $direction;
   -webkit-flex-direction: $direction;
@@ -28,6 +38,16 @@
 
 // flex-start | flex-end | center | space-between | space-around
 @mixin justify-content($alignment) {
+  $old_map: (
+    flex-start: start,
+    flex-end: end,
+    center: center,
+    space-between: justify,
+  );
+  @if map_has_key($old_map, $alignment) {
+    -webkit-box-pack: map_get($old_map, $alignment);
+  }
+
   -webkit-box-justify-content: $alignment;
   -moz-box-justify-content: $alignment;
   -webkit-justify-content: $alignment;
@@ -37,6 +57,17 @@
 
 // flex-start | flex-end | center | baseline | stretch
 @mixin align-items($alignment) {
+  $old_map: (
+    flex-start: start,
+    flex-end: end,
+    center: center,
+    baseline: baseline,
+    stretch: stretch,
+  );
+  @if map_has_key($old_map, $alignment) {
+    -webkit-box-align: map_get($old_map, $alignment);
+  }
+
   -webkit-box-align-items: $alignment;
   -moz-box-align-items: $alignment;
   -webkit-align-items: $alignment;
