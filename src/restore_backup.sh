@@ -6,7 +6,7 @@ directory=$2
 
 if [[ -z "$directory" ]]
 then
-    directory=..
+    directory=$(dirname $(pwd))
 fi
 
 unzip -o $archive media/* -d $directory/
