@@ -82,7 +82,7 @@
     };
 
     CKEDITOR.dialog.add("pagephotos", function (editor) {
-		return {
+        return {
             title: gettext('Upload images'),
             minWidth: 680,
             minHeight: 400,
@@ -144,34 +144,34 @@
 
                 if (images.length) {
                     // Вставка картинок
-					var container = editor.getSelection().getStartElement();
-					if (container.hasClass('page-images')) {
-						if (images.length) {
-							for (tag_index=images.length-1; tag_index>=0; tag_index--) {
-								editor.insertHtml(images[tag_index])
-							}
-						}
-					} else {
-						container = editor.document.createElement('p');
-						container.addClass('page-images');
-						if (images.length) {
-							for (tag_index=images.length-1; tag_index>=0; tag_index--) {
-								container.appendHtml(images[tag_index])
-							}
-							editor.insertElement(container)
-						}
-					}
+                    var container = editor.getSelection().getStartElement();
+                    if (container.hasClass('page-images')) {
+                        if (images.length) {
+                            for (tag_index=images.length-1; tag_index>=0; tag_index--) {
+                                editor.insertHtml(images[tag_index])
+                            }
+                        }
+                    } else {
+                        container = editor.document.createElement('p');
+                        container.addClass('page-images');
+                        if (images.length) {
+                            for (tag_index=images.length-1; tag_index>=0; tag_index--) {
+                                container.appendHtml(images[tag_index])
+                            }
+                            editor.insertElement(container)
+                        }
+                    }
 
-					// Определение типа галереи
+                    // Определение типа галереи
                     if (container.getElementsByTag('img').count() > 1) {
-						container
-							.removeClass('single-image')
-							.addClass('multi-image')
-					} else {
-						container
-							.removeClass('multi-image')
-							.addClass('single-image')
-					}
+                        container
+                            .removeClass('single-image')
+                            .addClass('multi-image')
+                    } else {
+                        container
+                            .removeClass('multi-image')
+                            .addClass('single-image')
+                    }
                 }
             },
 
@@ -184,6 +184,6 @@
                 }
             }
         }
-	})
+    })
 
 })(jQuery);

@@ -3,9 +3,9 @@
 */
 (function() {
 
-	CKEDITOR.plugins.add( 'enterfix', {
-		init: function(editor) {
-			editor.on('key', function(evt) {
+    CKEDITOR.plugins.add( 'enterfix', {
+        init: function(editor) {
+            editor.on('key', function(evt) {
                 if (evt.data.keyCode === 13) {
                     // if we call getStartElement too soon, we get the wrong element
                     setTimeout(function() {
@@ -15,7 +15,7 @@
                     }, 10);
                 }
             });
-		}
-	} );
+        }
+    } );
 
 })();

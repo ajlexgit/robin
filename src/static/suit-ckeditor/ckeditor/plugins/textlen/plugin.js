@@ -2,11 +2,11 @@
 'use strict';
 
 ( function() {
-	CKEDITOR.plugins.add( 'textlen', {
-		init: function( editor ) {
-			// This feature is available only for themed ui instance.
-			if ( editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE )
-				return;
+    CKEDITOR.plugins.add( 'textlen', {
+        init: function( editor ) {
+            // This feature is available only for themed ui instance.
+            if ( editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE )
+                return;
 
             var get_clear_textlen = function(text) {
                 var text = $.trim(text.replace(/<\/?[^>]+>/gi, '').replace(/(&nbsp;|&laquo;|&raquo)/g, " ").replace(/ +/g, " "));
@@ -14,7 +14,7 @@
             };
 
             editor.on('instanceReady', function(){
-				var element = this.document.createElement('span'),
+                var element = this.document.createElement('span'),
                     current_html = this.document.getBody().getHtml(),
                     bottom = this.ui.space('bottom');
 
@@ -31,8 +31,8 @@
                     var current_html = this.body.innerHTML.replace(/<\/p>([^$]+?)/g, '</p>\n$1');
                     bottom.$.getElementsByClassName('cke_path_item').item(0).textContent = get_clear_textlen(current_html);
                 });
-			});
-		}
-	} );
+            });
+        }
+    } );
 
 } )();

@@ -1,7 +1,7 @@
 (function($) {
 
-	CKEDITOR.dialog.add("pagevideos", function (editor) {
-		return {
+    CKEDITOR.dialog.add("pagevideos", function (editor) {
+        return {
             title: gettext('Insert video'),
             minWidth: 600,
             minHeight: 400,
@@ -9,42 +9,42 @@
                 id: 'tab-basic',
                 label: 'Basic Settings',
                 elements: [
-					{
-						type: 'html',
-						id: 'oembedHeader',
-						html: gettext('Input URL containing video (YouTube, Flickr, Vimeo etc)')
-					},
-					{
-						type: 'text',
-						id: 'embedCode',
-						label: 'URL',
-						title: gettext('Input URL containing video (YouTube, Flickr, Vimeo etc)')
-					}
-				]
+                    {
+                        type: 'html',
+                        id: 'oembedHeader',
+                        html: gettext('Input URL containing video (YouTube, Flickr, Vimeo etc)')
+                    },
+                    {
+                        type: 'text',
+                        id: 'embedCode',
+                        label: 'URL',
+                        title: gettext('Input URL containing video (YouTube, Flickr, Vimeo etc)')
+                    }
+                ]
             }],
 
-			onShow: function() {
-				var element = editor.getSelection().getStartElement();
+            onShow: function() {
+                var element = editor.getSelection().getStartElement();
                 var embedCode = this.getContentElement('tab-basic', 'embedCode').getInputElement();
 
                 if (element.hasClass('page-video')) {
-					embedCode.setValue(element.data('url'));
-				}
+                    embedCode.setValue(element.data('url'));
+                }
 
                 embedCode.focus(true);
-			},
+            },
 
-			onOk: function() {
-				var element = editor.getSelection().getStartElement();
-				var url = this.getValueOf('tab-basic', 'embedCode');
-				var provider = $.fn.oembed.getOEmbedProvider(url);
+            onOk: function() {
+                var element = editor.getSelection().getStartElement();
+                var url = this.getValueOf('tab-basic', 'embedCode');
+                var provider = $.fn.oembed.getOEmbedProvider(url);
                 var dialog = this;
 
-				// Вставка родительского контейнера
-				if (!element.hasClass('page-video')) {
+                // Вставка родительского контейнера
+                if (!element.hasClass('page-video')) {
                     element = editor.document.createElement('p');
                     element.addClass('page-video');
-					editor.insertElement(element);
+                    editor.insertElement(element);
                 }
 
                 element.addClass(provider.name);
@@ -152,10 +152,10 @@
 
                         $element.attr('data-url', url).data('url', url);
                         dialog.hide();
-					}
-				})
-			}
+                    }
+                })
+            }
         }
-	})
+    })
 
 })(jQuery);
