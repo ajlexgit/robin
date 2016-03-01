@@ -82,33 +82,12 @@
 
   <script src="{% url 'jsi18n' %}"></script>
 
-  <!-- Polifills -->
-  <!--[if lte IE 9]>
-    <script src="{% static 'polyfills/es5-shim.min.js' %}"></script>
-  <![endif]-->
-
-  <script src="{% static 'js/modernizr.js' %}"></script>
-  <script>
-    var loadJS = function(src, async) {
-      var script = document.createElement('script');
-      script.src = src;
-      script.async = async || false;
-      document.body.appendChild(script);
-    };
-
-    if (!Modernizr.flexbox) {
-      loadJS("/static/polyfills/respond.min.js");
-    }
-
-    if (!Modernizr.svg) {
-      loadJS("/static/polyfills/svg2png.js");
-    }
-  </script>
-
   {% block static_js %}
     {% js_storage_out %}
     {% javascript 'core' %}
   {% endblock static_js %}
+
+  <script src="{% static 'polyfills/loader.js' %}"></script>
 
   {% seo_counters 'body_bottom' %}
 </body>
