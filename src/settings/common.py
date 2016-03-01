@@ -217,7 +217,6 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'core': {
         'source_filenames': (
-            'js/modernizr.js',
             'js/jquery-2.1.4.min.js',
             'js/jquery-ui-effects.js',
             'js/jquery.form.js',
