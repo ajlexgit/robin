@@ -81,6 +81,10 @@
   </div>
 
   <script src="{% url 'jsi18n' %}"></script>
+  
+  <!--[if lte IE 9]>
+    <script src="{% static 'polyfills/es5-shim.min.js' %}"></script>
+  <![endif]-->
 
   {% block static_js %}
     {% js_storage_out %}
