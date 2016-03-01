@@ -81,9 +81,10 @@
   </div>
 
   <script src="{% url 'jsi18n' %}"></script>
-  
+
   <!--[if lte IE 9]>
     <script src="{% static 'polyfills/es5-shim.min.js' %}"></script>
+    <script src="{% static 'polyfills/respond.min.js' %}" defer async></script>
   <![endif]-->
 
   {% block static_js %}
@@ -91,7 +92,7 @@
     {% javascript 'core' %}
   {% endblock static_js %}
 
-  <script src="{% static 'polyfills/loader.js' %}"></script>
+  <script src="{% static 'polyfills/loader.js' %}" defer async></script>
 
   {% seo_counters 'body_bottom' %}
 </body>

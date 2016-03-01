@@ -32,7 +32,7 @@ $arrow_image_maxwidth: (
     top: 50%;
     width: $arrow_image_width;
     @include media_map(max-width, $arrow_image_maxwidth);
-    @include transform(translate3d(-50%, -50%, 0));
+    @include transform(translate(-50%, -50%));
 
     &:before {
       content: '';
@@ -49,7 +49,7 @@ $arrow_image_maxwidth: (
 
     span {
       // фикс оптической иллюзии, что стрелка не по центру
-      @include transform(translate3d(-62%, -50%, 0));
+      @include transform(translate(-62%, -50%));
     }
   }
 
@@ -58,7 +58,7 @@ $arrow_image_maxwidth: (
 
     span {
       // фикс оптической иллюзии, что стрелка не по центру
-      @include transform(translate3d(-38%, -50%, 0));
+      @include transform(translate(-38%, -50%));
 
       &:before {
         @include transform(rotate(180deg));
