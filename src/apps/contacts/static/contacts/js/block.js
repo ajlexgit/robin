@@ -15,7 +15,7 @@
                     content: response
                 }).show();
 
-                InitContactPopup(popup.$content.find('form'));
+                InitContactPopup(popup);
             },
             error: function() {
                 alert(window.DEFAULT_AJAX_ERROR);
@@ -27,11 +27,18 @@
     /*
         Инициализация окна контактов
      */
-    var InitContactPopup = function($form) {
+    var InitContactPopup = function(popup) {
+        var $form = popup.$content.find('form');
+
         $form.on('submit', function() {
+            $.preloader();
+
             // добавление адреса страницы, откуда отправлена форма
-            var data = new FormData(this);
-            data.append('referer', location.href);
+            var data = $(this).serializeArray();
+            data.push({
+                name: 'referer',
+                value: location.href
+            });
 
             $.ajax({
                 url: window.js_storage.ajax_contact,
@@ -55,7 +62,7 @@
                             content: response.form
                         }).show();
 
-                        InitContactPopup(popup.$content.find('form'));
+                        InitContactPopup(popup);
                     } else {
                         alert(window.DEFAULT_AJAX_ERROR);
                         $.popup().hide();
