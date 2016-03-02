@@ -1,6 +1,7 @@
 import os
 import sys
 
+# js templates
 # gallery: max photos, blank == no images
 # payment modules
 # nested inlines
