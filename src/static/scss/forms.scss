@@ -15,6 +15,9 @@ textarea, select {
   @include font_default;
   @include font-size(16px);
   @include border_radius(4px);
+  @include media_interval(0, $media480) {
+    width: 100%;  // fix old safari
+  }
 }
 
 // стандартные стили fieldset в форме
