@@ -94,6 +94,10 @@
 
 // int >= 0
 @mixin flex-grow($grow) {
+  @if ($grow != 0) {
+    -webkit-box-flex: $grow;
+  }
+
   -webkit-box-flex-grow: $grow;
   -moz-box-flex-grow: $grow;
   -webkit-flex-grow: $grow;
@@ -159,6 +163,12 @@
 @mixin flex($args...) {
   $result: ();
   $params: nth($args, 1);
+
+  @if (length($params) == 3) {
+    @if (nth($params, 1) != 0) {
+      -webkit-box-flex: nth($params, 1);
+    }
+  }
 
   // IE fix
   @if ((length($params) == 3) and (nth($params, 3) == 0)) {
