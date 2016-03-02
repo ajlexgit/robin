@@ -1,7 +1,7 @@
 (function() {
 
     CKEDITOR.dialog.add("simplephotos_image_description", function (editor) {
-		return {
+        return {
             title: gettext('Set image description'),
             minWidth: 400,
             minHeight: 100,
@@ -41,6 +41,6 @@
                 element.setAttribute('alt', textarea.getValue());
             }
         }
-	})
+    })
 
 })();

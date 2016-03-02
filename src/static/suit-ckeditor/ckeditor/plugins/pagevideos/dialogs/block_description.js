@@ -16,7 +16,7 @@
     };
 
     CKEDITOR.dialog.add("pagevideos_block_description", function (editor) {
-		return {
+        return {
             title: gettext('Set block description'),
             minWidth: 400,
             minHeight: 100,
@@ -65,6 +65,6 @@
                 }
             }
         }
-	})
+    })
 
 })();

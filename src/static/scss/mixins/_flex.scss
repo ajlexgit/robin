@@ -10,14 +10,13 @@
 
 // row | row-reverse | column | column-reverse
 @mixin flex-direction($direction) {
-  $old_map: (
-    row: normal,
-    row-reverse: reverse,
-    column: normal,
-    column-reverse: reverse,
-  );
-  @if map_has_key($old_map, $direction) {
-    -webkit-box-direction: map_get($old_map, $direction);
+  @if ($direction == 'row-reverse') {
+    -webkit-box-direction: reverse;
+  } @else if ($direction == 'column') {
+    -webkit-box-orient: vertical;
+  } @else if ($direction == 'column') {
+    -webkit-box-direction: reverse;
+    -webkit-box-orient: vertical;
   }
 
   -webkit-box-flex-direction: $direction;
@@ -136,6 +135,19 @@
 
 // <'flex-direction'> || <'flex-wrap'>
 @mixin flex-flow($args...) {
+  $params: nth($args, 1);
+  @if (length($params) == 2) {
+    $direction: nth($params, 1);
+    @if ($direction == 'row-reverse') {
+      -webkit-box-direction: reverse;
+    } @else if ($direction == 'column') {
+      -webkit-box-orient: vertical;
+    } @else if ($direction == 'column') {
+      -webkit-box-direction: reverse;
+      -webkit-box-orient: vertical;
+    }
+  }
+
   -webkit-box-flex-flow: $args;
   -moz-box-flex-flow: $args;
   -webkit-flex-flow: $args;

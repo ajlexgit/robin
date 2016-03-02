@@ -1,7 +1,7 @@
 from settings.common import *
 
-DOMAIN = 'directlinedev.com'
-VZ_DIRECTORY = 'directlinedev.com'
+DOMAIN = 'direktweb.ru'
+VZ_DIRECTORY = 'project.dev.direktweb.ru'
 
 # Имя хоста (имя виртуальной машины - master, staging и т.д.), должно быть настроено на виртуалке
 # Метка %HOSTNAME% при развёртывании заменяется на настоящее имя виртуалки

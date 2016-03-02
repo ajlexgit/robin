@@ -12,7 +12,7 @@ $window_margin: (
 // максимальная ширина окна
 $window_max_width: (
     ($media1024, 0): 70%,
-	($media480, $media1024): 80%,
+    ($media480, $media1024): 80%,
     (0, $media480): 90%,
 );
 

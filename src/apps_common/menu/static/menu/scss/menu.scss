@@ -64,9 +64,9 @@ $mobile_active_color: $menu_active_color;
     display: block;
   }
   @include media_interval(0, $media480) {
-		width: 80%;
-		text-align: right;
-	}
+    width: 80%;
+    text-align: right;
+  }
 
   ul {
     position: relative;
