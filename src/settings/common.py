@@ -220,7 +220,6 @@ PIPELINE_JS = {
             'polyfills/modernizr.js',
             'js/jquery-2.1.4.min.js',
             'js/jquery-ui-effects.js',
-            'js/jquery.form.js',
 
             'common/js/jquery.cookie.js',
             'common/js/jquery.utils.js',
