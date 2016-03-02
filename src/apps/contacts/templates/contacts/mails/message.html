@@ -17,5 +17,5 @@
 {% endif %}
 
 {% if message.referer %}
-  <p><b>From page:</b> {{ message.referer }}</p>
+  <p><b>From page:</b> <a href="{{ message.referer }}" target="_blank">{{ message.referer }}</a></p>
 {% endif %}
