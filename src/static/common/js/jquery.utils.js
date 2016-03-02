@@ -895,7 +895,13 @@
 
 
     /*
-        Создает Deferred-объект, который загружает картинку из файла.
+        Создает Deferred-объект, который загружает картинку из объекта Blob или File.
+        Возвращает base64-кодированную строку данных (DataURL).
+
+        Пример:
+            $.fileReaderDeferred(file).done(function(data) {
+                $('img').attr('src', data);
+            });
     */
     $.fileReaderDeferred = function(file) {
         var df = $.Deferred();
@@ -919,9 +925,10 @@
 
 
     /*
-        Создает Deferred-объект, который читает файл по URL.
+        Создает Deferred-объект, который читает текстовый файл из URL.
+        Возвращает текст файла.
      */
-    $.urlReader = function(url) {
+    $.urlReaderDeferred = function(url) {
         var df = $.Deferred();
 
         var xhr = new XMLHttpRequest();
@@ -946,7 +953,10 @@
 
 
     /*
-        Создает Deferred-объект, который загружает картинку.
+        Создает Deferred-объект, который загружает картинку по урлу
+        или из base64-кодированных данных (DataURL).
+
+        Возвращает объект Image.
     */
     $.loadImageDeferred = function(src) {
         var df = $.Deferred();
@@ -963,14 +973,17 @@
 
 
     /*
-        Возвращает canvas с картинкой с указанными ограничениями размеров.
-        Можно не указывать размеры, или указать один из них.
+        Возвращает canvas с вписанной картинкой.
+        Опционально, можно указать ограничения размера канвы.
+
+        Принимает тэг img, video, объект Image или Canvas.
+        Возвращает объект Canvas.
 
         Уменьшение размера происходит очень быстро, но некачественно.
 
         Пример:
-            $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
-                $.loadImageDeferred(src).done(function(img) {
+            $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(data) {
+                $.loadImageDeferred(data).done(function(img) {
                     var canvas = $.imageToCanvas(img, 360, 360);
                     $('#test').after(canvas);
                 });
@@ -998,12 +1011,12 @@
         Можно не указывать размеры, или указать один из них.
 
         Качество выше, чем у $.imageToCanvas, но всё равно не идеально.
-        Для лучшего качества используете плагин pica: https://github.com/nodeca/pica
+        Для лучшего качества используйте плагин pica: https://github.com/nodeca/pica
 
         Пример:
             $.fileReaderDeferred($('#test').prop('files').item(0)).done(function(src) {
-                $.loadImageDeferred(src).done(function(img) {
-                    $.imageToCanvasDeferred(img, 360, 360).done(function(canvas) {
+                $.loadImageDeferred(src).done(function(image) {
+                    $.imageToCanvasDeferred(image, 360, 360).done(function(canvas) {
                         $('#test').after(canvas);
                     });
                 });
