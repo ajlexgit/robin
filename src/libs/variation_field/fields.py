@@ -261,23 +261,24 @@ class VariationImageFieldFile(ImageFieldFile):
         """
         quality = quality or self.field.get_source_quality(self.instance)
 
-        with self as field_file:
-            field_file.open()
-            source_image = Image.open(field_file)
+        try:
+            self.open()
+            source_image = Image.open(self)
             source_format = source_image.format
-            source_image.load()
 
-        info = dict(source_image.info,
-            quality=quality,
-        )
+            info = dict(source_image.info,
+                quality=quality,
+            )
 
-        source_image = source_image.rotate(-angle)
-        source_image.format = source_format
-        with self.storage.open(self.name, 'wb') as destination:
-            try:
-                source_image.save(destination, source_format, optimize=1, **info)
-            except IOError:
-                source_image.save(destination, source_format, **info)
+            source_image = source_image.rotate(-angle, expand=True)
+            source_image.format = source_format
+            with self.storage.open(self.name, 'wb') as destination:
+                try:
+                    source_image.save(destination, source_format, optimize=1, **info)
+                except IOError:
+                    source_image.save(destination, source_format, **info)
+        finally:
+            self.close()
 
         # Сброс закэшированных размеров
         self.clear_dimensions()
@@ -285,16 +286,19 @@ class VariationImageFieldFile(ImageFieldFile):
         # Обрабатываем вариации
         self.field.create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
-            target_format = variation['format'] or source_format
-            self.field.resize_image(
-                self.instance,
-                variation,
-                target_format,
-                source_image
-            )
+            try:
+                self.open()
+                source_image = Image.open(self)
 
-        # Освобожение ресурсов
-        source_image.close()
+                target_format = variation['format'] or source_format
+                self.field.resize_image(
+                    self.instance,
+                    variation,
+                    target_format,
+                    source_image
+                )
+            finally:
+                self.close()
 
     def save(self, name, content, save=True):
         newfile_attrname = '_{}_new_file'.format(self.field.name)
