@@ -213,39 +213,33 @@ class VariationImageFieldFile(ImageFieldFile):
         # Форматирование параметров обрезки
         self.croparea = croparea
 
-        with self as field_file:
-            field_file.open()
-            source_image = Image.open(field_file)
-            source_format = source_image.format
-            source_image.load()
-
-        # Обрезаем по рамке
-        temp_image = variation_crop(source_image, self.croparea)
-
         # Обрабатываем вариации
         self.field.create_variation_fields(self.instance, field_file=self)
         for name, variation in self.variations.items():
-            if args and name not in args:
-                continue
+            with self as field_file:
+                field_file.open()
+                source_image = Image.open(field_file)
 
-            target_format = variation['format'] or source_format
-            if variation['use_source']:
-                self.field.resize_image(
-                    self.instance,
-                    variation,
-                    target_format,
-                    source_image
-                )
-            else:
-                self.field.resize_image(
-                    self.instance,
-                    variation,
-                    target_format,
-                    temp_image
-                )
+                if args and name not in args:
+                    continue
 
-        # Освобожение ресурсов
-        source_image.close()
+                target_format = variation['format'] or source_image.format
+                if variation['use_source']:
+                    self.field.resize_image(
+                        self.instance,
+                        variation,
+                        target_format,
+                        source_image
+                    )
+                else:
+                    # Обрезаем по рамке
+                    temp_image = variation_crop(source_image, self.croparea)
+                    self.field.resize_image(
+                        self.instance,
+                        variation,
+                        target_format,
+                        temp_image
+                    )
 
         if self.field.crop_field:
             self.set_crop_field(self.instance, croparea)
@@ -586,13 +580,11 @@ class VariationImageField(models.ImageField):
         image = variation_mask(image, variation)
         return image
 
-    def resize_image(self, instance, variation, target_format, source_image):
+    def resize_image(self, instance, variation, target_format, variation_image):
         """ Обработка и сохранение одной вариации """
         field_file = self.value_from_object(instance)
         if not field_file or not field_file.exists():
             return
-
-        variation_image = source_image.copy()
 
         # Целевой формат
         target_format = target_format.upper()
@@ -632,24 +624,33 @@ class VariationImageField(models.ImageField):
         variation_field = getattr(field_file, variation['name'])
         variation_field.clear_dimensions()
 
-    def build_variation_images(self, instance, source_image, croparea=None):
+    def build_variation_images(self, instance, croparea=None):
         """
             Обрезает картинку source_image по заданным координатам
             и создает из результата файлы вариаций.
         """
         field_file = self.value_from_object(instance)
-        current_image = variation_crop(source_image, croparea)
-
-        if source_image.format is None:
-            print('Warning: Image format is None (build_variation_imagesImage)')
+        if not field_file or not field_file.exists():
+            return
 
         self.create_variation_fields(instance)
         for name, variation in field_file.variations.items():
-            target_format = variation['format'] or source_image.format
-            if variation.get('use_source'):
-                self.resize_image(instance, variation, target_format, source_image)
-            else:
-                self.resize_image(instance, variation, target_format, current_image)
+            try:
+                field_file.open()
+                source_image = Image.open(field_file)
+
+                if source_image.format is None:
+                    print('Warning: Image format is None (build_variation_imagesImage)')
+
+                target_format = variation['format'] or source_image.format
+                if variation.get('use_source'):
+                    self.resize_image(instance, variation, target_format, source_image)
+                else:
+                    # Обрезаем по рамке
+                    current_image = variation_crop(source_image, croparea)
+                    self.resize_image(instance, variation, target_format, current_image)
+            finally:
+                field_file.close()
 
     def _post_save(self, instance, **kwargs):
         """ Обертка над реальным обработчиком """
@@ -706,7 +707,6 @@ class VariationImageField(models.ImageField):
                         field_file.croparea = croparea
 
             source_image.format = source_format
-            source_image.load()
         finally:
             field_file.close()
 
@@ -724,7 +724,7 @@ class VariationImageField(models.ImageField):
         self.update_instance(instance, **update_fields)
 
         # Обрабатываем вариации
-        self.build_variation_images(instance, source_image, croparea=field_file.croparea)
+        self.build_variation_images(instance, croparea=field_file.croparea)
 
     def post_delete(self, instance=None, **kwargs):
         """ Обработчик сигнала удаления экземпляра модели """
