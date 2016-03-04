@@ -49,8 +49,7 @@
         # после неудачной оплаты
         GOTOBILLING_FAIL_REDIRECT_URL = 'shop:index'
 
-    Примеры:
-
+    Пример:
         views.py:
             from gotobilling.forms import GotobillingForm
             ...
@@ -64,15 +63,15 @@
             ...
 
 
-            @receiver(gotobilling_paid)
-            def gotobilling_paid_handler(sender, **kwargs):
+            @receiver(gotobilling_success)
+            def gotobilling_success_handler(sender, **kwargs):
                 inv_id = kwargs['inv_id']
-                amount = kwargs['amount']
-
+                request = kwargs['request']
 
             @receiver(gotobilling_error)
             def gotobilling_error_handler(sender, **kwargs):
                 inv_id = kwargs['inv_id']
+                request = kwargs['request']
                 code = kwargs['code']
                 reason = kwargs['reason']
 

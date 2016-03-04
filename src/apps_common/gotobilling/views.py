@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from .models import Log
 from .forms import GotobillingResultForm
-from .signals import gotobilling_paid, gotobilling_error
+from .signals import gotobilling_success, gotobilling_error
 from . import conf
 
 
@@ -18,6 +18,7 @@ def _log_errors(errors):
 def result(request):
     """ Обработчик результата оплаты """
     data = request.GET
+    urlencoded = data.urlencode().replace('&', '\n')
 
     inv_id = data.get('x_invoice_num')
 
@@ -25,13 +26,12 @@ def result(request):
     Log.objects.create(
         inv_id=inv_id,
         status=Log.STATUS_MESSAGE,
-        request=data.urlencode().replace('&', '\n'),
+        request=urlencoded,
     )
 
     form = GotobillingResultForm(data)
     if form.is_valid():
         inv_id = form.cleaned_data['x_invoice_num']
-        amount = form.cleaned_data['x_amount']
 
         response_code = form.cleaned_data['x_response_code']
         if response_code == GotobillingResultForm.RESPONSE_CODE_APPROVED:
@@ -39,17 +39,17 @@ def result(request):
             #   Approved
             # ------------------------------
             try:
-                gotobilling_paid.send(
-                    sender=GotobillingResultForm,
+                gotobilling_success.send(
+                    sender=Log,
                     inv_id=inv_id,
-                    amount=amount,
+                    request=request,
                 )
             except Exception as e:
                 # log exception
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_EXCEPTION,
-                    request=data.urlencode().replace('&', '\n'),
+                    request=urlencoded,
                     message='Signal exception:\n{}: {}'.format(
                         e.__class__.__name__,
                         ', '.join(e.args),
@@ -60,9 +60,8 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_SUCCESS,
-                    request=data.urlencode().replace('&', '\n'),
+                    request=urlencoded,
                 )
-                return redirect(conf.SUCCESS_REDIRECT_URL)
         else:
             # ------------------------------
             #   Declined или Error
@@ -70,8 +69,9 @@ def result(request):
             reason = form.cleaned_data['x_response_reason_text']
             try:
                 gotobilling_error.send(
-                    sender=GotobillingResultForm,
+                    sender=Log,
                     inv_id=inv_id,
+                    request=request,
                     code=response_code,
                     reason=reason,
                 )
@@ -80,7 +80,7 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_EXCEPTION,
-                    request=data.urlencode().replace('&', '\n'),
+                    request=urlencoded,
                     message='Signal exception:\n{}: {}'.format(
                         e.__class__.__name__,
                         ', '.join(e.args),
@@ -91,18 +91,23 @@ def result(request):
                 Log.objects.create(
                     inv_id=inv_id,
                     status=Log.STATUS_ERROR,
-                    request=data.urlencode().replace('&', '\n'),
+                    request=urlencoded,
                     message=reason,
                 )
+
+            return redirect(conf.FAIL_REDIRECT_URL)
     else:
         # log form error
         Log.objects.create(
             inv_id=inv_id,
             status=Log.STATUS_ERROR,
-            request=data.urlencode().replace('&', '\n'),
+            request=urlencoded,
             message='Invalid form:\n{}'.format(
                 _log_errors(form.errors),
             )
         )
 
-    return redirect(conf.FAIL_REDIRECT_URL)
+    # Показываем Success даже если форма не валидна,
+    # чтобы не пугать пользователя, если, например,
+    # хэш рассчитывается неправильно
+    return redirect(conf.SUCCESS_REDIRECT_URL)

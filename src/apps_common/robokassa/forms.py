@@ -2,7 +2,6 @@ from hashlib import md5
 from urllib.parse import urlencode, quote_plus
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import Log
 from . import conf
 
 
@@ -51,6 +50,7 @@ class BaseRobokassaForm(forms.Form):
 
 
 class RobokassaForm(BaseRobokassaForm):
+    """ Форма для совершения платежа """
     # Параметр с URL'ом, на который будет отправлена форма.
     # Может пригодиться для использования в шаблоне.
     target = conf.FORM_TARGET
@@ -109,7 +109,7 @@ class RobokassaForm(BaseRobokassaForm):
 
 class ResultURLForm(BaseRobokassaForm):
     """
-        Форма для приема результатов и проверки контрольной суммы
+        Форма для обработки результата оплаты
     """
     SIGNATURE_FIELDS = ('OutSum', 'InvId')
     PASSWD = conf.PASSWORD2
@@ -128,37 +128,3 @@ class ResultURLForm(BaseRobokassaForm):
             raise forms.ValidationError(_('Invalid signature'))
 
         return self.cleaned_data
-
-
-class SuccessRedirectForm(ResultURLForm):
-    """
-        Форма для обработки страницы Success с дополнительной защитой. Она
-        проверяет, что ROBOKASSA предварительно уведомила систему о платеже,
-        отправив запрос на ResultURL.
-    """
-    PASSWD = conf.PASSWORD1
-
-    Culture = forms.CharField(max_length=10)
-
-    def clean(self):
-        data = super().clean()
-        if conf.STRICT_CHECK:
-            log_record = Log.objects.filter(
-                inv_id=data['InvId'],
-                status=Log.STATUS_SUCCESS
-            )
-            if not log_record.exists():
-                raise forms.ValidationError(_('Payment was not confirmed'))
-        return data
-
-class FailRedirectForm(BaseRobokassaForm):
-    """
-        Форма приема результатов для перенаправления на страницу Fail
-    """
-    OutSum = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
-    InvId = forms.IntegerField(min_value=0)
-    Culture = forms.CharField(max_length=10)
-
-
-
-

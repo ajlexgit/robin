@@ -16,8 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('inv_id', models.PositiveIntegerField(verbose_name='InvId', blank=True, null=True)),
-                ('step', models.PositiveSmallIntegerField(verbose_name='step', choices=[(1, 'Result'), (2, 'Success Page'), (3, 'Fail page')])),
-                ('status', models.PositiveSmallIntegerField(verbose_name='status', choices=[(1, 'Message'), (2, 'Warning'), (3, 'Success'), (4, 'Error')])),
+                ('status', models.PositiveSmallIntegerField(verbose_name='status', choices=[(1, 'Message'), (2, 'Success'), (3, 'Error'), (4, 'Exception')])),
                 ('message', models.CharField(verbose_name='message', max_length=255)),
                 ('request', models.TextField(verbose_name='request')),
                 ('created', models.DateTimeField(editable=False, verbose_name='create date', default=django.utils.timezone.now)),

@@ -8,14 +8,4 @@ urlpatterns = patterns('',
         views.result,
         name='result'
     ),
-    url(
-        r'^success/$',
-        views.success,
-        name='success'
-    ),
-    url(
-        r'^fail/$',
-        views.fail,
-        name='fail'
-    ),
 )

@@ -5,29 +5,17 @@ from django.utils.translation import ugettext_lazy as _
 
 class Log(models.Model):
     STATUS_MESSAGE = 1
-    STATUS_WARNING = 2
-    STATUS_SUCCESS = 3
-    STATUS_ERROR = 4
-    STATUS_EXCEPTION = 5
+    STATUS_SUCCESS = 2
+    STATUS_ERROR = 3
+    STATUS_EXCEPTION = 4
     STATUSES = (
         (STATUS_MESSAGE, _('Message')),
-        (STATUS_WARNING, _('Warning')),
         (STATUS_SUCCESS, _('Success')),
         (STATUS_ERROR, _('Error')),
         (STATUS_EXCEPTION, _('Exception')),
     )
 
-    STEP_RESULT = 1
-    STEP_SUCCESS = 2
-    STEP_FAIL = 3
-    STEPS = (
-        (STEP_RESULT, _('Result')),
-        (STEP_SUCCESS, _('Success Page')),
-        (STEP_FAIL, _('Fail page')),
-    )
-
     inv_id = models.PositiveIntegerField(_('InvId'), blank=True, null=True)
-    step = models.PositiveSmallIntegerField(_('step'), choices=STEPS)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUSES)
     message = models.CharField(_('message'), max_length=255)
     request = models.TextField(_('request'))

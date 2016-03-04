@@ -14,7 +14,8 @@ class LogAdmin(ModelAdminMixin, admin.ModelAdmin):
             ),
         }),
     )
-    list_filter = ('inv_id', 'status')
+    list_filter = ('status',)
+    search_fields = ('inv_id',)
     list_display = ('inv_id', 'status', 'short_message', 'created')
     readonly_fields = ('status', 'message', 'request', 'created')
     list_display_links = ('inv_id', 'status', )

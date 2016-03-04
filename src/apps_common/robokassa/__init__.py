@@ -12,8 +12,6 @@
             ROBOKASSA_LOGIN = 'asskicker'
             ROBOKASSA_PASSWORD1 = 'hachapuri666'
             ROBOKASSA_PASSWORD2 = 'bublik72x'
-            ROBOKASSA_SUCCESS_REDIRECT_URL = 'shop:index'
-            ROBOKASSA_FAIL_REDIRECT_URL = 'shop:index'
             ROBOKASSA_TEST_MODE = True
 
             SUIT_CONFIG = {
@@ -43,21 +41,10 @@
         # Второй пароль магазина
         ROBOKASSA_PASSWORD2 = 'nkvo6s8bv'
 
-        # Адрес страницы, куда перенаправит пользователя
-        # после успешной оплаты
-        ROBOKASSA_SUCCESS_REDIRECT_URL = 'shop:index'
-
-        # Адрес страницы, куда перенаправит пользователя
-        # после неудачной оплаты
-        ROBOKASSA_FAIL_REDIRECT_URL = 'shop:index'
-
         # === Не обязательные ===
 
-        # Использовать метод POST для уведомлений
+        # Используется ли метод POST для ResultURL
         ROBOKASSA_USE_POST = True
-
-        # Требовать наличия уведомления ResultURL перед SuccessURL
-        ROBOKASSA_STRICT_CHECK = True
 
         # Тестовый режим магазина
         ROBOKASSA_TEST_MODE = False
@@ -65,8 +52,7 @@
         # Дополнительные данные уведомлений
         ROBOKASSA_EXTRA_PARAMS = ['shp_param1', 'shp_param2']
 
-    Примеры:
-
+    Пример:
         views.py:
             from robokassa.forms import RobokassaForm
             ...
@@ -78,11 +64,10 @@
             })
             ...
 
-            @receiver(robokassa_paid)
-            def robokassa_paid_handler(sender, **kwargs):
+            @receiver(robokassa_success)
+            def robokassa_success_handler(sender, **kwargs):
                 inv_id = kwargs['inv_id']
-                out_sum = kwargs['out_sum']
-                extra = kwargs['extra']
+                request = kwargs['request']
 
         template.html:
             <form action="{{ robokassa_form.target }}" method="post">
@@ -91,6 +76,4 @@
             </form>
 
 """
-
-# TODO: donut form
 default_app_config = 'robokassa.apps.Config'

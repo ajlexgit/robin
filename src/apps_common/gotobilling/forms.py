@@ -16,6 +16,7 @@ class BaseGotobillingForm(forms.Form):
 
 
 class GotobillingForm(BaseGotobillingForm):
+    """ Форма для совершения платежа """
     # Параметр с URL'ом, на который будет отправлена форма.
     # Может пригодиться для использования в шаблоне.
     target = conf.FORM_TARGET
@@ -76,7 +77,7 @@ class GotobillingForm(BaseGotobillingForm):
 
 class GotobillingResultForm(BaseGotobillingForm):
     """
-        Форма для приема результатов и проверки контрольной суммы
+        Форма для обработки результата оплаты
     """
     SIGNATURE_FIELDS = ('x_trans_id', 'x_amount')
 
