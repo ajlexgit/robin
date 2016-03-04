@@ -13,9 +13,9 @@ class ValuteField(models.DecimalField):
     ]
 
     def __init__(self, *args, **kwargs):
-        kwargs['default'] = 0
-        kwargs['max_digits'] = DEFAULT_MAX_DIGITS
-        kwargs['decimal_places'] = DEFAULT_DECIMAL_PLACES
+        kwargs.setdefault('default', 0)
+        kwargs.setdefault('max_digits', DEFAULT_MAX_DIGITS)
+        kwargs.setdefault('decimal_places', DEFAULT_DECIMAL_PLACES)
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):
