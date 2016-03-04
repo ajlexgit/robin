@@ -1,6 +1,7 @@
 import os
 import sys
 
+# filedropper - not only files
 # alias unique for cases
 # filereader big files
 # js templates
