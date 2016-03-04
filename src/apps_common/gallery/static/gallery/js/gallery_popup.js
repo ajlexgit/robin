@@ -131,7 +131,7 @@
             $item.append($image, $playBtn);
 
             var that = this;
-            $item.on(touchClick, '.play-btn', function() {
+            $item.on('click', '.play-btn', function() {
                 that.playVideo($(this).closest('.' + that.opts.videoItemClass));
             }).data({
                 provider: data.provider,

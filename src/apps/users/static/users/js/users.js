@@ -26,7 +26,7 @@
         });
     };
 
-    $(document).on(touchClick, '.login-popup', function() {
+    $(document).on('click', '.login-popup', function() {
         // Открытие окна авторизации
         loginPopup();
         return false;
@@ -88,7 +88,7 @@
         });
     };
 
-    $(document).on(touchClick, '.register-popup', function() {
+    $(document).on('click', '.register-popup', function() {
         // Открытие окна регистрации
         registerPopup();
         return false;
@@ -150,7 +150,7 @@
         });
     };
 
-    $(document).on(touchClick, '.reset-password-popup', function() {
+    $(document).on('click', '.reset-password-popup', function() {
         // Открытие окна сброса пароля
         resetPasswordPopup();
         return false;
@@ -210,7 +210,7 @@
         });
     };
 
-    $(document).on(touchClick, '.reset-confirm-popup', function() {
+    $(document).on('click', '.reset-confirm-popup', function() {
         // Открытие окна установки пароля
         resetConfirmPopup();
         return false;
@@ -271,7 +271,7 @@
         });
     };
 
-    $(document).on(touchClick, '.logout', function() {
+    $(document).on('click', '.logout', function() {
         logoutPopup();
         return false;
     });

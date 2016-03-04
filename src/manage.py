@@ -2,7 +2,6 @@ import os
 import sys
 
 # alias unique for cases
-# lower memory upload
 # filereader big files
 # js templates
 # gallery: max photos, blank == no images

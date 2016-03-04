@@ -95,7 +95,7 @@
 
             // клик на кнопки сворачивания / разворачивания
             var that = this;
-            this.$root.on(touchClick + '.expander', this.opts.buttonSelector, function() {
+            this.$root.on('click.expander', this.opts.buttonSelector, function() {
                 if (that._expanded) {
                     that.reduce($(this));
                 } else {

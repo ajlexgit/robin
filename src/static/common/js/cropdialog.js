@@ -52,7 +52,7 @@
      */
     window.CropDialog = Class(Object, function CropDialog(cls, superclass) {
         cls.defaults = {
-            eventTypes: touchClick,
+            eventTypes: 'click',
             buttonSelector: 'button',
             dialogImageMaxSize: [600, 500],
             dialogOptions: {},

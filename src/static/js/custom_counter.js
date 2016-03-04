@@ -100,13 +100,13 @@
 
             // уменьшение значения
             var that = this;
-            this.$decrBtn.on(touchClick + '.counter', function() {
+            this.$decrBtn.on('click.counter', function() {
                 that.decrement();
                 return false;
             });
 
             // увеличение значения
-            this.$incrBtn.on(touchClick + '.counter', function() {
+            this.$incrBtn.on('click.counter', function() {
                 that.increment();
                 return false;
             });

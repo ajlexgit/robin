@@ -78,7 +78,7 @@
     /*
         Открытие окна контактов при клике на кнопки
      */
-    $(document).on(touchClick, '.open-contact-popup', function() {
+    $(document).on('click', '.open-contact-popup', function() {
         contactPopup();
         return false;
     });

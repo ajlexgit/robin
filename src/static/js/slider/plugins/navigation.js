@@ -88,7 +88,7 @@
             }
 
             var that = this;
-            this.$wrapper.on(touchClick + '.slider.navigation', '.' + this.opts.itemClass, function() {
+            this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
                 slider.slideTo(
