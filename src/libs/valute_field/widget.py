@@ -14,9 +14,9 @@ WIDGET_SETTINGS = {
     }
 }
 
-for langs, value in WIDGET_SETTINGS.items():
+for langs, opts in WIDGET_SETTINGS.items():
     if settings.SHORT_LANGUAGE_CODE in langs:
-        widget_kwargs = value
+        widget_kwargs = opts
         break
 else:
     widget_kwargs = {}
@@ -34,7 +34,7 @@ class ValuteWidget(EnclosedInput, widgets.NumberInput):
             value = ''
 
         if isinstance(value, Valute):
-            value = value.as_string
+            value = value.as_string()
 
         return super().render(name, value, attrs)
 

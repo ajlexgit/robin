@@ -33,10 +33,6 @@ class Valute:
     def __repr__(self):
         return "%s('%s')" % (self.__class__.__name__, self)
 
-    @property
-    def as_decimal(self):
-        return self._value
-
     def _join(self, int_part, frac_part):
         """ Объединение частей цены разделителем """
         if not frac_part:
@@ -57,11 +53,10 @@ class Valute:
     def __str__(self):
         return self.utf
 
-    @cached_property
+    def as_decimal(self):
+        return self._value
+
     def as_string(self):
-        """
-            Для виджета
-        """
         _int = self._int
         _frac = self._frac
         return self._join(_int, _frac)

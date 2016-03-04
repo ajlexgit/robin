@@ -39,7 +39,11 @@ class ValuteField(models.DecimalField):
 
     def get_db_prep_save(self, value, connection):
         value = self.to_python(value)
-        return connection.ops.value_to_db_decimal(value.as_decimal, self.max_digits, self.decimal_places)
+        return connection.ops.value_to_db_decimal(
+            value.as_decimal(),
+            self.max_digits,
+            self.decimal_places
+        )
 
     def get_prep_value(self, value):
         value = super().get_prep_value(value)
@@ -49,7 +53,7 @@ class ValuteField(models.DecimalField):
         if not isinstance(value, Valute):
             value = Valute(value)
 
-        return value.as_decimal
+        return value.as_decimal()
 
     def to_python(self, value):
         if value is None:
@@ -68,4 +72,4 @@ class ValuteField(models.DecimalField):
         return self.get_prep_value(value)
 
     def run_validators(self, value):
-        return super().run_validators(value.as_decimal)
+        return super().run_validators(value.as_decimal())

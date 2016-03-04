@@ -19,7 +19,7 @@ class ValuteFormField(forms.DecimalField):
             raise exceptions.ValidationError(e)
 
     def validate(self, value):
-        return super().validate(value.as_decimal)
+        return super().validate(value.as_decimal())
 
     def widget_attrs(self, widget):
         attrs = super().widget_attrs(widget)

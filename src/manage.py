@@ -1,7 +1,6 @@
 import os
 import sys
 
-# valute: as_decimal, as_string
 # filedropper - not only files
 # alias unique for cases
 # filereader big files
