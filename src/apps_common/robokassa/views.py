@@ -23,23 +23,16 @@ def result(request):
     data = request.POST if conf.USE_POST else request.GET
     urlencoded = data.urlencode().replace('&', '\n')
 
-    # попытка получить InvId
-    inv_id = data.get('InvId')
-    try:
-        inv_id = int(inv_id)
-    except (TypeError, ValueError):
-        inv_id = None
-
     # log result data
     Log.objects.create(
-        inv_id=inv_id,
+        inv_id=data.get('InvId'),
         status=Log.STATUS_MESSAGE,
         request=urlencoded,
     )
 
     form = ResultURLForm(data)
     if form.is_valid():
-        inv_id = form.cleaned_data['InvId']
+        invoice = form.cleaned_data['InvId']
 
         extra = {}
         for key in EXTRA_PARAMS:
@@ -49,13 +42,13 @@ def result(request):
             robokassa_success.send(
                 sender=Log,
                 request=request,
-                invoice=inv_id,
+                invoice=invoice,
                 extra=extra,
             )
         except Exception as e:
             # log exception
             Log.objects.create(
-                inv_id=inv_id,
+                inv_id=invoice,
                 status=Log.STATUS_EXCEPTION,
                 request=urlencoded,
                 message='Signal exception:\n{}: {}'.format(
@@ -66,7 +59,7 @@ def result(request):
         else:
             # log success
             Log.objects.create(
-                inv_id=inv_id,
+                inv_id=invoice,
                 status=Log.STATUS_SUCCESS,
                 request=urlencoded,
             )
@@ -74,7 +67,7 @@ def result(request):
     else:
         # log form error
         Log.objects.create(
-            inv_id=inv_id,
+            inv_id=data.get('InvId'),
             status=Log.STATUS_ERROR,
             request=urlencoded,
             message='Invalid form:\n{}'.format(

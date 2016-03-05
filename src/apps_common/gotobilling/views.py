@@ -20,18 +20,16 @@ def result(request):
     data = request.GET
     urlencoded = data.urlencode().replace('&', '\n')
 
-    inv_id = data.get('x_invoice_num')
-
     # log data
     Log.objects.create(
-        inv_id=inv_id,
+        inv_id=data.get('x_invoice_num'),
         status=Log.STATUS_MESSAGE,
         request=urlencoded,
     )
 
     form = GotobillingResultForm(data)
     if form.is_valid():
-        inv_id = form.cleaned_data['x_invoice_num']
+        invoice = form.cleaned_data['x_invoice_num']
 
         response_code = form.cleaned_data['x_response_code']
         if response_code == GotobillingResultForm.RESPONSE_CODE_APPROVED:
@@ -41,13 +39,13 @@ def result(request):
             try:
                 gotobilling_success.send(
                     sender=Log,
-                    invoice=inv_id,
+                    invoice=invoice,
                     request=request,
                 )
             except Exception as e:
                 # log exception
                 Log.objects.create(
-                    inv_id=inv_id,
+                    inv_id=invoice,
                     status=Log.STATUS_EXCEPTION,
                     request=urlencoded,
                     message='Signal exception:\n{}: {}'.format(
@@ -58,7 +56,7 @@ def result(request):
             else:
                 # log success
                 Log.objects.create(
-                    inv_id=inv_id,
+                    inv_id=invoice,
                     status=Log.STATUS_SUCCESS,
                     request=urlencoded,
                 )
@@ -70,7 +68,7 @@ def result(request):
             try:
                 gotobilling_error.send(
                     sender=Log,
-                    invoice=inv_id,
+                    invoice=invoice,
                     request=request,
                     code=response_code,
                     reason=reason,
@@ -78,7 +76,7 @@ def result(request):
             except Exception as e:
                 # log exception
                 Log.objects.create(
-                    inv_id=inv_id,
+                    inv_id=invoice,
                     status=Log.STATUS_EXCEPTION,
                     request=urlencoded,
                     message='Signal exception:\n{}: {}'.format(
@@ -89,7 +87,7 @@ def result(request):
             else:
                 # log fail
                 Log.objects.create(
-                    inv_id=inv_id,
+                    inv_id=invoice,
                     status=Log.STATUS_ERROR,
                     request=urlencoded,
                     message=reason,
@@ -99,7 +97,7 @@ def result(request):
     else:
         # log form error
         Log.objects.create(
-            inv_id=inv_id,
+            inv_id=data.get('x_invoice_num'),
             status=Log.STATUS_ERROR,
             request=urlencoded,
             message='Invalid form:\n{}'.format(

@@ -125,7 +125,7 @@ class ResultURLForm(BaseRobokassaForm):
     PASSWD = conf.PASSWORD2
 
     OutSum = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
-    InvId = forms.IntegerField(min_value=0)
+    InvId = forms.IntegerField(min_value=0, max_value=2147483647)
     SignatureValue = forms.CharField(max_length=32)
 
     def clean(self):

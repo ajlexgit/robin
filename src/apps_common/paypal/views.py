@@ -23,11 +23,9 @@ def result(request):
     data = request.POST
     urlencoded = data.urlencode().replace('&', '\n')
 
-    inv_id = data.get('invoice')
-
     # log data
     Log.objects.create(
-        inv_id=inv_id,
+        inv_id=data.get('invoice'),
         status=Log.STATUS_MESSAGE,
         request=urlencoded,
     )
@@ -38,7 +36,7 @@ def result(request):
         receiver_email = form.cleaned_data['receiver_email']
         invoice = form.cleaned_data['invoice']
 
-        resp = http_post(conf.FORM_TARGET, 'cmd=_notify-validate&' + data.urlencode())
+        resp = http_post(conf.FORM_TARGET, 'cmd=_notify-validate&' + request.body.decode())
         if (resp.text == 'VERIFIED'
             and payment_status.lower() == 'completed'
             and receiver_email.lower() == conf.EMAIL.lower()):
@@ -88,7 +86,7 @@ def result(request):
             else:
                 # log fail
                 Log.objects.create(
-                    inv_id=inv_id,
+                    inv_id=invoice,
                     status=Log.STATUS_ERROR,
                     request=urlencoded,
                     message='Not verified',
@@ -98,7 +96,7 @@ def result(request):
     else:
         # log form error
         Log.objects.create(
-            inv_id=inv_id,
+            inv_id=data.get('invoice'),
             status=Log.STATUS_ERROR,
             request=urlencoded,
             message='Invalid form:\n{}'.format(
