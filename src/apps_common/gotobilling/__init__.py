@@ -52,35 +52,39 @@
     Пример:
         views.py:
             from gotobilling.forms import GotobillingForm
-            ...
 
-            gotobilling_form = GotobillingForm(initial={
-                'x_invoice_num': 1,
-                'x_amount': 12.5,
-                'x_description': 'Золотое кольцо',
-                'x_relay_url': request.build_absolute_uri(resolve_url('gotobilling:result')),
-            })
+            ...
+            gotobilling_form = GotobillingForm(
+                request,
+                initial={
+                    'x_invoice_num': 1,
+                    'x_amount': '12.50',
+                    'x_description': 'Золотое кольцо',
+                }
+            )
             ...
 
 
             @receiver(gotobilling_success)
-            def gotobilling_success_handler(sender, **kwargs):
+            def payment_success(sender, **kwargs):
                 inv_id = kwargs['inv_id']
                 request = kwargs['request']
 
             @receiver(gotobilling_error)
-            def gotobilling_error_handler(sender, **kwargs):
+            def payment_error(sender, **kwargs):
                 inv_id = kwargs['inv_id']
                 request = kwargs['request']
                 code = kwargs['code']
                 reason = kwargs['reason']
 
         template.html:
-            <form action="{{ gotobilling_form.target }}" method="post">
-              {{ gotobilling_form.as_p }}
+            <form action="{{ form.target }}" method="post">
+              {{ form.as_p }}
               <button type="submit">Pay</button>
             </form>
 
 """
+from .forms import GotobillingForm
+from .signals import gotobilling_success, gotobilling_error
 
 default_app_config = 'gotobilling.apps.Config'

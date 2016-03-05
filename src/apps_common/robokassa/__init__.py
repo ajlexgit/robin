@@ -65,7 +65,7 @@
             ...
 
             @receiver(robokassa_success)
-            def robokassa_success_handler(sender, **kwargs):
+            def payment_success(sender, **kwargs):
                 inv_id = kwargs['inv_id']
                 request = kwargs['request']
 
@@ -76,4 +76,7 @@
             </form>
 
 """
+from .forms import RobokassaForm
+from .signals import robokassa_success
+
 default_app_config = 'robokassa.apps.Config'

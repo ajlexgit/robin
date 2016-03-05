@@ -5,6 +5,13 @@ from django.conf import settings
 LOGIN = settings.GOTOBILLING_MID
 HASH = settings.GOTOBILLING_HASH
 
+# Адрес страницы обработки результата
+RELAY_URL = getattr(
+    settings,
+    'GOTOBILLING_RELAY_URL',
+    'gotobilling:result'
+)
+
 # Адрес, куда будет перенаправлен пользователь после успешной оплаты
 SUCCESS_REDIRECT_URL = getattr(
     settings,

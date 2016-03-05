@@ -52,7 +52,6 @@ class BaseRobokassaForm(forms.Form):
 class RobokassaForm(BaseRobokassaForm):
     """ Форма для совершения платежа """
     # Параметр с URL'ом, на который будет отправлена форма.
-    # Может пригодиться для использования в шаблоне.
     target = conf.FORM_TARGET
 
     # login магазина в обменном пункте

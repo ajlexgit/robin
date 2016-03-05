@@ -1,6 +1,7 @@
 from hashlib import md5
 from urllib.parse import urlencode
 from django import forms
+from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from . import conf
 
@@ -53,12 +54,14 @@ class GotobillingForm(BaseGotobillingForm):
     # Полный URL, куда перенаправляется пользователь после оплаты
     x_relay_url = forms.URLField(max_length=255)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # скрытый виджет по умолчанию
         for field in self.fields:
             self.fields[field].widget = forms.HiddenInput()
+
+        self.initial['x_relay_url'] = request.build_absolute_uri(resolve_url(conf.RELAY_URL))
 
     def get_redirect_url(self):
         """
@@ -98,8 +101,8 @@ class GotobillingResultForm(BaseGotobillingForm):
     x_amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
     x_MD5_hash = forms.CharField(max_length=64)
 
-    def calc_signature(self):
-        hash_params = [conf.HASH, conf.LOGIN]
+    def calc_signature(self, hash_value=conf.HASH):
+        hash_params = [hash_value, conf.LOGIN]
         for fieldname in self.SIGNATURE_FIELDS:
             value = self._get_value(fieldname)
             if value is None:
