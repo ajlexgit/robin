@@ -68,13 +68,31 @@ def result(request):
                     request=urlencoded,
                 )
         else:
-            # log fail
-            Log.objects.create(
-                inv_id=inv_id,
-                status=Log.STATUS_ERROR,
-                request=urlencoded,
-                message='Not verified',
-            )
+            try:
+                paypal_error.send(
+                    sender=Log,
+                    invoice=invoice,
+                    request=request,
+                )
+            except Exception as e:
+                # log exception
+                Log.objects.create(
+                    inv_id=invoice,
+                    status=Log.STATUS_EXCEPTION,
+                    request=urlencoded,
+                    message='Signal exception:\n{}: {}'.format(
+                        e.__class__.__name__,
+                        ', '.join(e.args),
+                    )
+                )
+            else:
+                # log fail
+                Log.objects.create(
+                    inv_id=inv_id,
+                    status=Log.STATUS_ERROR,
+                    request=urlencoded,
+                    message='Not verified',
+                )
 
             return redirect(conf.FAIL_URL)
     else:

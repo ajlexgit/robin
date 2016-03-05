@@ -1,7 +1,6 @@
 """
     Модуль оплаты через PayPal.
 
-
     Установка:
         settings.py:
             INSTALLED_APPS = (
@@ -10,6 +9,7 @@
                 ...
             )
 
+            PAYPAL_EMAIL = 'pix666-facilitator@ya.ru'
 
             SUIT_CONFIG = {
                 ...

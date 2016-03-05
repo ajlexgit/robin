@@ -1,8 +1,6 @@
-from hashlib import md5
 from urllib.parse import urlencode
 from django import forms
 from django.shortcuts import resolve_url
-from django.utils.translation import ugettext_lazy as _
 from . import conf
 
 # Типы действия
@@ -102,8 +100,7 @@ class PayPalResultForm(BasePayPalForm):
     """
         Форма для обработки результата оплаты
     """
-
     payment_status = forms.CharField(max_length=32)
-    receiver_email = forms.EmailInput()
+    receiver_email = forms.EmailField()
     invoice = forms.CharField(max_length=128)
     mc_gross = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
