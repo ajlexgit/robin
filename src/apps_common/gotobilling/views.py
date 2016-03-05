@@ -41,7 +41,7 @@ def result(request):
             try:
                 gotobilling_success.send(
                     sender=Log,
-                    inv_id=inv_id,
+                    invoice=inv_id,
                     request=request,
                 )
             except Exception as e:
@@ -70,7 +70,7 @@ def result(request):
             try:
                 gotobilling_error.send(
                     sender=Log,
-                    inv_id=inv_id,
+                    invoice=inv_id,
                     request=request,
                     code=response_code,
                     reason=reason,
@@ -95,7 +95,7 @@ def result(request):
                     message=reason,
                 )
 
-            return redirect(conf.FAIL_REDIRECT_URL)
+            return redirect(conf.FAIL_URL)
     else:
         # log form error
         Log.objects.create(
@@ -110,4 +110,4 @@ def result(request):
     # Показываем Success даже если форма не валидна,
     # чтобы не пугать пользователя, если, например,
     # хэш рассчитывается неправильно
-    return redirect(conf.SUCCESS_REDIRECT_URL)
+    return redirect(conf.SUCCESS_URL)

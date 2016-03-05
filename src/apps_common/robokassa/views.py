@@ -49,7 +49,7 @@ def result(request):
             robokassa_success.send(
                 sender=Log,
                 request=request,
-                inv_id=inv_id,
+                invoice=inv_id,
                 extra=extra,
             )
         except Exception as e:

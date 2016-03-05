@@ -14,8 +14,8 @@
 
             GOTOBILLING_MID = 122879
             GOTOBILLING_HASH = 'myShop123'
-            GOTOBILLING_SUCCESS_REDIRECT_URL = 'shop:index'
-            GOTOBILLING_FAIL_REDIRECT_URL = 'shop:index'
+            GOTOBILLING_SUCCESS_URL = 'shop:index'
+            GOTOBILLING_FAIL_URL = 'shop:index'
 
             SUIT_CONFIG = {
                 ...
@@ -43,36 +43,39 @@
 
         # Адрес страницы, куда перенаправит пользователя
         # после успешной оплаты
-        GOTOBILLING_SUCCESS_REDIRECT_URL = 'shop:index'
+        GOTOBILLING_SUCCESS_URL = 'shop:index'
 
         # Адрес страницы, куда перенаправит пользователя
         # после неудачной оплаты
-        GOTOBILLING_FAIL_REDIRECT_URL = 'shop:index'
+        GOTOBILLING_FAIL_URL = 'shop:index'
 
     Пример:
         views.py:
             from gotobilling.forms import GotobillingForm
 
             ...
-            gotobilling_form = GotobillingForm(
+            form = GotobillingForm(
                 request,
                 initial={
-                    'x_invoice_num': 1,
-                    'x_amount': '12.50',
-                    'x_description': 'Золотое кольцо',
+                    'invoice': 1,
+                    'amount': '12.50',
+                    'description': 'Золотое кольцо',
                 }
             )
+
+            # можно сразу перенаправить
+            return redirect(form.get_redirect_url())
             ...
 
 
             @receiver(gotobilling_success)
             def payment_success(sender, **kwargs):
-                inv_id = kwargs['inv_id']
+                invoice = kwargs['invoice']
                 request = kwargs['request']
 
             @receiver(gotobilling_error)
             def payment_error(sender, **kwargs):
-                inv_id = kwargs['inv_id']
+                invoice = kwargs['invoice']
                 request = kwargs['request']
                 code = kwargs['code']
                 reason = kwargs['reason']

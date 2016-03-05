@@ -4,11 +4,15 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from . import conf
 
+FIELD_NAME_MAPPING = {
+    'invoice': 'InvId',
+    'amount': 'OutSum',
+    'description': 'Desc',
+    'email': 'Email',
+}
+
 
 class BaseRobokassaForm(forms.Form):
-    SIGNATURE_FIELDS = ('MrchLogin', 'OutSum', 'InvId')
-    PASSWD = conf.PASSWORD1
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -51,6 +55,9 @@ class BaseRobokassaForm(forms.Form):
 
 class RobokassaForm(BaseRobokassaForm):
     """ Форма для совершения платежа """
+    SIGNATURE_FIELDS = ('MrchLogin', 'amount', 'invoice')
+    PASSWD = conf.PASSWORD1
+
     # Параметр с URL'ом, на который будет отправлена форма.
     target = conf.FORM_TARGET
 
@@ -58,26 +65,26 @@ class RobokassaForm(BaseRobokassaForm):
     MrchLogin = forms.CharField(max_length=20, initial=conf.LOGIN)
 
     # сумма к оплате
-    OutSum = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
+    amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
 
     # описание покупки. Эта информация отображается в интерфейсе ROBOKASSA и в Электронной квитанции
-    Desc = forms.CharField(max_length=100)
-
-    # контрольная сумма MD5
-    SignatureValue = forms.CharField(max_length=32)
+    description = forms.CharField(max_length=100)
 
     # Номер счета в магазине. Значение этого параметра должно быть уникальным для каждой оплаты
-    InvId = forms.IntegerField(min_value=0)
+    invoice = forms.IntegerField(min_value=0)
+
+    # e-mail пользователя
+    email = forms.EmailField(required=False)
 
     # Кодировка, в которой отображается страница ROBOKASSA.
     Encoding = forms.CharField(max_length=16, initial='utf-8')
 
+    # контрольная сумма MD5
+    SignatureValue = forms.CharField(max_length=32)
+
     # Предлагаемый способ оплаты. Тот вариант оплаты, который Вы рекомендуете использовать своим покупателям.
     # https://merchant.roboxchange.com/WebService/Service.asmx/GetCurrencies?MerchantLogin=demo&language=ru
     IncCurrLabel = forms.CharField(max_length=32, required=False)
-
-    # e-mail пользователя
-    Email = forms.EmailField(required=False)
 
     # язык общения с клиентом (en или ru)
     Culture = forms.CharField(max_length=10, required=False)
@@ -90,6 +97,10 @@ class RobokassaForm(BaseRobokassaForm):
             self.fields[field].widget = forms.HiddenInput()
 
         self.fields['SignatureValue'].initial = self.calc_signature()
+
+    def add_prefix(self, field_name):
+        field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
+        return super().add_prefix(field_name)
 
     def get_redirect_url(self):
         """

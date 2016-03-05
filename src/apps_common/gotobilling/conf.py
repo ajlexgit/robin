@@ -6,23 +6,23 @@ LOGIN = settings.GOTOBILLING_MID
 HASH = settings.GOTOBILLING_HASH
 
 # Адрес страницы обработки результата
-RELAY_URL = getattr(
+RESULT_URL = getattr(
     settings,
-    'GOTOBILLING_RELAY_URL',
+    'GOTOBILLING_RESULT_URL',
     'gotobilling:result'
 )
 
 # Адрес, куда будет перенаправлен пользователь после успешной оплаты
-SUCCESS_REDIRECT_URL = getattr(
+SUCCESS_URL = getattr(
     settings,
-    'GOTOBILLING_SUCCESS_REDIRECT_URL',
+    'GOTOBILLING_SUCCESS_URL',
     settings.LOGIN_REDIRECT_URL
 )
 
 # Адрес, куда будет перенаправлен пользователь после неудачной оплаты
-FAIL_REDIRECT_URL = getattr(
+FAIL_URL = getattr(
     settings,
-    'GOTOBILLING_FAIL_REDIRECT_URL',
+    'GOTOBILLING_FAIL_URL',
     settings.LOGIN_REDIRECT_URL
 )
 

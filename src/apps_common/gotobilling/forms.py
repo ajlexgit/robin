@@ -6,6 +6,23 @@ from django.utils.translation import ugettext_lazy as _
 from . import conf
 
 
+FIELD_NAME_MAPPING = {
+    'first_name': 'x_first_name',
+    'last_name': 'x_last_name',
+    'company': 'x_company',
+    'address': 'x_address',
+    'city': 'x_city',
+    'zip': 'x_zip',
+    'country': 'x_country',
+    'phone': 'x_phone',
+    'email': 'x_email',
+    'invoice': 'x_invoice_num',
+    'description': 'x_description',
+    'amount': 'x_amount',
+    'result_url': 'x_relay_url',
+}
+
+
 class BaseGotobillingForm(forms.Form):
     def _get_value(self, fieldname):
         """ Получение значения поля формы """
@@ -28,31 +45,31 @@ class GotobillingForm(BaseGotobillingForm):
     x_show_form = forms.CharField(max_length=32, initial='PAYMENT_FORM')
 
     # имя плательщика
-    x_first_name = forms.CharField(max_length=50, required=False)
-    x_last_name = forms.CharField(max_length=50, required=False)
+    first_name = forms.CharField(max_length=50, required=False)
+    last_name = forms.CharField(max_length=50, required=False)
 
     # название компании плательщика
-    x_company = forms.CharField(max_length=50, required=False)
+    company = forms.CharField(max_length=50, required=False)
 
     # адрес плательщика
-    x_address = forms.CharField(max_length=60, required=False)
-    x_city = forms.CharField(max_length=40, required=False)
-    x_state = forms.CharField(max_length=40, required=False)
-    x_zip = forms.CharField(max_length=20, required=False)
-    x_country = forms.CharField(max_length=60, required=False)
+    address = forms.CharField(max_length=60, required=False)
+    city = forms.CharField(max_length=40, required=False)
+    state = forms.CharField(max_length=40, required=False)
+    zip = forms.CharField(max_length=20, required=False)
+    country = forms.CharField(max_length=60, required=False)
 
     # контакты плательщика
-    x_phone = forms.CharField(max_length=25, required=False)
-    x_email = forms.CharField(max_length=255, required=False)
+    phone = forms.CharField(max_length=25, required=False)
+    email = forms.CharField(max_length=255, required=False)
 
-    x_invoice_num = forms.CharField(max_length=20, required=False)
-    x_description = forms.CharField(max_length=100, required=False)
+    invoice = forms.CharField(max_length=20)
+    description = forms.CharField(max_length=100, required=False)
 
     # сумма к оплате
-    x_amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
+    amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
 
     # Полный URL, куда перенаправляется пользователь после оплаты
-    x_relay_url = forms.URLField(max_length=255)
+    result_url = forms.URLField(max_length=255)
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,7 +78,11 @@ class GotobillingForm(BaseGotobillingForm):
         for field in self.fields:
             self.fields[field].widget = forms.HiddenInput()
 
-        self.initial['x_relay_url'] = request.build_absolute_uri(resolve_url(conf.RELAY_URL))
+        self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
+
+    def add_prefix(self, field_name):
+        field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
+        return super().add_prefix(field_name)
 
     def get_redirect_url(self):
         """

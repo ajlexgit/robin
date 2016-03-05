@@ -55,18 +55,21 @@
     Пример:
         views.py:
             from robokassa.forms import RobokassaForm
-            ...
 
-            robokassa_form = RobokassaForm(initial={
-                'InvId': 1,
-                'OutSum': 12.5,
-                'Desc': 'Золотое кольцо',
+            ...
+            form = RobokassaForm(initial={
+                'invoice': 1,
+                'amount': '12.50',
+                'description': 'Золотое кольцо',
             })
+
+            # можно сразу перенаправить
+            return redirect(form.get_redirect_url())
             ...
 
             @receiver(robokassa_success)
             def payment_success(sender, **kwargs):
-                inv_id = kwargs['inv_id']
+                invoice = kwargs['invoice']
                 request = kwargs['request']
 
         template.html:
