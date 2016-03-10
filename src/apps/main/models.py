@@ -3,7 +3,8 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from gallery import *
-from libs.valute_field.fields import ValuteField
+from libs.media_storage import MediaStorage
+from libs.stdimage.fields import StdImageField
 
 
 class ImageItem(GalleryImageItem):
@@ -67,7 +68,22 @@ class Gallery(GalleryBase):
 class MainPageConfig(SingletonModel):
     """ Главная страница """
     gallery = GalleryField(Gallery, verbose_name=_('gallery'), blank=True, null=True)
-    price = ValuteField(_('price'))
+    preview = StdImageField(_('preview'),
+        blank=True,
+        storage=MediaStorage('main'),
+        min_dimensions=(800, 600),
+        admin_variation='admin',
+        crop_area=True,
+        aspects=('normal',),
+        variations=dict(
+            normal=dict(
+                size=(800, 600),
+            ),
+            admin=dict(
+                size=(280, 280),
+            ),
+        ),
+    )
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
