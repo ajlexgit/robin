@@ -9,6 +9,18 @@
                 ...
             )
 
+            SUIT_CONFIG = {
+                ...
+                {
+                    'app': 'sitemap',
+                    'icon': 'icon-file',
+                    'models': (
+                        'SitemapConfig',
+                    )
+                },
+                ...
+            }
+
         urls.py:
             ...
             url(r'^sitemap/', include('sitemap.urls', namespace='sitemap')),

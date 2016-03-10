@@ -8,11 +8,13 @@ class Map:
         return iter(self.childs)
 
     def add_child(self, instance):
+        """ Добавление одной сущности """
         record = MapRecord(instance)
         self.childs.append(record)
         return record
 
     def add_childs(self, queryset):
+        """ Добавление всех сущностей из QuerySet """
         records = tuple(MapRecord(instance) for instance in queryset)
         self.childs.extend(records)
         return records
