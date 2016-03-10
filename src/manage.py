@@ -2,6 +2,7 @@ import os
 import sys
 
 # alias unique for cases
+# crop each variation
 # filereader big files
 # js templates
 # gallery: max photos, blank == no images

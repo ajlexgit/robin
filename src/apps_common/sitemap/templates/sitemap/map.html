@@ -1,9 +1,9 @@
-<ul class="links">
+<ul class="links level-{{ level }}">
   {% for record in map %}
     <li>
       <a href="{{ record.url }}">{{ record.title }}</a>
       {% if record.childs %}
-        {% include 'sitemap/map.html' with map=record.childs %}
+        {% include 'sitemap/map.html' with map=record.childs level=level|add:1 %}
       {% endif %}
     </li>
   {% endfor %}
