@@ -45,18 +45,36 @@
       <div class="slider no-slider">
         {% for item in config.gallery.items.all %}
           {% if item.is_image %}
-            <div class="slider-item image-item"
-                 data-src="{{ item.image.wide.url }}"
-                 data-srcset="{{ item.image.wide.srcset }}, {{ item.image.normal.srcset }}, {{ item.image.mobile.srcset }}">
+            <div class="slider-item">
               <img src="{{ item.image.preview.url }}" width="{{ item.image.preview.target_width }}" height="{{ item.image.preview.target_height }}">
+
+              <!-- popup content -->
+              <script type="text/template">
+                <div class="image-item">
+                  <img src="{{ item.image.wide.url }}"
+                       srcset="{{ item.image.wide.srcset }},
+                             {{ item.image.normal.srcset }},
+                             {{ item.image.mobile.srcset }}"
+                       sizes="100vw">
+                </div>
+              </script>
             </div>
           {% elif item.is_video_link %}
-            <div class="slider-item video-item"
-                 data-provider="{{ item.video.provider.name }}"
-                 data-key="{{ item.video.key }}"
-                 data-src="{{ item.video_preview.wide.url }}"
-                 data-srcset="{{ item.video_preview.wide.srcset }}, {{ item.video_preview.normal.srcset }}, {{ item.video_preview.mobile.srcset }}">
+            <div class="slider-item">
               <img src="{{ item.video_preview.preview.url }}">
+
+              <!-- popup content -->
+              <script type="text/template">
+                <div class="video-item" data-provider="{{ item.video.provider.name }}" data-key="{{ item.video.key }}">
+                  <img src="{{ item.video_preview.wide.url }}"
+                       srcset="{{ item.video_preview.wide.srcset }},
+                             {{ item.video_preview.normal.srcset }},
+                             {{ item.video_preview.mobile.srcset }}"
+                       sizes="100vw">
+
+                  <div class="play-btn"></div>
+                </div>
+              </script>
             </div>
           {% endif %}
         {% endfor %}

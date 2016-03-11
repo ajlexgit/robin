@@ -13,29 +13,43 @@
             jquery.vimeo.js
 
         Параметры:
-            previews: str / jquery       - превью-элементы галереи
-            activePreview: DOM / index   - DOM-элемент или индекс начальной картинки
+            previews: str / jquery       - превью-элементы галереи, содержащие код для окна
+            activePreview: DOM / index   - DOM-элемент или индекс активного превью-элемента
             keyboard: true / false       - прокручивать галерею стрелками (плохо для видео)
             keyboardAnimation: str       - имя анимации при нажатии стрелок
 
 
-        У превью-элементов картинок обязателен атрибут data-src.
-        Опционально, можно указать атрибуты data-srcset и data-sizes.
+        Внутри каждого превью должен быть тэг <script>, содержащий HTML-код,
+        содержимое которого будет элементом слайдера. Поэтому, в содержимом
+        <script> должен быть ровно ОДИН корневой элемент.
 
-        У превью-элементов видео обязательны атрибуты data-src, data-provider и data-key.
-        Поддерживаются только провайдеры "youtube" и "vimeo".
-        Опционально, можно указать атрибуты data-srcset и data-sizes.
-
+        Для видео-элемента обязательно наличие аттрибутов data-provider и data-key
+        у родительского элемента, расположенного в <script>.
 
         Пример HTML:
             <div id="gallery">
-                <div class="item" data-src="...">
-                    <img src="...">
-                </div>
+              <div class="item">
+                <img src="...">
 
-                <div class="item" data-src="..." data-provider="youtube" data-key="...">
+                <!-- popup content -->
+                <script type="text/template">
+                  <div class="image-item">
                     <img src="...">
+                  </div>
+                </script>
+            </div>
+
+            <div class="item">
+              <img src="...">
+
+              <!-- popup content -->
+              <script type="text/template">
+                <div class="video-item" data-provider="youtube" data-key="...">
+                  <img src="...">
+                  <div class="play-btn"></div>
                 </div>
+              </script>
+            </div>
 
                 ...
             </div>
@@ -52,8 +66,9 @@
 
     window.GalleryPopup = Class(OverlayedPopup, function GalleryPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
-            imageItemClass: 'image-item',
-            videoItemClass: 'video-item',
+            classes: 'gallery-popup',
+            hideOnClick: false,
+
             videoLoadingClass: 'loading',
             videoPlayingClass: 'playing',
 
@@ -88,69 +103,39 @@
             Создание элемента окна галереи из элемента превью
          */
         cls._buildItem = function($preview) {
-            var $item;
-            var preview_data = $preview.data();
-            if (preview_data.src) {
-                if (preview_data.provider && preview_data.key) {
-                    // видео
-                    $item = this._buildVideoItem($preview, preview_data);
-                    $item.addClass(this.opts.videoItemClass);
-                } else {
-                    // картинка
-                    $item = this._buildImageItem($preview, preview_data);
-                    $item.addClass(this.opts.imageItemClass);
-                }
-
-                // проверка наличия картинки
-                if ($item && ($item.length == 1)) {
-                    return $item
-                }
+            var $template = $preview.find('script[type="text/template"]').first();
+            if ($template.length) {
+                return $($template.html());
             }
         };
-
-
-        cls._buildImageItem = function($preview, data) {
-            var $item = $('<img>').attr('src', data.src);
-
-            // атрибуты srcset и sizes
-            if (data.srcset) {
-                $item.attr({
-                    srcset: data.srcset,
-                    sizes: data.sizes || '100vw'
-                })
-            }
-
-            return $item;
-        };
-
-
-        cls._buildVideoItem = function($preview, data) {
-            var $item = $('<div/>');
-            var $playBtn = $('<div/>').addClass('play-btn');
-            var $image = this._buildImageItem($preview, data);
-            $item.append($image, $playBtn);
-
-            var that = this;
-            $item.on('click', '.play-btn', function() {
-                that.playVideo($(this).closest('.' + that.opts.videoItemClass));
-            }).data({
-                provider: data.provider,
-                key: data.key
-            });
-
-            return $item;
-        };
-
 
         /*
-            Содержимое окна
+            Инициализация элемента-картинки
+         */
+        cls._initImageItem = function($item, item_data) {
+
+        };
+
+        /*
+            Инициализация элемента-видео
+         */
+        cls._initVideoItem = function($item, item_data) {
+            var that = this;
+            var $playBtn = $item.find('.play-btn');
+            $playBtn.on('click', function() {
+                that.playVideo($item);
+            });
+        };
+
+        /*
+            Установка содержимого окна
          */
         cls.resetContent = function() {
             var that = this;
             var $items = this.$previews.map(function(i, preview) {
                 var $preview = $(preview);
-                var $item = that._buildItem($preview);
 
+                var $item = that._buildItem($preview);
                 if (!$item || !$item.length) {
                     that.warn('not builded item from preview ', $preview);
                     return;
@@ -159,6 +144,14 @@
                 if ($item.length > 1) {
                     that.warn('item contains more that one element ', $preview);
                     return;
+                }
+
+                // Инициализация
+                var item_data = $item.data();
+                if (item_data.provider && item_data.key) {
+                    that._initVideoItem($item, item_data);
+                } else {
+                    that._initImageItem($item, item_data);
                 }
 
                 return $item.get(0);
@@ -270,7 +263,7 @@
             } else if (item_data.provider == this.VIMEO_VIDEO) {
                 this._playVimeo($item, item_data);
             } else {
-                this.warn('undefined video type:', item_data.provider);
+                this.warn('undefined video provider:', item_data.provider);
                 return
             }
 
@@ -351,12 +344,7 @@
 
 
     $.gallery = function(options) {
-        var opts = $.extend({
-            classes: 'gallery-popup',
-            hideOnClick: false
-        }, options);
-
-        var popup = GalleryPopup(opts);
+        var popup = GalleryPopup(options);
         return popup && popup.show();
     };
 
