@@ -5,7 +5,7 @@ django-pipeline==1.5.4
 django-redis==3.5.1
 django-softhyphen==1.1.0
 django-solo==1.1.2
-django-suit==0.2.16
+django-suit==0.2.18
 django-suit-ckeditor==0.0.2
 beautifulsoup4==4.4.1
 html5lib==0.9999999
