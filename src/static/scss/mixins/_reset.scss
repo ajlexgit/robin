@@ -139,6 +139,7 @@
   }
   picture {
     display: inline-block;
+    max-width: 100%;
   }
 
   // Correct `block` display not defined for `details` or `summary` in IE 10/11
