@@ -294,22 +294,7 @@
                     $item.attr('id', file.id);
                     that.$list.append($item);
 
-                    // проверка максимального кол-ва элементов
-                    var max_count = that.$root.find('.max_item_count').val();
-                    max_count = parseInt(max_count) || 0;
-                    if (max_count > 0) {
-                        var $items = that.$list.find('.gallery-item');
-                        $items = $items.not('.' + that.opts.errorClass);
-                        if ($items.length > max_count) {
-                            var err_msg = ngettext(
-                                'this gallery can\'t contain more than %s item',
-                                'this gallery can\'t contain more than %s items',
-                                max_count
-                            );
-                            that.setItemError($item, interpolate(err_msg, [max_count]));
-                            return false;
-                        }
-                    }
+                    return that._checkMaxItemCount($item);
                 },
                 onBeforeFileUpload: function(file) {
                     var $item = that.$list.find('#' + file.id);
@@ -393,6 +378,29 @@
         };
 
         /*
+            Проверка максимального кол-ва элементов
+         */
+        cls._checkMaxItemCount = function($item) {
+            // проверка максимального кол-ва элементов
+            var max_count = this.$root.find('.max_item_count').val();
+            max_count = parseInt(max_count) || 0;
+            if (max_count > 0) {
+                var $items = this.$list.find('.gallery-item');
+                $items = $items.not('.' + this.opts.errorClass);
+                if ($items.length > max_count) {
+                    var err_msg = ngettext(
+                        'this gallery can\'t contain more than %s item',
+                        'this gallery can\'t contain more than %s items',
+                        max_count
+                    );
+                    this.setItemError($item, interpolate(err_msg, [max_count]));
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        /*
             Установка ошибки на элементе галереи
          */
         cls.setItemError = function($item, message) {
@@ -470,7 +478,7 @@
          */
         cls.addVideo = function(link) {
             if (this.locked()) {
-                return
+                return;
             }
 
             if (!this.gallery_id) {
@@ -481,6 +489,11 @@
             var template = this.$root.find(this.opts.videolinkTemplateSelector).html();
             var $item = $(template);
             this.$list.append($item);
+
+            // проверка максимального кол-ва
+            if (!this._checkMaxItemCount($item)) {
+                return;
+            }
 
             var that = this;
             return this.ajax({
