@@ -96,8 +96,8 @@
                 if (response && response.errors) {
                     // ошибки формы
                     var first_error;
-                    for (var i = 0, l = response.errors.length; i < l; i++) {
-                        var record = response.errors[i];
+
+                    response.errors.forEach(function(record) {
                         var $field = $form.find('.field-' + record.field);
                         if ($field.length) {
                             if (!first_error) {
@@ -105,7 +105,7 @@
                             }
                             $field.addClass(record.classes);
                         }
-                    }
+                    });
 
                     if (first_error) {
                         $.scrollTo(first_error, 400, {

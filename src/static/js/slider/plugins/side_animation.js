@@ -86,10 +86,8 @@
 
             // заполнение данных о анимации каждого слайда
             var animatedSlidesCount = animatedSlides.length;
-            for (i = 0; i < animatedSlidesCount; i++) {
-                var $animatedSlide = animatedSlides[i];
-
-                var left = i * slide_left;
+            animatedSlides.forEach(function($animatedSlide, index) {
+                var left = index * slide_left;
                 $animatedSlide.css({
                     left: left + '%'
                 });
@@ -98,7 +96,7 @@
                     from_left: left,
                     to_left: left - ((animatedSlidesCount - 1) * slide_left)
                 });
-            }
+            });
 
             slider._setCurrentSlide($toSlide);
 
@@ -106,18 +104,22 @@
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
-                    for (var i = 0; i < animations.length; i++) {
-                        var animation_data = animations[i];
-                        this.autoInit('slide_' + i, animation_data.from_left, animation_data.to_left);
-                    }
+                    var that = this;
+                    animations.forEach(function(animation_data, index) {
+                        that.autoInit(
+                            'slide_' + index,
+                            animation_data.from_left,
+                            animation_data.to_left
+                        );
+                    });
                 },
                 step: function(eProgress) {
-                    for (var i = 0; i < animations.length; i++) {
-                        var animation_data = animations[i];
+                    var that = this;
+                    animations.forEach(function(animation_data, index) {
                         animation_data.$animatedSlide.css({
-                            left: this.autoCalc('slide_' + i, eProgress) + '%'
+                            left: that.autoCalc('slide_' + index, eProgress) + '%'
                         })
-                    }
+                    });
                 },
                 complete: function() {
                     for (var i = 0; i < (animations.length - 1); i++) {
@@ -159,10 +161,8 @@
 
             // заполнение данных о анимации каждого слайда
             var animatedSlidesCount = animatedSlides.length;
-            for (i = 0; i < animatedSlidesCount; i++) {
-                var $animatedSlide = animatedSlides[i];
-
-                var left = -i * slide_left;
+            animatedSlides.forEach(function($animatedSlide, index) {
+                var left = -index * slide_left;
                 $animatedSlide.css({
                     left: left + '%'
                 });
@@ -171,7 +171,7 @@
                     from_left: left,
                     to_left: left + ((animatedSlidesCount - 1) * slide_left)
                 });
-            }
+            });
 
             slider._setCurrentSlide($toSlide);
 
@@ -179,18 +179,22 @@
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 init: function() {
-                    for (var i = 0; i < animations.length; i++) {
-                        var animation_data = animations[i];
-                        this.autoInit('slide_' + i, animation_data.from_left, animation_data.to_left);
-                    }
+                    var that = this;
+                    animations.forEach(function(animation_data, index) {
+                        that.autoInit(
+                            'slide_' + index,
+                            animation_data.from_left,
+                            animation_data.to_left
+                        );
+                    });
                 },
                 step: function(eProgress) {
-                    for (var i = 0; i < animations.length; i++) {
-                        var animation_data = animations[i];
+                    var that = this;
+                    animations.forEach(function(animation_data, index) {
                         animation_data.$animatedSlide.css({
-                            left: this.autoCalc('slide_' + i, eProgress) + '%'
+                            left: that.autoCalc('slide_' + index, eProgress) + '%'
                         })
-                    }
+                    });
                 },
                 complete: function() {
                     for (var i = 0; i < (animations.length - 1); i++) {

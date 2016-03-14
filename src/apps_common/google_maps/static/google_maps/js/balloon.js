@@ -132,15 +132,19 @@
 
             // Запрещаем всплытие некоторых событий на окне, чтобы можно было выделять текст
             this._listeners = [];
-            for (var i = 0, event; event = MOUSE_EVENTS[i]; i++) {
-                var handler = google.maps.event.addDomListener(this.$container.get(0), event, function(e) {
-                    e.cancelBubble = true;
-                    if (e.stopPropagation) {
-                        e.stopPropagation();
+            MOUSE_EVENTS.forEach(function(eventname) {
+                var handler = google.maps.event.addDomListener(
+                    this.$container.get(0),
+                    eventname,
+                    function(e) {
+                        e.cancelBubble = true;
+                        if (e.stopPropagation) {
+                            e.stopPropagation();
+                        }
                     }
-                });
-                this._listeners.push(handler);
-            }
+                );
+                that._listeners.push(handler);
+            });
 
             google.maps.event.trigger(this.native, 'domready');
             this.trigger('added');
@@ -158,9 +162,9 @@
          */
         cls.onRemove = function() {
             // удаление обработчиков мыши на окне
-            for (var i = 0, listener; listener = this._listeners[i]; i++) {
-                google.maps.event.removeListener(listener);
-            }
+            this._listeners.forEach(function(handler) {
+                google.maps.event.removeListener(handler);
+            });
 
             google.maps.event.removeListener(this._closeListener);
             superclass.onRemove.call(this);

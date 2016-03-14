@@ -442,16 +442,16 @@
             Подключение плагинов
          */
         cls.attachPlugins = function(plugins) {
+            var that = this;
             if ($.isArray(plugins)) {
-                for (var i = 0; i < plugins.length; i++) {
-                    var plugin = plugins[i];
-                    if (plugin && (plugin instanceof SliderPlugin)) {
-                        this._plugins.push(plugin);
-                        plugin.onAttach(this);
-                        plugin.afterAttach(this);
+                plugins.forEach(function(plugin) {
+                    if (plugin instanceof window.SliderPlugin) {
+                        that._plugins.push(plugin);
+                        plugin.onAttach(that);
+                        plugin.afterAttach(that);
                     }
-                }
-            } else if (plugins && (plugins instanceof SliderPlugin)) {
+                });
+            } else if (plugins instanceof window.SliderPlugin) {
                 this._plugins.push(plugins);
                 plugins.onAttach(this);
                 plugins.afterAttach(this);
