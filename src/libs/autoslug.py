@@ -64,7 +64,7 @@ class AutoSlugField(models.SlugField):
         return name, path, args, kwargs
 
     def pre_save(self, instance, add):
-        manager = instance._default_manager
+        manager = self.model._default_manager
         qs = manager.exclude(pk=instance.pk)
 
         value = self.value_from_object(instance)
