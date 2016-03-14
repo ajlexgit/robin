@@ -61,6 +61,43 @@
         };
 
         /*
+            Создание анимации перехода
+         */
+        cls._slide = function(slider, $toSlide, animations) {
+            slider._animation = $.animate({
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                init: function() {
+                    var that = this;
+                    animations.forEach(function(animation_data, index) {
+                        that.autoInit(
+                            'slide_' + index,
+                            animation_data.from_left,
+                            animation_data.to_left
+                        );
+                    });
+                },
+                step: function(eProgress) {
+                    var that = this;
+                    animations.forEach(function(animation_data, index) {
+                        animation_data.$animatedSlide.css({
+                            left: that.autoCalc('slide_' + index, eProgress) + '%'
+                        })
+                    });
+                },
+                complete: function() {
+                    for (var i = 0; i < (animations.length - 1); i++) {
+                        var animation_data = animations[i];
+                        animation_data.$animatedSlide.css({
+                            left: ''
+                        })
+                    }
+                    slider.afterSlide($toSlide);
+                }
+            });
+        };
+
+        /*
             Появление нового слайда справа от текущего
          */
         cls.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
@@ -99,39 +136,7 @@
             });
 
             slider._setCurrentSlide($toSlide);
-
-            slider._animation = $.animate({
-                duration: this.opts.speed,
-                easing: this.opts.easing,
-                init: function() {
-                    var that = this;
-                    animations.forEach(function(animation_data, index) {
-                        that.autoInit(
-                            'slide_' + index,
-                            animation_data.from_left,
-                            animation_data.to_left
-                        );
-                    });
-                },
-                step: function(eProgress) {
-                    var that = this;
-                    animations.forEach(function(animation_data, index) {
-                        animation_data.$animatedSlide.css({
-                            left: that.autoCalc('slide_' + index, eProgress) + '%'
-                        })
-                    });
-                },
-                complete: function() {
-                    for (var i = 0; i < (animations.length - 1); i++) {
-                        var animation_data = animations[i];
-                        animation_data.$animatedSlide.css({
-                            left: ''
-                        })
-                    }
-                    slider.afterSlide($toSlide);
-                }
-            });
-
+            this._slide(slider, $toSlide, animations);
             slider.updateListHeight(animatedHeight);
         };
 
@@ -174,39 +179,7 @@
             });
 
             slider._setCurrentSlide($toSlide);
-
-            slider._animation = $.animate({
-                duration: this.opts.speed,
-                easing: this.opts.easing,
-                init: function() {
-                    var that = this;
-                    animations.forEach(function(animation_data, index) {
-                        that.autoInit(
-                            'slide_' + index,
-                            animation_data.from_left,
-                            animation_data.to_left
-                        );
-                    });
-                },
-                step: function(eProgress) {
-                    var that = this;
-                    animations.forEach(function(animation_data, index) {
-                        animation_data.$animatedSlide.css({
-                            left: that.autoCalc('slide_' + index, eProgress) + '%'
-                        })
-                    });
-                },
-                complete: function() {
-                    for (var i = 0; i < (animations.length - 1); i++) {
-                        var animation_data = animations[i];
-                        animation_data.$animatedSlide.css({
-                            left: ''
-                        })
-                    }
-                    slider.afterSlide($toSlide);
-                }
-            });
-
+            this._slide(slider, $toSlide, animations);
             slider.updateListHeight(animatedHeight);
         };
     });

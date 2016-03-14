@@ -81,13 +81,13 @@
             this.$container.find('.' + this.opts.wrapperClass).remove();
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
-            for (var i = 0; i < slider.$slides.length; i++) {
-                var $item = $('<a>').addClass(this.opts.itemClass).data('slideIndex', i);
-                $item.append($('<span>').text(i+1));
-                this.$wrapper.append($item);
-            }
-
             var that = this;
+            $.each(slider.$slides, function(index) {
+                var $item = $('<a>').addClass(that.opts.itemClass).data('slideIndex', index);
+                $item.append($('<span>').text(index + 1));
+                that.$wrapper.append($item);
+            });
+
             this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
