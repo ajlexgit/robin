@@ -154,8 +154,8 @@ PIPELINE = {
     ),
     'SASS_BINARY': '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR,
     'SASS_ARGUMENTS': '-t nested',
-    'CSS_COMPRESSOR': '',
-    'JS_COMPRESSOR': '',
+    'CSS_COMPRESSOR': 'libs.cssmin.CSSCompressor',
+    'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
 
     'STYLESHEETS': {
         'core': {
@@ -176,7 +176,7 @@ PIPELINE = {
                 'header/scss/header.scss',
                 'menu/scss/menu.scss',
             ),
-            'output_filename': 'css/head_core.css',
+            'output_filename': 'css_build/head_core.css',
         },
         'admin_customize': {
             'source_filenames': (
@@ -194,32 +194,32 @@ PIPELINE = {
                 'gallery/scss/gallery_popup.scss',
                 'main/scss/index.scss',
             ),
-            'output_filename': 'css/main_page.css',
+            'output_filename': 'css_build/main_page.css',
         },
         'error_page': {
             'source_filenames': (
                 'scss/error_page.scss',
             ),
-            'output_filename': 'css/error_page.css',
+            'output_filename': 'css_build/error_page.css',
         },
         'contacts_page': {
             'source_filenames': (
                 'contacts/scss/index.scss',
             ),
-            'output_filename': 'css/contacts_page.css',
+            'output_filename': 'css_build/contacts_page.css',
         },
         'blog_page': {
             'source_filenames': (
                 'paginator/scss/paginator.scss',
                 'blog/scss/index.scss',
             ),
-            'output_filename': 'css/blog_page.css',
+            'output_filename': 'css_build/blog_page.css',
         },
         'blog_detail_page': {
             'source_filenames': (
                 'blog/scss/detail.scss',
             ),
-            'output_filename': 'css/blog_detail_page.css',
+            'output_filename': 'css_build/blog_detail_page.css',
         },
     },
 
@@ -254,7 +254,7 @@ PIPELINE = {
                 'contacts/js/block.js',
                 'menu/js/menu.js',
             ),
-            'output_filename': 'js/core.js',
+            'output_filename': 'js_build/core.js',
         },
         'main_page': {
             'source_filenames': (
@@ -264,30 +264,29 @@ PIPELINE = {
                 'gallery/js/gallery_popup.js',
                 'main/js/index.js',
             ),
-            'output_filename': 'js/main_page.js',
+            'output_filename': 'js_build/main_page.js',
         },
         'contacts_page': {
             'source_filenames': (
                 'google_maps/js/core.js',
                 'contacts/js/index.js',
             ),
-            'output_filename': 'js/contacts_page.js',
+            'output_filename': 'js_build/contacts_page.js',
         },
         'blog_page': {
             'source_filenames': (
                 'blog/js/index.js',
             ),
-            'output_filename': 'js/blog_page.js',
+            'output_filename': 'js_build/blog_page.js',
         },
         'blog_detail_page': {
             'source_filenames': (
                 'blog/js/detail.js',
             ),
-            'output_filename': 'js/blog_detail_page.js',
+            'output_filename': 'js_build/blog_detail_page.js',
         },
     }
 }
-
 
 MIDDLEWARE_CLASSES = (
     'pipeline.middleware.MinifyHTMLMiddleware',

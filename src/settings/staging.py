@@ -22,8 +22,6 @@ STATIC_ROOT = '/home/webapp/%s/static/' % VZ_DIRECTORY
 MEDIA_ROOT = '/home/webapp/%s/media/' % VZ_DIRECTORY
 BACKUP_ROOT = '/home/webapp/%s/backup/' % VZ_DIRECTORY
 
-PIPELINE['CSS_COMPRESSOR'] = 'libs.cssmin.CSSCompressor'
-PIPELINE['COMPRESSOR'] = 'pipeline.compressors.jsmin.JSMinCompressor'
 PIPELINE['SASS_ARGUMENTS'] = '-t compressed'
 
 DATABASES = {
