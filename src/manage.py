@@ -2,7 +2,6 @@ import os
 import sys
 
 # Jinja2
-# alias unique for cases
 # crop each variation
 # filereader big files
 # js templates
