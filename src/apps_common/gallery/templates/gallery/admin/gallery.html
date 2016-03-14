@@ -31,6 +31,7 @@
 
     {% block content %}
       <input type="hidden" class="gallery_id" {{ attrs }} value="{{ gallery.pk|default:"" }}"/>
+      <input type="hidden" class="max_item_count" value="{{ gallery_model.MAX_ITEM_COUNT|default:0 }}"/>
 
       {% if gallery_model.IMAGE_MODEL %}
         <input type="hidden" class="aspects" value="{{ image_aspects }}">

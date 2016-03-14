@@ -1,9 +1,8 @@
 (function($) {
     'use strict';
 
-    var formatError = function(file, message, html) {
-        var nl = html ? '<br>' : '\n';
-        return gettext('Error') + ':' + nl + message;
+    var formatError = function(message) {
+        return gettext('Error') + ':<br>' + message;
     };
 
 
@@ -294,6 +293,23 @@
                     var $item = $(template);
                     $item.attr('id', file.id);
                     that.$list.append($item);
+
+                    // проверка максимального кол-ва элементов
+                    var max_count = that.$root.find('.max_item_count').val();
+                    max_count = parseInt(max_count) || 0;
+                    if (max_count > 0) {
+                        var $items = that.$list.find('.gallery-item');
+                        $items = $items.not('.' + that.opts.errorClass);
+                        if ($items.length > max_count) {
+                            var err_msg = ngettext(
+                                'this gallery can\'t contain more than %s item',
+                                'this gallery can\'t contain more than %s items',
+                                max_count
+                            );
+                            that.setItemError($item, interpolate(err_msg, [max_count]));
+                            return false;
+                        }
+                    }
                 },
                 onBeforeFileUpload: function(file) {
                     var $item = that.$list.find('#' + file.id);
@@ -340,10 +356,6 @@
                     var $controls = $item.find(that.opts.controlsSelector);
                     $controls.hide();
 
-                    $item.removeClass(that.opts.loadingClass);
-                    $item.addClass(that.opts.errorClass);
-                    $item.find(that.opts.progressSelector).remove();
-
                     // Ошибка показывается на фоне превью
                     $.fileReaderDeferred(file.getNative()).done(function(src) {
                         $.loadImageDeferred(src).done(function(img) {
@@ -369,23 +381,32 @@
                         });
                     });
 
-                    $preview.show();
                     $controls.show();
 
-                    if (json_response && json_response.message) {
-                        $preview.append(
-                            $('<span>').html(formatError(file, json_response.message, true))
-                        );
-                    } else if (error && error.message) {
-                        $preview.append(
-                            $('<span>').html(formatError(file, error.message, true))
-                        );
-                    }
+                    var error_msg = (json_response && json_response.message) || (error && error.message);
+                    that.setItemError($item, error_msg);
 
                     // event
                     that.trigger('item-error.gallery', $item, json_response);
                 }
             });
+        };
+
+        /*
+            Установка ошибки на элементе галереи
+         */
+        cls.setItemError = function($item, message) {
+            $item.removeClass(this.opts.loadingClass);
+            $item.addClass(this.opts.errorClass);
+            $item.find(this.opts.progressSelector).remove();
+
+            if (message) {
+                var $preview = $item.find(this.opts.previewSelector);
+                $preview.append(
+                    $('<span>').html(formatError(message))
+                );
+                $preview.show();
+            }
         };
 
         /*

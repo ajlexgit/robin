@@ -128,6 +128,14 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         else:
             item.save()
 
+        try:
+            self.gallery.clean()
+        except ValidationError as e:
+            item.delete()
+            return self.json_response({
+                'message': '; '.join(e.messages),
+            }, status=400)
+
         response = {
             'id': item.pk,
             'preview_url': item.admin_variation.url,
@@ -159,6 +167,14 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
             }, status=400)
         else:
             item.save()
+
+        try:
+            self.gallery.clean()
+        except ValidationError as e:
+            item.delete()
+            return self.json_response({
+                'message': '; '.join(e.messages),
+            }, status=400)
 
         return self.json_response({
             'id': item.pk,

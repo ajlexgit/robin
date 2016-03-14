@@ -1,12 +1,11 @@
 import os
 import sys
 
+# Jinja2
 # alias unique for cases
 # crop each variation
 # filereader big files
 # js templates
-# gallery: max photos, blank == no images
-# nested inlines
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Parallax наизнанку

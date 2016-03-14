@@ -2,12 +2,12 @@ import os
 from django.db import models
 from django.core import checks
 from django.conf import settings
-from django.db.models.functions import Coalesce
 from django.utils.timezone import now
+from django.db.models.functions import Coalesce
 from django.contrib.contenttypes import generic
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ungettext
 from django.contrib.contenttypes.models import ContentType
 from model_utils.managers import InheritanceQuerySetMixin
 from libs.variation_field import *
@@ -643,6 +643,9 @@ class GalleryBase(models.Model):
     IMAGE_MODEL = None
     VIDEO_LINK_MODEL = None
 
+    # Максимальное кол-во элементов
+    MAX_ITEM_COUNT = None
+
     # Размер элемента галереи в админке
     ADMIN_ITEM_SIZE = (160, 120)
 
@@ -726,6 +729,16 @@ class GalleryBase(models.Model):
     @cached_property
     def video_link_items(self):
         return self.all_items.filter(model=self.VIDEO_LINK_MODEL)
+
+    def clean(self):
+        """ Ограничение на максимальное кол-во элементов """
+        if isinstance(self.MAX_ITEM_COUNT, int) and (self.MAX_ITEM_COUNT > 0) and self.items.count() > self.MAX_ITEM_COUNT:
+            error_message = ungettext(
+                'this gallery can\'t contain more than %s item',
+                'this gallery can\'t contain more than %s items',
+                self.MAX_ITEM_COUNT
+            )
+            raise ValidationError(error_message % self.MAX_ITEM_COUNT)
 
     def copy_items_to(self, dest_gallery, items=(), **kwargs):
         """

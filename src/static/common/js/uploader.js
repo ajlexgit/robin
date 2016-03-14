@@ -260,7 +260,10 @@
             var that = this;
 
             plupload.each(files, function(file) {
-                that.opts.onFileAdded.call(that, file);
+                var result = that.opts.onFileAdded.call(that, file);
+                if (result === false) {
+                    that.uploader.removeFile(file);
+                }
             });
 
             // начинать загрузку сразу
@@ -271,7 +274,10 @@
             Событие перед началом загрузки файла
          */
         cls.BeforeUploadHandler = function(file) {
-            this.opts.onBeforeFileUpload.call(this, file);
+            var result = this.opts.onBeforeFileUpload.call(this, file);
+            if (result === false) {
+                this.uploader.removeFile(file);
+            }
         };
 
         /*

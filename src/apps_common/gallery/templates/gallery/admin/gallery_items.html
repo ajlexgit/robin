@@ -16,7 +16,6 @@
       Gallery has <span class="gallery-image-counter">{{ image_count }}</span> images
     {% endblocktrans %}
   {% endif %}
-
 </div>
 
 <div class="gallery-items" id="gallery-{{ name }}-items">
@@ -64,10 +63,15 @@
   <div class="buttons clearfix">
     <div style="float: left">
       {% if gallery.IMAGE_MODEL %}
-        <button class="btn btn-success add-gallery-image">{% trans 'Add image' %}</button>
+        <button class="btn btn-success add-gallery-image">
+          {% trans 'Add image' %}
+        </button>
       {% endif %}
+
       {% if gallery.VIDEO_LINK_MODEL %}
-        <button class="btn btn-success add-gallery-video">{% trans 'Add video' %}</button>
+        <button class="btn btn-success add-gallery-video">
+          {% trans 'Add video' %}
+        </button>
       {% endif %}
     </div>
     <div style="float: right">
