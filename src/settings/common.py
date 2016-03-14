@@ -146,133 +146,146 @@ SUIT_CONFIG = {
 
 
 # Pipeline
-PIPELINE_CSS = {
-    'core': {
-        'source_filenames': (
-            'scss/grid.scss',
-            'scss/layout.scss',
-            'scss/forms.scss',
-            'scss/text_styles.scss',
-            'scss/popups/popups.scss',
-            'scss/popups/preloader.scss',
+SASS_INCLUDE_DIR = BASE_DIR + '/static/scss/'
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'COMPILERS': (
+        'libs.sassc.SASSCCompiler',
+    ),
+    'SASS_BINARY': '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR,
+    'SASS_ARGUMENTS': '-t nested',
+    'CSS_COMPRESSOR': '',
+    'JS_COMPRESSOR': '',
 
-            'scss/slider/slider.scss',
-            'scss/slider/plugins/controls.scss',
-            'scss/slider/plugins/navigation.scss',
+    'STYLESHEETS': {
+        'core': {
+            'source_filenames': (
+                'scss/grid.scss',
+                'scss/layout.scss',
+                'scss/forms.scss',
+                'scss/text_styles.scss',
+                'scss/popups/popups.scss',
+                'scss/popups/preloader.scss',
 
-            'contacts/scss/block.scss',
-            'footer/scss/footer.scss',
-            'header/scss/header.scss',
-            'menu/scss/menu.scss',
-        ),
-        'output_filename': 'css/head_core.css',
-    },
-    'admin_customize': {
-        'source_filenames': (
-            'admin/scss/admin_fixes.scss',
-            'admin/scss/admin_table.scss',
-            'admin/scss/button_filter.scss',
-            'admin/scss/dl_core.scss',
-            'admin/scss/dl_login.scss',
-        ),
-        'output_filename': 'admin/css/customize.css',
-    },
-    'main_page': {
-        'source_filenames': (
-            'scss/section_slider.scss',
-            'gallery/scss/gallery_popup.scss',
-            'main/scss/index.scss',
-        ),
-        'output_filename': 'css/main_page.css',
-    },
-    'error_page': {
-        'source_filenames': (
-            'scss/error_page.scss',
-        ),
-        'output_filename': 'css/error_page.css',
-    },
-    'contacts_page': {
-        'source_filenames': (
-            'contacts/scss/index.scss',
-        ),
-        'output_filename': 'css/contacts_page.css',
-    },
-    'blog_page': {
-        'source_filenames': (
-            'paginator/scss/paginator.scss',
-            'blog/scss/index.scss',
-        ),
-        'output_filename': 'css/blog_page.css',
-    },
-    'blog_detail_page': {
-        'source_filenames': (
-            'blog/scss/detail.scss',
-        ),
-        'output_filename': 'css/blog_detail_page.css',
-    },
-}
-PIPELINE_JS = {
-    'core': {
-        'source_filenames': (
-            'polyfills/modernizr.js',
-            'js/jquery-2.1.4.min.js',
-            'js/jquery-ui-effects.js',
+                'scss/slider/slider.scss',
+                'scss/slider/plugins/controls.scss',
+                'scss/slider/plugins/navigation.scss',
 
-            'common/js/jquery.cookie.js',
-            'common/js/jquery.utils.js',
-            'common/js/jquery.ajax_csrf.js',
-            'common/js/jquery.mousewheel.js',
+                'contacts/scss/block.scss',
+                'footer/scss/footer.scss',
+                'header/scss/header.scss',
+                'menu/scss/menu.scss',
+            ),
+            'output_filename': 'css/head_core.css',
+        },
+        'admin_customize': {
+            'source_filenames': (
+                'admin/scss/admin_fixes.scss',
+                'admin/scss/admin_table.scss',
+                'admin/scss/button_filter.scss',
+                'admin/scss/dl_core.scss',
+                'admin/scss/dl_login.scss',
+            ),
+            'output_filename': 'admin/css/customize.css',
+        },
+        'main_page': {
+            'source_filenames': (
+                'scss/section_slider.scss',
+                'gallery/scss/gallery_popup.scss',
+                'main/scss/index.scss',
+            ),
+            'output_filename': 'css/main_page.css',
+        },
+        'error_page': {
+            'source_filenames': (
+                'scss/error_page.scss',
+            ),
+            'output_filename': 'css/error_page.css',
+        },
+        'contacts_page': {
+            'source_filenames': (
+                'contacts/scss/index.scss',
+            ),
+            'output_filename': 'css/contacts_page.css',
+        },
+        'blog_page': {
+            'source_filenames': (
+                'paginator/scss/paginator.scss',
+                'blog/scss/index.scss',
+            ),
+            'output_filename': 'css/blog_page.css',
+        },
+        'blog_detail_page': {
+            'source_filenames': (
+                'blog/scss/detail.scss',
+            ),
+            'output_filename': 'css/blog_detail_page.css',
+        },
+    },
 
-            'js/jquery.fitvids.js',
-            'js/jquery.scrollTo.js',
-            'js/drager.js',
+    'JAVASCRIPT': {
+        'core': {
+            'source_filenames': (
+                'polyfills/modernizr.js',
+                'js/jquery-2.1.4.min.js',
+                'js/jquery-ui-effects.js',
 
-            'js/popups/jquery.popups.js',
-            'js/popups/preloader.js',
-            'js/slider/slider.js',
-            'js/slider/plugins/side_animation.js',
-            'js/slider/plugins/fade_animation.js',
-            'js/slider/plugins/autoscroll.js',
-            'js/slider/plugins/navigation.js',
-            'js/slider/plugins/controls.js',
-            'js/slider/plugins/drag.js',
-            'js/text_styles.js',
+                'common/js/jquery.cookie.js',
+                'common/js/jquery.utils.js',
+                'common/js/jquery.ajax_csrf.js',
+                'common/js/jquery.mousewheel.js',
 
-            'attachable_blocks/js/async_blocks.js',
-            'contacts/js/block.js',
-            'menu/js/menu.js',
-        ),
-        'output_filename': 'js/core.js',
-    },
-    'main_page': {
-        'source_filenames': (
-            'js/slider/win_height_slider.js',
-            'js/jquery.youtube.js',
-            'js/jquery.vimeo.js',
-            'gallery/js/gallery_popup.js',
-            'main/js/index.js',
-        ),
-        'output_filename': 'js/main_page.js',
-    },
-    'contacts_page': {
-        'source_filenames': (
-            'google_maps/js/core.js',
-            'contacts/js/index.js',
-        ),
-        'output_filename': 'js/contacts_page.js',
-    },
-    'blog_page': {
-        'source_filenames': (
-            'blog/js/index.js',
-        ),
-        'output_filename': 'js/blog_page.js',
-    },
-    'blog_detail_page': {
-        'source_filenames': (
-            'blog/js/detail.js',
-        ),
-        'output_filename': 'js/blog_detail_page.js',
-    },
+                'js/jquery.fitvids.js',
+                'js/jquery.scrollTo.js',
+                'js/drager.js',
+
+                'js/popups/jquery.popups.js',
+                'js/popups/preloader.js',
+                'js/slider/slider.js',
+                'js/slider/plugins/side_animation.js',
+                'js/slider/plugins/fade_animation.js',
+                'js/slider/plugins/autoscroll.js',
+                'js/slider/plugins/navigation.js',
+                'js/slider/plugins/controls.js',
+                'js/slider/plugins/drag.js',
+                'js/text_styles.js',
+
+                'attachable_blocks/js/async_blocks.js',
+                'contacts/js/block.js',
+                'menu/js/menu.js',
+            ),
+            'output_filename': 'js/core.js',
+        },
+        'main_page': {
+            'source_filenames': (
+                'js/slider/win_height_slider.js',
+                'js/jquery.youtube.js',
+                'js/jquery.vimeo.js',
+                'gallery/js/gallery_popup.js',
+                'main/js/index.js',
+            ),
+            'output_filename': 'js/main_page.js',
+        },
+        'contacts_page': {
+            'source_filenames': (
+                'google_maps/js/core.js',
+                'contacts/js/index.js',
+            ),
+            'output_filename': 'js/contacts_page.js',
+        },
+        'blog_page': {
+            'source_filenames': (
+                'blog/js/index.js',
+            ),
+            'output_filename': 'js/blog_page.js',
+        },
+        'blog_detail_page': {
+            'source_filenames': (
+                'blog/js/detail.js',
+            ),
+            'output_filename': 'js/blog_detail_page.js',
+        },
+    }
 }
 
 
@@ -469,25 +482,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'libs.debug_finder.PipelineFinder',
 )
-
-
-# Pipeline
-# pipeline ставит type для тега script равным application/javascript, что плохо для IE8
-PIPELINE_MIMETYPES = (
-    (b'text/coffeescript', '.coffee'),
-    (b'text/less', '.less'),
-    (b'text/javascript', '.js'),
-    (b'text/x-sass', '.sass'),
-    (b'text/x-scss', '.scss')
-)
-PIPELINE_CSS_COMPRESSOR = ''
-PIPELINE_JS_COMPRESSOR = ''
-PIPELINE_COMPILERS = (
-    'libs.sassc.SASSCCompiler',
-)
-SASS_INCLUDE_DIR = BASE_DIR + '/static/scss/'
-PIPELINE_SASS_BINARY = '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR
-PIPELINE_SASS_ARGUMENTS = '-t nested'
 
 # Ckeditor
 CKEDITOR_CONFIG_DEFAULT = {

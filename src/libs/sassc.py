@@ -10,14 +10,12 @@ class SASSCCompiler(SubProcessCompiler):
     """
         Класс для компилирования JS и CSS через sassc.
         В settings.py необходимо добавить:
-            PIPELINE_CSS_COMPRESSOR = ''
-            PIPELINE_JS_COMPRESSOR = ''
-            PIPELINE_COMPILERS = (
+            SASS_INCLUDE_DIR = BASE_DIR + '/static/scss/'
+            PIPELINE['SASS_BINARY'] = '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR
+            PIPELINE['SASS_ARGUMENTS'] = '-t nested'
+            PIPELINE['COMPILERS'] = (
                 'libs.sassc.SASSCCompiler',
             )
-            SASS_INCLUDE_DIR = BASE_DIR + '/static/scss/'
-            PIPELINE_SASS_BINARY = '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR
-            PIPELINE_SASS_ARGUMENTS = '-t nested'
             STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
     """
     output_extension = 'css'
@@ -52,8 +50,8 @@ class SASSCCompiler(SubProcessCompiler):
 
     def compile_file(self, infile, outfile, outdated=False, force=False):
         command = "%s %s %s" % (
-            settings.PIPELINE_SASS_BINARY,
-            settings.PIPELINE_SASS_ARGUMENTS,
+            ' '.join(settings.SASS_BINARY),
+            ' '.join(settings.SASS_ARGUMENTS),
             infile
         )
         try:
@@ -65,4 +63,3 @@ class SASSCCompiler(SubProcessCompiler):
             output = output.decode('utf-8-sig')
             with open(outfile, 'w+') as f:
                 f.write(output)
-

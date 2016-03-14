@@ -29,8 +29,6 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
     'devserver.middleware.DevServerMiddleware',
 )
 
-PIPELINE_ENABLED = True
-
 # Devserver
 DEVSERVER_SQL_MIN_DURATION = 100
 
