@@ -1,13 +1,13 @@
 from settings.common import *
 
-DEBUG = True
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = (
     'localhost',
     'local.ru',
 )
 
+DEBUG = True
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 DATABASES = {
     'default': {

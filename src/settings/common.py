@@ -2,7 +2,7 @@ import os
 import re
 import sys
 from django.utils.translation import ugettext_lazy as _
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -11,7 +11,6 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps_common'))
 SECRET_KEY = 'lr2b8&^p8dv#&b=4%op-0^2*vomo816l-*8*^5#o9@q!=zv@f$'
 
 DEBUG = False
-TEMPLATE_DEBUG = False
 
 LANGUAGE_CODE = 'en-US'
 SHORT_LANGUAGE_CODE = LANGUAGE_CODE.split('-')[0]
@@ -425,13 +424,28 @@ CACHES = {
 
 
 # Templates
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
-TEMPLATE_CONTEXT_PROCESSORS = TCP + (
-    'django.core.context_processors.request',
-)
-
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': (
+            os.path.join(BASE_DIR, 'templates'),
+        ),
+        'OPTIONS': {
+            'debug': False,
+            'context_processors': (
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
+                'django.core.context_processors.request',
+            ),
+            'loaders': (
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ),
+        }
+    },
+]
 
 # Locale
 LOCALE_PATHS = (

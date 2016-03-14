@@ -17,10 +17,6 @@ ALLOWED_HOSTS = (
     '.dev.%s' % DOMAIN,
 )
 
-DEBUG = False
-
-TEMPLATE_DEBUG = False
-
 # настройки статики
 STATIC_ROOT = '/home/webapp/%s/static/' % VZ_DIRECTORY
 MEDIA_ROOT = '/home/webapp/%s/media/' % VZ_DIRECTORY
