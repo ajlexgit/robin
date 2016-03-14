@@ -204,7 +204,7 @@
             this._preloaderStart();
 
             var that = this;
-            $.fileReaderDeferred(this.$input.prop('files').item(0)).done(function(src) {
+            $.fileReaderDeferred(this.$input.prop('files')[0]).done(function(src) {
                 $.loadImageDeferred(src).done(function(img) {
                     that._preloaderStop();
                     that.$crop_btn_wrapper.show();
@@ -265,8 +265,6 @@
                 this._invalid(MIN_WIDTH_ERROR, {
                     limit: this.opts.min_dimensions[0]
                 });
-
-                this._badfile();
                 return
             }
 
