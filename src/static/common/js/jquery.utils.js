@@ -884,11 +884,52 @@
         Создает Deferred-объект, который загружает картинку из объекта Blob или File.
         Возвращает base64-кодированную строку данных (DataURL).
 
+        Используется загрузка по частям, чтобы не блокировать браузер.
+
         Пример:
             $.fileReaderDeferred(file).done(function(data) {
                 $('img').attr('src', data);
             });
     */
+
+    // Кодирование Uint8Array в base64.
+    // https://gist.github.com/jonleighton/958841
+    var base64Uint8Array = function(bytes) {
+        var base64 = '';
+        var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        var byteLength = bytes.byteLength;
+        var byteRemainder = byteLength % 3;
+        var mainLength = byteLength - byteRemainder;
+        var a, b, c, d;
+        var chunk;
+
+        // Main loop deals with bytes in chunks of 3
+        for (var i = 0; i < mainLength; i = i + 3) {
+            chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+            a = (chunk & 16515072) >> 18;
+            b = (chunk & 258048) >> 12;
+            c = (chunk & 4032) >> 6;
+            d = chunk & 63;
+            base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+        }
+
+        // Deal with the remaining bytes and padding
+        if (byteRemainder == 1) {
+            chunk = bytes[mainLength];
+            a = (chunk & 252) >> 2;
+            b = (chunk & 3) << 4;
+            base64 += encodings[a] + encodings[b] + '=='
+        } else if (byteRemainder == 2) {
+            chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
+            a = (chunk & 64512) >> 10;
+            b = (chunk & 1008) >> 4;
+            c = (chunk & 15) << 2;
+            base64 += encodings[a] + encodings[b] + encodings[c] + '=';
+        }
+
+        return base64;
+    };
+
     $.fileReaderDeferred = function(file) {
         var df = $.Deferred();
         if (!window.FileReader) {
@@ -899,13 +940,36 @@
         }
 
         var reader = new FileReader();
+        var fileSize = file.size;
+        var fileType = file.type;
+        var chunkSize = 32 * 1024;
+        var result = new Uint8Array(fileSize);
+        var offset = 0;
+
+        var readBlock = function() {
+            var slice = file.slice(offset, offset + chunkSize);
+            reader.readAsArrayBuffer(slice);
+        };
+
         reader.onload = function(event) {
-            df.resolve(event.target.result);
+            if (offset >= fileSize) {
+                var data = base64Uint8Array(result);
+                result = null;
+                df.resolve('data:' + fileType + '; base64,' + data);
+                return;
+            }
+
+            var chunk = new Uint8Array(event.target.result);
+            result.set(chunk, offset);
+
+            offset += chunk.byteLength;
+            setTimeout(readBlock, 0);
         };
         reader.onerror = function() {
             df.reject('can not read');
         };
-        reader.readAsDataURL(file);
+
+        readBlock();
         return df;
     };
 
