@@ -227,7 +227,7 @@ PIPELINE = {
         'core': {
             'source_filenames': (
                 'polyfills/modernizr.js',
-                'js/jquery-2.1.4.min.js',
+                'js/jquery-2.2.1.min.js',
                 'js/jquery-ui-effects.js',
 
                 'common/js/jquery.cookie.js',
