@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Jinja2
 # crop each variation
 # filereader big files
 # js templates
