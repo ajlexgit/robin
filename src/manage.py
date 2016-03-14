@@ -2,7 +2,6 @@ import os
 import sys
 
 # crop each variation
-# js templates
 # facebook like button: https://developers.facebook.com/docs/plugins/like-button?locale=ru_RU
 # text-ellipsis: https://css-tricks.com/line-clampin/
 # Parallax наизнанку
