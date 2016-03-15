@@ -27,7 +27,7 @@ PIPELINE['SASS_ARGUMENTS'] = '-t compressed'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'directlinedev',
+        'NAME': 'webapp',
         'USER': 'webapp',
         'PASSWORD': '%DBPASSWORD%',
         'HOST': 'localhost',

@@ -443,7 +443,6 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'templates'),
         ),
         'OPTIONS': {
-            'debug': False,
             'context_processors': (
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
