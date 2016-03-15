@@ -1,6 +1,6 @@
 from django.conf import settings
+from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
-from django.template import loader, Context, RequestContext
 from django.core.mail import send_mail, BadHeaderError
 
 
@@ -25,15 +25,12 @@ def send(request, recievers, subject, template, context=None):
     if not recievers:
         return True
 
-    if not isinstance(context, Context):
-        context = RequestContext(request, context)
-
     # Добавляем в контекст текущий домен
     site = get_current_site(request)
     context['domain'] = site.domain
 
     subject = subject.format(domain=site.domain)
-    message = loader.get_template(template).render(context)
+    message = loader.get_template(template).render(context, request)
 
     try:
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,

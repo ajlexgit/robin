@@ -50,11 +50,8 @@ class StringRenderMixin:
         Представление, добавляющее метод render_to_string для
         рендеринга шаблона в строку
     """
-    def render_to_string(self, template, context=None, current_app=None, dirs=None):
-        if not isinstance(context, Context):
-            context = RequestContext(self.request, context, current_app=current_app)
-
-        return loader.get_template(template, dirs=dirs).render(context)
+    def render_to_string(self, template, context=None, dirs=None):
+        return loader.get_template(template, dirs=dirs).render(context, self.request)
 
 
 class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMixin, View):
