@@ -17,3 +17,6 @@ dev.py
 #Python
 __pycache__
 *.pyc
+
+#Data
+SxGeoCity.dat
