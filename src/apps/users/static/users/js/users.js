@@ -1,5 +1,17 @@
 (function($) {
 
+    var onLoginHandler = function(response) {
+        //$(document).trigger('login.auth.users', response);
+        //$('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
+        location.reload(true);
+    };
+
+    var onLogoutHandler = function(response) {
+        //$(document).trigger('logout.auth.users', response);
+        //$('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
+        location.reload(true);
+    };
+
     // ==================================
     //  Авторизация
     // ==================================
@@ -41,9 +53,8 @@
             data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                $(document).trigger('login.auth.users', response);
-                $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
                 $.popup().hide();
+                onLoginHandler(response);
             },
             error: $.parseError(function(response) {
                 if (response && response.form) {
@@ -103,10 +114,8 @@
             data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                $(document).trigger('register.auth.users', response);
-                $(document).trigger('login.auth.users', response);
-                $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
                 $.popup().hide();
+                onLoginHandler(response);
             },
             error: $.parseError(function(response) {
                 if (response && response.form) {
@@ -165,7 +174,6 @@
             data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                $(document).trigger('reset-password.auth.users', response);
                 $.popup({
                     classes: 'users-popup',
                     content: response.done
@@ -225,7 +233,6 @@
             data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                $(document).trigger('reset-confirm.auth.users', response);
                 $.popup({
                     classes: 'users-popup',
                     content: response.done
@@ -260,9 +267,8 @@
             type: 'POST',
             dataType: 'json',
             success: function(response) {
-                $(document).trigger('logout.auth.users', response);
-                $('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
                 $.popup().hide();
+                onLogoutHandler(response);
             },
             error: $.parseError(function() {
                 alert(window.DEFAULT_AJAX_ERROR);

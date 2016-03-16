@@ -4,38 +4,34 @@
 
 
 {% block content %}
-  <div class="grid">
-    <div class="gc gc-alone">
-      <h1 class="title-h1">{% trans 'Authorization' %}</h1>
-    </div>
+  <div class="grid-block">
+    <h1 class="title-h1">{% trans 'Authorization' %}</h1>
 
-    <div class="gc gc-alone">
-      {{ form.media }}
-      <form method="post" action="" id="login-form"
-            class="users-login-form users-form" autocomplete="off">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.GET.next }}">
+    {{ form.media }}
+    <form method="post" action="" id="login-form"
+          class="users-login-form users-form" autocomplete="off">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
 
-        {{ form.non_field_errors.as_ul }}
-        <fieldset class="{{ form.username.errors.classes }}">
-          {{ form.username.label_tag }}
-          {{ form.username }}
-          {{ form.username.errors }}
-        </fieldset>
-        <fieldset class="{{ form.password.errors.classes }}">
-          {{ form.password.label_tag }}
-          {{ form.password }}
-          {{ form.password.errors }}
-        </fieldset>
+      {{ form.non_field_errors.as_ul }}
+      <fieldset class="{{ form.username.errors.classes }}">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.username.errors }}
+      </fieldset>
+      <fieldset class="{{ form.password.errors.classes }}">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        {{ form.password.errors }}
+      </fieldset>
 
-        <fieldset>
-          <button type="submit" class="btn">{% trans 'Sign in' %}</button>
-        </fieldset>
-      </form>
+      <fieldset>
+        <button type="submit" class="btn">{% trans 'Sign in' %}</button>
+      </fieldset>
+    </form>
 
-      <script>
-        document.getElementById('id_username').focus();
-      </script>
-    </div>
+    <script>
+      document.getElementById('id_username').focus();
+    </script>
   </div>
 {% endblock content %}

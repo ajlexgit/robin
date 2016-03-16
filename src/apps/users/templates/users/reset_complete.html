@@ -2,18 +2,16 @@
 
 {% load i18n %}
 
-
 {% block extra_meta %}
   <meta http-equiv="refresh" content="5; url={{ redirect|default:"/" }}"/>
 {% endblock extra_meta %}
 
-{% block content %}
-  <div class="grid">
-    <div class="gc gc-alone">
-      <h1 class="title-h1">{% trans 'Reset password' %}</h1>
-    </div>
 
-    <div class="text-styles gc gc-alone">
+{% block content %}
+  <div class="grid-block">
+    <h1 class="title-h1">{% trans 'Reset password' %}</h1>
+
+    <div class="text-styles">
       <p>
         {% trans 'Your password was successfully changed. You will be redirected to a new page in 5 seconds.' %}
       </p>
