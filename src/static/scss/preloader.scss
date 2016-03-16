@@ -1,0 +1,54 @@
+@import "mixins";
+
+$size: 50px;
+$color: #82BD36;
+$bg_color: #FFFFFF;
+
+
+@keyframes loading {
+  0% {
+    border: 0 solid $bg_color;
+  }
+
+  20% {
+    border: 8px solid $bg_color;
+    width: 0;
+    height: 0;
+  }
+
+  90% {
+    border: 8px solid $bg_color;
+    width: 100%;
+    height: 100%;
+  }
+
+  100% {
+    border: 8px solid transparent;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+
+.preloader {
+  position: relative;
+  display: inline-block;
+  width: $size;
+  height: $size;
+  z-index: 1;
+  vertical-align: middle;
+  background-color: $color;
+  @include border_radius(50%);
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 0 solid $bg_color;
+    animation: loading 1000ms ease-out forwards infinite;
+    @include border_radius(50%);
+    @include transform(translate(-50%, -50%));
+  }
+}
+
