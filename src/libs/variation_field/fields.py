@@ -202,7 +202,7 @@ class VariationImageFieldFile(ImageFieldFile):
 
         return tuple(files_list)
 
-    def recut(self, *args, croparea=None):
+    def recut(self, *args, croparea=''):
         """
             Перенарезка вариаций.
 
