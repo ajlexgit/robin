@@ -214,7 +214,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.croparea = croparea
 
         # Обрабатываем вариации
-        self.field.create_variation_fields(self.instance, field_file=self)
+        self.field.add_field_variations(self)
         for name, variation in self.variations.items():
             with self as field_file:
                 field_file.open()
@@ -284,7 +284,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.clear_dimensions()
 
         # Обрабатываем вариации
-        self.field.create_variation_fields(self.instance, field_file=self)
+        self.field.add_field_variations(self)
         for name, variation in self.variations.items():
             try:
                 self.open()
@@ -309,7 +309,7 @@ class VariationImageFieldFile(ImageFieldFile):
 
     def delete(self, save=True):
         """ Удаление картинки """
-        self.field.create_variation_fields(self.instance, field_file=self)
+        self.field.add_field_variations(self)
         for name in self.variations:
             variation_field = getattr(self, name, None)
             if variation_field:
@@ -359,20 +359,19 @@ class VariationImageField(models.ImageField):
         self.crop_field = kwargs.pop('crop_field', None)
         super().__init__(*args, **kwargs)
 
-    def create_variation_fields(self, instance, field_file=None):
-        """ Создание полей вариаций, если их нет """
-        if field_file is None:
-            field_file = self.value_from_object(instance)
-        if not field_file.variations:
-            self._set_field_variations(instance)
-
-    def _set_field_variations(self, instance, **kwargs):
-        """
-            Создает в экземпляре класса VariationImageFieldFile поля вариаций
-        """
+    def _post_init(self, instance, **kwargs):
         field_file = self.value_from_object(instance)
         field_file.variations = self.get_variations(instance)
         if not field_file or not field_file.exists():
+            return
+
+        self.add_field_variations(field_file)
+
+    def add_field_variations(self, field_file):
+        """
+            Создает в экземпляре класса VariationImageFieldFile поля вариаций
+        """
+        if not field_file.variations:
             return
 
         for name, variation in field_file.variations.items():
@@ -392,9 +391,9 @@ class VariationImageField(models.ImageField):
 
     def contribute_to_class(self, cls, name, **kwargs):
         super().contribute_to_class(cls, name, **kwargs)
+        signals.post_init.connect(self._post_init, sender=cls)
         signals.post_save.connect(self._post_save, sender=cls)
-        signals.post_init.connect(self._set_field_variations, sender=cls)
-        signals.post_delete.connect(self.post_delete, sender=cls)
+        signals.post_delete.connect(self._post_delete, sender=cls)
 
     def save_form_data(self, instance, data):
         croparea = None
@@ -410,7 +409,7 @@ class VariationImageField(models.ImageField):
             # database, so leaving False as-is is not acceptable.
             if not data:
                 data = ''
-                self.post_delete(instance)
+                self._post_delete(instance)
 
             setattr(instance, self.name, data)
 
@@ -637,7 +636,7 @@ class VariationImageField(models.ImageField):
         if not field_file or not field_file.exists():
             return
 
-        self.create_variation_fields(instance)
+        self.add_field_variations(field_file)
         for name, variation in field_file.variations.items():
             try:
                 field_file.open()
@@ -730,7 +729,7 @@ class VariationImageField(models.ImageField):
         # Обрабатываем вариации
         self.build_variation_images(instance, croparea=field_file.croparea)
 
-    def post_delete(self, instance=None, **kwargs):
+    def _post_delete(self, instance=None, **kwargs):
         """ Обработчик сигнала удаления экземпляра модели """
         field_file = self.value_from_object(instance)
         field_file.delete(save=False)
