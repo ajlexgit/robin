@@ -4,12 +4,10 @@
 
 
 {% block content %}
-  <div class="grid">
-    <div class="gc gc-alone">
-      <h1 class="title-h1">{% trans 'Reset password' %}</h1>
-    </div>
+  <div class="grid-block">
+    <h1 class="title-h1">{% trans 'Reset password' %}</h1>
 
-    <div class="text-styles gc gc-alone">
+    <div class="text-styles">
       <p>
         {% blocktrans %}We've sent password reset instructions to your email <b>{{ email }}</b>.{% endblocktrans %}
       </p>

@@ -20,4 +20,3 @@ class Config(AppConfig):
             'plupload_moxie_swf': static('common/js/plupload/Moxie.swf'),
             'plupload_moxie_xap': static('common/js/plupload/Moxie.xap'),
         })
-

@@ -4,7 +4,8 @@
 {% load comments %}
 
 <div class="comment comment-level-{{ comment.final_level }} {% if comment.deleted %}comment-deleted{% endif %}"
-     data-id="{{ comment.id }}" data-level="{{ comment.level }}">
+     data-id="{{ comment.id }}"
+     data-level="{{ comment.level }}">
   <div class="info">
     <div class="rating {% if not comment.can_vote %}disabled{% endif %}">
       <span>{{ comment.rating|format_rating }}</span>

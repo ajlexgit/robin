@@ -1,8 +1,7 @@
 {% extends 'layout.html' %}
 
-{% load i18n %}
-{% load dates %}
 {% load pipeline %}
+{% load i18n %}
 
 {% block static_head %}
   {{ block.super }}
@@ -17,32 +16,29 @@
 
 {% block content %}
   <div id="profile">
-    <div class="grid">
-      <div class="gc-full gc-alone">
-        <h1 class="title-h1">
-          {% with username=profile_user.username %}
-            {% blocktrans %}Profile of «{{ username }}»{% endblocktrans %}
-          {% endwith %}
-        </h1>
+    <div class="grid-block">
+      <h1 class="title-h1">
+        {% with username=profile_user.username %}
+          {% blocktrans %}Profile of «{{ username }}»{% endblocktrans %}
+        {% endwith %}
+      </h1>
 
-        {% include 'users/profile_avatar.html' %}
+      {% include 'users/profile_avatar.html' %}
 
-        <div class="profile-info">
-          {% with fullname=profile_user.get_full_name %}
-            {% if fullname %}
-              <p><b>{% trans 'Name' %}</b>: {{ fullname }}</p>
-            {% endif %}
-          {% endwith %}
-          {% with email=profile_user.email %}
-            {% if email %}
-              <p><b>E-mail</b>: {{ email }}</p>
-            {% endif %}
-          {% endwith %}
-          <p><b>{% trans 'Last login' %}</b>: {{ profile_user.last_login|shortdate }}</p>
-          {% if profile_user == request.user %}
-            <a href="{% url 'users:reset_password' %}" class="btn">{% trans 'Change password' %}</a>
+      <div class="profile-info">
+        {% with fullname=profile_user.get_full_name %}
+          {% if fullname %}
+            <p><b>{% trans 'Name' %}</b>: {{ fullname }}</p>
           {% endif %}
-        </div>
+        {% endwith %}
+        {% with email=profile_user.email %}
+          {% if email %}
+            <p><b>E-mail</b>: {{ email }}</p>
+          {% endif %}
+        {% endwith %}
+        {% if profile_user == request.user %}
+          <a href="{% url 'users:reset_password' %}" class="btn">{% trans 'Change password' %}</a>
+        {% endif %}
       </div>
     </div>
   </div>

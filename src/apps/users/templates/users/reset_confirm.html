@@ -4,37 +4,33 @@
 
 
 {% block content %}
-  <div class="grid">
-    <div class="gc gc-alone">
-      <h1 class="title-h1">{% trans 'Set password' %}</h1>
-    </div>
+  <div class="grid-block">
+    <h1 class="title-h1">{% trans 'Set password' %}</h1>
 
-    <div class="gc gc-alone">
-      {{ form.media }}
-      <form method="post" action="{{ target }}" id="reset-confirm-form"
-            class="users-reset-confirm-form users-form" autocomplete="off">
-        {% csrf_token %}
+    {{ form.media }}
+    <form method="post" action="{{ target }}" id="reset-confirm-form"
+          class="users-reset-confirm-form users-form" autocomplete="off">
+      {% csrf_token %}
 
-        {{ form.non_field_errors.as_ul }}
-        <fieldset class="{{ form.new_password1.errors.classes }}">
-          {{ form.new_password1.label_tag }}
-          {{ form.new_password1 }}
-          {{ form.new_password1.errors }}
-        </fieldset>
-        <fieldset class="{{ form.new_password2.errors.classes }}">
-          {{ form.new_password2.label_tag }}
-          {{ form.new_password2 }}
-          {{ form.new_password2.errors }}
-        </fieldset>
+      {{ form.non_field_errors.as_ul }}
+      <fieldset class="{{ form.new_password1.errors.classes }}">
+        {{ form.new_password1.label_tag }}
+        {{ form.new_password1 }}
+        {{ form.new_password1.errors }}
+      </fieldset>
+      <fieldset class="{{ form.new_password2.errors.classes }}">
+        {{ form.new_password2.label_tag }}
+        {{ form.new_password2 }}
+        {{ form.new_password2.errors }}
+      </fieldset>
 
-        <fieldset>
-          <button type="submit" class="btn">{% trans 'Save' %}</button>
-        </fieldset>
-      </form>
+      <fieldset>
+        <button type="submit" class="btn">{% trans 'Save' %}</button>
+      </fieldset>
+    </form>
 
-      <script>
-        document.getElementById('id_new_password1').focus();
-      </script>
-    </div>
+    <script>
+      document.getElementById('id_new_password1').focus();
+    </script>
   </div>
 {% endblock content %}
