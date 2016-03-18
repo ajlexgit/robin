@@ -51,6 +51,9 @@ class CKEditorUploadWidget(CKEditorWidget):
         upload_simplephoto_url_parts[4] = parse.urlencode(query)
         self.editor_options['SIMPLEPHOTOS_UPLOAD_URL'] = parse.urlunparse(upload_simplephoto_url_parts)
 
+        # Язык редактора
+        self.editor_options.setdefault('language', get_language())
+
         # Шаблон урла окна редактирования изображения
         self.editor_options['PAGEPHOTOS_EDIT_URL'] = resolve_url('admin:ckeditor_pagephoto_change', 1)
 

@@ -486,7 +486,6 @@ STATICFILES_FINDERS = (
 
 # Ckeditor
 CKEDITOR_CONFIG_DEFAULT = {
-    'language': LANGUAGE_CODE,
     'height': 320,
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
@@ -531,7 +530,6 @@ CKEDITOR_CONFIG_DEFAULT = {
     ]
 }
 CKEDITOR_CONFIG_MINI = {
-    'language': LANGUAGE_CODE,
     'height': 100,
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix',
