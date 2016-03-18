@@ -1,7 +1,10 @@
+import os
 from django.contrib import admin
+from django.template import loader
+from django.utils.translation import get_language
 from django.views.decorators.http import condition
-from django.template import loader, Context, RequestContext
-from django.views.generic.base import TemplateResponseMixin, View
+from django.core.exceptions import ImproperlyConfigured
+from django.views.generic.base import View, TemplateResponseMixin
 
 
 class DecoratableViewMixin:
@@ -45,21 +48,46 @@ class AdminViewMixin:
         return handler
 
 
-class StringRenderMixin:
+class LanguageViewMixin:
+    """
+        Миксина, добавляющая метод для поиска специальных языковых шаблонов.
+
+        Например поиск шаблона "module/page.html" превращается в поиск
+        первого из шаблонов ["module/ru/page.html", "module/page.html"].
+
+        Миксина должна быть перед TemplateResponseMixin (если она есть).
+    """
+    def get_template_names(self, template=None):
+        original_template = template or getattr(self, 'template_name', None)
+        if original_template is None:
+            raise ImproperlyConfigured("LanguageViewMixin requires either a definition of 'template_name'")
+
+        lang = get_language()
+        parts = os.path.split(original_template)
+        lang_template = os.path.join(parts[0], lang, *parts[1:])
+        return [lang_template, original_template]
+
+
+class StringRenderMixin(LanguageViewMixin):
     """
         Представление, добавляющее метод render_to_string для
-        рендеринга шаблона в строку
+        рендеринга шаблона в строку.
+
+        Миксина должна быть перед TemplateResponseMixin (если она есть).
     """
-    def render_to_string(self, template, context=None, dirs=None):
-        return loader.get_template(template, dirs=dirs).render(context, self.request)
+    def render_to_string(self, template, context=None, using=None):
+        template_names = self.get_template_names(template)
+        new_template = loader.select_template(template_names, using=using)
+
+        request = getattr(self, 'request', None)
+        return new_template.render(context, request)
 
 
-class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMixin, View):
+class TemplateExView(StringRenderMixin, DecoratableViewMixin, TemplateResponseMixin, View):
     """
         Расширенная версия TemplateView:
-        1) Позволяет переопределить шаблон в методе render_to_response
-        2) Позволяет рендерить шаблон в строку
-        3) Позволяет установить кэширование в браузере для GET-страницы
+        1) Позволяет рендерить шаблон в строку
+        2) Позволяет установить кэширование в браузере для GET-страницы
            путем задания методов last_modified и/или etag.
 
         Пример:
@@ -78,7 +106,6 @@ class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMi
                         'config': self.config,
                     })
     """
-
     def last_modified(self, *args, **kwargs):
         return None
 
@@ -94,15 +121,3 @@ class TemplateExView(TemplateResponseMixin, StringRenderMixin, DecoratableViewMi
             )(handler)
         else:
             return handler
-
-    def render_to_response(self, context=None, template=None, dirs=None, **response_kwargs):
-        template = template or self.template_name
-        template = loader.get_template(template, dirs=dirs)
-
-        response_kwargs.setdefault('content_type', self.content_type)
-        return self.response_class(
-            request=self.request,
-            template=template,
-            context=context,
-            **response_kwargs
-        )

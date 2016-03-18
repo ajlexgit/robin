@@ -1,31 +1,15 @@
 from django.forms import widgets
-from django.conf import settings
 from suit.widgets import EnclosedInput
 from .valute import Valute
-
-
-# Дополнительные настройки виджета в зависимости от языка
-WIDGET_SETTINGS = {
-    ('ru',): {
-        'append': 'руб.'
-    },
-    ('en',): {
-        'prepend': '$'
-    }
-}
-
-for langs, opts in WIDGET_SETTINGS.items():
-    if settings.SHORT_LANGUAGE_CODE in langs:
-        widget_kwargs = opts
-        break
-else:
-    widget_kwargs = {}
+from .utils import get_formatter
 
 
 class ValuteWidget(EnclosedInput, widgets.NumberInput):
     input_type = 'number'
 
     def __init__(self, *args, **kwargs):
+        formatter = get_formatter()
+        widget_kwargs = formatter.get('widget_attrs') or {}
         attrs = dict(kwargs, **widget_kwargs)
         super().__init__(*args, **attrs)
 

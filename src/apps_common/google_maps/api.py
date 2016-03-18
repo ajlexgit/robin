@@ -1,6 +1,8 @@
 import xml
 from urllib import parse, request, error
 from django.conf import settings
+from django.utils.translation import get_language
+
 
 STATIC_MAPS_URL = 'http://maps.googleapis.com/maps/api/staticmap?'
 HOSTED_MAPS_URL = 'http://maps.google.com/maps?'
@@ -28,7 +30,7 @@ def get_static_map_url(longitude, latitude, zoom=14, width=None, height=None):
         size='%dx%d' % (width, height,),
         zoom=zoom,
         maptype='roadmap',
-        language=settings.SHORT_LANGUAGE_CODE,
+        language=get_language(),
         markers='color:red|label:G|%s' % point,
     ))
 
@@ -43,7 +45,7 @@ def get_external_map_url(longitude, latitude, zoom=14):
     return HOSTED_MAPS_URL + parse.urlencode(dict(
         q='loc:%s' % point,
         t='r',
-        hl=settings.SHORT_LANGUAGE_CODE,
+        hl=get_language(),
         z=zoom,
     ))
 

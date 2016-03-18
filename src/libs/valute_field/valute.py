@@ -1,24 +1,12 @@
 from decimal import Decimal, getcontext, ROUND_CEILING
-from django.conf import settings
 from django.utils.functional import cached_property
-from .utils import split_price
-
-
-# Формат валюты по умолчанию
-valute_formats = getattr(settings, 'VALUTE_FORMATS', {})
-for langs, val in valute_formats.items():
-    if settings.SHORT_LANGUAGE_CODE in langs:
-        default_formatter = val
-        break
-else:
-    default_formatter = {}
+from .utils import split_price, get_formatter
 
 
 class Valute:
-    def __init__(self, value='0', rounding=ROUND_CEILING, formatter=None):
+    def __init__(self, value='0', rounding=ROUND_CEILING):
         # настройки форматирования
-        formatter = formatter or {}
-        self._formatter = dict(default_formatter, **formatter)
+        self._formatter = get_formatter()
 
         # форматирование числа
         context = getcontext().copy()

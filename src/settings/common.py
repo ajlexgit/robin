@@ -12,11 +12,10 @@ SECRET_KEY = 'lr2b8&^p8dv#&b=4%op-0^2*vomo816l-*8*^5#o9@q!=zv@f$'
 
 DEBUG = False
 
-LANGUAGE_CODE = 'en-US'
-SHORT_LANGUAGE_CODE = LANGUAGE_CODE.split('-')[0]
+LANGUAGE_CODE = 'en'
 LANGUAGES = (
-    ('ru-RU', _('Russian')),
-    ('en-US', _('English')),
+    ('ru', _('Russian')),
+    ('en', _('English')),
 )
 
 TIME_ZONE = 'America/New_York'
@@ -397,6 +396,7 @@ SCC_DISABLED_URLS = [
 #    trail              - не выводить дробную часть, если в ней только нули
 #    utf_format         - формат с использованием UTF-символов
 #    alternative_format - формат без использования UTF-символов
+#    widget_attrs       - дополнительные параметры виждета
 VALUTE_FORMATS = {
     ('ru',): {
         'decimal_places': 2,
@@ -406,6 +406,9 @@ VALUTE_FORMATS = {
 
         'utf_format': '{}\u20bd',
         'alternative_format': '{} руб.',
+        'widget_attrs': {
+            'append': 'руб.',
+        },
     },
     ('en',): {
         'decimal_places': 2,
@@ -415,6 +418,9 @@ VALUTE_FORMATS = {
 
         'utf_format': '${}',
         'alternative_format': '${}',
+        'widget_attrs': {
+            'prepend': '$',
+        },
     }
 }
 
@@ -428,7 +434,7 @@ CACHES = {
     'default': {
         "BACKEND": "redis_cache.cache.RedisCache",
         "LOCATION": "127.0.0.1:6379:0",
-        "KEY_PREFIX": SHORT_LANGUAGE_CODE + SECRET_KEY,
+        "KEY_PREFIX": LANGUAGE_CODE + SECRET_KEY,
         "OPTIONS": {
             "CLIENT_CLASS": 'redis_cache.client.DefaultClient',
             "PASSWORD": "",
@@ -450,10 +456,12 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
             ),
-            'loaders': ('django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ]),
+            'loaders': (
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ),
         }
     },
 ]
@@ -483,7 +491,7 @@ STATICFILES_FINDERS = (
 
 # Ckeditor
 CKEDITOR_CONFIG_DEFAULT = {
-    'language': SHORT_LANGUAGE_CODE,
+    'language': LANGUAGE_CODE,
     'height': 320,
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
@@ -528,7 +536,7 @@ CKEDITOR_CONFIG_DEFAULT = {
     ]
 }
 CKEDITOR_CONFIG_MINI = {
-    'language': SHORT_LANGUAGE_CODE,
+    'language': LANGUAGE_CODE,
     'height': 100,
     'forcePasteAsPlainText': True,
     'extraPlugins': 'autogrow,textlen,enterfix',

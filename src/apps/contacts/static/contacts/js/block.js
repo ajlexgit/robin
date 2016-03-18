@@ -9,13 +9,16 @@
         return $.ajax({
             url: window.js_storage.ajax_contact,
             type: 'GET',
+            dataType: 'json',
             success: function(response) {
-                var popup = $.popup({
-                    classes: 'contact-popup contact-form-popup',
-                    content: response
-                }).show();
+                if (response.form) {
+                    var popup = $.popup({
+                        classes: 'contact-popup contact-form-popup',
+                        content: response.form
+                    }).show();
 
-                InitContactPopup(popup);
+                    InitContactPopup(popup);
+                }
             },
             error: function() {
                 alert(window.DEFAULT_AJAX_ERROR);

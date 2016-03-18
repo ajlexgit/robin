@@ -1,21 +1,22 @@
 from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
-from libs.views import TemplateExView
+from django.views.generic.base import View
 from libs.views_ajax import AjaxViewMixin
 from libs.email import send
 from .models import ContactsConfig, MessageReciever
 from .forms import ContactForm
 
 
-class ContactView(AjaxViewMixin, TemplateExView):
+class ContactView(AjaxViewMixin, View):
     def get(self, request):
         form = ContactForm()
         config = ContactsConfig.get_solo()
-
-        return self.render_to_response({
-            'config': config,
-            'form': form,
-        }, template='contacts/ajax_contact.html')
+        return self.json_response({
+            'form': self.render_to_string('contacts/ajax_contact.html', {
+                'config': config,
+                'form': form,
+            }),
+        })
 
     def post(self, request):
         config = ContactsConfig.get_solo()

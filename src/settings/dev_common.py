@@ -4,6 +4,7 @@ from settings.common import *
 ALLOWED_HOSTS = (
     'localhost',
     'local.ru',
+    'local.com',
 )
 
 DEBUG = True

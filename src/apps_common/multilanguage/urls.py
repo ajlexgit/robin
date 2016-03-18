@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^set/(?P<code>[-\w]{2,5})/$', views.set_lang, name='set_language'),
+    url(r'^set/(?P<code>[-\w]{2,5})/$', views.redirect_to_language, name='set_language'),
 ]

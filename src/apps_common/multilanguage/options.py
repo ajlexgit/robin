@@ -1,24 +1,17 @@
-import re
-
-LANGUAGES = (
-    {
-        'code': 'en-US',
-        'short_code': 'en',
-        'url': '//en.local.ru/',
+LANGUAGES = {
+    'en': {
+        'url': '//local.com/',
     },
-    {
-        'code': 'ru-RU',
-        'short_code': 'ru',
-        'url': '//ru.local.ru/',
+    'ru': {
+        'url': '//local.ru/',
         'iso': ('RU', 'UA'),
-    },
-)
-LANGUAGES_DICT = {
-    item['code']: item
-    for item in LANGUAGES
+    }
 }
-LANGUAGE_CODES = tuple(item['code'] for item in LANGUAGES)
 
+
+# если авторедирект на текущий сайт приводит на страницу,
+# которой нет - редиректим на страницу FALLBACK_REDIRECT_URL
+FALLBACK_REDIRECT_URL = 'index'
 
 # имя ключа сессии, хранящего флаг того,
 # что редиректить автоматически не нужно

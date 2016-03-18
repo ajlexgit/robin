@@ -3,6 +3,7 @@ from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
+from django.utils.translation import get_language
 from suit_ckeditor.widgets import CKEditorWidget
 
 
@@ -17,7 +18,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         js = CKEditorWidget.Media.js + (
             'common/js/plupload/plupload.full.min.js',
             'common/js/plupload/jquery.ui.plupload.min.js',
-            'common/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
+            'common/js/plupload/i18n/%s.js' % (get_language(), ),
         )
         css = CKEditorWidget.Media.css
 

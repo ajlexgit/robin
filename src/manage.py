@@ -1,6 +1,8 @@
 import os
 import sys
 
+# admin selectbox multilang
+# pipeline static multilang
 # crop each variation
 # Parallax наизнанку
 # drager: блокируется вертикальный скролл Android

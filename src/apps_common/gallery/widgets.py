@@ -1,7 +1,7 @@
 from django import forms
-from django.conf import settings
 from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
+from django.utils.translation import get_language
 from django.template.loader import render_to_string
 
 
@@ -11,7 +11,7 @@ class GalleryWidget(forms.Widget):
         js = (
             'common/js/jquery.Jcrop.js',
             'common/js/plupload/plupload.full.min.js',
-            'common/js/plupload/i18n/%s.js' % (settings.SHORT_LANGUAGE_CODE, ),
+            'common/js/plupload/i18n/%s.js' % (get_language(), ),
             'common/js/cropdialog.js',
             'common/js/uploader.js',
             'gallery/admin/js/gallery_class.js',

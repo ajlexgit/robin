@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.template import loader, Library
+from django.utils.translation import get_language
 from django.template.context import RequestContext
 from .. import options
 
@@ -12,12 +13,12 @@ def select_language(context, current_code=None):
     if not request:
         return ''
 
-    if not current_code or not current_code in options.LANGUAGE_CODES:
+    current_code = current_code or get_language()
+    if not current_code or not current_code in options.LANGUAGES:
         current_code = settings.LANGUAGE_CODE
 
     return loader.render_to_string('multilanguage/allowed_languages.html',
         RequestContext(request, {
-            'current_short_code': settings.SHORT_LANGUAGE_CODE,
             'current_code': current_code,
             'langs': options.LANGUAGES,
         }

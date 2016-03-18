@@ -1,8 +1,8 @@
 import re
 from html import unescape
+from django.utils.translation import get_language
 from bs4 import BeautifulSoup as Soup, NavigableString
 from softhyphen.html import get_hyphenator_for_language, SOFT_HYPHEN
-from django.conf import settings
 from django.core.cache import caches
 from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
@@ -14,12 +14,16 @@ re_nbsp = re.compile('\\b(\w{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
 
-hybernator = get_hyphenator_for_language(settings.LANGUAGE_CODE)
-hybernator.left = 4
-hybernator.right = 3
+
+def get_hybernator():
+    hybernator = get_hyphenator_for_language(get_language())
+    hybernator.left = 4
+    hybernator.right = 3
+    return hybernator
 
 
 def hybernate_string(string):
+    hybernator = get_hybernator()
     result = (
         hybernator.inserted(word, SOFT_HYPHEN)
         for word in string.split()
@@ -124,9 +128,7 @@ def softhyphen(value):
         Вставка невидимых переносов в слова
     """
     cache = caches['default']
-    language = settings.LANGUAGE_CODE
-
-    key = ':'.join(map(str, (value, language)))
+    key = ':'.join(map(str, (value, get_language())))
     if cache.has_key(key):
         return cache.get(key)
     else:

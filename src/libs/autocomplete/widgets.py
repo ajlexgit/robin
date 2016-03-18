@@ -7,7 +7,8 @@ from django.forms.utils import flatatt
 from django.shortcuts import resolve_url
 from django.utils.encoding import force_text
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
+
 
 CACHE_BACKEND = getattr(settings,  'AUTOCOMPLETE_CACHE_BACKEND', 'default')
 cache = caches[CACHE_BACKEND]
@@ -56,7 +57,7 @@ class AutocompleteWidget(widgets.Widget):
         js = (
             'autocomplete/js/autocomplete.js',
             'autocomplete/js/select2.min.js',
-            'autocomplete/js/select2_locale_%s.js' % settings.SHORT_LANGUAGE_CODE,
+            'autocomplete/js/select2_locale_%s.js' % get_language(),
         )
         css = {
             'all': (

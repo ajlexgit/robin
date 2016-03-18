@@ -25,16 +25,15 @@
 
         В options.py должны быть указаны поддерживаемые языки и их URL. Коды языков должны
         совпадать с кодами в settings.LANGUAGE_CODE на указанных сайтах:
-            LANGUAGES = (
-                {
-                    'code': 'en',
+            LANGUAGES = {
+                'en': {
                     'url': '//mysite.com/',
                 },
-                {
-                    'code': 'ru',
+                'ru': {
                     'url': '//mysite.ru/',
+                    'iso': ('RU', 'UA'),
                 },
-            )
+            }
 
     Примеры:
         template.html:
