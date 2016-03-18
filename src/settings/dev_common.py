@@ -22,6 +22,10 @@ DATABASES = {
 # Отключение компрессии SASS (теряется наглядность кода)
 PIPELINE['SASS_ARGUMENTS'] = '-t nested'
 
+STATICFILES_FINDERS += (
+    'libs.debug_finder.PipelineFinder',
+)
+
 # Отключение кэширования шаблонов
 TEMPLATES[0]['OPTIONS']['loaders'] = (
     'django.template.loaders.filesystem.Loader',

@@ -482,7 +482,6 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'libs.debug_finder.PipelineFinder',
 )
 
 # Ckeditor
