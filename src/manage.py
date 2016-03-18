@@ -1,6 +1,7 @@
 import os
 import sys
 
+# template multilang can not extends
 # admin selectbox multilang
 # pipeline static multilang
 # crop each variation
