@@ -19,10 +19,27 @@
                 ...
             )
 
+            # Для поиска языковых шаблонов (опционально) можно использовать
+            # один из специальных загрузчиков:
+            #   1) multilanguage.loaders.LanguageLoader
+            #   2) multilanguage.loaders.LanguageCachedLoader
+            TEMPLATE = {
+                ...
+                'OPTIONS': {
+                    'loaders': (
+                        ('multilanguage.loaders.LanguageCachedLoader', [
+                            'django.template.loaders.filesystem.Loader',
+                            'django.template.loaders.app_directories.Loader',
+                        ]),
+                    ),
+                }
+            }
+
         urls.py:
             ...
             url(r'^langs/', include('multilanguage.urls', namespace='multilanguage')),
             ...
+
 
     Настройки:
         # Ключи словаря должны соответсвовать аналогичным кодам из settings.LANGUAGES

@@ -48,27 +48,7 @@ class AdminViewMixin:
         return handler
 
 
-class LanguageViewMixin:
-    """
-        Миксина, добавляющая метод для поиска специальных языковых шаблонов.
-
-        Например поиск шаблона "module/page.html" превращается в поиск
-        первого из шаблонов ["module/ru/page.html", "module/page.html"].
-
-        Миксина должна быть перед TemplateResponseMixin (если она есть).
-    """
-    def get_template_names(self, template=None):
-        original_template = template or getattr(self, 'template_name', None)
-        if original_template is None:
-            raise ImproperlyConfigured("LanguageViewMixin requires either a definition of 'template_name'")
-
-        lang = get_language()
-        parts = os.path.split(original_template)
-        lang_template = os.path.join(parts[0], lang, *parts[1:])
-        return [lang_template, original_template]
-
-
-class StringRenderMixin(LanguageViewMixin):
+class StringRenderMixin:
     """
         Представление, добавляющее метод render_to_string для
         рендеринга шаблона в строку.
@@ -76,11 +56,8 @@ class StringRenderMixin(LanguageViewMixin):
         Миксина должна быть перед TemplateResponseMixin (если она есть).
     """
     def render_to_string(self, template, context=None, using=None):
-        template_names = self.get_template_names(template)
-        new_template = loader.select_template(template_names, using=using)
-
         request = getattr(self, 'request', None)
-        return new_template.render(context, request)
+        return loader.get_template(template, using=using).render(context, request)
 
 
 class TemplateExView(StringRenderMixin, DecoratableViewMixin, TemplateResponseMixin, View):

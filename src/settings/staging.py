@@ -8,6 +8,9 @@ VZ_DIRECTORY = 'project.dev.direktweb.ru'
 HOSTNAME = '%HOSTNAME%'
 
 SESSION_COOKIE_DOMAIN = DOMAIN
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_CACHE_ALIAS = 'default'
+
 CSRF_COOKIE_DOMAIN = DOMAIN
 
 # Метка %SECRET_KEY% при развёртывании заменяется на нужный секретный ключ
@@ -32,11 +35,6 @@ DATABASES = {
         'CONN_MAX_AGE': 60,
     }
 }
-
-SESSION_ENGINE = 'redis_sessions.session'
-SESSION_REDIS_HOST = 'localhost'
-SESSION_REDIS_PORT = 6379
-SESSION_REDIS_PREFIX = 'session'
 
 LOGGING = {
     'version': 1,

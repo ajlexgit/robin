@@ -1,2 +1,1 @@
 -r common.txt
-django-redis-sessions==0.4.0
