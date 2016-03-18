@@ -24,6 +24,13 @@ BACKUP_ROOT = '/home/webapp/%s/backup/' % VZ_DIRECTORY
 
 PIPELINE['SASS_ARGUMENTS'] = '-t compressed'
 
+TEMPLATES[0]['OPTIONS']['loaders'] = (
+    ('django.template.loaders.cached.Loader', [
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    ]),
+)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
