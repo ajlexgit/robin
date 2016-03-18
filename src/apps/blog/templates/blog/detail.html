@@ -19,7 +19,7 @@
 
   <div id="blog-post" class="block">
     <div class="grid-block">
-      <div class="date">{{ post.date|date }}</div>
+      <time datetime="{{ post.date|date:"c" }}" class="date">{{ post.date|date }}</time>
 
       <h1 class="title title-h1">{{ post.title }}</h1>
 

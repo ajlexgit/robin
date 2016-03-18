@@ -36,15 +36,17 @@
       {% endif %}
     </div>
 
-    <ul id="posts">
+    <div id="posts">
       {% for post in paginator.page %}
-        <li class="post">
+        <article class="post">
           <div class="grid-block">
-            <div class="date">{{ post.date|date }}</div>
+            <header>
+              <time datetime="{{ post.date|date:"c" }}" class="date">{{ post.date|date }}</time>
 
-            <div class="title title-h1">
-              <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-            </div>
+              <h2 class="title title-h1">
+                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+              </h2>
+            </header>
 
             {% if post.preview %}
               <a href="{{ post.get_absolute_url }}" class="preview">
@@ -59,9 +61,9 @@
               </div>
             {% endif %}
           </div>
-        </li>
+        </article>
       {% endfor %}
-    </ul>
+    </div>
 
     {% if paginator.num_pages > 1 %}
       <div id="paginator">

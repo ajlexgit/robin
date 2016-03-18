@@ -8,7 +8,7 @@ $dl_logo_height: 32px;
 $column_footer: $media480;
 
 
-footer {
+#footer-cell > footer {
   background-color: #D0D0D0;
   @include vpad(40px);
 
