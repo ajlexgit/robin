@@ -153,7 +153,7 @@ PIPELINE = {
         'libs.sassc.SASSCCompiler',
     ),
     'SASS_BINARY': '/usr/bin/env sassc --load-path ' + SASS_INCLUDE_DIR,
-    'SASS_ARGUMENTS': '-t nested',
+    'SASS_ARGUMENTS': '-t compressed',
     'CSS_COMPRESSOR': 'libs.cssmin.CSSCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
 
@@ -450,10 +450,10 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
             ),
-            'loaders': (
+            'loaders': ('django.template.loaders.cached.Loader', [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-            ),
+            ]),
         }
     },
 ]

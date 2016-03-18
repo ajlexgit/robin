@@ -18,6 +18,15 @@ DATABASES = {
     }
 }
 
+# Отключение компрессии SASS (теряется наглядность кода)
+PIPELINE['SASS_ARGUMENTS'] = '-t nested'
+
+# Отключение кэширования шаблонов
+TEMPLATES[0]['OPTIONS']['loaders'] = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
 
 INSTALLED_APPS = (
     'devserver',
