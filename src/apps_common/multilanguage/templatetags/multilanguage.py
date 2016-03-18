@@ -14,12 +14,12 @@ def select_language(context, current_code=None):
         return ''
 
     current_code = current_code or get_language()
-    if not current_code or not current_code in options.LANGUAGES:
+    if not current_code or not current_code in options.MULTILANGUAGE_SITES:
         current_code = settings.LANGUAGE_CODE
 
     return loader.render_to_string('multilanguage/allowed_languages.html',
         RequestContext(request, {
             'current_code': current_code,
-            'langs': options.LANGUAGES,
+            'langs': options.MULTILANGUAGE_SITES,
         }
     ))

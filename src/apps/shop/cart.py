@@ -1,6 +1,7 @@
 import re
 from django.views.generic import View
 from libs.views_ajax import AjaxViewMixin
+from libs.cookies import set_cookie
 from .models import ShopProduct
 from . import options
 
@@ -74,7 +75,7 @@ class CartProducts:
             pass
 
         if response:
-            response.set_cookie('clear_cart', '1', path='/')
+            set_cookie(response, 'clear_cart', '1')
 
     @classmethod
     def from_session(cls, request):

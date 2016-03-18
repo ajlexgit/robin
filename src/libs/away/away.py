@@ -5,7 +5,6 @@ from django.contrib.sites.shortcuts import get_current_site
 
 
 def is_same_domain(host, pattern):
-    # TODO: скоро будет в Django (django.utils.http)
     if not pattern:
         return False
 

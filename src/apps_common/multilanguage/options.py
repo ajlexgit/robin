@@ -1,27 +1,17 @@
-LANGUAGES = {
-    'en': {
-        'url': '//local.com/',
-    },
-    'ru': {
-        'url': '//local.ru/',
-        'iso': ('RU', 'UA'),
-    }
-}
+from django.conf import settings
 
+
+MULTILANGUAGE_SITES = settings.MULTILANGUAGE_SITES
 
 # если авторедирект на текущий сайт приводит на страницу,
-# которой нет - редиректим на страницу FALLBACK_REDIRECT_URL
-FALLBACK_REDIRECT_URL = 'index'
+# которой нет - редиректим на страницу MULTILANGUAGE_FALLBACK_URL
+MULTILANGUAGE_FALLBACK_URL = getattr(settings, 'MULTILANGUAGE_FALLBACK_URL', 'index')
 
-# имя ключа сессии, хранящего флаг того,
-# что редиректить автоматически не нужно
-NOREDIRECT_SESSION_KEY = 'language_setted'
+# имя куки, хранящей флаг того, что редиректить автоматически с данного сайта не нужно
+MULTILANGUAGE_COOKIE_KEY = getattr(settings, 'MULTILANGUAGE_COOKIE_KEY', 'no_redirect')
 
 # Имя GET-параметра, запрещающего авторедирект
-NOREDIRECT_GET_PARAM = 'noredirect'
-
-# Путь редиректа по умолчанию.
-DEFAULT_REDIRECT_URL = 'index'
+MULTILANGUAGE_GET_PARAM = 'no_redirect'
 
 # Строки в User-Agent, которые не должны редиректиться
 ROBOTS_UA = tuple(map(str.lower, (

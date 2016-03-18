@@ -9,6 +9,7 @@
             INSTALLED_APPS = (
                 ...
                 'multilanguage',
+                'libs.geocity',
                 ...
             )
 
@@ -23,17 +24,29 @@
             url(r'^langs/', include('multilanguage.urls', namespace='multilanguage')),
             ...
 
-        В options.py должны быть указаны поддерживаемые языки и их URL. Коды языков должны
-        совпадать с кодами в settings.LANGUAGE_CODE на указанных сайтах:
-            LANGUAGES = {
-                'en': {
-                    'url': '//mysite.com/',
-                },
-                'ru': {
-                    'url': '//mysite.ru/',
-                    'iso': ('RU', 'UA'),
-                },
-            }
+    Настройки:
+        # Ключи словаря должны соответсвовать аналогичным кодам из settings.LANGUAGES
+        MULTILANGUAGE_SITES = {
+            'en': {
+                'url': '//mysite.com/',
+            },
+            'ru': {
+                'url': '//mysite.ru/',
+                'iso': ('RU', 'UA'),
+            },
+        }
+
+        # == Не обязательные ==
+
+        # Запасной URL при авторедиректе. Например, когда на русской версии сайта
+        # нет страницы, с которой был совершен редирект.
+        MULTILANGUAGE_FALLBACK_URL = 'index'
+
+        # имя куки, хранящей флаг того, что редиректить автоматически с данного сайта не нужно
+        MULTILANGUAGE_COOKIE_NAME = 'no_redirect'
+
+        # Имя GET-параметра, запрещающего авторедирект
+        MULTILANGUAGE_GET_PARAM = 'no_redirect'
 
     Примеры:
         template.html:

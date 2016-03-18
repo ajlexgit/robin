@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
-from .utils import disable_autoredirect, noredirect_url, get_referer_url
+from libs.cookies import set_cookie
+from .utils import noredirect_url, get_referer_url
 from . import options
 
 
@@ -10,13 +11,14 @@ def redirect_to_language(request, code):
     referer_url = get_referer_url(request)
 
     # язык некорректен или отсутствует
-    if not code or not code in options.LANGUAGES:
+    if not code or not code in options.MULTILANGUAGE_SITES:
         return redirect(referer_url)
 
-    # запрещаем авторедирект на текущем домене
-    disable_autoredirect(request)
-
     # запрещаем авторедирект на удаленном домене
-    language = options.LANGUAGES.get(code)
+    language = options.MULTILANGUAGE_SITES.get(code)
     redirect_url = noredirect_url(language['url'], forced_path=referer_url)
-    return redirect(redirect_url)
+
+    # запрещаем авторедирект на текущем домене
+    response = redirect(redirect_url)
+    set_cookie(response, options.MULTILANGUAGE_COOKIE_KEY, '1', expires=365)
+    return response

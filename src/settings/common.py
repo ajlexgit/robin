@@ -363,15 +363,10 @@ SESSION_COOKIE_DOMAIN = None
 # запретных юзер-агентов
 DISALLOWED_USER_AGENTS = ()
 
+
 # ==================================================================
 # ==================== APPS SETTINGS ===============================
 # ==================================================================
-
-# Admin honeypot
-ADMIN_HONEYPOT_EMAIL_ADMINS = False
-
-# Autocomplete
-AUTOCOMPLETE_CACHE_BACKEND = 'default'
 
 # Admin Dump
 BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
@@ -423,6 +418,7 @@ VALUTE_FORMATS = {
         },
     }
 }
+
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

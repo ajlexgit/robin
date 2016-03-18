@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
-from . import options
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import resolve_url
+from . import options
 
 
 def get_client_ip(request):
@@ -14,26 +14,20 @@ def get_client_ip(request):
     return ip
 
 
-def disable_autoredirect(request):
-    """
-        Отключение авторедиректа на текущем домене
-    """
-    request.session[options.NOREDIRECT_SESSION_KEY] = True
-
-
 def get_referer_url(request):
     """
         Возвращает относительный путь REFERER, если он с текущего сайта.
-        Иначе, возвращает путь к главной странице
+        Иначе, возвращает MULTILANGUAGE_FALLBACK_URL
     """
     referer = request.META.get('HTTP_REFERER')
     if not referer:
-        return resolve_url(options.DEFAULT_REDIRECT_URL)
+        return resolve_url(options.MULTILANGUAGE_FALLBACK_URL)
 
     site = get_current_site(request)
     url_parts = list(urlparse(referer))
+    print(url_parts[1], site.domain)
     if url_parts[1] != site.domain:
-        return resolve_url(options.DEFAULT_REDIRECT_URL)
+        return resolve_url(options.MULTILANGUAGE_FALLBACK_URL)
 
     url_parts[0] = ''
     url_parts[1] = ''
@@ -54,7 +48,7 @@ def noredirect_url(url, forced_path=None):
         query.update(forced_path_query)
 
     query.update({
-        options.NOREDIRECT_GET_PARAM: 1
+        options.MULTILANGUAGE_GET_PARAM: 1
     })
     url_parts[4] = urlencode(query)
 
