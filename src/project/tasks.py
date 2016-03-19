@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.management import call_command
 from project import celery_app
@@ -17,7 +18,7 @@ def make_backup(max_count=None):
 
     if max_count is None:
         return
-    
+
     if isinstance(max_count, int) and max_count > 1:
         files = []
         for file in reversed(sorted(os.listdir(settings.BACKUP_ROOT))):
@@ -29,3 +30,12 @@ def make_backup(max_count=None):
             for old_file in files[max_count:]:
                 os.unlink(old_file)
 
+
+@celery_app.task
+def clean_admin_log(days=180):
+    """
+        Удаление записей лога, старее двух месяцев назад
+    """
+    from django.contrib.admin.models import LogEntry
+    since_date = datetime.now() - timedelta(days=days)
+    LogEntry.objects.filter(action_time__lt=since_date).delete()

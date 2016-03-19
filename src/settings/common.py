@@ -450,14 +450,23 @@ BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ('pickle', 'json')
 CELERY_TIMEZONE = 'Europe/Moscow'
 CELERYBEAT_SCHEDULE = {
-    # создание бэкапа дважы в месяц
+    # создание бэкапа дважды в месяц
     'make_backup': {
         'task': 'project.tasks.make_backup',
-        'schedule': crontab(day_of_month='1,15', hour='2', minute='0'),
+        'schedule': crontab(day_of_month='1,15', hour='9', minute='0'),
         'kwargs': {
             'max_count': 10,
         }
-    }
+    },
+
+    # очистка старых логов
+    'clean_admin_log': {
+        'task': 'project.tasks.clean_admin_log',
+        'schedule': crontab(day_of_month='1', hour='9', minute='0'),
+        'kwargs': {
+            'days': 90,
+        }
+    },
 }
 
 # Templates
