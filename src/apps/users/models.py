@@ -35,6 +35,11 @@ class CustomUser(AbstractUser):
         editable=False,
     )
 
+    class Meta(AbstractUser.Meta):
+        permissions = (
+            ('admin_menu', 'Can see hidden menu items'),
+        )
+
     @property
     def normal_avatar(self):
         if self.avatar:

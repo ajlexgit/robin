@@ -44,7 +44,7 @@ class DummyAdmin(admin.ModelAdmin):
             os.mkdir(settings.BACKUP_ROOT, 0o755)
 
         zip_archives = []
-        for file in sorted(os.listdir(settings.BACKUP_ROOT)):
+        for file in reversed(sorted(os.listdir(settings.BACKUP_ROOT))):
             absfile = os.path.abspath(os.path.join(settings.BACKUP_ROOT, file))
             if os.path.isfile(absfile) and absfile.endswith('.zip'):
                 zip_archives.append((
@@ -53,7 +53,7 @@ class DummyAdmin(admin.ModelAdmin):
 
         return render(request, 'backups/admin/index.html', {
             'prefix_url': self.prefix_url,
-            'files': reversed(zip_archives),
+            'files': zip_archives,
         })
 
     def create(self, request):
