@@ -8,9 +8,6 @@ VZ_DIRECTORY = 'directlinedev.com'
 HOSTNAME = '%HOSTNAME%'
 
 SESSION_COOKIE_DOMAIN = DOMAIN
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
-SESSION_CACHE_ALIAS = 'default'
-
 CSRF_COOKIE_DOMAIN = DOMAIN
 
 # Метка %SECRET_KEY% при развёртывании заменяется на нужный секретный ключ
@@ -58,8 +55,8 @@ LOGGING = {
         },
         'django.request': {
             'handlers': ['null'],
-            'level': 'DEBUG',
             'propagate': True,
+            'level': 'DEBUG',
         },
         '': {
             'handlers': ['file'],

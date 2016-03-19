@@ -323,8 +323,6 @@ LOGIN_REDIRECT_URL = 'index'
 RESET_PASSWORD_REDIRECT_URL = 'index'
 LOGOUT_URL = 'index'
 
-SESSION_COOKIE_AGE = 30 * 24 * 3600
-
 # Email
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 25
@@ -358,6 +356,9 @@ CSRF_COOKIE_DOMAIN = None
 
 # Домен для куки сессий (".example.com")
 SESSION_COOKIE_DOMAIN = None
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 30 * 24 * 3600
 
 # Список скомпилированных регулярных выражений
 # запретных юзер-агентов

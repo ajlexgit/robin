@@ -11,6 +11,7 @@ beautifulsoup4==4.4.1
 html5lib==0.9999999
 csscompressor==0.9.4
 jsmin==2.2.1
+ipython==4.1.2
 Pillow==3.1.1
 pysyge==0.2.0
 pytils==0.3
