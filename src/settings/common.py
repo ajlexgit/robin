@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -115,8 +116,8 @@ SUIT_CONFIG = {
         '-',
         {
             'icon': 'icon-lock',
-            'permissions': 'users.change_customuser',
             'label': 'Authentication and Authorization',
+            'permissions': 'users.admin_menu',
             'models': (
                 'auth.group',
                 'users.customuser',
@@ -125,13 +126,18 @@ SUIT_CONFIG = {
         {
             'app': 'backups',
             'icon': 'icon-hdd',
+            'permissions': 'users.admin_menu',
         },
         {
             'app': 'admin',
             'icon': 'icon-list-alt',
             'label': _('History'),
+            'permissions': 'users.admin_menu',
         },
-        'sites',
+        {
+            'app': 'sites',
+            'permissions': 'users.admin_menu',
+        },
         {
             'app': 'seo',
             'icon': 'icon-tasks',
@@ -439,6 +445,20 @@ CACHES = {
     }
 }
 
+# Celery
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ('pickle', 'json')
+CELERY_TIMEZONE = 'Europe/Moscow'
+CELERYBEAT_SCHEDULE = {
+    # создание бэкапа дважы в месяц
+    'make_backup': {
+        'task': 'project.tasks.make_backup',
+        'schedule': crontab(day_of_month='1,15', hour='2', minute='0'),
+        'kwargs': {
+            'max_count': 10,
+        }
+    }
+}
 
 # Templates
 TEMPLATES = [
