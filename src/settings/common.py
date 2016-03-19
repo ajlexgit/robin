@@ -336,7 +336,7 @@ EMAIL_HOST_USER = 'noreply@automessenger.ru'
 EMAIL_HOST_PASSWORD = 'woodstock1999'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@automessenger.ru'
-
+EMAIL_SUBJECT_PREFIX = '[%s] ' % (SUIT_CONFIG['ADMIN_NAME'], )
 
 # Получатели писем о ошибках при DEBUG = False
 ADMINS = (
@@ -449,6 +449,7 @@ CACHES = {
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ('pickle', 'json')
 CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_SEND_TASK_ERROR_EMAILS = True
 CELERYBEAT_SCHEDULE = {
     # создание бэкапа дважды в месяц
     'make_backup': {

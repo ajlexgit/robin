@@ -46,6 +46,10 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': '/home/webapp/%s/django_errors.log' % VZ_DIRECTORY,
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
     },
     'loggers': {
         'django': {
@@ -54,9 +58,9 @@ LOGGING = {
             'level': 'INFO',
         },
         'django.request': {
-            'handlers': ['null'],
-            'propagate': True,
-            'level': 'DEBUG',
+            'handlers': ['mail_admins'],
+            'propagate': False,
+            'level': 'ERROR',
         },
         '': {
             'handlers': ['file'],
