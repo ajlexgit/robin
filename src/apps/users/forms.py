@@ -11,6 +11,7 @@ UserModel = get_user_model()
 
 class LoginForm(FormHelperMixin, AuthenticationForm):
     """ Форма авторизации """
+    autofocus_field = 'username'
     error_messages = {
         'invalid_login': _('Login or password incorrect'),
         'inactive': _('Account blocked'),
@@ -34,6 +35,7 @@ class LoginForm(FormHelperMixin, AuthenticationForm):
 
 class RegisterForm(FormHelperMixin, UserCreationForm):
     """ Форма регистрации """
+    autofocus_field = 'username'
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }
@@ -99,6 +101,7 @@ class RegisterForm(FormHelperMixin, UserCreationForm):
 
 class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
     """ Форма сброса пароля. Указание e-mail """
+    autofocus_field = 'email'
     error_messages = {
         'unregistered_email': _('E-mail is not registered'),
     }
@@ -123,6 +126,7 @@ class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
 
 class SetPasswordForm(FormHelperMixin, DefaultSetPasswordForm):
     """ Форма сброса пароля. Указание нового пароля """
+    autofocus_field = 'new_password1'
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }

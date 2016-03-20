@@ -92,7 +92,6 @@
             $reply_form.find('input[name="parent"]').val($comment.data('id'));
             $comment.append($reply_form);
 
-            $reply_form.find('textarea').keyup().focus();
             return df.resolve($reply_form);
         };
 
@@ -118,7 +117,7 @@
                     var $edit_form = $(that.$edit_form_template);
                     $comment.append($edit_form);
 
-                    $edit_form.find('textarea').val(response.text).keyup().focus();
+                    $edit_form.find('textarea').val(response.text);
                     df.resolve($edit_form);
                 },
                 error: $.parseError(function(response) {

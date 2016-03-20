@@ -5,6 +5,8 @@ from .models import Message
 
 
 class ContactForm(FormHelperMixin, forms.ModelForm):
+    autofocus_field = 'name'
+
     class Meta:
         model = Message
         fields = '__all__'

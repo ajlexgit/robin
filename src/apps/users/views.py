@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.shortcuts import render
-from django.http.response import Http404
 from django.contrib.auth import get_user_model
+from django.http.response import Http404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
@@ -32,12 +31,6 @@ class LoginView(FormView):
     """ Страница авторизации """
     template_name = 'users/login.html'
     form_class = LoginForm
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        username = form.fields.get('username')
-        username.widget.attrs['autofocus'] = True
-        return form
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -78,12 +71,6 @@ class RegisterView(FormView):
     """ Страница регистрации """
     template_name = 'users/register.html'
     form_class = RegisterForm
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        username = form.fields.get('username')
-        username.widget.attrs['autofocus'] = True
-        return form
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -134,19 +121,15 @@ class PasswordResetView(TemplateView):
         if request.user.is_authenticated():
             # Смена своего пароля, если авторизованы
             form = SetPasswordForm(request.user)
-            new_password1 = form.fields.get('new_password1')
-            new_password1.widget.attrs['autofocus'] = True
             return self.render_to_response({
                 'form': form,
                 'target': resolve_url('users:reset_self'),
             })
         else:
-            form = PasswordResetForm()
-            email = form.fields.get('email')
-            email.widget.attrs['autofocus'] = True
-            return render(request, 'users/reset.html', {
-                'form': form,
-            })
+            return password_reset(request,
+                template_name='users/reset.html',
+                password_reset_form=PasswordResetForm,
+            )
 
     @staticmethod
     def post(request):
