@@ -8,7 +8,6 @@ from .models import Comment
 
 class CommentForm(FormHelperMixin, forms.ModelForm):
     """ Форма добавления/редактирования комментария """
-    autofocus_field = 'text'
     hash = forms.CharField(
         widget = forms.HiddenInput,
         error_messages = {
@@ -25,6 +24,7 @@ class CommentForm(FormHelperMixin, forms.ModelForm):
             'parent': forms.HiddenInput(),
             'text': forms.Textarea(attrs={
                 'rows': 4,
+                'autofocus': True,
             }),
         }
         error_messages = {

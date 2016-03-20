@@ -17,15 +17,10 @@ class FormHelperMixin:
         2) ошибки в виде словарей (для JS):
             2.1) form.error_dict
             2.2) form.error_dict_full
-
-        3) поле с автофокусом
     """
 
     # Префикс классов поля
     fieldclass_prefix = 'field'
-
-    # Имя поля, которому добавится аттрибут autofocus
-    autofocus_field = ''
 
     # Класс, добавляемый полю, если оно заполнено некорректно
     invalid_class = 'invalid'
@@ -36,11 +31,6 @@ class FormHelperMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_class = PlainErrorList
-
-        if self.autofocus_field:
-            field = self.fields.get(self.autofocus_field)
-            if field:
-                field.widget.attrs['autofocus'] = True
 
     def add_field_error(self, fieldname, code, params=None):
         """

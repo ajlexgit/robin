@@ -11,7 +11,6 @@ UserModel = get_user_model()
 
 class LoginForm(FormHelperMixin, AuthenticationForm):
     """ Форма авторизации """
-    autofocus_field = 'username'
     error_messages = {
         'invalid_login': _('Login or password incorrect'),
         'inactive': _('Account blocked'),
@@ -20,6 +19,9 @@ class LoginForm(FormHelperMixin, AuthenticationForm):
     username = forms.CharField(
         label=_('Login'),
         max_length=30,
+        widget=forms.TextInput(attrs={
+            'autofocus': True,
+        }),
         error_messages={
             'required': _('Please enter your login')
         }
@@ -35,7 +37,6 @@ class LoginForm(FormHelperMixin, AuthenticationForm):
 
 class RegisterForm(FormHelperMixin, UserCreationForm):
     """ Форма регистрации """
-    autofocus_field = 'username'
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }
@@ -45,6 +46,9 @@ class RegisterForm(FormHelperMixin, UserCreationForm):
         min_length=3,
         max_length=30,
         regex=r'^[\w.@+-]+$',
+        widget=forms.TextInput(attrs={
+            'autofocus': True,
+        }),
         error_messages={
             'required': _('Please enter your login'),
             'unique': _('This login is already taken'),
@@ -101,7 +105,6 @@ class RegisterForm(FormHelperMixin, UserCreationForm):
 
 class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
     """ Форма сброса пароля. Указание e-mail """
-    autofocus_field = 'email'
     error_messages = {
         'unregistered_email': _('E-mail is not registered'),
     }
@@ -109,6 +112,9 @@ class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
     email = forms.EmailField(
         label=_("E-mail"),
         max_length=254,
+        widget=forms.EmailInput(attrs={
+            'autofocus': True,
+        }),
         error_messages={
             'required': _('Please enter your e-mail'),
             'invalid': _('E-mail incorrect'),
@@ -126,14 +132,15 @@ class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
 
 class SetPasswordForm(FormHelperMixin, DefaultSetPasswordForm):
     """ Форма сброса пароля. Указание нового пароля """
-    autofocus_field = 'new_password1'
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
     }
 
     new_password1 = forms.CharField(
         label=_("New password"),
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(attrs={
+            'autofocus': True,
+        }),
         error_messages={
             'required': _('Please enter your password'),
         }
