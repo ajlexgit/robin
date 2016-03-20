@@ -17,6 +17,8 @@ class FormHelperMixin:
         2) ошибки в виде словарей (для JS):
             2.1) form.error_dict
             2.2) form.error_dict_full
+
+        3) поле с автофокусом
     """
 
     # Префикс классов поля

@@ -7,7 +7,7 @@
 <form method="post" action="{% url 'contacts:index' %}" id="ajax-contact-form" autocomplete="off">
   {% render_form form %}
 
-  <fieldset>
+  <div>
     <button type="submit" class="btn">{% trans 'Send' %}</button>
-  </fieldset>
+  </div>
 </form>

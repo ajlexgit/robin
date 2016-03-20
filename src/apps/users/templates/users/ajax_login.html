@@ -9,9 +9,9 @@
 
   {% render_form form %}
 
-  <fieldset>
+  <div>
     <button type="submit" class="btn">{% trans 'Sign in' %}</button>
     <a href="{% url 'users:reset' %}" class="reset-password-popup">{% trans 'Forgot your password?' %}</a>
     <a href="{% url 'users:register' %}" class="register-popup">{% trans 'Registration' %}</a>
-  </fieldset>
+  </div>
 </form>

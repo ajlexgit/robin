@@ -20,8 +20,8 @@ textarea, select {
   }
 }
 
-// стандартные стили fieldset в форме
-fieldset {
+// стандартные стили полей в форме
+.field {
   margin-bottom: 10px;
   &:nth-last-of-type(1) {
     margin-bottom: 0;
@@ -33,7 +33,7 @@ fieldset {
     @include fontsize_default;
   }
 
-  // класс на fieldset с ошибочным полем
+  // класс на поле с ошибкой
   &.invalid {
     input, select, textarea {
       border: 2px solid red;

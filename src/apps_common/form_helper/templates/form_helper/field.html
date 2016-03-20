@@ -1,4 +1,4 @@
-<fieldset class="{{ field_classes }}">
+<div class="field {{ field_classes }}">
   {{ field.label_tag }}
 
   {{ field }}
@@ -6,4 +6,4 @@
   {% if field_errors %}
     <span class="error">{{ field_errors|first }}</span>
   {% endif %}
-</fieldset>
+</div>
