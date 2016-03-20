@@ -14,7 +14,11 @@ from .models import PagePhoto, SimplePhoto
 def pagephoto_tag(instance, nocache=False):
     attrs = flatatt({
         'src': instance.photo.normal.url_nocache if nocache else instance.photo.normal.url,
-        'srcset': '%s, %s' % (instance.photo.normal.srcset, instance.photo.mobile.srcset),
+        'srcset': ', '.join((
+            instance.photo.wide.srcset,
+            instance.photo.normal.srcset,
+            instance.photo.mobile.srcset
+        )),
         'width': instance.photo.normal.width,
         'height': instance.photo.normal.height,
         'sizes': '100vw',
@@ -110,7 +114,10 @@ def upload_pagephoto(request):
 def simplephoto_tag(instance, nocache=False):
     attrs = flatatt({
         'src': instance.photo.url_nocache if nocache else instance.photo.url,
-        'srcset': '%s, %s' % (instance.photo.srcset, instance.photo.mobile.srcset),
+        'srcset': ', '.join((
+            instance.photo.srcset,
+            instance.photo.mobile.srcset
+        )),
         'width': instance.photo.width,
         'height': instance.photo.height,
         'sizes': '100vw',

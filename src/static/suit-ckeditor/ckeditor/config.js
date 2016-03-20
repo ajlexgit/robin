@@ -5,10 +5,8 @@
 
 CKEDITOR.editorConfig = function( config ) {
     // Define changes to default configuration here. For example:
-    // config.language = 'fr';
-    // config.uiColor = '#AADC6E';
     config.linkShowAdvancedTab = false;
     config.linkShowTargetTab = false;
 
-    config.format_tags = "p;h1;h2;h3;h4";
+    config.format_tags = "p;h2;h3;h4";
 };

@@ -214,7 +214,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.croparea = croparea
 
         # Обрабатываем вариации
-        self.field.add_field_variations(self)
+        self.field.add_field_variations(self.instance, self)
         for name, variation in self.variations.items():
             with self as field_file:
                 field_file.open()
@@ -284,7 +284,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.clear_dimensions()
 
         # Обрабатываем вариации
-        self.field.add_field_variations(self)
+        self.field.add_field_variations(self.instance, self)
         for name, variation in self.variations.items():
             try:
                 self.open()
@@ -309,7 +309,7 @@ class VariationImageFieldFile(ImageFieldFile):
 
     def delete(self, save=True):
         """ Удаление картинки """
-        self.field.add_field_variations(self)
+        self.field.add_field_variations(self.instance, self)
         for name in self.variations:
             variation_field = getattr(self, name, None)
             if variation_field:
@@ -360,19 +360,19 @@ class VariationImageField(models.ImageField):
         super().__init__(*args, **kwargs)
 
     def _post_init(self, instance, **kwargs):
-        field_file = self.value_from_object(instance)
-        field_file.variations = self.get_variations(instance)
-        if not field_file or not field_file.exists():
-            return
+        self.add_field_variations(instance)
 
-        self.add_field_variations(field_file)
-
-    def add_field_variations(self, field_file):
+    def add_field_variations(self, instance, field_file=None):
         """
             Создает в экземпляре класса VariationImageFieldFile поля вариаций
         """
+        if field_file is None:
+            field_file = self.value_from_object(instance)
+            if not field_file or not field_file.exists():
+                return
+
         if not field_file.variations:
-            return
+            field_file.variations = self.get_variations(instance)
 
         for name, variation in field_file.variations.items():
             variation_filename = self.build_variation_name(variation, field_file.name)
@@ -636,7 +636,7 @@ class VariationImageField(models.ImageField):
         if not field_file or not field_file.exists():
             return
 
-        self.add_field_variations(field_file)
+        self.add_field_variations(instance, field_file)
         for name, variation in field_file.variations.items():
             try:
                 field_file.open()
