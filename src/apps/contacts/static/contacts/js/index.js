@@ -74,9 +74,7 @@
             dataType: 'json',
             beforeSend: function() {
                 // сброс ошибок формы
-                $form.find('.errors').each(function() {
-                    this.className = this.className.replace(/\berror.*?\b/g, '');
-                });
+                $form.find('.invalid').removeClass('invalid');
             },
             success: function(response) {
                 if (response.success_message) {
@@ -98,12 +96,12 @@
                     var first_error;
 
                     response.errors.forEach(function(record) {
-                        var $field = $form.find('.field-' + record.field);
+                        var $field = $form.find('.' + record.fullname);
                         if ($field.length) {
                             if (!first_error) {
                                 first_error = $field.get(0);
                             }
-                            $field.addClass(record.classes);
+                            $field.addClass(record.class);
                         }
                     });
 

@@ -50,7 +50,10 @@ class ChangeView(AjaxViewMixin, View):
         validation_form = CommentValidationForm(request.GET)
         if not validation_form.is_valid():
             return self.json_response({
-                'message': ';\n'.join(err[1][0] for err in validation_form.error_list),
+                'message': ';\n'.join(
+                    messages[0]
+                    for field, messages in validation_form.errors.items()
+                ),
             }, status=400)
 
         comment = validation_form.cleaned_data['comment']
@@ -87,7 +90,10 @@ class ChangeView(AjaxViewMixin, View):
         form = CommentForm(request.POST, instance=comment)
         if not form.is_valid():
             return self.json_response({
-                'message': ';\n'.join(err[1][0] for err in form.error_list),
+                'message': ';\n'.join(
+                    messages[0]
+                    for field, messages in form.errors.items()
+                ),
             }, status=400)
 
         if not request.user.has_perm('comments.can_edit', comment):
@@ -116,7 +122,10 @@ class DeleteView(AjaxViewMixin, View):
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
             return self.json_response({
-                'message': ';\n'.join(err[1][0] for err in validation_form.error_list),
+                'message': ';\n'.join(
+                    messages[0]
+                    for field, messages in validation_form.errors.items()
+                ),
             }, status=400)
 
         comment = validation_form.cleaned_data['comment']
@@ -149,7 +158,10 @@ class RestoreView(AjaxViewMixin, View):
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
             return self.json_response({
-                'message': ';\n'.join(err[1][0] for err in validation_form.error_list),
+                'message': ';\n'.join(
+                    messages[0]
+                    for field, messages in validation_form.errors.items()
+                ),
             }, status=400)
 
         comment = validation_form.cleaned_data['comment']
@@ -182,7 +194,10 @@ class PostView(AjaxViewMixin, View):
         form = CommentForm(request.POST)
         if not form.is_valid():
             return self.json_response({
-                'message': ';\n'.join(err[1][0] for err in form.error_list),
+                'message': ';\n'.join(
+                    messages[0]
+                    for field, messages in form.errors.items()
+                ),
             }, status=400)
 
         comment = form.save(commit=False)
@@ -220,7 +235,10 @@ class VoteView(AjaxViewMixin, View):
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
             return self.json_response({
-                'message': ';\n'.join(err[1][0] for err in validation_form.error_list),
+                'message': ';\n'.join(
+                    messages[0]
+                    for field, messages in validation_form.errors.items()
+                ),
             }, status=400)
 
         comment = validation_form.cleaned_data['comment']

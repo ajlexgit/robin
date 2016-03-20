@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'backups',
     'ckeditor',
     'footer',
+    'form_helper',
     'gallery',
     'google_maps',
     'header',

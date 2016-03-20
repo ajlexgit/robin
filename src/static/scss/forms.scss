@@ -34,7 +34,7 @@ fieldset {
   }
 
   // класс на fieldset с ошибочным полем
-  &.errors {
+  &.invalid {
     input, select, textarea {
       border: 2px solid red;
       padding: 4px 5px;
@@ -45,6 +45,7 @@ fieldset {
   .error {
     margin-left: 10px;
     color: #FF0000;
+    @include font-size(12px);
   }
 }
 

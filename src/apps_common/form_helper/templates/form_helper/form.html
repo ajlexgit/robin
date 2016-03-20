@@ -1,0 +1,12 @@
+{% load form_helper %}
+
+
+{% csrf_token %}
+
+{% for field in form.hidden_fields %}
+  {% render_field form field.name %}
+{% endfor %}
+
+{% for field in form.visible_fields %}
+  {% render_field form field.name %}
+{% endfor %}

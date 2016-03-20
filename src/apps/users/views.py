@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.shortcuts import render
 from django.http.response import Http404
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
@@ -32,6 +33,12 @@ class LoginView(FormView):
     template_name = 'users/login.html'
     form_class = LoginForm
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        username = form.fields.get('username')
+        username.widget.attrs['autofocus'] = True
+        return form
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return redirect(get_redirect_url(request))
@@ -52,6 +59,9 @@ class LoginView(FormView):
 
 class LogoutView(View):
     """ Выход из профиля """
+    def get(self, request):
+        raise Http404
+
     @staticmethod
     def post(request, next_page=None):
         auth_logout(request)
@@ -68,6 +78,12 @@ class RegisterView(FormView):
     """ Страница регистрации """
     template_name = 'users/register.html'
     form_class = RegisterForm
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        username = form.fields.get('username')
+        username.widget.attrs['autofocus'] = True
+        return form
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -111,23 +127,26 @@ class PasswordResetView(TemplateView):
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Reset password')
+            'title': _('Password reset')
         })
         seo.save(request)
 
         if request.user.is_authenticated():
             # Смена своего пароля, если авторизованы
             form = SetPasswordForm(request.user)
+            new_password1 = form.fields.get('new_password1')
+            new_password1.widget.attrs['autofocus'] = True
             return self.render_to_response({
                 'form': form,
                 'target': resolve_url('users:reset_self'),
             })
         else:
-            return password_reset(request,
-                template_name='users/reset.html',
-                password_reset_form=PasswordResetForm,
-                post_reset_redirect='users:reset_done',
-            )
+            form = PasswordResetForm()
+            email = form.fields.get('email')
+            email.widget.attrs['autofocus'] = True
+            return render(request, 'users/reset.html', {
+                'form': form,
+            })
 
     @staticmethod
     def post(request):
@@ -137,7 +156,7 @@ class PasswordResetView(TemplateView):
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Reset password')
+            'title': _('Password reset')
         })
         seo.save(request)
 
@@ -163,7 +182,7 @@ class ResetDoneView(TemplateView):
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Reset password')
+            'title': _('Password reset')
         })
         seo.save(request)
 
@@ -190,7 +209,7 @@ class ResetConfirmView(TemplateView):
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Reset password')
+            'title': _('Password reset')
         })
         seo.save(request)
 
@@ -215,7 +234,7 @@ class ResetConfirmView(TemplateView):
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Reset password')
+            'title': _('Password reset')
         })
         seo.save(request)
 
@@ -250,7 +269,7 @@ class ResetCompleteView(TemplateView):
         # Seo
         seo = Seo()
         seo.set({
-            'title': _('Reset password')
+            'title': _('Password reset')
         })
         seo.save(request)
 

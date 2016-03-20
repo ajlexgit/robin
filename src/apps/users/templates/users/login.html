@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 
+{% load form_helper %}
 {% load i18n %}
 
 
@@ -10,28 +11,13 @@
     {{ form.media }}
     <form method="post" action="" id="login-form"
           class="users-login-form users-form" autocomplete="off">
-      {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.GET.next }}">
 
-      {{ form.non_field_errors.as_ul }}
-      <fieldset class="{{ form.username.errors.classes }}">
-        {{ form.username.label_tag }}
-        {{ form.username }}
-        {{ form.username.errors }}
-      </fieldset>
-      <fieldset class="{{ form.password.errors.classes }}">
-        {{ form.password.label_tag }}
-        {{ form.password }}
-        {{ form.password.errors }}
-      </fieldset>
+      {% render_form form %}
 
       <fieldset>
         <button type="submit" class="btn">{% trans 'Sign in' %}</button>
       </fieldset>
     </form>
-
-    <script>
-      document.getElementById('id_username').focus();
-    </script>
   </div>
 {% endblock content %}

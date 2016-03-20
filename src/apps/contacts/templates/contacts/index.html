@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% load attachable_blocks %}
+{% load form_helper %}
 {% load pipeline %}
 {% load i18n %}
 
@@ -21,14 +22,7 @@
     <div class="title-h1">{{ config.header }}</div>
 
     <form method="post" action="" id="contact-form">
-      {% csrf_token %}
-
-      {% for field in form.visible_fields %}
-        <fieldset class="field-{{ field.name }} {{ field.errors.classes }}">
-          {{ field.label_tag }}
-          {{ field }}
-        </fieldset>
-      {% endfor %}
+      {% render_form form %}
 
       <fieldset class="buttons">
         <button type="submit" class="btn">{% trans 'Send' %}</button>

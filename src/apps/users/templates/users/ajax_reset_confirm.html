@@ -1,3 +1,4 @@
+{% load form_helper %}
 {% load i18n %}
 
 <p class="title title-h1">{% trans 'Set password' %}</p>
@@ -5,19 +6,8 @@
 {{ form.media }}
 <form method="post" action="" id="ajax-reset-confirm-form"
       class="users-reset-confirm-form users-popup-form users-form" autocomplete="off">
-  {% csrf_token %}
 
-  {{ form.non_field_errors.as_ul }}
-  <fieldset class="{{ form.new_password1.errors.classes }}">
-    {{ form.new_password1.label_tag }}
-    {{ form.new_password1 }}
-    {{ form.new_password1.errors }}
-  </fieldset>
-  <fieldset class="{{ form.new_password2.errors.classes }}">
-    {{ form.new_password2.label_tag }}
-    {{ form.new_password2 }}
-    {{ form.new_password2.errors }}
-  </fieldset>
+  {% render_form form %}
 
   <fieldset>
     <button type="submit" class="btn">{% trans 'Save' %}</button>

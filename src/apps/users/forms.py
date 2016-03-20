@@ -4,12 +4,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
                                        PasswordResetForm as DefaultPasswordResetForm,
                                        SetPasswordForm as DefaultSetPasswordForm)
-from libs.plainerror_form import PlainErrorFormMixin
+from form_helper import FormHelperMixin
 
 UserModel = get_user_model()
 
 
-class LoginForm(PlainErrorFormMixin, AuthenticationForm):
+class LoginForm(FormHelperMixin, AuthenticationForm):
     """ Форма авторизации """
     error_messages = {
         'invalid_login': _('Login or password incorrect'),
@@ -32,7 +32,7 @@ class LoginForm(PlainErrorFormMixin, AuthenticationForm):
     )
 
 
-class RegisterForm(PlainErrorFormMixin, UserCreationForm):
+class RegisterForm(FormHelperMixin, UserCreationForm):
     """ Форма регистрации """
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),
@@ -97,7 +97,7 @@ class RegisterForm(PlainErrorFormMixin, UserCreationForm):
         self.add_field_error('email', 'unique')
 
 
-class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
+class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
     """ Форма сброса пароля. Указание e-mail """
     error_messages = {
         'unregistered_email': _('E-mail is not registered'),
@@ -121,7 +121,7 @@ class PasswordResetForm(PlainErrorFormMixin, DefaultPasswordResetForm):
         return email
 
 
-class SetPasswordForm(PlainErrorFormMixin, DefaultSetPasswordForm):
+class SetPasswordForm(FormHelperMixin, DefaultSetPasswordForm):
     """ Форма сброса пароля. Указание нового пароля """
     error_messages = {
         'password_mismatch': _('The two passwords didn\'t match'),

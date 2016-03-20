@@ -1,10 +1,10 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from libs.plainerror_form import PlainErrorFormMixin
+from form_helper import FormHelperMixin
 from .models import Message
 
 
-class ContactForm(PlainErrorFormMixin, forms.ModelForm):
+class ContactForm(FormHelperMixin, forms.ModelForm):
     class Meta:
         model = Message
         fields = '__all__'

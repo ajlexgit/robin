@@ -2,11 +2,11 @@ import hashlib
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
-from libs.plainerror_form import PlainErrorFormMixin
+from form_helper import FormHelperMixin
 from .models import Comment
 
 
-class CommentForm(PlainErrorFormMixin, forms.ModelForm):
+class CommentForm(FormHelperMixin, forms.ModelForm):
     """ Форма добавления/редактирования комментария """
     hash = forms.CharField(
         widget = forms.HiddenInput,
@@ -89,7 +89,7 @@ class CommentForm(PlainErrorFormMixin, forms.ModelForm):
         return parent
 
 
-class CommentValidationForm(PlainErrorFormMixin, forms.Form):
+class CommentValidationForm(FormHelperMixin, forms.Form):
     """ Форма для валидации входных значений при действиях над комментом """
     content_type = forms.ModelChoiceField(
         queryset=ContentType.objects.all(),

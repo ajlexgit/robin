@@ -1,31 +1,22 @@
 {% extends 'layout.html' %}
 
+{% load form_helper %}
 {% load i18n %}
 
 
 {% block content %}
   <div class="grid-block">
-    <h1 class="title-h1">{% trans 'Reset password' %}</h1>
+    <h1 class="title-h1">{% trans 'Password reset' %}</h1>
 
     {{ form.media }}
     <form method="post" action="" id="reset-password-form"
           class="users-reset-password-form users-form" autocomplete="off">
-      {% csrf_token %}
 
-      {{ form.non_field_errors.as_ul }}
-      <fieldset class="{{ form.email.errors.classes }}">
-        {{ form.email.label_tag }}
-        {{ form.email }}
-        {{ form.email.errors }}
-      </fieldset>
+      {% render_form form %}
 
       <fieldset>
         <button type="submit" class="btn">{% trans 'Continue' %}</button>
       </fieldset>
     </form>
-
-    <script>
-      document.getElementById('id_email').focus();
-    </script>
   </div>
 {% endblock content %}
