@@ -15,8 +15,11 @@
         Высота окна динамическая и зависит от содержимого.
 
         Параметры:
-            // Классы контейнера окна
+            // Классы контейнера окна и оверлея
             classes: ''
+
+            // Классы, добавляемые к <body>, когда окно открыто
+            body_classes: ''
 
             // HTML или метод, возвращающий содержимое окна
             content: ''
@@ -123,6 +126,7 @@
     window.Popup = Class(EventedObject, function Popup(cls, superclass) {
         cls.defaults = {
             classes: '',
+            body_classes: '',
             content: '',
             speed: 400,
             easingShow: 'easeInCubic',
@@ -211,7 +215,7 @@
         };
 
         /*
-            Добавление в окно дополнительных элементов
+            Добавление в окно дополнительных элементов / обработчиков событий
          */
         cls.extraDOM = function() {
 
@@ -363,6 +367,10 @@
         cls._beforeShow = function() {
             currentPopup = this;
             this._opened = true;
+
+            if (this.opts.body_classes) {
+                $body.addClass(this.opts.body_classes);
+            }
         };
 
         /*
@@ -457,6 +465,11 @@
         cls._afterHide = function() {
             this._opened = false;
             currentPopup = null;
+
+            if (this.opts.body_classes) {
+                $body.removeClass(this.opts.body_classes);
+            }
+
             this.trigger('after_hide');
             this._removeDOM();
         };

@@ -19,6 +19,7 @@
 
   .popup-wrapper {
     height: 100%;
+    @include border-box;
     @include no_fontsize;
     @include valign_after;
   }
