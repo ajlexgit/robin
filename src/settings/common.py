@@ -43,7 +43,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # 'celery_haystack',
     # 'haystack',
     'pipeline',
     'solo',
@@ -481,7 +480,6 @@ CELERYBEAT_SCHEDULE = {
 #         'INDEX_NAME': 'directlinedev-haystack',
 #     },
 # }
-# HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 # Templates
 TEMPLATES = [
