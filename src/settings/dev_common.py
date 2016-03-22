@@ -19,7 +19,7 @@ DATABASES = {
     }
 }
 
-# Отключение компрессии SASS (теряется наглядность кода)
+# Отключение компрессии SASS (иначе теряется наглядность кода)
 PIPELINE['SASS_ARGUMENTS'] = '-t nested'
 
 STATICFILES_FINDERS += (

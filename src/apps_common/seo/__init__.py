@@ -47,8 +47,8 @@
             from seo import Seo
             request.seodata = Seo.get_for(entity)
 
-        P.S: Если в представлениях используется алиас set_data,
-        то ни entity ни request.seodata устанавливать не нужно.
+        P.S: Если в представлениях используется метод seo.set_data(),
+        то request.seodata устанавливается автоматически.
 
 
     Пример:
@@ -57,7 +57,7 @@
 
             # Простейшая установка SEO-данных из объекта SeoData, привязанного к entity:
                 seo = Seo()
-                seo.set_data(instance, defaults={
+                seo.set_data(entity, defaults={
                     'title': entity.title,
                     'keywords': 'Default keywords',
                 })
