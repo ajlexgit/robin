@@ -28,7 +28,10 @@ def make_backup(max_count=None):
 
         if len(files) > max_count:
             for old_file in files[max_count:]:
-                os.unlink(old_file)
+                try:
+                    os.unlink(old_file)
+                except (FileNotFoundError, PermissionError):
+                    pass
 
 
 @celery_app.task
