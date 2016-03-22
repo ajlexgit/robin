@@ -86,6 +86,9 @@ SUIT_CONFIG = {
     # header
     'ADMIN_NAME': 'Project',
 
+    # search
+    'SEARCH_URL': '',
+
     # menu
     'MENU': (
         {
