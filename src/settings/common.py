@@ -85,10 +85,6 @@ INSTALLED_APPS = (
 SUIT_CONFIG = {
     # header
     'ADMIN_NAME': 'Project',
-    'HEADER_DATE_FORMAT': 'l, j F Y',
-
-    # search
-    'SEARCH_URL': '',
 
     # menu
     'MENU': (

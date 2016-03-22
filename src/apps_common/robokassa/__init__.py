@@ -9,9 +9,9 @@
                 ...
             )
 
-            ROBOKASSA_LOGIN = 'asskicker'
-            ROBOKASSA_PASSWORD1 = 'hachapuri666'
-            ROBOKASSA_PASSWORD2 = 'bublik72x'
+            ROBOKASSA_LOGIN = 'stroisad'
+            ROBOKASSA_PASSWORD1 = 'qX11LDagwPqmC1ofI45n'
+            ROBOKASSA_PASSWORD2 = 's6mTLawO0Ehc06Cc6rLT'
             ROBOKASSA_TEST_MODE = True
 
             SUIT_CONFIG = {

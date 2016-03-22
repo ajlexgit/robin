@@ -1,6 +1,7 @@
 import os
 import sys
 
+# возможность вставки в текст кнопок / файлов
 # crop each variation
 # Parallax наизнанку
 # drager: блокируется вертикальный скролл Android

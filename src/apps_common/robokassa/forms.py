@@ -96,6 +96,12 @@ class RobokassaForm(BaseRobokassaForm):
         for field in self.fields:
             self.fields[field].widget = forms.HiddenInput()
 
+        if conf.TEST_MODE:
+            self.fields['IsTest'] = forms.CharField(
+                required=False,
+                widget=forms.HiddenInput,
+            )
+
         self.fields['SignatureValue'].initial = self.calc_signature()
 
     def add_prefix(self, field_name):
@@ -114,6 +120,9 @@ class RobokassaForm(BaseRobokassaForm):
             if value:
                 params[fieldname] = value
 
+        if conf.TEST_MODE:
+            params['IsTest'] = '1'
+ 
         return '{}?{}'.format(self.target, urlencode(params))
 
 
