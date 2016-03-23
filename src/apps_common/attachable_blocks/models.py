@@ -22,7 +22,7 @@ class AttachableBlock(models.Model):
         related_name='+',
     )
     label = models.CharField(_('label'), max_length=128, help_text=_('For inner use'))
-    visible = models.BooleanField(_('visible'), default=False)
+    visible = models.BooleanField(_('visible'), default=True)
     created = models.DateTimeField(_('create date'), editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 

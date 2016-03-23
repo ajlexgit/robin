@@ -112,14 +112,14 @@
         // кнопка удаления
         var $delete_button = generate_delete_button($field);
         $field.after($delete_button);
+        
+        // кнопка редактирования
+        var $change_button = generate_change_button($field);
+        $field.after($change_button);
 
         // кнопка добавления
         var $add_button = generate_add_button($field);
         $field.after($add_button);
-
-        // кнопка редактирования
-        var $change_button = generate_change_button($field);
-        $field.after($change_button);
 
 
         // обновление при изменении типа блока

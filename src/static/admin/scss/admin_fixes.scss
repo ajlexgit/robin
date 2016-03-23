@@ -57,33 +57,16 @@ input[type=number] {
 .control-group .related-lookup,
 .inline-group .related-lookup,
 .control-group .change-related,
-.inline-group .change-related {
-  padding: 4px;
-  @include opacity(0.2);
-
-  &:link {
-    @include opacity(0.6);
-
-    &:hover {
-      @include opacity(1);
-    }
-  }
-}
-
+.inline-group .change-related,
 .control-group .delete-related,
 .inline-group .delete-related {
-  display: inline-block;
-  overflow: hidden;
-  padding: 4px 4px 4px 0;
-  margin: 0;
-  width: 14px;
-  height: 14px;
-  text-indent: 200%;
-  white-space: nowrap;
-  vertical-align: middle;
-  border: 1px solid transparent;
-  background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -311px 4px;
+  margin: 4px 2px;
+  padding: 0;
   @include opacity(0.2);
+
+  &:first-of-type {
+    margin-left: 10px;
+  }
 
   &:link {
     @include opacity(0.6);
@@ -96,10 +79,26 @@ input[type=number] {
 
 .control-group .add-related,
 .inline-group .add-related {
-  background-position: 4px -92px;
+  background-position: 0px -96px;
 }
 
+.control-group .change-related,
+.inline-group .change-related {
+  background-position: 0px -72px;
+}
 
+.control-group .delete-related,
+.inline-group .delete-related {
+  display: inline-block;
+  overflow: hidden;
+  width: 14px;
+  height: 14px;
+  text-indent: 200%;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -312px 0;
+}
 
 // не ограниченная высота textarea
 textarea.autosize {
