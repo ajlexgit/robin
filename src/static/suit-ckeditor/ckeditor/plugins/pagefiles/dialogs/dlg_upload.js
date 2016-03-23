@@ -137,11 +137,13 @@
 
                 if (uploaded.length) {
                     // Вставка файла
+                    var output;
                     var container = editor.getSelection().getStartElement();
                     if (container.hasClass('page-files')) {
                         // UL
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
-                            editor.insertHtml(uploaded[tag_index])
+                            output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
+                            editor.insertElement(element);
                         }
                     } else {
                         var ascendant = container.getAscendant('ul');
@@ -154,7 +156,8 @@
                         }
 
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
-                            container.appendHtml(uploaded[tag_index])
+                            output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
+                            container.append(output)
                         }
 
                         if (!inFiles) {

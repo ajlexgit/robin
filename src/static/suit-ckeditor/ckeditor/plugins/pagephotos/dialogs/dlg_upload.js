@@ -144,16 +144,19 @@
 
                 if (uploaded.length) {
                     // Вставка картинок
+                    var output;
                     var container = editor.getSelection().getStartElement();
                     if (container.hasClass('page-images')) {
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
-                            editor.insertHtml(uploaded[tag_index])
+                            output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
+                            editor.insertElement(output);
                         }
                     } else {
                         container = editor.document.createElement('p');
                         container.addClass('page-images');
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
-                            container.appendHtml(uploaded[tag_index])
+                            output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
+                            container.append(output)
                         }
                         editor.insertElement(container)
                     }
