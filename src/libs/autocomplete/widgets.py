@@ -128,7 +128,7 @@ class AutocompleteWidget(widgets.Widget):
             'format_item_module': self.format_item_module,
             'format_item_method': self.format_item_method,
             'dependencies': self.dependencies,
-        }), timeout=1800)
+        }), timeout=7200)
 
     def get_url(self, name):
         """ Построение урла для запроса данных """
