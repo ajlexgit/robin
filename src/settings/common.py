@@ -529,7 +529,7 @@ STATICFILES_FINDERS = (
 CKEDITOR_CONFIG_DEFAULT = {
     'height': 320,
     'forcePasteAsPlainText': True,
-    'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,simplephotos',
+    'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,pagefiles,simplephotos',
     'autoGrow_maxHeight': '540',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
@@ -548,13 +548,13 @@ CKEDITOR_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
-                      'JustifyBlock']
+            'items': ['NumberedList', 'BulletedList', '-',
+                      'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
         },
         '/',
         {
             'name': 'insert',
-            'items': ['PagePhotos', 'PageVideos']
+            'items': ['PagePhotos', 'PageVideos', 'PageFiles']
         },
         {
             'name': 'links',

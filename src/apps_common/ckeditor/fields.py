@@ -31,9 +31,11 @@ class CKEditorField(models.Field):
 
 class CKEditorUploadField(models.Field):
     """ Текстовое поле с WISYWIG редактором и возможностью загрузки картинок """
-    def __init__(self, *args, editor_options=None, upload_pagephoto_url='', upload_simplephoto_url='', **kwargs):
+    def __init__(self, *args, editor_options=None, upload_pagephoto_url='',
+            upload_pagefile_url='', upload_simplephoto_url='', **kwargs):
         self.editor_options = editor_options or {}
         self.upload_pagephoto_url = upload_pagephoto_url or '/dladmin/ckeditor/upload_pagephoto/'
+        self.upload_pagefile_url = upload_pagefile_url or '/dladmin/ckeditor/upload_pagefile/'
         self.upload_simplephoto_url = upload_simplephoto_url or '/dladmin/ckeditor/upload_simplephoto/'
         super().__init__(*args, **kwargs)
 
@@ -51,6 +53,7 @@ class CKEditorUploadField(models.Field):
             'form_class': CKEditorUploadFormField,
             'editor_options': self.editor_options,
             'upload_pagephoto_url': self.upload_pagephoto_url,
+            'upload_pagefile_url': self.upload_pagefile_url,
             'upload_simplephoto_url': self.upload_simplephoto_url,
             'model': self.model,
         }
@@ -60,12 +63,14 @@ class CKEditorUploadField(models.Field):
     def pre_save(self, model_instance, add):
         """ Сохраняем текст в базу, а картинки - в экземпляр сущности """
         model_instance._page_photos = ()
+        model_instance._page_files = ()
         model_instance._simple_photos = ()
 
         value = self.value_from_object(model_instance)
         if isinstance(value, (list, tuple)):
             if len(value) == 3:
                 model_instance._page_photos = value[1].split(',') if value[1] else ()
+                model_instance._page_files = value[1].split(',') if value[1] else ()
                 model_instance._simple_photos = value[2].split(',') if value[2] else ()
             return value[0]
         return value

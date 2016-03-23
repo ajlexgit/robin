@@ -18,7 +18,7 @@ urlpatterns = [
 
     url(r'^admin/', include(honeypot_site.urls)),
     url(r'^dladmin/autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
-    url(r'^dladmin/ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
+    url(r'^dladmin/ckeditor/', include('ckeditor.admin_urls', namespace='admin_ckeditor')),
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),
     url(r'^dladmin/users/', include('users.admin_urls', namespace='admin_users')),
     url(r'^dladmin/ctr/', include('admin_ctr.urls', namespace='admin_ctr')),
@@ -26,6 +26,7 @@ urlpatterns = [
 
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),
     url(r'^away/$', 'libs.away.views.away', name='away'),
+    url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
 
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps}),
 ]

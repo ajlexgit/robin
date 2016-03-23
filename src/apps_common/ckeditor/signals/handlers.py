@@ -1,4 +1,4 @@
-from ..models import PagePhoto, SimplePhoto
+from ..models import PagePhoto, PageFile, SimplePhoto
 
 
 def delete_photos(sender, **kwargs):
@@ -11,6 +11,12 @@ def delete_photos(sender, **kwargs):
         model_name=instance._meta.model_name,
         instance_id=instance.id)
     pagephotos.delete()
+
+    pagefiles = PageFile.objects.filter(
+        app_name=instance._meta.app_label,
+        model_name=instance._meta.model_name,
+        instance_id=instance.id)
+    pagefiles.delete()
 
     simplephotos = SimplePhoto.objects.filter(
         app_name=instance._meta.app_label,
@@ -34,6 +40,16 @@ def save_photos(sender, **kwargs):
         else:
             photo.instance_id = instance.id
             photo.save()
+
+    page_files = getattr(instance, '_page_files', ())
+    for file_id in page_files:
+        try:
+            file = PageFile.objects.get(id=file_id)
+        except (PageFile.DoesNotExist, PageFile.MultipleObjectsReturned):
+            continue
+        else:
+            file.instance_id = instance.id
+            file.save()
 
     simple_photos = getattr(instance, '_simple_photos', ())
     for photo_id in simple_photos:

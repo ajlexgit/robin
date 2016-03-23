@@ -55,6 +55,39 @@ class PagePhoto(models.Model):
         }
 
 
+def page_file_filename(instance, filename):
+    """ Разбиваем файлы по папкам по 1000 файлов максимум """
+    directory = ''
+    if instance.pk:
+        directory = '%04d' % (instance.pk // 1000)
+    return os.path.join(directory, os.path.basename(filename))
+
+
+class PageFile(models.Model):
+    """ Модель файла на страницу """
+    app_name = models.CharField(_('application'), max_length=30, blank=True)
+    model_name = models.CharField(_('model'), max_length=30, blank=True)
+    instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
+    file = models.FileField(_('file'),
+        storage=MediaStorage('page_files'),
+        upload_to=page_file_filename,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = _('page file')
+        verbose_name_plural = _('page files')
+        default_permissions = ('change',)
+
+    def __str__(self):
+        return _('File #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s') % {
+            'pk': self.pk,
+            'app': self.app_name,
+            'model': self.model_name,
+            'entry_id': self.instance_id,
+        }
+
+
 class SimplePhoto(models.Model):
     """ Модель фото на страницу """
     app_name = models.CharField(_('application'), max_length=30, blank=True)

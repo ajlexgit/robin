@@ -2,13 +2,14 @@ from django.apps import apps
 from django.contrib import admin
 from django.forms.utils import flatatt
 from django.utils.html import escapejs
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.http import JsonResponse, Http404, HttpResponse
 from django.template.response import SimpleTemplateResponse
 from project.admin import ModelAdminMixin
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
-from .models import PagePhoto, SimplePhoto
+from .models import PagePhoto, PageFile, SimplePhoto
 
 
 def pagephoto_tag(instance, nocache=False):
@@ -62,7 +63,7 @@ class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'newId': obj.id,
             })
 
-        return super(PagePhotoAdmin, self).response_change(request, obj)
+        return super().response_change(request, obj)
 
 
 @admin.site.admin_view
@@ -108,6 +109,101 @@ def upload_pagephoto(request):
         'tag': pagephoto_tag(pagephoto),
         'field': field_name,
         'id': pagephoto.pk,
+    })
+
+
+def pagefile_tag(instance):
+    return """
+        <li data-id="{id}">
+            <a href="{url}" data-cke-survive="true">{display}</a>
+        </li>
+    """.format(
+        id=instance.id,
+        url=reverse('ckeditor:download_pagefile', kwargs={
+            'file_id': instance.pk,
+        }),
+        display=instance.file.name,
+    )
+
+
+@admin.register(PageFile)
+class PageFileAdmin(ModelAdminMixin, admin.ModelAdmin):
+    exclude = ('app_name', 'model_name', 'instance_id')
+
+    class Media:
+        js = (
+            'admin/js/jquery-ui.min.js',
+            'common/js/jquery.Jcrop.js',
+        )
+        css = {
+            'all': (
+                'admin/css/jquery-ui/jquery-ui.min.css',
+                'common/css/jcrop/jquery.Jcrop.css',
+            )
+        }
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_module_permission(self, request):
+        return False
+
+    def response_change(self, request, obj):
+        if IS_POPUP_VAR in request.POST:
+            return SimpleTemplateResponse('ckeditor/popup_response.html', {
+                'newTag': escapejs(pagefile_tag(obj)),
+                'newId': obj.id,
+            })
+
+        return super().response_change(request, obj)
+
+
+@admin.site.admin_view
+def upload_pagefile(request):
+    """
+        Функция, принимающая файлы, загружаемые через CKEditor.
+        Может вызываться несколько раз для одного файла, если он разбит на части.
+    """
+    app_label = request.GET.get('app_label')
+    model_name = request.GET.get('model_name')
+    field_name = request.GET.get('field_name')
+
+    instance_model = apps.get_model(app_label, model_name)
+    if not instance_model:
+        raise Http404
+
+    try:
+        uploaded_file = upload_chunked_file(request, 'file')
+    except TemporaryFileNotFoundError:
+        raise Http404
+    except NotLastChunk:
+        return HttpResponse()
+
+    # Создание экземпляра элемента галереи
+    pagefile = PageFile(
+        app_name=app_label,
+        model_name=model_name,
+    )
+    pagefile.file.save(uploaded_file.name, uploaded_file, save=False)
+    uploaded_file.close()
+
+    try:
+        pagefile.full_clean()
+    except ValidationError as e:
+        pagefile.photo.delete(save=False)
+        return JsonResponse({
+            'message': ', '.join(e.messages),
+        }, status=400)
+    else:
+        pagefile.save()
+
+    return JsonResponse({
+        'tag': pagefile_tag(pagefile),
+        'field': field_name,
+        'id': pagefile.pk,
     })
 
 

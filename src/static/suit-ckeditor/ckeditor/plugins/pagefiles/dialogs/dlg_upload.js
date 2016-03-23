@@ -1,30 +1,25 @@
 (function($) {
 
     var InitPluploader = function(editor) {
-        $(".ckupload-page-photos").plupload({
+        $(".ckupload-page-files").plupload({
             runtimes : 'html5,flash,silverlight,html4',
-            url : editor.config.PAGEPHOTOS_UPLOAD_URL,
-            max_file_size : editor.config.PAGEPHOTOS_MAX_FILE_SIZE,
+            url : editor.config.PAGEFILES_UPLOAD_URL,
+            max_file_size : editor.config.PAGEFILES_MAX_FILE_SIZE,
             chunk_size: '256kb',
-            file_data_name: 'image',
+            file_data_name: 'file',
             headers: {
                 'X-CSRFToken': $.cookie('csrftoken'),
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            filters : [
-               {title : "Image files", extensions : "jpg,jpeg,gif,png,bmp,tif,tiff"}
-            ],
             unique_names : true,
             prevent_duplicates: true,
             sortable: true,
             dragdrop: true,
             autostart: true,
-            thumb_width: editor.config.PAGEPHOTOS_THUMB_SIZE[0],
-            thumb_height: editor.config.PAGEPHOTOS_THUMB_SIZE[1],
             views: {
-               list: false,
-               thumbs: true,
-               default: 'thumbs'
+               list: true,
+               thumbs: false,
+               default: 'list'
             },
             flash_swf_url : editor.config.MOXIE_SWF,
             silverlight_xap_url : editor.config.MOXIE_XAP,
@@ -39,24 +34,24 @@
                     var response = $.parseJSON(data.response);
                     file.result_tag = response.tag;
 
-                    // Записываем id сохраненных картинок в форму
+                    // Записываем id сохраненных файлов в форму
                     var text_field = $('#id_' + response.field);
                     if (text_field.length) {
-                        var pagephotos = text_field.siblings('input[name="' + response.field + '-page-photos"]');
-                        if (!pagephotos.length) {
-                            pagephotos = $('<input type="hidden" name="' + response.field + '-page-photos">');
-                            text_field.before(pagephotos);
+                        var pagefiles = text_field.siblings('input[name="' + response.field + '-page-files"]');
+                        if (!pagefiles.length) {
+                            pagefiles = $('<input type="hidden" name="' + response.field + '-page-files">');
+                            text_field.before(pagefiles);
                         }
 
-                        // Формируем список id загруженных картинок
-                        var value = pagephotos.val() || '';
+                        // Формируем список id загруженных файлов
+                        var value = pagefiles.val() || '';
                         if (value) {
                             value += ',' + response.id
                         } else {
                             value = response.id
                         }
 
-                        pagephotos.val(value);
+                        pagefiles.val(value);
                     }
                 },
                 UploadComplete: function(up, files) {
@@ -81,17 +76,17 @@
         })
     };
 
-    CKEDITOR.dialog.add("pagephotos", function (editor) {
+    CKEDITOR.dialog.add("pagefiles", function (editor) {
         return {
-            title: gettext('Upload images'),
-            minWidth: 700,
+            title: gettext('Upload files'),
+            minWidth: 600,
             minHeight: 400,
             contents: [{
-                id: 'tab-basic-photos',
+                id: 'tab-basic-files',
                 label: 'Basic Settings',
                 elements: [{
                     type: 'html',
-                    html: '<div class="ckupload-files ckupload-page-photos">' + gettext('Loading...') + '</div>'
+                    html: '<div class="ckupload-files ckupload-page-files">' + gettext('Loading...') + '</div>'
                 }]
             }],
 
@@ -110,15 +105,14 @@
             },
 
             onOk: function() {
-                var uploader = $('.ckupload-page-photos'),
+                var uploader = $('.ckupload-page-files'),
                     uploaded=[],
                     not_loaded = [],
                     file,
-                    img,
                     file_index,
                     tag_index;
 
-                // Очистка очереди и получение тегов изображений
+                // Очистка очереди и получение тегов
                 var files = uploader.plupload('getFiles');
                 for (file_index=files.length-1; file_index>=0; file_index--) {
                     file = files[file_index];
@@ -134,8 +128,7 @@
                 }
 
                 if (not_loaded.length) {
-                    var need_load = confirm(gettext('There are not uploaded images.\nUpload them now?'));
-
+                    var need_load = confirm(gettext('There are not uploaded files.\nUpload them now?'));
                     if (need_load) {
                         uploader.plupload('start');
                         return false
@@ -143,37 +136,37 @@
                 }
 
                 if (uploaded.length) {
-                    // Вставка картинок
+                    // Вставка файла
                     var container = editor.getSelection().getStartElement();
-                    if (container.hasClass('page-images')) {
+                    if (container.hasClass('page-files')) {
+                        // UL
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
                             editor.insertHtml(uploaded[tag_index])
                         }
                     } else {
-                        container = editor.document.createElement('p');
-                        container.addClass('page-images');
+                        var ascendant = container.getAscendant('ul');
+                        var inFiles = ascendant && ascendant.hasClass('page-files');
+                        if (inFiles) {
+                            container = ascendant;
+                        } else {
+                            container = editor.document.createElement('ul');
+                            container.addClass('page-files');
+                        }
+
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
                             container.appendHtml(uploaded[tag_index])
                         }
-                        editor.insertElement(container)
-                    }
 
-                    // Определение типа галереи
-                    if (container.getElementsByTag('img').count() > 1) {
-                        container
-                            .removeClass('single-image')
-                            .addClass('multi-image')
-                    } else {
-                        container
-                            .removeClass('multi-image')
-                            .addClass('single-image')
+                        if (!inFiles) {
+                            editor.insertElement(container);
+                        }
                     }
                 }
             },
 
             onCancel: function() {
                 // Очистка очереди
-                var $uploader = $('.ckupload-page-photos');
+                var $uploader = $('.ckupload-page-files');
                 var files = $uploader.plupload('getFiles');
                 for (var file_index=files.length-1; file_index>=0; file_index--) {
                     $uploader.plupload('removeFile', files[file_index])
