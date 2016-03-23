@@ -540,7 +540,7 @@ CKEDITOR_CONFIG_DEFAULT = {
                'format,htmlwriter,justify,link,list,liststyle,'
                'removeformat,resize,'
                'showborders,sourcearea,tab,'
-               'toolbar,wsc,wysiwygarea',
+               'toolbar,wysiwygarea',
     'toolbar': [
         {
             'name': 'basicstyles',
@@ -583,7 +583,7 @@ CKEDITOR_CONFIG_MINI = {
                'elementspath,enterkey,entities,floatingspace,'
                'htmlwriter,link,pastefromword,pastetext,'
                'removeformat,resize,showborders,sourcearea,'
-               'tab,toolbar,wsc,wysiwygarea',
+               'tab,toolbar,wysiwygarea',
     'removeButtons': 'Anchor,Strike,Superscript,Subscript,JustifyBlock',
     'toolbar': [
         {

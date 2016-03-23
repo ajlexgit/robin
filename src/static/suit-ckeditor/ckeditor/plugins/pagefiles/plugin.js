@@ -70,7 +70,8 @@
             });
             editor.contextMenu.addListener(function (element) {
                 if (element) {
-                    var inFiles = element.getAscendant('ul').hasClass('page-files');
+                    var ascendant = element.getAscendant('ul');
+                    var inFiles = ascendant && ascendant.hasClass('page-files');
                     var isFile = inFiles && (element.is('li') || element.is('a'));
                     if (isFile) {
                         return {
@@ -97,7 +98,8 @@
                             return
                         }
 
-                        var inFiles = container.getAscendant('ul').hasClass('page-files');
+                        var ascendant = container.getAscendant('ul');
+                        var inFiles = ascendant && ascendant.hasClass('page-files');
                         if (inFiles) {
                             evt.cancel();
                             evt.stop();
