@@ -37,8 +37,8 @@
                 setTimeout(function() {
                     var target = evt.data.target;
                     var element = evt.data.dropRange.getNextEditableNode();
-
-                    if (element && element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
+                    if (element && (element.type == CKEDITOR.NODE_ELEMENT) &&
+                        element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
                         if (target && !target.hasClass('page-files')) {
                             var wrapper = new CKEDITOR.dom.element('div', editor.document);
                             wrapper.addClass('page-files');
