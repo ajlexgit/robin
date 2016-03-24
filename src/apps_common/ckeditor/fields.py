@@ -68,10 +68,10 @@ class CKEditorUploadField(models.Field):
 
         value = self.value_from_object(model_instance)
         if isinstance(value, (list, tuple)):
-            if len(value) == 3:
+            if len(value) == 4:
                 model_instance._page_photos = value[1].split(',') if value[1] else ()
-                model_instance._page_files = value[1].split(',') if value[1] else ()
-                model_instance._simple_photos = value[2].split(',') if value[2] else ()
+                model_instance._page_files = value[2].split(',') if value[2] else ()
+                model_instance._simple_photos = value[3].split(',') if value[3] else ()
             return value[0]
         return value
 
