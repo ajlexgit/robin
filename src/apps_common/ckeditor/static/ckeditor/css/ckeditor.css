@@ -43,20 +43,27 @@ p iframe {
 
 .page-files {
     margin: 1em 0;
-    background: #dadada;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#dadada));
-    background-image: -moz-linear-gradient(top, #f5f5f5, #dadada);
-    background-image: -webkit-linear-gradient(top, #f5f5f5, #dadada);
-    background-image: -o-linear-gradient(top, #f5f5f5, #dadada);
-    background-image: -ms-linear-gradient(top, #f5f5f5, #dadada);
-    background-image: linear-gradient(top, #f5f5f5, #dadada);
-    filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#fff5f5f5', endColorstr='#ffdadada');
-    border-radius: 10px;
+    padding: 8px;
+    background: #eee;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 1px #fff inset, 0 -1px 0 #ccc inset;
 }
 .page-files .page-file {
-    padding: 6px 0 6px 36px;
-    min-height: 32px;
+    padding: 5px 0 5px 36px;
+    min-height: 24px;
     background: url(../img/file.png) no-repeat 2px 6px;
+    background-size: 24px;
+}
+.page-files .page-file:after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    min-height: inherit;
+    vertical-align: middle;
+}
+.page-files .page-file a {
+    vertical-align: middle;
 }
 .page-files .cke_widget_drag_handler_container {
     top: 0 !important;

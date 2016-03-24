@@ -5,6 +5,7 @@
         icons: 'file_widget',
         init: function(editor) {
             editor.widgets.add('file_widget', {
+                dialog: 'file_widget_dlg',
                 upcast: function(element) {
                     return element.hasClass('page-file')
                 }
@@ -16,7 +17,7 @@
             editor.addMenuGroup('files');
             editor.addMenuItems({
                 _edit_files: {
-                    label: gettext('Edit Files Box'),
+                    label: gettext('Edit file name'),
                     icon: this.path + 'edit.png',
                     command: 'file_widget_edit',
                     group: 'files',

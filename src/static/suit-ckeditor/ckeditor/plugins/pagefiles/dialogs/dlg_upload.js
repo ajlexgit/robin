@@ -146,7 +146,15 @@
                             editor.insertElement(output);
                             editor.widgets.initOn(output, 'file_widget');
                         }
+                    } else if (container.findOne('.page-file')) {
+                        // File
+                        for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
+                            output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
+                            output.insertAfter(container);
+                            editor.widgets.initOn(output, 'file_widget');
+                        }
                     } else {
+                        // Nothing
                         var ascendant = container.getAscendant('div');
                         var inFiles = ascendant && ascendant.hasClass('page-file');
                         if (inFiles) {

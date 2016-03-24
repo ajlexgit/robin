@@ -1,5 +1,7 @@
 import os
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from libs.stdimage import StdImageField
 from libs.media_storage import MediaStorage
@@ -86,6 +88,12 @@ class PageFile(models.Model):
             'model': self.model_name,
             'entry_id': self.instance_id,
         }
+
+
+@receiver(post_delete, sender=PageFile)
+def delete_pagefile(sender, instance, **kwargs):
+    if instance.file:
+        instance.file.delete(save=False)
 
 
 class SimplePhoto(models.Model):
