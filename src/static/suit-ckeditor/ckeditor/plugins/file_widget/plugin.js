@@ -24,19 +24,43 @@
                 }
             });
             editor.contextMenu.addListener(function(element) {
-                if (element) {
-                    if (element.hasAttribute('data-cke-widget-id')) {
-                        window.el = element;
-                        var wrapper = element.findOne('.page-file');
-                        if (wrapper) {
-                            return {
-                                _edit_files: CKEDITOR.TRISTATE_OFF
-                            }
-                        }
+                if (element && element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
+                    return {
+                        _edit_files: CKEDITOR.TRISTATE_OFF
                     }
                 }
 
                 return null
+            });
+
+            editor.on('drop', function(evt) {
+                setTimeout(function() {
+                    var target = evt.data.target;
+                    var element = evt.data.dropRange.getNextEditableNode();
+
+                    if (element && element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
+                        if (target && !target.hasClass('page-files')) {
+                            var wrapper = new CKEDITOR.dom.element('div', editor.document);
+                            wrapper.addClass('page-files');
+                            element.insertBeforeMe(wrapper);
+                            wrapper.append(element);
+                        }
+                    }
+                }, 10);
+            });
+
+            editor.on('key', function(evt) {
+                if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
+                    if (editor.mode != "wysiwyg") {
+                        return
+                    }
+
+                    var element = editor.getSelection().getStartElement();
+                    if (element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
+                        element.remove();
+                        evt.stop();
+                    }
+                }
             });
         }
     })

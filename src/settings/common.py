@@ -535,7 +535,7 @@ CKEDITOR_CONFIG_DEFAULT = {
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
         STATIC_URL + 'ckeditor/css/ckeditor.css',
     ),
-    'plugins': 'basicstyles,undo,contextmenu,'
+    'plugins': 'basicstyles,undo,contextmenu,div,'
                'elementspath,enterkey,entities,floatingspace,'
                'format,htmlwriter,justify,link,list,liststyle,'
                'removeformat,resize,'
