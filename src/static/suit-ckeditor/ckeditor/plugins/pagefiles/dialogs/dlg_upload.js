@@ -143,21 +143,23 @@
                         // UL
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
                             output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
-                            editor.insertElement(element);
+                            editor.insertElement(output);
+                            editor.widgets.initOn(output, 'file_widget');
                         }
                     } else {
-                        var ascendant = container.getAscendant('ul');
-                        var inFiles = ascendant && ascendant.hasClass('page-files');
+                        var ascendant = container.getAscendant('div');
+                        var inFiles = ascendant && ascendant.hasClass('page-file');
                         if (inFiles) {
-                            container = ascendant;
+                            container = ascendant.getParent()
                         } else {
-                            container = editor.document.createElement('ul');
+                            container = editor.document.createElement('div');
                             container.addClass('page-files');
                         }
 
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {
                             output = CKEDITOR.dom.element.createFromHtml(uploaded[tag_index], editor.document);
-                            container.append(output)
+                            container.append(output);
+                            editor.widgets.initOn(output, 'file_widget');
                         }
 
                         if (!inFiles) {

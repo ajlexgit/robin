@@ -114,9 +114,9 @@ def upload_pagephoto(request):
 
 def pagefile_tag(instance):
     return """
-        <li data-id="{id}">
-            <a href="{url}" data-cke-survive="true">{display}</a>
-        </li>
+        <div class="page-file" data-id="{id}">
+            <a href="{url}">{display}</a>
+        </div>
     """.format(
         id=instance.id,
         url=reverse('ckeditor:download_pagefile', kwargs={
