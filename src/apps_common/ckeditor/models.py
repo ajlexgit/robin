@@ -67,6 +67,19 @@ def page_file_filename(instance, filename):
 
 class PageFile(models.Model):
     """ Модель файла на страницу """
+    MIME_CLASSES = {
+        'image/jpeg': 'file-image file-jpg',
+        'image/png': 'file-image file-png',
+        'image/gif': 'file-image file-gif',
+        'text/plain': 'file-text file-txt',
+        'text/rtf': 'file-text file-doc',
+        'application/msword': 'file-text file-doc',
+        'application/xml': 'file-text file-xml',
+        'application/pdf': 'file-text file-pdf',
+        'application/x-rar': 'file-archive file-rar',
+        'application/zip': 'file-archive file-zip',
+    }
+
     app_name = models.CharField(_('application'), max_length=30, blank=True)
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)

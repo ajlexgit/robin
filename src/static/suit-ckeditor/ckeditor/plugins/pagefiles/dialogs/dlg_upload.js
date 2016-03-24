@@ -139,6 +139,10 @@
                     // Вставка файла
                     var output;
                     var container = editor.getSelection().getStartElement();
+                    if (!container) {
+                        return
+                    }
+
                     if (container.hasClass('page-files')) {
                         // UL
                         for (tag_index = uploaded.length - 1; tag_index >= 0; tag_index--) {

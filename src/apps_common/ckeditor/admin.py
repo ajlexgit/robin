@@ -1,3 +1,5 @@
+import magic
+import mimetypes
 from django.apps import apps
 from django.contrib import admin
 from django.forms.utils import flatatt
@@ -112,13 +114,14 @@ def upload_pagephoto(request):
     })
 
 
-def pagefile_tag(instance):
+def pagefile_tag(instance, classes=''):
     return """
-        <div class="page-file" data-id="{id}">
+        <div class="page-file {classes}" data-id="{id}">
             <a href="{url}">{display}</a>
         </div>
     """.format(
         id=instance.id,
+        classes=classes,
         url=reverse('ckeditor:download_pagefile', kwargs={
             'file_id': instance.pk,
         }),
@@ -200,8 +203,13 @@ def upload_pagefile(request):
     else:
         pagefile.save()
 
+    # Определяем тип файла
+    mimetype = magic.from_file(pagefile.file.path, mime=True).decode()
+    if mimetype not in PageFile.MIME_CLASSES:
+        mimetype = mimetypes.guess_type(pagefile.file.path)[0]
+
     return JsonResponse({
-        'tag': pagefile_tag(pagefile),
+        'tag': pagefile_tag(pagefile, classes=PageFile.MIME_CLASSES.get(mimetype, '')),
         'field': field_name,
         'id': pagefile.pk,
     })

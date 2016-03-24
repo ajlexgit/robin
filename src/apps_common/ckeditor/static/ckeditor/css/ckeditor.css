@@ -37,10 +37,12 @@ p iframe {
     box-shadow: 1px 1px 3px #808080;
 }
 
+/* Видео */
 .page-video iframe {
     max-width: 90%;
 }
 
+/* Файлы */
 .page-files {
     margin: 1em 0;
     padding: 8px;
@@ -50,10 +52,9 @@ p iframe {
     box-shadow: 0 1px 1px #fff inset, 0 -1px 0 #ccc inset;
 }
 .page-files .page-file {
-    padding: 5px 0 5px 36px;
+    padding: 5px 0 5px 32px;
     min-height: 24px;
     background: url(../img/file.png) no-repeat 2px 6px;
-    background-size: 24px;
 }
 .page-files .page-file:after {
     content: '';
