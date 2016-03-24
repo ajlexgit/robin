@@ -13,13 +13,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DummyModel',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
             ],
             options={
-                'verbose_name': 'backup',
                 'managed': False,
-                'verbose_name_plural': 'backups',
                 'default_permissions': (),
+                'verbose_name_plural': 'backups',
+                'verbose_name': 'backup',
             },
         ),
     ]
