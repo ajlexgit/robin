@@ -26,7 +26,8 @@
             editor.contextMenu.addListener(function(element) {
                 if (element) {
                     if (element.hasAttribute('data-cke-widget-id')) {
-                        var wrapper = element.getElementsByClassName('page-files').getItem(0);
+                        window.el = element;
+                        var wrapper = element.findOne('.page-file');
                         if (wrapper) {
                             return {
                                 _edit_files: CKEDITOR.TRISTATE_OFF
