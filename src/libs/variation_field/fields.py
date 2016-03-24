@@ -110,6 +110,11 @@ class VariationField(ImageFile):
         return '{url} {width}w'.format(url=self.url, width=width)
 
     @property
+    def srcset_nocache(self):
+        width = self.dimensions[0]
+        return '{url} {width}w'.format(url=self.url_nocache, width=width)
+
+    @property
     def size(self):
         return self.storage.size(self.name)
 
@@ -160,6 +165,11 @@ class VariationImageFieldFile(ImageFieldFile):
     def srcset(self):
         width = self.dimensions[0]
         return '{url} {width}w'.format(url=self.url, width=width)
+
+    @property
+    def srcset_nocache(self):
+        width = self.dimensions[0]
+        return '{url} {width}w'.format(url=self.url_nocache, width=width)
 
     @property
     def croparea(self):

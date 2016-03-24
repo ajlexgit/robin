@@ -355,8 +355,8 @@ def variation_resize(image, variation, target_format):
         elif not target_size[1]:
             target_size = (target_size[0], source_size[1])
 
-        image.draft(None, target_size)
-        source_size = image.size
+        # image.draft(None, target_size)
+        # source_size = image.size
 
         if stretch:
             # OLD: CROP_ANYWAY

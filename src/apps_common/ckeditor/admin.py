@@ -16,9 +16,9 @@ def pagephoto_tag(instance, nocache=False):
     attrs = flatatt({
         'src': instance.photo.normal.url_nocache if nocache else instance.photo.normal.url,
         'srcset': ', '.join((
-            instance.photo.wide.srcset,
-            instance.photo.normal.srcset,
-            instance.photo.mobile.srcset
+            instance.photo.wide.srcset_nocache,
+            instance.photo.normal.srcset_nocache,
+            instance.photo.mobile.srcset_nocache
         )),
         'width': instance.photo.normal.width,
         'height': instance.photo.normal.height,
@@ -211,8 +211,8 @@ def simplephoto_tag(instance, nocache=False):
     attrs = flatatt({
         'src': instance.photo.url_nocache if nocache else instance.photo.url,
         'srcset': ', '.join((
-            instance.photo.srcset,
-            instance.photo.mobile.srcset
+            instance.photo.srcset_nocache,
+            instance.photo.mobile.srcset_nocache
         )),
         'width': instance.photo.width,
         'height': instance.photo.height,
