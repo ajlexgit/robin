@@ -12,6 +12,7 @@
         preview = StdImageField(_('preview'),
             blank=True,
             storage=MediaStorage('main/header'),
+            min_dimensions=(800, 600),
             admin_variation='admin',
             crop_area=True,
             aspects='normal',

@@ -12,7 +12,7 @@
 
             CKEDITOR.dialog.add("pagefiles", this.path + "dialogs/dlg_upload.js");
             editor.addCommand("pagefiles", new CKEDITOR.dialogCommand("pagefiles", {
-                allowedContent: 'div(*); div(!page-file)[!data-id]',
+                allowedContent: 'div(*); div(!page-file)[!data-id]; span',
                 modes: {
                     wysiwyg: 1,
                     source: 0

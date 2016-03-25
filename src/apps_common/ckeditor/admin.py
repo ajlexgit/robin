@@ -117,7 +117,9 @@ def upload_pagephoto(request):
 def pagefile_tag(instance, classes=''):
     return """
         <div class="page-file {classes}" data-id="{id}">
-            <a href="{url}">{display}</a>
+            <a href="{url}">
+                <span>{display}</span>
+            </a>
         </div>
     """.format(
         id=instance.id,

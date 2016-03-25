@@ -31,20 +31,10 @@
     margin-bottom: 10px;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    line-height: 1.2;
+  h2, h3, h4 {
+    margin: 1.1em 0 0.5em;
     font-weight: bold;
-  }
-  h1, h2, h3 {
-    margin: 1.1em 0 0.55em;
-    word-wrap: break-word;
-    @include font-size(30px);
-    @include media_interval(0, $media768) {
-      @include font-size(24px);
-    }
-  }
-  h4, h5, h6 {
-    margin-bottom: 0.75em;
+    line-height: 1.2;
   }
 
   h2 {
@@ -61,35 +51,37 @@
     }
   }
 
-  ul {
+  h4 {
+    @include font-size(16px);
+  }
+
+  ul, ol {
     padding-left: 1.6em;
-    margin: 1.1em 0;
+    margin: 1.6em 0;
 
     li {
       position: relative;
+      margin-bottom: 0.5em;
+    }
+  }
 
-      &:before {
-        content: '●';
-        position: absolute;
-        left: -1.4em;
-        top: 0.7em;
-        font-size: 0.8em;
-        @include transform(translateY(-50%));
-      }
+  ul > li {
+    &:before {
+      content: '●';
+      position: absolute;
+      left: -1.4em;
+      top: 0.7em;
+      font-size: 0.8em;
+      @include transform(translateY(-50%));
     }
   }
 
   ol {
     list-style: decimal;
-    padding-left: 1.6em;
-    margin: 1.1em 0;
   }
 
-  .page-images, .page-video {
-    margin: 2.2em 0;
-    @include media_interval(0, $media1024) {
-      margin: 1.1em 0;
-    }
+  .page-images, .page-video, .page-files {
+    margin: 1.6em 0;
 
     img {
       width: 100%;
@@ -106,7 +98,7 @@
 
   // JS-слайдер с описанием
   .slider-root {
-    margin: 2.2em 0;
+    margin: 1.6em 0;
     font-size: inherit;
     @include media_interval(0, $media1024) {
       margin: 1.1em 0;
@@ -118,14 +110,6 @@
 
     .page-images {
       margin: 0;
-    }
-  }
-
-  // One image
-  .single-image {
-    margin: 2.2em 0;
-    @include media_interval(0, $media1024) {
-      margin: 1.1em 0;
     }
   }
 
@@ -153,6 +137,41 @@
 
     iframe {
       margin: 0;
+    }
+  }
+
+  // Файлы
+  .page-file {
+    margin-bottom: 0.5em;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    a {
+      position: relative;
+      display: inline-block;
+      padding-left: 36px;
+      min-height: 32px;
+      z-index: 1;
+      @include valign_after;
+
+      &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 24px;
+        height: 32px;
+        z-index: 1;
+        background: $sprite_url no-repeat rel-background-position(24px, 32px, -240px, 0px);
+        background-size: rel-background-size(24px, 32px);
+      }
+    }
+
+    span {
+      display: inline-block;
+      word-break: break-all;
+      vertical-align: middle;
     }
   }
 }

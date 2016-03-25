@@ -26,9 +26,9 @@
                 var input = dialogElement.getElementsByTag('input').getItem(0);
 
                 var element = editor.getSelection().getStartElement();
-                var link = element.findOne('.page-file a');
-                if (link) {
-                    input.setValue(link.getText());
+                var text = element.findOne('.page-file span');
+                if (text) {
+                    input.setValue(text.getText());
                     input.focus(true);
                 }
             },
@@ -44,9 +44,9 @@
                 }
 
                 var element = editor.getSelection().getStartElement();
-                var link = element.findOne('.page-file a');
-                if (link) {
-                    link.setText(value);
+                var text = element.findOne('.page-file span');
+                if (text) {
+                    text.setText(value);
                 }
             }
         };

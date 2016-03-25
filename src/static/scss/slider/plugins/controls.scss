@@ -12,7 +12,8 @@ $arrow_image_width: 26px;
 $arrow_image_height: 50px;
 $arrow_image_maxwidth: (
     ($media768, 0px): 50%,
-    (0px, $media768): 40%,
+    ($media480, $media768): 40%,
+    (0px, $media480): 16px,
 );
 
 

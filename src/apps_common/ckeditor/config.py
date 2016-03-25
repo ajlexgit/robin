@@ -16,7 +16,7 @@ CKEDITOR_CONFIG_DEFAULT = {
                'htmlwriter,link,pastefromword,pastetext,'
                'removeformat,resize,showborders,sourcearea,'
                'tab,toolbar,wysiwygarea',
-    'removeButtons': 'Anchor,Strike,Superscript,Subscript,JustifyBlock',
+    'removeButtons': 'Anchor,Strike,Superscript,Subscript',
     'toolbar': [
         {
             'name': 'document',
@@ -44,7 +44,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
     ),
     'plugins': 'basicstyles,undo,contextmenu,'
                'elementspath,enterkey,entities,floatingspace,'
-               'format,htmlwriter,justify,link,list,liststyle,'
+               'format,htmlwriter,link,list,liststyle,'
                'removeformat,resize,'
                'showborders,sourcearea,tab,'
                'toolbar,wysiwygarea',
@@ -56,8 +56,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList', '-',
-                      'JustifyLeft', 'JustifyCenter', 'JustifyRight']
+            'items': ['BulletedList', 'NumberedList', 'Format']
         },
         '/',
         {
@@ -67,10 +66,6 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         {
             'name': 'links',
             'items': ['Link', 'Unlink']
-        },
-        {
-            'name': 'styles',
-            'items': ['Format']
         },
         {
             'name': 'document',

@@ -1,7 +1,8 @@
 import os
 import sys
 
-# возможность вставки в текст кнопок / файлов
+# во views добавить global context
+# возможность вставки в текст колонок
 # crop each variation
 # Parallax наизнанку
 # drager: блокируется вертикальный скролл Android
