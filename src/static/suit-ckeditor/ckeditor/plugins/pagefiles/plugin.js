@@ -19,6 +19,24 @@
                 },
                 canUndo: true
             }));
+
+            editor.on('key', function(evt) {
+                if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
+                    if (editor.mode != "wysiwyg") {
+                        return
+                    }
+
+                    // if we call getStartElement too soon, we get the wrong element
+                    setTimeout(function() {
+                        var containers = editor.document.find('.page-files');
+                        for (var i=0, container; container=containers.getItem(i) ; i++) {
+                            if (!container.getChildCount()) {
+                                container.remove();
+                            }
+                        }
+                    }, 10)
+                }
+            }, null, null, 8);
         }
     })
 
