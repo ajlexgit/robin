@@ -72,7 +72,7 @@
         cls.openDropdown = function() {
             this.$root.addClass('opened');
             var margin = parseInt(this.$preview.width()) + 18;
-            this.$dropdown.css('margin-left', margin).stop().slideDown(200);
+            this.$dropdown.css('margin-left', margin).stop().slideDown(100);
 
             var that = this;
             $(document).one('click.sprite-image', function(event) {
