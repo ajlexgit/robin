@@ -42,16 +42,12 @@
 .sprite-icon-preview {
     float: left;
     margin: 8px;
-    box-shadow: 0 0 8px #888;
-}
-
-.sprite-icon-field.opened .sprite-icon-preview {
-    box-shadow: 0 0 8px 1px #080;
 }
 
 /* Dropdown */
 .sprite-icon-dropdown {
     display: none;
+    border-left: 1px solid #ccc;
 }
 
 .sprite-icon-list {
@@ -59,7 +55,6 @@
     overflow: hidden;
     padding: 3px;
     cursor: default;
-    background-color: #fafad0;
 
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -69,13 +64,19 @@
 .sprite-icon-item {
     display: inline-block;
     margin: 5px;
-    box-shadow: 0 0 8px #666;
+    outline: 2px solid transparent;
+
+    -webkit-transition: outline 0.2s;
+    -moz-transition: outline 0.2s;
+    -ms-transition: outline 0.2s;
+    -o-transition: outline 0.2s;
+    transition: outline 0.2s;
 }
 
 .sprite-icon-item.active {
-    box-shadow: 0 0 3px 2px #0A0;
+    outline: 2px solid rgba(51, 51, 51, 1);
 }
 
 .sprite-icon-item:hover {
-    box-shadow: 0 0 8px 1px #880;
+    outline: 2px solid rgba(51, 51, 51, 0.75);
 }

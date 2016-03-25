@@ -18,9 +18,10 @@ class SpriteImageWidget(forms.Widget):
             'sprite_image/admin/js/sprite_image.js',
         )
 
-    def __init__(self, *args, sprite='', size=(), **kwargs):
+    def __init__(self, *args, sprite='', size=(), background='#FFFFFF', **kwargs):
         self.sprite = sprite
         self.size = size
+        self.background = background
         super().__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):

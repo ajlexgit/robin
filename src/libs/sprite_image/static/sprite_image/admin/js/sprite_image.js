@@ -41,7 +41,7 @@
                 }
             }).on('click.sprite-image', '.sprite-icon-item', function() {
                 that.selectItem($(this));
-                that.closeDropdown(true);
+                that.closeDropdown();
             });
 
             this.$root.data(this.DATA_KEY, this);
@@ -86,16 +86,9 @@
         /*
             Закрытие выпадающего списка
          */
-        cls.closeDropdown = function(instant) {
+        cls.closeDropdown = function() {
             this.$root.removeClass('opened');
-
-            if (instant) {
-                this.$dropdown.stop().hide();
-            } else {
-                this.$dropdown.stop().slideUp(200, function() {
-                    $(this).removeAttr('style')
-                });
-            }
+            this.$dropdown.stop().hide();
         };
     });
 

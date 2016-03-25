@@ -34,17 +34,19 @@ class SpriteImageField(models.CharField):
     descriptor_class = SpriteImageDescriptor
     attr_class = Icon
 
-    def __init__(self, *args, sprite='', size=(), **kwargs):
+    def __init__(self, *args, sprite='', size=(), background='#FFFFFF', **kwargs):
         kwargs.setdefault('max_length', 100)
         super().__init__(*args, **kwargs)
         self.sprite = sprite
         self.sprite_url = staticfiles_storage.url(self.sprite)
+        self.background = background
         self.size = size
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
         kwargs['sprite'] = self.sprite
         kwargs['size'] = self.size
+        kwargs['background'] = self.background
         if kwargs['max_length'] == 100:
             del kwargs['max_length']
         return name, path, args, kwargs
@@ -53,6 +55,7 @@ class SpriteImageField(models.CharField):
         errors = super().check(**kwargs)
         errors.extend(self._check_sprite_attribute(**kwargs))
         errors.extend(self._check_size_attribute(**kwargs))
+        errors.extend(self._check_background_attribute(**kwargs))
         return errors
 
     def _check_sprite_attribute(self, **kwargs):
@@ -94,6 +97,20 @@ class SpriteImageField(models.CharField):
         else:
             return []
 
+    def _check_background_attribute(self, **kwargs):
+        if self.background is None:
+            return []
+
+        if not isinstance(self.background, str):
+            return [
+                checks.Error(
+                    'background should be a string, like "#FFDA00"',
+                    obj=self
+                )
+            ]
+
+        return []
+
     def contribute_to_class(self, cls, *args, **kwargs):
         super().contribute_to_class(cls, *args, **kwargs)
         setattr(cls, self.name, self.descriptor_class(self))
@@ -129,6 +146,7 @@ class SpriteImageField(models.CharField):
             'widget': SpriteImageWidget(
                 sprite=self.sprite_url,
                 size=self.size,
+                background=self.background,
             ),
         }
         defaults.update(kwargs)
