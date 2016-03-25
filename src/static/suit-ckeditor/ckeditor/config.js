@@ -18,6 +18,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.forcePasteAsPlainText = true;
     config.autoGrow_maxHeight = 540;
+    config.dialog_noConfirmCancel = true;
 
     CKEDITOR.on('instanceReady', function(ev) {
         var blockTags = ['div', 'p', 'pre', 'ul', 'ol', 'li'];

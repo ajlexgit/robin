@@ -20,13 +20,19 @@
 
 
     CKEDITOR.plugins.add("pagephotos", {
+        requires: 'dialog',
         icons: 'pagephotos',
+        lang: 'en,ru',
         init: function (editor) {
+            var lang = editor.lang.pagephotos;
+
             editor.ui.addButton("PagePhotos", {
-                label: gettext('Upload images'),
+                label: lang.buttonTitle,
                 command: "pagephotos",
                 toolbar: 'insert'
             });
+
+            editor.addContentsCss(this.path + 'styles/editor.css');
 
             // ======================================
             //      DIALOGS
@@ -67,7 +73,7 @@
                         image_id = parseInt(element.data('id')) || 0;
 
                     if (!image_id) {
-                        alert(gettext('Impossible to crop the picture.\nPlease contact your system administrator'));
+                        alert(lang.badImage);
                         return
                     }
 
@@ -84,21 +90,21 @@
             editor.addMenuGroup('images');
             editor.addMenuItems({
                 _crop_command : {
-                    label : gettext('Edit'),
+                    label : lang.contextMenuEdit,
                     icon: this.path + 'edit.png',
                     command : 'ChangeImage',
                     group : 'images',
                     order: 1
                 },
-                _block_description : {
-                    label : gettext('Block description'),
+                _photos_block_description : {
+                    label : lang.contextMenuBlockDescr,
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_block_description',
                     group : 'images',
                     order: 2
                 },
-                _image_description : {
-                    label : gettext('Image description'),
+                _photos_image_description : {
+                    label : lang.contextMenuImageDescr,
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_image_description',
                     group : 'images',
@@ -114,12 +120,12 @@
                     if (isImage && isInGallery) {
                         return {
                             _crop_command : CKEDITOR.TRISTATE_OFF,
-                            _block_description : CKEDITOR.TRISTATE_OFF,
-                            _image_description : CKEDITOR.TRISTATE_OFF
+                            _photos_block_description : CKEDITOR.TRISTATE_OFF,
+                            _photos_image_description : CKEDITOR.TRISTATE_OFF
                         }
                     } else if (isGallery) {
                         return {
-                            _block_description : CKEDITOR.TRISTATE_OFF
+                            _photos_block_description : CKEDITOR.TRISTATE_OFF
                         }
                     }
                 }

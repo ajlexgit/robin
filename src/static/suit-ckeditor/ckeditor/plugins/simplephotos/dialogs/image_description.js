@@ -1,8 +1,9 @@
 (function() {
 
     CKEDITOR.dialog.add("simplephotos_image_description", function (editor) {
+        var lang = editor.lang.simplephotos;
         return {
-            title: gettext('Set image description'),
+            title: lang.dialogImageDescr,
             minWidth: 400,
             minHeight: 100,
             contents: [{
@@ -10,15 +11,9 @@
                 label: 'Basic Settings',
                 elements: [{
                     id: 'description',
-                    type: 'html',
-                    html: '<div>' +
-                        '<p>Description (maximum length 128 characters):</p>' +
-                        '<textarea ' +
-                        'style="width: 100%; height: 4.8em; resize: none; border: 1px solid gray;' +
-                        'padding: 5px 8px; font-size: 14px; ' +
-                        '-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;">' +
-                        '</textarea>' +
-                    '</div>'
+                    type: 'textarea',
+                    style: 'width:100%;height:7em;resize:none;',
+                    label: lang.dialogImageDescrTextarea
                 }]
             }],
 

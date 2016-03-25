@@ -3,9 +3,12 @@
     CKEDITOR.plugins.add("pagefiles", {
         requires: 'file_widget',
         icons: 'pagefiles',
-        init: function (editor) {
+        lang: 'en,ru',
+        init: function(editor) {
+            var lang = editor.lang.pagefiles;
+
             editor.ui.addButton("PageFiles", {
-                label: gettext('Upload files'),
+                label: lang.buttonTitle,
                 command: "pagefiles",
                 toolbar: 'insert'
             });
@@ -19,6 +22,7 @@
                 },
                 canUndo: true
             }));
+            editor.addContentsCss(this.path + 'styles/editor.css');
 
             editor.on('key', function(evt) {
                 if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
@@ -29,7 +33,7 @@
                     // if we call getStartElement too soon, we get the wrong element
                     setTimeout(function() {
                         var containers = editor.document.find('.page-files');
-                        for (var i=0, container; container=containers.getItem(i) ; i++) {
+                        for (var i = 0, container; container = containers.getItem(i); i++) {
                             if (!container.getChildCount()) {
                                 container.remove();
                             }

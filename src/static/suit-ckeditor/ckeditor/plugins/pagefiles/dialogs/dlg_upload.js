@@ -77,8 +77,9 @@
     };
 
     CKEDITOR.dialog.add("pagefiles", function (editor) {
+        var lang = editor.lang.pagefiles;
         return {
-            title: gettext('Upload files'),
+            title: lang.dialogTitle,
             minWidth: 600,
             minHeight: 400,
             contents: [{
@@ -86,7 +87,7 @@
                 label: 'Basic Settings',
                 elements: [{
                     type: 'html',
-                    html: '<div class="ckupload-files ckupload-page-files">' + gettext('Loading...') + '</div>'
+                    html: '<div class="ckupload-files ckupload-page-files">' + lang.loading + '</div>'
                 }]
             }],
 
@@ -128,7 +129,7 @@
                 }
 
                 if (not_loaded.length) {
-                    var need_load = confirm(gettext('There are not uploaded files.\nUpload them now?'));
+                    var need_load = confirm(lang.unUploaded);
                     if (need_load) {
                         uploader.plupload('start');
                         return false

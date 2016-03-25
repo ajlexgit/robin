@@ -82,8 +82,9 @@
     };
 
     CKEDITOR.dialog.add("pagephotos", function (editor) {
+        var lang = editor.lang.pagephotos;
         return {
-            title: gettext('Upload images'),
+            title: lang.dialogTitle,
             minWidth: 700,
             minHeight: 400,
             contents: [{
@@ -91,7 +92,7 @@
                 label: 'Basic Settings',
                 elements: [{
                     type: 'html',
-                    html: '<div class="ckupload-files ckupload-page-photos">' + gettext('Loading...') + '</div>'
+                    html: '<div class="ckupload-files ckupload-page-photos">' + lang.loading + '</div>'
                 }]
             }],
 
@@ -134,7 +135,7 @@
                 }
 
                 if (not_loaded.length) {
-                    var need_load = confirm(gettext('There are not uploaded images.\nUpload them now?'));
+                    var need_load = confirm(lang.unUploaded);
 
                     if (need_load) {
                         uploader.plupload('start');

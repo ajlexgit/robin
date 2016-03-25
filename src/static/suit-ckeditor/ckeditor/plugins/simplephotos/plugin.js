@@ -87,7 +87,10 @@
     };
 
     CKEDITOR.plugins.add("simplephotos", {
+        lang: 'en,ru',
         init: function(editor) {
+            var lang = editor.lang.simplephotos;
+
             // ======================================
             //      DIALOGS
             // ======================================
@@ -120,8 +123,8 @@
             // Добавление пунктов в контекстное меню
             editor.addMenuGroup('images');
             editor.addMenuItems({
-                _image_description : {
-                    label : gettext('Image description'),
+                _simple_image_description : {
+                    label : lang.contextMenuImageDescr,
                     icon: this.path + 'descr.png',
                     command : 'simplephotos_image_description',
                     group : 'images'
@@ -130,7 +133,7 @@
             editor.contextMenu.addListener(function(element) {
                 if (element && element.is('img') && element.hasClass('simple-photo')) {
                     return {
-                        _image_description : CKEDITOR.TRISTATE_OFF
+                        _simple_image_description : CKEDITOR.TRISTATE_OFF
                     }
                 }
                 return null

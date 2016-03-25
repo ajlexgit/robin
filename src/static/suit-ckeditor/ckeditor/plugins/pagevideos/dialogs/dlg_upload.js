@@ -1,10 +1,11 @@
 (function($) {
 
     CKEDITOR.dialog.add("pagevideos", function (editor) {
+        var lang = editor.lang.pagevideos;
         return {
-            title: gettext('Insert video'),
-            minWidth: 600,
-            minHeight: 400,
+            title: lang.dialogTitle,
+            minWidth: 500,
+            minHeight: 150,
             contents: [{
                 id: 'tab-basic',
                 label: 'Basic Settings',
@@ -12,13 +13,13 @@
                     {
                         type: 'html',
                         id: 'oembedHeader',
-                        html: gettext('Input URL containing video (YouTube, Flickr, Vimeo etc)')
+                        html: lang.dialogLabel
                     },
                     {
                         type: 'text',
                         id: 'embedCode',
                         label: 'URL',
-                        title: gettext('Input URL containing video (YouTube, Flickr, Vimeo etc)')
+                        title: lang.dialogLabel
                     }
                 ]
             }],
@@ -147,7 +148,7 @@
                                 });
                             }
                         } else {
-                            alert('Unknown URL service');
+                            alert(lang.unknown);
                         }
 
                         $element.attr('data-url', url).data('url', url);

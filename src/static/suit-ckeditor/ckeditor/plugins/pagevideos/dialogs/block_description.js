@@ -16,6 +16,7 @@
     };
 
     CKEDITOR.dialog.add("pagevideos_block_description", function (editor) {
+        var lang = editor.lang.pagevideos;
         return {
             title: gettext('Set block description'),
             minWidth: 400,
@@ -25,15 +26,9 @@
                 label: 'Basic Settings',
                 elements: [{
                     id: 'description',
-                    type: 'html',
-                    html: '<div>' +
-                        '<p>Description:</p>' +
-                        '<textarea ' +
-                        'style="width: 100%; height: 7em; resize: none; border: 1px solid gray;' +
-                        'padding: 5px 8px; font-size: 14px; ' +
-                        '-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;">' +
-                        '</textarea>' +
-                    '</div>'
+                    type: 'textarea',
+                    style: 'width:100%;height:7em;resize:none;',
+                    label: lang.dialogBlockDescrTextarea
                 }]
             }],
 

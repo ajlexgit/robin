@@ -27,7 +27,8 @@ CKEDITOR_CONFIG_DEFAULT = {
 
 CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
     'height': 320,
-    'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,pagevideos,pagefiles,simplephotos',
+    'extraPlugins': 'autogrow,textlen,enterfix,pagephotos,'
+                    'pagevideos,pagefiles,simplephotos',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
         settings.STATIC_URL + 'ckeditor/css/ckeditor.css',

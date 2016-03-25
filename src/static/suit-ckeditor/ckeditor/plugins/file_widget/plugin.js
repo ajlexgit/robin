@@ -1,9 +1,12 @@
 (function() {
 
     CKEDITOR.plugins.add("file_widget", {
-        requires: 'widget',
+        requires: 'widget,dialog',
         icons: 'file_widget',
+        lang: 'en,ru',
         init: function(editor) {
+            var lang = editor.lang.file_widget;
+
             editor.widgets.add('file_widget', {
                 dialog: 'file_widget_dlg',
                 upcast: function(element) {
@@ -13,11 +16,12 @@
 
             CKEDITOR.dialog.add('file_widget_dlg', this.path + 'dialogs/file_widget.js');
             editor.addCommand("file_widget_edit", new CKEDITOR.dialogCommand("file_widget_dlg"));
+            editor.addContentsCss(this.path + 'styles/editor.css');
 
             editor.addMenuGroup('files');
             editor.addMenuItems({
                 _edit_files: {
-                    label: gettext('Edit file name'),
+                    label: lang.contextMenuEdit,
                     icon: this.path + 'edit.png',
                     command: 'file_widget_edit',
                     group: 'files',

@@ -2,9 +2,12 @@
 
     CKEDITOR.plugins.add("pagevideos", {
         icons: 'pagevideos',
+        lang: 'en,ru',
         init: function (editor) {
+            var lang = editor.lang.pagevideos;
+
             editor.ui.addButton("PageVideos", {
-                label: gettext('Insert video'),
+                label: lang.buttonTitle,
                 command: "pagevideos",
                 toolbar: 'insert'
             });
@@ -12,6 +15,8 @@
             CKEDITOR.scriptLoader.load(
                 CKEDITOR.getUrl(this.path + 'libs/jquery.oembed.js')
             );
+
+            editor.addContentsCss(this.path + 'styles/editor.css');
 
             // ======================================
             //      DIALOGS
@@ -56,13 +61,13 @@
             editor.addMenuGroup('videos');
             editor.addMenuItems({
                 _change_video : {
-                    label : gettext('Edit'),
+                    label : lang.contextMenuEdit,
                     icon: this.path + 'edit.png',
                     command : 'ChangeVideo',
                     group : 'videos'
                 },
-                _block_description : {
-                    label : gettext('Block description'),
+                _video_block_description : {
+                    label : lang.contextMenuBlockDescr,
                     icon: this.path + 'descr.png',
                     command : 'pagevideos_block_description',
                     group : 'videos'
@@ -72,7 +77,7 @@
                 if (element && element.hasClass('page-video')) {
                     return {
                         _change_video : CKEDITOR.TRISTATE_OFF,
-                        _block_description : CKEDITOR.TRISTATE_OFF
+                        _video_block_description : CKEDITOR.TRISTATE_OFF
                     }
                 }
 
