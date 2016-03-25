@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
@@ -77,7 +76,7 @@ class BlogPost(models.Model):
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(_('slug'), populate_from=('title',), unique=True)
     note = models.TextField(_('note'))
-    text = CKEditorUploadField(_('text'), editor_options=settings.CKEDITOR_CONFIG_DEFAULT)
+    text = CKEditorUploadField(_('text'))
     date = models.DateTimeField(_('publication date'), default=now)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=STATUS_DRAFT)
     tags = models.ManyToManyField(Tag, verbose_name=_('tags'), through='PostTag', related_name='posts')

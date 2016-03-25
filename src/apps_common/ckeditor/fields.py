@@ -1,18 +1,43 @@
 from django.db import models
+from django.core import checks
 from django.db.models import signals
 from django.utils.encoding import smart_text
 from .signals.handlers import delete_photos, save_photos
 from .forms import CKEditorFormField, CKEditorUploadFormField
+from . import config
 
 
 class CKEditorField(models.Field):
     """ Текстовое поле с WISYWIG редактором """
     def __init__(self, *args, editor_options=None, **kwargs):
-        self.editor_options = editor_options or {}
+        self.editor_options = editor_options or config.CKEDITOR_CONFIG_DEFAULT
         super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return "TextField"
+
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_options(**kwargs))
+        return errors
+
+    def _check_options(self, **kwargs):
+        if not self.editor_options:
+            return [
+                checks.Error(
+                    'options required',
+                    obj=self
+                )
+            ]
+        elif not isinstance(self.editor_options, dict):
+            return [
+                checks.Error(
+                    'options must be a dict',
+                    obj=self
+                )
+            ]
+        else:
+            return []
 
     def get_prep_value(self, value):
         value = super().get_prep_value(value)
@@ -33,7 +58,8 @@ class CKEditorUploadField(models.Field):
     """ Текстовое поле с WISYWIG редактором и возможностью загрузки картинок """
     def __init__(self, *args, editor_options=None, upload_pagephoto_url='',
             upload_pagefile_url='', upload_simplephoto_url='', **kwargs):
-        self.editor_options = editor_options or {}
+
+        self.editor_options = editor_options or config.CKEDITOR_UPLOAD_CONFIG_DEFAULT
         self.upload_pagephoto_url = upload_pagephoto_url or '/dladmin/ckeditor/upload_pagephoto/'
         self.upload_pagefile_url = upload_pagefile_url or '/dladmin/ckeditor/upload_pagefile/'
         self.upload_simplephoto_url = upload_simplephoto_url or '/dladmin/ckeditor/upload_simplephoto/'
@@ -41,6 +67,29 @@ class CKEditorUploadField(models.Field):
 
     def get_internal_type(self):
         return "TextField"
+
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_options(**kwargs))
+        return errors
+
+    def _check_options(self, **kwargs):
+        if not self.editor_options:
+            return [
+                checks.Error(
+                    'options required',
+                    obj=self
+                )
+            ]
+        elif not isinstance(self.editor_options, dict):
+            return [
+                checks.Error(
+                    'options must be a dict',
+                    obj=self
+                )
+            ]
+        else:
+            return []
 
     def get_prep_value(self, value):
         value = super().get_prep_value(value)

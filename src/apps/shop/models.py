@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from django.conf import settings
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
 from django.core.exceptions import ValidationError
@@ -237,10 +236,7 @@ class ShopProduct(models.Model):
         help_text=_('Unique identifier of the product')
     )
     gallery = GalleryField(ShopProductGallery, verbose_name=_('gallery'), blank=True, null=True)
-    description = CKEditorField(_('description'),
-        editor_options=settings.CKEDITOR_CONFIG_DEFAULT,
-        blank=True
-    )
+    description = CKEditorField(_('description'), blank=True)
     price = ValuteField(_('price'), validators=[MinValueValidator(0)])
     is_visible = models.BooleanField(_('visible'), default=True)
     created = models.DateTimeField(_('create date'), default=now, editable=False)
