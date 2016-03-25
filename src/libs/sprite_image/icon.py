@@ -4,6 +4,14 @@ class Icon:
         self._name = name
         self._position = position
 
+    @property
+    def x(self):
+        return self._position[0]
+
+    @property
+    def y(self):
+        return self._position[1]
+
     def __getitem__(self, item):
         return self._position[item]
 

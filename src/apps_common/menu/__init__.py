@@ -26,6 +26,7 @@
             # Аттрибуты ссылки
             attrs={
                 'target': '_blank',
+                'class': 'menu-item',
             },
 
             # Дочерние пункты меню
@@ -42,7 +43,10 @@
             MenuItem('Test2', '/test2/'),
         )
         menu.insert(0,
-            MenuItem('Test3', '/test3/'),
+            MenuItem('Test3', '/test3/', attrs={
+                'target': '_blank',
+                'class': 'my-menu red-item'
+            }),
         )
         menu.render(template='menu/menu.html')
 """

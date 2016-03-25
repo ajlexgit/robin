@@ -73,7 +73,10 @@ class MenuItem(MenuListMixin):
         Класс пункта меню.
 
         Пример создания пункта:
-            item = MenuItem('Yandex', 'http://yandex.ru', attrs={'target': '_blank'})
+            item = MenuItem('Yandex', 'http://yandex.ru', attrs={
+                'target': '_blank',
+                'class': 'my-menu red-item'
+            })
     """
     _active = False
 

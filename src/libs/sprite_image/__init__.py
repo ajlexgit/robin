@@ -28,7 +28,7 @@
             <div class="{{ object.icon }}">
 
             # Вывод координат
-            <div style="background-position: {{ object.icon.0 }}px {{ object.icon.1 }}px">
+            <div style="background-position: {{ object.icon.x }}px {{ object.icon.y }}px">
 
             # Вывод ссылки на картинку
             <div style="background-image: {{ object.icon.url }}">
