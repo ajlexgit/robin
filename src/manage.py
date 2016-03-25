@@ -1,6 +1,7 @@
 import os
 import sys
 
+# шрифты в localStorage?
 # во views добавить global context
 # возможность вставки в текст колонок
 # crop each variation

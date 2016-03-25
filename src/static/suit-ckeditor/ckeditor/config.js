@@ -12,6 +12,13 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.format_tags = "p;h2;h3;h4";
 
+    config.plugins = "basicstyles,toolbar,wysiwygarea,contextmenu,elementspath," +
+        "entities,format,htmlwriter,enterkey,sourcearea,undo,pastefromword,pastetext," +
+        "list,link,removeformat,specialchar";
+
+    config.forcePasteAsPlainText = true;
+    config.autoGrow_maxHeight = 540;
+
     CKEDITOR.on('instanceReady', function(ev) {
         var blockTags = ['div', 'p', 'pre', 'ul', 'ol', 'li'];
         var rules = {
