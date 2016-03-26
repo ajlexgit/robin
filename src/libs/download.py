@@ -5,7 +5,7 @@ from django.http.response import FileResponse
 
 
 class BigFileResponse(FileResponse):
-    block_size = 16 * 1024
+    block_size = 128 * 1024
 
 
 def AttachmentResponse(request, stream, name=None):
@@ -25,11 +25,14 @@ def AttachmentResponse(request, stream, name=None):
 
     if name is None:
         if hasattr(stream, 'name'):
-            name = os.path.basename(stream.name)
+            filename = os.path.basename(stream.name)
+            response['Content-Length'] = os.path.getsize(stream.name)
         else:
-            name = 'file'
+            filename = 'file'
+    else:
+        filename = name
 
-    type_name, encoding = mimetypes.guess_type(name)
+    type_name, encoding = mimetypes.guess_type(filename)
     if type_name is None:
         type_name = 'application/octet-stream'
     response['Content-Type'] = type_name
@@ -43,6 +46,6 @@ def AttachmentResponse(request, stream, name=None):
         filename_header = ''
     else:
         # For others like Firefox, we follow RFC2231 (encoding extension in HTTP headers).
-        filename_header = 'filename*=UTF-8\'\'%s' % quote(name)
+        filename_header = 'filename*=UTF-8\'\'%s' % quote(filename)
     response['Content-Disposition'] = 'attachment; ' + filename_header
     return response
