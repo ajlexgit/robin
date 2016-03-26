@@ -1,4 +1,3 @@
-import magic
 import mimetypes
 from django.apps import apps
 from django.contrib import admin
@@ -206,12 +205,11 @@ def upload_pagefile(request):
         pagefile.save()
 
     # Определяем тип файла
-    mimetype = magic.from_file(pagefile.file.path, mime=True).decode()
-    if mimetype not in PageFile.MIME_CLASSES:
-        mimetype = mimetypes.guess_type(pagefile.file.path)[0]
+    mimetype, encoding = mimetypes.guess_type(pagefile.file.path)
+    classes = PageFile.MIME_CLASSES.get(mimetype, '')
 
     return JsonResponse({
-        'tag': pagefile_tag(pagefile, classes=PageFile.MIME_CLASSES.get(mimetype, '')),
+        'tag': pagefile_tag(pagefile, classes=classes),
         'field': field_name,
         'id': pagefile.pk,
     })

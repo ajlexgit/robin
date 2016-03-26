@@ -8,7 +8,7 @@ class BigFileResponse(FileResponse):
     block_size = 128 * 1024
 
 
-def AttachmentResponse(request, stream, name=None):
+def AttachmentResponse(request, stream, filename=None):
     """
         Response, заставляющий браузер скачать файл.
 
@@ -23,15 +23,11 @@ def AttachmentResponse(request, stream, name=None):
 
     response = BigFileResponse(stream)
 
-    if name is None:
-        if hasattr(stream, 'name'):
-            filename = os.path.basename(stream.name)
-            response['Content-Length'] = os.path.getsize(stream.name)
-        else:
-            filename = 'file'
-    else:
-        filename = name
+    filepath = getattr(stream, 'name', None)
+    if filepath is not None:
+        response['Content-Length'] = os.path.getsize(filepath)
 
+    filename = filename or os.path.basename(filepath) or 'unnamed'
     type_name, encoding = mimetypes.guess_type(filename)
     if type_name is None:
         type_name = 'application/octet-stream'
