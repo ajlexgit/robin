@@ -148,6 +148,8 @@ $footer_1col: $media480;
 
     // подменю в окне
     li:not(.active):hover {
+      background: rgba($blue, 0.1);
+
       & > ul {
         display: block;
         position: absolute;
