@@ -108,16 +108,76 @@ $footer_1col: $media480;
       text-shadow: none;
       border-bottom: none;
       background: inherit;
-    }
 
-    &:hover {
-      background: rgba($blue, 0.1);
+      &:hover {
+        background: rgba($blue, 0.1);
+      }
     }
   }
 
   // меню первого уровня
   & > ul {
     padding: 14px 0;
+
+    a {
+      color: #0088cc;
+      font-weight: normal;
+    }
+
+    // подменюхи
+    ul {
+      display: none;
+
+      li.active > a {
+        color: #333;
+        font-weight: bold;
+      }
+
+      a {
+        padding-left: 45px;
+      }
+    }
+
+    // показ подменню активного пункта
+    li.active {
+      & > ul {
+        display: block;
+        @include box-shadow(none);
+      }
+    }
+
+    // подменю в окне
+    li:not(.active):hover {
+      & > ul {
+        display: block;
+        position: absolute;
+        left: 180px;
+        padding: 0;
+        margin-top: -30px;
+        margin-right: -250px;
+        z-index: 10;
+        @include background-clip(padding-box);
+        @include border_radius(4px);
+        @include box-shadow(0 0 3px rgba(0, 0, 0, 0.4));
+
+        & > li {
+
+          & > a {
+            padding: 5px 25px 5px 15px;
+            @include font-size(14px);
+          }
+
+          &:first-child a {
+            padding-top: 7px;
+          }
+
+          &:last-child a {
+            padding-bottom: 7px;
+          }
+        }
+      }
+    }
+
 
     & > li {
       & > a {
@@ -128,10 +188,11 @@ $footer_1col: $media480;
         }
       }
 
+      // активный пункт первого меню
       &.active {
         & > a {
+          color: #FFF;
           background: $blue;
-
           &:after {
             content: none;
           }
@@ -139,22 +200,6 @@ $footer_1col: $media480;
 
         & > ul > li > a {
           padding: 6px 0 6px 27px;
-        }
-      }
-
-      // подменю в окне
-      &:not(.active):hover > ul {
-        a {
-          padding: 5px 25px 5px 15px;
-          @include font-size(14px);
-        }
-
-        li:first-child a {
-          padding-top: 7px;
-        }
-
-        li:last-child a {
-          padding-bottom: 7px;
         }
       }
 
