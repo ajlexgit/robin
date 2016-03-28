@@ -431,7 +431,7 @@ class Menu(object):
 
                 # Activate models
                 if subapp['models']:
-                    self.activate_models(subapp, level=level+1)
+                    self.activate_models(subapp, match_by_name=match_by_name, level=level+1)
             else:
                 if not match_by_name:
                     # Mark as active by url or model plural name match
@@ -454,11 +454,7 @@ class Menu(object):
         nice app_label (django-filer for ex.) therefore this is the only way
         """
         for app in menu:
-            for model in app['models']:
-                if model['url'] and self.request.path.startswith(model['url']):
-                    model['is_active'] = True
-                    app['is_active'] = self.app_activated = True
-                    break
+            self.activate_model_by_url(app, app['models'])
             if self.app_activated:
                 break
 
@@ -468,6 +464,20 @@ class Menu(object):
                 orig_url = app.get('orig_url')
                 if orig_url and self.request.path.startswith(orig_url):
                     app['is_active'] = self.app_activated = True
+
+
+    def activate_model_by_url(self, app, models):
+        for model in models:
+            if 'models' in model:
+                self.activate_model_by_url(model, model['models'])
+            else:
+                if model['url'] and self.request.path.startswith(model['url']):
+                    model['is_active'] = True
+                    self.app_activated = True
+
+            if model['is_active']:
+                app['is_active'] = True
+                break
 
     def process_url(self, url, app=None):
         """

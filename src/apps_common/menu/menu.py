@@ -80,7 +80,7 @@ class MenuItem(MenuListMixin):
     """
     _active = False
 
-    def __init__(self, title, url, url_args=(), url_kwargs=None, attrs=None):
+    def __init__(self, title, url, url_args=(), url_kwargs=None, attrs=None, is_active=None):
         super().__init__()
 
         self.title = str(title)
@@ -91,6 +91,7 @@ class MenuItem(MenuListMixin):
         except NoReverseMatch:
             self.link = str(url)
 
+        self._is_active = is_active
         self.attrs = attrs or {}
         self.classes = self.attrs.pop('class', '')
 
@@ -103,7 +104,10 @@ class MenuItem(MenuListMixin):
 
     def is_active(self, request):
         """ Является ли пункт активным """
-        return request.path_info.startswith(self.link)
+        if callable(self._is_active):
+            return self._is_active(request)
+        else:
+            return request.path_info.startswith(self.link)
 
     def active_branch(self, value):
         """ Распростронение активности вверх по ветке """

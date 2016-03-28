@@ -1,6 +1,7 @@
 import os
 import mimetypes
 from urllib.parse import quote
+from django.core.files.base import File
 from django.http.response import FileResponse
 
 
@@ -23,11 +24,19 @@ def AttachmentResponse(request, stream, filename=None):
 
     response = BigFileResponse(stream)
 
-    filepath = getattr(stream, 'name', None)
-    if filepath is not None:
-        response['Content-Length'] = os.path.getsize(filepath)
+    # filename
+    if filename is None:
+        if hasattr(stream, 'name'):
+            filename = os.path.basename(stream.name)
+        else:
+            filename = 'file'
 
-    filename = filename or os.path.basename(filepath) or 'unnamed'
+    # size
+    if isinstance(stream, File):
+        response['Content-Length'] = stream.size
+    elif hasattr(stream, 'name'):
+        response['Content-Length'] = os.path.getsize(stream.name)
+
     type_name, encoding = mimetypes.guess_type(filename)
     if type_name is None:
         type_name = 'application/octet-stream'
