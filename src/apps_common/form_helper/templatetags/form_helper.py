@@ -4,17 +4,17 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def render_form(context, form):
-    return loader.get_template('form_helper/form.html').render({
+def render_form(context, form, template='form_helper/form.html'):
+    return loader.get_template(template).render({
         'form': form,
     }, context.get('request'))
 
 
 @register.simple_tag(takes_context=True)
-def render_field(context, form, fieldname):
+def render_field(context, form, fieldname, template='form_helper/hidden_field.html'):
     field = form[fieldname]
     if field.is_hidden:
-        return loader.get_template('form_helper/hidden_field.html').render({
+        return loader.get_template(template).render({
             'field': field,
         }, context.get('request'))
 
