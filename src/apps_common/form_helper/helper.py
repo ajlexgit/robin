@@ -28,6 +28,17 @@ class FormHelperMixin:
     # Выводить текстовые описания ошибок полей
     render_error_message = False
 
+    # Шаблоны полей по-умолчанию
+    field_template = 'form_helper/field.html'
+    hidden_field_template = 'form_helper/hidden_field.html'
+
+    # Шаблоны отдельных полей формы
+    # Пример:
+    #   field_templates = {
+    #       'name': 'module/name_field.html'
+    #   }
+    field_templates = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_class = PlainErrorList

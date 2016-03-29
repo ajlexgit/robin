@@ -5,6 +5,10 @@ from .models import Message
 
 
 class ContactForm(FormHelperMixin, forms.ModelForm):
+    field_templates = {
+        'email': 'form_helper/hidden_field.html',
+    }
+
     class Meta:
         model = Message
         fields = '__all__'
