@@ -1,7 +1,6 @@
 import os
 import sys
 
-# CSS checkbox с галочкой
 # Form_helper FileField / ImageField
 # ProtectedFileField, фильтровать exe / bat и т.п.
 # Admin update date

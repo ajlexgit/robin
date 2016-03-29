@@ -8,7 +8,7 @@ form {
 input[type="text"], input[type="password"], input[type="email"],
 input[type="number"], input[type="tel"], input[type="url"], input[type="search"],
 textarea, select {
-  width: 200px;
+  width: 280px;
   max-width: 100%;
   padding: 5px 6px;
   border: 1px solid #808080;
@@ -16,7 +16,7 @@ textarea, select {
   @include font-size(16px);
   @include border_radius(4px);
   @include media_interval(0, $media480) {
-    width: 100%;  // fix old safari
+    width: 100%; // fix old safari
   }
 }
 
@@ -55,13 +55,12 @@ textarea, select {
     Кастомизация чекбоксов.
     ОБЯЗАТЕЛЬНО наличие label после input.
 */
-$checkbox_width: 30px;
-$checkbox_height: 17px;
-$checkbox_background: #CDD1DA;
-$checkbox_background_checked: #9FD468;
-$checkbox_dot_gap: 1px;
-$checkbox_dot_color: #FFFFFF;
-$checkbox_dot_size: $checkbox_height - 2 * $checkbox_dot_gap;
+$checkbox_size: 16px;
+$checkbox_background: #FFFFFF;
+$checkbox_border_width: 1px;
+$checkbox_border_color: #AAAAAA;
+$checkbox_icon_size: (14px, 13px);
+$checkbox_icon_offset: (2px, 3px);      // left, top
 
 input[type=checkbox] {
   // прячем оригинал
@@ -73,45 +72,42 @@ input[type=checkbox] {
   & + label {
     position: relative;
     display: inline-block;
-    padding-left: $checkbox_width + 10px;
+    padding-left: $checkbox_size + 10px;
     margin: 0;
-    line-height: $checkbox_height;
+    line-height: $checkbox_size + 2 * $checkbox_border_width;
 
     &:before {
       content: '';
       position: absolute;
-      top: 1px;
+      top: 0;
       left: 0;
-      width: $checkbox_width;
-      height: $checkbox_height;
+      width: $checkbox_size;
+      height: $checkbox_size;
+      z-index: 1;
       background: $checkbox_background;
-      @include border_radius(#{$checkbox_height / 2});
-      @include box-shadow(inset 0 2px 3px rgba(0, 0, 0, 0.2));
+      border: $checkbox_border_width solid $checkbox_border_color;
+      @include border_radius(4px);
     }
 
     // переключатель
     &:after {
       content: '';
       position: absolute;
-      top: 1px + $checkbox_dot_gap;
-      left: 1px + $checkbox_dot_gap;
-      width: $checkbox_dot_size;
-      height: $checkbox_dot_size;
-      background: $checkbox_dot_color;
-      @include border_radius(50%);
-      @include transition(left 0.2s);
-      @include box-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+      left: nth($checkbox_icon_offset, 1);
+      top: nth($checkbox_icon_offset, 2);
+      width: nth($checkbox_icon_size, 1);
+      height: nth($checkbox_icon_size, 2);
+      z-index: 1;
+      background: $sprite_url no-repeat -264px 0;
+      @include opacity(0);
+      @include transition(opacity 0.1s);
     }
   }
 
   &:checked {
     & + label {
-      &:before {
-        background: $checkbox_background_checked;
-      }
-
       &:after {
-        left: $checkbox_width - $checkbox_height;
+        @include opacity(1);
       }
     }
   }
@@ -119,18 +115,14 @@ input[type=checkbox] {
   &:disabled {
     & + label {
       &:before {
-        background: transparentize($checkbox_background, 0.7);
-      }
-
-      &:after {
-        background: darken($checkbox_dot_color, 10%);
+        background: darken($checkbox_background, 10%);
       }
     }
 
     &:checked {
       & + label {
-        &:before {
-          background: transparentize($checkbox_background_checked, 0.5);
+        &:after {
+          @include opacity(0.5);
         }
       }
     }
@@ -141,12 +133,12 @@ input[type=checkbox] {
     Кастомизация радиоксов.
     ОБЯЗАТЕЛЬНО наличие label после input.
 */
-$radiobox_size: 17px;
+$radiobox_size: 16px;
 $radiobox_background: #FFFFFF;
 $radiobox_border_width: 1px;
-$radiobox_border_color: #CDD1DA;
+$radiobox_border_color: #AAAAAA;
 $radiobox_dot_gap: 3px;
-$radiobox_dot_color: #9FD468;
+$radiobox_dot_color: #000000;
 $radiobox_dot_size: $radiobox_size - 2 * $radiobox_dot_gap;
 
 input[type=radio] {
@@ -170,6 +162,7 @@ input[type=radio] {
       left: 0;
       width: $radiobox_size;
       height: $radiobox_size;
+      z-index: 1;
       background: $radiobox_background;
       border: $radiobox_border_width solid $radiobox_border_color;
       @include border_radius(50%);
@@ -183,6 +176,7 @@ input[type=radio] {
       left: $radiobox_border_width + $radiobox_dot_gap;
       width: $radiobox_dot_size;
       height: $radiobox_dot_size;
+      z-index: 1;
       background: $radiobox_dot_color;
       @include opacity(0);
       @include border_radius(50%);
@@ -208,7 +202,7 @@ input[type=radio] {
     &:checked {
       & + label {
         &:after {
-          background: #B8DF90;
+          @include opacity(0.5);
         }
       }
     }

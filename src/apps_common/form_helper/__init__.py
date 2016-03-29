@@ -30,6 +30,20 @@
             где FORM_PREFIX - префикс формы, а NAME - имя поля в форме.
             Если префикса у формы нет - этот класс не будет добавлен.
 
+
+    Для полей типа radio и checkbox можно использовать встроенный шаблон
+    form_helper/boolean_field.html, чтобы работала CSS-стилизация:
+        from form_helper import FormHelperMixin
+
+        class MyForm(FormHelperMixin, forms.ModelForm):
+            field_templates = {
+                'checkbox_field': 'form_helper/boolean_field.html',
+            }
+            ...
+
+    В случае использования виджета RadioSelect, для CSS-стилизации
+    нужно применить виджет libs.widgets.RadioSelect.
+
     Пример:
         template.html:
             {% load form_helper %}

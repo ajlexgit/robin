@@ -1,0 +1,6 @@
+{% extends 'form_helper/field.html' %}
+
+{% block field %}
+  {{ field }}
+  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+{% endblock field %}
