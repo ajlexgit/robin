@@ -1,3 +1,4 @@
+import os
 import mimetypes
 from django.apps import apps
 from django.contrib import admin
@@ -126,7 +127,7 @@ def pagefile_tag(instance, classes=''):
         url=reverse('ckeditor:download_pagefile', kwargs={
             'file_id': instance.pk,
         }),
-        display=instance.file.name,
+        display=os.path.splitext(instance.file.name)[0],
     )
 
 
