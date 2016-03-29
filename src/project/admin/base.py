@@ -27,26 +27,9 @@ class BaseModelAdminMixin:
                 'class': 'full-width',
             })
         },
-        models.SmallIntegerField: {
-            'widget': forms.NumberInput(attrs={
-                'class': 'input-small',
-            })
-        },
         models.IntegerField: {
             'widget': forms.NumberInput(attrs={
                 'class': 'input-small',
-            })
-        },
-        models.PositiveSmallIntegerField: {
-            'widget': forms.NumberInput(attrs={
-                'class': 'input-small',
-                'min': 0,
-            })
-        },
-        models.PositiveIntegerField: {
-            'widget': forms.NumberInput(attrs={
-                'class': 'input-small',
-                'min': 0,
             })
         },
         models.TextField: {
