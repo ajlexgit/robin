@@ -74,6 +74,8 @@ input[type=checkbox] {
     position: relative;
     display: inline-block;
     padding-left: $checkbox_width + 10px;
+    margin: 0;
+    line-height: $checkbox_height;
 
     &:before {
       content: '';
@@ -158,6 +160,8 @@ input[type=radio] {
     position: relative;
     display: inline-block;
     padding-left: $radiobox_size + 10px;
+    margin: 0;
+    line-height: $radiobox_size + 2 * $radiobox_border_width;
 
     &:before {
       content: '';

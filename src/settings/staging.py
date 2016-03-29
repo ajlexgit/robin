@@ -1,7 +1,7 @@
 from settings.common import *
 
 DOMAIN = '.dev.direktweb.ru'
-VZ_DIRECTORY = 'project.dev.direktweb.ru'
+VZ_DIRECTORY = '/home/webapp/project.dev.direktweb.ru'
 
 # Имя хоста (имя виртуальной машины - master, staging и т.д.), должно быть настроено на виртуалке
 # Метка %HOSTNAME% при развёртывании заменяется на настоящее имя виртуалки
@@ -18,9 +18,9 @@ ALLOWED_HOSTS = (
 )
 
 # настройки статики
-STATIC_ROOT = '/home/webapp/%s/static/' % VZ_DIRECTORY
-MEDIA_ROOT = '/home/webapp/%s/media/' % VZ_DIRECTORY
-BACKUP_ROOT = '/home/webapp/%s/backup/' % VZ_DIRECTORY
+STATIC_ROOT = os.path.join(VZ_DIRECTORY, 'static')
+MEDIA_ROOT = os.path.join(VZ_DIRECTORY, 'media')
+BACKUP_ROOT = os.path.join(VZ_DIRECTORY, 'backup')
 
 DATABASES = {
     'default': {
@@ -44,7 +44,7 @@ LOGGING = {
         'file': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': '/home/webapp/%s/django_errors.log' % VZ_DIRECTORY,
+            'filename': os.path.join(VZ_DIRECTORY, 'django_errors.log'),
         },
     },
     'loggers': {
