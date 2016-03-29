@@ -40,4 +40,9 @@ if settings.DEBUG:
             'django.views.static.serve',
             kwargs={'document_root': settings.MEDIA_ROOT}
         ),
+        url(
+            r'^static/(?P<path>.*)$',
+            'django.views.static.serve',
+            kwargs={'document_root': settings.STATIC_ROOT}
+        ),
     ]
