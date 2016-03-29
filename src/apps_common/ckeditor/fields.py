@@ -9,8 +9,9 @@ from . import config
 
 class CKEditorField(models.Field):
     """ Текстовое поле с WISYWIG редактором """
-    def __init__(self, *args, editor_options=None, **kwargs):
+    def __init__(self, *args, editor_options=None, height=400, **kwargs):
         self.editor_options = editor_options or config.CKEDITOR_CONFIG_DEFAULT
+        self.editor_options['height'] = int(height)
         super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
@@ -56,10 +57,10 @@ class CKEditorField(models.Field):
 
 class CKEditorUploadField(models.Field):
     """ Текстовое поле с WISYWIG редактором и возможностью загрузки картинок """
-    def __init__(self, *args, editor_options=None, upload_pagephoto_url='',
+    def __init__(self, *args, editor_options=None, height=540, upload_pagephoto_url='',
             upload_pagefile_url='', upload_simplephoto_url='', **kwargs):
-
         self.editor_options = editor_options or config.CKEDITOR_UPLOAD_CONFIG_DEFAULT
+        self.editor_options['height'] = int(height)
         self.upload_pagephoto_url = upload_pagephoto_url or '/dladmin/ckeditor/upload_pagephoto/'
         self.upload_pagefile_url = upload_pagefile_url or '/dladmin/ckeditor/upload_pagefile/'
         self.upload_simplephoto_url = upload_simplephoto_url or '/dladmin/ckeditor/upload_simplephoto/'

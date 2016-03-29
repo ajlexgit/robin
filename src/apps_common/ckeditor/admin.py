@@ -255,7 +255,6 @@ def upload_simplephoto(request):
     except NotLastChunk:
         return HttpResponse()
 
-
     # Создание экземпляра элемента галереи
     simplephoto = SimplePhoto(
         app_name=app_label,
