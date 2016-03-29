@@ -1,9 +1,12 @@
 <div class="field {{ field_classes }}">
-  {{ field.label_tag }}
+  {% block field %}
+    {{ field.label_tag }}
+    {{ field }}
+  {% endblock field %}
 
-  {{ field }}
-
-  {% if field_errors %}
-    <span class="error">{{ field_errors|first }}</span>
-  {% endif %}
+  {% block errors %}
+    {% if field_errors %}
+      <span class="error">{{ field_errors|first }}</span>
+    {% endif %}
+  {% endblock %}
 </div>
