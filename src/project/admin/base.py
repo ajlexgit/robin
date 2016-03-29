@@ -1,6 +1,7 @@
 from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from suit.admin import SortableModelAdmin
 from suit.widgets import AutosizedTextarea
 from google_maps import GoogleCoordsField, GoogleCoordsAdminWidget
 from libs.color_field import ColorField, ColorFormField, ColorOpacityField, ColorOpacityFormField
@@ -24,6 +25,28 @@ class BaseModelAdminMixin:
         models.URLField: {
             'widget': URLWidget(attrs={
                 'class': 'full-width',
+            })
+        },
+        models.SmallIntegerField: {
+            'widget': forms.NumberInput(attrs={
+                'class': 'input-small',
+            })
+        },
+        models.IntegerField: {
+            'widget': forms.NumberInput(attrs={
+                'class': 'input-small',
+            })
+        },
+        models.PositiveSmallIntegerField: {
+            'widget': forms.NumberInput(attrs={
+                'class': 'input-small',
+                'min': 0,
+            })
+        },
+        models.PositiveIntegerField: {
+            'widget': forms.NumberInput(attrs={
+                'class': 'input-small',
+                'min': 0,
             })
         },
         models.TextField: {
@@ -151,3 +174,22 @@ class ModelAdminMixin(BaseModelAdminMixin):
         return '<span>-//-</span>'
     view.short_description = '#'
     view.allow_tags = True
+
+
+class ReversedSortableModelAdmin(SortableModelAdmin):
+    """
+        Аналог SortableModelAdmin, за тем исключением, что
+        новые записи добавляются в начало списка, а не в конец.
+
+        Внимание!! Поле сортировки должно поддерживать отрицательные значения!
+    """
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            min_order = obj.__class__.objects.aggregate(
+                models.Min(self.sortable))
+            try:
+                next_order = min_order['%s__min' % self.sortable] - 1
+            except TypeError:
+                next_order = 0
+            setattr(obj, self.sortable, next_order)
+        super(SortableModelAdmin, self).save_model(request, obj, form, change)

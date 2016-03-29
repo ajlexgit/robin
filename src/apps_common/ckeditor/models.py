@@ -27,7 +27,7 @@ class PagePhoto(models.Model):
         admin_variation='admin_thumbnail',
         min_dimensions=(960, 540),
         crop_area=True,
-        aspects='on_page',
+        aspects='normal',
         variations=dict(
             wide=dict(
                 size=(1440, 810)

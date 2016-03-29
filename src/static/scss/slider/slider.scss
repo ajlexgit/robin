@@ -45,6 +45,12 @@
 
 .no-slider {
   // Скрытие всех слайдов, кроме первого
+  .slider-slide:first-child {
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+  
   .slider-slide ~ .slider-slide {
     display: none;
   }

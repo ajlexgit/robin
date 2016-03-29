@@ -4,7 +4,14 @@ from django.shortcuts import resolve_url
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from django.utils.translation import get_language
-from suit_ckeditor.widgets import CKEditorWidget
+from suit_ckeditor.widgets import CKEditorWidget as DefaultWidget
+
+
+class CKEditorWidget(DefaultWidget):
+    def render(self, name, value, attrs=None):
+        # Язык редактора
+        self.editor_options.setdefault('language', get_language())
+        return super().render(name, value, attrs)
 
 
 class CKEditorUploadWidget(CKEditorWidget):
@@ -63,9 +70,6 @@ class CKEditorUploadWidget(CKEditorWidget):
         })
         upload_simplephoto_url_parts[4] = parse.urlencode(query)
         self.editor_options['SIMPLEPHOTOS_UPLOAD_URL'] = parse.urlunparse(upload_simplephoto_url_parts)
-
-        # Язык редактора
-        self.editor_options.setdefault('language', get_language())
 
         # Шаблон урла окна редактирования изображения
         self.editor_options['PAGEPHOTOS_EDIT_URL'] = resolve_url('admin:ckeditor_pagephoto_change', 1)
