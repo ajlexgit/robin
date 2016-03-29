@@ -11,16 +11,16 @@ CKEDITOR_CONFIG_DEFAULT = {
     ),
     'toolbar': [
         {
-            'name': 'document',
-            'items': ['Source']
+            'name': 'basicstyles',
+            'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
         },
         {
             'name': 'links',
             'items': ['Link', 'Unlink']
         },
         {
-            'name': 'basicstyles',
-            'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
+            'name': 'document',
+            'items': ['Source']
         },
     ]
 }

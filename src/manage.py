@@ -1,6 +1,7 @@
 import os
 import sys
 
+# ProtectedFileField, фильтровать exe / bat и т.п.
 # Admin update date
 # шрифты в localStorage?
 # во views добавить global context

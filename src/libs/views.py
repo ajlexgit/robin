@@ -1,9 +1,6 @@
-import os
 from django.contrib import admin
 from django.template import loader
-from django.utils.translation import get_language
 from django.views.decorators.http import condition
-from django.core.exceptions import ImproperlyConfigured
 from django.views.generic.base import View, TemplateResponseMixin
 
 
