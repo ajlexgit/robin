@@ -1,1 +1,1 @@
-from .base import ModelAdminMixin, ModelAdminInlineMixin
+from .base import ModelAdminMixin, ModelAdminInlineMixin, ReversedSortableModelAdmin
