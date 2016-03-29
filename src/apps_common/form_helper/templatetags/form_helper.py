@@ -11,10 +11,10 @@ def render_form(context, form, template='form_helper/form.html'):
 
 
 @register.simple_tag(takes_context=True)
-def render_field(context, form, fieldname, template='form_helper/hidden_field.html'):
+def render_field(context, form, fieldname, template='form_helper/field.html', hidden_template='form_helper/hidden_field.html'):
     field = form[fieldname]
     if field.is_hidden:
-        return loader.get_template(template).render({
+        return loader.get_template(hidden_template).render({
             'field': field,
         }, context.get('request'))
 
@@ -40,7 +40,7 @@ def render_field(context, form, fieldname, template='form_helper/hidden_field.ht
         if getattr(form, 'render_error_message', False):
             field_errors = field.errors
 
-    return loader.get_template('form_helper/field.html').render({
+    return loader.get_template(template).render({
         'field': field,
         'field_classes': ' '.join(classes),
         'field_errors': field_errors,
