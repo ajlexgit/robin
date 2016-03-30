@@ -21,6 +21,7 @@ ALLOWED_HOSTS = (
 STATIC_ROOT = os.path.join(VZ_DIRECTORY, 'static')
 MEDIA_ROOT = os.path.join(VZ_DIRECTORY, 'media')
 BACKUP_ROOT = os.path.join(VZ_DIRECTORY, 'backup')
+PUBLIC_DIR = os.path.join(VZ_DIRECTORY, 'public')
 
 DATABASES = {
     'default': {

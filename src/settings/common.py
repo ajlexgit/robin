@@ -120,8 +120,8 @@ SUIT_CONFIG = {
             'label': 'Authentication and Authorization',
             'permissions': 'users.admin_menu',
             'models': (
-                'auth.group',
-                'users.customuser',
+                'auth.Group',
+                'users.CustomUser',
             )
         },
         {
@@ -143,8 +143,9 @@ SUIT_CONFIG = {
             'app': 'seo',
             'icon': 'icon-tasks',
             'models': (
-                'counter',
-                'seoconfig',
+                'Counter',
+                'Robots',
+                'SeoConfig',
             ),
         },
     ),
@@ -379,6 +380,9 @@ DISALLOWED_USER_AGENTS = ()
 # Admin Dump
 BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
 
+# Директория для robots.txt и других открытых файлов
+PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
+
 # Youtube Data API
 # для ckeditor, videolink_field, youtube
 YOUTUBE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
@@ -489,6 +493,7 @@ TEMPLATES = [
         ),
         'OPTIONS': {
             'context_processors': (
+                'django.contrib.messages.context_processors.messages',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes import generic
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.contenttypes.models import ContentType
 from solo.models import SingletonModel
 
@@ -11,7 +11,10 @@ class SeoConfig(SingletonModel):
     description = models.TextField(_('site description'), max_length=160, blank=True)
 
     class Meta:
-        verbose_name = _('Site config')
+        verbose_name = _('Default settings')
+
+    def __str__(self):
+        return ugettext('Default settings')
 
 
 class SeoData(models.Model):
@@ -58,3 +61,16 @@ class Counter(models.Model):
 
     def __str__(self):
         return self.label
+
+
+class Robots(models.Model):
+    text = models.TextField(_('text'))
+
+    class Meta:
+        managed = False
+        verbose_name = _('file')
+        verbose_name_plural = _('robots.txt')
+        default_permissions = ()
+
+    def __str__(self):
+        return 'robots.txt'

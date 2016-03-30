@@ -12,6 +12,7 @@ dev.py
 /backup
 /media
 /static
+/public
 /venv
 
 #Python
