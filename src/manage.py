@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Robots.txt
 # BlockVariants.js
 # ProtectedFileField, фильтровать exe / bat и т.п.
 # Admin update date

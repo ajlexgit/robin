@@ -9,7 +9,7 @@ from . import config
 
 class CKEditorField(models.Field):
     """ Текстовое поле с WISYWIG редактором """
-    def __init__(self, *args, editor_options=None, height=400, **kwargs):
+    def __init__(self, *args, editor_options=None, height=300, **kwargs):
         editor_options = editor_options or config.CKEDITOR_CONFIG_DEFAULT
         self.editor_options = editor_options.copy()
         self.editor_options['height'] = int(height)
@@ -58,7 +58,7 @@ class CKEditorField(models.Field):
 
 class CKEditorUploadField(models.Field):
     """ Текстовое поле с WISYWIG редактором и возможностью загрузки картинок """
-    def __init__(self, *args, editor_options=None, height=540, upload_pagephoto_url='',
+    def __init__(self, *args, editor_options=None, height=420, upload_pagephoto_url='',
             upload_pagefile_url='', upload_simplephoto_url='', **kwargs):
         editor_options = editor_options or config.CKEDITOR_UPLOAD_CONFIG_DEFAULT
         self.editor_options = editor_options.copy()
