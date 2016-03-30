@@ -32,12 +32,12 @@
             <span>{{ file.1|filesizeformat }}</span>
           </td>
           <td>
-            <a href="download/{{ file.0 }}" class="btn btn-success">
+            <a href="{% url 'admin:backups_backup_download' file.0 %}" class="btn btn-success">
               {% trans 'Download' %}
             </a>
           </td>
           <td>
-            <a href="delete/{{ file.0 }}" class="btn btn-danger btn-small"
+            <a href="{% url 'admin:backups_backup_delete' file.0 %}" class="btn btn-danger btn-small"
                 onclick="return confirm('{% trans 'Are you sure?' %}')">
               {% trans 'Delete' %}
             </a>
@@ -47,6 +47,6 @@
     </tbody>
   </table>
 
-  <a href="create/" class="btn btn-info">{% trans 'Create' %}</a>
+  <a href="{% url 'admin:backups_backup_create' %}" class="btn btn-info">{% trans 'Create' %}</a>
 
 {% endblock %}

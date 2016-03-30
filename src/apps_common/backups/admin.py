@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.core.management import call_command
 from libs.download import AttachmentResponse
-from .models import DummyModel
+from .models import Backup
 
 
 def _filesize(file):
@@ -16,26 +16,24 @@ def _filesize(file):
     return stat.st_size
 
 
-@admin.register(DummyModel)
-class DummyAdmin(admin.ModelAdmin):
-    prefix_url = 'backups'
-
+@admin.register(Backup)
+class BackupDummyAdmin(admin.ModelAdmin):
     def get_urls(self):
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
 
-        urls = super().get_urls()
-        custom_urls = patterns('',
-            url(r'^$', wrap(self.index), name='%s_index' % self.prefix_url),
-            url(r'^create/$', wrap(self.create), name='%s_create' % self.prefix_url),
-            url(r'^delete/(?P<filename>[\d_]+)/$', wrap(self.delete), name='%s_delete' % self.prefix_url),
-            url(r'^download/(?P<filename>[\d_]+)/$', wrap(self.download), name='%s_download' % self.prefix_url),
+        info = self.model._meta.app_label, self.model._meta.model_name
+        urls = patterns('',
+            url(r'^$', wrap(self.changelist), name='%s_%s_changelist' % info),
+            url(r'^create/$', wrap(self.create), name='%s_%s_create' % info),
+            url(r'^delete/(?P<filename>[\d_]+)/$', wrap(self.delete), name='%s_%s_delete' % info),
+            url(r'^download/(?P<filename>[\d_]+)/$', wrap(self.download), name='%s_%s_download' % info),
         )
-        return custom_urls + urls
+        return urls
 
-    def index(self, request):
+    def changelist(self, request):
         """ Список бэкапов """
         if not request.user.is_superuser:
             raise PermissionDenied
@@ -52,7 +50,6 @@ class DummyAdmin(admin.ModelAdmin):
                 ))
 
         return render(request, 'backups/admin/index.html', {
-            'prefix_url': self.prefix_url,
             'files': zip_archives,
         })
 
@@ -62,7 +59,8 @@ class DummyAdmin(admin.ModelAdmin):
             raise PermissionDenied
 
         call_command('zipdata')
-        return redirect('admin:%s_index' % self.prefix_url)
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return redirect('admin:%s_%s_changelist' % info)
 
     def delete(self, request, filename):
         """ Удаление бэкапа """
@@ -75,7 +73,8 @@ class DummyAdmin(admin.ModelAdmin):
         if os.path.isfile(file) and file.endswith('.zip'):
             os.unlink(file)
 
-        return redirect('admin:%s_index' % self.prefix_url)
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return redirect('admin:%s_%s_changelist' % info)
 
     def download(self, request, filename):
         """ Скачаивание бэкапа """
@@ -88,4 +87,5 @@ class DummyAdmin(admin.ModelAdmin):
         if os.path.isfile(file) and file.endswith('.zip'):
             return AttachmentResponse(request, file)
 
-        return redirect('admin:%s_index' % self.prefix_url)
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return redirect('admin:%s_%s_changelist' % info)
