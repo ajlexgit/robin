@@ -20,10 +20,10 @@
                     InitContactPopup(popup);
                 }
             },
-            error: function() {
+            error: $.parseError(function(response) {
                 alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
-            }
+            })
         });
     };
 

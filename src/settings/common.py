@@ -143,9 +143,9 @@ SUIT_CONFIG = {
             'app': 'seo',
             'icon': 'icon-tasks',
             'models': (
+                'SeoConfig',
                 'Counter',
                 'Robots',
-                'SeoConfig',
             ),
         },
     ),

@@ -27,8 +27,9 @@ textarea, select {
     margin-bottom: 0;
   }
 
-  label {
+  .label-holder {
     margin-bottom: 4px;
+    text-align: left;
     @include fontsize_default;
   }
 

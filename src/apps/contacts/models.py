@@ -60,7 +60,7 @@ class Message(models.Model):
     phone = models.CharField(_('phone'), max_length=32, blank=True)
     email = models.EmailField(_('e-mail'), blank=True)
     message = models.TextField(_('message'), max_length=2048)
-    date = models.DateTimeField(_('date'), default=now, editable=False)
+    date = models.DateTimeField(_('date sent'), default=now, editable=False)
     referer = models.CharField(_('from page'), max_length=255, blank=True, editable=False)
 
     class Meta:
