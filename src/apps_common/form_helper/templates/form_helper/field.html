@@ -1,6 +1,8 @@
 <div class="field {{ field_classes }}">
   {% block field %}
-    {{ field.label_tag }}
+    <div class="label-holder">
+      {{ field.label_tag }}
+    </div>
     {{ field }}
   {% endblock field %}
 

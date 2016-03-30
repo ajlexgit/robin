@@ -1,6 +1,7 @@
 import os
 import sys
 
+# BlockVariants.js
 # ProtectedFileField, фильтровать exe / bat и т.п.
 # Admin update date
 # шрифты в localStorage?
