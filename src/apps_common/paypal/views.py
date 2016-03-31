@@ -92,7 +92,7 @@ def result(request):
                     message='Not verified',
                 )
 
-            return redirect(conf.FAIL_URL)
+            return redirect(conf.CANCEL_URL)
     else:
         # log form error
         Log.objects.create(

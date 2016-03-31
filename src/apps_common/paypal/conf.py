@@ -33,8 +33,8 @@ SUCCESS_URL = getattr(
 )
 
 # Адрес, куда будет перенаправлен пользователь после неудачной оплаты
-FAIL_URL = getattr(
+CANCEL_URL = getattr(
     settings,
-    'PAYPAL_FAIL_URL',
+    'PAYPAL_CANCEL_URL',
     settings.LOGIN_REDIRECT_URL
 )

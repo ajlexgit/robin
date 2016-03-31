@@ -8,7 +8,7 @@ FIELD_NAME_MAPPING = {
 
     'result_url': 'notify_url',
     'success_url': 'return',
-    'fail_url': 'cancel_return',
+    'cancel_url': 'cancel_return',
 }
 
 
@@ -49,7 +49,7 @@ class BasePayPalForm(forms.Form):
 
     # адреса для редиректа пользователей
     success_url = forms.URLField(max_length=1024)
-    fail_url = forms.URLField(max_length=1024)
+    cancel_url = forms.URLField(max_length=1024)
 
     # Метод перехода на success_url
     rm = forms.CharField(max_length=1, initial='0')
@@ -63,7 +63,7 @@ class BasePayPalForm(forms.Form):
         self.initial['cmd'] = self.COMMAND
         self._initial_url(request, 'result_url', conf.RESULT_URL)
         self._initial_url(request, 'success_url', conf.SUCCESS_URL)
-        self._initial_url(request, 'fail_url', conf.FAIL_URL)
+        self._initial_url(request, 'cancel_url', conf.CANCEL_URL)
 
         # скрытый виджет по умолчанию для всех полей
         for field in self.fields:

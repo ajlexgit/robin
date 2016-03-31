@@ -11,7 +11,7 @@
 
             PAYPAL_EMAIL = 'pix666-facilitator@ya.ru'
             PAYPAL_SUCCESS_URL = 'shop:index'
-            PAYPAL_FAIL_URL = 'shop:index'
+            PAYPAL_CANCEL_URL = 'shop:index'
 
             SUIT_CONFIG = {
                 ...
@@ -33,7 +33,7 @@
 
         # Адреса для редиректа юзера
         PAYPAL_SUCCESS_URL = 'shop:index'
-        PAYPAL_FAIL_URL = 'shop:index'
+        PAYPAL_CANCEL_URL = 'shop:index'
 
         # Код валюты
         PAYPAL_CURRENCY = 'RUB'
