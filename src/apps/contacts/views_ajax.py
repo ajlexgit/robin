@@ -9,8 +9,8 @@ from .forms import ContactForm
 
 class ContactView(AjaxViewMixin, View):
     def get(self, request):
-        form = ContactForm()
         config = ContactsConfig.get_solo()
+        form = ContactForm()
         return self.json_response({
             'form': self.render_to_string('contacts/ajax_contact.html', {
                 'config': config,
@@ -21,7 +21,6 @@ class ContactView(AjaxViewMixin, View):
     def post(self, request):
         config = ContactsConfig.get_solo()
         form = ContactForm(request.POST, request.FILES)
-
         if form.is_valid():
             message = form.save(commit=False)
             referer = request.POST.get('referer')

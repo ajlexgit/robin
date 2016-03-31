@@ -7,11 +7,7 @@ from .map import Map
 
 
 class IndexView(TemplateExView):
-    config = None
     template_name = 'sitemap/index.html'
-
-    def before_get(self, request):
-        self.config = SitemapConfig.get_solo()
 
     @cached(time=30*60)
     def _build_map(self):
@@ -23,14 +19,16 @@ class IndexView(TemplateExView):
         return sitemap
 
     def get(self, request):
+        config = SitemapConfig.get_solo()
+
         # SEO
         seo = Seo()
-        seo.set_data(self.config, defaults={
-            'title': self.config.header,
+        seo.set_data(config, defaults={
+            'title': config.header,
         })
         seo.save(request)
 
         return self.render_to_response({
-            'config': self.config,
+            'config': config,
             'map': self._build_map(),
         })

@@ -17,7 +17,7 @@ class GalleryViewMixin:
     item = None
     require_item = False
 
-    def before_post(self, request):
+    def post(self, request):
         # Определение модели галереи
         app_label = request.POST.get('app_label')
         model_name = request.POST.get('model_name')
@@ -72,6 +72,8 @@ class GalleryCreate(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_gallery_model = True
 
     def post(self, request):
+        super().post(request)
+
         # Создание галереи
         gallery = self.gallery_model.objects.create()
 
@@ -90,6 +92,7 @@ class GalleryDelete(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_gallery = True
 
     def post(self, request):
+        super().post(request)
         self.gallery.delete()
         return self.json_response({
             'html': self.render_to_string(self.gallery.ADMIN_TEMPLATE_EMPTY)
@@ -102,6 +105,8 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_gallery = True
 
     def post(self, request):
+        super().post(request)
+
         try:
             uploaded_file = upload_chunked_file(request, 'image')
         except TemporaryFileNotFoundError as e:
@@ -152,6 +157,8 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_gallery = True
 
     def post(self, request):
+        super().post(request)
+
         # Создание экземпляра элемента галереи
         item = self.gallery.VIDEO_LINK_MODEL(
             gallery=self.gallery,
@@ -190,6 +197,7 @@ class DeleteItem(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_item = True
 
     def post(self, request):
+        super().post(request)
         self.item.delete()
         return self.json_response()
 
@@ -201,6 +209,8 @@ class RotateItem(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_item = True
 
     def post(self, request):
+        super().post(request)
+
         if not self.item.is_image:
             return self.json_response({
                 'message': _('Item is not image')
@@ -233,6 +243,8 @@ class CropItem(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_item = True
 
     def post(self, request):
+        super().post(request)
+
         if not self.item.is_image:
             return self.json_response({
                 'message': _('Item is not image')
@@ -262,6 +274,8 @@ class GetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_item = True
 
     def post(self, request):
+        super().post(request)
+
         if self.item.is_image and not self.item.image.exists():
             return self.json_response({
                 'message': _('Image is not exists')
@@ -279,6 +293,8 @@ class SetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_item = True
 
     def post(self, request):
+        super().post(request)
+
         if self.item.is_image and not self.item.image.exists():
             return self.json_response({
                 'message': _('Image is not exists')
@@ -304,6 +320,8 @@ class SortItems(GalleryViewMixin, AjaxAdminViewMixin, View):
     require_gallery = True
 
     def post(self, request):
+        super().post(request)
+
         try:
             item_ids = request.POST.get('item_ids', '').split(',')
             item_ids = map(int, item_ids)

@@ -10,32 +10,27 @@ from .forms import ContactForm
 
 
 class IndexView(TemplateExView):
-    config = None
     template_name = 'contacts/index.html'
 
-    def before_get(self, request):
-        self.config = ContactsConfig.get_solo()
-
     def get(self, request):
+        config = ContactsConfig.get_solo()
         form = ContactForm()
 
         # SEO
         seo = Seo()
-        seo.set_data(self.config, defaults={
-            'title': self.config.header,
+        seo.set_data(config, defaults={
+            'title': config.header,
         })
         seo.save(request)
 
         return self.render_to_response({
-            'config': self.config,
+            'config': config,
             'addresses': Address.objects.all(),
             'form': form,
         })
 
-    def before_post(self, request):
-        self.config = ContactsConfig.get_solo()
-
     def post(self, request):
+        config = ContactsConfig.get_solo()
         form = ContactForm(request.POST, request.FILES)
         if form.is_valid():
             message = form.save(commit=False)
@@ -55,7 +50,7 @@ class IndexView(TemplateExView):
             return redirect('contacts:index')
         else:
             return self.render_to_response({
-                'config': self.config,
+                'config': config,
                 'addresses': Address.objects.all(),
                 'form': form,
             })
