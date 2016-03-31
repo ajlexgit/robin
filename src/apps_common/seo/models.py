@@ -64,7 +64,7 @@ class Counter(models.Model):
 
 
 class Robots(models.Model):
-    text = models.TextField(_('text'))
+    text = models.TextField(_('text'), blank=True)
 
     class Meta:
         managed = False
