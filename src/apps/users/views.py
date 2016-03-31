@@ -272,7 +272,7 @@ class ProfileView(TemplateView):
     """ Страница профиля """
     template_name = 'users/profile.html'
 
-    def get(self, request, username=None):
+    def get(self, request, *args, username=None, **kwargs):
         if not username and not request.user.is_authenticated():
             return redirect(settings.LOGIN_URL)
 

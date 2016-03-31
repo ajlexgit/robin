@@ -71,9 +71,11 @@ class URLWidget(forms.URLInput):
 class SplitDateTimeWidget(forms.SplitDateTimeWidget):
     """ Виджет даты-времени """
     def __init__(self, attrs=None):
-        widgets = (SuitDateWidget(attrs=attrs),
-                   HTML5Input(attrs={'class': 'input-small'}, input_type='time'))
-        forms.MultiWidget.__init__(self, widgets, attrs)
+        inner_widgets = (
+            SuitDateWidget(attrs=attrs),
+            HTML5Input(attrs={'class': 'input-small'}, input_type='time')
+        )
+        forms.MultiWidget.__init__(self, inner_widgets, attrs)
 
     def format_output(self, rendered_widgets):
         return ' '.join(rendered_widgets)

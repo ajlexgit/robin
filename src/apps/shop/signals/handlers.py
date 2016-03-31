@@ -116,9 +116,7 @@ def order_confirmed_handler(sender, **kwargs):
     if not order or not isinstance(order, ShopOrder):
         return
 
-    request = kwargs.get('request')
-
-    pass
+    # TODO: paste your code here
 
 
 @receiver(order_paid, sender=ShopOrder)
@@ -129,6 +127,8 @@ def order_paid_handler(sender, **kwargs):
     order = kwargs.get('order')
     if not order or not isinstance(order, ShopOrder):
         return
+
+    # TODO: paste your code here
 
     request = kwargs.get('request')
 
@@ -152,6 +152,4 @@ def order_cancelled_handler(sender, **kwargs):
     if not order or not isinstance(order, ShopOrder):
         return
 
-    request = kwargs.get('request')
-
-    pass
+    # TODO: paste your code here
