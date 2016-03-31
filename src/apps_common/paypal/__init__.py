@@ -16,9 +16,6 @@
                 {
                     'app': 'paypal',
                     'icon': 'icon-shopping-cart',
-                    'models': (
-                        'log',
-                    )
                 },
                 ...
             }
@@ -40,17 +37,36 @@
 
     Пример:
         views.py:
-            from paypal.forms import PayPalForm
+            from paypal import *
 
             ...
-            form = PayPalForm(
-                request,
-                initial={
-                    'invoice': 1,
-                    'amount': '12.50',
-                    'description': 'Золотое кольцо',
-                }
-            )
+            # форма мгновенной оплаты
+            form = PaymentForm(request, initial={
+                'invoice': 18,
+                'amount': '12.50',
+                'description': 'Золотое кольцо',
+                'quantity': 2,      // 2 штуки
+            })
+
+            # форма добавления товара в корзину
+            add_cart_form = AddToCartForm(request, initial={
+                'invoice': 18,
+                'amount': '12.50',
+                'description': 'Золотое кольцо',
+                'quantity': 2,      // 2 штуки
+            })
+
+            # форма для просмотра корзины
+            display_cart_form = DisplayCartForm(request, initial={
+                'invoice': 18,
+            })
+
+            # форма для пожертвований
+            donate_form = DonationForm(request, initial={
+                'amount': '10.00',
+                'description': 'На еду',
+            })
+
 
             # можно сразу перенаправить
             return redirect(form.get_redirect_url())
@@ -76,7 +92,7 @@
             </form>
 
 """
-from .forms import PayPalForm
+from .forms import PaymentForm, AddToCartForm, DisplayCartForm, DonationForm
 from .signals import paypal_success, paypal_error
 
 default_app_config = 'paypal.apps.Config'

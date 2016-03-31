@@ -34,7 +34,7 @@ def result(request):
     if form.is_valid():
         payment_status = form.cleaned_data['payment_status']
         receiver_email = form.cleaned_data['receiver_email']
-        invoice = form.cleaned_data['invoice']
+        invoice = form.cleaned_data.get('invoice', '')
 
         resp = http_post(conf.FORM_TARGET, 'cmd=_notify-validate&' + request.body.decode())
         if (resp.text == 'VERIFIED'
