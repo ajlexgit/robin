@@ -61,9 +61,15 @@ class BasePayPalForm(forms.Form):
         kwargs.setdefault('auto_id', '')
         super().__init__(*args, **kwargs)
         self.initial['cmd'] = self.COMMAND
-        self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
-        self.initial['success_url'] = request.build_absolute_uri(resolve_url(conf.SUCCESS_URL))
-        self.initial['fail_url'] = request.build_absolute_uri(resolve_url(conf.FAIL_URL))
+
+        if not self.initial.get('result_url'):
+            self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
+
+        if not self.initial.get('success_url'):
+            self.initial['success_url'] = request.build_absolute_uri(resolve_url(conf.SUCCESS_URL))
+
+        if not self.initial.get('fail_url'):
+            self.initial['fail_url'] = request.build_absolute_uri(resolve_url(conf.FAIL_URL))
 
         # скрытый виджет по умолчанию для всех полей
         for field in self.fields:

@@ -10,6 +10,8 @@
             )
 
             PAYPAL_EMAIL = 'pix666-facilitator@ya.ru'
+            PAYPAL_SUCCESS_URL = 'shop:index'
+            PAYPAL_FAIL_URL = 'shop:index'
 
             SUIT_CONFIG = {
                 ...

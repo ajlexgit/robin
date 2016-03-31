@@ -27,7 +27,7 @@ class BaseGotobillingForm(forms.Form):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('auto_id', '')
         super().__init__(*args, **kwargs)
-    
+
     def _get_value(self, fieldname):
         """ Получение значения поля формы """
         field = self.fields[fieldname]
@@ -83,7 +83,9 @@ class PaymentForm(BaseGotobillingForm):
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
+
+        if not self.initial.get('result_url'):
+            self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
 
         # скрытый виджет по умолчанию
         for field in self.fields:
