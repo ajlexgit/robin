@@ -142,6 +142,7 @@ SUIT_CONFIG = {
         {
             'app': 'seo',
             'icon': 'icon-tasks',
+            'permissions': 'users.admin_menu',
             'models': (
                 'SeoConfig',
                 'Counter',

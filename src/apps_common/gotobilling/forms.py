@@ -24,6 +24,10 @@ FIELD_NAME_MAPPING = {
 
 
 class BaseGotobillingForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('auto_id', '')
+        super().__init__(*args, **kwargs)
+    
     def _get_value(self, fieldname):
         """ Получение значения поля формы """
         field = self.fields[fieldname]

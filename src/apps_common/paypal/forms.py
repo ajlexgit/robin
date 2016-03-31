@@ -58,6 +58,7 @@ class BasePayPalForm(forms.Form):
     custom = forms.CharField(max_length=256, required=False)
 
     def __init__(self, request, *args, **kwargs):
+        kwargs.setdefault('auto_id', '')
         super().__init__(*args, **kwargs)
         self.initial['cmd'] = self.COMMAND
         self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))

@@ -14,6 +14,7 @@ FIELD_NAME_MAPPING = {
 
 class BaseRobokassaForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        kwargs.setdefault('auto_id', '')
         super().__init__(*args, **kwargs)
 
         # создаем дополнительные поля
