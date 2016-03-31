@@ -61,15 +61,9 @@ class BasePayPalForm(forms.Form):
         kwargs.setdefault('auto_id', '')
         super().__init__(*args, **kwargs)
         self.initial['cmd'] = self.COMMAND
-
-        if not self.initial.get('result_url'):
-            self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
-
-        if not self.initial.get('success_url'):
-            self.initial['success_url'] = request.build_absolute_uri(resolve_url(conf.SUCCESS_URL))
-
-        if not self.initial.get('fail_url'):
-            self.initial['fail_url'] = request.build_absolute_uri(resolve_url(conf.FAIL_URL))
+        self._initial_url(request, 'result_url', conf.RESULT_URL)
+        self._initial_url(request, 'success_url', conf.SUCCESS_URL)
+        self._initial_url(request, 'fail_url', conf.FAIL_URL)
 
         # скрытый виджет по умолчанию для всех полей
         for field in self.fields:
@@ -84,6 +78,17 @@ class BasePayPalForm(forms.Form):
         """ Замена имен полей """
         field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
         return super().add_prefix(field_name)
+
+    def _initial_url(self, request, fieldname, default):
+        """
+            Добавление initial-значения в поле fieldname, которое является полной ссылкой
+            на страницу
+        """
+        url = self.initial.get(fieldname, '')
+        if url and not url.startswith('http'):
+            self.initial[fieldname] = request.build_absolute_uri(resolve_url(url))
+
+        self.initial[fieldname] = request.build_absolute_uri(resolve_url(default))
 
     def _get_value(self, fieldname):
         """ Получение значения поля формы """

@@ -83,9 +83,7 @@ class PaymentForm(BaseGotobillingForm):
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        if not self.initial.get('result_url'):
-            self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
+        self._initial_url(request, 'result_url', conf.RESULT_URL)
 
         # скрытый виджет по умолчанию
         for field in self.fields:
@@ -99,6 +97,17 @@ class PaymentForm(BaseGotobillingForm):
     def add_prefix(self, field_name):
         field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
         return super().add_prefix(field_name)
+
+    def _initial_url(self, request, fieldname, default):
+        """
+            Добавление initial-значения в поле fieldname, которое является полной ссылкой
+            на страницу
+        """
+        url = self.initial.get(fieldname, '')
+        if url and not url.startswith('http'):
+            self.initial[fieldname] = request.build_absolute_uri(resolve_url(url))
+
+        self.initial[fieldname] = request.build_absolute_uri(resolve_url(default))
 
     def get_redirect_url(self):
         """
