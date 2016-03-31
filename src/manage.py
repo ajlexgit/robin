@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Paeeze модуль
+# CKeditor inline
 # AttachmentResponse -> class
 # BlockVariants.js
 # ProtectedFileField, фильтровать exe / bat и т.п.
