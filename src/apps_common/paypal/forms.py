@@ -6,6 +6,7 @@ from . import conf
 FIELD_NAME_MAPPING = {
     'description': 'item_name',
 
+    'result_url': 'notify_url',
     'success_url': 'return',
     'fail_url': 'cancel_return',
 }
@@ -44,7 +45,7 @@ class BasePayPalForm(forms.Form):
     no_note = forms.CharField(max_length=1, initial='1', required=False)
 
     # адрес, обрабатывающий уведомления о платежах
-    notify_url = forms.URLField(max_length=255)
+    result_url = forms.URLField(max_length=255)
 
     # адреса для редиректа пользователей
     success_url = forms.URLField(max_length=1024)
@@ -59,7 +60,7 @@ class BasePayPalForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initial['cmd'] = self.COMMAND
-        self.initial['notify_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
+        self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
         self.initial['success_url'] = request.build_absolute_uri(resolve_url(conf.SUCCESS_URL))
         self.initial['fail_url'] = request.build_absolute_uri(resolve_url(conf.FAIL_URL))
 

@@ -33,11 +33,17 @@ class BaseGotobillingForm(forms.Form):
             return self.initial.get(fieldname, field.initial)
 
 
-class GotobillingForm(BaseGotobillingForm):
+class PaymentForm(BaseGotobillingForm):
     """ Форма для совершения платежа """
+
     # Параметр с URL'ом, на который будет отправлена форма.
     # Может пригодиться для использования в шаблоне.
     target = conf.FORM_TARGET
+
+    # Обязательные поля. Не имеет отношения к валидации формы.
+    # Перечисляются поля, в которых должно быть заполнено
+    # начальное значение при создании формы
+    REQUIRE_INITIAL = ('invoice', 'amount', 'description')
 
     # login магазина
     x_login = forms.CharField(max_length=8, initial=conf.LOGIN)
@@ -73,12 +79,16 @@ class GotobillingForm(BaseGotobillingForm):
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
 
         # скрытый виджет по умолчанию
         for field in self.fields:
             self.fields[field].widget = forms.HiddenInput()
 
-        self.initial['result_url'] = request.build_absolute_uri(resolve_url(conf.RESULT_URL))
+        for fieldname in self.REQUIRE_INITIAL:
+            value = self.initial.get(fieldname)
+            if not value:
+                raise ValueError('"%s" field requires initial value' % fieldname)
 
     def add_prefix(self, field_name):
         field_name = FIELD_NAME_MAPPING.get(field_name, field_name)

@@ -54,10 +54,10 @@
 
     Пример:
         views.py:
-            from robokassa.forms import RobokassaForm
+            from robokassa import *
 
             ...
-            form = RobokassaForm(initial={
+            form = PaymentForm(initial={
                 'invoice': 1,
                 'amount': '12.50',
                 'description': 'Золотое кольцо',
@@ -79,7 +79,7 @@
             </form>
 
 """
-from .forms import RobokassaForm
+from .forms import PaymentForm
 from .signals import robokassa_success
 
 default_app_config = 'robokassa.apps.Config'

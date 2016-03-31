@@ -63,7 +63,7 @@ def result(request):
                 status=Log.STATUS_SUCCESS,
                 request=urlencoded,
             )
-            return HttpResponse('OK%s' % inv_id)
+            return HttpResponse('OK%s' % invoice)
     else:
         # log form error
         Log.objects.create(

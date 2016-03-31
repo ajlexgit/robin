@@ -51,17 +51,14 @@
 
     Пример:
         views.py:
-            from gotobilling.forms import GotobillingForm
+            from gotobilling import *
 
             ...
-            form = GotobillingForm(
-                request,
-                initial={
-                    'invoice': 1,
-                    'amount': '12.50',
-                    'description': 'Золотое кольцо',
-                }
-            )
+            form = PaymentForm(request, initial={
+                'invoice': 1,
+                'amount': '12.50',
+                'description': 'Золотое кольцо',
+            })
 
             # можно сразу перенаправить
             return redirect(form.get_redirect_url())
@@ -87,7 +84,7 @@
             </form>
 
 """
-from .forms import GotobillingForm
+from .forms import PaymentForm
 from .signals import gotobilling_success, gotobilling_error
 
 default_app_config = 'gotobilling.apps.Config'

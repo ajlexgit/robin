@@ -53,25 +53,32 @@ class BaseRobokassaForm(forms.Form):
         return hash_value
 
 
-class RobokassaForm(BaseRobokassaForm):
-    """ Форма для совершения платежа """
+class PaymentForm(BaseRobokassaForm):
+    """
+        Форма для совершения платежа
+    """
     SIGNATURE_FIELDS = ('MrchLogin', 'amount', 'invoice')
     PASSWD = conf.PASSWORD1
 
     # Параметр с URL'ом, на который будет отправлена форма.
     target = conf.FORM_TARGET
 
+    # Обязательные поля. Не имеет отношения к валидации формы.
+    # Перечисляются поля, в которых должно быть заполнено
+    # начальное значение при создании формы
+    REQUIRE_INITIAL = ('invoice', 'amount', 'description')
+
     # login магазина в обменном пункте
     MrchLogin = forms.CharField(max_length=20, initial=conf.LOGIN)
+
+    # Номер счета в магазине. Значение этого параметра должно быть уникальным для каждой оплаты
+    invoice = forms.IntegerField(min_value=0)
 
     # сумма к оплате
     amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
 
     # описание покупки. Эта информация отображается в интерфейсе ROBOKASSA и в Электронной квитанции
     description = forms.CharField(max_length=100)
-
-    # Номер счета в магазине. Значение этого параметра должно быть уникальным для каждой оплаты
-    invoice = forms.IntegerField(min_value=0)
 
     # e-mail пользователя
     email = forms.EmailField(required=False)
@@ -91,6 +98,7 @@ class RobokassaForm(BaseRobokassaForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['SignatureValue'].initial = self.calc_signature()
 
         # скрытый виджет по умолчанию
         for field in self.fields:
@@ -102,7 +110,10 @@ class RobokassaForm(BaseRobokassaForm):
                 widget=forms.HiddenInput,
             )
 
-        self.fields['SignatureValue'].initial = self.calc_signature()
+        for fieldname in self.REQUIRE_INITIAL:
+            value = self.initial.get(fieldname)
+            if not value:
+                raise ValueError('"%s" field requires initial value' % fieldname)
 
     def add_prefix(self, field_name):
         field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
@@ -122,7 +133,7 @@ class RobokassaForm(BaseRobokassaForm):
 
         if conf.TEST_MODE:
             params['IsTest'] = '1'
- 
+
         return '{}?{}'.format(self.target, urlencode(params))
 
 

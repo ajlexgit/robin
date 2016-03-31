@@ -39,11 +39,11 @@ class Paginator(paginator.Paginator):
             return number
 
     @cached_property
-    def page(self):
+    def page(self, number):
         """ Объект текущей страницы """
-        number = self.request.GET.get(self.parameter_name)
-        number = self.real_page_number(number)
-        return super().page(number)
+        new_number = self.request.GET.get(self.parameter_name, number)
+        new_number = self.real_page_number(new_number)
+        return super().page(new_number)
 
     @cached_property
     def pages(self):
