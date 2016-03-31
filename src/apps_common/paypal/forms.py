@@ -87,6 +87,7 @@ class BasePayPalForm(forms.Form):
         url = self.initial.get(fieldname, '')
         if url and not url.startswith('http'):
             self.initial[fieldname] = request.build_absolute_uri(resolve_url(url))
+            return
 
         self.initial[fieldname] = request.build_absolute_uri(resolve_url(default))
 
