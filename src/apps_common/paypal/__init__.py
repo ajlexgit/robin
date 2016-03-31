@@ -29,6 +29,10 @@
         # E-mail аккаунта магазина
         PAYPAL_EMAIL = 'pix666-facilitator@ya.ru'
 
+        # Адреса для редиректа юзера
+        PAYPAL_SUCCESS_URL = 'shop:index'
+        PAYPAL_FAIL_URL = 'shop:index'
+
         # Код валюты
         PAYPAL_CURRENCY = 'RUB'
 
