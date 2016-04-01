@@ -30,7 +30,7 @@
         Slider('#gallery .slider', {
             loop: false,
             itemsPerSlide: function() {
-                var winWidth = $(window).width();
+                var winWidth = $.winWidth();
                 if (winWidth >= 1024) {
                     return 4;
                 } else if (winWidth >= 640) {

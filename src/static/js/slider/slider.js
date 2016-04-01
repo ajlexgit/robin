@@ -126,7 +126,7 @@
         Пример динамического количества элементов в слайде:
             Slider($list, {
                 itemsPerSlide: function() {
-                    if ($(window).width() >= 1200)  {
+                    if ($.winWidth() >= 1200)  {
                         return 4
                     } else {
                         return 3

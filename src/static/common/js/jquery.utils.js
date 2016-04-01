@@ -2,6 +2,14 @@
 
     var $window = $(window);
 
+    /*
+        Получение ширины окна, включая ширину вертикального скроллбара.
+        Для MediaQueries.
+     */
+    $.winWidth = function() {
+        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    };
+
     // ======================================================================================
     //      Обработчик AJAX-ошибок.
     //      Ничего не делает, если запрос был прерван (aborted).

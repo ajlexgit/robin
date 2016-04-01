@@ -102,7 +102,7 @@
     });
 
     $(window).on('resize.menu', $.rared(function() {
-        var winWidth = $(window).width();
+        var winWidth = $.winWidth();
         $.each(menus, function() {
             if (this.$menu.hasClass(this.opts.menuActiveClass)) {
                 if (this.opts.fullHeight) {
