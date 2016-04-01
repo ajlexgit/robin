@@ -110,7 +110,6 @@ SUIT_CONFIG = {
             'models': (
                 'Address',
                 'Message',
-                'ContactBlock',
                 'ContactsConfig',
             )
         },

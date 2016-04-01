@@ -6,7 +6,7 @@ CKEDITOR_CONFIG_DEFAULT = {
     'extraPlugins': 'textlen,enterfix',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
-        settings.STATIC_URL + 'ckeditor/css/ckeditor.css',
+        settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
     ),
     'toolbar': [
         {
@@ -28,7 +28,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
     'extraPlugins': 'textlen,enterfix,pagephotos,pagevideos,pagefiles,simplephotos',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
-        settings.STATIC_URL + 'ckeditor/css/ckeditor.css',
+        settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
     ),
     'toolbar': [
         {

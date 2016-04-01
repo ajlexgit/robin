@@ -1,3 +1,4 @@
+import json
 from urllib import parse
 from django.conf import settings
 from django.shortcuts import resolve_url
@@ -8,10 +9,33 @@ from suit_ckeditor.widgets import CKEditorWidget as DefaultWidget
 
 
 class CKEditorWidget(DefaultWidget):
+    class Media:
+        extend = True
+        css = {
+            'all': (
+                'ckeditor/admin/css/widget.css',
+            )
+        }
+        js = (
+            'ckeditor/admin/js/widget.js',
+        )
+
     def render(self, name, value, attrs=None):
-        # Язык редактора
         self.editor_options.setdefault('language', get_language())
-        return super().render(name, value, attrs)
+
+        attrs = attrs or {}
+        attrs.setdefault('class', '')
+        attrs['class'] += ' ckeditor-field'
+        output = super(DefaultWidget, self).render(name, value, attrs)
+
+        output += mark_safe('''
+            <script type="text/javascript">
+                window._ckeditor_confs = window._ckeditor_confs || {};
+                window._ckeditor_confs["%s"] = %s;
+            </script>
+        ''' % (name, json.dumps(self.editor_options)))
+
+        return output
 
 
 class CKEditorUploadWidget(CKEditorWidget):
@@ -23,12 +47,12 @@ class CKEditorUploadWidget(CKEditorWidget):
     upload_simplephoto_url = None
 
     class Media:
-        js = CKEditorWidget.Media.js + (
+        extend = True
+        js = (
             'common/js/plupload/plupload.full.min.js',
             'common/js/plupload/jquery.ui.plupload.min.js',
             'common/js/plupload/i18n/%s.js' % (get_language(), ),
         )
-        css = CKEditorWidget.Media.css
 
     def value_from_datadict(self, data, files, name):
         text = data.get(name, None)
@@ -91,7 +115,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         self.editor_options['PLUPLOADER_CSS'] = (
             static('admin/css/jquery-ui/jquery-ui.min.css'),
             static('common/js/plupload/css/jquery.ui.plupload.css'),
-            static('ckeditor/css/ckupload_fix.css'),
+            static('ckeditor/admin/css/ckupload_fix.css'),
         )
 
         # Youtube APIKEY
