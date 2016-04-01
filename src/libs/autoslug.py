@@ -1,5 +1,6 @@
 import pytils
 from django.db import models
+from django.core import checks
 from django.utils.translation import ugettext_lazy as _
 
 ALIAS_REGEXP = '[-a-zA-Z0-9_]+'
@@ -13,22 +14,59 @@ class AutoSlugField(models.SlugField):
     def __init__(self, *args, populate_from=None, **kwargs):
         """
             Параметры:
-                populate_from - имя поля, по которому будет строиться алиас,
-                                если его значение не указано явно
+                populate_from - имя поля, по которому будет строиться алиас
                 separator     - разделитель префикс алиаса от суффикса.
                                 (my_alias-1, my_alias-2, ...)
                 default_slug  - префикс по умолчанию, если populate_from пуст.
 
             Пример:
-                alias = AutoSlugField(_('alias'), populate_from=('title', ), unique=True)
+                alias = AutoSlugField(_('alias'), populate_from='title')
         """
         self.populate_from = populate_from
         self.separator = kwargs.pop('separator', '-')
         self.default_slug = kwargs.pop('default_slug', 'empty')
         kwargs.setdefault('blank', True)
+        kwargs.setdefault('unique', True)
         kwargs['max_length'] = kwargs.get('max_length', 64)
         kwargs['help_text'] = kwargs.get('help_text', DEFAULT_HELP)
         super(AutoSlugField, self).__init__(*args, **kwargs)
+
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_populate_from(**kwargs))
+        return errors
+
+    def _check_populate_from(self, **kwargs):
+        if not self.populate_from:
+            return [
+                checks.Error(
+                    'AutoSlugField requires "populate_from" attribute',
+                    obj=self
+                )
+            ]
+        else:
+            return []
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(models.SlugField, self).deconstruct()
+        kwargs['populate_from'] = self.populate_from
+        if kwargs.get("max_length", None) == 64:
+            del kwargs['max_length']
+        if self.blank is True:
+            del kwargs['blank']
+        if self.unique is True:
+            del kwargs['unique']
+        if self.help_text == DEFAULT_HELP:
+            del kwargs['help_text']
+        if self.separator != '-':
+            kwargs['separator'] = self.separator
+        if self.default_slug != 'empty':
+            kwargs['default_slug'] = self.default_slug
+        if self.db_index is False:
+            kwargs['db_index'] = False
+        else:
+            del kwargs['db_index']
+        return name, path, args, kwargs
 
     def _get_populate_value(self, instance):
         """ Получение значения, по которому нужно строить алиас """
@@ -44,24 +82,6 @@ class AutoSlugField(models.SlugField):
         """ Функция транслитерации """
         return pytils.translit.slugify(value)
 
-    def deconstruct(self):
-        name, path, args, kwargs = super(models.SlugField, self).deconstruct()
-        kwargs['populate_from'] = self.populate_from
-        if kwargs.get("max_length", None) == 64:
-            del kwargs['max_length']
-        if self.blank is True:
-            del kwargs['blank']
-        if self.help_text == DEFAULT_HELP:
-            del kwargs['help_text']
-        if self.separator != '-':
-            kwargs['separator'] = self.separator
-        if self.default_slug != 'empty':
-            kwargs['default_slug'] = self.default_slug
-        if self.db_index is False:
-            kwargs['db_index'] = False
-        else:
-            del kwargs['db_index']
-        return name, path, args, kwargs
 
     def pre_save(self, instance, add):
         manager = self.model._default_manager
