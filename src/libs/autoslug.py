@@ -4,7 +4,7 @@ from django.core import checks
 from django.utils.translation import ugettext_lazy as _
 
 ALIAS_REGEXP = '[-a-zA-Z0-9_]+'
-DEFAULT_HELP = _('Leave it blank to auto generate it')
+DEFAULT_HELP = _('Leave it blank to auto-generate it')
 
 
 class AutoSlugField(models.SlugField):
@@ -68,6 +68,11 @@ class AutoSlugField(models.SlugField):
             del kwargs['db_index']
         return name, path, args, kwargs
 
+    @staticmethod
+    def _slugify(value):
+        """ Функция транслитерации """
+        return pytils.translit.slugify(value)
+
     def _get_populate_value(self, instance):
         """ Получение значения, по которому нужно строить алиас """
         if callable(self.populate_from):
@@ -77,40 +82,38 @@ class AutoSlugField(models.SlugField):
         else:
             return getattr(instance, self.populate_from)
 
-    @staticmethod
-    def _slugify(value):
-        """ Функция транслитерации """
-        return pytils.translit.slugify(value)
-
-
-    def pre_save(self, instance, add):
+    def _make_unique(self, value, instance):
         manager = self.model._default_manager
         qs = manager.exclude(pk=instance.pk)
 
-        value = self.value_from_object(instance)
-
-        # Если значение уже указано - проверяем его на уникальность и оставляем
-        if value and not qs.filter((self.attname, value)).exists():
+        # Если значение есть и оно уникально - всё ок
+        if value and not qs.filter((self.name, value)).exists():
             return value
 
-        if self.populate_from and not value:
+        # Если значение не указано - формируем из поля populate_from
+        if not value:
             value = self._get_populate_value(instance)
 
+        # Если в populate_from тоже пусто - берем алиас по умолчанию
         slug = self._slugify(value) if value else ''
         if not slug:
             slug = None if self.null else self.default_slug
 
-        # max_length
+        # Ограничение по длине
         if len(slug) > self.max_length:
-            position = self.max_length - 1
-            while position:
-                if slug[position] in self.SLUG_SPLITTERS:
-                    slug = slug[:position]
+            length = self.max_length - 1
+            while length:
+                if slug[length] in self.SLUG_SPLITTERS:
+                    slug = slug[:length]
                     break
-                position += 1
+                length -= 1
             else:
-                slug = slug[:self.max_length]
+                length = self.max_length
 
+            length = min(length, self.max_length - 3)
+            slug = slug[:length]
+
+        # Проверяем уникальность значения
         if self.unique:
             if qs.filter((self.attname, slug)).exists():
                 suffix = 0
@@ -124,5 +127,14 @@ class AutoSlugField(models.SlugField):
 
                 slug = slug + self.separator + str(suffix + 1)
 
+        return slug
+
+    def clean(self, value, model_instance):
+        value = self._make_unique(value, model_instance)
+        return super().clean(value, model_instance)
+
+    def pre_save(self, instance, add):
+        value = self.value_from_object(instance)
+        slug = self._make_unique(value, instance)
         setattr(instance, self.attname, slug)
         return slug

@@ -100,9 +100,9 @@ class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     date_fmt.admin_order_field = 'date'
 
     def make_public_action(self, request, queryset):
-        queryset.update(status=BlogPost.STATUS_PUBLIC)
+        queryset.update(status=self.model.STATUS_PUBLIC)
     make_public_action.short_description = _('Make public')
 
     def make_draft_action(self, request, queryset):
-        queryset.update(status=BlogPost.STATUS_DRAFT)
+        queryset.update(status=self.model.STATUS_DRAFT)
     make_draft_action.short_description = _('Make draft')
