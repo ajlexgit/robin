@@ -7,7 +7,7 @@
         Для MediaQueries.
      */
     $.winWidth = function() {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        return Math.max(window.innerWidth || 0,  document.documentElement.clientWidth);
     };
 
     // ======================================================================================
