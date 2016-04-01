@@ -2,8 +2,6 @@
 
 .slider-root {
   position: relative;
-  height: inherit;
-  min-height: inherit;
   z-index: 1;
   @include no_fontsize;
 }
@@ -50,7 +48,7 @@
     left: 0;
     top: 0;
   }
-  
+
   .slider-slide ~ .slider-slide {
     display: none;
   }

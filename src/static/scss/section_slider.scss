@@ -74,6 +74,9 @@
 
   // после загрузки JS
   .slider-root {
+    height: inherit;
+    min-height: inherit;
+
     .slider-slide {
       height: inherit;
     }

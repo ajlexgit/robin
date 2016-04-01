@@ -246,6 +246,7 @@
 
             this.$list.removeClass(this.REMOVABLE_CLASS);
             this.$list.data(this.DATA_KEY, this);
+            this.updateListHeight();
 
             sliders.push(this);
         };
