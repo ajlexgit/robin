@@ -4,19 +4,16 @@ import sys
 # Paeeze модуль
 # BlockVariants.js
 # ProtectedFileField, фильтровать exe / bat и т.п.
-# Admin update date
-# шрифты в localStorage?
 # во views добавить global context
 # возможность вставки в текст колонок
-# crop each variation
-# Parallax наизнанку
-# drager: блокируется вертикальный скролл Android
-# подумать над плагином "конструктор галереи"
-
-# Слайдер - блокировка при некотром условии
 # Очередь анимаций JS
+# Слайдер - блокировка при некотром условии
+# crop each variation
 # Кнопка подтверждения заказа в админке
 # Редактирование продуктов магазина в админке
+
+# Parallax наизнанку
+# drager: блокируется вертикальный скролл Android
 
 # Comments: есть возможность написать коммент к удаленному комменту. Как быть?
 # Logging, checks, tests
