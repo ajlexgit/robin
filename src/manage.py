@@ -4,7 +4,6 @@ import sys
 # Paeeze модуль
 # BlockVariants.js
 # ProtectedFileField, фильтровать exe / bat и т.п.
-# во views добавить global context
 # возможность вставки в текст колонок
 # Очередь анимаций JS
 # Слайдер - блокировка при некотром условии
