@@ -112,8 +112,8 @@
      */
     var Momentum = Class(Object, function Momentum(cls, superclass) {
         cls.init = function(drager, event, momentumPoint) {
-            this.lightness = drager.settings.momentumLightness;
-            this.easing = drager.settings.momentumEasing;
+            this.lightness = drager.opts.momentumLightness;
+            this.easing = drager.opts.momentumEasing;
             this.startX = event.dx;
             this.startY = event.dy;
             this.speedX = 0;
