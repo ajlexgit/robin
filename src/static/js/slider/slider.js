@@ -532,7 +532,7 @@
         cls.updateListHeight = function(animated) {
             // прерываем анимацию высоты, если она идёт
             if (this._adaptive_animation) {
-                this._adaptive_animation.stop();
+                this._adaptive_animation.stop(true);
                 this._adaptive_animation = null;
             }
 
@@ -551,20 +551,20 @@
             if (animated && this.opts.sliderHeightTransition) {
                 // с анимацией
                 var that = this;
-                this._adaptive_animation = $.animate({
+                this._adaptive_animation = $({
+                    height: current_height
+                }).animate({
+                    height: final_height
+                }, {
                     duration: this.opts.sliderHeightTransition,
-                    delay: 40,
                     easing: 'easeOutCubic',
-                    init: function() {
-                        this.autoInit('height', current_height, final_height);
-                    },
-                    step: function(eProgress) {
-                        var height = this.autoCalc('height', eProgress);
+                    progress: function() {
+                        var height = this.height;
                         $.animation_frame(function() {
                             that.$list.outerHeight(height);
                         }, that.$list.get(0))();
                     }
-                })
+                });
             } else {
                 // мгновенно
                 this.$list.outerHeight(final_height);

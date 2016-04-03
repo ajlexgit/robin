@@ -321,24 +321,26 @@
           */
         cls.startMomentum = function(evt) {
             if (!(evt.momentum instanceof Momentum)) {
-                return
+                return false;
             }
 
             if (this.trigger('start_momentum', evt.momentum) === false) {
-                return
+                return false;
             }
 
             var that = this;
-            this._momentumAnimation = $.animate({
+            this._momentumAnimation = $({
+                x: evt.momentum.startX,
+                y: evt.momentum.startY
+            }).animate({
+                x: evt.momentum.endX,
+                y: evt.momentum.endY
+            }, {
                 duration: evt.momentum.duration,
                 easing: evt.momentum.easing,
-                init: function() {
-                    this.autoInit('x', evt.momentum.startX, evt.momentum.endX);
-                    this.autoInit('y', evt.momentum.startY, evt.momentum.endY);
-                },
-                step: function(eProgress) {
-                    evt.dx = this.autoCalc('x', eProgress);
-                    evt.dy = this.autoCalc('y', eProgress);
+                progress: function() {
+                    evt.dx = this.x;
+                    evt.dy = this.y;
                     evt.timeStamp = $.now();
                     that.trigger('drag', evt);
                 },
@@ -354,9 +356,12 @@
           */
         cls.stopMomentum = function(jumpToEnd) {
             if (this._momentumAnimation) {
-                this._momentumAnimation.stop(jumpToEnd);
-                this._momentumAnimation = null;
-                this.trigger('stop_momentum');
+                this._momentumAnimation.stop(true, jumpToEnd);
+
+                if (!jumpToEnd) {
+                    this._momentumAnimation = null;
+                    this.trigger('stop_momentum');
+                }
             }
         };
 

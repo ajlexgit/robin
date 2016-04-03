@@ -28,22 +28,24 @@
                 opacity: 0,
                 zIndex: 6
             });
+
             slider._setCurrentSlide($toSlide);
 
-            slider._animation = $.animate({
+            slider._animation = $({
+                from_slide: 1,
+                to_slide: 0
+            }).animate({
+                from_slide: 0,
+                to_slide: 1
+            }, {
                 duration: this.opts.speed,
-                delay: 50,
                 easing: this.opts.easing,
-                init: function() {
-                    this.autoInit('from_slide_opacity', 1, 0);
-                    this.autoInit('to_slide_opacity', 0, 1);
-                },
-                step: function(eProgress) {
+                progress: function() {
                     $fromSlide.css({
-                        opacity: this.autoCalc('from_slide_opacity', eProgress)
+                        opacity: this.from_slide
                     });
                     $toSlide.css({
-                        opacity: this.autoCalc('to_slide_opacity', eProgress)
+                        opacity: this.to_slide
                     });
                 },
                 complete: function() {
@@ -56,6 +58,7 @@
                         zIndex: '',
                         opacity: ''
                     });
+
                     slider.afterSlide($toSlide);
                 }
             });
