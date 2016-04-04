@@ -16,12 +16,23 @@
             showSpeed           - скорость показа новой формы при добавлении
             hideSpeed           - скорость скрытия формы при удалении
 
-            beforeAddForm       - событие, вызываемое перед добавлением новой формы.
+            canAddForm          - событие, вызываемое перед добавлением новой формы.
                                   Если вернёт false, форма не будет добавлена
-            afterAddForm        - событие, вызываемое после добавления новой формы
-            beforeDeleteForm    - событие, вызываемое перед удалением формы.
+            canDeleteForm       - событие, вызываемое перед удалением формы.
                                   Если вернёт false, форма не будет удалена
-            afterDeleteForm     - событие, вызываемое после удаления формы
+
+        События:
+            // новая форма добавлена, но еще не видна (до анимации)
+            before_add($form)
+
+            // новая форма добавлена и видна (после анимации)
+            after_add($form)
+
+            // форма удалена, но еще видна (до анимации)
+            before_delete($form)
+
+            // форма удалена и не видна (после анимации)
+            after_delete($form, removed_dom)
 
         Пример:
             HTML:
@@ -129,7 +140,7 @@
         };
     });
 
-    window.Formset = Class(Object, function Formset(cls, superclass) {
+    window.Formset = Class(EventedObject, function Formset(cls, superclass) {
         cls.defaults = {
             prefix: '',
             formsListSelector: '.forms',
@@ -137,20 +148,19 @@
             formTemplate: '.empty-form',
             showSpeed: 300,
             hideSpeed: 300,
-            beforeAddForm: function() {
+            canAddForm: function() {
                 return this.getFormCount() < this.management.getMaxFormCount();
             },
-            afterAddForm: $.noop,
-            beforeDeleteForm: function() {
+            canDeleteForm: function() {
                 return this.getFormCount() > this.management.getMinFormCount()
-            },
-            afterDeleteForm: $.noop
+            }
         };
 
         cls.DATA_KEY = 'formset';
 
 
         cls.init = function(root, options) {
+            superclass.init.call(this);
             this.$root = $(root).first();
             if (!this.$root.length) {
                 return this.raise('root element not found');
@@ -208,6 +218,7 @@
          */
         cls.destroy = function() {
             this.$root.removeData(this.DATA_KEY);
+            superclass.destroy.call(this);
         };
 
         /*
@@ -270,7 +281,7 @@
             $form.find('*').each(function() {
                 setElementIndex(this, that._nextFormIndex);
             });
-            that._nextFormIndex++;
+            this._nextFormIndex++;
             return $form;
         };
 
@@ -281,7 +292,7 @@
             Возвращает jQuery-объект новой формы или false
          */
         cls.addForm = function() {
-            if (this.opts.beforeAddForm.call(this) === false) {
+            if (this.opts.canAddForm.call(this) === false) {
                 return false
             }
 
@@ -292,12 +303,14 @@
             var total_forms = this.management.getTotalFormCount();
             this.management.$total_forms.val(total_forms + 1);
 
+            this.trigger('before_add', $form);
+
             // анимация показа
             var that = this;
             $form.slideDown({
                 duration: this.opts.showSpeed,
                 complete: function() {
-                    that.opts.afterAddForm.call(this, $form);
+                    that.trigger('after_add', $form);
                 }
             });
 
@@ -316,7 +329,7 @@
                 return false
             }
 
-            if (this.opts.beforeDeleteForm.call(this, $form) === false) {
+            if (this.opts.canDeleteForm.call(this, $form) === false) {
                 return false
             }
 
@@ -332,12 +345,15 @@
                 this.warn('"delete" field not found');
             }
 
+            this.trigger('before_delete', $form);
+
             // анимация удаления
             var that = this;
             $form.slideUp({
                 duration: that.opts.hideSpeed,
                 complete: function() {
-                    if (!that.isInitial($form)) {
+                    var remove_dom = !that.isInitial($form);
+                    if (remove_dom) {
                         $form.remove();
 
                         // уменьшаем TOTAL_FORMS
@@ -345,7 +361,7 @@
                         that.management.$total_forms.val(total_forms - 1);
                     }
 
-                    that.opts.afterDeleteForm.call(this, $form);
+                    that.trigger('after_delete', $form, remove_dom);
                 }
             });
 
