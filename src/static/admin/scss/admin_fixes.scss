@@ -212,20 +212,18 @@ td, th {
 }
 
 // стили для списков
-.form-horizontal .control-group .controls > ul {
+.form-horizontal .control-group .controls ul {
   list-style-type: none;
   margin: 0;
 
-  li {
+  label {
     position: relative;
     padding-left: 20px;
     z-index: 1;
 
     input {
-      margin: 0;
       position: absolute;
       left: 0;
-      top: 2px;
       z-index: 1;
     }
   }

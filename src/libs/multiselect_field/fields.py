@@ -1,0 +1,137 @@
+from django.db import models
+from django.core import exceptions, checks
+from .forms import MultiSelectFormField
+
+
+class MultiSelectField(models.Field):
+    def __init__(self, *args, coerce=int, splitter=',', **kwargs):
+        kwargs.setdefault('max_length', 64)
+        self.coerce = coerce
+        self.splitter = splitter
+        super().__init__(*args, **kwargs)
+
+    def get_internal_type(self):
+        return "CharField"
+
+    def check(self, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(self._check_choices_required())
+        errors.extend(self._check_choices_coerce())
+        return errors
+
+    def _check_choices_required(self, **kwargs):
+        if self._choices is None:
+            return [
+                checks.Error(
+                    "'choices' required",
+                    hint=None,
+                    obj=self,
+                )
+            ]
+        else:
+            return []
+
+    def _check_choices_coerce(self, **kwargs):
+        for choice in self.choices:
+            try:
+                self.coerce(choice[0])
+            except (TypeError, ValueError):
+                return [
+                    checks.Error(
+                        "Invalid choice: '%s'" % choice[0],
+                        hint=None,
+                        obj=self,
+                    )
+                ]
+
+        return []
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        if self.max_length == 64:
+            del kwargs['max_length']
+        if self.coerce is not int:
+            kwargs['coerce'] = self.coerce
+        if self.splitter != ',':
+            kwargs['splitter'] = self.splitter
+        return name, path, args, kwargs
+
+    def _get_coerced_value(self, value):
+        """ Получение списка значений выбранного типа coerce """
+        new_value = []
+        if value:
+            for choice in value.split(self.splitter):
+                new_value.append(self.coerce(choice))
+        return tuple(new_value)
+
+    def from_db_value(self, value, *args, **kwargs):
+        if value is None:
+            return None
+
+        return self._get_coerced_value(value)
+
+    def get_prep_value(self, value):
+        value = super().get_prep_value(value)
+        if not value:
+            return ''
+
+        if isinstance(value, (list, tuple)):
+            value = self.splitter.join(map(str, value))
+
+        return value
+
+    def to_python(self, value):
+        if value is None:
+            return None
+        elif isinstance(value, tuple):
+            return value
+        elif isinstance(value, list):
+            return tuple(value)
+        elif isinstance(value, str):
+            try:
+                return self._get_coerced_value(value)
+            except (TypeError, ValueError) as e:
+                raise exceptions.ValidationError(e)
+        else:
+            raise exceptions.ValidationError(
+                self.error_messages['invalid'],
+                code='invalid',
+                params={'value': value},
+            )
+
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
+
+    def validate(self, value, model_instance):
+        if not self.editable:
+            # Skip validation for non-editable fields.
+            return
+
+        if self._choices and value not in self.empty_values:
+            if not isinstance(value, (list, tuple)):
+                raise exceptions.ValidationError(self.error_messages['invalid_choice'], code='invalid_choice')
+
+            choices = tuple(self.coerce(item[0]) for item in self.choices)
+            for option_key in value:
+                if option_key not in choices:
+                    raise exceptions.ValidationError(
+                        self.error_messages['invalid_choice'],
+                        code='invalid_choice',
+                        params={'value': option_key},
+                    )
+
+        if value is None and not self.null:
+            raise exceptions.ValidationError(self.error_messages['null'], code='null')
+
+        if not self.blank and value in self.empty_values:
+            raise exceptions.ValidationError(self.error_messages['blank'], code='blank')
+
+    def formfield(self, form_class=None, choices_form_class=None, **kwargs):
+        defaults = {
+            'choices_form_class': MultiSelectFormField,
+            'choices': self.get_choices(include_blank=False),
+            'coerce': self.coerce,
+        }
+        defaults.update(kwargs)
+        return super().formfield(**defaults)
