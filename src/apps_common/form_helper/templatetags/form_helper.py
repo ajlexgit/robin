@@ -61,12 +61,17 @@ def render_field(context, form, fieldname, template=None):
     if hasattr(form, 'get_field_fullname'):
         classes.add(form.get_field_fullname(fieldname))
 
+    if field.field.required:
+        required_css_class = getattr(form, 'required_css_class', 'required')
+        if required_css_class:
+            classes.add(required_css_class)
+
     # классы для неверно заполненного поля
     field_errors = []
     if form.is_bound and fieldname in form.errors:
-        invalid_class = getattr(form, 'invalid_class', 'invalid')
-        if invalid_class:
-            classes.add(invalid_class)
+        invalid_css_class = getattr(form, 'invalid_css_class', 'invalid')
+        if invalid_css_class:
+            classes.add(invalid_css_class)
 
         if getattr(form, 'render_error_message', False):
             field_errors = field.errors

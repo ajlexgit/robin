@@ -22,14 +22,14 @@ class FormHelperMixin:
     # Выводить ли CSRF-токен
     csrf_token = True
 
-    # Выводить ли в <label> звездочку в обязательных полях
-    required_asterisk = False
-
     # Префикс классов поля
     fieldclass_prefix = 'field'
 
     # Класс, добавляемый полю, если оно заполнено некорректно
-    invalid_class = 'invalid'
+    invalid_css_class = 'invalid'
+
+    # Класс, добавляемый полю, если оно обязательно
+    required_css_class = 'required'
 
     # Выводить текстовые описания ошибок полей
     render_error_message = False
@@ -100,7 +100,7 @@ class FormHelperMixin:
         return tuple({
             'name': name,
             'fullname': self.get_field_fullname(name),
-            'class': self.invalid_class,
+            'class': self.invalid_css_class,
             'errors': messages,
         } for name, messages in self._field_errors())
 
