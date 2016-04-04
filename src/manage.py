@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Приложение для переноса данных
 # Paeeze модуль
 # CKeditor inline
 # AttachmentResponse -> class

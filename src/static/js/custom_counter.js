@@ -184,14 +184,13 @@
             Получение и установка значения
          */
         cls.value = function(value) {
+            var current = this._formatted(this.$input.val());
             if (value === undefined) {
                 // получение значения
-                return this._formatted(this.$input.val());
+                return current;
             }
 
-
             value = this._formatted(value);
-            var current = this._formatted(this.$input.val());
             if ((value == current) || (isNaN(value) && isNaN(current))) {
                 return this;
             }
@@ -216,7 +215,7 @@
                 result = current + this.step;
             }
 
-            this.$input.val(this._formatted(result));
+            this.value(result);
             return this;
         };
 
@@ -232,7 +231,7 @@
                 result = current - this.step;
             }
 
-            this.$input.val(this._formatted(result));
+            this.value(result);
             return this;
         };
     });
