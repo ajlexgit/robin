@@ -71,6 +71,11 @@
             element.id = element.id.replace(prefix_regexp, index);
         }
 
+        // Class attr
+        if (element.className) {
+            element.className = element.className.replace(prefix_regexp, index);
+        }
+
         // name attr
         if (element.name) {
             element.name = element.name.replace(prefix_regexp, index);

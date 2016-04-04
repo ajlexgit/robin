@@ -19,11 +19,14 @@ class FormHelperMixin:
             2.2) form.error_dict_full
     """
 
-    # Префикс классов поля
-    fieldclass_prefix = 'field'
+    # Выводить ли CSRF-токен
+    csrf_token = True
 
     # Выводить ли в <label> звездочку в обязательных полях
     required_asterisk = False
+
+    # Префикс классов поля
+    fieldclass_prefix = 'field'
 
     # Класс, добавляемый полю, если оно заполнено некорректно
     invalid_class = 'invalid'

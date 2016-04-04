@@ -1,7 +1,8 @@
 {% load form_helper %}
 
-
-{% csrf_token %}
+{% if form.csrf_token %}
+  {% csrf_token %}
+{% endif %}
 
 {% block prefix %}{% endblock prefix %}
 
