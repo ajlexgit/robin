@@ -73,6 +73,7 @@ def render_field(context, form, fieldname, template=None):
 
     template = template or get_field_template(form, field)
     return loader.get_template(template).render({
+        'form': form,
         'field': field,
         'field_classes': ' '.join(classes),
         'field_errors': field_errors,

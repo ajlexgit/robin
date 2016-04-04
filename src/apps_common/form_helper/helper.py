@@ -22,6 +22,9 @@ class FormHelperMixin:
     # Префикс классов поля
     fieldclass_prefix = 'field'
 
+    # Выводить ли в <label> звездочку в обязательных полях
+    required_asterisk = False
+
     # Класс, добавляемый полю, если оно заполнено некорректно
     invalid_class = 'invalid'
 

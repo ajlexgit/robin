@@ -1,7 +1,9 @@
 <div class="field {{ field_classes }}">
   {% block field %}
     <div class="label-holder">
-      {{ field.label_tag }}
+      <label for="{{ field.id_for_label }}">
+        {{ field.label }}{% if form.required_asterisk and field.field.required %}*{% endif %}
+      </label>
     </div>
     {{ field }}
   {% endblock field %}
