@@ -211,6 +211,26 @@ td, th {
   }
 }
 
+// стили для списков
+.form-horizontal .control-group .controls > ul {
+  list-style-type: none;
+  margin: 0;
+
+  li {
+    position: relative;
+    padding-left: 20px;
+    z-index: 1;
+
+    input {
+      margin: 0;
+      position: absolute;
+      left: 0;
+      top: 2px;
+      z-index: 1;
+    }
+  }
+}
+
 // уродливые белые линии в поле добавления инлайна
 .form-horizontal .inline-group .add-row,
 .inline-group .tabular table.table tr.add-row td {

@@ -1,5 +1,4 @@
 from django import forms
-from datetime import time
 from django.forms import widgets
 from django.utils.encoding import force_str
 from django.utils.html import format_html, smart_urlquote
@@ -71,11 +70,11 @@ class URLWidget(forms.URLInput):
 class SplitDateTimeWidget(forms.SplitDateTimeWidget):
     """ Виджет даты-времени """
     def __init__(self, attrs=None):
-        inner_widgets = (
+        subwidgets = (
             SuitDateWidget(attrs=attrs),
             HTML5Input(attrs={'class': 'input-small'}, input_type='time')
         )
-        forms.MultiWidget.__init__(self, inner_widgets, attrs)
+        forms.MultiWidget.__init__(self, subwidgets, attrs)
 
     def format_output(self, rendered_widgets):
         return ' '.join(rendered_widgets)
@@ -87,23 +86,7 @@ class SplitDateTimeWidget(forms.SplitDateTimeWidget):
         return [None, None]
 
 
-class TimeWidget(forms.widgets.Input):
-    """ Виджет времени """
-    input_type = 'time'
-
-    def __init__(self, attrs=None):
-        final_attrs = {'class': 'input-mini'}
-        if attrs is not None:
-            final_attrs.update(attrs)
-        super().__init__(attrs=final_attrs)
-
-    def render(self, name, value, attrs=None):
-        if isinstance(value, time):
-            value = value.strftime('%H:%M')
-        return super().render(name, value, attrs)
-
-
-class RadioChoiceInput(widgets.RadioChoiceInput):
+class ChoiceInputRenderMixin:
     def render(self, name=None, value=None, attrs=None, choices=()):
         if self.id_for_label:
             label_for = format_html(' for="{}"', self.id_for_label)
@@ -115,8 +98,20 @@ class RadioChoiceInput(widgets.RadioChoiceInput):
         )
 
 
+class RadioChoiceInput(ChoiceInputRenderMixin, widgets.RadioChoiceInput):
+    pass
+
+
+class CheckboxChoiceInput(ChoiceInputRenderMixin , widgets.CheckboxChoiceInput):
+    pass
+
+
 class RadioFieldRenderer(widgets.RadioFieldRenderer):
     choice_input_class = RadioChoiceInput
+
+
+class CheckboxFieldRenderer(widgets.CheckboxFieldRenderer):
+    choice_input_class = CheckboxChoiceInput
 
 
 class RadioSelect(forms.RadioSelect):
@@ -125,3 +120,11 @@ class RadioSelect(forms.RadioSelect):
         помещает <input> перед <label> (для стилизации).
     """
     renderer = RadioFieldRenderer
+
+
+class CheckboxSelectMultiple(forms.CheckboxSelectMultiple):
+    """
+        Аналог CheckboxSelectMultiple, но вместо того, чтобы <input> был внутри <label>,
+        помещает <input> перед <label> (для стилизации).
+    """
+    renderer = CheckboxFieldRenderer
