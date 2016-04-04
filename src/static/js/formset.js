@@ -266,7 +266,7 @@
                 if ($df.length) {
                     return !$df.prop('checked');
                 } else {
-                    that.warn('"delete" field not found');
+                    // that.warn('"delete" field not found');
                     return true
                 }
             }).length
@@ -342,7 +342,7 @@
 
                 $df.prop('checked', true);
             } else {
-                this.warn('"delete" field not found');
+                // this.warn('"delete" field not found');
             }
 
             this.trigger('before_delete', $form);
