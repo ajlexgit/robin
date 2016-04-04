@@ -74,6 +74,7 @@ input[type=checkbox] {
     display: inline-block;
     padding-left: $checkbox_size + 10px;
     margin: 0;
+    @include fontsize_default;
     line-height: $checkbox_size + 2 * $checkbox_border_width;
 
     &:before {
@@ -153,6 +154,7 @@ input[type=radio] {
     display: inline-block;
     padding-left: $radiobox_size + 10px;
     margin: 0;
+    @include fontsize_default;
     line-height: $radiobox_size + 2 * $radiobox_border_width;
 
     &:before {
