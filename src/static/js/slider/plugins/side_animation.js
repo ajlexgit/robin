@@ -5,7 +5,7 @@
         cls.defaults = $.extend({}, superclass.defaults, {
             name: 'side',
 
-            margin: 0,
+            margin: 0,          // в пикселях или процентах
             speed: 800,
             showIntermediate: true,
             easing: 'easeOutCubic'
@@ -14,7 +14,7 @@
         /*
             Перевод отступа в пикселях в отступ в процентах
          */
-        cls._marginToPercents = function(slider) {
+        cls._getPercentGap = function(slider) {
             if (this.opts.margin.toString().indexOf('%') >= 0) {
                 return parseFloat(this.opts.margin);
             } else {
@@ -64,24 +64,22 @@
             Создание анимации перехода
          */
         cls._slide = function(slider, $toSlide, animations) {
-            slider._animation = $.animate({
+            var animation_from = {};
+            var animation_to = {};
+            animations.forEach(function(animation_data, index) {
+                var name = 'slide_' + index;
+                animation_from[name] = animation_data.from_left;
+                animation_to[name] = animation_data.to_left;
+            });
+
+            slider._animation = $(animation_from).animate(animation_to, {
                 duration: this.opts.speed,
                 easing: this.opts.easing,
-                init: function() {
-                    var that = this;
-                    animations.forEach(function(animation_data, index) {
-                        that.autoInit(
-                            'slide_' + index,
-                            animation_data.from_left,
-                            animation_data.to_left
-                        );
-                    });
-                },
-                step: function(eProgress) {
-                    var that = this;
+                progress: function() {
+                    var conf = this;
                     animations.forEach(function(animation_data, index) {
                         animation_data.$animatedSlide.css({
-                            left: that.autoCalc('slide_' + index, eProgress) + '%'
+                            left: conf['slide_' + index] + '%'
                         })
                     });
                 },
@@ -103,7 +101,7 @@
         cls.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slide_left = 100 + this._marginToPercents(slider);
+            var slide_left = 100 + this._getPercentGap(slider);
 
             slider.beforeSlide($toSlide);
 
@@ -146,7 +144,7 @@
         cls.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slide_left = 100 + this._marginToPercents(slider);
+            var slide_left = 100 + this._getPercentGap(slider);
 
             slider.beforeSlide($toSlide);
 

@@ -16,10 +16,10 @@
 
         События:
             // Перед изменение значения. Если вернет false - значение не изменится.
-            before_change(new_value)
+            before_change(new_value, old_value)
 
             // После изменения значения
-            after_change
+            after_change(new_value, old_value)
 
         Пример:
             <div class="custom-counter">
@@ -195,7 +195,7 @@
                 return this;
             }
 
-            if (this.trigger('before_change', value) === false) {
+            if (this.trigger('before_change', value, current) === false) {
                 return this;
             }
             this.$input.val(value);

@@ -49,8 +49,6 @@ class StringRenderMixin:
     """
         Представление, добавляющее метод render_to_string для
         рендеринга шаблона в строку.
-
-        Миксина должна быть перед TemplateResponseMixin (если она есть).
     """
     def render_to_string(self, template, context=None, using=None):
         request = getattr(self, 'request', None)

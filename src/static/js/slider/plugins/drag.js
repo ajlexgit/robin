@@ -13,7 +13,7 @@
             slideThreshold: 10,         // %
             maxSlideThreshold: 50,      // px
 
-            margin: 0,                  // "2%" или ("20px" / 20)
+            margin: 0,                  // в пикселях или процентах
             speed: 800,
             dragOneSlide: false,
             easing: 'easeOutCubic'
@@ -49,7 +49,7 @@
 
                 // если идет анимация - прекращаем её
                 if (slider._animation) {
-                    slider._animation.stop(true);
+                    slider._animation.stop(true, true);
                     slider._animation = null;
                 }
 
@@ -80,7 +80,7 @@
         /*
             Перевод отступа в пикселях в отступ в процентах
          */
-        cls._marginToPercents = function(slider) {
+        cls._getPercentGap = function(slider) {
             if (this.opts.margin.toString().indexOf('%') >= 0) {
                 return parseFloat(this.opts.margin);
             } else {
@@ -109,7 +109,7 @@
         cls.onDrag = function(slider, evt) {
             var dxPercents = this._dxToPercents(slider, evt);
             var absDxPercents = Math.abs(dxPercents);
-            var slide_left = 100 + this._marginToPercents(slider);
+            var slide_left = 100 + this._getPercentGap(slider);
 
             // метод перехода к соседнему слайду по направлению движения
             if (evt.dx > 0) {
@@ -199,48 +199,43 @@
                 return
             }
 
-            var leftSlide = this._movedSlides[0];
-            var rightSlide = this._movedSlides[1];
+            var $leftSlide = $(this._movedSlides[0]);
+            var $rightSlide = $(this._movedSlides[1]);
             var $currSlide = slider.$currentSlide;
 
-            var slide_left = 100 + this._marginToPercents(slider);
-            var currSlidePosition = parseFloat($currSlide.get(0).style.left);
-            if (isNaN(currSlidePosition)) {
-                currSlidePosition = evt.dx > 0 ? slide_left : -slide_left;
+            var slide_left = 100 + this._getPercentGap(slider);
+
+            // определение анимации
+            var animation_from = {
+                left_slide: parseFloat($leftSlide.get(0).style.left),
+                right_slide: parseFloat($rightSlide.get(0).style.left)
+            };
+            if ($currSlide.get(0) == $leftSlide.get(0)) {
+                var animation_to = {
+                    left_slide: 0,
+                    right_slide: slide_left
+                };
+                var duration = Math.round(this.opts.speed * Math.abs(animation_from.left_slide) / 100);
+            } else {
+                animation_to = {
+                    left_slide: -slide_left,
+                    right_slide: 0
+                };
+                duration = Math.round(this.opts.speed * Math.abs(animation_from.right_slide) / 100);
             }
-            var duration = Math.round(this.opts.speed * Math.abs(currSlidePosition) / 100);
+
 
             slider.beforeSlide($currSlide);
-            slider._animation = $.animate({
+            slider._animation = $(animation_from).animate(animation_to, {
                 duration: Math.max(200, duration),
                 easing: this.opts.easing,
-                init: function() {
-                    this.autoInit('current_slide', currSlidePosition, 0);
-
-                    if ($currSlide.get(0) == leftSlide) {
-                        // второй слайд - правый
-                        this.$otherSlide = $(rightSlide);
-                        if (rightSlide) {
-                            this.autoInit('other_slide', parseFloat(rightSlide.style.left), slide_left);
-                        }
-                    } else {
-                        // второй слайд - левый
-                        this.$otherSlide = $(leftSlide);
-                        if (leftSlide) {
-                            this.autoInit('other_slide', parseFloat(leftSlide.style.left), -slide_left);
-                        }
-                    }
-                },
-                step: function(eProgress) {
-                    $currSlide.css({
-                        left: this.autoCalc('current_slide', eProgress) + '%'
+                progress: function() {
+                    $leftSlide.css({
+                        left: this.left_slide + '%'
                     });
-
-                    if (this.$otherSlide.length) {
-                        this.$otherSlide.css({
-                            left: this.autoCalc('other_slide', eProgress) + '%'
-                        });
-                    }
+                    $rightSlide.css({
+                        left: this.right_slide + '%'
+                    });
                 },
                 complete: function() {
                     slider.$slides.css({

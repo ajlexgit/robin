@@ -467,11 +467,16 @@
             stop: $.noop                            - callback остановки анимации
             complete: $.noop                        - callback полного завершения анимации
 
+        События:
+            start(progress)
+            stop(progress)
+            complete()
+
         Методы:
             start()     - запуск анимации
             stop()      - приостановить анимацию
      */
-    window.Animation = Class(Object, function Animation(cls, superclass) {
+    window.Animation = Class(window.EventedObject, function Animation(cls, superclass) {
         cls.defaults = {
             duration: 1000,
             delay: 20,
@@ -487,13 +492,12 @@
 
 
         cls.init = function(options) {
+            superclass.init.call(this);
             this.opts = $.extend({}, this.defaults, options);
 
             this._progress = 0;
             this._paused = true;
             this._duration = Math.max(this.opts.duration || 0, 20);
-            this._deferred = $.Deferred();
-            this._deferred.promise(this);
 
             this.opts.init.call(this);
 
@@ -508,7 +512,7 @@
                 clearInterval(this._timer);
             }
 
-            this._deferred.reject();
+            superclass.destroy.call(this);
         };
 
         // Применение шага анимации с вычислением that._progress
@@ -546,6 +550,7 @@
                 this._timer = setInterval(timerHandle, this.opts.delay);
 
                 this.opts.start.call(this);
+                this.trigger('start', this._progress);
             }
 
             return this
@@ -561,10 +566,10 @@
                     this._progress = 1;
                     this._applyProgress();
                     this.opts.complete.call(this);
-                    this._deferred.resolve();
-                } else {
-                    this.opts.stop.call(this);
+                    this.trigger('complete');
                 }
+
+                this.trigger('stop', this._progress);
             }
 
             return this
