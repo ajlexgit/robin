@@ -7,7 +7,7 @@ from google_maps import GoogleCoordsField, GoogleCoordsAdminWidget
 from libs.color_field import ColorField, ColorFormField, ColorOpacityField, ColorOpacityFormField
 from libs.stdimage import StdImageField, StdImageAdminWidget
 from libs.valute_field import ValuteField, ValuteFormField
-from libs.widgets import SplitDateTimeWidget, TimeWidget, URLWidget
+from libs.widgets import SplitDateTimeWidget, URLWidget
 
 
 class BaseModelAdminMixin:
@@ -42,7 +42,11 @@ class BaseModelAdminMixin:
             'widget': SplitDateTimeWidget
         },
         models.TimeField: {
-            'widget': TimeWidget
+            'localize': True,
+            'widget': forms.TextInput(attrs={
+                'class': 'input-medium',
+                'placeholder': 'e.g. "11:00 am"',
+            }),
         },
         StdImageField: {
             'widget': StdImageAdminWidget
