@@ -58,7 +58,7 @@ class MultiSelectField(models.Field):
 
     def _get_coerced_value(self, value):
         """ Получение множества значений приведенных к типу coerce """
-        return set(self.coerce(choice) for choice in value)
+        return set(self.coerce(choice) for choice in value if choice)
 
     def from_db_value(self, value, *args, **kwargs):
         if value is None:
