@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Admin autocomplete_filter
 # Приложение для переноса данных
 # Paeeze модуль
 # ProtectedFileField, фильтровать exe / bat и т.п.

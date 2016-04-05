@@ -57,25 +57,21 @@ class MultiSelectField(models.Field):
         return name, path, args, kwargs
 
     def _get_coerced_value(self, value):
-        """ Получение списка значений выбранного типа coerce """
-        new_value = []
-        if value:
-            for choice in value.split(self.splitter):
-                new_value.append(self.coerce(choice))
-        return tuple(new_value)
+        """ Получение множества значений приведенных к типу coerce """
+        return set(self.coerce(choice) for choice in value)
 
     def from_db_value(self, value, *args, **kwargs):
         if value is None:
             return None
 
-        return self._get_coerced_value(value)
+        return self._get_coerced_value(value.split(self.splitter))
 
     def get_prep_value(self, value):
         value = super().get_prep_value(value)
         if not value:
             return ''
 
-        if isinstance(value, (list, tuple)):
+        if isinstance(value, set):
             value = self.splitter.join(map(str, value))
 
         return value
@@ -83,13 +79,13 @@ class MultiSelectField(models.Field):
     def to_python(self, value):
         if value is None:
             return None
-        elif isinstance(value, tuple):
+        elif isinstance(value, set):
             return value
-        elif isinstance(value, list):
-            return tuple(value)
+        elif isinstance(value, (tuple, list)):
+            return self._get_coerced_value(value)
         elif isinstance(value, str):
             try:
-                return self._get_coerced_value(value)
+                return self._get_coerced_value(value.split(self.splitter))
             except (TypeError, ValueError) as e:
                 raise exceptions.ValidationError(e)
         else:
@@ -109,16 +105,16 @@ class MultiSelectField(models.Field):
             return
 
         if self._choices and value not in self.empty_values:
-            if not isinstance(value, (list, tuple)):
+            if not isinstance(value, set):
                 raise exceptions.ValidationError(self.error_messages['invalid_choice'], code='invalid_choice')
 
-            choices = tuple(self.coerce(item[0]) for item in self.choices)
-            for option_key in value:
-                if option_key not in choices:
+            choices = set(self.coerce(item[0]) for item in self.choices)
+            for choice in value:
+                if choice not in choices:
                     raise exceptions.ValidationError(
                         self.error_messages['invalid_choice'],
                         code='invalid_choice',
-                        params={'value': option_key},
+                        params={'value': choice},
                     )
 
         if value is None and not self.null:
