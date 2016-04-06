@@ -262,6 +262,11 @@ label {
   margin-top: 20px;
 }
 
+// увеличиваем шрифт заголовка инлайнов
+.form-horizontal .inline-related h3 {
+  @include font-size(14px);
+}
+
 // увеличение нижнего отступа от заголовков
 .suit-tab > h2, .form-horizontal .suit-include > h2 {
   margin-bottom: -3px;

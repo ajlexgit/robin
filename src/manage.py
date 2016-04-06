@@ -1,6 +1,7 @@
 import os
 import sys
 
+# FORMAT_MODULE_PATH 
 # Admin autocomplete_filter
 # Admin: функция "скопировать из"
 # Приложение для переноса данных
