@@ -37,11 +37,11 @@
     </div>
 
     <div id="posts">
-      {% for post in paginator.page %}
+      {% for post in paginator.current_page %}
         <article class="post">
           <div class="grid-block">
             <header>
-              <time datetime="{{ post.date|date:"c" }}" class="date">{{ post.date|date }}</time>
+              <time datetime="{{ post.date|date:"c" }}" class="date">{{ post.date|date:"jS E Y" }}</time>
 
               <h2 class="title title-h1">
                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>

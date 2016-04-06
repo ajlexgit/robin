@@ -355,9 +355,6 @@ def variation_resize(image, variation, target_format):
         elif not target_size[1]:
             target_size = (target_size[0], source_size[1])
 
-        # image.draft(None, target_size)
-        # source_size = image.size
-
         if stretch:
             # OLD: CROP_ANYWAY
             image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS, centering=bg_options['center'])
@@ -424,8 +421,6 @@ def variation_resize(image, variation, target_format):
         # Ресайз
         img_size = (image_size.width, image_size.height)
         if stretch:
-            # Быстрое уменьшение картинки, если целевой размер намного меньше
-            image.draft(None, img_size)
             image = image.resize(img_size, resample=Image.ANTIALIAS)
         else:
             # OLD: INSRIBE

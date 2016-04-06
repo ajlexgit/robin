@@ -20,18 +20,10 @@ LANGUAGES = (
 )
 
 TIME_ZONE = 'America/New_York'
-TIME_FORMAT = 'P'
-DATE_FORMAT = 'jS E Y'
-DATETIME_FORMAT = 'jS E Y, P'
-TIME_INPUT_FORMATS = (
-    '%I:%M %p',
-    '%H:%M:%S',
-    '%H:%M:%S.%f',
-    '%H:%M',
-)
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
 
 INSTALLED_APPS = (
     'suit',
@@ -513,6 +505,10 @@ LOCALE_PATHS = (
     'locale',
 )
 
+# Datetime formats
+FORMAT_MODULE_PATH = [
+    'project.formats',
+]
 
 # Media
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'media'))

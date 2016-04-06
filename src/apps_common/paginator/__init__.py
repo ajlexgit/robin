@@ -18,7 +18,7 @@
 
         # template.html
             <!-- Элементы текущей страницы -->
-            {% for item in paginator.page %}
+            {% for item in paginator.current_page %}
                 {{ item.name }}
                 ...
             {% endfor %}

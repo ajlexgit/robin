@@ -39,23 +39,23 @@ class Paginator(paginator.Paginator):
             return number
 
     @cached_property
-    def page(self, number):
+    def current_page(self):
         """ Объект текущей страницы """
-        new_number = self.request.GET.get(self.parameter_name, number)
+        new_number = self.request.GET.get(self.parameter_name, 1)
         new_number = self.real_page_number(new_number)
-        return super().page(new_number)
+        return self.page(new_number)
 
     @cached_property
     def pages(self):
         """ Кортеж всех объектов страниц с их полными данными """
         self.object_list = self.object_list[:]      # принудительное выполнение запроса
-        return ( super().page(page_num) for page_num in self.num_pages )
+        return (self.page(page_num) for page_num in self.num_pages)
 
     @cached_property
     def zipped_page_range(self):
         """ Список номеров страниц с учетом сокращения длинного списка """
-        left_page = max(1, self.page.number - self.page_neighbors)
-        right_page = min(self.num_pages, self.page.number + self.page_neighbors)
+        left_page = max(1, self.current_page.number - self.page_neighbors)
+        right_page = min(self.num_pages, self.current_page.number + self.page_neighbors)
         result = []
 
         if left_page > 1 + self.side_neighbors + self.min_zip_pages:
@@ -78,12 +78,11 @@ class Paginator(paginator.Paginator):
             return '?%s=%s' % (self.parameter_name, number)
 
     def __str__(self):
-        page = self.page
-        if not page.has_other_pages():
+        if not self.current_page.has_other_pages():
             return ''
 
         return loader.render_to_string(self.template, {
             'paginator': self,
-            'page': page,
+            'page': self.current_page,
             'anchor': self.anchor,
         })
