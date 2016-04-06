@@ -61,11 +61,13 @@ class Command(BaseCommand):
                             files_list.remove(path)
 
 
-    def _get_filefield_files(self, filefield):
+    @staticmethod
+    def _get_filefield_files(filefield):
         """ Путь к файлам FileField / ImageField """
         return [filefield.storage.path(filefield.name)]
 
-    def _get_filefield_variations_files(self, filefield):
+    @staticmethod
+    def _get_filefield_variations_files(filefield):
         """ Путь к файлам VariationImageFieldFile """
         return [
             filefield.storage.path(path)

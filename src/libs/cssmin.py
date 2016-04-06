@@ -3,6 +3,7 @@ from csscompressor import compress
 
 
 class CSSCompressor(CompressorBase):
-    def compress_css(self, css):
+    @staticmethod
+    def compress_css(css):
         return compress(css)
 

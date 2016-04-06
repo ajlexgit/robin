@@ -16,11 +16,10 @@ def set_active(menulist, request):
             item.active_branch(True)
 
 
-class MenuListMixin:
+class BaseMenuList:
     _parent = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
         self._childs = []
 
     def __iter__(self):
@@ -68,7 +67,7 @@ class MenuListMixin:
             self.append(menu_item)
 
 
-class MenuItem(MenuListMixin):
+class MenuItem(BaseMenuList):
     """
         Класс пункта меню.
 
@@ -124,7 +123,7 @@ class MenuItem(MenuListMixin):
         self._active = bool(value)
 
 
-class Menu(MenuListMixin):
+class Menu(BaseMenuList):
     """
         Класс меню.
         Атрибут root является корневым уровнем пунктов меню.

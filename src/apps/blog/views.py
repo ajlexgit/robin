@@ -9,7 +9,7 @@ from .models import BlogConfig, BlogPost, Tag
 class IndexView(TemplateExView):
     template_name = 'blog/index.html'
 
-    def get(self, request, tag_slug=None):
+    def get(self, request, *args, tag_slug=None, **kwargs):
         config = BlogConfig.get_solo()
 
         if tag_slug is not None:
@@ -49,7 +49,7 @@ class IndexView(TemplateExView):
 class DetailView(TemplateExView):
     template_name = 'blog/detail.html'
 
-    def get(self, request, slug):
+    def get(self, request, *args, slug=None, **kwargs):
         config = BlogConfig.get_solo()
         post = get_object_or_404(BlogPost, slug=slug)
 

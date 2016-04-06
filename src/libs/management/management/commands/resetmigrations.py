@@ -11,7 +11,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('app_label', nargs='*', help='Applications')
 
-    def get_resetable_apps(self, app_labels=()):
+    @staticmethod
+    def get_resetable_apps(app_labels=()):
         """ Список приложений, чьи миграции нужно сбросить """
         local_apps = {
             app.__name__.rsplit('.', 1)[0]: os.path.dirname(app.__file__)
@@ -30,7 +31,6 @@ class Command(BaseCommand):
                 return result_apps
         else:
             return local_apps
-
 
     def handle(self, *args, **options):
         resetable_apps = self.get_resetable_apps(options['app_label'])

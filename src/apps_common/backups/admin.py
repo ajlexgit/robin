@@ -33,7 +33,8 @@ class BackupDummyAdmin(admin.ModelAdmin):
         )
         return urls
 
-    def changelist(self, request):
+    @staticmethod
+    def changelist(request):
         """ Список бэкапов """
         if not request.user.is_superuser:
             raise PermissionDenied

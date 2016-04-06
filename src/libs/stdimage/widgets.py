@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 
-class StdImageWidgetMixin:
+class BaseStdImageWidget(forms.FileInput):
     template = None
 
     def __init__(self, *args, **kwargs):
@@ -35,7 +35,7 @@ class StdImageWidgetMixin:
         return mark_safe(render_to_string(self.get_template(), context))
 
 
-class StdImageWidget(StdImageWidgetMixin, forms.FileInput):
+class StdImageWidget(BaseStdImageWidget):
     """
         Виджет для клиентской части
     """
@@ -52,7 +52,7 @@ class StdImageWidget(StdImageWidgetMixin, forms.FileInput):
         }
 
 
-class StdImageAdminWidget(StdImageWidgetMixin, forms.FileInput):
+class StdImageAdminWidget(BaseStdImageWidget):
     template = 'stdimage/admin_widget.html'
 
     class Media:
@@ -69,7 +69,8 @@ class StdImageAdminWidget(StdImageWidgetMixin, forms.FileInput):
             )
         }
 
-    def clear_checkbox_name(self, name):
+    @staticmethod
+    def clear_checkbox_name(name):
         return name + '-delete'
 
     def value_from_datadict(self, data, files, name):

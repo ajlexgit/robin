@@ -12,7 +12,7 @@ from .forms import ContactForm
 class IndexView(TemplateExView):
     template_name = 'contacts/index.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         config = ContactsConfig.get_solo()
         form = ContactForm()
 

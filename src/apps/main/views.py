@@ -6,7 +6,7 @@ from .models import MainPageConfig
 class IndexView(TemplateExView):
     template_name = 'main/index.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         config = MainPageConfig.get_solo()
 
         # SEO

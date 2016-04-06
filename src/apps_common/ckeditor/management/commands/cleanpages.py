@@ -22,14 +22,16 @@ class Command(BaseCommand):
         if isinstance(modelpath, str):
             return apps.get_model(*modelpath.rsplit('.', 1))
 
-    def get_apps(self):
+    @staticmethod
+    def get_apps():
         return (
             app
             for app in apps.get_apps()
             if app.__file__.startswith(settings.BASE_DIR)
         )
 
-    def get_model_textfields(self, model):
+    @staticmethod
+    def get_model_textfields(model):
         return [
             item.name
             for item in model._meta.get_fields()

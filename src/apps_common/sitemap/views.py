@@ -18,7 +18,7 @@ class IndexView(TemplateExView):
 
         return sitemap
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         config = SitemapConfig.get_solo()
 
         # SEO

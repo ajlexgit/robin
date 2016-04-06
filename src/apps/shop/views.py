@@ -8,7 +8,7 @@ from .models import ShopConfig, ShopCategory, ShopProduct
 class IndexView(TemplateExView):
     template_name = 'shop/index.html'
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         config = ShopConfig.get_solo()
 
         # Breadcrumbs

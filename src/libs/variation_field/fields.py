@@ -518,15 +518,15 @@ class VariationImageField(models.ImageField):
 
     def get_min_dimensions(self, instance):
         """ Возвращает минимальные размеры картинки для загрузки """
-        raise NotImplementedError()
+        return 0, 0
 
     def get_max_dimensions(self, instance):
         """ Возвращает максимальные размеры картинки для загрузки """
-        raise NotImplementedError()
+        return 6000, 6000
 
     def get_max_size(self, instance):
         """ Возвращает максимальный вес картинки для загрузки """
-        raise NotImplementedError()
+        return 20 * 1024 * 1024
 
     def build_source_name(self, instance, ext):
         raise NotImplementedError()

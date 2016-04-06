@@ -46,7 +46,8 @@ class ReadonlyFileWidget(forms.Widget):
 
 class URLWidget(forms.URLInput):
     """ Виджет URL """
-    def append(self, value):
+    @staticmethod
+    def append(value):
         if value:
             output = '<a href="{href}" class="add-on" target="_blank"><i class="icon-globe"></i></a>'
             href = force_str(value)

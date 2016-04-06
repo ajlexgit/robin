@@ -106,7 +106,8 @@ class AutocompleteWidget(widgets.Widget):
         else:
             raise TypeError('choices for AutocompleteWidget must be an instance of ModelChoiceIterator')
 
-    def get_short_name(self, name):
+    @staticmethod
+    def get_short_name(name):
         """
             Получение имени поля без индекса inline-формы,
             которые добавляются от inline-форм.
