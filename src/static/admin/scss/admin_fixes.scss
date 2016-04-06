@@ -257,6 +257,11 @@ label {
   min-width: 130px;
 }
 
+// увеличиваем отступ между инлайнами
+.form-horizontal .inline-related:not(:first-of-type) h3 {
+  margin-top: 20px;
+}
+
 // увеличение нижнего отступа от заголовков
 .suit-tab > h2, .form-horizontal .suit-include > h2 {
   margin-bottom: -3px;
