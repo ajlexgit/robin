@@ -10,15 +10,15 @@ class AsyncLoadView(AjaxViewMixin, View):
         try:
             block_id = int(block_id)
         except (TypeError, ValueError):
-            return self.json_response(status_code=404)
+            return self.json_error(status=404)
 
         real_block = get_block(block_id)
         if not real_block or not real_block.visible:
-            return self.json_response(status_code=404)
+            return self.json_error(status=404)
 
         block_view = get_block_view(real_block)
         if not block_view:
-            return self.json_response(status_code=404)
+            return self.json_error(status=404)
 
         return self.json_response({
             'html': block_view(request, real_block)

@@ -12,17 +12,13 @@ class LazyJSONEncoder(DjangoJSONEncoder):
         return super().default(obj)
 
 
-class JSONError(Exception):
-    def __init__(self, data, status=400):
-        self.data = data
-        self.status = status
-
-
 class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
     """
         Миксина для обработки AJAX-запросов.
 
-        Добавляет проверку request.is_ajax и метод json_response.
+        Добавляет проверку request.is_ajax и методы json_response и json_error.
+        Метод json_error полностью аналогичен json_response, но по умолчанию
+        имеет статут ответа 400 (Bad Request).
     """
     verify_ajax = True
 
@@ -31,12 +27,6 @@ class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
             return None
         else:
             return super().get_handler(request)
-
-    def dispatch(self, request, *args, **kwargs):
-        try:
-            return super().dispatch(request, *args, **kwargs)
-        except JSONError as e:
-            return self.json_response(e.data, status=e.status)
 
     @staticmethod
     def json_response(data=None, **kwargs):
@@ -48,6 +38,10 @@ class AjaxViewMixin(StringRenderMixin, DecoratableViewMixin):
         }
         defaults.update(kwargs)
         return JsonResponse(data, **defaults)
+
+    def json_error(self, data=None, **kwargs):
+        kwargs.setdefault('status', 400)
+        return self.json_response(data, **kwargs)
 
 
 class AjaxAdminViewMixin(AdminViewMixin, AjaxViewMixin):

@@ -3,11 +3,11 @@ from django.views.generic import View
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse, Http404
-from libs.views_ajax import AjaxAdminViewMixin, JSONError
+from libs.views_ajax import AjaxAdminViewMixin
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 
 
-class GalleryViewMixin:
+class GalleryView(AjaxAdminViewMixin, View):
     gallery_model = None
     require_gallery_model = True
 
@@ -25,7 +25,7 @@ class GalleryViewMixin:
             self.gallery_model = apps.get_model(app_label, model_name)
         except LookupError:
             if self.require_gallery_model:
-                raise JSONError({
+                return self.json_error({
                     'message': _('Gallery model not found')
                 })
 
@@ -35,7 +35,7 @@ class GalleryViewMixin:
         except (TypeError, ValueError):
             gallery_id = 0
             if self.require_gallery:
-                raise JSONError({
+                return self.json_error({
                     'message': _('Gallery not found')
                 })
 
@@ -43,7 +43,7 @@ class GalleryViewMixin:
             self.gallery = self.gallery_model.objects.get(pk=gallery_id)
         except self.gallery_model.DoesNotExist:
             if self.require_gallery:
-                raise JSONError({
+                return self.json_error({
                     'message': _('Gallery not found')
                 })
 
@@ -54,7 +54,7 @@ class GalleryViewMixin:
             except (TypeError, ValueError):
                 item_id = 0
                 if self.require_item:
-                    raise JSONError({
+                    return self.json_error({
                         'message': _('Item not found')
                     })
 
@@ -62,12 +62,12 @@ class GalleryViewMixin:
                 self.item = self.gallery.items.model.objects.get(pk=item_id)
             except self.gallery.items.model.DoesNotExist:
                 if self.require_item:
-                    raise JSONError({
+                    return self.json_error({
                         'message': _('Item not found')
                     })
 
 
-class GalleryCreate(GalleryViewMixin, AjaxAdminViewMixin, View):
+class GalleryCreate(GalleryView):
     """ Создание галереи """
     require_gallery_model = True
 
@@ -86,7 +86,7 @@ class GalleryCreate(GalleryViewMixin, AjaxAdminViewMixin, View):
         })
 
 
-class GalleryDelete(GalleryViewMixin, AjaxAdminViewMixin, View):
+class GalleryDelete(GalleryView):
     """ Удаление галереи """
     require_gallery_model = True
     require_gallery = True
@@ -99,7 +99,7 @@ class GalleryDelete(GalleryViewMixin, AjaxAdminViewMixin, View):
         })
 
 
-class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
+class UploadImage(GalleryView):
     """ Загрузка картинки """
     require_gallery_model = True
     require_gallery = True
@@ -110,9 +110,9 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         try:
             uploaded_file = upload_chunked_file(request, 'image')
         except TemporaryFileNotFoundError as e:
-            return self.json_response({
+            return self.json_error({
                 'message': str(e),
-            }, status=400)
+            })
         except NotLastChunk:
             return self.json_response()
 
@@ -127,9 +127,9 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
             item.full_clean()
         except ValidationError as e:
             item.image.delete(save=False)
-            return self.json_response({
+            return self.json_error({
                 'message': '; '.join(e.messages),
-            }, status=400)
+            })
         else:
             item.save()
 
@@ -137,9 +137,9 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
             self.gallery.clean()
         except ValidationError as e:
             item.delete()
-            return self.json_response({
+            return self.json_error({
                 'message': '; '.join(e.messages),
-            }, status=400)
+            })
 
         response = {
             'id': item.pk,
@@ -151,7 +151,7 @@ class UploadImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         return JsonResponse(response)
 
 
-class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
+class UploadVideoImage(GalleryView):
     """ Загрузка видео """
     require_gallery_model = True
     require_gallery = True
@@ -169,9 +169,9 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
             item.full_clean()
         except ValidationError as e:
             item.video_preview.delete(save=False)
-            return self.json_response({
+            return self.json_error({
                 'message': '; '.join(e.messages),
-            }, status=400)
+            })
         else:
             item.save()
 
@@ -179,9 +179,9 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
             self.gallery.clean()
         except ValidationError as e:
             item.delete()
-            return self.json_response({
+            return self.json_error({
                 'message': '; '.join(e.messages),
-            }, status=400)
+            })
 
         return self.json_response({
             'id': item.pk,
@@ -190,7 +190,7 @@ class UploadVideoImage(GalleryViewMixin, AjaxAdminViewMixin, View):
         })
 
 
-class DeleteItem(GalleryViewMixin, AjaxAdminViewMixin, View):
+class DeleteItem(GalleryView):
     """ Удаление элемента галереи """
     require_gallery_model = True
     require_gallery = True
@@ -202,7 +202,7 @@ class DeleteItem(GalleryViewMixin, AjaxAdminViewMixin, View):
         return self.json_response()
 
 
-class RotateItem(GalleryViewMixin, AjaxAdminViewMixin, View):
+class RotateItem(GalleryView):
     """ Поворот картинки """
     require_gallery_model = True
     require_gallery = True
@@ -212,19 +212,19 @@ class RotateItem(GalleryViewMixin, AjaxAdminViewMixin, View):
         super().post(request)
 
         if not self.item.is_image:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Item is not image')
-            }, status=400)
+            })
         elif not self.item.image.exists():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Image is not exists')
-            }, status=400)
+            })
 
         direction = request.GET.get('direction')
         if not direction or direction not in ('left', 'right'):
-            return self.json_response({
+            return self.json_error({
                 'message': _('Invalid rotate direction')
-            }, status=400)
+            })
 
         if direction == 'left':
             self.item.image.rotate(-90)
@@ -236,7 +236,7 @@ class RotateItem(GalleryViewMixin, AjaxAdminViewMixin, View):
         })
 
 
-class CropItem(GalleryViewMixin, AjaxAdminViewMixin, View):
+class CropItem(GalleryView):
     """ Обрезка картинки """
     require_gallery_model = True
     require_gallery = True
@@ -246,28 +246,28 @@ class CropItem(GalleryViewMixin, AjaxAdminViewMixin, View):
         super().post(request)
 
         if not self.item.is_image:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Item is not image')
-            }, status=400)
+            })
         elif not self.item.image.exists():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Image is not exists')
-            }, status=400)
+            })
 
         try:
             croparea = request.POST.get('coords', '')
             self.item.image.recut(croparea=croparea)
         except ValueError:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Invalid crop coords')
-            }, status=400)
+            })
 
         return self.json_response({
             'preview_url': self.item.admin_variation.url_nocache
         })
 
 
-class GetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
+class GetItemDescr(GalleryView):
     """ Получение описания """
     require_gallery_model = True
     require_gallery = True
@@ -277,16 +277,16 @@ class GetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
         super().post(request)
 
         if self.item.is_image and not self.item.image.exists():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Image is not exists')
-            }, status=400)
+            })
 
         return self.json_response({
             'description': self.item.description
         })
 
 
-class SetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
+class SetItemDescr(GalleryView):
     """ Установка описания """
     require_gallery_model = True
     require_gallery = True
@@ -296,15 +296,15 @@ class SetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
         super().post(request)
 
         if self.item.is_image and not self.item.image.exists():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Image is not exists')
-            }, status=400)
+            })
 
         description = request.POST.get('description', None)
         if description is None:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Invalid description')
-            }, status=400)
+            })
 
         self.item.description = description
         self.item.save()
@@ -314,7 +314,7 @@ class SetItemDescr(GalleryViewMixin, AjaxAdminViewMixin, View):
         })
 
 
-class SortItems(GalleryViewMixin, AjaxAdminViewMixin, View):
+class SortItems(GalleryView):
     """ Установка описания """
     require_gallery_model = True
     require_gallery = True
@@ -332,9 +332,9 @@ class SortItems(GalleryViewMixin, AjaxAdminViewMixin, View):
             try:
                 item = self.gallery.items.model.objects.get(pk=item_id)
             except self.gallery.items.model.DoesNotExist:
-                return self.json_response({
+                return self.json_error({
                     'message': _('Gallery item #%s not found' % item_id)
-                }, status=400)
+                })
             else:
                 item.sort_order = order
                 item.save()

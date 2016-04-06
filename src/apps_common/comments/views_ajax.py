@@ -16,15 +16,15 @@ class RefreshView(AjaxViewMixin, View):
             content_type_id = int(request.GET.get('content_type'))
             object_id = int(request.GET.get('object_id'))
         except (ValueError, TypeError):
-            return self.json_response(status=400)
+            return self.json_error()
 
         try:
             content_type = ContentType.objects.get(pk=content_type_id)
             obj = content_type.get_object_for_this_type(pk=object_id)
         except ObjectDoesNotExist:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Page not found'),
-            }, status=400)
+            })
 
         context = {
             'comments': Comment.objects.get_for(obj).with_permissions(request.user),
@@ -43,23 +43,23 @@ class ChangeView(AjaxViewMixin, View):
     """ Редактирование комментария """
     def get(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         validation_form = CommentValidationForm(request.GET)
         if not validation_form.is_valid():
-            return self.json_response({
+            return self.json_error({
                 'message': ';\n'.join(
                     messages[0]
                     for field, messages in validation_form.errors.items()
                 ),
-            }, status=400)
+            })
 
         comment = validation_form.cleaned_data['comment']
 
         if not request.user.has_perm('comments.can_edit', comment):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to edit this comment')
             }, status=403)
 
@@ -69,35 +69,35 @@ class ChangeView(AjaxViewMixin, View):
 
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         try:
             comment_id = int(request.POST.get('comment'))
         except (TypeError, ValueError):
-            return self.json_response({
-
-            }, status=400)
+            return self.json_error({
+                'message': _('Comment not found'),
+            })
 
         try:
             comment = Comment.objects.get(pk=comment_id)
         except Comment.DoesNotExist:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Comment not found'),
-            }, status=400)
+            })
 
         form = CommentForm(request.POST, instance=comment)
         if not form.is_valid():
-            return self.json_response({
+            return self.json_error({
                 'message': ';\n'.join(
                     messages[0]
                     for field, messages in form.errors.items()
                 ),
-            }, status=400)
+            })
 
         if not request.user.has_perm('comments.can_edit', comment):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to edit this comment')
             }, status=403)
 
@@ -115,23 +115,23 @@ class DeleteView(AjaxViewMixin, View):
     """ Удаление комментария """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
-            return self.json_response({
+            return self.json_error({
                 'message': ';\n'.join(
                     messages[0]
                     for field, messages in validation_form.errors.items()
                 ),
-            }, status=400)
+            })
 
         comment = validation_form.cleaned_data['comment']
 
         if not request.user.has_perm('comments.can_delete', comment):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to delete this comment')
             }, status=403)
 
@@ -151,23 +151,23 @@ class RestoreView(AjaxViewMixin, View):
     """ Восстановление комментария """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
-            return self.json_response({
+            return self.json_error({
                 'message': ';\n'.join(
                     messages[0]
                     for field, messages in validation_form.errors.items()
                 ),
-            }, status=400)
+            })
 
         comment = validation_form.cleaned_data['comment']
 
         if not request.user.has_perm('comments.can_restore', comment):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to restore this comment')
             }, status=403)
 
@@ -187,30 +187,30 @@ class PostView(AjaxViewMixin, View):
     """ Добавление нового комментария """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         form = CommentForm(request.POST)
         if not form.is_valid():
-            return self.json_response({
+            return self.json_error({
                 'message': ';\n'.join(
                     messages[0]
                     for field, messages in form.errors.items()
                 ),
-            }, status=400)
+            })
 
         comment = form.save(commit=False)
         comment.user = request.user
 
         if not request.user.has_perm('comments.can_post'):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to post comment'),
             }, status=403)
 
         if comment.parent:
             if not request.user.has_perm('comments.can_reply', comment.parent):
-                return self.json_response({
+                return self.json_error({
                     'message': _('You can\'t reply to your own comment'),
                 }, status=403)
 
@@ -228,32 +228,32 @@ class VoteView(AjaxViewMixin, View):
     """ Голосование за комментарий """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         validation_form = CommentValidationForm(request.POST)
         if not validation_form.is_valid():
-            return self.json_response({
+            return self.json_error({
                 'message': ';\n'.join(
                     messages[0]
                     for field, messages in validation_form.errors.items()
                 ),
-            }, status=400)
+            })
 
         comment = validation_form.cleaned_data['comment']
 
         if not request.user.has_perm('comments.can_vote'):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to vote for this comment'),
             }, status=403)
 
         try:
             int_vote = int(request.POST.get('is_like'))
         except (TypeError, ValueError):
-            return self.json_response({
+            return self.json_error({
                 'message': _('Bad vote value'),
-            }, status=400)
+            })
 
         vote = CommentVote(
             comment=comment,

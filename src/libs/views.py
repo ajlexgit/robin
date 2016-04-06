@@ -1,16 +1,15 @@
 from django.contrib import admin
 from django.template import loader
 from django.views.decorators.http import condition
-from django.views.generic.base import View, TemplateResponseMixin
+from django.views.generic.base import TemplateView
 
 
 class DecoratableViewMixin:
     """
-        Представление, добавляющее методы before_METHOD,
-        выполняющиеся перед вызовом соответствующего обработчика.
+        Представление, добавляющее метод get_handler,
+        которое должно вернуть функцию(метод) обработки запроса.
 
-        Эти методы могут устанавлисать данные, необходимые
-        для декораторов, таких как condition.
+        Этот метод может использоваться для декорирования методов CBV.
     """
     method = ''
 
@@ -26,15 +25,10 @@ class DecoratableViewMixin:
         if not callable(handler):
             return self.http_method_not_allowed(request, *args, **kwargs)
 
-        # метод, вызываемый перед вызовом обработчика
-        before_handler = getattr(self, 'before_%s' % handler.__name__, None)
-        if before_handler:
-            before_handler(request, *args, **kwargs)
-
         return handler(request, *args, **kwargs)
 
 
-class AdminViewMixin:
+class AdminViewMixin(DecoratableViewMixin):
     """
         Миксина для админской вьюхи
     """
@@ -45,38 +39,20 @@ class AdminViewMixin:
         return handler
 
 
-class StringRenderMixin:
+class CachedViewMixin(DecoratableViewMixin):
     """
-        Представление, добавляющее метод render_to_string для
-        рендеринга шаблона в строку.
-    """
-    def render_to_string(self, template, context=None, using=None):
-        request = getattr(self, 'request', None)
-        return loader.get_template(template, using=using).render(context, request)
-
-
-class TemplateExView(StringRenderMixin, DecoratableViewMixin, TemplateResponseMixin, View):
-    """
-        Расширенная версия TemplateView:
-        1) Позволяет рендерить шаблон в строку
-        2) Позволяет установить кэширование в браузере для GET-страницы
-           путем задания методов last_modified и/или etag.
+        Миксина, добавляющая методы last_modified и etag,
+        которые могут быть использованы для установки
+        соответствующих заголовков в GET-запросах.
 
         Пример:
-            class IndexView(TemplateExView):
-                config = None
-                template_name = 'module/index.html'
-
-                def before_get(self, request, *args, **kwargs):
-                    self.config =  ModuleConfig.get_solo()
+            class IndexView(CachedViewMixin, View):
+                ...
 
                 def last_modified(self, *args, **kwargs):
-                    return self.config.updated
+                    config =  ModuleConfig.get_solo()
+                    return config.updated
 
-                def get(self, request):
-                    return self.render_to_response({
-                        'config': self.config,
-                    })
     """
     def last_modified(self, *args, **kwargs):
         return None
@@ -93,3 +69,20 @@ class TemplateExView(StringRenderMixin, DecoratableViewMixin, TemplateResponseMi
             )(handler)
         else:
             return handler
+
+
+class StringRenderMixin:
+    """
+        Представление, добавляющее метод render_to_string для
+        рендеринга шаблона в строку.
+    """
+    def render_to_string(self, template, context=None, using=None):
+        request = getattr(self, 'request', None)
+        return loader.get_template(template, using=using).render(context, request)
+
+
+class TemplateExView(StringRenderMixin, TemplateView):
+    """
+        Расширенная версия TemplateView, которая позволяет рендерить шаблон в строку.
+    """
+    pass

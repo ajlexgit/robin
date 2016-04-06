@@ -36,12 +36,12 @@ class LoginView(AjaxViewMixin, FormView):
         })
 
     def form_invalid(self, form):
-        return self.json_response({
+        return self.json_error({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        }, status=400)
+        })
 
 
 class LogoutView(AjaxViewMixin, View):
@@ -78,12 +78,12 @@ class RegisterView(AjaxViewMixin, FormView):
         })
 
     def form_invalid(self, form):
-        return self.json_response({
+        return self.json_error({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        }, status=400)
+        })
 
 
 class PasswordResetView(AjaxViewMixin, FormView):
@@ -119,12 +119,12 @@ class PasswordResetView(AjaxViewMixin, FormView):
         })
 
     def form_invalid(self, form):
-        return self.json_response({
+        return self.json_error({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        }, status=400)
+        })
 
 
 class ResetConfirmView(AjaxViewMixin, FormView):
@@ -152,28 +152,28 @@ class ResetConfirmView(AjaxViewMixin, FormView):
         return self.json_response()
 
     def form_invalid(self, form):
-        return self.json_response({
+        return self.json_error({
             'errors': form.error_dict_full,
             'form': self.render_to_string(self.template_name, {
                 'form': form,
             }),
-        }, status=400)
+        })
 
 
 class AvatarUploadView(AjaxViewMixin, View):
     """ Загрузка аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         try:
             uploaded_file = upload_chunked_file(request, 'image')
         except TemporaryFileNotFoundError as e:
-            return self.json_response({
+            return self.json_error({
                 'message': str(e),
-            }, status=400)
+            })
         except NotLastChunk:
             return self.json_response()
 
@@ -184,9 +184,9 @@ class AvatarUploadView(AjaxViewMixin, View):
             request.user.full_clean()
         except ValidationError as e:
             request.user.avatar.delete(save=False)
-            return self.json_response({
+            return self.json_error({
                 'message': ', '.join(e.messages),
-            }, status=400)
+            })
         else:
             request.user.save()
 
@@ -204,21 +204,21 @@ class AvatarCropView(AjaxViewMixin, View):
     """ Обрезка аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 
         if not request.user.avatar:
-            return self.json_response({
+            return self.json_error({
                 'message': _('There are no avatar'),
-            }, status=400)
+            })
 
         try:
             croparea = request.POST.get('coords', '')
         except ValueError:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Croparea is empty'),
-            }, status=400)
+            })
 
         request.user.avatar.recut(croparea=croparea)
 
@@ -236,7 +236,7 @@ class AvatarRemoveView(AjaxViewMixin, View):
     """ Удаление аватара """
     def post(self, request):
         if not request.user.is_authenticated():
-            return self.json_response({
+            return self.json_error({
                 'message': _('Authentication required'),
             }, status=401)
 

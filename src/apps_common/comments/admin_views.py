@@ -10,13 +10,13 @@ class DeleteView(AjaxAdminViewMixin, View):
         try:
             comment = Comment.objects.get(pk=request.POST.get('id'))
         except Comment.DoesNotExist:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Comment not found'),
-            }, status=400)
+            })
 
 
         if not request.user.has_perm('comments.can_delete', comment):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to delete this comment')
             }, status=403)
 
@@ -32,13 +32,13 @@ class RestoreView(AjaxAdminViewMixin, View):
         try:
             comment = Comment.objects.get(pk=request.POST.get('id'))
         except Comment.DoesNotExist:
-            return self.json_response({
+            return self.json_error({
                 'message': _('Comment not found'),
-            }, status=400)
+            })
 
 
         if not request.user.has_perm('comments.can_restore', comment):
-            return self.json_response({
+            return self.json_error({
                 'message': _('You don\'t have permission to restore this comment')
             }, status=403)
 

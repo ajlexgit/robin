@@ -42,10 +42,10 @@ class ContactView(AjaxViewMixin, View):
                 })
             })
         else:
-            return self.json_response({
+            return self.json_error({
                 'errors': form.error_dict_full,
                 'form': self.render_to_string('contacts/ajax_contact.html', {
                     'config': config,
                     'form': form,
                 }),
-            }, status=400)
+            })
