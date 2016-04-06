@@ -68,7 +68,7 @@ def render_field(context, form, fieldname, template=None):
 
     # классы для неверно заполненного поля
     field_errors = []
-    if form.is_bound and fieldname in form.errors:
+    if form.is_bound and form._errors and fieldname in form._errors:
         invalid_css_class = getattr(form, 'invalid_css_class', 'invalid')
         if invalid_css_class:
             classes.add(invalid_css_class)
