@@ -82,6 +82,14 @@
             marker.position(point);
         }
         gmap.panTo(point);
+    }).on('click', '.nav-tabs li', function() {
+        // TODO: костыль. Фикс карты, когда она в невидимой вкладке
+        $('.google-map-field + .google-map').each(function() {
+            var gmap = $(this).data(GMap.prototype.DATA_KEY);
+            if (gmap) {
+                google.maps.event.trigger(gmap.native, 'resize');
+            }
+        });
     });
 
 })(jQuery);

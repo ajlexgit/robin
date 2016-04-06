@@ -2,6 +2,7 @@ import os
 import sys
 
 # Admin autocomplete_filter
+# Admin: функция "скопировать из"
 # Приложение для переноса данных
 # Paeeze модуль
 # ProtectedFileField, фильтровать exe / bat и т.п.
