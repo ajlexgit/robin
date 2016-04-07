@@ -528,7 +528,28 @@
             draggable: true,
             wheel: false,
             noClear: false,
-            styles: [],
+            styles: [
+                {
+                    "featureType": "poi",
+                    "stylers": [
+                        {"visibility": "off"}
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {"visibility": "off"}
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "labels",
+                    "stylers": [
+                        {"visibility": "off"}
+                    ]
+                }
+            ],
             zoom: 14,
             minZoom: null,
             maxZoom: null,

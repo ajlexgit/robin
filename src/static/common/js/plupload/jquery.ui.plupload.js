@@ -793,7 +793,9 @@ $.widget("ui.plupload", {
 		);
 
 		var timer = setTimeout(function() {
-			popup.remove();
+			popup.fadeOut(500, function() {
+				popup.remove();
+			});
 		}, 4000);
 
 		popup
