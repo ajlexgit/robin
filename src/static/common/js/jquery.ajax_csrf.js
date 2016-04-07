@@ -3,7 +3,12 @@
     // Устанавливаем CSRF-токен всем AJAX-запросам
     $(document).ajaxSend(function(event, xhr, settings) {
         if (!/^https?:\/\//i.test(settings.url)) {
-            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            var csrf = $('input[name=csrfmiddlewaretoken]:eq(0)').val();
+            if (!csrf) {
+                csrf = $.cookie('csrftoken')
+            }
+
+            xhr.setRequestHeader("X-CSRFToken", csrf);
         }
     });
 
