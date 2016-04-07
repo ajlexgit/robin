@@ -694,6 +694,8 @@ class VariationImageField(models.ImageField):
         field_file.croparea = croparea
 
         draft_size = None
+        update_fields = {}
+
         try:
             field_file.open()
             source_image = Image.open(field_file)
@@ -709,6 +711,7 @@ class VariationImageField(models.ImageField):
                     draft = source_image.draft(None, draft_size)
                     if draft is None:
                         source_image = source_image.resize(draft_size, Image.LINEAR)
+                        source_image.format = source_format
 
                     # Учитываем изменение размера исходника на области обрезки
                     if field_file.croparea:
@@ -719,16 +722,11 @@ class VariationImageField(models.ImageField):
                         )
                         field_file.croparea = croparea
 
-            source_image.format = source_format
+                # Сохраняем исходник
+                source_path = self.save_source_file(instance, source_image, draft_size=draft_size)
+                update_fields[self.attname] = source_path
         finally:
             field_file.close()
-
-        update_fields = {}
-
-        # Сохраняем исходник
-        if is_uploaded:
-            source_path = self.save_source_file(instance, source_image, draft_size=draft_size)
-            update_fields[self.attname] = source_path
 
         # Сохраняем область обрезки в поле, если оно указано
         if croparea and self.crop_field:
