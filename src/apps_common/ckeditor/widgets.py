@@ -50,7 +50,7 @@ class CKEditorUploadWidget(CKEditorWidget):
         extend = True
         js = (
             'common/js/plupload/plupload.full.min.js',
-            'common/js/plupload/jquery.ui.plupload.min.js',
+            'common/js/plupload/jquery.ui.plupload.js',
             'common/js/plupload/i18n/%s.js' % (get_language(), ),
         )
 

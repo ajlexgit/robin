@@ -66,16 +66,18 @@
                 },
                 Error: function(up, error) {
                     up.removeFile(error.file);
+                    var $widget = $(".ckupload-page-photos");
 
                     if (error.response) {
                         try {
                             var response = $.parseJSON(error.response);
-                            alert(response.message);
+                            $widget.plupload('notify', 'error', response.message);
                             return
                         } catch (e) {
                         }
                     }
-                    alert(error.message);
+
+                    $widget.plupload('notify', 'error', response.message);
                 }
             }
         })
