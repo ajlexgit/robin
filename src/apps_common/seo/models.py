@@ -8,7 +8,7 @@ from solo.models import SingletonModel
 class SeoConfig(SingletonModel):
     title = models.CharField(_('site title'), max_length=128)
     keywords = models.TextField(_('site keywords'), max_length=255, blank=True)
-    description = models.TextField(_('site description'), max_length=160, blank=True)
+    description = models.TextField(_('site description'), max_length=255, blank=True)
 
     class Meta:
         verbose_name = _('Default settings')
@@ -24,7 +24,7 @@ class SeoData(models.Model):
 
     title = models.CharField(_('title'), max_length=128, blank=True)
     keywords = models.TextField(_('keywords'), max_length=255, blank=True)
-    description = models.TextField(_('description'), max_length=160, blank=True)
+    description = models.TextField(_('description'), max_length=255, blank=True)
 
     # opengraph
     og_title = models.CharField(_('title'), max_length=255, blank=True)
