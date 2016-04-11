@@ -1,7 +1,7 @@
 <ul>
   {% for item in items %}
-    <li class="{% if item.active %}active{% endif %} {{ item.classes }}">
-      <a href="{{ item.link }}" {{ item.flat_attrs }}>
+    <li class="{% if item.active %}active{% endif %}">
+      <a href="{{ item.link }}" class="{{ item.classes }}" {{ item.flat_attrs }}>
         <span>{{ item.title }}</span>
       </a>
 

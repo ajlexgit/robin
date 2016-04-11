@@ -78,9 +78,11 @@ $mobile_active_color: $menu_active_color;
   li {
     margin: 24px 0;
     color: $mobile_text_color;
+
     &:nth-of-type(1) {
       margin-top: 0;
     }
+
     &:nth-last-of-type(1) {
       margin-bottom: 0;
     }
