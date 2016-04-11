@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import View
 from libs.views_ajax import AjaxViewMixin
 from libs.email import send
-from .models import ContactsConfig, MessageReciever
+from .models import ContactsConfig, NotifyReciever
 from .forms import ContactForm
 
 
@@ -27,7 +27,7 @@ class ContactView(AjaxViewMixin, View):
             message.referer = escape(referer)
             message.save()
 
-            recievers = MessageReciever.objects.all().values_list('email', flat=True)
+            recievers = NotifyReciever.objects.all().values_list('email', flat=True)
             send(request, recievers,
                 subject=_('Message from {domain}'),
                 template='contacts/mails/message.html',
