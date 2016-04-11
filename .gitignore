@@ -20,5 +20,5 @@ __pycache__
 *.pyc
 
 #Data
-celery*
+celerybeat*
 SxGeoCity.dat
