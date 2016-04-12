@@ -534,6 +534,7 @@
             styles: [
                 {
                     "featureType": "poi",
+                    "elementType": "labels.icon",
                     "stylers": [
                         {"visibility": "off"}
                     ]
