@@ -13,7 +13,7 @@ textarea, select {
   padding: 5px 6px;
   border: 1px solid #808080;
   @include font_default;
-  @include font-size(16px);
+  @include fontsize_default;
   @include border_radius(4px);
   @include media_interval(0, $media480) {
     width: 100%; // fix old safari
@@ -23,6 +23,7 @@ textarea, select {
 // стандартные стили полей в форме
 .field {
   margin-bottom: 10px;
+  @include border-box;
   &:nth-last-of-type(1) {
     margin-bottom: 0;
   }
