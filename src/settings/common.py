@@ -234,7 +234,6 @@ PIPELINE = {
                 'common/js/jquery.cookie.js',
                 'common/js/jquery.utils.js',
                 'common/js/jquery.ajax_csrf.js',
-                'common/js/jquery.mousewheel.js',
 
                 'js/jquery.fitvids.js',
                 'js/jquery.scrollTo.js',

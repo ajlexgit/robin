@@ -172,12 +172,11 @@
 
   // IE fix
   @if ((length($params) == 3) and (nth($params, 3) == 0)) {
-    $result: replace-nth($params, 3, 0%);
+    $result: replace-nth($params, 3, 0.1px);  // 0.1px - хак для cssmin
   } @else {
     $result: $params;
   }
 
-  -webkit-box-flex: $result;
   -moz-box-flex: $result;
   -webkit-flex: $result;
   -ms-flex: $result;

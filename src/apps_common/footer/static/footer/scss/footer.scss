@@ -17,6 +17,7 @@ $column_footer: $media480;
     @include align-items(center);
     @include justify-content(flex-start);
     @include media_interval(0, $column_footer) {
+      @include align-items(stretch);
       @include flex-direction(column);
     }
   }
