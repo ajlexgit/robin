@@ -1,0 +1,16 @@
+@import "mixins";
+
+.btn {
+  position: relative;
+  display: inline-block;
+  padding: 8px 20px;
+  max-width: 100%;
+  z-index: 1;
+  color: $white;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  background: #A0A0A0;
+  @include border-box;
+  @include fontsize_default;
+}

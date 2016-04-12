@@ -162,6 +162,7 @@ PIPELINE = {
                 'scss/grid.scss',
                 'scss/layout.scss',
                 'scss/forms.scss',
+                'scss/buttons.scss',
                 'scss/preloader.scss',
                 'scss/text_styles.scss',
 
