@@ -532,7 +532,7 @@
         /*
             Определение того, что клик произошел вне окна и нужно его закрыть (если hideOnClick = true)
          */
-        cls.isOutСlick = function($target) {
+        cls.isOutClick = function($target) {
             return $target.closest(this.$window).length == 0;
         };
 
@@ -545,7 +545,7 @@
             var that = this;
             if (this.opts.hideOnClick) {
                 $(document).on('click.popup', function(evt) {
-                    if (that.isOutСlick($(evt.target))) {
+                    if (that.isOutClick($(evt.target))) {
                         that.hide();
                     }
                 });
