@@ -134,7 +134,7 @@
             this._listeners = [];
             MOUSE_EVENTS.forEach(function(eventname) {
                 var handler = google.maps.event.addDomListener(
-                    this.$container.get(0),
+                    that.$container.get(0),
                     eventname,
                     function(e) {
                         e.cancelBubble = true;
@@ -201,7 +201,7 @@
          */
         cls._open = function() {
             var that = this;
-            this.$container.fadeIn({
+            this.$container.hide().fadeIn({
                 duration: 100,
                 complete: function() {
                     that.trigger('open');

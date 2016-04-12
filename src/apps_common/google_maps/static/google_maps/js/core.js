@@ -410,7 +410,10 @@
 
             map.balloon.close();
             if (this.opts.balloonContent) {
-                map.balloon.content(this.opts.balloonContent);
+                map.balloon.open(this);
+            }
+
+            if (map.balloon.content()) {
                 map.balloon.open(this);
             }
         };
