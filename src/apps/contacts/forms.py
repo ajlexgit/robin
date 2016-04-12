@@ -5,9 +5,7 @@ from .models import Message
 
 
 class ContactForm(FormHelperMixin, forms.ModelForm):
-    field_templates = {
-        'email': 'form_helper/hidden_field.html',
-    }
+    field_template = 'form_helper/unlabeled_field.html'
 
     class Meta:
         model = Message

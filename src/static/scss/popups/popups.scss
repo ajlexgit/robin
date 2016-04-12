@@ -9,6 +9,9 @@ $window_margin: (
     (0, $media480): 40px,
 );
 
+// размер окна
+$window_width: auto;
+
 // максимальная ширина окна
 $window_max_width: (
     ($media1024, 0): 70%,
@@ -48,9 +51,10 @@ $close_btn_weight: 3px;
 
 #popup-container {
   .popup-window {
+    @include media_map(width, $window_width);
+    @include media_map(max-width, $window_max_width);
     @include media_map(margin-top, $window_margin);
     @include media_map(margin-bottom, $window_margin);
-    @include media_map(max-width, $window_max_width);
   }
 
   .popup-close-button {
