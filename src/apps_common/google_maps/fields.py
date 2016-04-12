@@ -7,7 +7,7 @@ from libs.coords import Coords
 
 class GoogleCoordsField(models.Field):
     def __init__(self, *args, **kwargs):
-        self.zoom = kwargs.pop('zoom', 14)
+        self.zoom = kwargs.pop('zoom', 16)
         kwargs['max_length'] = 32
         kwargs.setdefault('help_text', _('Double click on the map places marker'))
         super().__init__(*args, **kwargs)

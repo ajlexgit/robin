@@ -9,7 +9,7 @@ html, body {
 body {
   overflow-x: hidden;
   color: $text_color;
-  line-height: 1.2;
+  line-height: 1;
   @include no_fontsize;
   @include font_default;
 }
@@ -37,7 +37,7 @@ body {
   display: table-cell;
   position: relative;
   height: 0;
-  z-index: 2;
+  z-index: 3;
   vertical-align: top;
 }
 

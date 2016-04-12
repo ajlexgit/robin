@@ -16,7 +16,7 @@ $logo_height: 54px;
   .logo-box {
     @include flex(0 0 auto);
 
-    a {
+    .logo {
       display: inline-block;
       width: $logo_width;
       vertical-align: middle;
@@ -31,14 +31,15 @@ $logo_height: 54px;
         background: $sprite_url no-repeat 0 0;
         background-size: rel-background-size($logo_width, $logo_height);
       }
+    }
 
-      &:hover {
-        @include opacity(0.75);
-      }
+    a.logo:hover {
+      @include opacity(0.75);
     }
   }
 
   .menu-box {
+    padding: 0 20px;
     text-align: center;
     @include flex(1 1 auto);
     @include media_interval($mobile_menu_interval) {
