@@ -65,10 +65,9 @@
 
         # blocks/views.py:
             def my_block_render(request, block):
-                context = RequestContext(request, {
+                return loader.render_to_string('block.html', {
                     'block': block,
-                })
-                return loader.render_to_string('block.html', context_instance=context)
+                }, request=request)
 
 
     Пример вывода конкретного блока любого типа на странице (никакой привязки к странице не требуется):

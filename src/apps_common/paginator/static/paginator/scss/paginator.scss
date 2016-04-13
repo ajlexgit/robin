@@ -1,5 +1,12 @@
 @import 'mixins';
 
+$hover_color: rgba(#00A000, 0.8);
+$active_color: #00A000;
+$disabled_color: rgba(#00A000, 0.4);
+
+// когда прятать Prev / Next
+$hide_nav: $media600;
+
 .navigation {
   font-weight: bold;
   text-align: center;
@@ -10,7 +17,7 @@
   @include justify-content(space-between);
 
   .nav-item {
-    @include media_interval(0, $media600) {
+    @include media_interval(0, $hide_nav) {
       display: none;
     }
 
@@ -33,11 +40,11 @@
     }
 
     &:hover {
-      @include opacity(0.75);
+      color: $hover_color;
     }
 
     &.disabled {
-      @include opacity(0.4);
+      color: $disabled_color;
     }
   }
 
@@ -66,11 +73,11 @@
     }
 
     &.active {
-      color: #00A000;
+      color: $active_color;
     }
 
     &.link:hover {
-      @include opacity(0.8);
+      color: $hover_color;
     }
   }
 }

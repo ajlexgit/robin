@@ -30,10 +30,11 @@ class PagePhoto(models.Model):
         aspects='normal',
         variations=dict(
             wide=dict(
-                size=(1440, 810)
+                size=(1440, 810),
+                stretch=True,
             ),
             normal=dict(
-                size=(960, 540)
+                size=(960, 540),
             ),
             mobile=dict(
                 size=(512, 288),

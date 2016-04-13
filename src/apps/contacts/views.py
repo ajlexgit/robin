@@ -1,7 +1,7 @@
+from django.template import loader
 from django.utils.html import escape
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
-from django.template import loader, RequestContext
 from django.utils.translation import ugettext_lazy as _
 from seo import Seo
 from libs.email import send
@@ -58,7 +58,6 @@ class IndexView(TemplateView):
 
 def contact_block_render(request, block):
     """ Рендеринг подключаемого блока контактов """
-    context = RequestContext(request, {
+    return loader.render_to_string('contacts/block.html', {
         'block': block,
-    })
-    return loader.render_to_string('contacts/block.html', context_instance=context)
+    }, request=request)

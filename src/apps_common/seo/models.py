@@ -3,6 +3,7 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.contenttypes.models import ContentType
 from solo.models import SingletonModel
+from libs.media_storage import MediaStorage
 
 
 class SeoConfig(SingletonModel):
@@ -28,7 +29,7 @@ class SeoData(models.Model):
 
     # opengraph
     og_title = models.CharField(_('title'), max_length=255, blank=True)
-    og_image = models.ImageField(_('image'), blank=True)
+    og_image = models.ImageField(_('image'), blank=True, storage=MediaStorage('seo'))
     og_description = models.TextField(_('description'), blank=True)
 
     header = models.CharField(_('header'), max_length=128, blank=True)
