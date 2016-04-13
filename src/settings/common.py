@@ -100,8 +100,8 @@ SUIT_CONFIG = {
             'app': 'contacts',
             'icon': 'icon-file',
             'models': (
-                'Address',
                 'Message',
+                'Address',
                 'ContactsConfig',
             )
         },

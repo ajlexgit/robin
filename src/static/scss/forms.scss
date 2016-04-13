@@ -1,6 +1,7 @@
 @import 'mixins';
 
 form {
+  max-width: 100%;
   @include border-box;
 }
 

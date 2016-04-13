@@ -1,15 +1,15 @@
 from django.utils.html import escape
 from django.shortcuts import redirect
+from django.views.generic import TemplateView
 from django.template import loader, RequestContext
 from django.utils.translation import ugettext_lazy as _
 from seo import Seo
 from libs.email import send
-from libs.views import TemplateExView
 from .models import ContactsConfig, Address, NotifyReciever
 from .forms import ContactForm
 
 
-class IndexView(TemplateExView):
+class IndexView(TemplateView):
     template_name = 'contacts/index.html'
 
     def get(self, request, *args, **kwargs):
