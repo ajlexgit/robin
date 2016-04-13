@@ -2,7 +2,8 @@ from django import forms
 from django.forms import widgets
 from django.utils.encoding import force_str
 from django.utils.html import format_html, smart_urlquote
-from django.forms.utils import flatatt
+from django.forms.utils import flatatt, to_current_timezone
+from suit.widgets import SuitDateWidget, HTML5Input
 
 
 class LinkWidget(forms.Widget):
@@ -65,6 +66,25 @@ class URLWidget(forms.URLInput):
             html=html,
             append=self.append(value)
         )
+
+
+class SplitDateTimeWidget(forms.SplitDateTimeWidget):
+    """ Виджет даты-времени """
+    def __init__(self, attrs=None):
+        subwidgets = (
+            SuitDateWidget(attrs=attrs),
+            HTML5Input(attrs={'class': 'input-small'}, input_type='time')
+        )
+        forms.MultiWidget.__init__(self, subwidgets, attrs)
+
+    def format_output(self, rendered_widgets):
+        return ' '.join(rendered_widgets)
+
+    def decompress(self, value):
+        if value:
+            value = to_current_timezone(value)
+            return [value.date(), value.time().replace(microsecond=0, second=0)]
+        return [None, None]
 
 
 class ChoiceInputRenderMixin:

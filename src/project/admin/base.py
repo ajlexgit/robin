@@ -2,12 +2,12 @@ from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
-from suit.widgets import AutosizedTextarea, SuitSplitDateTimeWidget
+from suit.widgets import AutosizedTextarea
 from google_maps import GoogleCoordsField, GoogleCoordsAdminWidget
 from libs.color_field import ColorField, ColorFormField, ColorOpacityField, ColorOpacityFormField
 from libs.stdimage import StdImageField, StdImageAdminWidget
 from libs.valute_field import ValuteField, ValuteFormField
-from libs.widgets import URLWidget
+from libs.widgets import SplitDateTimeWidget, URLWidget
 
 
 class BaseModelAdminMixin:
@@ -39,7 +39,7 @@ class BaseModelAdminMixin:
             })
         },
         models.DateTimeField: {
-            'widget': SuitSplitDateTimeWidget
+            'widget': SplitDateTimeWidget
         },
         models.TimeField: {
             'localize': True,
