@@ -1,5 +1,5 @@
 from . import settings
-from .models import MODULES
+from .modules import MODULES
 
 
 class DevServerMiddleware(object):
