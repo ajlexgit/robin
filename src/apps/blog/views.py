@@ -1,12 +1,12 @@
 from django.http.response import Http404
+from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from seo import Seo
 from paginator import Paginator, EmptyPage
-from libs.views import TemplateExView
 from .models import BlogConfig, BlogPost, Tag
 
 
-class IndexView(TemplateExView):
+class IndexView(TemplateView):
     template_name = 'blog/index.html'
 
     def get(self, request, *args, tag_slug=None, **kwargs):
@@ -46,7 +46,7 @@ class IndexView(TemplateExView):
         })
 
 
-class DetailView(TemplateExView):
+class DetailView(TemplateView):
     template_name = 'blog/detail.html'
 
     def get(self, request, *args, slug=None, **kwargs):

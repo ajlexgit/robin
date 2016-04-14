@@ -1,11 +1,11 @@
-from django.http.response import Http404
 from django.shortcuts import resolve_url
+from django.http.response import Http404
+from django.views.generic import TemplateView
 from seo import Seo
-from libs.views import TemplateExView
 from .models import ShopConfig, ShopCategory, ShopProduct
 
 
-class IndexView(TemplateExView):
+class IndexView(TemplateView):
     template_name = 'shop/index.html'
 
     def get(self, request, *args, **kwargs):
@@ -27,7 +27,7 @@ class IndexView(TemplateExView):
         })
 
 
-class CategoryView(TemplateExView):
+class CategoryView(TemplateView):
     template_name = 'shop/category.html'
 
     def get(self, request, *args, **kwargs):
@@ -62,7 +62,7 @@ class CategoryView(TemplateExView):
         })
 
 
-class DetailView(TemplateExView):
+class DetailView(TemplateView):
     template_name = 'shop/detail.html'
 
     def get(self, request, *args, **kwargs):
@@ -102,4 +102,3 @@ class DetailView(TemplateExView):
             'category': category,
             'product': product,
         })
-

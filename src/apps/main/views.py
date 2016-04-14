@@ -1,9 +1,9 @@
+from django.views.generic import TemplateView
 from seo import Seo
-from libs.views import TemplateExView
 from .models import MainPageConfig
 
 
-class IndexView(TemplateExView):
+class IndexView(TemplateView):
     template_name = 'main/index.html'
 
     def get(self, request, *args, **kwargs):

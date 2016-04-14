@@ -1,12 +1,12 @@
+from django.views.generic import TemplateView
 from seo import Seo
 from main.models import MainPageConfig
-from libs.views import TemplateExView
 from libs.cache import cached
 from .models import SitemapConfig
 from .map import Map
 
 
-class IndexView(TemplateExView):
+class IndexView(TemplateView):
     template_name = 'sitemap/index.html'
 
     @cached(time=30*60)

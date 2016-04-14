@@ -68,6 +68,8 @@ $dot_active_color: rgba($white, 1);
     }
 
     &.active {
+      cursor: default;
+
       span {
         background-color: $dot_active_color;
       }
