@@ -85,16 +85,19 @@ body {
   }
 
   .section-video {
+    visibility: hidden;
     @include centrizeImage($zIndex: 3);
 
     &::-webkit-media-controls {
       display: none;
     }
+    
+    &.loaded {
+      visibility: visible;
+    }
   }
-  @at-root .js & .section-video {
-    visibility: hidden;
-  }
-  @at-root .js &.video-loaded .section-video {
+
+  @at-root .no-js & .section-video {
     visibility: visible;
   }
 
