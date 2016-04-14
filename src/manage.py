@@ -1,11 +1,10 @@
 import os
 import sys
 
+# В M2M удаление некорректно
 # Admin autocomplete_filter
 # Admin: функция "скопировать из"
-# Приложение для переноса данных
 # Paeeze модуль
-# ProtectedFileField, фильтровать exe / bat и т.п.
 # возможность вставки в текст колонок
 # Слайдер - блокировка при некотром условии
 # crop each variation

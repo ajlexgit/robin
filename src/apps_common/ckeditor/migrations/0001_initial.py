@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import libs.stdimage.fields
 import libs.media_storage
 import ckeditor.models
-import libs.stdimage.fields
 
 
 class Migration(migrations.Migration):
@@ -16,11 +16,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PageFile',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('app_name', models.CharField(blank=True, max_length=30, verbose_name='application')),
-                ('model_name', models.CharField(blank=True, max_length=30, verbose_name='model')),
-                ('instance_id', models.IntegerField(db_index=True, verbose_name='entry id', default=0)),
-                ('file', models.FileField(blank=True, storage=libs.media_storage.MediaStorage('page_files'), upload_to=ckeditor.models.page_file_filename, verbose_name='file')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('app_name', models.CharField(max_length=30, verbose_name='application', blank=True)),
+                ('model_name', models.CharField(max_length=30, verbose_name='model', blank=True)),
+                ('instance_id', models.IntegerField(default=0, verbose_name='entry id', db_index=True)),
+                ('file', models.FileField(upload_to=ckeditor.models.page_file_filename, verbose_name='file', storage=libs.media_storage.MediaStorage('page_files'), blank=True)),
             ],
             options={
                 'default_permissions': ('change',),
@@ -31,11 +31,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PagePhoto',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('app_name', models.CharField(blank=True, max_length=30, verbose_name='application')),
-                ('model_name', models.CharField(blank=True, max_length=30, verbose_name='model')),
-                ('instance_id', models.IntegerField(db_index=True, verbose_name='entry id', default=0)),
-                ('photo', libs.stdimage.fields.StdImageField(aspects='on_page', storage=libs.media_storage.MediaStorage('page_photos'), min_dimensions=(960, 540), variations={'normal': {'size': (960, 540)}, 'admin_thumbnail': {'size': (224, 126)}, 'wide': {'size': (1440, 810)}, 'mobile': {'size': (512, 288)}}, upload_to=ckeditor.models.page_photo_filename, blank=True, verbose_name='image')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('app_name', models.CharField(max_length=30, verbose_name='application', blank=True)),
+                ('model_name', models.CharField(max_length=30, verbose_name='model', blank=True)),
+                ('instance_id', models.IntegerField(default=0, verbose_name='entry id', db_index=True)),
+                ('photo', libs.stdimage.fields.StdImageField(aspects='normal', min_dimensions=(960, 540), upload_to=ckeditor.models.page_photo_filename, verbose_name='image', variations={'admin_thumbnail': {'size': (224, 126)}, 'mobile': {'size': (512, 288)}, 'wide': {'size': (1440, 810), 'stretch': True}, 'normal': {'size': (960, 540)}}, storage=libs.media_storage.MediaStorage('page_photos'), blank=True)),
             ],
             options={
                 'default_permissions': ('change',),
@@ -46,11 +46,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SimplePhoto',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('app_name', models.CharField(blank=True, max_length=30, verbose_name='application')),
-                ('model_name', models.CharField(blank=True, max_length=30, verbose_name='model')),
-                ('instance_id', models.IntegerField(db_index=True, verbose_name='entry id', default=0)),
-                ('photo', libs.stdimage.fields.StdImageField(aspects=(), storage=libs.media_storage.MediaStorage('simple_photos'), variations={'admin_thumbnail': {'size': (0, 0), 'max_width': 250, 'max_height': 250, 'crop': False}, 'mobile': {'size': (0, 0), 'max_width': 512, 'crop': False}}, upload_to=ckeditor.models.page_photo_filename, blank=True, verbose_name='image', max_source_dimensions=(2048, 2048))),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('app_name', models.CharField(max_length=30, verbose_name='application', blank=True)),
+                ('model_name', models.CharField(max_length=30, verbose_name='model', blank=True)),
+                ('instance_id', models.IntegerField(default=0, verbose_name='entry id', db_index=True)),
+                ('photo', libs.stdimage.fields.StdImageField(aspects=(), max_source_dimensions=(2048, 2048), upload_to=ckeditor.models.page_photo_filename, verbose_name='image', variations={'admin_thumbnail': {'size': (0, 0), 'max_height': 250, 'max_width': 250, 'crop': False}, 'mobile': {'size': (0, 0), 'max_width': 512, 'crop': False}}, storage=libs.media_storage.MediaStorage('simple_photos'), blank=True)),
             ],
             options={
                 'default_permissions': ('change',),
