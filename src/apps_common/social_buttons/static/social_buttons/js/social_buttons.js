@@ -242,7 +242,9 @@
 
             var that = this;
             window.social_facebook = function(data) {
-                that.shareCountFetched(data[0]['total_count']);
+                if (data && data.length) {
+                    that.shareCountFetched(data[0]['total_count']);
+                }
             };
 
             this._shareCountScript('https://api.facebook.com/method/links.getStats?urls=' + this.url + '&format=json&callback=social_facebook');
