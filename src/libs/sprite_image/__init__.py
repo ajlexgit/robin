@@ -21,6 +21,7 @@
                     size=(30, 30),
                     choices=ICONS,
                     default=ICONS[0][0],
+                    background='#FFFFFF',
                 )
 
         template.html:
