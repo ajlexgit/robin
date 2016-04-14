@@ -12,10 +12,10 @@ class SeoConfig(SingletonModel):
     description = models.TextField(_('site description'), max_length=255, blank=True)
 
     class Meta:
-        verbose_name = _('Default settings')
+        verbose_name = _('Defaults')
 
     def __str__(self):
-        return ugettext('Default settings')
+        return ugettext('Defaults')
 
 
 class SeoData(models.Model):

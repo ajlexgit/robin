@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from model_utils.managers import InheritanceQuerySetMixin
-from .utils import get_block, get_block_view
+from .utils import get_block_types, get_block, get_block_view
 
 
 class AttachableBlockQuerySet(InheritanceQuerySetMixin, models.QuerySet):
@@ -113,9 +113,10 @@ class AttachableReference(models.Model):
         index_together = (('content_type', 'object_id', 'set_name'), )
 
     def __str__(self):
+        block_type = dict(get_block_types()).get(self.block.block_content_type_id) or 'Undefined'
         instance = '%s.%s (#%s)' % (
             self.content_type.app_label,
             self.content_type.model,
             self.object_id
         )
-        return '%s -> %s' % (instance, self.block)
+        return '%s (%s) => %s' % (self.block, block_type, instance)

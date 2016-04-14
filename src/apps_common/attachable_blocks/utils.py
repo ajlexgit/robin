@@ -1,4 +1,26 @@
 from importlib import import_module
+from django.apps import apps
+from django.core.cache import cache
+from django.contrib.contenttypes.models import ContentType
+
+
+def get_block_types():
+    """
+        Возвращает список content_type_id всех блоков из кэша
+    """
+    from .models import AttachableBlock
+
+    if 'attachable_block_types' not in cache:
+        blocks = []
+        for model in apps.get_models():
+            if issubclass(model, AttachableBlock) and model != AttachableBlock:
+                ct = ContentType.objects.get_for_model(model)
+                blocks.append((ct.pk, str(model._meta.verbose_name)))
+
+        blocks = tuple(sorted(blocks, key=lambda x: x[1]))
+        cache.set('attachable_block_types', blocks, timeout=10 * 60)
+
+    return cache.get('attachable_block_types')
 
 
 def get_block_view(block):
