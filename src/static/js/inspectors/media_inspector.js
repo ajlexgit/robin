@@ -8,8 +8,16 @@
         Не следует создавать экземпляры класса MediaInspector.
         Следует пользоваться уже созданным экземпляром $.mediaInspector.
 
+        В качестве state возвращается наибольший из breakpoint-ов:
+        Например, при point = [768, 1024, 1200], с шириной экрана 1100,
+        будет возвращено 1024. Если все числа в массиве меньше ширины экрана,
+        в state будет ноль.
+
         Требует:
             jquery.utils.js, inspector.js
+
+        Параметры:
+            point: int / array      - breakpoint или массив breakpoint'ов
 
         Пример:
             $.mediaInspector.inspect('body', {
@@ -40,7 +48,19 @@
 
 
         cls._check = function($element, opts) {
-            return $.winWidth() >= opts.point;
+            var state = 0;
+            var winWidth = $.winWidth();
+            if ($.isArray(opts.point)) {
+                opts.point.forEach(function(point) {
+                    if (winWidth >= point) {
+                        state = Math.max(state, point);
+                    }
+                })
+            } else {
+                state = winWidth >= opts.point;
+            }
+
+            return state;
         };
     });
 

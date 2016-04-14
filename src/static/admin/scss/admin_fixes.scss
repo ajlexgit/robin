@@ -24,6 +24,25 @@ body {
   }
 }
 
+// попап на всю ширину
+.popup {
+  #suit-center {
+    width: 100%;
+  }
+
+  .inner-two-columns .inner-right-column {
+    width: 140px;
+
+    .btn {
+      max-width: 100%;
+    }
+  }
+
+  .inner-two-columns .inner-center-column {
+    margin-right: 160px;
+  }
+}
+
 input[type="file"] {
   @include font-size(12px);
 }

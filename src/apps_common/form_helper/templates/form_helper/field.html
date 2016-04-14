@@ -1,4 +1,4 @@
-<div class="field {{ field_classes }}">
+<div class="field {{ field_classes }} {% block add_classes %}{% endblock add_classes %}">
   {% block field %}
     <div class="label-holder">
       <label for="{{ field.id_for_label }}">{{ field.label }}</label>
