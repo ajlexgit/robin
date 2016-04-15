@@ -73,8 +73,8 @@
                 request = kwargs['request']
 
         template.html:
-            <form action="{{ robokassa_form.target }}" method="post">
-              {{ robokassa_form.as_p }}
+            <form action="{{ form.target }}" method="post">
+              {{ form.as_p }}
               <button type="submit">Pay</button>
             </form>
 

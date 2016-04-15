@@ -4,7 +4,6 @@ import sys
 # В M2M удаление некорректно
 # Admin autocomplete_filter
 # Admin: функция "скопировать из"
-# Paeeze модуль
 # возможность вставки в текст колонок
 # Слайдер - блокировка при некотром условии
 # crop each variation
