@@ -12,6 +12,7 @@ FIELD_NAME_MAPPING = {
     'company': 'x_company',
     'address': 'x_address',
     'city': 'x_city',
+    'state': 'x_state',
     'zip': 'x_zip',
     'country': 'x_country',
     'phone': 'x_phone',
