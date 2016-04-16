@@ -102,8 +102,6 @@
 
             this.opts.onInit.call(this);
             this.trigger('init');
-
-            $.mediaInspector.check(this.$block);
         };
 
         /*

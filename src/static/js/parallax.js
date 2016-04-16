@@ -146,8 +146,6 @@
             this.opts.onInit.call(this);
             this.trigger('init');
 
-            $.mediaInspector.check(this.$block);
-
             // Вызов инспектора после загрузки картинки
             this.$bg.onLoaded(function() {
                 $.bgInspector.check(that.$bg);
