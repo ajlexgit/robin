@@ -49,9 +49,22 @@
             }
         });
 
+        cls.INSPECT_CLASS = 'bg-inspect';
         cls.STATE_DATA_KEY = 'bg_inspector_state';
         cls.OPTS_DATA_KEY = 'bg_inspector_opts';
 
+        /*
+            Проверка после загрузки картинки
+         */
+        cls.inspect = function(selector, options) {
+            superclass.inspect.call(this, selector, options);
+
+            var that = this;
+            var $elements = $(selector);
+            $elements.onLoaded(function() {
+                that.check(selector);
+            });
+        };
 
         /*
             Сохраняем inline-стили и сбрасываем размеры

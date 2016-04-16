@@ -43,6 +43,7 @@
             point: 0
         });
 
+        cls.INSPECT_CLASS = 'media-inspect';
         cls.STATE_DATA_KEY = 'media_inspector_state';
         cls.OPTS_DATA_KEY = 'media_inspector_opts';
 

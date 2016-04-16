@@ -14,13 +14,9 @@
             afterCheck: $.noop
         };
 
+        cls.INSPECT_CLASS = '';
         cls.STATE_DATA_KEY = 'inspector_state';
         cls.OPTS_DATA_KEY = 'inspector_opts';
-
-
-        cls.init = function() {
-            this._selectors = [];
-        };
 
         /*
             Получение настроек DOM-элемента
@@ -33,7 +29,7 @@
             Сохранение настроек DOM-элемента
          */
         cls._setOpts = function($element, opts) {
-            $element.first().data(this.OPTS_DATA_KEY, opts);
+            $element.first().data(this.OPTS_DATA_KEY, opts).addClass(this.INSPECT_CLASS);
         };
 
         /*
@@ -112,8 +108,6 @@
                 that._setState($elem, null);
             });
 
-            this._selectors.push(selector.toLocaleLowerCase());
-
             // сразу проверяем элементы
             this.check(selector);
         };
@@ -122,22 +116,18 @@
             Удаление селектора из инспектирования
          */
         cls.ignore = function(selector) {
-            var index = this._selectors.indexOf(selector);
-            if (index >= 0) {
-                $(selector).removeData(this.OPTS_DATA_KEY + ' ' + this.STATE_DATA_KEY);
-                this._selectors.splice(index, 1);
-            }
+            var that = this;
+            $(selector).removeClass(this.INSPECT_CLASS).each(function(i, elem) {
+                var $elem = $(elem);
+                $elem.removeData(that.OPTS_DATA_KEY + ' ' + that.STATE_DATA_KEY);
+            });
         };
 
         /*
             Проверка всех инспектируемых элементов
          */
         cls.checkAll = function() {
-            var i = 0;
-            var selector;
-            while (selector = this._selectors[i++]) {
-                this.check(selector);
-            }
+            this.check('.' + this.INSPECT_CLASS);
         };
     });
 

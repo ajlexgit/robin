@@ -48,6 +48,7 @@
             left: 1
         });
 
+        cls.INSPECT_CLASS = 'visbility-inspect';
         cls.STATE_DATA_KEY = 'visibility_inspector_state';
         cls.OPTS_DATA_KEY = 'visibility_inspector_opts';
 
