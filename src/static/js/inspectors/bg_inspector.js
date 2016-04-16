@@ -71,7 +71,6 @@
             if (($element.prop('tagName') == 'IMG') && !$element.prop('naturalWidth')) {
                 var that = this;
                 $element.onLoaded(function() {
-                    console.log('delayed check');
                     that.check(this);
                 });
             }
@@ -81,10 +80,6 @@
             var parent_asp = $parent.outerWidth() / $parent.outerHeight();
             $element.data('bginspector_aspect', elem_asp);
             $parent.data('bginspector_aspect', parent_asp);
-
-            console.log('image', $element.outerWidth(), $element.outerHeight());
-            console.log('block', $parent.outerWidth(), $parent.outerHeight());
-
             return elem_asp >= parent_asp;
         };
 
@@ -103,6 +98,9 @@
 
     $(window).on('resize.bg_inspector', $.rared(function() {
         $.bgInspector.checkAll();
-    }, 60));
+    }, 60)).on('load', function() {
+       // из-за бага хрома с шириной картинок
+        $.bgInspector.checkAll();
+    });
 
 })(jQuery);
