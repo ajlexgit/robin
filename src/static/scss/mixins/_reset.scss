@@ -132,6 +132,11 @@
   i, em {
     font-style: italic;
   }
+  video {
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+  }
   img {
     height: auto;
     max-width: 100%;

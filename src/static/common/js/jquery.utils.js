@@ -205,9 +205,6 @@
             }
         };
 
-        // Пустой метод инициализации по-умолчанию
-        ClassObj.prototype.init = $.noop;
-
         // Возбуждение исключения. Имеет смысл вызывать в методе init
         ClassObj.prototype.raise = function(message) {
             throw new ClassError(message);

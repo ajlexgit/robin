@@ -19,6 +19,8 @@
         cls.STATE_DATA_KEY = 'inspector_state';
         cls.OPTS_DATA_KEY = 'inspector_opts';
 
+        cls.init = $.noop;
+
         /*
             Получение настроек DOM-элемента
          */
