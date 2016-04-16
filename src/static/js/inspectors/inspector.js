@@ -10,6 +10,7 @@
 
     window.Inspector = Class(Object, function Inspector(cls, superclass) {
         cls.defaults = {
+            checkOnInit: true,
             beforeCheck: $.noop,
             afterCheck: $.noop
         };
@@ -106,10 +107,14 @@
                 var $elem = $(elem);
                 that._setOpts($elem, opts);
                 that._setState($elem, null);
+
+                // сразу проверяем элементы
+                if (opts.checkOnInit) {
+                    that.check($elem);
+                }
             });
 
-            // сразу проверяем элементы
-            this.check(selector);
+            return $elements;
         };
 
         /*

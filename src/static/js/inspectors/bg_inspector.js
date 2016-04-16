@@ -54,19 +54,6 @@
         cls.OPTS_DATA_KEY = 'bg_inspector_opts';
 
         /*
-            Проверка после загрузки картинки
-         */
-        cls.inspect = function(selector, options) {
-            superclass.inspect.call(this, selector, options);
-
-            var that = this;
-            var $elements = $(selector);
-            $elements.onLoaded(function() {
-                that.check(selector);
-            });
-        };
-
-        /*
             Сохраняем inline-стили и сбрасываем размеры
          */
         cls._beforeCheck = function($element, opts) {
@@ -84,7 +71,8 @@
             if (($element.prop('tagName') == 'IMG') && !$element.prop('naturalWidth')) {
                 var that = this;
                 $element.onLoaded(function() {
-                    that.check($element);
+                    console.log('delayed check');
+                    that.check(this);
                 });
             }
 
@@ -93,6 +81,10 @@
             var parent_asp = $parent.outerWidth() / $parent.outerHeight();
             $element.data('bginspector_aspect', elem_asp);
             $parent.data('bginspector_aspect', parent_asp);
+
+            console.log('image', $element.outerWidth(), $element.outerHeight());
+            console.log('block', $parent.outerWidth(), $parent.outerHeight());
+
             return elem_asp >= parent_asp;
         };
 

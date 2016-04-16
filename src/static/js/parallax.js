@@ -102,6 +102,7 @@
 
             // инспектирование пропорций
             $.bgInspector.inspect(this.$bg, {
+                checkOnInit: false,
                 afterCheck: function($element, opts, state) {
                     if (state) {
                         // картинка шире
