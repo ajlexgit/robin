@@ -87,6 +87,10 @@ class SplitDateTimeWidget(forms.SplitDateTimeWidget):
         return [None, None]
 
 
+class PhoneWidget(forms.TextInput):
+    input_type = 'tel'
+
+
 class ChoiceInputRenderMixin:
     def render(self, name=None, value=None, attrs=None, choices=()):
         if self.id_for_label:

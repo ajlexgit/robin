@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from form_helper import FormHelperMixin
+from libs.widgets import PhoneWidget
 from .models import Message
 
 
@@ -14,10 +15,10 @@ class ContactForm(FormHelperMixin, forms.ModelForm):
             'name': forms.TextInput(attrs={
                 'placeholder': _('Name'),
             }),
-            'phone': forms.TextInput(attrs={
+            'phone': PhoneWidget(attrs={
                 'placeholder': _('Phone'),
             }),
-            'email': forms.TextInput(attrs={
+            'email': forms.EmailInput(attrs={
                 'placeholder': _('E-mail'),
             }),
             'message': forms.Textarea(attrs={
