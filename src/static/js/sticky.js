@@ -292,6 +292,11 @@
 
     $window.on('scroll.sticky', applyStickies);
     $window.on('load.sticky', applyStickies);
+    $window.on('resize.sticky', $.rared(function() {
+        $.each(stickies, function(i, item) {
+            item.updateWidth();
+        });
+    }, 100));
 
     $.fn.sticky = function(options) {
         return this.each(function() {
