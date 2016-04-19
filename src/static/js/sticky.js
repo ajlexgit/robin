@@ -15,6 +15,7 @@
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
             onInit          - функция, выполняемая после инициализации объекта.
+            onDisable       - функция, выполняемая при отключении плагина
 
         События:
             // Инициализация объекта
@@ -47,7 +48,8 @@
             bottomOffset: 0,
             minEnabledWidth: 768,
 
-            onInit: $.noop
+            onInit: $.noop,
+            onDisable: $.noop
         };
 
         cls.DATA_KEY = 'sticky';
@@ -159,6 +161,8 @@
                     marginTop: ''
                 })
             }
+
+            this.opts.onDisable.call(this);
         };
 
         /*
@@ -293,8 +297,13 @@
     $window.on('scroll.sticky', applyStickies);
     $window.on('load.sticky', applyStickies);
     $window.on('resize.sticky', $.rared(function() {
+        var win_scroll = $window.scrollTop();
         $.each(stickies, function(i, item) {
             item.updateWidth();
+
+            $.animation_frame(function() {
+                item.process(win_scroll);
+            })(item.$block.get(0));
         });
     }, 100));
 

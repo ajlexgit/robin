@@ -15,6 +15,7 @@
             minEnabledWidth - минимальная ширина экрана, при которой элемент перемещается
 
             onInit          - функция, выполняемая после инициализации объекта.
+            onDisable       - функция, выполняемая при отключении плагина
 
         События:
             // Инициализация объекта
@@ -45,7 +46,8 @@
             bgHeight: 150,
             minEnabledWidth: 768,
 
-            onInit: $.noop
+            onInit: $.noop,
+            onDisable: $.noop
         };
 
         cls.DATA_KEY = 'parallax';
@@ -211,6 +213,8 @@
                 minHeight: '',
                 top: ''
             });
+
+            this.opts.onDisable.call(this);
         };
 
         /*
@@ -258,6 +262,7 @@
 
     $window.on('scroll.parallax', applyParallaxes);
     $window.on('load.parallax', applyParallaxes);
+    $window.on('resize.parallax', $.rared(applyParallaxes, 100));
 
     $.fn.parallax = function(options) {
         return this.each(function() {

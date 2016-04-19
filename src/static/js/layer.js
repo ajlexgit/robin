@@ -12,12 +12,9 @@
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
             onInit          - функция, выполняемая после инициализации объекта.
+            onDisable       - функция, выполняемая при отключении плагина
             calcOffset      - функция, рассчитывающая смещение блока.
                               Если вернет false - блок останется на месте.
-
-        События:
-            // Инициализация объекта
-            init
 
         Пример:
             // Двигаем блок внутри контейнера #ctnr.
@@ -61,6 +58,7 @@
             minEnabledWidth: 768,
 
             onInit: $.noop,
+            onDisable: $.noop,
             calcOffset: function(win_scroll) {
                 return this._initial + parseInt(0.5 * win_scroll)
             }
@@ -69,11 +67,11 @@
         cls.DATA_KEY = 'layer';
 
 
-        cls.init = function(block, options) {
+        cls.init = function(element, options) {
             superclass.init.call(this);
 
-            this.$block = $(block).first();
-            if (!this.$block.length) {
+            this.$elem = $(element).first();
+            if (!this.$elem.length) {
                 return this.raise('block not found');
             }
 
@@ -84,17 +82,17 @@
             }
 
             // отвязывание старого экземпляра
-            var old_instance = this.$block.data(this.DATA_KEY);
+            var old_instance = this.$elem.data(this.DATA_KEY);
             if (old_instance) {
                 old_instance.destroy();
             }
 
             // получаем начальное положение
             if (this.opts.strategy == 'top') {
-                this._initial = parseInt(this.$block.css('top')) || 0;
+                this._initial = parseInt(this.$elem.css('top')) || 0;
             } else {
-                var matrix = this.$block.css('transform');
-                var match = /(\d+)\)/.exec(matrix);
+                var matrix = this.$elem.css('transform');
+                var match = /([^ ]+)\)/.exec(matrix);
                 if (match) {
                     this._initial = parseInt(match[1]) || 0;
                 } else {
@@ -102,13 +100,20 @@
                 }
             }
 
+            // Сохраняем объект в массив для использования в событиях
+            layers.push(this);
+
+            this.$elem.data(this.DATA_KEY, this);
+
+            this.opts.onInit.call(this);
+
             // Включение и выключение параллакса в зависимости
             // от ширины окна браузера
             var that = this;
-            $.mediaInspector.inspect(this.$block, {
+            $.mediaInspector.inspect(this.$elem, {
                 point: that.opts.minEnabledWidth,
-                afterCheck: function($block, opts, state) {
-                    var old_state = this.getState($block);
+                afterCheck: function($elem, opts, state) {
+                    var old_state = this.getState($elem);
                     if (state === old_state) {
                         return
                     }
@@ -116,18 +121,10 @@
                     if (state) {
                         that.enable();
                     } else {
-                        that.disable()
+                        that.disable();
                     }
                 }
             });
-
-            // Сохраняем объект в массив для использования в событиях
-            layers.push(this);
-
-            this.$block.data(this.DATA_KEY, this);
-
-            this.opts.onInit.call(this);
-            this.trigger('init');
         };
 
         /*
@@ -135,8 +132,8 @@
          */
         cls.destroy = function() {
             this.disable();
-            $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(this.DATA_KEY);
+            $.mediaInspector.ignore(this.$elem);
+            this.$elem.removeData(this.DATA_KEY);
 
             var index = layers.indexOf(this);
             if (index >= 0) {
@@ -170,10 +167,12 @@
             }
 
             if (this.opts.strategy == 'top') {
-                this.$block.css('top', this._initial);
+                this.$elem.css('top', this._initial);
             } else {
-                this.$block.css('transform', 'translateY(' + this._initial + 'px)');
+                this.$elem.css('transform', 'translateY(' + this._initial + 'px)');
             }
+
+            this.opts.onDisable.call(this);
         };
 
         /*
@@ -193,9 +192,9 @@
             }
 
             if (this.opts.strategy == 'top') {
-                this.$block.css('top', offset + 'px');
+                this.$elem.css('top', offset + 'px');
             } else {
-                this.$block.css('transform', 'translateY(' + offset + 'px)');
+                this.$elem.css('transform', 'translateY(' + offset + 'px)');
             }
         };
     });
@@ -210,12 +209,13 @@
         $.each(layers, function(i, item) {
             $.animation_frame(function() {
                 item.process(win_scroll);
-            })(item.$block.get(0));
+            })(item.$elem.get(0));
         });
     };
 
     $window.on('scroll.layers', updateLayers);
     $window.on('load.layers', updateLayers);
+    $window.on('resize.layers', $.rared(updateLayers, 100));
 
     $.fn.layer = function(options) {
         return this.each(function() {
