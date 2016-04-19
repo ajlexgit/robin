@@ -114,24 +114,31 @@
                         } else {
                             $element.css({
                                 width: '',
-                                height: '100%'
+                                height: '100.5%'
                             })
                         }
                     } else {
                         // картинка выше
-                        var $parent = $element.parent();
-                        var elem_asp = $element.data('bginspector_aspect');
-                        var parent_asp = $parent.data('bginspector_aspect');
+                        if (that._enabled) {
+                            var $parent = $element.parent();
+                            var elem_asp = $element.data('bginspector_aspect');
+                            var parent_asp = $parent.data('bginspector_aspect');
 
-                        var relation = 100 * (parent_asp / elem_asp);
-                        if (relation > that.opts.bgHeight) {
-                            $element.css({
-                                width: '100%',
-                                height: ''
-                            })
+                            var relation = 100 * (parent_asp / elem_asp);
+                            if (relation > that.opts.bgHeight) {
+                                $element.css({
+                                    width: '100.5%',
+                                    height: ''
+                                })
+                            } else {
+                                $element.css({
+                                    width: 100 * that.opts.bgHeight / relation + '%',
+                                    height: ''
+                                })
+                            }
                         } else {
                             $element.css({
-                                width: 100 * that.opts.bgHeight / relation + '%',
+                                width: '100.5%',
                                 height: ''
                             })
                         }
