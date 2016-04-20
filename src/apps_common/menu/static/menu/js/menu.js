@@ -81,7 +81,9 @@
 
             if (this.opts.fullHeight) {
                 // на всю высоту окна
-                $.winHeight(this.$menu);
+                this.$menu.height('auto');
+                var default_height = this.$menu.outerHeight();
+                this.$menu.outerHeight(Math.max(default_height, $.winHeight()));
             }
 
             $(this.opts.buttonSelector).addClass(this.opts.buttonActiveClass);
@@ -103,11 +105,14 @@
 
     $(window).on('resize.menu', $.rared(function() {
         var winWidth = $.winWidth();
+        var winHeight = $.winHeight();
         $.each(menus, function() {
             if (this.$menu.hasClass(this.opts.menuActiveClass)) {
                 if (this.opts.fullHeight) {
                     // на всю высоту окна
-                    $.winHeight(this.$menu);
+                    this.$menu.height('auto');
+                    var default_height = this.$menu.outerHeight();
+                    this.$menu.outerHeight(Math.max(default_height, winHeight));
                 }
 
                 this.trigger('resize', winWidth);

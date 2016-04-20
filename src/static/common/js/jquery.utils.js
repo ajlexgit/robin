@@ -1,13 +1,15 @@
 (function($) {
 
-    var $window = $(window);
-
     /*
         Получение ширины окна, включая ширину вертикального скроллбара.
         Для MediaQueries.
      */
     $.winWidth = function() {
         return Math.max(window.innerWidth || 0,  document.documentElement.clientWidth);
+    };
+
+    $.winHeight = function() {
+        return Math.max(window.innerHeight || 0, document.documentElement.clientHeight);
     };
 
     // ======================================================================================
@@ -692,60 +694,6 @@
         parent1.insertBefore(elm2, next1);
         parent2.insertBefore(elm1, next2);
     };
-
-    /*
-
-        Плагин, устанавливающий высоту элемента равной высоте окна,
-        при условии, что позволяет высота содержимого.
-
-        Пример:
-            $.winHeight('.block', 0.9);      - разовая установка высоты на 90% высоты окна
-            $('.block').winHeight(0.9);      - обновляемая высота d 90% высоты окна
-
-     */
-    var winBlocks = [];
-    $.winHeight = function($blocks, multiplier) {
-        var win_height = document.documentElement.clientHeight;
-
-        if ($.isFunction(multiplier)) {
-            multiplier = multiplier() || 1;
-        } else {
-            multiplier = multiplier || 1;
-        }
-
-        if (!$blocks.jquery) {
-            $blocks = $($blocks);
-        }
-
-        return $blocks.each(function() {
-            var $block = $(this).height('auto');
-            var block_height = $block.outerHeight();
-            var final_height = Math.round(win_height * multiplier);
-            $block.outerHeight(Math.max(block_height, final_height));
-        })
-    };
-
-    // Обновление высот блоков при ресайзе
-    $window.on('resize.winHeight', $.rared(function() {
-        $.each(winBlocks, function(index, winBlock) {
-            $.winHeight(winBlock.$block, winBlock.multiplier);
-        });
-    }, 50));
-
-    $.fn.winHeight = function(multiplier) {
-        return this.each(function() {
-            var $block = $(this);
-
-            var winBlock = {
-                $block: $block,
-                multiplier: multiplier
-            };
-            winBlocks.push(winBlock);
-
-            $.winHeight($block, multiplier);
-        });
-    };
-
 
     /*
         Плагин, вычисляющий максимальную высоту элементов текущей коллекции.
