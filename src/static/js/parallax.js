@@ -83,6 +83,13 @@
                 overflow: 'hidden'
             });
 
+            // Сохраняем объект в массив для использования в событиях
+            parallaxes.push(this);
+
+            this.$block.data(this.DATA_KEY, this);
+            this.opts.onInit.call(this);
+            this.trigger('init');
+
             // Включение и выключение параллакса в зависимости
             // от ширины окна браузера
             var that = this;
@@ -148,16 +155,8 @@
                 }
             });
 
-            // Сохраняем объект в массив для использования в событиях
-            parallaxes.push(this);
-
-            this.$block.data(this.DATA_KEY, this);
-
-            this.opts.onInit.call(this);
-            this.trigger('init');
-
             // Вызов инспектора после загрузки картинки
-            this.$bg.onLoaded(function() {
+            this.$bg.onLoaded(true, function() {
                 $.bgInspector.check(that.$bg);
                 that.$bg.show();
             });

@@ -27,7 +27,7 @@
                 calcOffset: function(win_scroll) {
                     var ctnr_top = this.$ctnr.offset().top;
                     var ctnr_height = this.$ctnr.outerHeight();
-                    var win_height = document.documentElement.clientHeight;
+                    var win_height = $.winHeight();
 
                     var from_point = ctnr_top - win_height;
                     var to_point = ctnr_top + ctnr_height;

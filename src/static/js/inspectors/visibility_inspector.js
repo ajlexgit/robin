@@ -54,8 +54,8 @@
 
 
         cls._check = function($element, opts) {
-            var vpWidth = document.documentElement.clientWidth;
-            var vpHeight = document.documentElement.clientHeight;
+            var vpWidth = $.winWidth();
+            var vpHeight = $.winHeight();
             var rect = $element.get(0).getBoundingClientRect();
 
             var visible = rect.bottom >= opts.bottom;
