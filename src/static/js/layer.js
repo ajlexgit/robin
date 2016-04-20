@@ -167,9 +167,9 @@
             }
 
             if (this.opts.strategy == 'top') {
-                this.$elem.css('top', this._initial);
+                this.$elem.css('top', '');
             } else {
-                this.$elem.css('transform', 'translateY(' + this._initial + 'px)');
+                this.$elem.css('transform', '');
             }
 
             this.opts.onDisable.call(this);
