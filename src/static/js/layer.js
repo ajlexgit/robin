@@ -33,7 +33,7 @@
                     var to_point = ctnr_top + ctnr_height;
 
                     if ((win_scroll >= from_point) && (win_scroll <= to_point)) {
-                        return this._initial + parseInt(0.5 * (win_scroll - from_point));
+                        return parseInt(0.5 * (win_scroll - from_point));
                     } else {
                         return false;
                     }
@@ -60,7 +60,7 @@
             onInit: $.noop,
             onDisable: $.noop,
             calcOffset: function(win_scroll) {
-                return this._initial + parseInt(0.5 * win_scroll)
+                return parseInt(0.5 * win_scroll)
             }
         };
 
@@ -87,24 +87,9 @@
                 old_instance.destroy();
             }
 
-            // получаем начальное положение
-            if (this.opts.strategy == 'top') {
-                this._initial = parseInt(this.$elem.css('top')) || 0;
-            } else {
-                var matrix = this.$elem.css('transform');
-                var match = /([^ ]+)\)/.exec(matrix);
-                if (match) {
-                    this._initial = parseInt(match[1]) || 0;
-                } else {
-                    this._initial = 0;
-                }
-            }
-
             // Сохраняем объект в массив для использования в событиях
             layers.push(this);
-
             this.$elem.data(this.DATA_KEY, this);
-
             this.opts.onInit.call(this);
 
             // Включение и выключение параллакса в зависимости
