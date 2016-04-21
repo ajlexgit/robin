@@ -1,4 +1,5 @@
 from importlib import import_module
+from django.db import models
 from django.apps import apps
 from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
@@ -21,6 +22,35 @@ def get_block_types():
         cache.set('attachable_block_types', blocks, timeout=10 * 60)
 
     return cache.get('attachable_block_types')
+
+
+def get_visible_references(instance, set_name=None):
+    """
+        Получение связей на видимые блоки для сущности
+    """
+    from .models import AttachableReference
+
+    ct = ContentType.objects.get_for_model(instance)
+    query = models.Q(
+        content_type=ct,
+        object_id=instance.pk,
+        block__visible=True
+    )
+    if set_name:
+        query &= models.Q(set_name=set_name)
+
+    return AttachableReference.objects.filter(query)
+
+
+def get_last_updated(instance):
+    """
+        Получение даты последнего изменения подключаемого блока,
+        привязанного к сущности
+    """
+    from .models import AttachableBlock
+    attached_blocks = get_visible_references(instance).values_list('block', flat=True)
+    result = AttachableBlock.objects.filter(pk__in=attached_blocks).aggregate(models.Max('updated'))
+    return result['updated__max']
 
 
 def get_block_view(block):

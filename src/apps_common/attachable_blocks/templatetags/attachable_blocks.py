@@ -3,7 +3,7 @@ from django.db import models
 from django.template import Library
 from django.contrib.contenttypes.models import ContentType
 from ..models import AttachableReference
-from ..utils import get_block, get_block_view
+from ..utils import get_block, get_block_view, get_visible_references
 
 register = Library()
 
@@ -31,17 +31,8 @@ def render_attached_blocks(context, entity, set_name=None):
     if not request:
         return ''
 
-    ct = ContentType.objects.get_for_model(entity)
-    query = models.Q(
-        content_type=ct,
-        object_id=entity.pk,
-        block__visible=True
-    )
-    if set_name:
-        query &= models.Q(set_name=set_name)
-
     output = []
-    for blockref in AttachableReference.objects.filter(query):
+    for blockref in get_visible_references(entity, set_name=set_name):
         block = get_block(blockref.block_id)
         if not block:
             continue

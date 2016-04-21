@@ -119,4 +119,4 @@ class AttachableReference(models.Model):
             self.content_type.model,
             self.object_id
         )
-        return '%s (%s) => %s' % (self.block, block_type, instance)
+        return '%s (%s) → %s' % (self.block, block_type, instance)
