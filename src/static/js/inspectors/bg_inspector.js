@@ -71,7 +71,9 @@
             if (($element.prop('tagName') == 'IMG') && !$element.prop('naturalWidth')) {
                 var that = this;
                 $element.onLoaded(function() {
-                    that.check(this);
+                    if ($element.prop('naturalWidth')) {
+                        that.check(this);
+                    }
                 });
             }
 
