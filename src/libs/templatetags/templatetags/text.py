@@ -10,7 +10,7 @@ from django.template import Library, defaultfilters
 
 register = Library()
 
-re_nbsp = re.compile('\\b(\w{1,3})\s+')
+re_nbsp = re.compile('(?<![\w’\'"])([\w’]{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
 
@@ -65,15 +65,38 @@ def strip_tags_except_filter(html, args):
     return re_clean_newlines.sub('\n', result).replace('\xa0', '&nbsp;')
 
 
+def _typograf_replace(text):
+    last_pos = -1
+    length = 1
+
+    def sub_func(match):
+        nonlocal last_pos, length
+        value = match.group(1)
+
+        if last_pos == match.start():
+            length += 1
+        else:
+            length = 1
+
+        if length == 2:
+            return '%s ' % value
+
+        last_pos = match.end()
+        return '%s&nbsp;' % value
+
+    return re_nbsp.sub(sub_func, text)
+
+
 @register.filter(is_safe=True)
 def typograf(html):
     """
         Удаление висячих предлогов
     """
+
     soup = Soup(html, 'html5lib')
     for tag in soup.findAll(text=True):
         if re_nbsp.search(tag):
-            new_tag = soup.new_string(unescape(re_nbsp.sub('\\1&nbsp;', tag)))
+            new_tag = soup.new_string(unescape(_typograf_replace(tag)))
             tag.replace_with(new_tag)
 
     return soup.body.decode_contents().replace('\xa0', '&nbsp;')
