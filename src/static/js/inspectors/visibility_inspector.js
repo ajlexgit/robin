@@ -88,6 +88,8 @@
         $.visibilityInspector.checkAll();
     }, 100)).on('resize.visibility_inspector', $.rared(function() {
         $.visibilityInspector.checkAll();
-    }, 100));
+    }, 100)).on('load.visibility_inspector', function() {
+        $.visibilityInspector.checkAll();
+    });
 
 })(jQuery);

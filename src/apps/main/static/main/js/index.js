@@ -31,11 +31,11 @@
             loop: false,
             itemsPerSlide: function() {
                 var winWidth = $.winWidth();
-                if (winWidth >= 1024) {
+                if (winWidth > 1024) {
                     return 4;
-                } else if (winWidth >= 640) {
+                } else if (winWidth > 640) {
                     return 3;
-                } else if (winWidth >= 400) {
+                } else if (winWidth > 400) {
                     return 2;
                 } else {
                     return 1;

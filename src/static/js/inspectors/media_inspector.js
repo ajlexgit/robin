@@ -53,12 +53,12 @@
             var winWidth = $.winWidth();
             if ($.isArray(opts.point)) {
                 opts.point.forEach(function(point) {
-                    if (winWidth >= point) {
+                    if (winWidth > point) {
                         state = Math.max(state, point);
                     }
                 })
             } else {
-                state = winWidth >= opts.point;
+                state = winWidth > opts.point;
             }
 
             return state;
