@@ -4,6 +4,10 @@
   position: relative;
   z-index: 1;
   @include no_fontsize;
+
+  &.one-slide .slider-item {
+    @include user-select(auto);
+  }
 }
 
 .slider-list-wrapper {

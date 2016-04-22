@@ -358,6 +358,12 @@
             this.slideTo(this.getCurrentSlide(), 'instant', false);
 
             this.afterSetItemsPerSlide(itemsPerSlide);
+
+            if (this.$slides.length == 1) {
+                this.$root.addClass('one-slide');
+            } else {
+                this.$root.removeClass('one-slide');
+            }
         };
 
         /*
