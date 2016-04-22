@@ -67,6 +67,26 @@
             }).on('dragend', function(evt) {
                 that.onStopDrag(slider, evt);
             });
+
+            this._checkUnselectable(slider);
+        };
+
+        /*
+            Обновление кнопок при изменении кол-ва элементов в слайде
+         */
+        cls.afterSetItemsPerSlide = function(slider) {
+            this._checkUnselectable(slider);
+        };
+
+        /*
+            Проверка, нужно ли блокировать выделение текста
+         */
+        cls._checkUnselectable = function(slider) {
+            if (!this.opts.dragOneSlide && (slider.$slides.length == 1)) {
+                slider.$root.removeClass('unselectable');
+            } else {
+                slider.$root.addClass('unselectable');
+            }
         };
 
         /*

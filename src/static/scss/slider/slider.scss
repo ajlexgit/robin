@@ -5,8 +5,8 @@
   z-index: 1;
   @include no_fontsize;
 
-  &.one-slide .slider-item {
-    @include user-select(auto);
+  &.unselectable .slider-item {
+    @include unselectable;
   }
 }
 
@@ -42,7 +42,6 @@
   position: relative;
   max-width: none;
   z-index: 1;
-  @include unselectable;
 }
 
 .no-slider {
