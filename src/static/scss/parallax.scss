@@ -10,7 +10,7 @@
   z-index: 1;
   text-align: center;
   @include transform(translate(-50%, -50%));
-  @include backface-visibility(hidden);
+  // @include backface-visibility(hidden);
 
   @at-root .js & {
     display: none;
