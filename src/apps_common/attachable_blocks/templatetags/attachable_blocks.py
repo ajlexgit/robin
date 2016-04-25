@@ -1,8 +1,5 @@
 from django.apps import apps
-from django.db import models
 from django.template import Library
-from django.contrib.contenttypes.models import ContentType
-from ..models import AttachableReference
 from ..utils import get_block, get_block_view, get_visible_references
 
 register = Library()
