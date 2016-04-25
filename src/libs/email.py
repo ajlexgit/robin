@@ -4,7 +4,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, BadHeaderError
 
 
-def send(request, recievers, subject, template, context=None):
+def send(request, receivers, subject, template, context=None):
     """
         Отправка получателям отрендеренного шаблона.
 
@@ -14,7 +14,7 @@ def send(request, recievers, subject, template, context=None):
         Функция возвращает True / False.
 
         Пример:
-            send(request, ('reciever1@ya.ru', 'reciever2@ya.ru'),
+            send(request, ('receiver1@ya.ru', 'receiver2@ya.ru'),
                 subject=_('Message from {domain}'),
                 template='module/mails/email.html',
                 context={
@@ -22,7 +22,7 @@ def send(request, recievers, subject, template, context=None):
                 }
             )
     """
-    if not recievers:
+    if not receivers:
         return True
 
     # Добавляем в контекст текущий домен
@@ -34,7 +34,7 @@ def send(request, recievers, subject, template, context=None):
 
     try:
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
-            recipient_list=recievers,
+            recipient_list=receivers,
             html_message=message
         )
     except BadHeaderError:

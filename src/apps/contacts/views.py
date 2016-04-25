@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.utils.translation import ugettext_lazy as _
 from seo import Seo
 from libs.email import send
-from .models import ContactsConfig, Address, NotifyReciever
+from .models import ContactsConfig, Address, NotifyReceiver
 from .forms import ContactForm
 
 
@@ -38,8 +38,8 @@ class IndexView(TemplateView):
             message.referer = escape(referer)
             message.save()
 
-            recievers = NotifyReciever.objects.all().values_list('email', flat=True)
-            send(request, recievers,
+            receivers = NotifyReceiver.objects.all().values_list('email', flat=True)
+            send(request, receivers,
                 subject=_('Message from {domain}'),
                 template='contacts/mails/message.html',
                 context={

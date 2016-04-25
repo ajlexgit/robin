@@ -464,14 +464,14 @@ class OrderRecord(models.Model):
         return '%s (x%s)' % (self.product.title, self.count)
 
 
-class NotifyReciever(models.Model):
+class NotifyReceiver(models.Model):
     """ Получаети писем о новом оплаченном заказе """
-    config = models.ForeignKey(ShopConfig, related_name='recievers')
+    config = models.ForeignKey(ShopConfig, related_name='receivers')
     email = models.EmailField(_('e-mail'))
 
     class Meta:
-        verbose_name = _('notify reciever')
-        verbose_name_plural = _('notify recievers')
+        verbose_name = _('notify receiver')
+        verbose_name_plural = _('notify receivers')
 
     def __str__(self):
         return self.email

@@ -6,7 +6,7 @@ from django.db.models.signals import post_delete
 from django.db.models.query import ValuesListQuerySet
 from django.utils.translation import ugettext_lazy as _
 from libs.email import send
-from ..models import ShopCategory, ShopProduct, ShopOrder, NotifyReciever
+from ..models import ShopCategory, ShopProduct, ShopOrder, NotifyReceiver
 from . import products_changed, categories_changed, order_confirmed, order_cancelled, order_paid
 
 
@@ -132,9 +132,9 @@ def order_paid_handler(sender, **kwargs):
 
     request = kwargs.get('request')
 
-    recievers = NotifyReciever.objects.all().values_list('email', flat=True)
-    if recievers:
-        send(request, recievers,
+    receivers = NotifyReceiver.objects.all().values_list('email', flat=True)
+    if receivers:
+        send(request, receivers,
             subject=_('New order at {domain}'),
             template='shop/mails/new_order.html',
             context={

@@ -41,14 +41,14 @@ class Address(models.Model):
         return ', '.join(filter(bool, (self.city, self.address)))
 
 
-class NotifyReciever(models.Model):
+class NotifyReceiver(models.Model):
     """ Получатели писем с информацией о отправленных сообщениях """
-    config = models.ForeignKey(ContactsConfig, related_name='recievers')
+    config = models.ForeignKey(ContactsConfig, related_name='receivers')
     email = models.EmailField(_('e-mail'))
 
     class Meta:
-        verbose_name = _('notify reciever')
-        verbose_name_plural = _('notify recievers')
+        verbose_name = _('notify receiver')
+        verbose_name_plural = _('notify receivers')
 
     def __str__(self):
         return self.email
