@@ -156,7 +156,7 @@ $mobile_active_color: $menu_active_color;
   &.active {
     &:before {
       top: 50%;
-      box-shadow: transparent 0 0 0 0;
+      @include box-shadow(transparent 0 0 0 0);
       @include transform(translate3d(0, -50%, 0) rotate(225deg));
       @include transition-delay(0.1s, 0.1s, 0s, 0s);
     }

@@ -13,6 +13,7 @@ register = Library()
 re_nbsp = re.compile('(?<![\w’\'"])([\w’]{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
+re_not_numbers = re.compile('[^\d]+')
 
 
 def get_hybernator():
@@ -158,3 +159,11 @@ def softhyphen(value):
         result = hybernate_string(value)
         cache.set(key, result, timeout=6*3600)
         return result
+
+
+@register.filter(is_safe=True)
+def numbers(value):
+    """
+        Оставляет только цифры
+    """
+    return re_not_numbers.sub('', value)

@@ -452,11 +452,11 @@
                         that.$element.off('click.drager.prevent' + that.id);
                     }, 0);
                 }
-            } else if (isTouch && isAndroid) {
+            } /*else if (isTouch && isAndroid) {
                 // Из-за бага на Android, предотвращение touchstart блокирует
                 // событие click. Вызываем его сами.
                 $(event.target).trigger('click');
-            }
+            }*/
 
             var evt = MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
@@ -511,7 +511,7 @@
                     if (isMultiTouch(event)) return;
 
                     // Баг двухсекундной задержки на Android
-                    if (isAndroid) event.preventDefault();
+                    // if (isAndroid) event.preventDefault();
 
                     return that.mouseDownHandler.call(that, event);
                 });
