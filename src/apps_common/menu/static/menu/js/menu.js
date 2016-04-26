@@ -121,14 +121,21 @@
     }, 100));
 
 
-    // главное меню на мобиле
-    window.menu = Menu({
-        fullHeight: true
-    }).on('resize', function(winWidth) {
-        // скрытие на больших экранах
-        if (winWidth >= 1024) {
-            this.hide();
+    $(document).ready(function() {
+        var $menu = $('#mobile-menu');
+        if (!$menu.length) {
+            return
         }
+
+        // главное меню на мобиле
+        window.menu = Menu({
+            fullHeight: true
+        }).on('resize', function(winWidth) {
+            // скрытие на больших экранах
+            if (winWidth >= 1024) {
+                this.hide();
+            }
+        });
     });
 
 })(jQuery);
