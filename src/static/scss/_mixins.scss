@@ -54,14 +54,14 @@
   }
 
   @if $from > 0 {
-    $line: "(min-width: #{$from + 1px})";
+    $line: "(min-width: #{$from})";
   }
 
   @if $to > 0 {
     @if $from > 0 {
-      $line: "#{$line} and (max-width: #{$to})";
+      $line: "#{$line} and (max-width: #{$to - 1px})";
     } @else {
-      $line: "(max-width: #{$to})";
+      $line: "(max-width: #{$to - 1px})";
     }
   }
 

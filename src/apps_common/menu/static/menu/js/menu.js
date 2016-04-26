@@ -126,7 +126,7 @@
         fullHeight: true
     }).on('resize', function(winWidth) {
         // скрытие на больших экранах
-        if (winWidth > 1024) {
+        if (winWidth >= 1024) {
             this.hide();
         }
     });
