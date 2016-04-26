@@ -1,4 +1,3 @@
-import io
 import os
 import zipfile
 from datetime import datetime
@@ -35,10 +34,7 @@ class Command(BaseCommand):
                     ziph.write(abspath, os.path.join('media', relpath))
 
             # db dump
-            buffer = io.StringIO()
-            call_command('dump', stdout=buffer)
-            buffer.seek(0)
-            ziph.writestr('dump.json', buffer.read())
-            buffer.close()
+            call_command('dump', output='dump.json')
 
+        os.unlink('dump.json')
         self.stdout.write('backup saved to "%s"' % backup_path)
