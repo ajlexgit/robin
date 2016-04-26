@@ -37,9 +37,10 @@
       <div class="grid-block">
         <ul class="address-list">
           {% for addr in addresses %}
-            <li class="address" data-lat="{{ addr.coords.lat }}" data-lng="{{ addr.coords.lng }}">
-              <p>{{ addr }}</p>
-              <p>{{ addr.phones }}</p>
+            <li class="address" data-lat="{{ addr.coords.lat }}" data-lng="{{ addr.coords.lng }}"
+                itemscope itemtype="http://schema.org/PostalAddress">
+              <p itemprop="streetAddress">{{ addr }}</p>
+              <p itemprop="telephone">{{ addr.phones }}</p>
             </li>
           {% endfor %}
         </ul>
