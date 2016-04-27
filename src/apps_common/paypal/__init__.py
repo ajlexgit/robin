@@ -83,6 +83,7 @@
             def payment_success(sender, **kwargs):
                 invoice = kwargs['invoice']
                 request = kwargs['request']
+                items = kwargs['items']
 
             @receiver(paypal_error)
             def payment_error(sender, **kwargs):

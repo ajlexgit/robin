@@ -126,6 +126,9 @@ class PaymentForm(BasePayPalForm):
     # ID заказа
     invoice = forms.CharField(max_length=127)
 
+    # ID товара
+    item_number = forms.CharField(max_length=127, required=False)
+
     # цена товара
     amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
 
@@ -153,7 +156,7 @@ class AddToCartForm(BasePayPalForm):
     invoice = forms.CharField(max_length=127)
 
     # ID товара
-    item_number = forms.CharField(max_length=127)
+    item_number = forms.CharField(max_length=127, required=False)
 
     # цена товара
     amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
