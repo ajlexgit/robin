@@ -116,8 +116,6 @@ def result(request):
                     request=urlencoded,
                     message='Not verified',
                 )
-
-            return redirect(conf.CANCEL_URL)
     else:
         # log form error
         Log.objects.create(
