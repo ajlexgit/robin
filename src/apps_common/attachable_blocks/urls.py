@@ -4,7 +4,7 @@ from . import views_ajax
 
 urlpatterns = [
     url(
-        r'^async/$', views_ajax.AsyncLoadView.as_view(),
-        name='async'
+        r'^ajax/$', views_ajax.AsyncLoadView.as_view(),
+        name='ajax'
     ),
 ]

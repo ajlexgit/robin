@@ -96,9 +96,6 @@ class AttachableReference(models.Model):
     entity = GenericForeignKey('content_type', 'object_id')
 
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'), related_name='references')
-    noindex = models.BooleanField(_('noIndex'), default=True,
-        help_text=_('wraps block with &lt;!--noidex--&gt;')
-    )
     ajax = models.BooleanField(_('AJAX load'), default=False,
         help_text=_('load block through AJAX')
     )

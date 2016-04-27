@@ -5,7 +5,7 @@ from ..utils import get_block, get_block_view, get_visible_references
 register = Library()
 
 
-def block_output(request, block, noindex=False, ajax=False, **kwargs):
+def block_output(request, block, ajax=False, **kwargs):
     block_view = get_block_view(block)
     if not block_view:
         return ''
@@ -16,10 +16,7 @@ def block_output(request, block, noindex=False, ajax=False, **kwargs):
     else:
         block_html = block_view(request, block, **kwargs)
 
-    if noindex:
-        return ''.join(('<!--noindex-->', block_html, '<!--/noindex-->',))
-    else:
-        return block_html
+    return block_html
 
 
 @register.simple_tag(takes_context=True)
@@ -34,7 +31,7 @@ def render_attached_blocks(context, entity, set_name=None):
         if not block:
             continue
 
-        block_html = block_output(request, block, blockref.noindex, blockref.ajax)
+        block_html = block_output(request, block, blockref.ajax)
         if block_html:
             output.append(block_html)
 
@@ -42,7 +39,7 @@ def render_attached_blocks(context, entity, set_name=None):
 
 
 @register.simple_tag(takes_context=True)
-def render_attachable_block(context, block, noindex=False, ajax=False, **kwargs):
+def render_attachable_block(context, block, ajax=False, **kwargs):
     request = context.get('request')
     if not request:
         return ''
@@ -51,11 +48,11 @@ def render_attachable_block(context, block, noindex=False, ajax=False, **kwargs)
     if not real_block or not real_block.visible:
         return ''
 
-    return block_output(request, real_block, noindex, ajax, **kwargs)
+    return block_output(request, real_block, ajax, **kwargs)
 
 
 @register.simple_tag(takes_context=True)
-def render_first_attachable_block(context, model, noindex=False, ajax=False, **kwargs):
+def render_first_attachable_block(context, model, ajax=False, **kwargs):
     if not '.' in model:
         return ''
 
@@ -69,4 +66,4 @@ def render_first_attachable_block(context, model, noindex=False, ajax=False, **k
     if not block:
         return ''
 
-    return render_attachable_block(context, block, noindex, ajax)
+    return render_attachable_block(context, block, ajax)

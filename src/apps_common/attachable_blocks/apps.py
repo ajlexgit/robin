@@ -13,5 +13,5 @@ class Config(AppConfig):
         cache.delete('attachable_block_types')
 
         JS_STORAGE.update({
-            'async_block': resolve_url('blocks:async'),
+            'ajax_attached_block': resolve_url('blocks:ajax'),
         })

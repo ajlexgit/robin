@@ -62,8 +62,8 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
     form = AttachedBlocksForm
     formset = AttachedBlocksFormset
     model = AttachableReference
-    fields = ['block_type', 'block', 'noindex', 'ajax']
-    superuser_fields = ('noindex', 'ajax')
+    fields = ['block_type', 'block', 'ajax']
+    superuser_fields = ('ajax', )
     readonly_fields = ('set_name',)
     extra = 0
     set_name = 'default'

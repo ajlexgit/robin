@@ -13,7 +13,7 @@
 
     window.AsyncBlock = Class(EventedObject, function AsyncBlock(cls, superclass) {
         cls.defaults = {
-            url: window.js_storage.async_block,
+            url: window.js_storage.ajax_attached_block,
             extraData: function() {
                 return {
                     block_id: this.$placeholder.data('id')
