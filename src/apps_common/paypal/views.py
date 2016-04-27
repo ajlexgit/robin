@@ -20,14 +20,14 @@ def _log_errors(errors):
 
 def get_cart_items(data):
     index = 1
-    items = {}
+    items = []
     while 'item_number%s' % index in data:
-        item_number = data.get('item_number%s' % index, '0')
-        items[item_number] = {
+        items.append({
+            'number': data.get('item_number%s' % index),
             'name': data.get('item_name%s' % index),
             'count': int(data.get('quantity%s' % index)),
             'cost': Decimal(data.get('mc_gross_%s' % index)),
-        }
+        })
         index += 1
     return items
 
