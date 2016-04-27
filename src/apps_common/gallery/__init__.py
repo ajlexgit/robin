@@ -81,10 +81,14 @@
             {%endif
 
     Перенарезка всех картинок галереи:
-        1) for item in gallery.image_items:
+        1) MyImageItem.recut_all('mobile')
+            или
+           MyGallery.IMAGE_MODEL.recut_all('mobile')
+
+        2) for item in gallery.image_items:
                item.image.recut()
 
-        2) for error_code, msg in gallery.recut_generator():
+        3) for error_code, msg in gallery.recut_generator():
                print(msg)
                if error_code:
                    break

@@ -379,6 +379,12 @@ class GalleryImageItem(GalleryItemBase):
             return filename
 
     @classmethod
+    def recut_all(cls, *args):
+        """ Перенарезка всех картинок галереи """
+        for instance in cls.objects.all():
+            instance.image.recut(*args, croparea=instance.image_crop)
+
+    @classmethod
     def variations(cls):
         key = 'variations.%s.%s' % (cls.__module__, cls.__qualname__)
         variations = cls._cache.get(key)
@@ -593,6 +599,12 @@ class GalleryVideoLinkItem(GalleryItemBase):
             return 'video_%04d/%s' % ((self.pk // 1000), filename)
         else:
             return filename
+
+    @classmethod
+    def recut_all(cls, *args):
+        """ Перенарезка всех превьюх видео галереи """
+        for instance in cls.objects.all():
+            instance.video_preview.recut(*args)
 
     @classmethod
     def variations(cls):
