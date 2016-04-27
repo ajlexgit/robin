@@ -1,3 +1,4 @@
+from decimal import Decimal
 from requests import post as http_post
 from django.shortcuts import redirect
 from django.http.response import HttpResponse
@@ -49,6 +50,7 @@ def result(request):
     if form.is_valid():
         payment_status = form.cleaned_data['payment_status']
         receiver_email = form.cleaned_data['receiver_email']
+        custom = form.cleaned_data['custom']
         invoice = form.cleaned_data.get('invoice', '')
         try:
             invoice = int(invoice)
@@ -66,6 +68,7 @@ def result(request):
                     invoice=invoice,
                     request=request,
                     items=get_cart_items(data),
+                    custom=custom,
                 )
             except Exception as e:
                 # log exception
@@ -92,6 +95,7 @@ def result(request):
                     invoice=invoice,
                     request=request,
                     items=get_cart_items(data),
+                    custom=custom,
                 )
             except Exception as e:
                 # log exception

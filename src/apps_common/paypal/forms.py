@@ -216,3 +216,4 @@ class PayPalResultForm(forms.Form):
     receiver_email = forms.EmailField()
     invoice = forms.CharField(max_length=127, required=False)
     mc_gross = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
+    custom = forms.CharField(max_length=256, required=False)
