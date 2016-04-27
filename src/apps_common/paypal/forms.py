@@ -85,8 +85,9 @@ class BasePayPalForm(forms.Form):
             на страницу
         """
         url = self.initial.get(fieldname, '')
-        if url and not url.startswith('http'):
-            self.initial[fieldname] = request.build_absolute_uri(resolve_url(url))
+        if url:
+            if not url.startswith('http'):
+                self.initial[fieldname] = request.build_absolute_uri(resolve_url(url))
             return
 
         self.initial[fieldname] = request.build_absolute_uri(resolve_url(default))
@@ -151,6 +152,9 @@ class AddToCartForm(BasePayPalForm):
     # ID заказа
     invoice = forms.CharField(max_length=127)
 
+    # ID товара
+    item_number = forms.CharField(max_length=127)
+
     # цена товара
     amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
 
@@ -201,7 +205,7 @@ class DonationForm(BasePayPalForm):
     currency_code = forms.CharField(max_length=3, initial=conf.CURRENCY)
 
 
-class PayPalResultForm(BasePayPalForm):
+class PayPalResultForm(forms.Form):
     """
         Форма для обработки результата оплаты
     """

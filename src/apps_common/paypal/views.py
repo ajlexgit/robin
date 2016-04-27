@@ -1,5 +1,6 @@
 from requests import post as http_post
 from django.shortcuts import redirect
+from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Log
 from .forms import PayPalResultForm
@@ -15,6 +16,20 @@ def _log_errors(errors):
         )
         for key, errors_list in errors.items()
     )
+
+
+def get_cart_items(data):
+    index = 1
+    items = {}
+    while 'item_number%s' % index in data:
+        item_number = data.get('item_number%s' % index, '0')
+        items[item_number] = {
+            'name': data.get('item_name%s' % index),
+            'count': data.get('item_number%s' % index),
+            'cost': data.get('mc_gross_%s' % index),
+        }
+        index += 1
+    return items
 
 
 @csrf_exempt
@@ -46,6 +61,7 @@ def result(request):
                     sender=Log,
                     invoice=invoice,
                     request=request,
+                    items=get_cart_items(data),
                 )
             except Exception as e:
                 # log exception
@@ -71,6 +87,7 @@ def result(request):
                     sender=Log,
                     invoice=invoice,
                     request=request,
+                    items=get_cart_items(data),
                 )
             except Exception as e:
                 # log exception
@@ -104,7 +121,4 @@ def result(request):
             )
         )
 
-    # Показываем Success даже если форма не валидна,
-    # чтобы не пугать пользователя, если, например,
-    # хэш рассчитывается неправильно
-    return redirect(conf.SUCCESS_URL)
+    return HttpResponse('')
