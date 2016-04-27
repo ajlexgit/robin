@@ -128,10 +128,10 @@ class PaymentForm(BaseRobokassaForm):
         """
         params = {}
         for fieldname, field in self.fields.items():
-            fieldname = FIELD_NAME_MAPPING.get(fieldname, fieldname)
+            real_fieldname = FIELD_NAME_MAPPING.get(fieldname, fieldname)
             value = self.initial.get(fieldname, field.initial)
             if value:
-                params[fieldname] = value
+                params[real_fieldname] = value
 
         if conf.TEST_MODE:
             params['IsTest'] = '1'

@@ -119,10 +119,10 @@ class PaymentForm(BaseGotobillingForm):
         """
         params = {}
         for fieldname, field in self.fields.items():
-            fieldname = FIELD_NAME_MAPPING.get(fieldname, fieldname)
+            real_fieldname = FIELD_NAME_MAPPING.get(fieldname, fieldname)
             value = self._get_value(fieldname)
             if value:
-                params[fieldname] = value
+                params[real_fieldname] = value
 
         return '{}?{}'.format(self.target, urlencode(params))
 
