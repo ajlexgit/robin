@@ -32,6 +32,10 @@ def result(request):
     form = PayeezyResultForm(data)
     if form.is_valid():
         invoice = form.cleaned_data['x_invoice_num']
+        try:
+            invoice = int(invoice)
+        except (TypeError, ValueError):
+            invoice = None
 
         response_code = form.cleaned_data['x_response_code']
         if response_code == PayeezyResultForm.RESPONSE_CODE_APPROVED:

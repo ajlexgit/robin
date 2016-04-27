@@ -50,6 +50,10 @@ def result(request):
         payment_status = form.cleaned_data['payment_status']
         receiver_email = form.cleaned_data['receiver_email']
         invoice = form.cleaned_data.get('invoice', '')
+        try:
+            invoice = int(invoice)
+        except (TypeError, ValueError):
+            invoice = None
 
         resp = http_post(conf.FORM_TARGET, 'cmd=_notify-validate&' + request.body.decode())
         if (resp.text == 'VERIFIED'

@@ -30,6 +30,10 @@ def result(request):
     form = GotobillingResultForm(data)
     if form.is_valid():
         invoice = form.cleaned_data['x_invoice_num']
+        try:
+            invoice = int(invoice)
+        except (TypeError, ValueError):
+            invoice = None
 
         response_code = form.cleaned_data['x_response_code']
         if response_code == GotobillingResultForm.RESPONSE_CODE_APPROVED:
