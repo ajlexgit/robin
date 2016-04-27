@@ -25,8 +25,8 @@ def get_cart_items(data):
         item_number = data.get('item_number%s' % index, '0')
         items[item_number] = {
             'name': data.get('item_name%s' % index),
-            'count': data.get('quantity%s' % index),
-            'cost': data.get('mc_gross_%s' % index),
+            'count': int(data.get('quantity%s' % index)),
+            'cost': Decimal(data.get('mc_gross_%s' % index)),
         }
         index += 1
     return items
