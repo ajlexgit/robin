@@ -83,3 +83,5 @@ from .forms import PaymentForm
 from .signals import robokassa_success
 
 default_app_config = 'robokassa.apps.Config'
+
+__all__ = ('PaymentForm', 'robokassa_success')

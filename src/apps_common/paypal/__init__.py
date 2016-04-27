@@ -102,3 +102,6 @@ from .forms import PaymentForm, AddToCartForm, DisplayCartForm, DonationForm
 from .signals import paypal_success, paypal_error
 
 default_app_config = 'paypal.apps.Config'
+
+__all__ = ('PaymentForm', 'AddToCartForm', 'DisplayCartForm', 'DonationForm',
+           'paypal_success', 'paypal_error')

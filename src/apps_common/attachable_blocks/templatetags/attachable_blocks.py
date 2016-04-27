@@ -44,6 +44,9 @@ def render_attachable_block(context, block, ajax=False, **kwargs):
     if not request:
         return ''
 
+    if not block:
+        return ''
+
     real_block = get_block(block.id)
     if not real_block or not real_block.visible:
         return ''
