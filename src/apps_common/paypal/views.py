@@ -1,6 +1,5 @@
 from decimal import Decimal
 from requests import post as http_post
-from django.shortcuts import redirect
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Log
