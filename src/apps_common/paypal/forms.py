@@ -107,9 +107,9 @@ class BasePayPalForm(forms.Form):
         """
         params = {}
         for fieldname, field in self.fields.items():
-            real_fieldname = FIELD_NAME_MAPPING.get(fieldname, fieldname)
             value = self._get_value(fieldname)
             if value:
+                real_fieldname = FIELD_NAME_MAPPING.get(fieldname, fieldname)
                 params[real_fieldname] = value
 
         return '{}?{}'.format(self.target, urlencode(params))
