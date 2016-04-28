@@ -1,5 +1,8 @@
 from django import forms
 from django.db import models
+from django.core.urlresolvers import reverse
+from django.contrib.admin.utils import quote
+from django.contrib.admin.views.main import ChangeList
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
 from suit.widgets import AutosizedTextarea
@@ -101,6 +104,16 @@ class BaseModelAdminMixin:
         return fieldsets
 
 
+class RealChangeListMixin:
+    def url_for_result(self, result):
+        pk = getattr(result, self.pk_attname)
+        return reverse(
+            'admin:%s_%s_change' % (result._meta.app_label, result._meta.model_name),
+            args=(quote(pk),),
+            current_app=self.model_admin.admin_site.name
+        )
+
+
 class ModelAdminInlineMixin(BaseModelAdminMixin):
     pass
 
@@ -143,6 +156,11 @@ class ModelAdminMixin(BaseModelAdminMixin):
     def get_suit_form_tabs(self, request, add=False):
         """ Получение вкладок для модели админки Suit """
         return getattr(self, 'suit_form_tabs', ())
+
+    def get_changelist(self, request, **kwargs):
+        """ Список, ссылающийся на адреса фактических моделей, а не модели AdminModel """
+        default = super().get_changelist(request, **kwargs)
+        return type('RealChangeList', (RealChangeListMixin, default), {})
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         """ Получаем вкладки Suit и передаем их в шаблон """
