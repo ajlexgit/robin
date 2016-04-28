@@ -1,3 +1,4 @@
+import collections
 from django.contrib import admin
 from django.template import loader
 from django.views.decorators.http import condition
@@ -54,6 +55,17 @@ class CachedViewMixin(DecoratableViewMixin):
                     return config.updated
 
     """
+    def _last_modified(self, *args, **kwargs):
+        """
+            Обертка над реальным методом, обрабатывающая случаи,
+            когда возвращается итератор
+        """
+        data = self.last_modified(*args, **kwargs)
+        if isinstance(data, collections.Iterable):
+            return max(filter(bool, data), default=None)
+        else:
+            return data
+
     def last_modified(self, *args, **kwargs):
         return None
 
@@ -64,7 +76,7 @@ class CachedViewMixin(DecoratableViewMixin):
         handler = super().get_handler(request)
         if handler and self.method == 'get':
             return condition(
-                last_modified_func=self.last_modified,
+                last_modified_func=self._last_modified,
                 etag_func=self.etag,
             )(handler)
         else:
