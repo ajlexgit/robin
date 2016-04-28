@@ -34,7 +34,9 @@ class Command(BaseCommand):
                     ziph.write(abspath, os.path.join('media', relpath))
 
             # db dump
-            call_command('dump', output='dump.json')
+            dump_path = os.path.join(settings.BASE_DIR, 'dump.json')
+            call_command('dump', output=dump_path)
+            ziph.write(dump_path, 'dump.json')
 
         os.unlink('dump.json')
         self.stdout.write('backup saved to "%s"' % backup_path)
