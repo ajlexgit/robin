@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 
     # 'haystack',
+    # 'djcelery_email',
     'pipeline',
     'solo',
     'suit_ckeditor',
@@ -331,6 +332,10 @@ EMAIL_HOST_PASSWORD = 'woodstock1999'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@automessenger.ru'
 EMAIL_SUBJECT_PREFIX = '[%s] ' % (SUIT_CONFIG['ADMIN_NAME'], )
+# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+# CELERY_EMAIL_TASK_CONFIG = {
+#     'rate_limit': '10/m',
+# }
 
 # Получатели писем о ошибках при DEBUG = False
 ADMINS = (
