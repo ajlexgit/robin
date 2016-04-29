@@ -6,6 +6,7 @@ class Command(DumpDataCommand):
     """
         Алиас для команды
             pm dumpdata --natural-foreign
+                        --use_base_manager
                         --exclude=contenttypes
                         --exclude=auth.Permission
                         --exclude=admin.logentry
@@ -19,5 +20,7 @@ class Command(DumpDataCommand):
                 exclude.add('%s.%s' % (model._meta.app_label, model._meta.model_name))
 
         options['exclude'] = exclude
+        options['use_base_manager'] = True
         options['use_natural_foreign_keys'] = True
         super().handle(*args, **options)
+
