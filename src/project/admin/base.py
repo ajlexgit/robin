@@ -108,6 +108,7 @@ class ModelAdminInlineMixin(BaseModelAdminMixin):
 
 
 class ModelAdminMixin(BaseModelAdminMixin):
+    delete_action = True
     actions_on_top = True
     actions_on_bottom = True
 
@@ -145,6 +146,12 @@ class ModelAdminMixin(BaseModelAdminMixin):
     def get_suit_form_tabs(self, request, add=False):
         """ Получение вкладок для модели админки Suit """
         return getattr(self, 'suit_form_tabs', ())
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if not self.delete_action and 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         """ Получаем вкладки Suit и передаем их в шаблон """
