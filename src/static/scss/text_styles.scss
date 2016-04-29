@@ -62,6 +62,16 @@
     li {
       position: relative;
       margin-bottom: 0.5em;
+      z-index: 1;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
     }
   }
 
@@ -69,10 +79,10 @@
     &:before {
       content: '●';
       position: absolute;
-      left: -1.4em;
-      top: 0.7em;
-      font-size: 0.8em;
-      @include transform(translateY(-50%));
+      left: -1em;
+      top: 0;
+      @include transform(scale(0.6));
+      @include transform-origin(50% 45%);
     }
   }
 

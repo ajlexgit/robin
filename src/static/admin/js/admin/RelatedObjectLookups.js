@@ -49,8 +49,8 @@ function showAdminPopup(triggeringLink, name_regexp) {
         browser_top = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
         browser_width = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth,
         browser_height = typeof window.outerHeight != 'undefined' ? window.outerHeight : document.body.clientHeight,
-        popup_width = 800,
-        popup_height = 500,
+        popup_width = 940,
+        popup_height = 600,
         top_position = browser_top + Math.round((browser_height - popup_height) / 2),
         left_position = browser_left + Math.round((browser_width - popup_width) / 2);
 
@@ -89,8 +89,8 @@ function showRelatedObjectPopup(triggeringLink) {
         browser_top = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
         browser_width = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth,
         browser_height = typeof window.outerHeight != 'undefined' ? window.outerHeight : document.body.clientHeight,
-        popup_width = 800,
-        popup_height = 500,
+        popup_width = 940,
+        popup_height = 600,
         top_position = browser_top + Math.round((browser_height - popup_height) / 2),
         left_position = browser_left + Math.round((browser_width - popup_width) / 2);
 
