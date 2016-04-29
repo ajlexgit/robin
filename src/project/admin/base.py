@@ -1,5 +1,7 @@
 from django import forms
 from django.db import models
+from django.core.urlresolvers import reverse
+from django.contrib.admin.utils import quote
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
 from suit.widgets import AutosizedTextarea
@@ -180,3 +182,25 @@ class ReversedSortableModelAdmin(SortableModelAdmin):
                 next_order = 0
             setattr(obj, self.sortable, next_order)
         super(SortableModelAdmin, self).save_model(request, obj, form, change)
+
+
+class RealLinksChangeListMixin:
+    def url_for_result(self, result):
+        pk = getattr(result, self.pk_attname)
+        return reverse(
+            'admin:%s_%s_change' % (result._meta.app_label, result._meta.model_name),
+            args=(quote(pk),),
+            current_app=self.model_admin.admin_site.name
+        )
+
+class RealLinksModelAdminMixin:
+    """
+        Миксина для модели админки,
+        которая генерирует ссылки на сущности на основе фактических моделей в списке,
+        а не на основе модели админки.
+
+        Полезно в случаях, когда get_queryset() возвращает модели разных классов.
+    """
+    def get_changelist(self, request, **kwargs):
+        default = super().get_changelist(request, **kwargs)
+        return type('CustomChangeList', (RealLinksChangeListMixin, default), {})
