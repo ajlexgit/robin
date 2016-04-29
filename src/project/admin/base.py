@@ -108,7 +108,6 @@ class ModelAdminInlineMixin(BaseModelAdminMixin):
 
 
 class ModelAdminMixin(BaseModelAdminMixin):
-    delete_action = True
     actions_on_top = True
     actions_on_bottom = True
 
@@ -149,7 +148,7 @@ class ModelAdminMixin(BaseModelAdminMixin):
 
     def get_actions(self, request):
         actions = super().get_actions(request)
-        if not self.delete_action and 'delete_selected' in actions:
+        if not self.has_delete_permission(request) and 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
 
