@@ -10,6 +10,7 @@
         if (!siblings.length) return;
         var value = $this.val();
         if (value) {
+            value = value.toString().split(',').pop();
             siblings.each(function(){
                 var elm = $(this);
                 var href = elm.attr('data-href-template');

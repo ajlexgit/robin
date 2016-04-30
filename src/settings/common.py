@@ -162,6 +162,7 @@ MIDDLEWARE_CLASSES = (
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
+    'libs.utm_middleware.UTMMiddleware',
 )
 
 ALLOWED_HOSTS = ()

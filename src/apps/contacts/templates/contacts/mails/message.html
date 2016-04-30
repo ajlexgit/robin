@@ -20,3 +20,7 @@
 {% if message.referer %}
   <p><b>From page:</b> <a href="{{ message.referer }}" target="_blank">{{ message.referer }}</a></p>
 {% endif %}
+
+{% if request.COOKIES.utm %}
+  <p><b>UTM:</b> {{ request.COOKIES.utm }}</p>
+{% endif %}
