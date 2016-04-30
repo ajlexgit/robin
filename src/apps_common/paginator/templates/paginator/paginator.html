@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load paginator %}
 
-<div class="navigation">
+<div class="navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
   {% if not page.has_previous %}
     <span class="nav-item prev-page disabled">{% trans 'Previous' %}</span>
   {% else %}
@@ -17,7 +17,7 @@
       {% elif page.number == page_num %}
         <span class="page active">{{ page_num }}</span>
       {% else %}
-        <a href="{% href paginator page_num anchor %}"
+        <a href="{% href paginator page_num anchor %}" itemprop="url"
            class="page link {% if page.number == page_num %}active{% endif %}"
            data-page="{{ page_num }}">{{ page_num }}</a>
       {% endif %}
