@@ -14,11 +14,7 @@
     window.AsyncBlock = Class(EventedObject, function AsyncBlock(cls, superclass) {
         cls.defaults = {
             url: window.js_storage.ajax_attached_block,
-            extraData: function() {
-                return {
-                    block_id: this.$placeholder.data('id')
-                }
-            }
+            extraData: $.noop
         };
 
         cls.DATA_KEY = 'async-block';
@@ -51,7 +47,8 @@
             }
 
             var data = $.extend({
-                referer: location.href
+                referer: location.href,
+                block_id: this.$placeholder.data('id')
             }, this.opts.extraData.call(this));
 
             var that = this;
