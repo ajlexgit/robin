@@ -1,8 +1,9 @@
 class Icon:
-    def __init__(self, url='', name='', position=()):
+    def __init__(self, url='', name='', position=(), size=()):
         self.url = url
         self._name = name
         self._position = position
+        self._size = size
 
     @property
     def x(self):
@@ -11,6 +12,14 @@ class Icon:
     @property
     def y(self):
         return self._position[1]
+
+    @property
+    def width(self):
+        return self._size[0]
+
+    @property
+    def height(self):
+        return self._size[1]
 
     def __getitem__(self, item):
         return self._position[item]

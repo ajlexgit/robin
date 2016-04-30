@@ -80,9 +80,9 @@
       content: '●';
       position: absolute;
       left: -1em;
-      top: 0;
+      top: -0.1em;
       @include transform(scale(0.6));
-      @include transform-origin(50% 45%);
+      @include transform-origin(50% 55%);
     }
   }
 

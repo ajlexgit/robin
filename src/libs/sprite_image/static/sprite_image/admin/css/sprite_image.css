@@ -66,11 +66,11 @@
     margin: 5px;
     outline: 2px solid transparent;
 
-    -webkit-transition: outline 0.2s;
-    -moz-transition: outline 0.2s;
-    -ms-transition: outline 0.2s;
-    -o-transition: outline 0.2s;
-    transition: outline 0.2s;
+    -webkit-transition: outline 0.1s;
+    -moz-transition: outline 0.1s;
+    -ms-transition: outline 0.1s;
+    -o-transition: outline 0.1s;
+    transition: outline 0.1s;
 }
 
 .sprite-icon-item.active {

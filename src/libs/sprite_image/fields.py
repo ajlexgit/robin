@@ -21,7 +21,7 @@ class SpriteImageDescriptor:
 
         key = str(value)
         choices_dict = dict(self.field.choices)
-        icon = self.field.attr_class(self.field.sprite_url, key, choices_dict.get(key, ()))
+        icon = self.field.attr_class(self.field.sprite_url, key, choices_dict.get(key, ()), self.field.size)
         instance.__dict__[self.field.name] = icon
 
         return instance.__dict__[self.field.name]
