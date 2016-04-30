@@ -9,9 +9,11 @@ from .conf import AJAX_CACHE_BACKEND
 
 class AjaxCacheView(CachedViewMixin, AjaxViewMixin, View):
     def get(self, request):
-        cache_key = request.GET['key']
-        fragment_cache = caches[AJAX_CACHE_BACKEND]
+        cache_key = request.GET.get('key')
+        if cache_key is None or not cache_key.startswith('template.cache.'):
+            return self.json_error()
 
+        fragment_cache = caches[AJAX_CACHE_BACKEND]
         response = self.json_response({
             'html': fragment_cache.get(cache_key)
         })
