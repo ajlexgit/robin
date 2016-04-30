@@ -61,7 +61,7 @@ class SeoModelAdminMixin(ModelAdminMixin):
         super().__init__(*args, **kwargs)
         default_includes = getattr(self, 'suit_form_includes', ())
         self.suit_form_includes = default_includes + (
-            ('seo/admin/admin_include.html', 'top', SEO_TAB_NAME),
+            ('seo/admin/admin_include.html', 'bottom', SEO_TAB_NAME),
         )
 
     def has_seo_permissions(self, request):

@@ -1,3 +1,4 @@
+{% load ajaxcache %}
 {% load menu %}
 
 <header>
@@ -18,7 +19,9 @@
       </nav>
 
       <nav id="mobile-menu">
-        {% main_menu %}
+        {% ajaxcache 1800 menu %}
+          {% main_menu %}
+        {% endajaxcache %}
       </nav>
     </div>
   </div>

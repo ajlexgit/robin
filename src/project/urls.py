@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
+    url(r'^ajax_cache/', include('libs.ajax_cache.urls', namespace='ajax_cache')),
 
     url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^shop/', include('shop.urls', namespace='shop')),
