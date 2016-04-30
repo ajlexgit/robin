@@ -123,7 +123,7 @@ class AutocompleteWidget(widgets.Widget):
 
     def _cache_data(self, cache_keys=()):
         """ Сохранение некоторых данных в кэш """
-        cache_key = '.'.join(cache_keys)
+        cache_key = 'autocomplete.%s' % '.'.join(cache_keys)
         cache.set(cache_key, pickle.dumps({
             'query': self.choices.queryset.query,
             'format_item_module': self.format_item_module,
