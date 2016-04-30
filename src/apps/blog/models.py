@@ -14,6 +14,9 @@ class BlogConfig(SingletonModel):
     """ Главная страница """
     header = models.CharField(_('header'), max_length=255)
 
+    microdata_author = models.CharField(_('author'), max_length=255, blank=True)
+    microdata_publisher_logo = models.ImageField(_('logo'), storage=MediaStorage('microdata'))
+
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:

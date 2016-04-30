@@ -17,11 +17,32 @@
 
 {% block content %}
 
-  <div id="blog-post" class="block">
-    <div class="grid-block">
-      <time datetime="{{ post.date|date:"c" }}" class="date">{{ post.date|date }}</time>
+  <div id="blog-post" class="block" itemscope itemtype="http://schema.org/Article">
+    <meta itemprop="author" content="{{ config.microdata_author }}">
+    <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
+    <meta itemprop="dateModified" content="{{ post.updated|date:"c" }}"/>
+    {% if config.microdata_publisher_logo %}
+      <div style="display:none;" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+          <img itemprop="url" itemprop="image" src="{{ config.microdata_publisher_logo.url }}"/>
+          <meta itemprop="width" content="{{ config.microdata_publisher_logo.width }}">
+          <meta itemprop="height" content="{{ config.microdata_publisher_logo.height }}">
+        </div>
+        <meta itemprop="name" content="{{ config.microdata_author }}">
+      </div>
+    {% endif %}
+    <div style="display: none" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
+      <link itemprop="url" href="{{ post.preview.normal.url }}"/>
+      <meta itemprop="width" content="{{ post.preview.normal.target_width }}"/>
+      <meta itemprop="height" content="{{ post.preview.normal.target_height }}"/>
+    </div>
 
-      <h1 class="title title-h1">{{ post.title }}</h1>
+    <div class="grid-block">
+      <time datetime="{{ post.date|date:"c" }}" class="date" itemprop="datePublished">
+        {{ post.date|date }}
+      </time>
+
+      <h1 class="title title-h1" itemprop="headline">{{ post.title }}</h1>
 
       {% if post.preview %}
         <img class="preview" src="{{ post.preview.normal.url }}"
@@ -29,7 +50,7 @@
              sizes="100vw">
       {% endif %}
 
-      <div class="text text-styles">
+      <div class="text text-styles" itemprop="articleBody">
         {% away post.text|typograf %}
       </div>
     </div>

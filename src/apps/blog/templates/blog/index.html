@@ -38,25 +38,45 @@
 
     <div id="posts">
       {% for post in paginator.current_page %}
-        <article class="post">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+          <meta itemprop="author" content="{{ config.microdata_author }}">
+          <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
+          <meta itemprop="dateModified" content="{{ post.updated|date:"c" }}"/>
+          {% if config.microdata_publisher_logo %}
+            <div style="display:none;" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+              <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+                <img itemprop="url" itemprop="image" src="{{ config.microdata_publisher_logo.url }}"/>
+                <meta itemprop="width" content="{{ config.microdata_publisher_logo.width }}">
+                <meta itemprop="height" content="{{ config.microdata_publisher_logo.height }}">
+              </div>
+              <meta itemprop="name" content="{{ config.microdata_author }}">
+            </div>
+          {% endif %}
+
           <div class="grid-block">
             <header>
-              <time datetime="{{ post.date|date:"c" }}" class="date">{{ post.date|date:"jS E Y" }}</time>
+              <time datetime="{{ post.date|date:"c" }}" class="date" itemprop="datePublished">
+                {{ post.date|date:"jS E Y" }}
+              </time>
 
               <h2 class="title title-h1">
-                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                <a href="{{ post.get_absolute_url }}">
+                  <span itemprop="headline">{{ post.title }}</span>
+                </a>
               </h2>
             </header>
 
             {% if post.preview %}
-              <a href="{{ post.get_absolute_url }}" class="preview">
+              <a href="{{ post.get_absolute_url }}" class="preview" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
                 <img srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
-                     src="{{ post.preview.normal.url }}" sizes="100vw">
+                     src="{{ post.preview.normal.url }}" sizes="100vw" itemprop="url">
+                <meta itemprop="width" content="{{ post.preview.normal.target_width }}"/>
+                <meta itemprop="height" content="{{ post.preview.normal.target_height }}"/>
               </a>
             {% endif %}
 
             {% if post.note %}
-              <div class="note text-styles">
+              <div class="note text-styles" itemprop="articleBody">
                 {{ post.note|clean }}
               </div>
             {% endif %}
