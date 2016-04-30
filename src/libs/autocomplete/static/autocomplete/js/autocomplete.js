@@ -259,6 +259,10 @@
                             return
                         }
 
+                        if (!record.object.opts.multiple) {
+                            result = result[0];
+                        }
+
                         record.object.$elem.select2("data", result);
                         record.callback(result);
                     },
