@@ -152,9 +152,9 @@
                     var key = that.opts.url;
                     var record = {
                         id: id,
-                        elem: that.$elem,
+                        object: that,
                         callback: callback,
-                        multiple: that.opts.multiple
+                        depends: that.$depends.length
                     };
 
                     if (key in mass_requests) {
@@ -181,49 +181,89 @@
 
         // Запрос собранных данных
         $.each(mass_requests, function(url, records) {
-            var ids = $.unique(records.map(function(record) { return record.id }));
+            var with_depends = [];
+            var without_depends = [];
 
-            $.ajax(url, {
-                type: 'POST',
-                dataType: "json",
-                data: {
-                    q: ids.join(','),
-                    expressions: 'pk__in'
-                },
-                success: function(response) {
-                    var data;
-                    var result = response.result;
-                    if (!result || !result.length) {
-                        return
-                    }
+            // распределение зависимых и независимых объектов
+            records.forEach(function(record) {
+                if (record.depends) {
+                    with_depends.push(record);
+                } else {
+                    without_depends.push(record);
+                }
+            });
 
-                    // формирование словаря из результатов
-                    var result_dict = {};
-                    $.each(result, function(i, item) {
-                        result_dict[item.id] = item.text;
-                    });
+            // запрос независимых объектов
+            if (without_depends.length) {
+                var ids = $.unique(without_depends.map(function(record) {
+                    return record.id
+                }));
 
-                    // обработка каждого поля
-                    $.each(records, function(i, record) {
-                        if (!record.multiple) {
-                            data = {
-                                id: record.id,
-                                text: result_dict[record.id]
-                            };
-                        } else {
-                            data = record.id.split(',').map($.trim).filter(Boolean).map(function(pk) {
-                                return {
-                                    id: pk,
-                                    text: result_dict[pk]
-                                }
-                            });
+                $.ajax(url, {
+                    type: 'POST',
+                    dataType: "json",
+                    data: {
+                        q: ids.join(','),
+                        expressions: 'pk__in'
+                    },
+                    success: function(response) {
+                        var data;
+                        var result = response.result;
+                        if (!result || !result.length) {
+                            return
                         }
 
-                        record.elem.select2("data", data);
-                        record.callback(data);
-                    });
-                },
-                error: $.parseError()
+                        // формирование словаря из результатов
+                        var result_dict = {};
+                        $.each(result, function(i, item) {
+                            result_dict[item.id] = item.text;
+                        });
+
+                        // обработка каждого поля
+                        $.each(without_depends, function(i, record) {
+                            if (!record.object.opts.multiple) {
+                                data = {
+                                    id: record.id,
+                                    text: result_dict[record.id]
+                                };
+                            } else {
+                                data = record.id.split(',').map($.trim).filter(Boolean).map(function(pk) {
+                                    return {
+                                        id: pk,
+                                        text: result_dict[pk]
+                                    }
+                                });
+                            }
+
+                            record.object.$elem.select2("data", data);
+                            record.callback(data);
+                        });
+                    },
+                    error: $.parseError()
+                });
+            }
+
+            // запрос зависимых объектов
+            with_depends.forEach(function(record) {
+                $.ajax(url, {
+                    type: 'POST',
+                    dataType: "json",
+                    data: {
+                        q: record.id,
+                        values: record.object._parentValues(),
+                        expressions: 'pk__in'
+                    },
+                    success: function(response) {
+                        var result = response.result;
+                        if (!result || !result.length) {
+                            return
+                        }
+
+                        record.object.$elem.select2("data", result);
+                        record.callback(result);
+                    },
+                    error: $.parseError()
+                });
             });
         });
         mass_requests = {};

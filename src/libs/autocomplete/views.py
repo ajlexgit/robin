@@ -45,23 +45,21 @@ def autocomplete_widget(request, application, model_name, name):
     dependencies = tuple(item[0] for item in redis_data['dependencies'])
     is_multiple = tuple(item[2] for item in redis_data['dependencies'])
 
-    values = request.POST.get('values', '')
-    if values:
-        values = values.split(';')
-        for index, key in enumerate(dependencies):
-            try:
-                value = values[index]
-                multiple = is_multiple[index]
-            except KeyError:
-                return JsonResponse(data)
+    values = request.POST.get('values', '').split(';')
+    for index, key in enumerate(dependencies):
+        try:
+            value = values[index]
+            multiple = is_multiple[index]
+        except KeyError:
+            return JsonResponse(data)
 
-            if not value:
-                value = None
-            elif multiple:
-                value = value.split(',')
-                key += '__in'
+        if not value:
+            value = None
+        elif multiple:
+            value = value.split(',')
+            key += '__in'
 
-            query &= Q((key, value))
+        query &= Q((key, value))
 
     queryset = queryset.filter(query)
 

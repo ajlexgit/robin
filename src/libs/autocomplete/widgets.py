@@ -168,13 +168,13 @@ class AutocompleteWidget(widgets.Widget):
 
 
 class AutocompleteMultipleWidget(AutocompleteWidget):
-    def render(self, name, value, attrs=None):
+    def __init__(self, attrs=None, *args, **kwargs):
         default_attrs = {
             'style': 'width: 300px',
             'data-multiple': 1,
         }
         default_attrs.update(attrs or {})
-        return super().render(name, value, attrs=default_attrs)
+        super().__init__(default_attrs, *args, **kwargs)
 
     def value_from_datadict(self, data, files, name):
         """ Преобразует строку '1,2' в список (1,2) """
