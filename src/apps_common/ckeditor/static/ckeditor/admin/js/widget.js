@@ -23,9 +23,11 @@
             Suit.after_inline.register('ckeditor-field', function(inline_prefix, row) {
                 row.find('.ckeditor-field').each(function() {
                     var $field = $(this);
-                    var name = $(this).attr('name');
+                    var name = $field.attr('name');
                     var name_arr = name.split('-');
-                    var template_name = [name_arr[0], '__prefix__', name_arr[2]].join('-');
+                    var template_name = name_arr.slice(0, -2).concat(
+                        '__prefix__', name_arr[2]
+                    ).join('-');
                     var config = window._ckeditor_confs[template_name];
 
                     CKEDITOR.replace(name, config);
