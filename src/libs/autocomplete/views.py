@@ -25,7 +25,7 @@ def autocomplete_widget(request, application, model_name, name):
 
     # Получаем данные из Redis
     redis_data = pickle.loads(
-        cache.get('.'.join((application, model_name, name)))
+        cache.get('autocomplete.%s' % '.'.join((application, model_name, name)))
     )
 
     # Восстанавливаем queryset
