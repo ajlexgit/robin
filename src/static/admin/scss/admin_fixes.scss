@@ -278,12 +278,17 @@ label {
 
 // увеличиваем отступ между инлайнами
 .form-horizontal .inline-related:not(:first-of-type) h3 {
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 // увеличиваем шрифт заголовка инлайнов
 .form-horizontal .inline-related h3 {
   @include font-size(14px);
+}
+
+// отступ между инлайнами
+.form-horizontal .inline-group:not(:first-of-type) > h2 {
+  margin-top: 20px;
 }
 
 // увеличение нижнего отступа от заголовков
