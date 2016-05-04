@@ -52,7 +52,7 @@ class Redirect(models.Model):
     new_path = models.CharField(_('redirect to'), max_length=200, blank=True,
         help_text=_("This can be either an absolute path (as above) or a full URL starting with 'http://'."))
     permanent = models.BooleanField(_('permanent'), default=True)
-    created = models.DateField(_('created'), default=now)
+    created = models.DateField(_('created'), default=now, editable=False)
 
     class Meta:
         verbose_name = _('redirect')
@@ -60,7 +60,11 @@ class Redirect(models.Model):
         ordering = ('old_path',)
 
     def __str__(self):
-        return "%s --(%s)--> %s" % (self.old_path, '301' if self.permanent else '302', self.new_path)
+        return '(%s) "%s" → "%s"' % (
+            '301' if self.permanent else '302',
+            self.old_path,
+            self.new_path,
+        )
 
 
 class Counter(models.Model):

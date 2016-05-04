@@ -232,5 +232,5 @@ class DummyRobotsAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 @admin.register(Redirect)
 class RedirectAdmin(ModelAdminMixin, admin.ModelAdmin):
-    list_display = ('old_path', 'new_path')
+    list_display = ('old_path', 'new_path', 'permanent', 'created')
     search_fields = ('old_path', 'new_path')
