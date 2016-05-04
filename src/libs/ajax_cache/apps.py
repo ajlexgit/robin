@@ -13,7 +13,8 @@ class Config(AppConfig):
         from .conf import AJAX_CACHE_BACKEND
 
         cache = caches[AJAX_CACHE_BACKEND]
-        cache.delete_pattern('template.cache.*')
+        if hasattr(cache, 'delete_pattern'):
+            cache.delete_pattern('template.cache.*')
 
         JS_STORAGE.update({
             'ajax_cache_block': resolve_url('ajax_cache:ajax'),
