@@ -35,8 +35,10 @@ def get_visible_references(instance, set_name=None):
         content_type=ct,
         object_id=instance.pk,
         block__visible=True,
-        set_name=set_name or 'default'
     )
+
+    if set_name is not None:
+        query &= models.Q(set_name=set_name)
 
     return AttachableReference.objects.filter(query)
 
