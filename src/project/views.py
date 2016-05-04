@@ -1,14 +1,13 @@
 from django.apps import apps
 from django.utils import timezone
 from django.views.decorators.http import last_modified
-from django.views.decorators.cache import cache_control, cache_page
+from django.views.decorators.cache import cache_control
 from django.views.i18n import javascript_catalog
 
 
 last_modified_date = timezone.now()
 
-@cache_control(private=True)
-@cache_page(7 * 24 * 3600)
+@cache_control(private=True, max_age=7*24*3600)
 @last_modified(lambda req, **kw: last_modified_date)
 def cached_javascript_catalog(request, domain='djangojs', packages=None):
     """ Закэшированный каталог JS-перевода """
