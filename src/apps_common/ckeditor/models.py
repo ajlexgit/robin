@@ -32,6 +32,7 @@ class PagePhoto(models.Model):
                 size=(0, 0),
                 crop=False,
                 max_width=1440,
+                quality=95,
             ),
             normal=dict(
                 size=(0, 0),
