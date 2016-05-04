@@ -4,8 +4,11 @@ from .models import Redirect
 
 
 class RedirectMiddleware(object):
-    def process_response(self, request, response):
+    def process_request(self, request):
         full_path = request.get_full_path()
+
+        if settings.DEBUG:
+            return 
 
         redirect = None
         try:
@@ -23,7 +26,7 @@ class RedirectMiddleware(object):
                 pass
 
         if redirect is None:
-            return response
+            return
 
         if redirect.new_path == '':
             return http.HttpResponseGone()

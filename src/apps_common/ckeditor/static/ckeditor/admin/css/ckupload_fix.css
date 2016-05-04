@@ -49,3 +49,9 @@
     background-color: #f2f2f2;
     border-radius: 3px;
 }
+
+.plupload_filelist_content:after {
+    content:'';
+    clear: both;
+    display: block;
+}
