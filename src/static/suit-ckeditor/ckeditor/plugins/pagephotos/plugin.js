@@ -50,7 +50,7 @@
             // UPLOAD
             editor.addCommand("pagephotos", new CKEDITOR.dialogCommand("pagephotos", {
                 allowedContent: 'p(!page-images,single-image,multi-image); ' +
-                                'img(*)[!src,alt,width,height,title,data-id]',
+                                'img(*)[!src,alt,width,height,title,srcset,sizes,data-id]',
                 modes: {
                     wysiwyg: 1,
                     source: 0

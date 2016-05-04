@@ -92,12 +92,10 @@
 
   .page-images, .page-video, .page-files {
     margin: 1.6em 0;
+  }
 
-    img {
-      width: 100%;
-      max-width: 100%;
-      margin-bottom: 0;
-    }
+  .page-images img {
+    width: 100%;
   }
 
   .object-description {

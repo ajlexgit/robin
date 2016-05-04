@@ -25,7 +25,7 @@ class PagePhoto(models.Model):
         upload_to=page_photo_filename,
         blank=True,
         admin_variation='admin_thumbnail',
-        min_dimensions=(1024, 600),
+        min_dimensions=(900, 500),
         crop_area=True,
         variations=dict(
             wide=dict(
