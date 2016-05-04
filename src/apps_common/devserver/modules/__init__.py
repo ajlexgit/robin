@@ -5,7 +5,7 @@ class DevServerModule(object):
     """
     Functions a lot like middleware, except that it does not accept any return values.
     """
-    logger_name = 'generic'
+    logger_name = 'devserver'
 
     def __init__(self):
         logger = ThreadedConsoleLogger(self.logger_name)

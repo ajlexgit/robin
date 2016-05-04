@@ -1,6 +1,9 @@
+import logging
 from django.db import connections
 from django.utils.termcolors import colorize
 from ..modules import DevServerModule
+
+sql_logger = logging.getLogger('sql')
 
 
 class SQLSummaryModule(DevServerModule):
@@ -15,6 +18,10 @@ class SQLSummaryModule(DevServerModule):
             for q in connections[alias].queries
         ]
         num_queries = len(queries)
+
+        sql_logger.debug('-' * 30 + '\n' + request.path + '\n\n')
+        for index, query in enumerate(queries, start=1):
+            sql_logger.debug('%s)\t%s\n' % (index, query['sql']))
 
         if num_queries:
             unique = set([s['sql'] for s in queries])

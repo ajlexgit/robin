@@ -70,6 +70,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
+        'sql': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
         '': {
             'handlers': ['console'],
             'level': 'DEBUG',
