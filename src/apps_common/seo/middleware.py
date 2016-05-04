@@ -7,9 +7,6 @@ class RedirectMiddleware(object):
     def process_request(self, request):
         full_path = request.get_full_path()
 
-        if settings.DEBUG:
-            return 
-
         redirect = None
         try:
             redirect = Redirect.objects.get(old_path=full_path)
