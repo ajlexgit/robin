@@ -25,22 +25,26 @@ class PagePhoto(models.Model):
         upload_to=page_photo_filename,
         blank=True,
         admin_variation='admin_thumbnail',
-        min_dimensions=(960, 540),
+        min_dimensions=(1024, 600),
         crop_area=True,
-        aspects='normal',
         variations=dict(
             wide=dict(
-                size=(1440, 810),
-                stretch=True,
+                size=(0, 0),
+                crop=False,
+                max_width=1440,
             ),
             normal=dict(
-                size=(960, 540),
+                size=(0, 0),
+                crop=False,
+                max_width=800,
             ),
             mobile=dict(
-                size=(512, 288),
+                size=(0, 0),
+                crop=False,
+                max_width=480,
             ),
             admin_thumbnail=dict(
-                size=(224, 126),
+                size=(234, 130),
             ),
         ))
 
@@ -119,19 +123,13 @@ class SimplePhoto(models.Model):
         storage=MediaStorage('simple_photos'),
         upload_to=page_photo_filename,
         blank=True,
-        admin_variation='admin_thumbnail',
-        max_source_dimensions=(2048, 2048),
+        admin_variation='mobile',
+        max_source_dimensions=(3072, 3072),
         variations=dict(
             mobile=dict(
                 size=(0, 0),
                 crop=False,
                 max_width=512,
-            ),
-            admin_thumbnail=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=250,
-                max_height=250,
             ),
         )
     )

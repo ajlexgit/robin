@@ -26,7 +26,7 @@
                     var name = $field.attr('name');
                     var name_arr = name.split('-');
                     var template_name = name_arr.slice(0, -2).concat(
-                        '__prefix__', name_arr[2]
+                        '__prefix__', name_arr[name_arr.length - 1]
                     ).join('-');
                     var config = window._ckeditor_confs[template_name];
 

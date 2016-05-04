@@ -14,6 +14,10 @@ CKEDITOR_CONFIG_DEFAULT = {
             'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
         },
         {
+            'name': 'paragraph',
+            'items': ['BulletedList', 'NumberedList', 'Format']
+        },
+        {
             'name': 'links',
             'items': ['Link', 'Unlink']
         },
