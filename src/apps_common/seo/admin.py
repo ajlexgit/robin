@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
-from .models import SeoConfig, SeoData, Counter, Robots
+from .models import SeoConfig, SeoData, Redirect, Counter, Robots
 
 SEO_TAB_NAME = 'seo'
 SEO_FORM_PREFIX = 'seo'
@@ -228,3 +228,9 @@ class DummyRobotsAdmin(ModelAdminMixin, admin.ModelAdmin):
     def response_post_save_add(self, request, obj):
         info = self.model._meta.app_label, self.model._meta.model_name
         return redirect('admin:%s_%s_add' % info)
+
+
+@admin.register(Redirect)
+class RedirectAdmin(ModelAdminMixin, admin.ModelAdmin):
+    list_display = ('old_path', 'new_path')
+    search_fields = ('old_path', 'new_path')

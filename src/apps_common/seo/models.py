@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.contenttypes.models import ContentType
@@ -43,6 +44,23 @@ class SeoData(models.Model):
 
     def __str__(self):
         return 'SeoData for %s(#%s)' % (self.content_type.name, self.object_id)
+
+
+class Redirect(models.Model):
+    old_path = models.CharField(_('redirect from'), max_length=200, unique=True,
+        help_text=_("This should be an absolute path, excluding the domain name. Example: '/events/search/'."))
+    new_path = models.CharField(_('redirect to'), max_length=200, blank=True,
+        help_text=_("This can be either an absolute path (as above) or a full URL starting with 'http://'."))
+    permanent = models.BooleanField(_('permanent'), default=True)
+    created = models.DateField(_('created'), default=now)
+
+    class Meta:
+        verbose_name = _('redirect')
+        verbose_name_plural = _('redirects')
+        ordering = ('old_path',)
+
+    def __str__(self):
+        return "%s --(%s)--> %s" % (self.old_path, '301' if self.permanent else '302', self.new_path)
 
 
 class Counter(models.Model):
