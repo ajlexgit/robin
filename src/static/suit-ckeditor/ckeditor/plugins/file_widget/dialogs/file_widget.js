@@ -29,7 +29,18 @@
                         }
                     }
                 }]
-            }]
+            }],
+            onShow: function() {
+                var selection = editor.getSelection();
+                var element = selection.getStartElement();
+                var widget = editor.widgets.getByElement(element);
+
+                this.widget = widget;
+                this.setupContent(widget);
+            },
+            onOk: function() {
+                this.commitContent(this.widget);
+            }
         };
     });
 
