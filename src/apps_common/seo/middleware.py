@@ -7,6 +7,10 @@ class RedirectMiddleware(object):
     def process_request(self, request):
         full_path = request.get_full_path()
 
+        # fix bug on development
+        if settings.DEBUG and (full_path.startswith(settings.STATIC_URL) or full_path.startswith(settings.MEDIA_URL)):
+            return
+
         redirect = None
         try:
             redirect = Redirect.objects.get(old_path=full_path)

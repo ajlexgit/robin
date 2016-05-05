@@ -18,11 +18,11 @@
         {% main_menu %}
       </nav>
 
-      <nav id="mobile-menu">
-        {% ajaxcache 1800 menu %}
+      {% ajaxcache 1800 mobile-menu %}
+        <div id="mobile-menu">
           {% main_menu %}
-        {% endajaxcache %}
-      </nav>
+        </div>
+      {% endajaxcache %}
     </div>
   </div>
 </header>

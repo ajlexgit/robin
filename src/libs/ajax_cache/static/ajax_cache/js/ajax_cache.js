@@ -17,7 +17,7 @@
             extraData: $.noop
         };
 
-        cls.DATA_KEY = 'ajax-cache--block';
+        cls.DATA_KEY = 'ajax-cache-block';
 
 
         cls.init = function(placeholder, options) {

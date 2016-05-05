@@ -118,16 +118,10 @@
                 this.trigger('resize', winWidth);
             }
         })
-    }, 100));
-
-
-    $(document).ready(function() {
-        var $menu = $('#mobile-menu');
-        if (!$menu.length) {
-            return
-        }
-
-        // главное меню на мобиле
+    }, 100))
+    
+    // главное меню
+    var initMainMenu = function() {
         window.menu = Menu({
             fullHeight: true
         }).on('resize', function(winWidth) {
@@ -136,6 +130,21 @@
                 this.hide();
             }
         });
-    });
+    };
+
+    $(document).ready(function() {
+        var $menu = $('#mobile-menu');
+        if ($menu.length) {
+            initMainMenu();
+            return
+        }
+
+        var $placeholder = $('.ajax-cache-block[data-key^="template.cache.mobile-menu"]');
+        if ($placeholder.length) {
+            $placeholder.on('loaded', function() {
+                initMainMenu()
+            });
+        }
+    })
 
 })(jQuery);
