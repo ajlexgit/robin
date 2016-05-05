@@ -56,7 +56,6 @@
   }
 
   ul, ol {
-    padding-left: 1.6em;
     margin: 1.6em 0;
 
     li {
@@ -76,6 +75,8 @@
   }
 
   ul > li {
+    padding-left: 1.6em;
+
     &:before {
       content: '●';
       position: absolute;
@@ -87,6 +88,7 @@
   }
 
   ol {
+    padding-left: 1.6em;
     list-style: decimal;
   }
 
