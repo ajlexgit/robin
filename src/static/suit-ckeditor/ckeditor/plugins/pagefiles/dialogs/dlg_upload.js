@@ -11,7 +11,7 @@
                 'X-CSRFToken': $.cookie('csrftoken'),
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            unique_names : true,
+            unique_names : false,
             prevent_duplicates: true,
             sortable: true,
             dragdrop: true,
