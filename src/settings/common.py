@@ -37,6 +37,7 @@ INSTALLED_APPS = (
 
     # 'haystack',
     # 'djcelery_email',
+    'libs.pipeline',    # До pipeline
     'pipeline',
     'solo',
     'suit_ckeditor',
