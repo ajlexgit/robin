@@ -1,6 +1,6 @@
+{% load pipeline_plus %}
 {% load staticfiles %}
 {% load js_storage %}
-{% load pipeline %}
 {% load opengraph %}
 {% load header %}
 {% load footer %}
@@ -20,7 +20,7 @@
 
   {# === SCRIPTS === #}
   {#  Асинхронная подгрузка CSS  #}
-  {% include 'pipeline/load_css.html' %}
+  {% include 'pipeline/script.html' %}
 
   {# === STYLES === #}
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>

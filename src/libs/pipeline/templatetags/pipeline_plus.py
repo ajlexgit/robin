@@ -2,14 +2,31 @@ import codecs
 import hashlib
 from django.core.cache import cache
 from django.utils.safestring import mark_safe
-from django.template import Library, TemplateSyntaxError
+from django.template import Library, TemplateSyntaxError, loader
 from django.contrib.staticfiles.storage import staticfiles_storage
 from pipeline.templatetags import pipeline
+from pipeline.utils import guess_type
 
 register = Library()
 
 
 class StylesheetNode(pipeline.StylesheetNode):
+    """
+        Добавлено время изменения файла
+    """
+    def render_css(self, package, path):
+        template_name = package.template_name or "pipeline/css.html"
+        modified = staticfiles_storage.modified_time(path).timestamp()
+        context = package.extra_context
+        context.update({
+            'type': guess_type(path, 'text/css'),
+            'url': mark_safe(staticfiles_storage.url(path)),
+            'modified': int(modified),
+        })
+        return loader.render_to_string(template_name, context)
+
+
+class InlineStylesheetNode(pipeline.StylesheetNode):
     def render_css(self, package, path):
         cache_key = ':'.join((
             self.name,
@@ -41,4 +58,26 @@ def inline_stylesheet(parser, token):
         raise TemplateSyntaxError(
             '%r requires exactly one argument: the name of a group in the PIPELINE.STYLESHEETS setting' %
             token.split_contents()[0])
+    return InlineStylesheetNode(name)
+
+
+@register.tag
+def stylesheet(parser, token):
+    try:
+        tag_name, name = token.split_contents()
+    except ValueError:
+        raise TemplateSyntaxError(
+            '%r requires exactly one argument: the name of a group in the PIPELINE.STYLESHEETS setting' %
+            token.split_contents()[0])
     return StylesheetNode(name)
+
+
+@register.tag
+def javascript(parser, token):
+    try:
+        tag_name, name = token.split_contents()
+    except ValueError:
+        raise TemplateSyntaxError(
+            '%r requires exactly one argument: the name of a group in the PIPELINE.JAVASVRIPT setting' %
+            token.split_contents()[0])
+    return pipeline.JavascriptNode(name)
