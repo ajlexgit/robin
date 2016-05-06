@@ -23,7 +23,7 @@ DATABASES = {
 PIPELINE['SASS_ARGUMENTS'] = '-t nested'
 
 STATICFILES_FINDERS += (
-    'libs.debug_finder.PipelineFinder',
+    'libs.pipeline.debug_finder.PipelineFinder',
 )
 
 # Отключение кэширования шаблонов
