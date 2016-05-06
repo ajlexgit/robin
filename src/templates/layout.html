@@ -18,6 +18,10 @@
 
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
 
+  {# === SCRIPTS === #}
+  {#  Асинхронная подгрузка CSS  #}
+  {#  {% include 'pipeline/load_css.html' %} #}
+
   {# === STYLES === #}
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">

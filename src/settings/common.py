@@ -37,7 +37,6 @@ INSTALLED_APPS = (
 
     # 'haystack',
     # 'djcelery_email',
-    'libs.pipeline',    # До pipeline
     'pipeline',
     'solo',
     'suit_ckeditor',
@@ -71,6 +70,7 @@ INSTALLED_APPS = (
     'libs.js_storage',
     'libs.management',
     'libs.opengraph',
+    'libs.pipeline',
     'libs.stdimage',
     'libs.templatetags',
     'libs.variation_field',
