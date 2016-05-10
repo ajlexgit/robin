@@ -89,3 +89,9 @@ class StdImageAdminWidget(BaseStdImageWidget):
             upload,
             data.get('%s-croparea' % name, None) or None
         )
+
+    def has_changed(self, initial, data):
+        if isinstance(data, tuple):
+            data, croparea = data
+
+        return super().has_changed(initial, data)
