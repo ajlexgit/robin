@@ -21,6 +21,9 @@
   {# === STYLES === #}
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
+  {% for domain in MEDIA_URLS %}
+    <link rel="dns-prefetch" href="{{ domain }}">
+  {% endfor %}
   {% stylesheet 'core' %}
 
   {% block static_head %}{% endblock static_head %}
