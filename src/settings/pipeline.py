@@ -1,10 +1,10 @@
 PIPELINE = {
     'PIPELINE_ENABLED': True,
     'COMPILERS': (
-        'libs.sassc.SASSCCompiler',
+        'libs.pipeline.sassc.SASSCCompiler',
     ),
     'SASS_ARGUMENTS': '-t compressed',
-    'CSS_COMPRESSOR': 'libs.cssmin.CSSCompressor',
+    'CSS_COMPRESSOR': 'libs.pipeline.cssmin.CSSCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
 
     'STYLESHEETS': {

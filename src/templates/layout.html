@@ -1,6 +1,6 @@
+{% load pipeline_plus %}
 {% load staticfiles %}
 {% load js_storage %}
-{% load pipeline %}
 {% load opengraph %}
 {% load header %}
 {% load footer %}
@@ -17,6 +17,10 @@
   {% block extra_meta %}{% endblock extra_meta %}
 
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
+
+  {# === SCRIPTS === #}
+  {#  Асинхронная подгрузка CSS  #}
+  {% include 'pipeline/script.html' %}
 
   {# === STYLES === #}
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>

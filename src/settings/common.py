@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'libs.js_storage',
     'libs.management',
     'libs.opengraph',
+    'libs.pipeline',
     'libs.stdimage',
     'libs.templatetags',
     'libs.variation_field',
