@@ -10,7 +10,8 @@ from .utils import get_block_types
 
 
 class AttachedBlocksForm(forms.ModelForm):
-    block_type = forms.ChoiceField(
+    block_type = forms.TypedChoiceField(
+        coerce=int,
         label=_('Type'),
         choices=get_block_types,
     )
