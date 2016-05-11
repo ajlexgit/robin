@@ -39,6 +39,6 @@ def clean_admin_log(days=180):
     """
         Удаление записей лога, старее двух месяцев назад
     """
-    from django.contrib.admin.models import LogEntry
+    from admin_log.models import LogEntry
     since_date = datetime.now() - timedelta(days=days)
     LogEntry.objects.filter(action_time__lt=since_date).delete()
