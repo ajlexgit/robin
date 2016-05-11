@@ -14,6 +14,9 @@ class LinkWidget(forms.Widget):
         self.attrs.setdefault('target', '_self')
 
     def render(self, name, value, attrs=None):
+        if value is None:
+            return None
+
         final_attrs = self.build_attrs(attrs)
         href = smart_urlquote(value)
         text = self.text or href

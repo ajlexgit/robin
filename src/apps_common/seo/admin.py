@@ -126,6 +126,12 @@ class SeoModelAdminMixin(ModelAdminMixin):
             seo_instance.object_id = obj.id
             seo_model_admin.save_model(request, seo_instance, seo_form, change=not is_add)
 
+            if is_add:
+                seo_model_admin.log_addition(request, seo_instance)
+            else:
+                change_message = seo_model_admin.construct_change_message(request, seo_form, None)
+                seo_model_admin.log_change(request, seo_instance, change_message)
+
     def response_add(self, request, obj, *args, **kwargs):
         self.save_seo_form(request, obj, change=False)
         return super().response_add(request, obj, *args, **kwargs)
