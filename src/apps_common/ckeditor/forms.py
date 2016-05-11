@@ -36,3 +36,7 @@ class CKEditorUploadFormField(forms.Field):
     def clean(self, value):
         text, page_photos, page_files, simple_photos = value
         return super().clean(text), page_photos, page_files, simple_photos
+
+    def has_changed(self, initial, data):
+        data, *other = data
+        return super().has_changed(initial, data)
