@@ -6,9 +6,6 @@ from pipeline.conf import settings
 from pipeline.compilers import SubProcessCompiler
 from pipeline.exceptions import CompilerError
 
-# Время, в течении которго исходник считается свежим
-RECOMPILE_TIME = 3 * 60
-
 
 class SASSCMetaclass(type):
     def __init__(cls, name, bases, nmspc):
@@ -65,12 +62,6 @@ class SASSCCompiler(SubProcessCompiler, metaclass=SASSCMetaclass):
             # Уже есть свежий скомпиленный файл
             if os.stat(outfile).st_mtime > self.start:
                 return
-
-            # Исходник менялся давнее, чем RECOMPILE_TIME секунд назад
-            if os.path.isfile(infile):
-                recompile_time = self.start - RECOMPILE_TIME
-                if os.stat(infile).st_mtime < recompile_time:
-                    return
 
         command = "%s %s %s" % (
             ' '.join(settings.SASS_BINARY),
