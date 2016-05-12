@@ -7,7 +7,7 @@ from pipeline.compilers import SubProcessCompiler
 from pipeline.exceptions import CompilerError
 
 # Время, в течении которго исходник считается свежим
-RECOMPILE_TIME = 5 * 60
+RECOMPILE_TIME = 3 * 60
 
 
 class SASSCMetaclass(type):
