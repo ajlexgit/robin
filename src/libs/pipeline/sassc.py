@@ -1,4 +1,4 @@
-﻿import os
+import os
 import subprocess
 from django.utils.encoding import smart_bytes
 from pipeline.conf import settings
