@@ -1,4 +1,5 @@
 import os
+import time
 import subprocess
 from django.utils.encoding import smart_bytes
 from pipeline.conf import settings
@@ -6,7 +7,13 @@ from pipeline.compilers import SubProcessCompiler
 from pipeline.exceptions import CompilerError
 
 
-class SASSCCompiler(SubProcessCompiler):
+class SASSCMetaclass(type):
+    def __init__(cls, name, bases, nmspc):
+        super().__init__(name, bases, nmspc)
+        cls.start = time.time()
+
+
+class SASSCCompiler(SubProcessCompiler, metaclass=SASSCMetaclass):
     """
         Класс для компилирования JS и CSS через sassc.
         В settings.py необходимо добавить:
@@ -50,6 +57,9 @@ class SASSCCompiler(SubProcessCompiler):
         return stdout
 
     def compile_file(self, infile, outfile, outdated=False, force=False):
+        if os.path.isfile(outfile) and os.stat(outfile).st_mtime > self.start:
+            return
+
         command = "%s %s %s" % (
             ' '.join(settings.SASS_BINARY),
             ' '.join(settings.SASS_ARGUMENTS),
@@ -62,5 +72,5 @@ class SASSCCompiler(SubProcessCompiler):
             raise
         else:
             output = output.decode('utf-8-sig')
-            with open(outfile, 'w+', encoding='utf-8') as f:
+            with open(outfile, 'w+') as f:
                 f.write(output)
