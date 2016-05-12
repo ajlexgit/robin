@@ -72,5 +72,5 @@ class SASSCCompiler(SubProcessCompiler, metaclass=SASSCMetaclass):
             raise
         else:
             output = output.decode('utf-8-sig')
-            with open(outfile, 'w+') as f:
+            with open(outfile, 'w+', encoding='utf-8') as f:
                 f.write(output)
