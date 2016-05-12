@@ -15,7 +15,7 @@ def is_same_domain(host, pattern):
     )
 
 
-def away_links(request, html, target="_blank"):
+def away_links(request, html):
     """
         Заменяет все внешние ссылки в html-коде на единую точку с редиректом
     """
@@ -23,10 +23,9 @@ def away_links(request, html, target="_blank"):
     soup = Soup(html, 'html5lib')
     for tag in soup.findAll('a'):
         if tag.get('href'):
-            tag['target'] = target
-
             parsed = parse.urlparse(tag['href'])
             if '' not in (parsed.scheme, parsed.netloc) and not is_same_domain(parsed.netloc, site.domain):
+                tag['target'] = '_blank'
                 tag['href'] = resolve_url('away') + '?url=' + parsed.geturl()
                 tag.string = parse.unquote(tag.string)
 
