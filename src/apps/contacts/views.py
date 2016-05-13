@@ -1,3 +1,4 @@
+from django.db import models
 from django.template import loader
 from django.utils.html import escape
 from django.shortcuts import redirect
@@ -5,27 +6,34 @@ from django.views.generic import TemplateView
 from django.utils.translation import ugettext_lazy as _
 from seo import Seo
 from libs.email import send
+from libs.views import CachedViewMixin
 from .models import ContactsConfig, Address, NotifyReceiver
 from .forms import ContactForm
 
 
-class IndexView(TemplateView):
+class IndexView(CachedViewMixin, TemplateView):
     template_name = 'contacts/index.html'
+    config = None
+    addresses = None
+
+    def last_modified(self, *args, tag_slug=None, **kwargs):
+        self.config = ContactsConfig.get_solo()
+        self.addresses = Address.objects.all()
+        return self.config.updated, self.addresses.aggregate(models.Max('updated'))['updated__max']
 
     def get(self, request, *args, **kwargs):
-        config = ContactsConfig.get_solo()
         form = ContactForm()
 
         # SEO
         seo = Seo()
-        seo.set_data(config, defaults={
-            'title': config.header,
+        seo.set_data(self.config, defaults={
+            'title': self.config.header,
         })
         seo.save(request)
 
         return self.render_to_response({
-            'config': config,
-            'addresses': Address.objects.all(),
+            'config': self.config,
+            'addresses': self.addresses,
             'form': form,
         })
 

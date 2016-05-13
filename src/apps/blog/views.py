@@ -1,28 +1,35 @@
+from django.db import models
 from django.http.response import Http404
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from seo import Seo
 from paginator import Paginator, EmptyPage
+from libs.views import CachedViewMixin
 from .models import BlogConfig, BlogPost, Tag
 
 
-class IndexView(TemplateView):
+class IndexView(CachedViewMixin, TemplateView):
     template_name = 'blog/index.html'
+    config = None
+    posts = None
+    tag = None
+
+    def last_modified(self, *args, tag_slug=None, **kwargs):
+        self.config = BlogConfig.get_solo()
+
+        if tag_slug:
+            self.tag = get_object_or_404(Tag, slug=tag_slug)
+            self.posts = BlogPost.objects.filter(visible=True, tags=self.tag)
+        else:
+            self.posts = BlogPost.objects.filter(visible=True)
+
+        return self.config.updated, self.posts.aggregate(models.Max('updated'))['updated__max']
 
     def get(self, request, *args, tag_slug=None, **kwargs):
-        config = BlogConfig.get_solo()
-
-        if tag_slug is not None:
-            tag = get_object_or_404(Tag, slug=tag_slug)
-            posts = BlogPost.objects.filter(visible=True, tags=tag)
-        else:
-            tag = None
-            posts = BlogPost.objects.filter(visible=True)
-
         try:
             paginator = Paginator(
                 request,
-                object_list=posts,
+                object_list=self.posts,
                 per_page=3,
                 page_neighbors=1,
                 side_neighbors=1,
@@ -33,35 +40,39 @@ class IndexView(TemplateView):
 
         # SEO
         seo = Seo()
-        seo.set_data(config, defaults={
-            'title': config.header,
+        seo.set_data(self.config, defaults={
+            'title': self.config.header,
         })
         seo.save(request)
 
         return self.render_to_response({
-            'config': config,
-            'tags': Tag.objects.active(),
-            'current_tag': tag,
+            'config': self.config,
             'paginator': paginator,
+            'tags': Tag.objects.active(),
+            'current_tag': self.tag,
         })
 
 
-class DetailView(TemplateView):
+class DetailView(CachedViewMixin, TemplateView):
     template_name = 'blog/detail.html'
+    config = None
+    post = None
+
+    def last_modified(self, *args, slug=None, **kwargs):
+        self.config = BlogConfig.get_solo()
+        self.post = get_object_or_404(BlogPost, slug=slug)
+        return self.config.updated, self.post.updated
 
     def get(self, request, *args, slug=None, **kwargs):
-        config = BlogConfig.get_solo()
-        post = get_object_or_404(BlogPost, slug=slug)
-
         # SEO
         seo = Seo()
-        seo.set_title(config, default=config.header)
-        seo.set_data(post, defaults={
-            'title': post.title,
+        seo.set_title(self.config, default=self.config.header)
+        seo.set_data(self.post, defaults={
+            'title': self.post.title,
         })
         seo.save(request)
 
         return self.render_to_response({
-            'config': config,
-            'post': post,
+            'config': self.config,
+            'post': self.post,
         })

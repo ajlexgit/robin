@@ -10,7 +10,6 @@ from google_maps.fields import GoogleCoordsField
 class ContactsConfig(SingletonModel):
     """ Главная страница """
     header = models.CharField(_('header'), max_length=128)
-
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
@@ -31,6 +30,7 @@ class Address(models.Model):
     coords = GoogleCoordsField(_('coords'), blank=True)
 
     sort_order = models.PositiveIntegerField(_('sort order'))
+    updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
         verbose_name = _('address')

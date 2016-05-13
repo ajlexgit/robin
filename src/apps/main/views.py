@@ -1,20 +1,24 @@
 from django.views.generic import TemplateView
+from libs.views import CachedViewMixin
 from seo import Seo
 from .models import MainPageConfig
 
 
-class IndexView(TemplateView):
+class IndexView(CachedViewMixin, TemplateView):
     template_name = 'main/index.html'
+    config = None
+
+    def last_modified(self, *args, tag_slug=None, **kwargs):
+        self.config = MainPageConfig.get_solo()
+        return self.config.updated
 
     def get(self, request, *args, **kwargs):
-        config = MainPageConfig.get_solo()
-
         # SEO
         seo = Seo()
-        seo.set_data(config)
+        seo.set_data(self.config)
         seo.save(request)
 
         return self.render_to_response({
-            'config': config,
+            'config': self.config,
             'is_main_page': True,       # отменяет <noindex> шапки и подвала
         })
