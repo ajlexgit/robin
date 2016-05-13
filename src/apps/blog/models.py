@@ -88,7 +88,6 @@ class BlogPost(models.Model):
         blank=True,
         storage=MediaStorage('blog/preview'),
         min_dimensions=(900, 500),
-        max_source_dimensions=(1024, 1024),
         admin_variation='admin',
         crop_area=True,
         aspects=('normal',),
