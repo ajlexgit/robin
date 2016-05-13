@@ -1,6 +1,7 @@
 import operator
 import itertools
 from PIL import Image, ImageOps, ImageEnhance
+from django.contrib.staticfiles.finders import find
 from django.contrib.staticfiles.storage import staticfiles_storage
 from .croparea import CropArea
 from .size import Size
@@ -138,11 +139,11 @@ def check_variations(variations, obj):
                 errors.append(checks.Error('unacceptable format of variation %r: %r. Allowed types: jpg, jpeg, png' % (name, fmt), obj=obj))
 
         # overlay
-        if params['overlay'] and not staticfiles_storage.exists(params['overlay']):
+        if params['overlay'] and not find(params['overlay']):
             errors.append(checks.Error('overlay file not found: %r' % params['overlay'], obj=obj))
 
         # mask
-        if params['mask'] and not staticfiles_storage.exists(params['mask']):
+        if params['mask'] and not find(params['mask']):
             errors.append(checks.Error('mask file not found: %r' % params['mask'], obj=obj))
 
         if params['watermark']:
@@ -154,7 +155,7 @@ def check_variations(variations, obj):
             # file
             if 'file' not in watermark:
                 errors.append(checks.Error('watermark file required for variation %r' % name, obj=obj))
-            if not staticfiles_storage.exists(watermark['file']):
+            if not find(watermark['file']):
                 errors.append(checks.Error('watermark file not found: %r' % watermark['file'], obj=obj))
 
             # padding
