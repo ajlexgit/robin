@@ -654,7 +654,7 @@ class VariationImageField(models.ImageField):
                     variation,
                     croparea=croparea
                 )
-                
+
     def _post_save(self, instance, **kwargs):
         """ Обертка над реальным обработчиком """
         # Флаг, что загружен новый файл
