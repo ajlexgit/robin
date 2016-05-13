@@ -2,7 +2,6 @@ import os
 import logging
 import tempfile
 from PIL import Image
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from django.db import models
 from django.db.models import signals
 from django.core.files.images import ImageFile
@@ -645,15 +644,13 @@ class VariationImageField(models.ImageField):
             return
 
         self.add_field_variations(instance, field_file)
-        with ProcessPoolExecutor(max_workers=2) as executor:
-            for variation in field_file.variations.values():
-                executor.submit(
-                    self.resize_image,
-                    instance,
-                    field_file.path,
-                    variation,
-                    croparea=croparea
-                )
+        for variation in field_file.variations.values():
+            self.resize_image(
+                instance,
+                field_file.path,
+                variation,
+                croparea=croparea
+            )
 
     def _post_save(self, instance, **kwargs):
         """ Обертка над реальным обработчиком """
