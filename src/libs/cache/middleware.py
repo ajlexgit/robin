@@ -5,7 +5,7 @@ from django.utils.cache import patch_vary_headers
 
 logger = logging.getLogger(__name__)
 PREVENT_CACHING = getattr(settings, 'SCC_PREVENT_CACHING', settings.DEBUG)
-MAX_AGE_PUBLIC = getattr(settings, 'SCC_MAX_AGE_PUBLIC', 86400)
+MAX_AGE_PUBLIC = getattr(settings, 'SCC_MAX_AGE_PUBLIC', 24 * 3600)
 MAX_AGE_PRIVATE = getattr(settings, 'SCC_MAX_AGE_PRIVATE', 0)
 ENABLED = getattr(settings, 'SCC_ENABLED', True)
 
