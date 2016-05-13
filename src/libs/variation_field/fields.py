@@ -1,8 +1,9 @@
 import os
+import logging
+import tempfile
 from PIL import Image
 from django.db import models
 from django.db.models import signals
-from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
@@ -12,6 +13,8 @@ from django.db.models.fields.files import ImageFieldFile, FieldFile, ImageFileDe
 from .croparea import CropArea
 from .utils import (put_on_bg, limited_size, variation_crop, variation_resize,
                     variation_watermark, variation_overlay, variation_mask)
+
+logger = logging.getLogger('variation_field')
 
 
 class VariationField(ImageFile):
@@ -547,18 +550,22 @@ class VariationImageField(models.ImageField):
             with self.storage.open(field_file.name) as source:
                 self.storage.save(source_path, source)
         else:
-            ct = ContentFile(b'')
             params = source_image.info or {}
             params['quality'] = self.get_source_quality(instance)
             params.update(**kwargs)
-            try:
-                source_image.save(ct, source_image.format, optimize=1, **params)
-            except IOError:
-                source_image.save(ct, source_image.format, **params)
 
-            self.storage.save(source_path, ct)
+            with tempfile.TemporaryFile() as tmp:
+                try:
+                    source_image.save(tmp, source_image.format, optimize=1, **params)
+                except IOError:
+                    source_image.save(tmp, source_image.format, **params)
+                finally:
+                    source_image.close()
 
-            # Удаляем загруженный исходник
+                tmp.seek(0)
+                self.storage.save(source_path, tmp)
+
+        # Удаляем загруженный исходник
         self.storage.delete(field_file.name)
 
         # Записываем путь к исходнику
@@ -633,6 +640,8 @@ class VariationImageField(models.ImageField):
             except IOError:
                 variation_image.save(destination, **save_params)
 
+        variation_image.close()
+
         # Очищаем закэшированные размеры картинки, т.к. они могли измениться
         variation_field = getattr(field_file, variation['name'])
         variation_field.clear_dimensions()
@@ -663,6 +672,7 @@ class VariationImageField(models.ImageField):
                     current_image = variation_crop(source_image, croparea)
                     self.resize_image(instance, variation, target_format, current_image)
             finally:
+                source_image.close()
                 field_file.close()
 
     def _post_save(self, instance, **kwargs):
@@ -693,7 +703,6 @@ class VariationImageField(models.ImageField):
 
         field_file.croparea = croparea
 
-        draft_size = None
         update_fields = {}
 
         try:
