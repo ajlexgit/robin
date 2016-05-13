@@ -531,16 +531,13 @@ class VariationImageField(models.ImageField):
             params['quality'] = self.get_source_quality(instance)
             params.update(**kwargs)
 
-            with tempfile.TemporaryFile() as tmp:
+            with self.storage.open(source_path, 'wb') as destination:
                 try:
-                    source_image.save(tmp, source_image.format, optimize=1, **params)
+                    source_image.save(destination, source_image.format, optimize=1, **params)
                 except IOError:
-                    source_image.save(tmp, source_image.format, **params)
+                    source_image.save(destination, source_image.format, **params)
                 finally:
                     source_image.close()
-
-                tmp.seek(0)
-                self.storage.save(source_path, tmp)
 
         # Удаляем загруженный исходник
         self.storage.delete(field_file.name)
@@ -583,8 +580,6 @@ class VariationImageField(models.ImageField):
             return
 
         field_file = self.value_from_object(instance)
-        if not field_file:
-            return
 
         with open(filepath, 'rb') as fp:
             variation_image = Image.open(fp)
