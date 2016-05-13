@@ -646,7 +646,7 @@ class VariationImageField(models.ImageField):
 
         self.add_field_variations(instance, field_file)
         with ProcessPoolExecutor(max_workers=2) as executor:
-            fs = (
+            for variation in field_file.variations.values():
                 executor.submit(
                     self.resize_image,
                     instance,
@@ -654,12 +654,7 @@ class VariationImageField(models.ImageField):
                     variation,
                     croparea=croparea
                 )
-                for variation in field_file.variations.values()
-            )
-
-            for f in as_completed(fs):
-                print('done')
-
+                
     def _post_save(self, instance, **kwargs):
         """ Обертка над реальным обработчиком """
         # Флаг, что загружен новый файл
