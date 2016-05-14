@@ -3,7 +3,7 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from gallery import *
-from libs.media_storage import MediaStorage
+from libs.storages import MediaStorage
 from libs.stdimage.fields import StdImageField
 
 

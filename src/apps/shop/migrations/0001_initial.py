@@ -6,7 +6,7 @@ import libs.autoslug
 import django.utils.timezone
 import libs.valute_field.fields
 import gallery.models
-import libs.media_storage
+import libs.storages
 import django.core.validators
 import ckeditor.fields
 import mptt.fields
@@ -138,7 +138,7 @@ class Migration(migrations.Migration):
             name='ShopProductGalleryImageItem',
             fields=[
                 ('galleryitembase_ptr', models.OneToOneField(parent_link=True, to='gallery.GalleryItemBase', auto_created=True, serialize=False, primary_key=True)),
-                ('image', gallery.fields.GalleryImageField(upload_to=gallery.models.generate_filepath, verbose_name='image', storage=libs.media_storage.MediaStorage())),
+                ('image', gallery.fields.GalleryImageField(upload_to=gallery.models.generate_filepath, verbose_name='image', storage=libs.storages.MediaStorage())),
                 ('image_crop', models.CharField(max_length=32, verbose_name='stored_crop', editable=False, blank=True)),
             ],
             options={

@@ -3,7 +3,7 @@
     CKEditorUploadField - поле ckeditor с возможностью закачки файлов.
 
     Зависит от:
-        libs.media_storage
+        libs.storages
         libs.stdimage
         libs.upload
 

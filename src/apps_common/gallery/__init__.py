@@ -1,7 +1,7 @@
 """
     Зависит от:
         libs.aliased_queryset
-        libs.media_storage
+        libs.storages
         libs.upload
         libs.variation_field
         libs.videolink_field

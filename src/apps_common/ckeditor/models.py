@@ -4,7 +4,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from libs.stdimage import StdImageField
-from libs.media_storage import MediaStorage
+from libs.storages import MediaStorage
 
 
 def page_photo_filename(instance, filename):

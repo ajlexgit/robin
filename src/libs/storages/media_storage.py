@@ -11,12 +11,6 @@ MULTIDOMAIN_MEDIA = tuple(
 )
 
 
-def context_processor(request):
-    return {
-        'MEDIA_URLS': MULTIDOMAIN_MEDIA,
-    }
-
-
 class MediaStorage(FileSystemStorage):
     """
         Файловое хранилище в папке media

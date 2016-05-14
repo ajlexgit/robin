@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import libs.media_storage
+import libs.storages
 import django.utils.timezone
 
 
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('keywords', models.TextField(max_length=255, blank=True, verbose_name='keywords')),
                 ('description', models.TextField(max_length=255, blank=True, verbose_name='description')),
                 ('og_title', models.CharField(max_length=255, blank=True, verbose_name='title')),
-                ('og_image', models.ImageField(blank=True, upload_to='', storage=libs.media_storage.MediaStorage('seo'), verbose_name='image')),
+                ('og_image', models.ImageField(blank=True, upload_to='', storage=libs.storages.MediaStorage('seo'), verbose_name='image')),
                 ('og_description', models.TextField(blank=True, verbose_name='description')),
                 ('header', models.CharField(max_length=128, blank=True, verbose_name='header')),
                 ('text', models.TextField(blank=True, verbose_name='text')),

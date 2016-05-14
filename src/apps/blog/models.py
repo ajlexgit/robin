@@ -6,7 +6,7 @@ from solo.models import SingletonModel
 from ckeditor.fields import CKEditorUploadField
 from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.autoslug import AutoSlugField
-from libs.media_storage import MediaStorage
+from libs.storages import MediaStorage
 from libs.stdimage.fields import StdImageField
 
 

@@ -357,7 +357,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
-                'libs.media_storage.context_processor',
+                'libs.storages.context_processors.media_urls',
             ),
             'loaders': (
                 ('django.template.loaders.cached.Loader', (

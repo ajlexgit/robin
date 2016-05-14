@@ -4,7 +4,7 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.contenttypes.models import ContentType
 from solo.models import SingletonModel
-from libs.media_storage import MediaStorage
+from libs.storages import MediaStorage
 
 
 class SeoConfig(SingletonModel):

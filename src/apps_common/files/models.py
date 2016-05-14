@@ -2,7 +2,7 @@ import os
 from django.db import models
 from django.core import checks
 from django.utils.translation import ugettext_lazy as _
-from libs.media_storage import MediaStorage
+from libs.storages import MediaStorage
 
 
 def generate_filepath(instance, filename):

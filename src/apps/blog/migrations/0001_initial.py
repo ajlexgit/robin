@@ -5,7 +5,7 @@ from django.db import migrations, models
 import libs.stdimage.fields
 import django.utils.timezone
 import libs.autoslug
-import libs.media_storage
+import libs.storages
 import ckeditor.fields
 
 
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('header', models.CharField(max_length=255, verbose_name='header')),
                 ('microdata_author', models.CharField(max_length=255, verbose_name='author')),
-                ('microdata_publisher_logo', models.ImageField(storage=libs.media_storage.MediaStorage('microdata'), upload_to='', verbose_name='logo')),
+                ('microdata_publisher_logo', models.ImageField(storage=libs.storages.MediaStorage('microdata'), upload_to='', verbose_name='logo')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
             ],
             options={
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('text', ckeditor.fields.CKEditorUploadField(verbose_name='text')),
                 ('date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='publication date')),
                 ('status', models.IntegerField(choices=[(1, 'Draft'), (2, 'Public')], default=1, verbose_name='status')),
-                ('preview', libs.stdimage.fields.StdImageField(min_dimensions=(900, 500), variations={'admin': {'size': (450, 250)}, 'mobile': {'size': (540, 300)}, 'normal': {'size': (900, 500)}}, storage=libs.media_storage.MediaStorage('blog/preview'), upload_to='', verbose_name='preview', blank=True, aspects=('normal',))),
+                ('preview', libs.stdimage.fields.StdImageField(min_dimensions=(900, 500), variations={'admin': {'size': (450, 250)}, 'mobile': {'size': (540, 300)}, 'normal': {'size': (900, 500)}}, storage=libs.storages.MediaStorage('blog/preview'), upload_to='', verbose_name='preview', blank=True, aspects=('normal',))),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
             ],
             options={

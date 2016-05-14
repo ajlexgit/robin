@@ -2,7 +2,7 @@
     Модуль файлов на страницу.
 
     Зависит от:
-        libs.media_storage
+        libs.storages
 
     Установка:
         settings.py:
