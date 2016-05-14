@@ -8,20 +8,12 @@ PIPELINE = {
     'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
 
     'STYLESHEETS': {
-        'critical': {
+        'core': {
             'source_filenames': (
                 'scss/grid.scss',
                 'scss/layout.scss',
                 'scss/forms.scss',
                 'scss/buttons.scss',
-
-                'header/scss/header.scss',
-                'menu/scss/menu.scss',
-            ),
-            'output_filename': 'css_build/critical.css',
-        },
-        'core': {
-            'source_filenames': (
                 'scss/preloader.scss',
                 'scss/text_styles.scss',
 
@@ -34,9 +26,10 @@ PIPELINE = {
 
                 'contacts/scss/block.scss',
                 'footer/scss/footer.scss',
+                'header/scss/header.scss',
+                'menu/scss/menu.scss',
             ),
             'output_filename': 'css_build/head_core.css',
-            'template_name': 'pipeline/load_css.html',
         },
         'admin_customize': {
             'source_filenames': (
