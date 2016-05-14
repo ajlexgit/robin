@@ -64,7 +64,7 @@
             // вставляем описание в слайдер
             if (description) {
                 slider.$root.append(
-                    $('<div>').addClass('description').html(description)
+                    $('<div>').addClass('object-description').html(description)
                 )
             }
         });
