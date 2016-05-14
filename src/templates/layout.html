@@ -28,6 +28,7 @@
   {% for domain in MEDIA_URLS %}
     <link rel="dns-prefetch" href="{{ domain }}">
   {% endfor %}
+  {% inline_stylesheet 'critical' %}
   {% stylesheet 'core' %}
 
   {% block static_head %}{% endblock static_head %}

@@ -14,20 +14,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GalleryItemBase',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('object_id', models.PositiveIntegerField()),
-                ('description', models.TextField(verbose_name='description', blank=True)),
+                ('description', models.TextField(blank=True, verbose_name='description')),
                 ('sort_order', models.PositiveIntegerField(default=0, verbose_name='sort order')),
-                ('created', models.DateTimeField(verbose_name='created on', blank=True)),
+                ('created', models.DateTimeField(blank=True, verbose_name='created on')),
                 ('changed', models.DateTimeField(auto_now=True, verbose_name='changed on')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('self_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType', editable=False, help_text='Для выборки элементов определенного типа')),
+                ('self_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType', help_text='Для выборки элементов определенного типа', editable=False)),
             ],
             options={
-                'default_permissions': (),
                 'verbose_name_plural': 'gallery items',
-                'verbose_name': 'gallery item',
                 'ordering': ('object_id', 'sort_order', 'created'),
+                'default_permissions': (),
+                'verbose_name': 'gallery item',
             },
         ),
         migrations.AlterIndexTogether(
