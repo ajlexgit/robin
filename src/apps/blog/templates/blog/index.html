@@ -70,7 +70,9 @@
             {% if post.preview %}
               <a href="{{ post.get_absolute_url }}" class="preview" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
                 <img srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
-                     src="{{ post.preview.normal.url }}" sizes="100vw" itemprop="url">
+                     src="{{ post.preview.normal.url }}" sizes="100vw" itemprop="url"
+                     width="{{ post.preview.normal.target_width }}"
+                     height="{{ post.preview.normal.target_height }}">
                 <meta itemprop="width" content="{{ post.preview.normal.target_width }}"/>
                 <meta itemprop="height" content="{{ post.preview.normal.target_height }}"/>
               </a>
