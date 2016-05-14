@@ -36,6 +36,7 @@ PIPELINE = {
                 'footer/scss/footer.scss',
             ),
             'output_filename': 'css_build/head_core.css',
+            'template_name': 'pipeline/load_css.html',
         },
         'admin_customize': {
             'source_filenames': (
