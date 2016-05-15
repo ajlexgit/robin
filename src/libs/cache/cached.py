@@ -1,31 +1,59 @@
 from hashlib import md5
 from random import randint
+from inspect import signature
 from django.core.cache import caches
 
 
-def make_key(func, params=(), additions=()):
+def make_key(func, params=()):
     """
         Возвращает ключ кэша функции с указанными параметрами.
 
         Параметры:
             func      - функция
             params    - последовательность значений, которые составят ключ кэша
-            additions - дополнительные значения для составления ключа кэша
     """
     final_params = [func.__module__, func.__qualname__]
     for param in params:
         param = str(param)
+
         # Требуем, чтобы ключ состоял только из latin-1
         try:
             param.encode('latin-1')
         except UnicodeEncodeError:
             param = md5(param.encode()).hexdigest()
+
         final_params.append(param)
-    final_params.extend(additions)
+
     return '.'.join(final_params)
 
 
-def cached(key=(), key_const=(), time=5*60, backend='default'):
+def get_property(value, prop):
+    # Аттрибут
+    try:
+        value = getattr(value, prop)
+    except AttributeError:
+        pass
+    else:
+        return value
+
+    # Индекс
+    try:
+        value = value[prop]
+    except (KeyError, TypeError):
+        pass
+    else:
+        return value
+
+    # Числовой индекс
+    try:
+        value = value[int(prop)]
+    except (KeyError, TypeError, ValueError):
+        raise ValueError
+    else:
+        return value
+
+
+def cached(*key, time=5*60, backend='default'):
     """
         Декоратор кэширования функций и методов,
         использующий для составления ключа значения параметров функции.
@@ -34,15 +62,13 @@ def cached(key=(), key_const=(), time=5*60, backend='default'):
         Данная нотация может быть использована и для свойств и для индексов (dectionary.index).
 
         Параметры:
-            time            - время кэширования в секундах
-            key             - список/кортеж имен параметров функции, которые
+            key             - список имен параметров функции, которые
                               будут использованы для составления ключа кэша
-            key_const       - список/кортеж дополнительных значений, которые будут использованы
-                              для составления ключа кэша
+            time            - время кэширования в секундах
             backend         - идентификатор используемого бэкенда кэширования
 
         Пример использования:
-            @cached(['title', 'address.street', 'addition.key'], [settings.CACHE_VERSION], time=3600)
+            @cached('title', 'address.street', 'addition.key', time=3600)
             def MyFunc(title, address, addition={'key': 1})
                 ...
                 return ...
@@ -50,35 +76,34 @@ def cached(key=(), key_const=(), time=5*60, backend='default'):
     cache = caches[backend]
 
     def decorator(func):
-        varnames = func.__code__.co_varnames
-        _defaults = func.__defaults__ or ()
-        defaults = dict(zip(varnames[-len(_defaults):], _defaults))
+        sig = signature(func)
+        defaults = {
+            k: v.default
+            for k, v in sig.parameters.items()
+        }
 
         def wrapper(*args, **kwargs):
-            func_args = defaults.copy()
-            func_args.update(zip(varnames[:len(args)], args))
-            func_args.update(kwargs)
+            bind_args = sig.bind(*args, **kwargs)
+            bind_args = dict(defaults, **bind_args.arguments)
 
             # Получение значений параметров функции
             real_params = []
-            for name in (key or varnames):
+            for name in (key or bind_args):
                 properties = name.split('.')
-                value = func_args.get(properties.pop(0), None)
+                value = bind_args.get(properties.pop(0), None)
                 for prop in properties:
-                    if value is None:
-                        break
-
                     try:
-                        value = getattr(value, prop, None)
-                    except AttributeError:
-                        value = value.get(prop, None)
+                        value = get_property(value, prop)
+                    except ValueError:
+                        value = None
+                        break
 
                     if callable(value):
                         value = value()
 
                 real_params.append(value)
 
-            cache_key = make_key(func, real_params, key_const)
+            cache_key = make_key(func, real_params)
             if cache_key in cache:
                 return cache.get(cache_key)
             else:
