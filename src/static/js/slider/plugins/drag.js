@@ -219,18 +219,18 @@
                 return
             }
 
-            var $leftSlide = $(this._movedSlides[0]);
-            var $rightSlide = $(this._movedSlides[1]);
+            var leftSlide = this._movedSlides[0];
+            var rightSlide = this._movedSlides[1];
             var $currSlide = slider.$currentSlide;
 
             var slide_left = 100 + this._getPercentGap(slider);
 
             // определение анимации
             var animation_from = {
-                left_slide: parseFloat($leftSlide.get(0).style.left),
-                right_slide: parseFloat($rightSlide.get(0).style.left)
+                left_slide: leftSlide ? parseFloat(leftSlide.style.left) : 0,
+                right_slide: rightSlide ? parseFloat(rightSlide.style.left) : 0
             };
-            if ($currSlide.get(0) == $leftSlide.get(0)) {
+            if ($currSlide.get(0) == leftSlide) {
                 var animation_to = {
                     left_slide: 0,
                     right_slide: slide_left
@@ -245,6 +245,8 @@
             }
 
 
+            var $leftSlide = $(leftSlide);
+            var $rightSlide = $(rightSlide);
             slider.beforeSlide($currSlide);
             slider._animation = $(animation_from).animate(animation_to, {
                 duration: Math.max(200, duration),
