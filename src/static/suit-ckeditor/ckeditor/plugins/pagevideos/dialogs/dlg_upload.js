@@ -132,18 +132,19 @@
                                             return
                                         }
 
+                                        var $code = $(code);
                                         var width = /width="(\d+)"/i.exec(code);
                                         var height = /height="(\d+)"/i.exec(code);
-                                        if (!width || !height) {
-                                            return
+                                        if (width && height) {
+                                            width = parseInt(width[1]);
+                                            height = parseInt(height[1]);
+                                            $code.attr({
+                                                width: 425,
+                                                height: Math.ceil((height / width) * 425) + 25
+                                            });
                                         }
 
-                                        width = parseInt(width[1]);
-                                        height = parseInt(height[1]);
-                                        $(element.$).find('iframe').attr({
-                                            width: 425,
-                                            height: Math.ceil((height / width) * 425) + 25
-                                        });
+                                        $(element.$).find('iframe').replaceWith($code);
                                     }
                                 });
                             }
