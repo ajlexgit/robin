@@ -18,7 +18,7 @@
         {% main_menu %}
       </nav>
 
-      {% ajaxcache 1800 mobile-menu %}
+      {% ajaxcache 1800 mobile-menu request.path_info %}
         <div id="mobile-menu">
           {% main_menu %}
         </div>
