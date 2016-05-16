@@ -23,21 +23,21 @@
       margin-right: 0;
     }
 
+    a {
+      display: inline-block;
+      padding: map-get($conf, 'padding');
+
+      &:hover {
+        color: map-get($conf, 'hover');
+      }
+    }
+
     &.active {
       color: map-get($conf, 'active');
 
       a:hover {
         color: map-get($conf, 'active');
       }
-    }
-  }
-
-  a {
-    display: inline-block;
-    padding: map-get($conf, 'padding');
-
-    &:hover {
-      color: map-get($conf, 'hover');
     }
   }
 }

@@ -77,17 +77,17 @@ $mobile_active_color: $menu_active_color;
         color: $mobile_active_color;
       }
     }
-  }
 
-  a {
-    display: inline-block;
-    padding: 5px;
-    font-weight: bold;
-    vertical-align: top;
-    @include font-size(22px, 28px);
+    a {
+      display: inline-block;
+      padding: 5px;
+      font-weight: bold;
+      vertical-align: top;
+      @include font-size(22px, 28px);
 
-    &:hover {
-      color: $mobile_hover_color;
+      &:hover {
+        color: $mobile_hover_color;
+      }
     }
   }
 
