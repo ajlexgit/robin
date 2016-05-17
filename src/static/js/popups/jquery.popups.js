@@ -128,9 +128,9 @@
             classes: '',
             body_classes: '',
             content: '',
-            speed: 400,
-            easingShow: 'easeInCubic',
-            easingHide: 'easeOutCubic'
+            speed: 300,
+            easingShow: 'linear',
+            easingHide: 'linear'
         };
 
         cls.CONTAINER_ID = 'popup-container';
