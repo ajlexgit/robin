@@ -14,7 +14,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.plugins = "basicstyles,toolbar,wysiwygarea,contextmenu,elementspath," +
         "entities,format,htmlwriter,enterkey,sourcearea,undo,pastefromword,pastetext," +
-        "list,link,removeformat,specialchar";
+        "list,link,removeformat,specialchar,stylescombo";
 
     config.forcePasteAsPlainText = true;
     config.autoGrow_maxHeight = 540;
