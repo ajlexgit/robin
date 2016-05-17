@@ -44,7 +44,7 @@ class AttachmentResponse(FileResponse):
             self['Content-Encoding'] = encoding
 
         # To inspect details for the below code, see http://greenbytes.de/tech/tc2231/
-        if 'MSIE' in request.META['HTTP_USER_AGENT']:
+        if 'HTTP_USER_AGENT' in request.META and 'MSIE' in request.META['HTTP_USER_AGENT']:
             # IE does not support internationalized filename at all.
             # It can only recognize internationalized URL, so we do the trick via routing rules.
             filename_header = ''
