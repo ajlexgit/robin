@@ -118,7 +118,7 @@
                 this.trigger('resize', winWidth);
             }
         })
-    }, 100))
+    }, 100));
     
     // главное меню
     var initMainMenu = function() {
