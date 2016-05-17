@@ -128,7 +128,7 @@
             classes: '',
             body_classes: '',
             content: '',
-            speed: 300,
+            speed: 200,
             easingShow: 'linear',
             easingHide: 'linear'
         };
