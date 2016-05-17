@@ -36,6 +36,10 @@
         $form.on('submit', function() {
             $.preloader();
 
+            if ($form.hasClass('sending')) {
+                return false;
+            }
+
             // добавление адреса страницы, откуда отправлена форма
             var data = $(this).serializeArray();
             data.push({
@@ -48,6 +52,9 @@
                 type: 'post',
                 data: data,
                 dataType: 'json',
+                beforeSend: function() {
+                    $form.addClass('sending');
+                },
                 success: function(response) {
                     if (response.success_message) {
                         // сообщение о успешной отправке
@@ -70,7 +77,10 @@
                         alert(window.DEFAULT_AJAX_ERROR);
                         $.popup().hide();
                     }
-                })
+                }),
+                complete: function() {
+                    $form.removeClass('sending');
+                }
             });
 
             return false;
