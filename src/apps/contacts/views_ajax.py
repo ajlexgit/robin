@@ -17,7 +17,7 @@ class ContactView(AjaxViewMixin, View):
                 'form': form,
             }),
         })
-        response['Cache-Control'] = 'max-age=%d' % 24 * 3600
+        response['cache-control'] = 'max-age=%d' % 24 * 3600
         return response
 
     def post(self, request):
