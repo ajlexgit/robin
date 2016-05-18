@@ -11,14 +11,12 @@ class ContactView(AjaxViewMixin, View):
     def get(self, request):
         config = ContactsConfig.get_solo()
         form = ContactForm()
-        response = self.json_response({
+        return self.json_response({
             'form': self.render_to_string('contacts/ajax_contact.html', {
                 'config': config,
                 'form': form,
             }),
         })
-        response['cache-control'] = 'public, must-revalidate, max-age=%d' % 24 * 3600
-        return response
 
     def post(self, request):
         config = ContactsConfig.get_solo()
