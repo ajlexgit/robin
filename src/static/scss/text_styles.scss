@@ -187,4 +187,12 @@
       @include border-box;
     }
   }
+
+  .no-margin {
+    margin-bottom: 0;
+
+    & + * {
+      margin-top: 0;
+    }
+  }
 }

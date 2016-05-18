@@ -15,11 +15,11 @@ CKEDITOR_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList', 'Format']
+            'items': ['BulletedList', 'NumberedList']
         },
         {
             'name': 'links',
-            'items': ['Link', 'Unlink']
+            'items': ['Link', 'Unlink', 'Styles', 'Format']
         },
         {
             'name': 'document',

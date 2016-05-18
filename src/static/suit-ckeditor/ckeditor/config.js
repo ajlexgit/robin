@@ -55,3 +55,12 @@ CKEDITOR.editorConfig = function( config ) {
         });
     });
 };
+
+CKEDITOR.stylesSet.add('default', [
+    // Block Styles
+    {
+        name: 'No margin',
+        element: 'p',
+        attributes: {'class': 'no-margin'}
+    }
+]);
