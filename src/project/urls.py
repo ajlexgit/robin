@@ -13,7 +13,7 @@ urlpatterns = [
 
     url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^shop/', include('shop.urls', namespace='shop')),
-    url(r'^contacts/', include('contacts.urls', namespace='contacts')),
+    url(r'^contact/', include('contacts.urls', namespace='contacts')),
 
     url(r'^admin/', include(honeypot_site.urls)),
     url(r'^dladmin/autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
