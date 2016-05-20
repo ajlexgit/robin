@@ -20,6 +20,7 @@ PIPELINE = {
                 'scss/popups/popups.scss',
                 'scss/popups/preloader.scss',
 
+                'popup_banner/scss/popup_banner.scss',
                 'contacts/scss/block.scss',
                 'footer/scss/footer.scss',
                 'header/scss/header.scss',
@@ -98,6 +99,7 @@ PIPELINE = {
                 'js/text_styles.js',
 
                 'attachable_blocks/js/async_blocks.js',
+                'popup_banner/js/popup_banner.js',
                 'ajax_cache/js/ajax_cache.js',
                 'contacts/js/block.js',
                 'menu/js/menu.js',
