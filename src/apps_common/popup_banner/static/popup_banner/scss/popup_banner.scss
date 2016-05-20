@@ -1,0 +1,107 @@
+@import "popups/popups_core";
+
+// вертикальные отступы окна
+$window_margin: (
+    ($media1024, 0): 60px,
+    ($media640, $media1024): 50px,
+    ($media480, $media640): 40px,
+    (0, $media480): 40px,
+);
+
+// размер окна
+$window_width: (
+    ($media1024, 0): 750px,
+    ($media768, $media1024): 650px,
+    (0, $media768): 550px,
+);
+
+// максимальная ширина окна
+$window_max_width: (
+    ($media1024, 0): 70%,
+    ($media480, $media1024): 80%,
+    (0, $media480): 90%,
+);
+
+// поля контентной части окна
+$content_paddings: (
+    ($media768, 0): 50px 50px 80px,
+    ($media480, $media768): 36px 36px 50px,
+    (0, $media480): 28px 28px 36px,
+);
+
+// цвет фона
+$background_color: $blue;
+
+// кнопка закрытия
+$close_btn_size: 28px;
+$close_btn_color: $white;
+$close_btn_weight: 4px;
+
+
+#popup-banner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(0,0,0, 0.75);
+}
+
+#popup-banner-container {
+  .popup-window {
+    @include media_map(width, $window_width);
+    @include media_map(max-width, $window_max_width);
+    @include media_map(margin-top, $window_margin);
+    @include media_map(margin-bottom, $window_margin);
+  }
+
+  .popup-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: $close_btn_size;
+    height: $close_btn_size;
+    z-index: 6;
+    cursor: pointer;
+    @include transform(scale(0.8));
+    @include transition(transform 0.2s);
+
+    &:before, &:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 80%;
+      height: $close_btn_weight;
+      background: $close_btn_color;
+      @include border_radius($close_btn_weight);
+    }
+    &:before {
+      @include transform(translate3d(-50%, -50%, 0) rotate(45deg));
+    }
+    &:after {
+      @include transform(translate3d(-50%, -50%, 0) rotate(-45deg));
+    }
+
+    &:hover {
+      @include transform(scale(1));
+    }
+  }
+
+  .popup-content {
+    background-color: $background_color;
+    @include media_map(padding, $content_paddings);
+    @include linear-gradient(to right, #2A55B4, #397FDE);
+  }
+
+  .title {
+    padding: 0 10px;
+    margin-bottom: 1em;
+    color: $white;
+    text-align: center;
+    @include media_interval(0, $media480) {
+      padding: 0 16px;
+    }
+  }
+}

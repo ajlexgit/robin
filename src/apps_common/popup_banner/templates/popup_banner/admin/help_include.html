@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<style>
+  dl.help dt {
+    float: left;
+    min-width: 80px;
+  }
+</style>
+
+<div class="alert alert-info">
+  <p>{% trans 'Examples' %}:</p>
+
+  <dl class="help">
+    <dt>/</dt>
+    <dd>{% trans 'Only main page' %}</dd>
+
+    <dt>/*</dt>
+    <dd>{% trans 'All pages' %}</dd>
+
+    <dt>/news/*</dt>
+    <dd>{% trans 'All pages inside "news" catalog' %}</dd>
+  </dl>
+</div>
