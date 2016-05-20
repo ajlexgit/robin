@@ -4,9 +4,7 @@
 // вертикальные отступы окна
 $window_margin: (
     ($media1024, 0): 60px,
-    ($media640, $media1024): 50px,
-    ($media480, $media640): 40px,
-    (0, $media480): 40px,
+    (0, $media1024): 50px
 );
 
 // размер окна

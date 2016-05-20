@@ -3,6 +3,8 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import CKEditorUploadField
 from libs.aliased_queryset import AliasedQuerySetMixin
+from libs.stdimage.fields import StdImageField
+from libs.storages.media_storage import MediaStorage
 
 
 class BannerQuerySet(AliasedQuerySetMixin, models.QuerySet):
@@ -23,15 +25,12 @@ class Banner(models.Model):
         (SHOW_ONCE_SESSION, _('Once per session')),
         (SHOW_ONCE, _('Once per user')),
     )
-    
+
     label = models.CharField(_('label'), max_length=255, help_text=_('for inner use'))
-    timeout = models.IntegerField(_('timeout'), help_text=_('seconds from page load'), default=10)
-    since_date = models.DateField(_('since'), default=now)
-    to_date = models.DateField(_('to'), null=True, blank=True)
-    
     url = models.URLField(_('url'))
+
     image = StdImageField(_('image'),
-        storage=MediaStorage('banner/image'),
+        storage=MediaStorage('popup_banner/image'),
         min_dimensions=(300, 300),
         admin_variation='admin',
         crop_area=True,
@@ -47,10 +46,12 @@ class Banner(models.Model):
     )
     header = models.CharField(_('header'), max_length=255, blank=True)
     text = CKEditorUploadField(_('text'), height=200, blank=True)
-    button_text = models.CharField(_('button text'), max_length=48, blank=True)
 
+    timeout = models.IntegerField(_('timeout'), help_text=_('seconds from page load'), default=10)
     is_visible = models.BooleanField(_('visible'), default=True)
     show_type = models.CharField(_('show'), max_length=16, choices=SHOW_OPTS, default=SHOW_ONCE_SESSION)
+    since_date = models.DateField(_('since'), default=now)
+    to_date = models.DateField(_('to'), null=True, blank=True)
     objects = BannerQuerySet.as_manager()
 
     class Meta:

@@ -1,12 +1,31 @@
 (function($) {
 
+    /*
+        Треует:
+            bg_inspector.js, popups.js
+     */
+
+    var SHOW_ALWAYS = 'always';
+    var SHOW_ONCE_SESSION = 'session';
+    var SHOW_ONCE = 'once';
+
+
     var BannerPopup = Class(OverlayedPopup, function BannerPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             hideOnClick: false
         });
 
-        cls.CONTAINER_ID = 'popup-banner-container';
         cls.OVERLAY_ID = 'popup-banner-overlay';
+
+        cls.extraDOM = function() {
+            superclass.extraDOM.call(this);
+            $.bgInspector.inspect(this.$content.find('.image'));
+        };
+
+        cls._removeDOM = function() {
+            superclass._removeDOM.call(this);
+            $.bgInspector.ignore(this.$content.find('.image'));
+        };
     });
 
 
@@ -30,7 +49,7 @@
         if (was_shown && (show_type != SHOW_ALWAYS)) {
             return
         }
-        
+
         return $.ajax({
             url: window.js_storage.ajax_popup_banner,
             type: 'GET',
@@ -41,7 +60,7 @@
             success: function(response) {
                 if (response.html) {
                     var popup = BannerPopup({
-                        classes: 'banner-popup',
+                        classes: 'popup-banner',
                         content: response.html
                     }).show();
                 }

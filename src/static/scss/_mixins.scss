@@ -127,6 +127,12 @@
   }
 }
 
+@mixin fontsize_h1() {
+  @include font-size(40px, 42px);
+  @include media_interval(0, $media768) {
+    @include font-size(28px);
+  }
+}
 
 //=========================================
 //  Шрифты

@@ -91,7 +91,7 @@ body {
     &::-webkit-media-controls {
       display: none;
     }
-    
+
     &.loaded {
       visibility: visible;
     }
@@ -122,9 +122,6 @@ body {
 // Заголовки
 .title-h1 {
   font-weight: bold;
-  @include font-size(40px, 46px);
-  @include media_interval(0, $media768) {
-    @include font-size(28px);
-  }
+  @include fontsize_h1;
 }
 

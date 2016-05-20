@@ -20,10 +20,6 @@ PIPELINE = {
                 'scss/popups/popups.scss',
                 'scss/popups/preloader.scss',
 
-                'scss/slider/slider.scss',
-                'scss/slider/plugins/controls.scss',
-                'scss/slider/plugins/navigation.scss',
-
                 'contacts/scss/block.scss',
                 'footer/scss/footer.scss',
                 'header/scss/header.scss',
@@ -43,6 +39,10 @@ PIPELINE = {
         },
         'main_page': {
             'source_filenames': (
+                'scss/slider/slider.scss',
+                'scss/slider/plugins/controls.scss',
+                'scss/slider/plugins/navigation.scss',
+
                 'scss/section_slider.scss',
                 'gallery/scss/gallery_popup.scss',
                 'main/scss/index.scss',
@@ -87,19 +87,14 @@ PIPELINE = {
                 'common/js/jquery.utils.js',
                 'common/js/jquery.ajax_csrf.js',
 
+                'js/inspectors/inspector.js',
+                'js/inspectors/bg_inspector.js',
+
                 'js/jquery.fitvids.js',
                 'js/jquery.scrollTo.js',
-                'js/drager.js',
 
                 'js/popups/jquery.popups.js',
                 'js/popups/preloader.js',
-                'js/slider/slider.js',
-                'js/slider/plugins/side_animation.js',
-                'js/slider/plugins/fade_animation.js',
-                'js/slider/plugins/autoscroll.js',
-                'js/slider/plugins/navigation.js',
-                'js/slider/plugins/controls.js',
-                'js/slider/plugins/drag.js',
                 'js/text_styles.js',
 
                 'attachable_blocks/js/async_blocks.js',
@@ -111,9 +106,19 @@ PIPELINE = {
         },
         'main_page': {
             'source_filenames': (
-                'js/slider/win_height_slider.js',
+                'js/drager.js',
                 'js/jquery.youtube.js',
                 'js/jquery.vimeo.js',
+
+                'js/slider/slider.js',
+                'js/slider/win_height_slider.js',
+                'js/slider/plugins/side_animation.js',
+                'js/slider/plugins/fade_animation.js',
+                'js/slider/plugins/autoscroll.js',
+                'js/slider/plugins/navigation.js',
+                'js/slider/plugins/controls.js',
+                'js/slider/plugins/drag.js',
+
                 'gallery/js/gallery_popup.js',
                 'main/js/index.js',
             ),

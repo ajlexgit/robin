@@ -3,7 +3,7 @@ import random
 from .models import Banner
 
 
-class BannerMiddleware:
+class PopupBannerMiddleware:
     @staticmethod
     def process_request(request):
         banners = []
@@ -18,7 +18,7 @@ class BannerMiddleware:
 
         js_storage = getattr(request, 'js_storage', None)
         if js_storage is None:
-            raise RuntimeError('BannerMiddleware should be after JsStorageMiddleware')
+            raise RuntimeError('PopupBannerMiddleware should be after JsStorageMiddleware')
 
         banner = random.choice(banners)
         js_storage.update({
