@@ -1,10 +1,15 @@
+import re
 import os
 import time
 import subprocess
 from django.utils.encoding import smart_bytes
+from django.conf import settings as django_settings
 from pipeline.conf import settings
 from pipeline.compilers import SubProcessCompiler
 from pipeline.exceptions import CompilerError
+
+cached_imports = {}
+re_import = re.compile('@import\s+[\'"]([^\'"]+)')
 
 
 class SASSCMetaclass(type):
@@ -57,10 +62,55 @@ class SASSCCompiler(SubProcessCompiler, metaclass=SASSCMetaclass):
 
         return stdout
 
+    def find_import_file(self, base_dir, import_name):
+        if not import_name.endswith('scss'):
+            import_name += '.scss'
+
+        scss_dir, scss_file = os.path.split(import_name)
+
+        # Find import files
+        imports_lookup = (
+            os.path.join(base_dir, import_name),
+            os.path.join(base_dir, scss_dir, '_' + scss_file),
+            os.path.join(django_settings.SASS_INCLUDE_DIR, import_name),
+            os.path.join(django_settings.SASS_INCLUDE_DIR, scss_dir, '_' + scss_file),
+        )
+
+        for path in imports_lookup:
+            if os.path.exists(path):
+                return path
+        else:
+            print('WARNING: not found SCSS import "%s"' % import_name)
+
+    def get_scss_modified(self, infile):
+        infile_dir = os.path.dirname(infile)
+        infile_modified = [os.stat(infile).st_mtime]
+
+        # Read imports
+        with open(infile, 'r') as fp:
+            buffer = fp.read(1024)
+
+        imports = re_import.findall(buffer)
+        for import_name in imports:
+            import_path = self.find_import_file(infile_dir, import_name)
+            if not import_path:
+                break
+
+            # Get imported file modify time
+            if import_path in cached_imports:
+                infile_modified.append(cached_imports[import_path])
+            else:
+                cached_imports[import_path] = self.get_scss_modified(import_path)
+                infile_modified.append(cached_imports[import_path])
+
+        return max(infile_modified)
+
     def compile_file(self, infile, outfile, outdated=False, force=False):
         if os.path.isfile(outfile):
-            # Уже есть свежий скомпиленный файл
-            if os.stat(outfile).st_mtime > self.start:
+            # Уже есть скомпиленный файл. Проверяем его свежесть
+            infile_modified = self.get_scss_modified(infile)
+            outfile_modified = os.stat(outfile).st_mtime
+            if outfile_modified > infile_modified:
                 return
 
         command = "%s %s %s" % (
