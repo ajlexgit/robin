@@ -3,10 +3,6 @@ from settings.common import *
 DOMAIN = '.directlinedev.com'
 VZ_DIRECTORY = '/home/webapp/directlinedev.com'
 
-# Имя хоста (имя виртуальной машины - master, staging и т.д.), должно быть настроено на виртуалке
-# Метка %HOSTNAME% при развёртывании заменяется на настоящее имя виртуалки
-HOSTNAME = '%HOSTNAME%'
-
 SESSION_COOKIE_DOMAIN = DOMAIN
 CSRF_COOKIE_DOMAIN = DOMAIN
 
