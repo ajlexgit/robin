@@ -33,6 +33,11 @@
         Показ окна баннера
      */
     window.bannerPopup = function() {
+        if (getCurrentPopup()) {
+            console.info('Banner popup was blocked because another popup is opened');
+            return;
+        }
+
         var cookie_name = 'banner_' + window.js_storage.popup_banner_id;
         var show_type = window.js_storage.popup_show_type;
         var was_shown = $.cookie(cookie_name);

@@ -1,3 +1,54 @@
+from collections import namedtuple
+
+# ===============================
+#   Наборы скриптов с зависимостями.
+#
+#   Пример использования:
+#       'some_page': {
+#           'source_filenames': PopupGallery.css + (
+#           ...
+#           ),
+#           ...
+#       }
+# ===============================
+
+# Слайдер
+Slider = namedtuple('Slider', ['css', 'js'])(
+    css=(
+        'scss/slider/slider.scss',
+        'scss/slider/plugins/controls.scss',
+        'scss/slider/plugins/navigation.scss',
+    ),
+    js=(
+        'js/drager.js',
+        'js/slider/slider.js',
+        'js/slider/win_height_slider.js',
+        'js/slider/plugins/side_animation.js',
+        'js/slider/plugins/fade_animation.js',
+        'js/slider/plugins/autoscroll.js',
+        'js/slider/plugins/navigation.js',
+        'js/slider/plugins/controls.js',
+        'js/slider/plugins/drag.js',
+    )
+)
+
+# Галерея во всплывающем окне
+PopupGallery = namedtuple('PopupGallery', ['css', 'js'])(
+    css=Slider.css + (
+        'gallery/scss/gallery_popup.scss',
+    ),
+    js=(
+        'js/jquery.youtube.js',
+        'js/jquery.vimeo.js',
+    ) + Slider.js + (
+        'gallery/js/gallery_popup.js',
+    )
+)
+
+# ===============================
+#   Скрипты
+# ===============================
+
 PIPELINE = {
     'PIPELINE_ENABLED': True,
     'COMPILERS': (
@@ -38,46 +89,37 @@ PIPELINE = {
             ),
             'output_filename': 'admin/css/customize.css',
         },
-        'main_page': {
-            'source_filenames': (
-                'scss/slider/slider.scss',
-                'scss/slider/plugins/controls.scss',
-                'scss/slider/plugins/navigation.scss',
-
+        'main': {
+            'source_filenames': PopupGallery.css + (
                 'scss/section_slider.scss',
-                'gallery/scss/gallery_popup.scss',
                 'main/scss/index.scss',
             ),
-            'output_filename': 'css_build/main_page.css',
+            'output_filename': 'css_build/main.css',
         },
-        'error_page': {
+        'error': {
             'source_filenames': (
                 'scss/error_page.scss',
             ),
-            'output_filename': 'css_build/error_page.css',
+            'output_filename': 'css_build/error.css',
         },
-        'contacts_page': {
+        'contacts': {
             'source_filenames': (
                 'contacts/scss/index.scss',
             ),
-            'output_filename': 'css_build/contacts_page.css',
+            'output_filename': 'css_build/contacts.css',
         },
-        'blog_page': {
+        'blog': {
             'source_filenames': (
                 'paginator/scss/paginator.scss',
                 'blog/scss/index.scss',
             ),
-            'output_filename': 'css_build/blog_page.css',
+            'output_filename': 'css_build/blog.css',
         },
-        'blog_detail_page': {
-            'source_filenames': (
-                'scss/slider/slider.scss',
-                'scss/slider/plugins/controls.scss',
-                'scss/slider/plugins/navigation.scss',
-
+        'blog_detail': {
+            'source_filenames': Slider.css + (
                 'blog/scss/detail.scss',
             ),
-            'output_filename': 'css_build/blog_detail_page.css',
+            'output_filename': 'css_build/blog_detail.css',
         },
     },
 
@@ -110,55 +152,30 @@ PIPELINE = {
             ),
             'output_filename': 'js_build/core.js',
         },
-        'main_page': {
-            'source_filenames': (
-                'js/drager.js',
-                'js/jquery.youtube.js',
-                'js/jquery.vimeo.js',
-
-                'js/slider/slider.js',
-                'js/slider/win_height_slider.js',
-                'js/slider/plugins/side_animation.js',
-                'js/slider/plugins/fade_animation.js',
-                'js/slider/plugins/autoscroll.js',
-                'js/slider/plugins/navigation.js',
-                'js/slider/plugins/controls.js',
-                'js/slider/plugins/drag.js',
-
-                'gallery/js/gallery_popup.js',
+        'main': {
+            'source_filenames': PopupGallery.js + (
                 'main/js/index.js',
             ),
-            'output_filename': 'js_build/main_page.js',
+            'output_filename': 'js_build/main.js',
         },
-        'contacts_page': {
+        'contacts': {
             'source_filenames': (
                 'google_maps/js/core.js',
                 'contacts/js/index.js',
             ),
-            'output_filename': 'js_build/contacts_page.js',
+            'output_filename': 'js_build/contacts.js',
         },
-        'blog_page': {
+        'blog': {
             'source_filenames': (
                 'blog/js/index.js',
             ),
-            'output_filename': 'js_build/blog_page.js',
+            'output_filename': 'js_build/blog.js',
         },
-        'blog_detail_page': {
-            'source_filenames': (
-                'js/drager.js',
-                
-                'js/slider/slider.js',
-                'js/slider/win_height_slider.js',
-                'js/slider/plugins/side_animation.js',
-                'js/slider/plugins/fade_animation.js',
-                'js/slider/plugins/autoscroll.js',
-                'js/slider/plugins/navigation.js',
-                'js/slider/plugins/controls.js',
-                'js/slider/plugins/drag.js',
-
+        'blog_detail': {
+            'source_filenames': Slider.js + (
                 'blog/js/detail.js',
             ),
-            'output_filename': 'js_build/blog_detail_page.js',
+            'output_filename': 'js_build/blog_detail.js',
         },
     }
 }
