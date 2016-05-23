@@ -71,6 +71,10 @@ PIPELINE = {
         },
         'blog_detail_page': {
             'source_filenames': (
+                'scss/slider/slider.scss',
+                'scss/slider/plugins/controls.scss',
+                'scss/slider/plugins/navigation.scss',
+
                 'blog/scss/detail.scss',
             ),
             'output_filename': 'css_build/blog_detail_page.css',
@@ -141,6 +145,17 @@ PIPELINE = {
         },
         'blog_detail_page': {
             'source_filenames': (
+                'js/drager.js',
+                
+                'js/slider/slider.js',
+                'js/slider/win_height_slider.js',
+                'js/slider/plugins/side_animation.js',
+                'js/slider/plugins/fade_animation.js',
+                'js/slider/plugins/autoscroll.js',
+                'js/slider/plugins/navigation.js',
+                'js/slider/plugins/controls.js',
+                'js/slider/plugins/drag.js',
+
                 'blog/js/detail.js',
             ),
             'output_filename': 'js_build/blog_detail_page.js',
