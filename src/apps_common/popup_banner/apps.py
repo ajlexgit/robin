@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Config(AppConfig):
-    name = 'libs.popup_banner'
+    name = 'popup_banner'
     verbose_name = _('Pop-Up Banners')
 
     def ready(self):

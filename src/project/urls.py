@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^dladmin/ctr/', include('admin_ctr.urls', namespace='admin_ctr')),
     url(r'^dladmin/', include(admin.site.urls)),
 
-    url(r'^popup_banner/', include('libs.popup_banner.urls', namespace='popup_banner')),
+    url(r'^popup_banner/', include('popup_banner.urls', namespace='popup_banner')),
     url(r'^ajax_cache/', include('libs.ajax_cache.urls', namespace='ajax_cache')),
     url(r'^away/$', 'libs.away.views.away', name='away'),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),

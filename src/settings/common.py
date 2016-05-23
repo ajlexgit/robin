@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'header',
     'menu',
     'paginator',
+    'popup_banner',
     'seo',
 
     # Libs
@@ -71,7 +72,6 @@ INSTALLED_APPS = (
     'libs.management',
     'libs.opengraph',
     'libs.pipeline',
-    'libs.popup_banner',
     'libs.stdimage',
     'libs.templatetags',
     'libs.variation_field',
@@ -170,7 +170,7 @@ MIDDLEWARE_CLASSES = (
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
     'libs.utm_middleware.UTMMiddleware',
-    'libs.popup_banner.middleware.PopupBannerMiddleware',
+    'popup_banner.middleware.PopupBannerMiddleware',
 )
 
 ALLOWED_HOSTS = ()
