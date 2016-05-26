@@ -13,16 +13,14 @@
 
 {% block content %}
 
-  <div class="grid-block">
-    <div class="inner block text-styles">
-      <div class="code title-h1">404</div>
-      <div class="description">
-        {% blocktrans %}
-          The page you are looking for no longer exists.<br>
-          Perhaps you can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
-          looking for.
-        {% endblocktrans %}
-      </div>
+  <div id="error" class="grid-block block">
+    <div class="block-name title-h1">404</div>
+    <div class="text text-styles">
+      {% blocktrans %}
+        The page you are looking for no longer exists.<br>
+        Perhaps you can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
+        looking for.
+      {% endblocktrans %}
     </div>
   </div>
 

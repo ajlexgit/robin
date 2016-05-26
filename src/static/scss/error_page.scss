@@ -1,32 +1,26 @@
 @import 'mixins';
 
-#content-wrapper {
-  .content {
-    text-align: center;
-    vertical-align: middle;
-  }
+#content {
+  vertical-align: middle;
 }
 
-.inner {
-  display: inline-block;
+#error {
+  text-align: center;
 
-  .code {
-    color: #000000;
-    line-height: 1;
-    @include font-size(100px);
-    @include media_interval(0, $media640) {
-      @include font-size(80px);
+  .block-name {
+    color: #FF0000;
+    @include font-size(165px, 165px);
+    @include media_interval($media480, $media1024) {
+      @include font-size(140px);
+    }
+    @include media_interval(0, $media480) {
+      @include font-size(120px);
     }
   }
 
-  .description {
-    max-width: 360px;
+  .text {
+    width: 360px;
+    max-width: 100%;
     margin: 20px auto 0;
-    @include media_interval($media400, $media640) {
-      max-width: 300px;
-    }
-    @include media_interval(0, $media400) {
-      max-width: 260px;
-    }
   }
 }

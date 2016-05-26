@@ -13,16 +13,14 @@
 
 {% block content %}
 
-  <div class="grid-block">
-    <div class="inner block text-styles">
-      <div class="code title-h1">500</div>
-      <div class="description">
-        {% blocktrans %}
-          The server encountered an internal error or misconfiguration and was unable to complete your request.<br>
-          You can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
-          looking for.
-        {% endblocktrans %}
-      </div>
+  <div id="error" class="grid-block block">
+    <div class="block-name title-h1">500</div>
+    <div class="text text-styles">
+      {% blocktrans %}
+        The server encountered an internal error or misconfiguration and was unable to complete your request.<br>
+        You can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
+        looking for.
+      {% endblocktrans %}
     </div>
   </div>
 
