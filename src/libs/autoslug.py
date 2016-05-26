@@ -26,7 +26,6 @@ class AutoSlugField(models.SlugField):
         self.separator = kwargs.pop('separator', '-')
         self.default_slug = kwargs.pop('default_slug', 'empty')
         kwargs.setdefault('blank', True)
-        kwargs.setdefault('unique', True)
         kwargs['max_length'] = kwargs.get('max_length', 64)
         kwargs['help_text'] = kwargs.get('help_text', DEFAULT_HELP)
         super(AutoSlugField, self).__init__(*args, **kwargs)
@@ -54,8 +53,6 @@ class AutoSlugField(models.SlugField):
             del kwargs['max_length']
         if self.blank is True:
             del kwargs['blank']
-        if self.unique is True:
-            del kwargs['unique']
         if self.help_text == DEFAULT_HELP:
             del kwargs['help_text']
         if self.separator != '-':
