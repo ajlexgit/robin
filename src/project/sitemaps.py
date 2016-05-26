@@ -8,5 +8,5 @@ mainpage = {
 
 
 site_sitemaps = {
-    'main': GenericSitemap(mainpage, changefreq='weekly', priority=0.5),
+    'main': GenericSitemap(mainpage, changefreq='daily', priority=1),
 }
