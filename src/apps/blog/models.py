@@ -41,7 +41,7 @@ class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
 class Tag(models.Model):
     """ Тэг """
     title = models.CharField(_('title'), max_length=255)
-    slug = AutoSlugField(_('slug'), populate_from='title')
+    slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
 
     objects = TagQuerySet.as_manager()
 
@@ -77,7 +77,7 @@ class BlogPost(models.Model):
     )
 
     title = models.CharField(_('title'), max_length=255)
-    slug = AutoSlugField(_('slug'), populate_from='title')
+    slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
     note = models.TextField(_('note'))
     text = CKEditorUploadField(_('text'))
     date = models.DateTimeField(_('publication date'), default=now)

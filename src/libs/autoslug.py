@@ -20,7 +20,7 @@ class AutoSlugField(models.SlugField):
                 default_slug  - префикс по умолчанию, если populate_from пуст.
 
             Пример:
-                alias = AutoSlugField(_('alias'), populate_from='title')
+                alias = AutoSlugField(_('alias'), populate_from='title', unique=True)
         """
         self.populate_from = populate_from
         self.separator = kwargs.pop('separator', '-')

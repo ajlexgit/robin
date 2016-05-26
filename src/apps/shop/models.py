@@ -60,7 +60,7 @@ class ShopCategory(MPTTModel):
         related_name='children'
     )
     title = models.CharField(_('title'), max_length=128)
-    alias = AutoSlugField(_('alias'), populate_from='title')
+    alias = AutoSlugField(_('alias'), populate_from='title', unique=True)
     is_visible = models.BooleanField(_('visible'), default=True, db_index=True)
     product_count = models.PositiveIntegerField(
         default=0,
@@ -224,6 +224,7 @@ class ShopProduct(models.Model):
     title = models.CharField(_('title'), max_length=128)
     alias = AutoSlugField(_('alias'),
         populate_from='title',
+        unique=True,
         help_text=_('Leave it blank to auto generate it')
     )
     serial = models.SlugField(_('serial number'),
