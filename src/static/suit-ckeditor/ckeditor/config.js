@@ -13,7 +13,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.format_tags = "p;h2;h3;h4";
 
     config.plugins = "basicstyles,toolbar,wysiwygarea,contextmenu,elementspath," +
-        "entities,format,htmlwriter,enterkey,sourcearea,undo,pastefromword,pastetext," +
+        "entities,format,htmlwriter,enterkey,justify,sourcearea,undo,pastefromword,pastetext," +
         "list,link,removeformat,specialchar,stylescombo";
 
     config.forcePasteAsPlainText = true;
