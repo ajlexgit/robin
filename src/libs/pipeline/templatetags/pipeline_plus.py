@@ -15,7 +15,7 @@ class StylesheetNode(pipeline.StylesheetNode):
         Добавлено время изменения файла
     """
     def render_css(self, package, path):
-        template_name = package.template_name or "pipeline/css.html"
+        template_name = package.template_name or "pipeline/css_default.html"
         modified = staticfiles_storage.modified_time(path).timestamp()
         context = package.extra_context
         context.update({
@@ -50,6 +50,22 @@ class InlineStylesheetNode(pipeline.StylesheetNode):
         return mark_safe(html)
 
 
+class JavascriptNode(pipeline.JavascriptNode):
+    """
+        Добавлено время изменения файла
+    """
+    def render_js(self, package, path):
+        template_name = package.template_name or "pipeline/js_default.html"
+        modified = staticfiles_storage.modified_time(path).timestamp()
+        context = package.extra_context
+        context.update({
+            'type': guess_type(path, 'text/javascript'),
+            'url': mark_safe(staticfiles_storage.url(path)),
+            'modified': int(modified),
+        })
+        return loader.render_to_string(template_name, context)
+
+
 @register.tag
 def inline_stylesheet(parser, token):
     try:
@@ -80,4 +96,4 @@ def javascript(parser, token):
         raise TemplateSyntaxError(
             '%r requires exactly one argument: the name of a group in the PIPELINE.JAVASVRIPT setting' %
             token.split_contents()[0])
-    return pipeline.JavascriptNode(name)
+    return JavascriptNode(name)
