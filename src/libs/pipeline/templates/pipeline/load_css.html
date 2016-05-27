@@ -1,5 +1,5 @@
 <script>
-  window.loadCSS('{{ url }}', false, '{{ media }}');
+  window.loadCSS('{{ url }}?_={{ modified }}', false, '{{ media }}');
 </script>
 <noscript>
   <link href="{{ url }}?_={{ modified }}" rel="stylesheet" type="{{ type }}" {% if media %}media="{{ media }}"{% endif %} {% if title %}title="{{ title|default:"all" }}"{% endif %} {% if charset %}charset="{{ charset }}"{% endif %}/>
