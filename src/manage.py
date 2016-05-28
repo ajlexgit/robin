@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Admin autocomplete_filter
 # Admin: функция "скопировать из"
 # Слайдер - блокировка при некотром условии
 # crop each variation
