@@ -61,7 +61,6 @@ INSTALLED_APPS = (
     'header',
     'menu',
     'paginator',
-    'popup_banner',
     'seo',
 
     # Libs
@@ -108,10 +107,6 @@ SUIT_CONFIG = {
                 'Address',
                 'ContactsConfig',
             )
-        },
-        '-',
-        {
-            'app': 'popup_banner',
         },
         '-',
         {
@@ -170,7 +165,6 @@ MIDDLEWARE_CLASSES = (
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
     'libs.utm_middleware.UTMMiddleware',
-    'popup_banner.middleware.PopupBannerMiddleware',
 )
 
 ALLOWED_HOSTS = ()
