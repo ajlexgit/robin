@@ -5,9 +5,8 @@ from .models import Redirect
 
 class RedirectMiddleware(object):
     def process_request(self, request):
-        full_path = request.get_full_path()
-
         # fix bug on development
+        full_path = request.get_full_path()
         if settings.DEBUG and (full_path.startswith(settings.STATIC_URL) or full_path.startswith(settings.MEDIA_URL)):
             return
 

@@ -1,5 +1,6 @@
 import re
 import random
+from django.conf import settings
 from .models import Banner
 
 
@@ -7,7 +8,13 @@ class PopupBannerMiddleware:
     @staticmethod
     def process_request(request):
         if request.is_ajax():
-            return 
+            return
+
+        # fix bug on development
+        full_path = request.get_full_path()
+        if settings.DEBUG and (
+            full_path.startswith(settings.STATIC_URL) or full_path.startswith(settings.MEDIA_URL)):
+            return
 
         banners = []
         for banner in Banner.objects.filter(active=True):
