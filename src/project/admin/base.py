@@ -118,18 +118,8 @@ class ModelAdminMixin(BaseModelAdminMixin):
     def media(self):
         return super().media + forms.Media(
             js=(
-                'admin/js/jquery-ui.min.js',
-                'common/js/jquery.cookie.js',
-                'common/js/jquery.ajax_csrf.js',
-                'common/js/jquery.mousewheel.js',
-                'common/js/jquery.utils.js',
-                'common/js/file_dropper.js',
+                'admin/js/customize.js',
             ),
-            css={
-                'all': (
-                    'admin/css/jquery-ui/jquery-ui.min.css',
-                )
-            }
         )
 
     def suit_cell_attributes(self, obj, column):

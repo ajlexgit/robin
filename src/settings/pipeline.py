@@ -81,6 +81,7 @@ PIPELINE = {
         },
         'admin_customize': {
             'source_filenames': (
+                'admin/css/jquery-ui/jquery-ui.min.css',
                 'admin/scss/admin_fixes.scss',
                 'admin/scss/admin_table.scss',
                 'admin/scss/button_filter.scss',
@@ -151,6 +152,17 @@ PIPELINE = {
                 'menu/js/menu.js',
             ),
             'output_filename': 'js_build/core.js',
+        },
+        'admin_customize': {
+            'source_filenames': (
+                'admin/js/jquery-ui.min.js',
+                'common/js/jquery.cookie.js',
+                'common/js/jquery.ajax_csrf.js',
+                'common/js/jquery.mousewheel.js',
+                'common/js/jquery.utils.js',
+                'common/js/file_dropper.js',
+            ),
+            'output_filename': 'admin/js/customize.js',
         },
         'main': {
             'source_filenames': PopupGallery.js + (
