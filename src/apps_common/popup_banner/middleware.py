@@ -6,6 +6,9 @@ from .models import Banner
 class PopupBannerMiddleware:
     @staticmethod
     def process_request(request):
+        if request.is_ajax():
+            return 
+
         banners = []
         for banner in Banner.objects.filter(active=True):
             for regex in banner.pages.values_list('regex', flat=True):
