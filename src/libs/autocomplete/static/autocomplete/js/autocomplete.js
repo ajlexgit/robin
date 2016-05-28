@@ -27,7 +27,6 @@
             depends: [],
             expressions: 'title__icontains',
             minimum_input_length: 2,
-            close_on_select: true,
             multiple: false
         };
 
@@ -98,6 +97,7 @@
         cls.destroy = function() {
             this.$depends.off('.autocomplete' + this.event_ns);
             this.$elem.removeData(this.DATA_KEY);
+            this.$elem.select2('destroy');
         };
 
         /*
@@ -115,13 +115,17 @@
         cls.initSelect2 = function() {
             var that = this;
             this.$elem.select2({
-                minimumInputLength: this.opts.minimum_input_length,
-                closeOnSelect: this.opts.close_on_select,
                 multiple: this.opts.multiple,
-                dropdownCssClass: "bigdrop",
+                minimumInputLength: this.opts.minimum_input_length,
                 formatResult: formatResult,
                 formatSelection: formatSelection,
-                allowClear: true,
+                cache_key: function(query) {
+                    return {
+                        page: query.page,
+                        term: query.term,
+                        values: that._parentValues()
+                    }
+                },
                 ajax: {
                     url: this.opts.url,
                     type: 'POST',

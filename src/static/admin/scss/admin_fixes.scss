@@ -217,6 +217,18 @@ td, th {
   vertical-align: middle;
 }
 
+// удаление непонятных отступов
+.search-container input, .search-container select {
+  margin-top: 0;
+}
+.search-container .result-count {
+  margin: 0 0 0 5px;
+}
+
+// блок фильтров
+.search-filters {
+  display: inline-block;
+}
 
 // увеличение стандартного поля M2M
 .form-horizontal .control-group .controls .selector {

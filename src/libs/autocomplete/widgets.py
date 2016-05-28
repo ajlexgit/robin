@@ -45,9 +45,6 @@ class AutocompleteWidget(widgets.Widget):
 
             minimum_input_length: int
                 Минимальное количество введенных символов для запуска автокомплита
-
-            close_on_select: bool
-                Закрывать список после выбора элемента
     """
     _choices = ()
     app_label = ''
@@ -55,9 +52,10 @@ class AutocompleteWidget(widgets.Widget):
 
     class Media:
         js = (
-            'autocomplete/js/autocomplete.js',
             'autocomplete/js/select2.min.js',
+            'autocomplete/js/select2_cached.js',
             'autocomplete/js/select2_locale_%s.js' % get_language(),
+            'autocomplete/js/autocomplete.js',
         )
         css = {
             'all': (
@@ -66,8 +64,7 @@ class AutocompleteWidget(widgets.Widget):
         }
 
     def __init__(self, attrs=None, dependencies=(), expressions='title__icontains',
-                 minimum_input_length=2, format_item=None, close_on_select=True,
-                 template='autocomplete/autocomplete.html'):
+                 minimum_input_length=2, format_item=None, template='autocomplete/field.html'):
         default_attrs = {
             'style': 'width: 220px',
             'placeholder': _('Search element'),
@@ -78,7 +75,6 @@ class AutocompleteWidget(widgets.Widget):
         self.template = template
         self.dependencies = dependencies
         self.minimum_input_length = int(minimum_input_length)
-        self.close_on_select = int(bool(close_on_select))
 
         # модуль и имя функции, форматирующей каждый элемент
         # выпадающего списка автокомплита
@@ -147,7 +143,6 @@ class AutocompleteWidget(widgets.Widget):
         final_attrs = self.build_attrs(attrs, name=name, **{
             'data-minimum_input_length': self.minimum_input_length,
             'data-expressions': self.expressions,
-            'data-close_on_select': self.close_on_select,
             'data-depends': ','.join(item[1] for item in self.dependencies),
             'data-url': self.get_url(short_name),
         })

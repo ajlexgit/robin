@@ -383,6 +383,14 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         ('shop/admin/products.html', 'top', 'products'),
     )
 
+    @property
+    def media(self):
+        return super().media + forms.Media(
+            js=(
+                'admin/js/button_filter.js',
+            ),
+        )
+
     def suit_row_attributes(self, obj, request):
         if obj.is_cancelled:
             return {'class': 'error'}

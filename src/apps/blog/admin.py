@@ -8,7 +8,7 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from attachable_blocks.admin import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
-from libs.autocomplete.widgets import AutocompleteWidget
+from libs.autocomplete import AutocompleteWidget
 from .models import BlogConfig, BlogPost, Tag, PostTag
 
 
@@ -86,7 +86,7 @@ class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     inlines = (PostTagAdmin, )
     list_display = ('view', 'title', 'tags_list', 'date_fmt', 'status')
     list_display_links = ('title',)
-    list_filter = ('status', )
+    list_filter = ('status',)
     search_fields = ('title',)
     actions = ('make_public_action', 'make_draft_action')
     prepopulated_fields = {'slug': ('title', )}

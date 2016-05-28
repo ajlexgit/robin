@@ -124,7 +124,6 @@ class ModelAdminMixin(BaseModelAdminMixin):
                 'common/js/jquery.mousewheel.js',
                 'common/js/jquery.utils.js',
                 'common/js/file_dropper.js',
-                'admin/js/button_filter.js',
             ),
             css={
                 'all': (

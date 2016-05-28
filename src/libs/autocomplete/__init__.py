@@ -47,8 +47,46 @@
                         )
                     }
 
+
+
+
+    Также, включает фильтр для списка сущностей в админке:
+        from django.utils.translation import get_language
+        from libs.autocomplete import AutocompleteListFilter
+
+        class PublicationTagFilter(AutocompleteListFilter):
+            model = Tag
+            multiple = False
+
+            def filter(self, queryset, value):
+                return queryset.filter(tags=value).distinct()
+
+
+        ...
+
+        class PublicationAdmin(admin.ModelAdmin):
+            ...
+            list_filter = (PublicationTagFilter, ...)
+
+            @property
+            def media(self):
+                return super().media + forms.Media(
+                    js=(
+                        'autocomplete/js/select2.min.js',
+                        'autocomplete/js/select2_cached.js',
+                        'autocomplete/js/select2_locale_%s.js' % get_language(),
+                        'autocomplete/js/filter.js',
+                    ),
+                    css={
+                        'all': (
+                            'autocomplete/css/select2.css',
+                        )
+                    }
+                )
+
 """
 
 from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
+from .filters import AutocompleteListFilter
 
-__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget']
+__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget', 'AutocompleteListFilter']

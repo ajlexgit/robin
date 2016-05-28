@@ -103,3 +103,54 @@ def autocomplete_widget(request, application, model_name, name):
         data['result'].append(item_dict)
 
     return JsonResponse(data)
+
+
+@admin.site.admin_view
+def autocomplete_filter(request, application, model_name):
+    if not request.is_ajax():
+        raise Http404
+
+    try:
+        page = int(request.POST.get('page', 1))
+        page_limit = int(request.POST.get('page_limit', 0))
+    except (TypeError, ValueError):
+        raise Http404
+
+    model = apps.get_model(application, model_name)
+    if model is None:
+        raise Http404
+
+    data = {
+        'result': [],
+    }
+
+    queryset = model.objects.all()
+
+    # Поиск по выражениям
+    expression = request.POST.get('expression')
+    if not expression:
+        raise Http404
+    else:
+        token = request.POST.get('q', '')
+        if expression.endswith('__in'):
+            expression_query = Q((expression, token.split(",")))
+        else:
+            expression_query = Q((expression, token))
+
+        queryset = queryset.filter(expression_query)
+
+    # Постраничная навигация
+    if page and page_limit:
+        count = data['total'] = queryset.count()
+        max_pages = math.ceil(count / page_limit)
+        real_page = max(1, min(page, max_pages))
+        offset = (real_page - 1) * page_limit
+        queryset = queryset[offset:offset + page_limit]
+
+    for item in queryset.iterator():
+        data['result'].append({
+            'id': item.pk,
+            'text': str(item)
+        })
+
+    return JsonResponse(data)
