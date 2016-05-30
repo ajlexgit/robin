@@ -47,7 +47,8 @@
             $.cookie(cookie_name, 1);
         } else if (show_type == SHOW_ONCE) {
             $.cookie(cookie_name, 1, {
-                expires: 180
+                expires: 180,
+                path: '/'
             });
         }
 

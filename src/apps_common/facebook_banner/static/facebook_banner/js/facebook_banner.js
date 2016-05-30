@@ -40,7 +40,8 @@
             $(this).remove()
         });
         $.cookie('fb-banner-shown', 1, {
-            expires: 30
+            expires: 30,
+            path: '/'
         });
     });
 
