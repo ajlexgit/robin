@@ -27,7 +27,7 @@
                                 $('#facebook-banner').fadeIn(300);
                             }, 1000);
                         };
-                        js.src = "//connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v2.4&appId=" + APP_ID;
+                        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=" + APP_ID;
                         fjs.parentNode.insertBefore(js, fjs);
                     }(document, 'script', 'facebook-jssdk'));
                 }
