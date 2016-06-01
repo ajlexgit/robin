@@ -1,0 +1,20 @@
+
+<h2>Search</h2>
+
+<form method="get" action=".">
+  <input type="search" name="q" value="{{ query }}">
+  <input type="submit" value="Search">
+</form>
+
+
+{% if query %}
+  <h3>Results</h3>
+
+  <ol>
+    {% for result in queryset %}
+      <li>
+        <a href="{{ result.get_absolute_url }}">{{ result.title }}</a>
+      </li>
+    {% endfor %}
+  </ol>
+{% endif %}
