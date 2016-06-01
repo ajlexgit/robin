@@ -163,9 +163,8 @@ class PayeezyResultForm(BasePayeezyForm):
         for fieldname in self.SIGNATURE_FIELDS:
             value = self._get_value(fieldname)
             if value is None:
-                value = ''
-
-            if fieldname == 'x_amount':
+                hash_params.append('')
+            elif fieldname == 'x_amount':
                 # Force decimal places
                 hash_params.append('%.2f' % value)
             else:
