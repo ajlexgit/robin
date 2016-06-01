@@ -9,7 +9,7 @@ ALLOWED_HOSTS = (
 
 DEBUG = True
 
-DATABASES = {
+DATABASES.update({
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'project',
@@ -17,7 +17,7 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'localhost',
     }
-}
+})
 
 # Отключение компрессии SASS (иначе теряется наглядность кода)
 PIPELINE['SASS_ARGUMENTS'] = '-t nested'

@@ -19,7 +19,7 @@ MEDIA_ROOT = os.path.join(VZ_DIRECTORY, 'media')
 BACKUP_ROOT = os.path.join(VZ_DIRECTORY, 'backup')
 PUBLIC_DIR = os.path.join(VZ_DIRECTORY, 'public')
 
-DATABASES = {
+DATABASES.update({
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'directlinedev',
@@ -28,7 +28,7 @@ DATABASES = {
         'HOST': 'localhost',
         'CONN_MAX_AGE': 60,
     }
-}
+})
 
 LOGGING = {
     'version': 1,
