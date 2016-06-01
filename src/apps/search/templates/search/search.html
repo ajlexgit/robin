@@ -2,7 +2,7 @@
 <h2>Search</h2>
 
 <form method="get" action=".">
-  <input type="search" name="q" value="{{ query }}">
+  <input type="search" name="q" value="{{ query|default:'' }}">
   <input type="submit" value="Search">
 </form>
 
