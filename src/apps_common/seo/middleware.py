@@ -4,11 +4,11 @@ from .models import Redirect
 
 
 class RedirectMiddleware(object):
-    def process_request(self, request):
-        # fix bug on development
+    def process_response(self, request, response):
+        if response.status_code != 404:
+            return response
+
         full_path = request.get_full_path()
-        if settings.DEBUG and (full_path.startswith(settings.STATIC_URL) or full_path.startswith(settings.MEDIA_URL)):
-            return
 
         redirect = None
         try:
@@ -26,7 +26,7 @@ class RedirectMiddleware(object):
                 pass
 
         if redirect is None:
-            return
+            return response
 
         if redirect.new_path == '':
             return http.HttpResponseGone()
