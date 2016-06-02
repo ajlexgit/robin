@@ -6,7 +6,10 @@ from libs.views_ajax import AjaxViewMixin
 class BannerView(AjaxViewMixin, View):
     def get_handler(self, request):
         handler = super().get_handler(request)
-        return cache_control(private=True, max_age=7*24*3600)(handler)
+        if handler:
+            return cache_control(private=True, max_age=7*24*3600)(handler)
+        else:
+            return handler
 
     def get(self, request):
         return self.json_response({
