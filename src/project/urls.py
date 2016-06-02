@@ -23,8 +23,8 @@ urlpatterns = [
     url(r'^dladmin/ctr/', include('admin_ctr.urls', namespace='admin_ctr')),
     url(r'^dladmin/', include(admin.site.urls)),
 
-    url(r'^cache/', include('libs.ajax_cache.urls', namespace='ajax_cache')),
     url(r'^away/$', 'libs.away.views.away', name='away'),
+    url(r'^cache/', include('libs.ajax_cache.urls', namespace='ajax_cache')),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
     url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),
