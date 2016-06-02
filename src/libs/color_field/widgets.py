@@ -23,7 +23,7 @@ class ColorWidget(widgets.MultiWidget):
             'max_length': 7,
             'placeholder': 'hex color',
             'class': 'colorfield-hex input-small',
-            'pattern': '#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})',
+            'pattern': '#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})',
         })
         _widgets = (color_widget, input_widget)
         super().__init__(_widgets, attrs)
@@ -72,7 +72,7 @@ class ColorOpacityWidget(widgets.MultiWidget):
             'max_length': 7,
             'placeholder': 'hex color',
             'class': 'colorfield-hex input-small',
-            'pattern': '#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})',
+            'pattern': '#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})',
         })
         opacity_widget = widgets.TextInput(attrs={
             'type': 'number',
