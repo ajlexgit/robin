@@ -159,11 +159,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 
-    'seo.middleware.RedirectMiddleware',
     'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
     'libs.utm_middleware.UTMMiddleware',
+    'seo.middleware.RedirectMiddleware',
 )
 
 ALLOWED_HOSTS = ()

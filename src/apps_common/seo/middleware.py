@@ -4,7 +4,8 @@ from .models import Redirect
 
 
 class RedirectMiddleware(object):
-    def process_response(self, request, response):
+    @staticmethod
+    def process_response(request, response):
         if response.status_code != 404:
             return response
 
