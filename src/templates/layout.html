@@ -18,19 +18,23 @@
 
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
 
+  {# === CANONICAL === #}
+  {% block canonical %}
+    {% if request.seo.canonical %}
+      <link rel="canonical" href="{{ request.seo.canonical }}">
+    {% endif %}
+  {% endblock canonical %}
+
+  {# === PREFETCH === #}
+  {% for domain in MEDIA_URLS %}
+    <link rel="dns-prefetch" href="{{ domain }}">
+  {% endfor %}
+
   {# === SCRIPTS === #}
   {#  Асинхронная подгрузка CSS  #}
   {% include 'pipeline/script.html' %}
 
   {# === STYLES === #}
-  {% if request.seo.canonical %}
-    <link rel="canonical" href="{{ request.seo.canonical }}">
-  {% endif %}
-
-  {% for domain in MEDIA_URLS %}
-    <link rel="dns-prefetch" href="{{ domain }}">
-  {% endfor %}
-
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
   {% stylesheet 'core' %}
