@@ -31,7 +31,7 @@ class Seo:
     @staticmethod
     def get_for(entity):
         """ Получение SeoData для объекта """
-        ct = ContentType.objects.get_for_model(entity.__class__)
+        ct = ContentType.objects.get_for_model(type(entity))
         try:
             return SeoData.objects.get(
                 content_type=ct,
@@ -43,7 +43,7 @@ class Seo:
     @staticmethod
     def get_or_create_for(entity):
         """ Получение или создание SeoData для объекта """
-        ct = ContentType.objects.get_for_model(entity.__class__)
+        ct = ContentType.objects.get_for_model(type(entity))
         try:
             return SeoData.objects.get(
                 content_type=ct,
