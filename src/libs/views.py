@@ -74,7 +74,7 @@ class CachedViewMixin(DecoratableViewMixin):
 
     def get_handler(self, request):
         handler = super().get_handler(request)
-        if handler and self.method == 'get':
+        if handler and self.method in ('get', 'head'):
             return condition(
                 last_modified_func=self._last_modified,
                 etag_func=self.etag,
