@@ -16,6 +16,23 @@ class Opengraph(dict):
                 else:
                     params[key] = value
 
-        return loader.render_to_string('opengraph/block.html', {
+        return loader.render_to_string('opengraph/opengraph.html', {
+            'params': params,
+        })
+
+
+class TwitterCard(dict):
+    FROM_OPENGRAPH = ('title', 'description', 'image')
+
+    def render(self):
+        params = {
+            'card': 'summary',
+        }
+        for key, value in self.items():
+            value = str(value).strip()
+            if value and key in self.FROM_OPENGRAPH:
+                params[key] = value
+
+        return loader.render_to_string('opengraph/twitter_card.html', {
             'params': params,
         })

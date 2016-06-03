@@ -9,4 +9,13 @@ def opengraph(context):
     if not request:
         return ''
 
-    return request.opengraph.render()
+    output = []
+    og = getattr(request, 'opengraph', None)
+    if og is not None:
+        output.append(og.render())
+
+    tw = getattr(request, 'twitter_card', None)
+    if tw is not None:
+        output.append(tw.render())
+
+    return ''.join(output)

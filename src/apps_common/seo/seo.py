@@ -113,9 +113,10 @@ class Seo:
             'canonical': self.canonical,
         }
 
-        # opengraph
+        # opengraph + twitter card
         og = getattr(request, 'opengraph', None)
-        if og is not None:
+        tw = getattr(request, 'twitter_card', None)
+        if og is not None or tw is not None:
             og_data = {
                 'url': request.build_absolute_uri(request.path_info)
             }
@@ -136,3 +137,4 @@ class Seo:
                 og_data['description'] = strip_tags(og_description)
 
             og.update(og_data)
+            tw.update(og_data)
