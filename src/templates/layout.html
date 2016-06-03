@@ -1,7 +1,6 @@
 {% load pipeline_plus %}
 {% load staticfiles %}
 {% load js_storage %}
-{% load opengraph %}
 {% load header %}
 {% load footer %}
 {% load seo %}
@@ -9,21 +8,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
-  <meta charset="utf-8">
-  <meta name="keywords" content="{{ request.seo.keywords }}"/>
-  <meta name="description" content="{{ request.seo.description }}"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% opengraph %}
-  {% block extra_meta %}{% endblock extra_meta %}
-
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
-
-  {# === CANONICAL === #}
-  {% block canonical %}
-    {% if request.seo.canonical %}
-      <link rel="canonical" href="{{ request.seo.canonical }}">
-    {% endif %}
-  {% endblock canonical %}
+  {% seo_metatags %}
+  {% block extra_meta %}{% endblock extra_meta %}
 
   {# === PREFETCH === #}
   {% for domain in MEDIA_URLS %}

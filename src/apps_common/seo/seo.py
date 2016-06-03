@@ -5,15 +5,17 @@ from django.forms.models import model_to_dict
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 from .models import SeoConfig, SeoData
+from .metatags import Opengraph, TwitterCard
+
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
-
 SEODATA_META = ('title', 'keywords', 'description', 'canonical')
 SEODATA_OPENGRAPH = ('og_title', 'og_image', 'og_description')
 
 
 class Seo:
-    _seodata = None
+    opengraph = None
+    twitter_card = None
 
     def __init__(self, empty=False):
         super().__init__()
@@ -55,7 +57,7 @@ class Seo:
 
     def set(self, seodata, defaults=None):
         """
-            Установка SEO-данных из экземпляра модели или словаря
+            Установка SEO-данных из экземпляра модели SeoData или словаря.
         """
         if isinstance(seodata, Model):
             seodata = model_to_dict(seodata)
@@ -76,40 +78,40 @@ class Seo:
             else:
                 setattr(self, fieldname, value)
 
-    def set_title(self, entity, *args, default=None):
+    def set_title(self, entity, default=None):
         """
             Алиас для упрощения добавления заголовков из родительских категорий.
+
+            Пример:
+                seo = Seo()
+                seo.set_title(shop, default=shop.title)
         """
         seodata = self.get_for(entity) or {}
         self.set(seodata, {
             'title': default,
         })
 
-    def set_data(self, entity, *args, defaults=None):
+    def set_data(self, entity, defaults=None):
         """
             Алиас для упрощения добавления данных, которые не нужно модифицировать
+
+            Пример:
+                seo = Seo()
+                seo.set_data(shop, defaults={
+                    'title': shop.title,
+                    'og_title': shop.title,
+                })
         """
         seodata = self.get_for(entity) or {}
         self.set(seodata, defaults)
 
-        # сохраняем для передачи в request.seodata
-        self._seodata = seodata
-
     def save(self, request):
         """ Сохранение данных в request, чтобы выводить их в шаблонах """
-        # title
         title_parts = list(filter(bool, map(str, self.title_deque)))
         if TITLE_JOIN_WITH:
             title = mark_safe(TITLE_JOIN_WITH.join(title_parts))
         else:
             title = mark_safe(title_parts[0]) if title_parts else ''
-
-        request.seo = {
-            'title': title,
-            'keywords': self.keywords,
-            'description': self.description,
-            'canonical': self.canonical,
-        }
 
         # opengraph + twitter card
         social_data = {
@@ -119,10 +121,19 @@ class Seo:
             'description': getattr(self, 'og_description', None),
         }
 
-        og = getattr(request, 'opengraph', None)
-        if og is not None:
-            og.update(social_data)
+        self.opengraph = Opengraph(request)
+        self.opengraph.update(social_data)
 
-        tw = getattr(request, 'twitter_card', None)
-        if tw is not None:
-            tw.update(social_data)
+        self.twitter_card = TwitterCard(request)
+        self.twitter_card.update(social_data)
+
+        # Сохранение данных в request
+        request.seo = {
+            'title': title,
+
+            'keywords': self.keywords,
+            'description': self.description,
+            'canonical': self.canonical,
+            'opengraph': self.opengraph.data,
+            'twitter_card': self.twitter_card.data,
+        }

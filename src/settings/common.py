@@ -68,7 +68,6 @@ INSTALLED_APPS = (
     'libs.away',
     'libs.js_storage',
     'libs.management',
-    'libs.opengraph',
     'libs.pipeline',
     'libs.stdimage',
     'libs.templatetags',
@@ -160,7 +159,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 
     'libs.js_storage.middleware.JSStorageMiddleware',
-    'libs.opengraph.middleware.OpengraphMiddleware',
     'libs.cache.middleware.SCCMiddleware',
     'libs.middleware.xss.XSSProtectionMiddleware',
     'libs.middleware.utm.UTMMiddleware',

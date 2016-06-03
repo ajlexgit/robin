@@ -1,10 +1,9 @@
-from django.template import loader
 from django.utils.html import strip_tags
 from django.db.models.fields.files import ImageFieldFile
 from libs.description import description
 
 
-class MetaCollection:
+class MetaTags:
     def __init__(self, request):
         self._dict = {}
         self.request = request
@@ -22,10 +21,6 @@ class MetaCollection:
     def __setitem__(self, key, value):
         self._dict[key] = value
         self._format()
-
-    @property
-    def data(self):
-        return self._dict.copy()
 
     def _format(self):
         # stringify all
@@ -49,8 +44,12 @@ class MetaCollection:
         elif isinstance(image, str) and not image.startswith('http'):
             return self.request.build_absolute_uri(image)
 
+    @property
+    def data(self):
+        return self._dict
 
-class Opengraph(MetaCollection):
+
+class Opengraph(MetaTags):
     OG_PREFIXED = ('url', 'title', 'image', 'description', 'type')
 
     def __init__(self, request):
@@ -64,7 +63,8 @@ class Opengraph(MetaCollection):
 
         super()._format()
 
-    def render(self):
+    @property
+    def data(self):
         final_data = {}
         for key, value in self._dict.items():
             if key in self.OG_PREFIXED:
@@ -72,12 +72,10 @@ class Opengraph(MetaCollection):
             else:
                 final_data[key] = value
 
-        return loader.render_to_string('opengraph/opengraph.html', {
-            'data': final_data,
-        })
+        return final_data
 
 
-class TwitterCard(MetaCollection):
+class TwitterCard(MetaTags):
     ALLOWED = ('card', 'title', 'description', 'image')
 
     def __init__(self, request):
@@ -105,8 +103,3 @@ class TwitterCard(MetaCollection):
         descr = self._dict.get('description')
         if descr:
             self._dict['description'] = description(descr, 30, 120)
-
-    def render(self):
-        return loader.render_to_string('opengraph/twitter_card.html', {
-            'data': self._dict,
-        })

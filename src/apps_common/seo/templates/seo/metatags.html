@@ -1,0 +1,16 @@
+<meta charset="utf-8">
+<meta name="keywords" content="{{ seo.keywords }}"/>
+<meta name="description" content="{{ seo.description }}"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% if seo.canonical %}
+  <link rel="canonical" href="{{ seo.canonical }}">
+{% endif %}
+
+{% for key, value in seo.opengraph.items %}
+  <meta property="{{ key }}" content="{{ value }}">
+{% endfor %}
+
+{% for key, value in seo.twitter_card.items %}
+  <meta name="twitter:{{ key }}" content="{{ value }}">
+{% endfor %}
