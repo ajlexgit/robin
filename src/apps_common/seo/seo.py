@@ -1,12 +1,9 @@
 from collections import deque
 from django.conf import settings
 from django.db.models import Model
-from django.utils.html import strip_tags
 from django.forms.models import model_to_dict
 from django.utils.safestring import mark_safe
-from django.db.models.fields.files import ImageFieldFile
 from django.contrib.contenttypes.models import ContentType
-from libs.description import description
 from .models import SeoConfig, SeoData
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
@@ -115,34 +112,17 @@ class Seo:
         }
 
         # opengraph + twitter card
+        social_data = {
+            'url': request.build_absolute_uri(request.path_info),
+            'title': getattr(self, 'og_title', None),
+            'image': getattr(self, 'og_image', None),
+            'description': getattr(self, 'og_description', None),
+        }
+
         og = getattr(request, 'opengraph', None)
+        if og is not None:
+            og.update(social_data)
+
         tw = getattr(request, 'twitter_card', None)
-        if og is not None or tw is not None:
-            og_data = {
-                'url': request.build_absolute_uri(request.path_info)
-            }
-
-            og_title = getattr(self, 'og_title', None)
-            if og_title:
-                og_data['title'] = og_title
-
-            og_image = getattr(self, 'og_image', None)
-            if og_image:
-                if isinstance(og_image, ImageFieldFile):
-                    og_data['image'] = request.build_absolute_uri(og_image.url)
-                elif isinstance(og_image, str) and not og_image.startswith('http'):
-                    og_data['image'] = request.build_absolute_uri(og_image)
-
-            og_description = getattr(self, 'og_description', None)
-            if og_description:
-                og_data['description'] = strip_tags(og_description)
-
-            og.update(og_data)
-
-            # twitter format
-            tw_data = og_data.copy()
-            if 'title' in tw_data:
-                tw_data['title'] = description(tw_data['title'], 35, 70)
-            if 'description' in tw_data:
-                tw_data['description'] = description(tw_data['description'], 60, 120)
-            tw.update(tw_data)
+        if tw is not None:
+            tw.update(social_data)

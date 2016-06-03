@@ -1,38 +1,112 @@
 from django.template import loader
+from django.utils.html import strip_tags
+from django.db.models.fields.files import ImageFieldFile
+from libs.description import description
 
 
-class Opengraph(dict):
+class MetaCollection:
+    def __init__(self, request):
+        self._dict = {}
+        self.request = request
+
+    def update(self, *args, **kwargs):
+        self._dict.update(*args, **kwargs)
+        self._format()
+
+    def get(self, key, default=None):
+        return self._dict.get(key, default)
+
+    def __getitem__(self, item):
+        return self._dict[item]
+
+    def __setitem__(self, key, value):
+        self._dict[key] = value
+        self._format()
+
+    @property
+    def data(self):
+        return self._dict.copy()
+
+    def _format(self):
+        # stringify all
+        for key, value in tuple(self._dict.items()):
+            new_value = self._format_value(key, value)
+            if new_value:
+                self._dict[key] = new_value
+            else:
+                del self._dict[key]
+
+    def _format_value(self, key, value):
+        if value:
+            try:
+                return strip_tags(str(value))
+            except (TypeError, ValueError):
+                pass
+
+    def _format_image(self, image):
+        if isinstance(image, ImageFieldFile):
+            return self.request.build_absolute_uri(image.url)
+        elif isinstance(image, str) and not image.startswith('http'):
+            return self.request.build_absolute_uri(image)
+
+
+class Opengraph(MetaCollection):
     OG_PREFIXED = ('url', 'title', 'image', 'description', 'type')
 
+    def __init__(self, request):
+        super().__init__(request)
+        self._dict['type'] = 'website'
+
+    def _format(self):
+        image = self._dict.get('image')
+        if image:
+            self['image'] = self._format_image(image)
+
+        super()._format()
+
     def render(self):
-        params = {
-            'og:type': 'website',
-        }
-        for key, value in self.items():
-            value = str(value).strip()
-            if value:
-                if key in self.OG_PREFIXED:
-                    params['og:%s' % key] = value
-                else:
-                    params[key] = value
+        final_data = {}
+        for key, value in self._dict.items():
+            if key in self.OG_PREFIXED:
+                final_data['og:%s' % key] = value
+            else:
+                final_data[key] = value
 
         return loader.render_to_string('opengraph/opengraph.html', {
-            'params': params,
+            'data': final_data,
         })
 
 
-class TwitterCard(dict):
-    FROM_OPENGRAPH = ('title', 'description', 'image')
+class TwitterCard(MetaCollection):
+    ALLOWED = ('card', 'title', 'description', 'image')
+
+    def __init__(self, request):
+        super().__init__(request)
+        self._dict['card'] = 'summary'
+
+    def _format_value(self, key, value):
+        if key not in self.ALLOWED:
+            return
+        return super()._format_value(key, value)
+
+    def _format(self):
+        image = self._dict.get('image')
+        if image:
+            self['image'] = self._format_image(image)
+
+        super()._format()
+
+        # title
+        title = self._dict.get('title')
+        if title:
+            self._dict['title'] = description(title, 20, 70)
+
+        # description
+        descr = self._dict.get('description')
+        if descr:
+            self._dict['description'] = description(descr, 30, 120)
 
     def render(self):
-        params = {
-            'card': 'summary',
-        }
-        for key, value in self.items():
-            value = str(value).strip()
-            if value and key in self.FROM_OPENGRAPH:
-                params[key] = value
-
         return loader.render_to_string('opengraph/twitter_card.html', {
-            'params': params,
+            'data': self._dict,
         })

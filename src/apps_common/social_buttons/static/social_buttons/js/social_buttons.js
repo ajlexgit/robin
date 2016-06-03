@@ -21,12 +21,12 @@
 
         Пример разметки:
             <div class="social-buttons no-counter">
-                <div class="social-button social-vk">Share</div>
-                <div class="social-button social-fb">Share</div>
-                <div class="social-button social-gp">Share</div>
-                <div class="social-button social-tw">Share</div>
-                <div class="social-button social-li">Share</div>
-                <div class="social-button social-pn">Share</div>
+                <div class="social-button social-vk"></div>
+                <div class="social-button social-fb"></div>
+                <div class="social-button social-gp"></div>
+                <div class="social-button social-tw"></div>
+                <div class="social-button social-li"></div>
+                <div class="social-button social-pn"></div>
             </div>
      */
 
