@@ -76,8 +76,8 @@ class BlogPost(models.Model):
         (STATUS_PUBLIC, _('Public')),
     )
 
-    title = models.CharField(_('title'), max_length=255)
-    slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
+    header = models.CharField(_('header'), max_length=255)
+    slug = AutoSlugField(_('slug'), populate_from='header', unique=True)
     note = models.TextField(_('note'))
     text = CKEditorUploadField(_('text'))
     date = models.DateTimeField(_('publication date'), default=now)
@@ -105,7 +105,6 @@ class BlogPost(models.Model):
     )
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
-
     objects = BlogPostQuerySet.as_manager()
 
     class Meta:
@@ -114,7 +113,7 @@ class BlogPost(models.Model):
         ordering = ('-date', '-id')
 
     def __str__(self):
-        return self.title
+        return self.header
 
     def get_absolute_url(self):
         return resolve_url('blog:detail', slug=self.slug)
