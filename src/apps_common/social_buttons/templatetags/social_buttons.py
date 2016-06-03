@@ -1,4 +1,5 @@
 from urllib.parse import urlencode
+from collections import defaultdict
 from django.template import loader, Library
 
 register = Library()
@@ -10,7 +11,7 @@ def social_button(context, provider, text='', url='', title='', description='', 
     if not request:
         return ''
 
-    social_data = {}
+    social_data = defaultdict(lambda: '')
 
     # Берем данные из Opengraph
     seo = getattr(request, 'seo', None)
@@ -33,9 +34,9 @@ def social_button(context, provider, text='', url='', title='', description='', 
     if provider == 'vk':
         social_data = {
             'url': social_data['url'],
-            'title': social_data.get('title'),
-            'image': social_data.get('image'),
-            'description': social_data.get('description'),
+            'title': social_data['title'],
+            'image': social_data['image'],
+            'description': social_data['description'],
         }
         share_url = 'http://vk.com/share.php?%s' % urlencode(social_data)
     elif provider == 'fb':
@@ -46,7 +47,7 @@ def social_button(context, provider, text='', url='', title='', description='', 
     elif provider == 'tw':
         social_data = {
             'url': social_data['url'],
-            'text': social_data.get('description'),
+            'text': social_data['description'],
         }
         share_url = 'http://twitter.com/share?%s' % urlencode(social_data)
     elif provider == 'gp':
@@ -58,16 +59,16 @@ def social_button(context, provider, text='', url='', title='', description='', 
         social_data = {
             'mini': 'true',
             'url': social_data['url'],
-            'title': social_data.get('title'),
-            'image': social_data.get('image'),
-            'summary': social_data.get('description'),
+            'title': social_data['title'],
+            'image': social_data['image'],
+            'summary': social_data['description'],
         }
         share_url = 'http://www.linkedin.com/shareArticle?%s' % urlencode(social_data)
     elif provider == 'pn':
         social_data = {
             'url': social_data['url'],
-            'media': social_data.get('image'),
-            'description': social_data.get('description'),
+            'media': social_data['image'],
+            'description': social_data['description'],
         }
         share_url = 'http://www.pinterest.com/pin/create/button/?%s' % urlencode(social_data)
     else:

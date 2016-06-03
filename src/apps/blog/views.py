@@ -42,6 +42,11 @@ class IndexView(CachedViewMixin, TemplateView):
         seo = Seo()
         seo.set_data(self.config, defaults={
             'title': self.config.header,
+            'image': self.config.preview.url,
+            'description': self.config.note,
+            'og_title': self.config.header,
+            'og_image': self.config.preview.url,
+            'og_description': self.config.note,
         })
         seo.save(request)
 

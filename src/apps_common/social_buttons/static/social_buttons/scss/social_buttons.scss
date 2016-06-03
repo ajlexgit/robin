@@ -2,33 +2,29 @@
 
 .social-button {
   display: inline-block;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  background: url(../img/small.png) no-repeat;
   @include fontsize_default;
+  @include border_radius(45%);
 
-  &:before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    vertical-align: bottom;
-    background: url(../img/small.png) no-repeat;
-  }
-  &.social-fb:before {
+  &.social-fb {
     background-position: 0 0;
   }
-  &.social-tw:before {
+  &.social-tw {
     background-position: -21px 0;
   }
-  &.social-vk:before {
+  &.social-vk {
     background-position: -84px 0;
   }
-  &.social-gp:before {
+  &.social-gp {
     background-position: -126px 0;
   }
-  &.social-li:before {
+  &.social-li {
     background-position: -756px 0;
   }
-  &.social-pn:before {
+  &.social-pn {
     background-position: -105px 0;
   }
 }

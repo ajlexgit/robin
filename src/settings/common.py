@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'menu',
     'paginator',
     'seo',
+    'social_buttons',
 
     # Libs
     'libs.ajax_cache',
