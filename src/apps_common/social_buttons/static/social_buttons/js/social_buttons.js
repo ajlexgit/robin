@@ -218,7 +218,7 @@
                 that.shareCountFetched(count);
             };
 
-            this._shareCountScript('http://vk.com/share.php?act=count&url=' + this.url);
+            this._shareCountScript('https://vk.com/share.php?act=count&url=' + this.url);
         };
     });
 
@@ -309,7 +309,7 @@
                 that.shareCountFetched(parseInt(count));
             };
 
-            this._shareCountScript('http://share.yandex.ru/gpp.xml?url=' + this.url);
+            this._shareCountScript('https://share.yandex.ru/gpp.xml?url=' + this.url);
         };
     });
 
@@ -384,7 +384,7 @@
                 that.shareCountFetched(data['count']);
             };
 
-            this._shareCountScript('http://widgets.pinterest.com/v1/urls/count.json?url=' + this.url + '&callback=social_pinterest');
+            this._shareCountScript('https://widgets.pinterest.com/v1/urls/count.json?url=' + this.url + '&callback=social_pinterest');
         };
     });
 
