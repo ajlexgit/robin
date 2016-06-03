@@ -42,11 +42,7 @@ class IndexView(CachedViewMixin, TemplateView):
         seo = Seo()
         seo.set_data(self.config, defaults={
             'title': self.config.header,
-            'image': self.config.preview.url,
-            'description': self.config.note,
             'og_title': self.config.header,
-            'og_image': self.config.preview.url,
-            'og_description': self.config.note,
         })
         seo.save(request)
 
@@ -73,7 +69,12 @@ class DetailView(CachedViewMixin, TemplateView):
         seo = Seo()
         seo.set_title(self.config, default=self.config.header)
         seo.set_data(self.post, defaults={
-            'title': self.post.title,
+            'title': self.post.header,
+            'image': self.post.preview.url,
+            'description': self.post.note,
+            'og_title': self.post.header,
+            'og_image': self.post.preview.url,
+            'og_description': self.post.note,
         })
         seo.save(request)
 
