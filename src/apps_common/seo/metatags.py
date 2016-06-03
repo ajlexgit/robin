@@ -63,7 +63,7 @@ class Opengraph(MetaTags):
     def _format(self):
         image = self._dict.get('image')
         if image:
-            self['image'] = self._format_image(image)
+            self._dict['image'] = self._format_image(image)
 
         super()._format()
 
@@ -94,7 +94,7 @@ class TwitterCard(MetaTags):
     def _format(self):
         image = self._dict.get('image')
         if image:
-            self['image'] = self._format_image(image)
+            self._dict['image'] = self._format_image(image)
 
         super()._format()
 

@@ -39,11 +39,21 @@ def social_button(context, provider, text='', url='', title='', description='', 
         }
         share_url = 'http://vk.com/share.php?%s' % urlencode(social_data)
     elif provider == 'fb':
-        share_url = 'http://www.facebook.com/sharer/sharer.php?u=%s' % social_data['url']
+        social_data = {
+            'u': social_data['url'],
+        }
+        share_url = 'http://www.facebook.com/sharer/sharer.php?%s' % urlencode(social_data)
     elif provider == 'tw':
-        share_url = 'http://twitter.com/share?url=%s&text=%s' % (social_data['url'], social_data.get('description'))
+        social_data = {
+            'url': social_data['url'],
+            'text': social_data.get('description'),
+        }
+        share_url = 'http://twitter.com/share?%s' % urlencode(social_data)
     elif provider == 'gp':
-        share_url = 'https://plus.google.com/share?url=%s' % social_data['url']
+        social_data = {
+            'url': social_data['url'],
+        }
+        share_url = 'https://plus.google.com/share?%s' % urlencode(social_data)
     elif provider == 'li':
         social_data = {
             'mini': 'true',

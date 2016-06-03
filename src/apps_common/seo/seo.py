@@ -14,9 +14,6 @@ SEODATA_OPENGRAPH = ('og_title', 'og_image', 'og_description')
 
 
 class Seo:
-    opengraph = None
-    twitter_card = None
-
     def __init__(self, empty=False):
         super().__init__()
         self.title_deque = deque()
@@ -121,11 +118,11 @@ class Seo:
             'description': getattr(self, 'og_description', None),
         }
 
-        self.opengraph = Opengraph(request)
-        self.opengraph.update(social_data)
+        opengraph = Opengraph(request)
+        opengraph.update(social_data)
 
-        self.twitter_card = TwitterCard(request)
-        self.twitter_card.update(social_data)
+        twitter_card = TwitterCard(request)
+        twitter_card.update(social_data)
 
         # Сохранение данных в request
         request.seo = {
@@ -134,6 +131,6 @@ class Seo:
             'keywords': self.keywords,
             'description': self.description,
             'canonical': self.canonical,
-            'opengraph': self.opengraph.data,
-            'twitter_card': self.twitter_card.data,
+            'opengraph': opengraph,
+            'twitter_card': twitter_card,
         }

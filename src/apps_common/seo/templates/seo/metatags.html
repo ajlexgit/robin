@@ -7,10 +7,10 @@
   <link rel="canonical" href="{{ seo.canonical }}">
 {% endif %}
 
-{% for key, value in seo.opengraph.items %}
+{% for key, value in seo.opengraph.data.items %}
   <meta property="{{ key }}" content="{{ value }}">
 {% endfor %}
 
-{% for key, value in seo.twitter_card.items %}
+{% for key, value in seo.twitter_card.data.items %}
   <meta name="twitter:{{ key }}" content="{{ value }}">
 {% endfor %}
