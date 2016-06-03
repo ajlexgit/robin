@@ -45,6 +45,10 @@ class MetaTags:
             return self.request.build_absolute_uri(image)
 
     @property
+    def original_data(self):
+        return self._dict
+
+    @property
     def data(self):
         return self._dict
 

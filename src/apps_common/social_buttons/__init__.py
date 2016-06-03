@@ -12,7 +12,7 @@
     Пример использования:
         template.html:
             {% load social_buttons %}
-            ...
+
             <div class="social-buttons no-counter">
               {% social_button 'vk' %}
               {% social_button 'fb' %}
