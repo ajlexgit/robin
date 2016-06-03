@@ -14,20 +14,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GalleryItemBase',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
                 ('description', models.TextField(blank=True, verbose_name='description')),
                 ('sort_order', models.PositiveIntegerField(default=0, verbose_name='sort order')),
                 ('created', models.DateTimeField(blank=True, verbose_name='created on')),
                 ('changed', models.DateTimeField(auto_now=True, verbose_name='changed on')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('self_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType', help_text='Для выборки элементов определенного типа', editable=False)),
+                ('self_type', models.ForeignKey(help_text='Для выборки элементов определенного типа', to='contenttypes.ContentType', related_name='+', editable=False)),
             ],
             options={
                 'verbose_name_plural': 'gallery items',
+                'verbose_name': 'gallery item',
                 'ordering': ('object_id', 'sort_order', 'created'),
                 'default_permissions': (),
-                'verbose_name': 'gallery item',
             },
         ),
         migrations.AlterIndexTogether(

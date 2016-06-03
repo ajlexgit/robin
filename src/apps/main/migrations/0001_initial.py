@@ -2,55 +2,55 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import libs.stdimage.fields
-import gallery.models
-import gallery.fields
 import django.db.models.deletion
 import libs.videolink_field.fields
-import libs.storages
+import gallery.models
+import libs.storages.media_storage
+import libs.stdimage.fields
+import gallery.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '__first__'),
+        ('gallery', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Gallery',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
             ],
             options={
-                'abstract': False,
                 'verbose_name_plural': 'galleries',
-                'default_permissions': (),
+                'abstract': False,
                 'verbose_name': 'gallery',
+                'default_permissions': (),
             },
         ),
         migrations.CreateModel(
             name='ImageItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(parent_link=True, serialize=False, primary_key=True, auto_created=True, to='gallery.GalleryItemBase')),
-                ('image', gallery.fields.GalleryImageField(storage=libs.storages.MediaStorage(), upload_to=gallery.models.generate_filepath, verbose_name='image')),
-                ('image_crop', models.CharField(max_length=32, blank=True, editable=False, verbose_name='stored_crop')),
+                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, primary_key=True, parent_link=True, to='gallery.GalleryItemBase', serialize=False)),
+                ('image', gallery.fields.GalleryImageField(verbose_name='image', upload_to=gallery.models.generate_filepath, storage=libs.storages.media_storage.MediaStorage())),
+                ('image_crop', models.CharField(blank=True, max_length=32, verbose_name='stored_crop', editable=False)),
             ],
             options={
-                'abstract': False,
                 'verbose_name_plural': 'image items',
-                'default_permissions': (),
+                'abstract': False,
                 'verbose_name': 'image item',
+                'default_permissions': (),
             },
             bases=('gallery.galleryitembase',),
         ),
         migrations.CreateModel(
             name='MainPageConfig',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('preview', libs.stdimage.fields.StdImageField(min_dimensions=(800, 600), variations={'admin': {'size': (280, 280)}, 'normal': {'size': (800, 600)}}, storage=libs.storages.MediaStorage('main'), upload_to='', verbose_name='preview', blank=True, aspects=('normal',))),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('preview', libs.stdimage.fields.StdImageField(verbose_name='preview', min_dimensions=(800, 600), storage=libs.storages.media_storage.MediaStorage('main'), blank=True, variations={'normal': {'size': (800, 600)}, 'admin': {'size': (280, 280)}}, upload_to='', aspects=('normal',))),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
-                ('gallery', gallery.fields.GalleryField(verbose_name='gallery', on_delete=django.db.models.deletion.SET_NULL, null=True, blank=True, to='main.Gallery')),
+                ('gallery', gallery.fields.GalleryField(on_delete=django.db.models.deletion.SET_NULL, verbose_name='gallery', blank=True, null=True, to='main.Gallery')),
             ],
             options={
                 'verbose_name': 'settings',
@@ -59,15 +59,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='VideoItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(parent_link=True, serialize=False, primary_key=True, auto_created=True, to='gallery.GalleryItemBase')),
+                ('galleryitembase_ptr', models.OneToOneField(auto_created=True, primary_key=True, parent_link=True, to='gallery.GalleryItemBase', serialize=False)),
                 ('video', libs.videolink_field.fields.VideoLinkField(providers=set([]), verbose_name='video')),
-                ('video_preview', gallery.fields.GalleryVideoLinkPreviewField(blank=True, upload_to=gallery.models.generate_filepath, storage=libs.storages.MediaStorage(), verbose_name='preview')),
+                ('video_preview', gallery.fields.GalleryVideoLinkPreviewField(blank=True, verbose_name='preview', upload_to=gallery.models.generate_filepath, storage=libs.storages.media_storage.MediaStorage())),
             ],
             options={
-                'abstract': False,
                 'verbose_name_plural': 'video items',
-                'default_permissions': (),
+                'abstract': False,
                 'verbose_name': 'video item',
+                'default_permissions': (),
             },
             bases=('gallery.galleryitembase',),
         ),

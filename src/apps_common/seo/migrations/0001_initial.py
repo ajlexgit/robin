@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import libs.storages
+import libs.storages.media_storage
 import django.utils.timezone
 
 
@@ -16,22 +16,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Robots',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('text', models.TextField(blank=True, verbose_name='text')),
             ],
             options={
-                'managed': False,
                 'verbose_name_plural': 'robots.txt',
-                'default_permissions': (),
                 'verbose_name': 'file',
+                'managed': False,
+                'default_permissions': (),
             },
         ),
         migrations.CreateModel(
             name='Counter',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('label', models.CharField(max_length=128, verbose_name='label')),
-                ('position', models.CharField(max_length=12, choices=[('head', 'Inside <head>'), ('body_top', 'Start of <body>'), ('body_bottom', 'End of <body>')], verbose_name='position')),
+                ('position', models.CharField(max_length=12, verbose_name='position', choices=[('head', 'Inside <head>'), ('body_top', 'Start of <body>'), ('body_bottom', 'End of <body>')])),
                 ('content', models.TextField(verbose_name='content')),
             ],
             options={
@@ -42,25 +42,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Redirect',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('old_path', models.CharField(max_length=200, unique=True, help_text="This should be an absolute path, excluding the domain name. Example: '/events/search/'.", verbose_name='redirect from')),
-                ('new_path', models.CharField(max_length=200, blank=True, help_text="This can be either an absolute path (as above) or a full URL starting with 'http://'.", verbose_name='redirect to')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('old_path', models.CharField(max_length=200, verbose_name='redirect from', help_text="This should be an absolute path, excluding the domain name. Example: '/events/search/'.", unique=True)),
+                ('new_path', models.CharField(blank=True, max_length=200, verbose_name='redirect to', help_text="This can be either an absolute path (as above) or a full URL starting with 'http://'.")),
                 ('permanent', models.BooleanField(default=True, verbose_name='permanent')),
-                ('created', models.DateField(editable=False, default=django.utils.timezone.now, verbose_name='created')),
+                ('created', models.DateField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
             ],
             options={
                 'verbose_name_plural': 'redirects',
-                'ordering': ('old_path',),
                 'verbose_name': 'redirect',
+                'ordering': ('old_path',),
             },
         ),
         migrations.CreateModel(
             name='SeoConfig',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('title', models.CharField(max_length=128, verbose_name='site title')),
-                ('keywords', models.TextField(max_length=255, blank=True, verbose_name='site keywords')),
-                ('description', models.TextField(max_length=255, blank=True, verbose_name='site description')),
+                ('keywords', models.TextField(blank=True, max_length=255, verbose_name='site keywords')),
+                ('description', models.TextField(blank=True, max_length=255, verbose_name='site description')),
             ],
             options={
                 'verbose_name': 'Defaults',
@@ -69,15 +69,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeoData',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('object_id', models.PositiveIntegerField()),
-                ('title', models.CharField(max_length=128, blank=True, verbose_name='title')),
-                ('keywords', models.TextField(max_length=255, blank=True, verbose_name='keywords')),
-                ('description', models.TextField(max_length=255, blank=True, verbose_name='description')),
-                ('og_title', models.CharField(max_length=255, blank=True, verbose_name='title')),
-                ('og_image', models.ImageField(blank=True, upload_to='', storage=libs.storages.MediaStorage('seo'), verbose_name='image')),
+                ('title', models.CharField(blank=True, max_length=128, verbose_name='title')),
+                ('keywords', models.TextField(blank=True, max_length=255, verbose_name='keywords')),
+                ('description', models.TextField(blank=True, max_length=255, verbose_name='description')),
+                ('canonical', models.URLField(blank=True, verbose_name='canonical URL')),
+                ('og_title', models.CharField(blank=True, max_length=255, verbose_name='title')),
+                ('og_image', models.ImageField(blank=True, verbose_name='image', upload_to='', storage=libs.storages.media_storage.MediaStorage('seo'))),
                 ('og_description', models.TextField(blank=True, verbose_name='description')),
-                ('header', models.CharField(max_length=128, blank=True, verbose_name='header')),
+                ('header', models.CharField(blank=True, max_length=128, verbose_name='header')),
                 ('text', models.TextField(blank=True, verbose_name='text')),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
