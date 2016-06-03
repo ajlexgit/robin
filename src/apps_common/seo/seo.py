@@ -6,6 +6,7 @@ from django.forms.models import model_to_dict
 from django.utils.safestring import mark_safe
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.contenttypes.models import ContentType
+from libs.description import description
 from .models import SeoConfig, SeoData
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
@@ -137,4 +138,11 @@ class Seo:
                 og_data['description'] = strip_tags(og_description)
 
             og.update(og_data)
-            tw.update(og_data)
+
+            # twitter format
+            tw_data = og_data.copy()
+            if 'title' in tw_data:
+                tw_data['title'] = description(tw_data['title'], 35, 70)
+            if 'description' in tw_data:
+                tw_data['description'] = description(tw_data['description'], 60, 120)
+            tw.update(tw_data)
