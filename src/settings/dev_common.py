@@ -2,9 +2,8 @@ from settings.common import *
 
 
 ALLOWED_HOSTS = (
+    '.local.com',
     'localhost',
-    'local.ru',
-    'local.com',
 )
 
 DEBUG = True
