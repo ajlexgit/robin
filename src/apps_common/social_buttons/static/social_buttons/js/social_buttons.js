@@ -20,7 +20,7 @@
             data-description
 
         Пример разметки:
-            <div class="social-buttons">
+            <div class="social-buttons no-counter">
                 <div class="social-button social-vk">Share</div>
                 <div class="social-button social-fb">Share</div>
                 <div class="social-button social-gp">Share</div>
@@ -53,7 +53,9 @@
                 that.popup(url);
             });
 
-            this.getShareCount();
+            if (!this.$button.parent().hasClass('no-counter')) {
+                this.getShareCount();
+            }
         };
 
         cls.destroy = function() {

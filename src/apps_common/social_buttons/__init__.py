@@ -24,7 +24,7 @@
     Пример использования:
         template.html:
             ...
-            <div class="social-buttons">
+            <div class="social-buttons no-counter">
                 <div class="social-button social-vk">Share</div>
                 <div class="social-button social-fb">Share</div>
                 <div class="social-button social-gp">Share</div>
