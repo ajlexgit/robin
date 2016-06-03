@@ -27,6 +27,7 @@ class SeoData(models.Model):
     title = models.CharField(_('title'), max_length=128, blank=True)
     keywords = models.TextField(_('keywords'), max_length=255, blank=True)
     description = models.TextField(_('description'), max_length=255, blank=True)
+    canonical = models.URLField(_('canonical URL'), blank=True)
 
     # opengraph
     og_title = models.CharField(_('title'), max_length=255, blank=True)

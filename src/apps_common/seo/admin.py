@@ -42,7 +42,7 @@ class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
     model = SeoData
     fieldsets = (
         (_('SEO common'), {
-            'fields': ('title', 'keywords', 'description', ),
+            'fields': ('title', 'keywords', 'description', 'canonical'),
         }),
         (_('SEO text'), {
             'fields': ('header', 'text',),

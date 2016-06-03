@@ -10,7 +10,7 @@ from .models import SeoConfig, SeoData
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
 
-SEODATA_META = ('title', 'keywords', 'description')
+SEODATA_META = ('title', 'keywords', 'description', 'canonical')
 SEODATA_OPENGRAPH = ('og_title', 'og_image', 'og_description')
 
 
@@ -22,6 +22,7 @@ class Seo:
         self.title_deque = deque()
         self.keywords = ''
         self.description = ''
+        self.canonical = ''
 
         if not empty:
             site_seoconfig = SeoConfig.get_solo()
@@ -109,6 +110,7 @@ class Seo:
             'title': title,
             'keywords': self.keywords,
             'description': self.description,
+            'canonical': self.canonical,
         }
 
         # opengraph
