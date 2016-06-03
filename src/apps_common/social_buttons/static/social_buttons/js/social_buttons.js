@@ -7,26 +7,16 @@
         Требует:
             jquery.utils.js
 
-        Получение данных по приоритетам:
-            1) data-аттрибут кнопки
-            2) data-аттрибут родителя кнопки
-            3) Opengraph-тэги
-            4) данные на странице (<title>, location.href, ...)
-
-        Возможные аттрибуты:
-            data-url
-            data-title
-            data-image
-            data-description
-
         Пример разметки:
+            {% load social_buttons %}
+
             <div class="social-buttons no-counter">
-                <div class="social-button social-vk"></div>
-                <div class="social-button social-fb"></div>
-                <div class="social-button social-gp"></div>
-                <div class="social-button social-tw"></div>
-                <div class="social-button social-li"></div>
-                <div class="social-button social-pn"></div>
+              {% social_button 'vk' %}
+              {% social_button 'fb' %}
+              {% social_button 'tw' %}
+              {% social_button 'gp' %}
+              {% social_button 'li' %}
+              {% social_button 'pn' %}
             </div>
      */
 
@@ -49,8 +39,8 @@
 
             var that = this;
             this.$button.on('click.social', function() {
-                var url = that.getShareUrl();
-                that.popup(url);
+                that.popup($(this).attr('href'));
+                return false;
             });
 
             if (!this.$button.parent().hasClass('no-counter')) {
@@ -115,11 +105,6 @@
             }
         };
 
-        cls.getShareUrl = function() {
-            this.updateData();
-            return '';
-        };
-
         cls.getShareCount = function() {
             this.updateData();
             return '';
@@ -182,26 +167,6 @@
         Провайдер ВКонтакте
      */
     window.VkProvider = Class(SocialProvider, function VkProvider(cls, superclass) {
-        cls.getShareUrl = function() {
-            superclass.getShareUrl.call(this);
-
-            var params = '?';
-            if (this.url) {
-                params += 'url=' + this.url + '&';
-            }
-            if (this.title) {
-                params += 'title=' + this.title + '&';
-            }
-            if (this.image) {
-                params += 'image=' + this.image + '&';
-            }
-            if (this.description) {
-                params += 'description=' + this.description + '&';
-            }
-
-            return 'http://vk.com/share.php' + params;
-        };
-
         cls.getShareCount = function() {
             superclass.getShareCount.call(this);
 
@@ -228,17 +193,6 @@
         Провайдер Facebook
      */
     window.FacebookProvider = Class(SocialProvider, function FacebookProvider(cls, superclass) {
-        cls.getShareUrl = function() {
-            superclass.getShareUrl.call(this);
-
-            var params = '?';
-            if (this.url) {
-                params += 'u=' + this.url + '&';
-            }
-
-            return 'http://www.facebook.com/sharer/sharer.php' + params;
-        };
-
         cls.getShareCount = function() {
             superclass.getShareCount.call(this);
 
@@ -259,20 +213,6 @@
     window.TwitterProvider = Class(SocialProvider, function TwitterProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 300;
-
-        cls.getShareUrl = function() {
-            superclass.getShareUrl.call(this);
-
-            var params = '?';
-            if (this.url) {
-                params += 'url=' + this.url + '&';
-            }
-            if (this.description) {
-                params += 'text=' + this.description + '&';
-            }
-
-            return 'http://twitter.com/share' + params;
-        };
     });
 
     /*
@@ -281,17 +221,6 @@
     window.GooglePlusProvider = Class(SocialProvider, function GooglePlusProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 500;
-
-        cls.getShareUrl = function() {
-            superclass.getShareUrl.call(this);
-
-            var params = '?';
-            if (this.url) {
-                params += 'url=' + this.url + '&';
-            }
-
-            return 'https://plus.google.com/share' + params;
-        };
 
         cls.getShareCount = function() {
             superclass.getShareCount.call(this);
@@ -322,26 +251,6 @@
         cls.WINDOW_WIDTH = 600;
         cls.WINDOW_HEIGHT = 500;
 
-        cls.getShareUrl = function() {
-            superclass.getShareUrl.call(this);
-
-            var params = '?mini=true&';
-            if (this.url) {
-                params += 'url=' + this.url + '&';
-            }
-            if (this.title) {
-                params += 'title=' + this.title + '&';
-            }
-            if (this.image) {
-                params += 'image=' + this.image + '&';
-            }
-            if (this.description) {
-                params += 'summary=' + this.description + '&';
-            }
-
-            return 'http://www.linkedin.com/shareArticle' + params;
-        };
-
         cls.getShareCount = function() {
             superclass.getShareCount.call(this);
 
@@ -360,23 +269,6 @@
     window.PinterestProvider = Class(SocialProvider, function PinterestProvider(cls, superclass) {
         cls.WINDOW_WIDTH = 760;
         cls.WINDOW_HEIGHT = 600;
-
-        cls.getShareUrl = function() {
-            superclass.getShareUrl.call(this);
-
-            var params = '?';
-            if (this.url) {
-                params += 'url=' + this.url + '&';
-            }
-            if (this.image) {
-                params += 'media=' + this.image + '&';
-            }
-            if (this.description) {
-                params += 'description=' + this.description + '&';
-            }
-
-            return 'http://www.pinterest.com/pin/create/button/' + params;
-        };
 
         cls.getShareCount = function() {
             superclass.getShareCount.call(this);

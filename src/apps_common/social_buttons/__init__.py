@@ -9,27 +9,16 @@
                 ...
             )
 
-    Получение данных по приоритетам:
-        1) data-аттрибут кнопки
-        2) data-аттрибут родителя кнопки
-        3) Opengraph-тэги
-        4) данные на странице (<title>, location.href, ...)
-
-    Возможные аттрибуты:
-        data-url
-        data-title
-        data-image
-        data-description
-
     Пример использования:
         template.html:
+            {% load social_buttons %}
             ...
             <div class="social-buttons no-counter">
-                <div class="social-button social-vk"></div>
-                <div class="social-button social-fb"></div>
-                <div class="social-button social-gp"></div>
-                <div class="social-button social-tw"></div>
-                <div class="social-button social-li"></div>
-                <div class="social-button social-pn"></div>
+              {% social_button 'vk' %}
+              {% social_button 'fb' %}
+              {% social_button 'tw' %}
+              {% social_button 'gp' %}
+              {% social_button 'li' %}
+              {% social_button 'pn' %}
             </div>
 """
