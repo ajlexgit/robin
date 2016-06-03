@@ -44,7 +44,7 @@
         {{ post.date|date }}
       </time>
 
-      <h1 class="title title-h1" itemprop="headline">{{ post.title }}</h1>
+      <h1 class="title title-h1" itemprop="headline">{{ post.header }}</h1>
 
       {% if post.preview %}
         <img class="preview" src="{{ post.preview.normal.url }}"
