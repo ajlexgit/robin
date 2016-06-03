@@ -2,29 +2,34 @@
 
 .social-button {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  margin-right: 5px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  background: url(../img/small.png) no-repeat;
+  background: url(../img/social.png) no-repeat;
   @include fontsize_default;
   @include border_radius(45%);
 
-  &.social-fb {
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &.social-vk {
     background-position: 0 0;
   }
-  &.social-tw {
-    background-position: -21px 0;
+  &.social-fb {
+    background-position: -42px 0;
   }
-  &.social-vk {
+  &.social-tw {
     background-position: -84px 0;
   }
   &.social-gp {
     background-position: -126px 0;
   }
   &.social-li {
-    background-position: -756px 0;
+    background-position: -168px 0;
   }
   &.social-pn {
-    background-position: -105px 0;
+    background-position: -210px 0;
   }
 }
