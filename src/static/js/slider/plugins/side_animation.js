@@ -6,7 +6,7 @@
             name: 'side',
 
             margin: 0,          // в пикселях или процентах
-            speed: 800,
+            speed: 600,
             showIntermediate: true,
             easing: 'easeOutCubic'
         });
