@@ -1,6 +1,9 @@
 """
     Шаблон поиска по сайту.
 
+    Зависит от:
+        libs.sphinx
+
     Установка:
         settings.py:
             INSTALLED_APPS = (

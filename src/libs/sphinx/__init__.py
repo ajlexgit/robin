@@ -1,73 +1,84 @@
-from .sphinxapi import SphinxClient, SPH_SORT_EXTENDED
+"""
+    Модуль поиска через Sphinx.
+
+    Установка:
+        settings.py:
+            INSTALLED_APS = (
+                ...
+                'libs.sphinx',
+                ...
+            )
+
+        urls.py:
+            ...
+            url(r'^sphinx/', include('libs.sphinx.urls', namespace='sphinx')),
+            ...
+
+    В каждом индексируемом приложении должен быть файл с опрелением индексов indexes.py.
+
+    Пример индексации:
+        indexes.py:
+            from django.utils.html import strip_tags
+            from libs.sphinx import SphinxXMLIndex, ATTR_TYPE
+            from .models import Post
+
+            class PostIndex(SphinxXMLIndex):
+                name = 'news'
+                model = Post
+
+                def __init__(self):
+                    super().__init__()
+                    self.add_fields('title', is_attribute=True)
+                    self.add_fields('text')
+                    self.add_attr('url')
+                    self.add_attr('date', ATTR_TYPE.TIMESTAMP)
+
+                def get_queryset(self):
+                    return self.model.objects.filter(visible=True)
+
+                def document_dict(self, instance):
+                    return {
+                        'url': instance.get_absolute_url(),
+                        'title': instance.title,
+                        'text': strip_tags(instance.text),
+                        'date': int(instance.date.timestamp()),
+                    }
+
+        sphinx.conf:
+            source news
+            {
+                type                    = xmlpipe2
+                xmlpipe_command         = curl --connect-timeout 3 http://localhost/sphinx/index/news/skvx8wjq8p81d/
+            }
+            
+            index news
+            {
+                source              = news
+                path                = C:/sphinx/data/index/news
+                morphology          = stem_en
+                min_stemming_len    = 3
+                min_word_len        = 3
+            }
 
 
-class SphinxResult:
-    __slots__ = ('_total', '_matches', '_ids')
+    Пример поиска:
+        from libs.sphinx import SphinxSearch
 
-    def __init__(self, data):
-        data = data or {}
-        self._total = data.get('total_found', 0)
-        self._matches = data.get('matches', ())
-        self._ids = None
+        class MySphinxSearch(SphinxSearch):
+            limit = 20
+            weights = {
+                'title': 2,
+                'text': 1,
+            }
 
-    @property
-    def total(self):
-        """ Общее кол-во подходящих аргументов """
-        return self._total
+            def news_queryset(self, model, ids):
+                return model.objects.filter(pk__in=ids).select_related('category')
 
-    @property
-    def ids(self):
-        """ Список ID найденных документов """
-        if self._ids is None:
-            self._ids = tuple(record['id'] for record in self)
-        return self._ids
+        queryset = MySearchIndex().fetch_models('direct line')
 
-    def __iter__(self):
-        return iter(self._matches)
+"""
 
-    def __len__(self):
-        """ Кол-во найденных элементов """
-        return len(self._matches)
+from .search import SphinxSearch, SphinxSearchResult
+from .index import ATTR_TYPE, SphinxXMLIndex
 
-
-class SphinxIndex:
-    model = None
-    index = '*'
-    limit = 250
-
-    # defaults
-    filters = ()
-    weights = None
-    order_by = '@relevance DESC, @id DESC'
-
-    def __init__(self, host='localhost', port=9312):
-        self.client = SphinxClient()
-        self.client.SetServer(host, port)
-
-    def fetch(self, query, filters=None, weights=None, order_by='', offset=0):
-        """ Выборка страницы результатов """
-        self.client.SetLimits(offset, self.limit)
-        self.client.SetSortMode(SPH_SORT_EXTENDED, order_by or self.order_by)
-
-        weights = weights or self.weights
-        if weights:
-            self.client.SetFieldWeights(weights)
-
-        self.client.ResetFilters()
-        filters = filters or self.filters
-        for fieldname, values in filters:
-            self.client.SetFilter(fieldname, values)
-
-        return SphinxResult(self.client.Query(query, self.index))
-
-    def fetch_models(self, query, *args, **kwargs):
-        if self.model is None:
-            raise RuntimeError("method SphinxIndex.fetch_models() requires 'model' attribute")
-
-        page = self.fetch(query, *args, **kwargs)
-        if not page:
-            return ()
-
-        qs = self.model._default_manager.filter(id__in=page.ids)
-        qs_dict = {item.pk: item for item in qs}
-        return (qs_dict[pk] for pk in page.ids)
+default_app_config = 'libs.sphinx.apps.Config'

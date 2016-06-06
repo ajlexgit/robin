@@ -780,7 +780,7 @@ class SphinxClient:
                 nattrs -= 1
                 length = unpack('>L', response[p:p + 4])[0]
                 p += 4
-                attr = response[p:p + length]
+                attr = response[p:p + length].decode()
                 p += length
                 type_ = unpack('>L', response[p:p + 4])[0]
                 p += 4
