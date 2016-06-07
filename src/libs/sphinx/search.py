@@ -1,4 +1,3 @@
-import time
 from .api import SphinxClient, SPH_SORT_EXTENDED
 from .index import ALL_INDEXES
 

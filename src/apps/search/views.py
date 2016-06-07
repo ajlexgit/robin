@@ -17,8 +17,6 @@ class SearchView(TemplateView):
         query = request.GET.get('q')
         if query:
             queryset = MySphinxSearch().fetch_models(query)
-            from pprint import pprint
-            pprint(queryset)
         else:
             queryset = None
 
