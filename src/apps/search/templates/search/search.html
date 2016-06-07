@@ -12,7 +12,7 @@
   <ol>
     {% for result in queryset %}
       <li>
-        <a href="{{ result.get_absolute_url }}">{{ result.title }}</a>
+        <a href="{{ result.url }}">{{ result.title }}</a>
       </li>
     {% endfor %}
   </ol>

@@ -56,8 +56,12 @@
                 source              = news
                 path                = C:/sphinx/data/index/news
                 morphology          = stem_en
-                min_stemming_len    = 3
+                min_stemming_len    = 4
                 min_word_len        = 3
+                min_prefix_len      = 3
+                index_exact_words   = 1
+                expand_keywords     = 1
+                html_strip          = 1
             }
 
 

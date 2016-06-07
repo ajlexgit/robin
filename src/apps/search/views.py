@@ -16,7 +16,7 @@ class SearchView(TemplateView):
     def get(self, request):
         query = request.GET.get('q')
         if query:
-            queryset = MySphinxSearch().fetch_models(query)
+            queryset = MySphinxSearch().fetch_dicts(query)
         else:
             queryset = None
 
