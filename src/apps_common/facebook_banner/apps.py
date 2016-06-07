@@ -12,7 +12,7 @@ class Config(AppConfig):
         from . import conf
 
         JS_STORAGE.update({
-            'fb_banner_appid': conf.APP_ID,
-            'fb_banner_timeout': conf.TIMEOUT,
+            'fb_banner_appid': conf.FACEBOOK_APP_ID,
+            'fb_banner_timeout': conf.POPUP_TIMEOUT,
             'fb_banner_url': reverse('facebook_banner:ajax_facebook_banner'),
         })

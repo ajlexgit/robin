@@ -246,6 +246,9 @@ PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
 # для ckeditor, videolink_field, youtube
 YOUTUBE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
 
+# Facebook API ID
+FACEBOOK_APP_ID = '575938032576227'
+
 # Smart Cache-Control
 SCC_ENABLED = True
 SCC_MAX_AGE_PRIVATE = 0
