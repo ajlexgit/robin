@@ -52,7 +52,7 @@ PIPELINE['STYLESHEETS'].update({
     },
     'blog_detail': {
         'source_filenames': Slider.css + (
-            'social_buttons/scss/social_buttons.scss',
+            'social_networks/scss/social_buttons.scss',
             'blog/scss/detail.scss',
         ),
         'output_filename': 'css_build/blog_detail.css',
@@ -108,7 +108,7 @@ PIPELINE['JAVASCRIPT'].update({
     },
     'blog_detail': {
         'source_filenames': Slider.js + (
-            'social_buttons/js/social_buttons.js',
+            'social_networks/js/social_buttons.js',
             'blog/js/detail.js',
         ),
         'output_filename': 'js_build/blog_detail.js',

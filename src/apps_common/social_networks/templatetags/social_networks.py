@@ -74,7 +74,7 @@ def social_button(context, provider, text='', url='', title='', description='', 
     else:
         return ''
 
-    return loader.render_to_string('social_buttons/button.html', {
+    return loader.render_to_string('social_networks/button.html', {
         'share_url': share_url,
         'provider': provider,
         'text': text,

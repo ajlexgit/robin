@@ -6,18 +6,6 @@
 
         Требует:
             jquery.utils.js
-
-        Пример разметки:
-            {% load social_buttons %}
-
-            <div class="social-buttons no-counter">
-              {% social_button 'vk' %}
-              {% social_button 'fb' %}
-              {% social_button 'tw' %}
-              {% social_button 'gp' %}
-              {% social_button 'li' %}
-              {% social_button 'pn' %}
-            </div>
      */
 
     var SocialProvider = Class(Object, function SocialProvider(cls, superclass) {
