@@ -6,6 +6,7 @@ feeds = {
     conf.NETWORK_GOOGLE: rss.GoogleFeed,
     conf.NETWORK_TWITTER: rss.TwitterFeed,
     conf.NETWORK_FACEBOOK: rss.FacebookFeed,
+    conf.NETWORK_LINKEDIN: rss.LinkedInFeed,
 }
 
 
