@@ -18,6 +18,8 @@ SPRITE_ICONS = (
 
 @admin.register(SocialPost)
 class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
+    change_list_template = 'social_networks/admin/rss_list.html'
+
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -41,6 +43,13 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
             default.setdefault('class', '')
             default['class'] += ' mini-column'
         return default
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.update(
+            networks=conf.NETWORKS,
+        )
+        return super().changelist_view(request, extra_context)
 
     def network_icon(self, obj):
         icons_url = staticfiles_storage.url('social_networks/img/admin_icons.svg')
