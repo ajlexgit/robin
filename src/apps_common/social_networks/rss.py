@@ -32,11 +32,11 @@ class SocialRssFeed(Feed):
 
     def item_title(self, item):
         """ Заголовок элемента """
-        return item.title
+        return strip_tags(item.text)
 
     def item_description(self, item):
         """ Описание элемента """
-        return strip_tags(item.text)
+        return None
 
     def item_pubdate(self, item):
         """ Дата публикации """

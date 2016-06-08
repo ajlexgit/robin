@@ -2,6 +2,14 @@
 
 {% block content %}
   <style>
+    .rss-networks {
+      margin-bottom: 40px;
+    }
+
+    .rss-networks h4 {
+      margin-bottom: 10px;
+    }
+
     .rss-networks dl {
       margin: 0;
     }
@@ -18,10 +26,15 @@
 
 
   <div class="rss-networks alert alert-info">
+    <h4>Feed URLs:</h4>
     <dl class="dl-horizontal">
       {% for network_code, network_title in networks %}
         <dt>{{ network_title }}</dt>
-        <dd>http://{{ request.get_host }}{% url 'social_networks:'|add:network_code %}</dd>
+        <dd>
+          <a href="http://{{ request.get_host }}{% url 'social_networks:'|add:network_code %}" target="_blank">
+            http://{{ request.get_host }}{% url 'social_networks:'|add:network_code %}
+          </a>
+        </dd>
       {% endfor %}
     </dl>
   </div>
