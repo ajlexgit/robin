@@ -23,7 +23,7 @@ class SocialPost(models.Model):
     class Meta:
         verbose_name = _('post')
         verbose_name_plural = _('posts')
-        ordering = ('created', )
+        ordering = ('-created', )
 
     def __str__(self):
         return description(self.text, 10, 60)
