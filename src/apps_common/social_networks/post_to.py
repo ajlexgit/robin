@@ -1,14 +1,8 @@
 import twitter
 import facebook
-import httplib2
-import apiclient as google
-from oauth2client.client import OAuth2WebServerFlow
 from django.utils.html import strip_tags
 from . import conf
 from .utils import tinyurl
-
-GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/plus.stream.write']
-GOOGLE_REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
 
 class PostingError(Exception):
@@ -61,56 +55,3 @@ def post_to_facebook(message, url=None, image=None):
 
     graph = facebook.GraphAPI(conf.FACEBOOK_TOKEN)
     graph.put_wall_post(message=message, attachment=attachment)
-
-
-def post_to_google(message, url=None, image=None):
-    """ Постинг в Фейсбук """
-    require_conf('GOOGLE_APP_ID', 'GOOGLE_SECRET')
-
-    message = strip_tags(message)
-    attachments = []
-
-    if url is not None:
-        attachments.append({
-            'url': url,
-            'objectType': 'article',
-        })
-
-    if image is not None:
-        attachments.append({
-            'url': image,
-            'objectType': 'photo',
-        })
-
-
-    flow = OAuth2WebServerFlow(
-        client_id=conf.GOOGLE_APP_ID,
-        client_secret=conf.GOOGLE_SECRET,
-        scope=GOOGLE_SCOPES,
-        redirect_uri=GOOGLE_REDIRECT_URI,
-    )
-    auth_uri = flow.step1_get_authorize_url()
-    print(auth_uri)
-    code = input()
-
-    credentials = flow.step2_exchange(code)
-    http = httplib2.Http()
-    http = credentials.authorize(http)
-
-    service = google.discovery.build('plusDomains', 'v1', http=http)
-    activities = service.activities()
-    activities.insert(
-        userId='me',
-        body={
-            'object': {
-                'originalContent': message,
-                'attachments': attachments,
-            },
-            'access': {
-                'items': [{
-                    'type': 'domain'
-                }],
-                'domainRestricted': True
-            }
-        }).execute()
-
