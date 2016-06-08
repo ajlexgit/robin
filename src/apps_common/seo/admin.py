@@ -3,9 +3,9 @@ from functools import update_wrapper
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.conf.urls import url
 from django.shortcuts import redirect
 from django.contrib.admin import helpers
-from django.conf.urls import url, patterns
 from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -189,9 +189,9 @@ class DummyRobotsAdmin(ModelAdminMixin, admin.ModelAdmin):
             return update_wrapper(wrapper, view)
 
         info = self.model._meta.app_label, self.model._meta.model_name
-        urls = patterns('',
+        urls = [
             url(r'^$', wrap(self.change_view), name='%s_%s_add' % info),
-        )
+        ]
         return urls
 
     def get_changeform_initial_data(self, request):

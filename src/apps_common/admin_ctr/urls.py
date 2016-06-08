@@ -1,7 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from . import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(
         r'^add/(?P<content_type_id>\d+)/$',
         view=views.add_related,
@@ -17,4 +17,4 @@ urlpatterns = patterns('',
         view=views.delete_related,
         name='delete_related'
     ),
-)
+]

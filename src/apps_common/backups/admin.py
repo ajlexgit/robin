@@ -2,7 +2,7 @@ import os
 from functools import update_wrapper
 from django.conf import settings
 from django.contrib import admin
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.core.management import call_command
@@ -25,12 +25,12 @@ class BackupDummyAdmin(admin.ModelAdmin):
             return update_wrapper(wrapper, view)
 
         info = self.model._meta.app_label, self.model._meta.model_name
-        urls = patterns('',
+        urls = [
             url(r'^$', wrap(self.changelist), name='%s_%s_changelist' % info),
             url(r'^create/$', wrap(self.create), name='%s_%s_create' % info),
             url(r'^delete/(?P<filename>[\d_]+)/$', wrap(self.delete), name='%s_%s_delete' % info),
             url(r'^download/(?P<filename>[\d_]+)/$', wrap(self.download), name='%s_%s_download' % info),
-        )
+        ]
         return urls
 
     @staticmethod
