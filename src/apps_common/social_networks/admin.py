@@ -9,9 +9,8 @@ SPRITE_ICONS = (
     conf.NETWORK_TWITTER,
     conf.NETWORK_FACEBOOK,
     conf.NETWORK_GOOGLE,
-    'linkedin',
+    conf.NETWORK_LINKEDIN,
     'pinterest',
-    'youtube',
     'instagram',
 )
 
@@ -28,7 +27,7 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
             ),
         }),
     )
-    list_display = ('network_icon', '__str__', 'url', 'created')
+    list_display = ('network_icon', '__str__', 'created')
     list_display_links = ('network_icon', '__str__')
     list_filter = ('network', 'created')
     search_fields = ('text',)

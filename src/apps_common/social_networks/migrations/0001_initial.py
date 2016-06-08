@@ -14,18 +14,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SocialPost',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
-                ('network', models.CharField(choices=[('google', 'Google Plus'), ('twitter', 'Twitter'), ('facebook', 'Facebook')], default='facebook', db_index=True, max_length=32, verbose_name='social network')),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('network', models.CharField(verbose_name='social network', default='facebook', max_length=32, choices=[('google', 'Google Plus'), ('twitter', 'Twitter'), ('facebook', 'Facebook'), ('linkedin', 'Linked In')], db_index=True)),
                 ('text', models.TextField(verbose_name='text')),
-                ('url', models.URLField(blank=True, verbose_name='URL')),
-                ('image', models.CharField(max_length=255, blank=True, verbose_name='image URL')),
-                ('created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created on', editable=False)),
+                ('url', models.CharField(verbose_name='URL', max_length=512, blank=True)),
+                ('image', models.CharField(verbose_name='image URL', max_length=255, blank=True)),
+                ('created', models.DateTimeField(verbose_name='created on', default=django.utils.timezone.now, editable=False)),
                 ('modified', models.DateTimeField(verbose_name='modified on', auto_now=True)),
             ],
             options={
-                'verbose_name_plural': 'posts',
                 'verbose_name': 'post',
-                'ordering': ('created',),
+                'ordering': ('-created',),
+                'verbose_name_plural': 'posts',
             },
         ),
     ]

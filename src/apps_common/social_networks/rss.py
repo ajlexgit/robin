@@ -64,3 +64,9 @@ class TwitterFeed(SocialRssFeed):
     title = 'Twitter feed'
     description = 'Twitter feed'
     network = conf.NETWORK_TWITTER
+
+
+class LinkedInFeed(SocialRssFeed):
+    title = 'LinkedIn feed'
+    description = 'LinkedIn feed'
+    network = conf.NETWORK_LINKEDIN
