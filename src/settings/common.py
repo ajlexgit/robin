@@ -109,6 +109,14 @@ SUIT_CONFIG = {
         },
         '-',
         {
+            'app': 'social_networks',
+            'icon': 'icon-lock',
+            'models': (
+                'SocialPost',
+            )
+        },
+        '-',
+        {
             'icon': 'icon-lock',
             'label': 'Authentication and Authorization',
             'permissions': 'users.admin_menu',

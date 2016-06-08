@@ -10,6 +10,12 @@
                 ...
             )
 
+        urls.py:
+            ...
+            url(r'^social/', include('social_networks.urls', namespace='social_networks')),
+            ...
+
+
     Пример вывода кнопок для расшаривания:
         # Нужно подключить JS и SCSS
 
@@ -25,3 +31,6 @@
               {% social_button 'pn' %}
             </div>
 """
+from .rss import SocialRssFeed
+
+default_app_config = 'social_networks.apps.Config'
