@@ -23,4 +23,4 @@ class IndexPipeView(View):
             raise Http404
 
         index = cls()
-        return StreamingHttpResponse(index.build_xml(), content_type='application/xml')
+        return StreamingHttpResponse(iter(index), content_type='application/xml')

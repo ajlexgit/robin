@@ -610,7 +610,8 @@ class SphinxClient:
         # filters
         req.append(pack('>L', len(self._filters)))
         for f in self._filters:
-            req.append(pack('>L', len(f['attr'])) + f['attr'])
+            req.append(pack('>L', len(f['attr'])))
+            req.append(f['attr'])
             filtertype = f['type']
             req.append(pack('>L', filtertype))
             if filtertype == SPH_FILTER_VALUES:
