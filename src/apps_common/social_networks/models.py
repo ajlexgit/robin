@@ -17,8 +17,8 @@ class SocialPost(models.Model):
     url = models.CharField(_('URL'), max_length=512, blank=True)
     image = models.CharField(_('image URL'), max_length=255, blank=True)
 
+    modified = models.DateTimeField(_('modified on'), default=now)
     created = models.DateTimeField(_('created on'), default=now, editable=False)
-    modified = models.DateTimeField(_('modified on'), auto_now=True)
 
     class Meta:
         verbose_name = _('post')
@@ -27,6 +27,3 @@ class SocialPost(models.Model):
 
     def __str__(self):
         return description(self.text, 10, 60)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)

@@ -23,7 +23,7 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'network', 'url', 'text', 'image',
+                'network', 'url', 'text', 'image', 'modified'
             ),
         }),
     )
