@@ -23,8 +23,14 @@ class SocialRssFeed(Feed):
         return resolve_url('social_networks:%s' % self.network)
 
     def items(self):
-        qs = SocialPost.objects.filter(for_network=self.network)
-        return qs[:self.items_count]
+        qs = SocialPost.objects.filter(for_network=self.network)[:self.items_count]
+
+        # Публикатор из фидов hootsuite.com
+        agent = self.request.META.get('HTTP_USER_AGENT', '')
+        if 'Hootsuite-WebFeed' in agent:
+            qs.update(scheduled=False)
+
+        return qs
 
     def item_link(self, item):
         """ URL элемента """
