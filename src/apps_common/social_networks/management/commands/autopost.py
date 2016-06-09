@@ -1,6 +1,7 @@
 import twitter
 import logging
 import facebook
+from django.core.cache import cache
 from django.utils.timezone import now
 from django.core.management import BaseCommand
 from ...models import SocialPost
@@ -8,6 +9,7 @@ from ... import utils
 from ... import conf
 
 logger = logging.getLogger(__name__)
+FACEBOOK_CACHE_KEY = 'facebook_token'
 
 
 class Command(BaseCommand):
@@ -25,9 +27,10 @@ class Command(BaseCommand):
             try:
                 self.twitter_api.PostUpdate(message)
             except twitter.TwitterError as e:
+                logger.error("Twitter Autopost: error on #{0.pk}: {1.args}".format(post, e))
                 raise e
             else:
-                logger.info("Twitter: posted {0.pk}('{0}')".format(post))
+                logger.info("Twitter Autopost: posted #{0.pk} ('{0}')".format(post))
                 post.scheduled = False
                 post.posted = now()
                 post.save()
@@ -44,9 +47,10 @@ class Command(BaseCommand):
             try:
                 self.facebook_api.put_wall_post(message=message, attachment=attachment)
             except facebook.GraphAPIError as e:
+                logger.error("Facebook Autopost: error on #{0.pk}: {1.args}".format(post, e))
                 raise e
             else:
-                logger.info("Facebook: posted {0.pk}('{0}')".format(post))
+                logger.info("Facebook Autopost: posted #{0.pk} ('{0}')".format(post))
                 post.scheduled = False
                 post.posted = now()
                 post.save()
@@ -62,8 +66,13 @@ class Command(BaseCommand):
         self.autopost_twitter()
 
         # Facebook
-        self.facebook_api = facebook.GraphAPI(
-            conf.FACEBOOK_TOKEN
-        )
+        if FACEBOOK_CACHE_KEY in cache:
+            token = cache.get(FACEBOOK_CACHE_KEY)
+        else:
+            token = conf.FACEBOOK_TOKEN
+
+        self.facebook_api = facebook.GraphAPI(token)
+        new_token = self.facebook_api.extend_access_token(conf.FACEBOOK_APP_ID, conf.FACEBOOK_SECRET)['access_token']
+        cache.set(FACEBOOK_CACHE_KEY, new_token, timeout=30 * 24 * 3600)
         self.autopost_facebook()
 
