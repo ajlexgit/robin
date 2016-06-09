@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 
 
-def _collect_lines(lines, maxlen):
+def _collect_lines(lines, maxlen, join_len=1):
     """
         Выборка первых строк из последовательности lines,
         чтобы суммарная длина не превышала maxlen.
@@ -21,7 +21,7 @@ def _collect_lines(lines, maxlen):
         line_len = len(strip_tags(line))
         if result_len + line_len <= maxlen:
             result_lines.append(line)
-            result_len += line_len
+            result_len += join_len + line_len
         else:
             break
 
@@ -39,7 +39,11 @@ def description(text, minlen, maxlen):
     text = re_clean_newlines.sub('\n', text)
     paragraphs, other_paragraphs, paragraphs_len = _collect_lines(text.split('\n'), maxlen)
     if other_paragraphs and paragraphs_len < minlen:
-        lines, other_lines, lines_len =  _collect_lines(other_paragraphs[0].split('. '), maxlen - paragraphs_len)
+        lines, other_lines, lines_len =  _collect_lines(
+            other_paragraphs[0].split('. '),
+            maxlen - paragraphs_len - 1,
+            join_len=2
+        )
         if lines:
             paragraphs.append('. '.join(lines) + '.')
         else:
@@ -55,8 +59,8 @@ def description(text, minlen, maxlen):
                     paragraphs[-1] = '\n'.join(str(tag) for tag in body)
             elif other_lines:
                 # Вообще текст набрать не удалось. Набираем по словам из первого предложения + многоточие
-                words, other_words, words_len = _collect_lines(other_lines[0].split(' '), maxlen)
-                paragraphs.append(' '.join(words) + '...')
+                words, other_words, words_len = _collect_lines(other_lines[0].split(' '), maxlen - 1)
+                paragraphs.append(' '.join(words) + '…')
 
     paragraphs = list(map(str.strip, paragraphs))
 
