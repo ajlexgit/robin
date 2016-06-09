@@ -3,6 +3,7 @@ import logging
 import facebook
 from django.utils.timezone import now
 from django.core.management import BaseCommand
+from libs.description import description
 from ...models import SocialPost
 from ... import utils
 from ... import conf
@@ -20,6 +21,9 @@ class Command(BaseCommand):
         posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
         for post in posts:
             message = post.text
+            if len(message) > 120:
+                message = description(message, 100, 120)
+
             if post.url:
                 message += '\n%s' % utils.tinyurl(post.url)
 
