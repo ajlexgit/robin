@@ -71,10 +71,13 @@ class Command(BaseCommand):
         if FACEBOOK_CACHE_KEY in cache:
             token = cache.get(FACEBOOK_CACHE_KEY)
         else:
-            token = conf.FACEBOOK_TOKEN
+            self.facebook_api = facebook.GraphAPI(conf.FACEBOOK_TOKEN)
+            token = self.facebook_api.extend_access_token(
+                conf.FACEBOOK_APP_ID,
+                conf.FACEBOOK_SECRET
+            )['access_token']
+            cache.set(FACEBOOK_CACHE_KEY, token, timeout=30 * 24 * 3600)
 
         self.facebook_api = facebook.GraphAPI(token)
-        new_token = self.facebook_api.extend_access_token(conf.FACEBOOK_APP_ID, conf.FACEBOOK_SECRET)['access_token']
-        cache.set(FACEBOOK_CACHE_KEY, new_token, timeout=30 * 24 * 3600)
         self.autopost_facebook()
 
