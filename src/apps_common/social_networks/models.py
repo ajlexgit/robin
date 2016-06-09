@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-
 from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.description import description
 from . import conf

@@ -5,9 +5,10 @@ from django.utils.timezone import now
 from django.core.management import BaseCommand
 from libs.description import description
 from ...models import SocialPost
-from ... import utils
 from ... import conf
 
+TWITTER_URL_LEN = 23
+TWITTER_MAX_LEN = 140
 MAX_POSTS_PER_CALL = 3
 logger = logging.getLogger(__name__)
 
@@ -21,17 +22,21 @@ class Command(BaseCommand):
         posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
         for post in posts:
             message = post.text
-            if len(message) >= 140:
-                message = description(message, 100, 138)
+
+            # Проверка длинны
+            message_len = len(message)
+            if post.url:
+                message_len += TWITTER_URL_LEN
+            if message_len >= TWITTER_MAX_LEN:
+                message = description(message, 100, TWITTER_MAX_LEN - TWITTER_URL_LEN - 1)
 
             if post.url:
-                message += '\n%s' % utils.tinyurl(post.url)
+                message += '\n%s' % post.url
 
             try:
                 self.twitter_api.PostUpdate(message)
             except twitter.TwitterError as e:
                 logger.error("Twitter Autopost: error on #{0.pk}: {1.args}".format(post, e))
-                raise e
             else:
                 logger.info("Twitter Autopost: posted #{0.pk} ('{0}')".format(post))
                 post.scheduled = False
@@ -51,7 +56,6 @@ class Command(BaseCommand):
                 self.facebook_api.put_wall_post(message=message, attachment=attachment)
             except facebook.GraphAPIError as e:
                 logger.error("Facebook Autopost: error on #{0.pk}: {1.args}".format(post, e))
-                raise e
             else:
                 logger.info("Facebook Autopost: posted #{0.pk} ('{0}')".format(post))
                 post.scheduled = False
