@@ -23,7 +23,7 @@ class SocialRssFeed(Feed):
         return resolve_url('social_networks:%s' % self.network)
 
     def items(self):
-        qs = SocialPost.objects.filter(network=self.network, scheduled=True)
+        qs = SocialPost.objects.filter(for_network=self.network)
         return qs[:self.items_count]
 
     def item_link(self, item):

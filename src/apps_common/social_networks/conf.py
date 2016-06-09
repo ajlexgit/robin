@@ -9,9 +9,9 @@ NETWORK_LINKEDIN = 'linkedin'
 
 # Все доступные соцсети
 ALL_NETWORKS = (
-    (NETWORK_GOOGLE, _('Google Plus')),
-    (NETWORK_TWITTER, _('Twitter')),
     (NETWORK_FACEBOOK, _('Facebook')),
+    (NETWORK_TWITTER, _('Twitter')),
+    (NETWORK_GOOGLE, _('Google Plus')),
     (NETWORK_LINKEDIN, _('Linked In')),
 )
 

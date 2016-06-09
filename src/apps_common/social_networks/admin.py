@@ -17,9 +17,18 @@ SPRITE_ICONS = (
 
 
 class SocialPostForm(forms.ModelForm):
+    network = forms.ChoiceField(
+        required=True,
+        choices=conf.ALLOWED_NETWORKS,
+        initial=SocialPost._meta.get_field('network').default,
+        label=SocialPost._meta.get_field('network').verbose_name.capitalize(),
+    )
+
     class Meta:
         model = SocialPost
         fields = '__all__'
+
+
 
 
 @admin.register(SocialPost)
@@ -46,7 +55,6 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_filter = ('network', 'created')
     readonly_fields = ('created', 'posted')
     actions = ('action_schedule_posts', 'action_unschedule_posts')
-    search_fields = ('text',)
     suit_form_tabs = (
         ('general', _('General')),
     )

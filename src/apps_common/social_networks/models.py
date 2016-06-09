@@ -10,7 +10,7 @@ from . import conf
 class SocialPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         # for_network
-        for_network = kwargs.get('for_network')
+        for_network = kwargs.pop('for_network', None)
         if for_network:
             qs &= models.Q(network=for_network, scheduled=True)
 

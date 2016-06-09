@@ -66,18 +66,23 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['null'],
-            'propagate': True,
             'level': 'INFO',
         },
         'django.request': {
             'handlers': ['console'],
             'level': 'ERROR',
-            'propagate': False,
         },
         'sql': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': False,
+        },
+        'sphinx': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'social_networks': {
+            'handlers': ['console'],
+            'level': 'INFO',
         },
         '': {
             'handlers': ['null'],
