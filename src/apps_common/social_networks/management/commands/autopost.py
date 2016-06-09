@@ -22,7 +22,7 @@ class Command(BaseCommand):
         for post in posts:
             message = post.text
             if len(message) > 120:
-                message = description(message, 100, 120)
+                message = description(message, 100, 140)
 
             if post.url:
                 message += '\n%s' % utils.tinyurl(post.url)
