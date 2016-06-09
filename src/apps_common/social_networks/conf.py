@@ -29,9 +29,7 @@ ALLOWED_NETWORKS = tuple(
 # ============== API KEYS =====================
 
 # https://developers.facebook.com/apps/
-# https://developers.facebook.com/tools/explorer/
-FACEBOOK_APP_ID = getattr(settings, 'FACEBOOK_APP_ID', getattr(settings, 'SOCIAL_AUTH_FACEBOOK_KEY', ''))
-FACEBOOK_SECRET = getattr(settings, 'FACEBOOK_SECRET', getattr(settings, 'SOCIAL_AUTH_FACEBOOK_SECRET', ''))
+# https://developers.facebook.com/docs/marketing-api/quickstart
 FACEBOOK_TOKEN = getattr(settings, 'FACEBOOK_TOKEN', '')
 
 # https://apps.twitter.com/app

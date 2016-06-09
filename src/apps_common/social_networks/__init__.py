@@ -15,12 +15,10 @@
             TWITTER_SECRET = '5xdxDZeQQi8mUjpQ86rtr2dMZqkSOn4wQFP4VPNlVDGGPhYV51'
             TWITTER_TOKEN = '201200112-g53dkoQAgJCYxgpiMw4AMpeM8QOuyXrvm5VAh7Cu'
             TWITTER_TOKEN_SECRET = '37Hc33tE6cBHIDEDEwQFaMFwPsCf3mXQABuXKuKsZiVI7'
-            FACEBOOK_APP_ID = '248477118860039'
-            FACEBOOK_SECRET = 'de160348bca3aac4598d2246e6e4f7cb'
-            FACEBOOK_TOKEN = 'EAADhZCRZAniwcBACypvz4YG5bszBRRPfA5IdDdFEZCHYvYbPQshumfUZCPhY' \
-                             'MZC2OlDOM3JE32h85p0ZApw56L87ZAz5OYwvZBkhsQMQoNItj0B7bHxnMZAZB' \
-                             'ggD2fZCB0tpmMjOcVct9YCS3NIYwvSWLwpxoLC0aypj8wGf6B9LLaLyQIZBoZ' \
-                             'BZCTWft9TfHZBk0KlUvbu2O5SQ7z8jOH2DMd5BEo4'
+            FACEBOOK_TOKEN = 'EAADhZCRZAniwcBAONB6fBjEgG0vZAJCRir46Lpa02Yb0aOtoA8FI' \
+                             'DMXOL7sJxLxptZCi7pkkC1XUi1uVIkjqZArCARcgx8ZCtKA7qw8Vm' \
+                             '9C6IIKqOoOE8RTYnVigifVirZBwID4OUTZB6dyI1mVDwfimIJjZCy' \
+                             'juf2diToFYsVClwYQZDZD'
 
         urls.py:
             ...

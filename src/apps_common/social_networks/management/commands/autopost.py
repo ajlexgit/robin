@@ -1,17 +1,14 @@
 import twitter
 import logging
 import facebook
-from django.core.cache import cache
 from django.utils.timezone import now
 from django.core.management import BaseCommand
 from ...models import SocialPost
 from ... import utils
 from ... import conf
 
-logger = logging.getLogger(__name__)
-
 MAX_POSTS_PER_CALL = 3
-FACEBOOK_CACHE_KEY = 'facebook_token'
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -68,16 +65,6 @@ class Command(BaseCommand):
         self.autopost_twitter()
 
         # === Facebook ===
-        if FACEBOOK_CACHE_KEY in cache:
-            token = cache.get(FACEBOOK_CACHE_KEY)
-        else:
-            self.facebook_api = facebook.GraphAPI(conf.FACEBOOK_TOKEN)
-            token = self.facebook_api.extend_access_token(
-                conf.FACEBOOK_APP_ID,
-                conf.FACEBOOK_SECRET
-            )['access_token']
-            cache.set(FACEBOOK_CACHE_KEY, token, timeout=30 * 24 * 3600)
-
-        self.facebook_api = facebook.GraphAPI(token)
+        self.facebook_api = facebook.GraphAPI(conf.FACEBOOK_TOKEN)
         self.autopost_facebook()
 
