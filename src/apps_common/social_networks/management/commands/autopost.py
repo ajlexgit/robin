@@ -21,8 +21,8 @@ class Command(BaseCommand):
         posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
         for post in posts:
             message = post.text
-            if len(message) > 120:
-                message = description(message, 100, 140)
+            if len(message) >= 140:
+                message = description(message, 100, 138)
 
             if post.url:
                 message += '\n%s' % utils.tinyurl(post.url)
