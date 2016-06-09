@@ -9,6 +9,8 @@ from ... import utils
 from ... import conf
 
 logger = logging.getLogger(__name__)
+
+MAX_POSTS_PER_CALL = 3
 FACEBOOK_CACHE_KEY = 'facebook_token'
 
 
@@ -18,7 +20,7 @@ class Command(BaseCommand):
     twitter_api = None
 
     def autopost_twitter(self):
-        posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)
+        posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
         for post in posts:
             message = post.text
             if post.url:
@@ -36,7 +38,7 @@ class Command(BaseCommand):
                 post.save()
 
     def autopost_facebook(self):
-        posts = SocialPost.objects.filter(for_network=conf.NETWORK_FACEBOOK)
+        posts = SocialPost.objects.filter(for_network=conf.NETWORK_FACEBOOK)[:MAX_POSTS_PER_CALL]
         for post in posts:
             attachment = {}
             message = post.text
@@ -56,7 +58,7 @@ class Command(BaseCommand):
                 post.save()
 
     def handle(self, *args, **options):
-        # Twitter
+        # === Twitter ===
         self.twitter_api = twitter.Api(
             conf.TWITTER_APP_ID,
             conf.TWITTER_SECRET,
@@ -65,7 +67,7 @@ class Command(BaseCommand):
         )
         self.autopost_twitter()
 
-        # Facebook
+        # === Facebook ===
         if FACEBOOK_CACHE_KEY in cache:
             token = cache.get(FACEBOOK_CACHE_KEY)
         else:
