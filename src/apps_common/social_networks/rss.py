@@ -23,7 +23,7 @@ class SocialRssFeed(Feed):
         return resolve_url('social_networks:%s' % self.network)
 
     def items(self):
-        qs = SocialPost.objects.filter(network=self.network)
+        qs = SocialPost.objects.filter(network=self.network, scheduled=True)
         return qs[:self.items_count]
 
     def item_link(self, item):
@@ -41,10 +41,6 @@ class SocialRssFeed(Feed):
     def item_pubdate(self, item):
         """ Дата публикации """
         return item.created
-
-    def item_updateddate(self, item):
-        """ Дата модификации """
-        return item.modified
 
     def item_guid(self, item):
         """ Уникальный идентификатор (обязательно ID поста) """

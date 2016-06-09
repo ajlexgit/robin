@@ -30,21 +30,22 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'network', 'url', 'text',
+                'network', 'url', 'text', 'scheduled',
             ),
         }),
         (_('Dates'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'created', 'modified', 'posted'
+                'created', 'posted'
             ),
         }),
     )
     form = SocialPostForm
-    list_display = ('network_icon', '__str__', 'created')
+    list_display = ('network_icon', '__str__', 'scheduled', 'created', 'posted')
     list_display_links = ('network_icon', '__str__')
     list_filter = ('network', 'created')
     readonly_fields = ('created', 'posted')
+    actions = ('action_schedule_posts', 'action_unschedule_posts')
     search_fields = ('text',)
     suit_form_tabs = (
         ('general', _('General')),
@@ -84,3 +85,11 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         )
     network_icon.short_description = _('#')
     network_icon.allow_tags = True
+
+    def action_schedule_posts(self, request, queryset):
+        queryset.update(scheduled=True)
+    action_schedule_posts.short_description = _('Schedule %(verbose_name_plural)s to be published')
+
+    def action_unschedule_posts(self, request, queryset):
+        queryset.update(scheduled=False)
+    action_unschedule_posts.short_description = _('Unschedule %(verbose_name_plural)s to be published')

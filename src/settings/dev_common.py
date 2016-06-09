@@ -80,7 +80,7 @@ LOGGING = {
             'propagate': False,
         },
         '': {
-            'handlers': ['console'],
+            'handlers': ['null'],
             'level': 'DEBUG',
         }
     },
