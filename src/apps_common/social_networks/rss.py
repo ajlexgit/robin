@@ -12,7 +12,7 @@ class SocialRssFeed(Feed):
     items_count = 20
 
     def __init__(self):
-        if self.network not in dict(conf.NETWORKS):
+        if self.network not in dict(conf.ALL_NETWORKS):
             raise ValueError("unknown feed network: '%s'" % self.network)
 
     def __call__(self, request, *args, **kwargs):
@@ -46,6 +46,9 @@ class SocialRssFeed(Feed):
         """ Дата модификации """
         return item.modified
 
+    def item_guid(self, item):
+        """ Уникальный идентификатор (обязательно ID поста) """
+        return str(item.id)
 
 
 class GoogleFeed(SocialRssFeed):

@@ -7,7 +7,7 @@ from . import conf
 
 class SocialPost(models.Model):
     network = models.CharField(_('social network'),
-        choices=conf.NETWORKS,
+        choices=conf.ALL_NETWORKS,
         default=conf.NETWORK_FACEBOOK,
         max_length=32,
         db_index=True
@@ -15,10 +15,10 @@ class SocialPost(models.Model):
 
     text = models.TextField(_('text'))
     url = models.CharField(_('URL'), max_length=512, blank=True)
-    image = models.CharField(_('image URL'), max_length=255, blank=True)
 
     modified = models.DateTimeField(_('modified on'), default=now)
     created = models.DateTimeField(_('created on'), default=now, editable=False)
+    posted = models.DateTimeField(_('posted on'), null=True, editable=False)
 
     class Meta:
         verbose_name = _('post')

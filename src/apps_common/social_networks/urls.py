@@ -1,16 +1,12 @@
+import inspect
 from django.conf.urls import url
 from . import conf
 from . import rss
 
-feeds = {
-    conf.NETWORK_GOOGLE: rss.GoogleFeed,
-    conf.NETWORK_TWITTER: rss.TwitterFeed,
-    conf.NETWORK_FACEBOOK: rss.FacebookFeed,
-    conf.NETWORK_LINKEDIN: rss.LinkedInFeed,
-}
+urlpatterns = []
 
-
-urlpatterns = [
-    url(r'^rss/{}/$'.format(network), Feed(), name=network)
-    for network, Feed in feeds.items()
-]
+for name, member in inspect.getmembers(rss, predicate=inspect.isclass):
+    if issubclass(member, rss.SocialRssFeed) and member.network in conf.ALLOWED_NETWORK_NAMES:
+        urlpatterns.append(
+            url(r'^rss/{}/$'.format(member.network), member(), name=member.network)
+        )

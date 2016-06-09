@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -15,6 +16,12 @@ SPRITE_ICONS = (
 )
 
 
+class SocialPostForm(forms.ModelForm):
+    class Meta:
+        model = SocialPost
+        fields = '__all__'
+
+
 @admin.register(SocialPost)
 class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
     change_list_template = 'social_networks/admin/rss_list.html'
@@ -23,13 +30,21 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'network', 'url', 'text', 'image', 'modified'
+                'network', 'url', 'text',
+            ),
+        }),
+        (_('Dates'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'created', 'modified', 'posted'
             ),
         }),
     )
+    form = SocialPostForm
     list_display = ('network_icon', '__str__', 'created')
     list_display_links = ('network_icon', '__str__')
     list_filter = ('network', 'created')
+    readonly_fields = ('created', 'posted')
     search_fields = ('text',)
     suit_form_tabs = (
         ('general', _('General')),
@@ -46,7 +61,7 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context.update(
-            networks=conf.NETWORKS,
+            networks=conf.ALLOWED_NETWORKS,
         )
         return super().changelist_view(request, extra_context)
 
@@ -55,7 +70,7 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         try:
             icon_code, icon_title = next((
                 network_tuple
-                for network_tuple in conf.NETWORKS
+                for network_tuple in conf.ALL_NETWORKS
                 if network_tuple[0] == obj.network
             ))
         except StopIteration:
