@@ -14,16 +14,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SocialPost',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
-                ('network', models.CharField(db_index=True, choices=[('google', 'Google Plus'), ('twitter', 'Twitter'), ('facebook', 'Facebook'), ('linkedin', 'Linked In')], default='facebook', verbose_name='social network', max_length=32)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('network', models.CharField(max_length=32, db_index=True, verbose_name='social network', default='facebook', choices=[('google', 'Google Plus'), ('twitter', 'Twitter'), ('facebook', 'Facebook'), ('linkedin', 'Linked In')])),
                 ('text', models.TextField(verbose_name='text')),
-                ('url', models.CharField(verbose_name='URL', max_length=512, blank=True)),
-                ('image', models.CharField(verbose_name='image URL', max_length=255, blank=True)),
-                ('modified', models.DateTimeField(default=django.utils.timezone.now, verbose_name='modified on')),
-                ('created', models.DateTimeField(editable=False, default=django.utils.timezone.now, verbose_name='created on')),
+                ('url', models.URLField(verbose_name='URL')),
+                ('scheduled', models.BooleanField(verbose_name='sheduled for sharing', default=True)),
+                ('created', models.DateTimeField(verbose_name='created on', editable=False, default=django.utils.timezone.now)),
+                ('posted', models.DateTimeField(verbose_name='posted on', editable=False, null=True)),
             ],
             options={
-                'ordering': ('-created',),
+                'ordering': ('-scheduled', '-created'),
                 'verbose_name_plural': 'posts',
                 'verbose_name': 'post',
             },
