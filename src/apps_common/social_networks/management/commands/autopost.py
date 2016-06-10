@@ -1,6 +1,7 @@
 import twitter
 import logging
 import facebook
+from PyLinkedinAPI.PyLinkedinAPI import PyLinkedinAPI
 from django.utils.timezone import now
 from django.core.management import BaseCommand
 from libs.description import description
@@ -17,6 +18,7 @@ class Command(BaseCommand):
     help = 'Autopost RSS feed to Twitter'
     facebook_api = None
     twitter_api = None
+    linkedin_api = None
 
     def autopost_twitter(self):
         posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
@@ -62,6 +64,24 @@ class Command(BaseCommand):
                 post.posted = now()
                 post.save()
 
+    def autopost_linkedin(self):
+        posts = SocialPost.objects.filter(for_network=conf.NETWORK_LINKEDIN)[:MAX_POSTS_PER_CALL]
+        for post in posts:
+            message = post.text
+
+            if post.url:
+                message += '\n%s' % post.url
+
+            try:
+                self.linkedin_api.publish_profile_comment(message)
+            except Exception as e:
+                logger.error("Linkedin Autopost: error on #{0.pk}: {1.args}".format(post, e))
+            else:
+                logger.info("Linkedin Autopost: posted #{0.pk} ('{0}')".format(post))
+                post.scheduled = False
+                post.posted = now()
+                post.save()
+
     def handle(self, *args, **options):
         # === Twitter ===
         self.twitter_api = twitter.Api(
@@ -76,3 +96,5 @@ class Command(BaseCommand):
         self.facebook_api = facebook.GraphAPI(conf.FACEBOOK_TOKEN)
         self.autopost_facebook()
 
+        self.linkedin_api = PyLinkedinAPI(conf.LINKEDIN_TOKEN)
+        self.autopost_linkedin()

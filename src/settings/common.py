@@ -263,6 +263,10 @@ FACEBOOK_TOKEN = 'EAADhZCRZAniwcBAONB6fBjEgG0vZAJCRir46Lpa02Yb0aOtoA8FI' \
                  'DMXOL7sJxLxptZCi7pkkC1XUi1uVIkjqZArCARcgx8ZCtKA7qw8Vm' \
                  '9C6IIKqOoOE8RTYnVigifVirZBwID4OUTZB6dyI1mVDwfimIJjZCy' \
                  'juf2diToFYsVClwYQZDZD'
+LINKEDIN_TOKEN = 'AQVDPMVg20HqmE0bJWq9pm27iFe116GKlrH9o7vHu_Xp1O89ySf0i' \
+                 'lw3GZc4W_u4zNI0EUD9EfnedLfAiEJxSmansU_P6eDPU5Pq8oJ-33' \
+                 'qDg_GxHw-Yi7C5DzunRuV_ab5fQxZRN8elsuukWx29kl_B-yamd4g' \
+                 'OH8nHA-Uv5FESS7Ul2MM'
 
 # Smart Cache-Control
 SCC_ENABLED = True

@@ -38,3 +38,6 @@ TWITTER_SECRET = getattr(settings, 'TWITTER_SECRET', getattr(settings, 'SOCIAL_A
 TWITTER_TOKEN = getattr(settings, 'TWITTER_TOKEN', '')
 TWITTER_TOKEN_SECRET = getattr(settings, 'TWITTER_TOKEN_SECRET', '')
 
+# https://www.linkedin.com/developer/apps/
+# https://apigee.com/console/linkedin
+LINKEDIN_TOKEN = getattr(settings, 'LINKEDIN_TOKEN', '')

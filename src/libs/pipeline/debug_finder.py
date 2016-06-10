@@ -8,6 +8,6 @@ class PipelineFinder(DefaultPipelineFinder):
     """
     def find(self, *args, **kwargs):
         if settings.DEBUG or not settings.PIPELINE_ENABLED:
-            return super().find(*args, **kwargs)
+            return super(DefaultPipelineFinder, self).find(*args, **kwargs)
         else:
             return []
