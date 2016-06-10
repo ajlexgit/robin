@@ -50,15 +50,6 @@
         Для Google Plus необходимо зарегистрироваться в https://hootsuite.com
         Для остальных соцсетей нужно настроить cron на выполнение
             python3 manage.py autopost
-
-    # ==============================================
-
-    Токен для Facebook имеет максимальное время жизни 2 месяца.
-    Он автоматически продлевается при вызове autopost. Если токен не обновлялся
-    более 2-х месяцев, нужно создавать его заново.
-        https://developers.facebook.com/tools/explorer/
-
-
 """
 from .rss import SocialRssFeed
 
