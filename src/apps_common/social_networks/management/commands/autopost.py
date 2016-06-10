@@ -10,6 +10,7 @@ from ... import conf
 
 TWITTER_URL_LEN = 23
 TWITTER_MAX_LEN = 140
+LINKEDIN_MAX_LEN = 600
 MAX_POSTS_PER_CALL = 3
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,13 @@ class Command(BaseCommand):
         for post in posts:
             message = post.text
 
+            # Проверка длинны
+            message_len = len(message)
+            if post.url:
+                message_len += len(post.url) + 1
+            if message_len >= LINKEDIN_MAX_LEN:
+                message = description(message, 540, LINKEDIN_MAX_LEN)
+                
             if post.url:
                 message += '\n%s' % post.url
 

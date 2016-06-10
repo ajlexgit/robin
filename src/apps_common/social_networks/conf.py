@@ -16,7 +16,12 @@ ALL_NETWORKS = (
 )
 
 # Имена соцсетей, доступных для автопостинга на текущем сайте
-ALLOWED_NETWORK_NAMES = (NETWORK_GOOGLE, NETWORK_TWITTER, NETWORK_FACEBOOK)
+ALLOWED_NETWORK_NAMES = (
+    NETWORK_GOOGLE,
+    NETWORK_TWITTER,
+    NETWORK_FACEBOOK,
+    NETWORK_LINKEDIN,
+)
 
 # Часть ALL_NETWORKS, включающая только доступные сети
 ALLOWED_NETWORKS = tuple(
