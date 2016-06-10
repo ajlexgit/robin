@@ -1,9 +1,9 @@
-from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles.storage import staticfiles_storage
 from project.admin import ModelAdminMixin
 from .models import SocialPost
+from .forms import SocialPostForm
 from . import conf
 
 SPRITE_ICONS = (
@@ -14,19 +14,6 @@ SPRITE_ICONS = (
     'pinterest',
     'instagram',
 )
-
-
-class SocialPostForm(forms.ModelForm):
-    network = forms.ChoiceField(
-        required=True,
-        choices=conf.ALLOWED_NETWORKS,
-        initial=SocialPost._meta.get_field('network').default,
-        label=SocialPost._meta.get_field('network').verbose_name.capitalize(),
-    )
-
-    class Meta:
-        model = SocialPost
-        fields = '__all__'
 
 
 @admin.register(SocialPost)

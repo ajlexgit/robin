@@ -93,7 +93,6 @@ def typograf(html):
     """
         Удаление висячих предлогов
     """
-
     soup = Soup(html, 'html5lib')
     for tag in soup.findAll(text=True):
         if re_nbsp.search(tag):
