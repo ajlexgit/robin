@@ -1,0 +1,62 @@
+.ui-dialog .autopost-form {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.ui-dialog.autopost-preloading:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: rgba(128, 128, 128, 0.6);
+}
+
+.ui-dialog.autopost-preloading:after {
+    content: 'Please wait...';
+    position: absolute;
+    padding: 10px;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    color: white;
+    max-width: 75%;
+    font-size: 20px;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.autopost-form .field {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.autopost-form label {
+    font-weight: bold;
+}
+
+.autopost-form ul {
+    margin: 0;
+    list-style: none;
+}
+
+.autopost-form ul label {
+    font-weight: normal;
+}
+
+.autopost-form ul input {
+    margin: 0;
+}
+
+.autopost-form textarea {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
