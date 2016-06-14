@@ -10,6 +10,15 @@
                 ...
             )
 
+            SUIT_CONFIG = {
+                ...
+                {
+                    'app': 'social_networks',
+                    'icon': 'icon-bullhorn',
+                },
+                ...
+            }
+
             # API для автопостинга
             TWITTER_APP_ID = 'j3tkGKGYdUvJy5i97us36UEaF'
             TWITTER_SECRET = '5xdxDZeQQi8mUjpQ86rtr2dMZqkSOn4wQFP4VPNlVDGGPhYV51'
