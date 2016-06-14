@@ -107,7 +107,7 @@ class AutoPostMixin(ModelAdminMixin):
         return request.user.has_perm('social_networks.change_socialpost')
 
     def get_autopost_text(self, obj):
-        return obj.note
+        raise NotImplementedError
 
     def get_autopost_url(self, obj):
         return obj.get_absolute_url()
