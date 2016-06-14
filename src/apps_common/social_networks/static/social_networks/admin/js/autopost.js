@@ -30,9 +30,12 @@
             },
             open: function() {
                 var $form = $(this);
+                var dialog = $form.dialog('instance');
+
                 var $textareas = $form.find('textarea');
                 if ($.fn.autosize) {
                     $textareas.autosize();
+                    dialog._position();
                 }
             },
             close: function() {
