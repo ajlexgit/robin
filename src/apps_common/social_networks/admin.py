@@ -120,7 +120,7 @@ class AutoPostMixin(ModelAdminMixin):
         initial_text = self.get_autopost_text(obj)
         initial_text = unescape(strip_tags(initial_text)).strip()
         initial_text = re_newlines.sub('\n', initial_text)
-        initial_text = initial_text[:1024]
+        initial_text = initial_text[:conf.TEXT_MAX_LENGTH]
 
         if request.method == 'POST':
             return AutpostForm(

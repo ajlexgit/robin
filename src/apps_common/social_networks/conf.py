@@ -31,6 +31,8 @@ ALLOWED_NETWORKS = tuple(
 )
 
 
+TEXT_MAX_LENGTH = 1024
+
 # ============== API KEYS =====================
 
 # https://developers.facebook.com/apps/

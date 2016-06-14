@@ -32,7 +32,7 @@ class AutpostForm(forms.Form):
     text = forms.CharField(
         required=True,
         widget=forms.Textarea(attrs={
-            'maxlength': 1024,
+            'maxlength': conf.TEXT_MAX_LENGTH,
             'rows': 3,
         }),
         error_messages={
