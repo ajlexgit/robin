@@ -1,5 +1,8 @@
+import re
+from html import unescape
 from django.contrib import admin
 from django.conf.urls import url
+from django.utils.html import strip_tags
 from django.core.urlresolvers import reverse
 from django.http.response import Http404, JsonResponse
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +12,7 @@ from .models import SocialPost
 from .forms import SocialPostForm, AutpostForm
 from . import conf
 
+re_newlines = re.compile(r'\n[\s\n]+')
 AUTOPOST_FORM_PREFIX = 'autopost'
 SPRITE_ICONS = (
     conf.NETWORK_TWITTER,
@@ -113,19 +117,24 @@ class AutoPostMixin(ModelAdminMixin):
         return obj.get_absolute_url()
 
     def get_autopost_form(self, request, obj):
+        initial_text = self.get_autopost_text(obj)
+        initial_text = unescape(strip_tags(initial_text)).strip()
+        initial_text = re_newlines.sub('\n', initial_text)
+        initial_text = initial_text[:1024]
+
         if request.method == 'POST':
             return AutpostForm(
                 request.POST,
                 request.FILES,
                 initial={
-                    'text': self.get_autopost_text(obj),
+                    'text': initial_text,
                 },
                 prefix=AUTOPOST_FORM_PREFIX
             )
         else:
             return AutpostForm(
                 initial={
-                    'text': self.get_autopost_text(obj),
+                    'text': initial_text,
                 },
                 prefix=AUTOPOST_FORM_PREFIX
             )
