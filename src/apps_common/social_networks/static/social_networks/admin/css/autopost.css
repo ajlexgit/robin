@@ -15,7 +15,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    background: rgba(51, 51, 51, 0.5);
+    background: rgba(51, 51, 51, 0.3);
     -webkit-animation: social-opacity 0.1s forwards linear;
     -o-animation: social-opacity 0.1s forwards linear;
     animation: social-opacity 0.1s forwards linear;

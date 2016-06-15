@@ -467,17 +467,17 @@ $footer_1col: $media480;
 */
 .ui-widget {
   font-family: 'Source Sans Pro', sans-serif;
-}
 
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-  font-family: 'Source Sans Pro', sans-serif;
-}
-
-.ui-button .ui-button-text {
-  margin-top: -0.1em;
+  input, select, textarea, button {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
 }
 
 .ui-widget-content {
+  border: none;
+}
+
+.ui-widget-header {
   border: none;
 }
 
@@ -485,40 +485,87 @@ $footer_1col: $media480;
   padding: 0;
   border: none;
   @include border_radius(7px);
-}
 
-.ui-dialog .ui-dialog-content {
-  padding: .5em 1em 0;
-  margin-bottom: 0;
-}
+  .ui-dialog-content {
+    padding: .5em 1em 0;
+    margin-bottom: 0;
+  }
 
-.ui-dialog .ui-dialog-titlebar {
-  @include border_radius(0);
-}
+  .ui-dialog-titlebar {
+    padding: .6em 1em;
+    @include border_radius(0);
 
-// fix background bleed
-.ui-dialog .ui-dialog-titlebar:before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 10px;
-  background: $blue;
-  z-index: 0;
-}
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 10px;
+      background: $blue;
+      z-index: 0;
+    }
+  }
 
-.ui-dialog .ui-dialog-buttonpane {
-  margin-top: 0;
-}
+  .ui-dialog-titlebar-close {
+    margin: -12px 0 0 0;
+    width: 24px;
+    height: 24px;
+    right: .8em;
+    border: none;
+    background: transparent;
 
-.ui-widget-header {
-  border: none;
+    .ui-button-icon-primary {
+      display: none;
+    }
+
+    &:before, &:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 86%;
+      height: 14%;
+      background: white;
+      @include border_radius(4px);
+    }
+
+    &:before {
+      @include transform(translate(-50%, -50%) rotate(-45deg));
+    }
+
+    &:after {
+      @include transform(translate(-50%, -50%) rotate(45deg));
+    }
+
+    &:hover {
+      &:before, &:after {
+        background: #DADADA;
+      }
+    }
+  }
+
+  // footer
+  .ui-dialog-buttonpane {
+    margin-top: 0;
+  }
+
+  .btn {
+    border: none;
+
+    &:not(.btn-info) {
+      @include linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+    }
+  }
 }
 
 /*
   Buttons
 */
+.ui-button .ui-button-text {
+  margin-top: -0.1em;
+}
+
 .btn.ui-button {
   padding: 0;
 }
@@ -527,14 +574,6 @@ $footer_1col: $media480;
   background-image: url(../css/jquery-ui/images/ui-icons_ffffff_256x240.png);
 }
 
-.ui-dialog .btn {
-  border: none;
-}
-
-.ui-dialog .btn:not(.btn-info) {
-  @include linear-gradient(to bottom, #f0f0f0, #e0e0e0);
-}
-
 .ui-icon-check {
-    background-position: -64px -145px;
+  background-position: -64px -145px;
 }
