@@ -46,9 +46,7 @@
 }
 
 .autopost-form .field {
-    margin-top: 14px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
+    margin-top: 12px;
 }
 
 .autopost-form label {
@@ -70,7 +68,7 @@
 }
 
 .autopost-form ul input {
-    margin: 0 2px 0 0;
+    margin: -2px 2px 0 0;
 }
 
 .autopost-form textarea {

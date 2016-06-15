@@ -233,12 +233,13 @@ $footer_1col: $media480;
 // стилизация кнопок
 .btn {
   padding: 8px 16px;
-  border: none;
+  color: #333333;
   text-shadow: none;
+  border: none;
   @include font-size(14px);
-  @include box-shadow(none);
+  @include box-shadow(inset 0px 0px 0px 1px #d0d0d0);
   @include border_radius(7px);
-  @include linear-gradient(to bottom, #ECECEC, #D1D1D1);
+  @include linear-gradient(to bottom, #f0f0f0, #e0e0e0);
 
   &.btn-small {
     padding: 6px 14px;
@@ -255,7 +256,6 @@ $footer_1col: $media480;
     }
   }
 
-
   &:hover {
     text-decoration: none !important;
     background-position: 0 0;
@@ -266,43 +266,78 @@ $footer_1col: $media480;
     background-position: 0 0;
   }
 
+  &:active {
+    background-image: none;
+    @include box-shadow(inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05));
+  }
+
   &.btn-success {
+    color: white;
+    @include box-shadow(none);
     @include linear-gradient(to bottom, #44B446, #1CA41C);
 
     &:hover {
       @include linear-gradient(to bottom, #5ABC59, #32AD31);
     }
+
+    &:active {
+      @include linear-gradient(to bottom, #1CA41C, #44B446);
+    }
   }
 
   &.btn-info {
+    color: white;
+    @include box-shadow(none);
     @include linear-gradient(to bottom, #60A7D3, #3B92C8);
 
     &:hover {
       @include linear-gradient(to bottom, #71B1D7, #4F9DCE);
     }
+
+    &:active {
+      @include linear-gradient(to bottom, #3B92C8, #60A7D3);
+    }
   }
 
   &.btn-primary {
+    color: white;
+    @include box-shadow(none);
     @include linear-gradient(to bottom, #5EC9FF, #36BBFC);
 
     &:hover {
       @include linear-gradient(to bottom, #6ECEFE, #4BC3FF);
     }
+
+    &:active {
+      @include linear-gradient(to bottom, #36BBFC, #5EC9FF);
+    }
   }
 
   &.btn-warning {
+    color: white;
+    @include box-shadow(none);
     @include linear-gradient(to bottom, #FE8333, #FE6601);
 
     &:hover {
       @include linear-gradient(to bottom, #FF9048, #FF751C);
     }
+
+    &:active {
+      @include linear-gradient(to bottom, #FE6601, #FE8333);
+    }
   }
 
   &.btn-danger {
+    color: white;
+    @include box-shadow(none);
     @include linear-gradient(to bottom, #E33F40, #DC100F);
 
     &:hover {
       @include linear-gradient(to bottom, #E55354, #E02828);
+    }
+
+    &:active {
+      @include linear-gradient(to bottom, #DC100F, #E33F40);
     }
   }
 }
@@ -424,3 +459,74 @@ $footer_1col: $media480;
     }
   }
 }
+
+/*
+  ======================================
+        Jquery UI
+  ======================================
+*/
+.ui-widget {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.ui-button .ui-button-text {
+  margin-top: -0.1em;
+}
+
+.ui-widget-content {
+  border: none;
+}
+
+.ui-dialog {
+  padding: 0;
+  border: none;
+  @include border_radius(7px);
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  @include border_radius(0);
+}
+
+// fix background bleed
+.ui-dialog .ui-dialog-titlebar:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 10px;
+  background: $blue;
+  z-index: 0;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  margin-top: 0;
+}
+
+.ui-widget-header {
+  border: none;
+}
+
+/*
+  Buttons
+*/
+.btn.ui-button {
+  padding: 0;
+}
+
+.btn-info.ui-button .ui-icon {
+  background-image: url(../css/jquery-ui/images/ui-icons_ffffff_256x240.png);
+}
+
+.ui-dialog .btn {
+  border: none;
+}
+
+.ui-dialog .btn:not(.btn-info) {
+  @include linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+}
+

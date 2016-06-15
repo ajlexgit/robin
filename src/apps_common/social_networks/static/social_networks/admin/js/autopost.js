@@ -43,7 +43,18 @@
             },
             buttons: [
                 {
+                    text: "Cancel",
+                    "class": 'btn',
+                    icons: {
+                        primary: "ui-icon-cancel"
+                    },
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                },
+                {
                     text: "Ok",
+                    "class": 'btn btn-info',
                     icons: {
                         primary: "ui-icon-check"
                     },
@@ -93,15 +104,6 @@
                                 dialog.uiDialog.removeClass('autopost-preload');
                             }
                         });
-                    }
-                },
-                {
-                    text: "Cancel",
-                    icons: {
-                        primary: "ui-icon-cancel"
-                    },
-                    click: function() {
-                        $(this).dialog("close");
                     }
                 }
             ]
