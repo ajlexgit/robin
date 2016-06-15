@@ -487,6 +487,11 @@ $footer_1col: $media480;
   @include border_radius(7px);
 }
 
+.ui-dialog .ui-dialog-content {
+  padding: .5em 1em 0;
+  margin-bottom: 0;
+}
+
 .ui-dialog .ui-dialog-titlebar {
   @include border_radius(0);
 }
