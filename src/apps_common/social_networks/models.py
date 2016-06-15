@@ -44,4 +44,7 @@ class SocialPost(models.Model):
         index_together = (('network', 'content_type', 'object_id'), )
 
     def __str__(self):
-        return description(self.text, 10, 60)
+        if self.entity:
+            return str(self.entity)
+        else:
+            return description(self.text, 10, 60)
