@@ -1,9 +1,5 @@
 @import 'mixins';
 
-// размеры логотипа ДЛ
-$dl_logo_width: 100px;
-$dl_logo_height: 32px;
-
 // точка перехода к вертикальному подвалу
 $column_footer: $media480;
 
@@ -34,18 +30,7 @@ $column_footer: $media480;
 
     a {
       display: inline-block;
-      width: $dl_logo_width;
       vertical-align: middle;
-
-      &:before {
-        content: '';
-        display: block;
-        padding-bottom: #{100 * $dl_logo_height/$dl_logo_width + "%"};
-        background: $sprite_url no-repeat rel-background-position(
-            $dl_logo_width, $dl_logo_height, -86px, -56px
-        );
-        background-size: rel-background-size($dl_logo_width, $dl_logo_height);
-      }
 
       &:hover {
         @include opacity(0.8);

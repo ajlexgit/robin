@@ -55,3 +55,7 @@
     clear: both;
     display: block;
 }
+
+.plupload_filelist {
+    background: #f0f0f0;
+}

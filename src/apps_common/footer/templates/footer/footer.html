@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <footer itemscope itemtype="https://schema.org/WPFooter">
   <div class="grid-block">
     <div class="copyright">
@@ -5,7 +7,9 @@
     </div>
 
     <div class="dl-logo">
-      <a href="http://directlinedev.com/" title="Web Development Company Philadelphia" target="_blank"></a>
+      <a href="http://directlinedev.com/" target="_blank" title="Web Development Company Philadelphia">
+        <img src="{% static 'img/dl_logo.png' %}" alt="Web Development Company Philadelphia">
+      </a>
     </div>
   </div>
 </footer>
