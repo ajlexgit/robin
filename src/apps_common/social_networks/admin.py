@@ -2,6 +2,7 @@ import re
 from html import unescape
 from django.contrib import admin
 from django.conf.urls import url
+from django.contrib.contenttypes.models import ContentType
 from django.utils.html import strip_tags
 from django.core.urlresolvers import reverse
 from django.http.response import Http404, JsonResponse
@@ -127,6 +128,7 @@ class AutoPostMixin(ModelAdminMixin):
                 request.POST,
                 request.FILES,
                 initial={
+                    'networks': conf.ALLOWED_NETWORK_NAMES,
                     'text': initial_text,
                 },
                 prefix=AUTOPOST_FORM_PREFIX
@@ -134,6 +136,7 @@ class AutoPostMixin(ModelAdminMixin):
         else:
             return AutpostForm(
                 initial={
+                    'networks': conf.ALLOWED_NETWORK_NAMES,
                     'text': initial_text,
                 },
                 prefix=AUTOPOST_FORM_PREFIX
@@ -166,14 +169,31 @@ class AutoPostMixin(ModelAdminMixin):
 
         form = self.get_autopost_form(request, obj)
         if form.is_valid():
+            obj_ct = ContentType.objects.get_for_model(obj)
             text = form.cleaned_data.get('text')
             networks = form.cleaned_data.get('networks')
             for network in networks:
-                SocialPost.objects.create(
-                    network=network,
-                    url=request.build_absolute_uri(self.get_autopost_url(obj)),
-                    text=text,
-                )
+                try:
+                    post = SocialPost.objects.get(
+                        network=network,
+                        content_type=obj_ct,
+                        object_id=obj.pk,
+                    )
+                except SocialPost.DoesNotExist:
+                    SocialPost.objects.create(
+                        network=network,
+                        url=request.build_absolute_uri(self.get_autopost_url(obj)),
+                        text=text,
+
+                        content_type=obj_ct,
+                        object_id=obj.pk,
+                    )
+                else:
+                    if post.scheduled:
+                        # обновляем данные
+                        post.url = request.build_absolute_uri(self.get_autopost_url(obj))
+                        post.text = text
+                        post.save()
 
             return JsonResponse({})
         else:

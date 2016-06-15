@@ -51,7 +51,7 @@
                         var $form = $(this);
                         var dialog = $form.dialog('instance');
 
-                        if (dialog.uiDialog.hasClass('autopost-preloading')) {
+                        if (dialog.uiDialog.hasClass('autopost-preload')) {
                             return
                         }
 
@@ -60,7 +60,7 @@
                             type: $form.attr('method'),
                             data: $form.serialize(),
                             beforeSend: function() {
-                                dialog.uiDialog.addClass('autopost-preloading');
+                                dialog.uiDialog.addClass('autopost-preload');
                             },
                             success: function() {
                                 dialog.close();
@@ -90,7 +90,7 @@
                                 }
                             },
                             complete: function() {
-                                dialog.uiDialog.removeClass('autopost-preloading');
+                                dialog.uiDialog.removeClass('autopost-preload');
                             }
                         });
                     }
