@@ -53,6 +53,7 @@ class Redirect(models.Model):
     new_path = models.CharField(_('redirect to'), max_length=200, blank=True,
         help_text=_("This can be either an absolute path (as above) or a full URL starting with 'http://'."))
     permanent = models.BooleanField(_('permanent'), default=True)
+    note = models.TextField(_('note'), blank=True, max_length=255)
     created = models.DateField(_('created'), default=now, editable=False)
 
     class Meta:

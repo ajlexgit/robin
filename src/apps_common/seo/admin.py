@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
+from libs.description import description
 from .models import SeoConfig, SeoData, Redirect, Counter, Robots
 
 SEO_TAB_NAME = 'seo'
@@ -238,5 +239,9 @@ class DummyRobotsAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 @admin.register(Redirect)
 class RedirectAdmin(ModelAdminMixin, admin.ModelAdmin):
-    list_display = ('old_path', 'new_path', 'permanent', 'created')
+    list_display = ('old_path', 'new_path', 'permanent', 'short_note', 'created')
     search_fields = ('old_path', 'new_path')
+
+    def short_note(self, obj):
+        return description(obj.note, 20, 40)
+    short_note.short_description = _('Note')
