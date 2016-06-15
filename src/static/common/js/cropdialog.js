@@ -262,6 +262,10 @@
                 buttons: [
                     {
                         text: gettext('Cancel'),
+                        "class": 'btn',
+                        icons: {
+                            primary: "ui-icon-cancel"
+                        },
                         click: function() {
                             var coords = that.getCropCoords();
                             that.closeDialog();
@@ -270,6 +274,10 @@
                     },
                     {
                         text: gettext('Ok'),
+                        "class": 'btn btn-info',
+                        icons: {
+                            primary: "ui-icon-check"
+                        },
                         click: function() {
                             var coords = that.getCropCoords();
                             that.closeDialog();
