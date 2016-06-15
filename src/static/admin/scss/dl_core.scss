@@ -535,3 +535,6 @@ $footer_1col: $media480;
   @include linear-gradient(to bottom, #f0f0f0, #e0e0e0);
 }
 
+.ui-icon-check {
+    background-position: -64px -145px;
+}
