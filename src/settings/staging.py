@@ -1,6 +1,6 @@
 from settings.common import *
 
-DOMAIN = 'project.dev.direktweb.ru'
+DOMAIN = '.project.dev.direktweb.ru'
 VZ_DIRECTORY = '/home/webapp/project.dev.direktweb.ru'
 
 SESSION_COOKIE_DOMAIN = DOMAIN
