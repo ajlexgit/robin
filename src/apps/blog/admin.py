@@ -8,6 +8,7 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from attachable_blocks.admin import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
+from social_networks.admin import AutoPostMixin
 from libs.autocomplete import AutocompleteWidget
 from .models import BlogConfig, BlogPost, Tag, PostTag
 
@@ -71,7 +72,7 @@ class PostTagAdmin(ModelAdminInlineMixin, admin.TabularInline):
 
 
 @admin.register(BlogPost)
-class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
+class BlogPostAdmin(SeoModelAdminMixin, AutoPostMixin, admin.ModelAdmin):
     """ Пост """
     fieldsets = (
         (None, {
@@ -104,6 +105,9 @@ class BlogPostAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         return dateformat.format(localtime(obj.date), settings.DATETIME_FORMAT)
     date_fmt.short_description = _('Publication date')
     date_fmt.admin_order_field = 'date'
+
+    def get_autopost_text(self, obj):
+        return obj.note
 
     def make_public_action(self, request, queryset):
         queryset.update(status=self.model.STATUS_PUBLIC)
