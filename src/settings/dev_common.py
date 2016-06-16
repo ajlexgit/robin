@@ -1,15 +1,11 @@
 from settings.common import *
 
 DOMAIN = '.local.com'
-
-ALLOWED_HOSTS = (
-    DOMAIN,
-    '127.0.0.1',
-    'localhost',
-)
-
 SESSION_COOKIE_DOMAIN = DOMAIN
 CSRF_COOKIE_DOMAIN = DOMAIN
+ALLOWED_HOSTS = (
+    DOMAIN,
+)
 
 DEBUG = True
 
