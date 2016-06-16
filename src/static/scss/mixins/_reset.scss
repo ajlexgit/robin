@@ -136,6 +136,10 @@
     height: auto;
     max-width: 100%;
     vertical-align: middle;
+
+    &::-webkit-media-controls {
+      display: none;
+    }
   }
   img {
     height: auto;

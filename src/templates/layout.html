@@ -20,6 +20,10 @@
   {# === SCRIPTS === #}
   {#  Асинхронная подгрузка CSS  #}
   {% include 'pipeline/script.html' %}
+  <script>
+    var docElement = document.documentElement;
+    docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
+  </script>
 
   {# === STYLES === #}
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>

@@ -88,10 +88,6 @@ body {
     visibility: hidden;
     @include centrizeImage($zIndex: 3);
 
-    &::-webkit-media-controls {
-      display: none;
-    }
-
     &.loaded {
       visibility: visible;
     }
