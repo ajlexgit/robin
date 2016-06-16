@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 class LinkChecker:
     timeout = (5, 10)
 
-    def __init__(self, url, proxy=None, verbosity=0):
+    def __init__(self, url, proxy=None, depth=32, verbosity=0):
         self._start_url = self.url_split(url)
         if not self._start_url.netloc:
             raise ValueError('Invalid URL')
@@ -27,7 +27,9 @@ class LinkChecker:
                 'https': proxy,
             }
 
+        self._depth = depth
         self._verbosity = verbosity
+
         self._pages = Queue()
         self._files = Queue()
         self._checked = set()
@@ -87,9 +89,13 @@ class LinkChecker:
 
         self._files.put((splitted, source_page))
 
-    def queue_page(self, url, source_page=None):
+    def queue_page(self, url, source_page=None, depth=0):
         """ Помещаем путь к странице в очередь """
         if not url:
+            return
+
+        # Проверяем максимальную глубину
+        if depth > self._depth:
             return
 
         # Отсеиваем "mailto" и "tel"
@@ -117,7 +123,7 @@ class LinkChecker:
                     verbosity=2
                 )
 
-        self._pages.put((splitted, source_page))
+        self._pages.put((splitted, source_page, depth))
 
     def check_file(self, splitted, source_page):
         """ Проверка существования файла """
@@ -135,7 +141,7 @@ class LinkChecker:
                 "%s %s '%s' on '%s'" % (response.status_code, response.reason, url, source_url)
             )
 
-    def parse_page(self, splitted, source_page):
+    def parse_page(self, splitted, source_page, depth):
         """ Проверка и парсинг страницы """
         # log
         if splitted.query:
@@ -150,8 +156,12 @@ class LinkChecker:
             )
 
         url = self.url_join(splitted)
+        source_url = self.url_join(source_page) if source_page else ''
+
         try:
-            response = self.client.get(url, timeout=self.timeout)
+            response = self.client.get(url, timeout=self.timeout, headers={
+                'Referer': source_url
+            })
         except Exception as e:
             self.output("ERROR on '%s': %s" % (url, e))
             return
@@ -159,8 +169,6 @@ class LinkChecker:
         # Проверяем, что не было редиректа на внешний сайт
         final_url = self.url_split(response.url)
         if final_url.netloc != self._start_url.netloc:
-            # TODO
-            print('Redirected on %s' % url)
             return
 
         if response.ok:
@@ -168,14 +176,13 @@ class LinkChecker:
             try:
                 self._parse_page_img(soup, source_page=splitted)
                 self._parse_page_script(soup, source_page=splitted)
-                self._parse_page_link(soup, source_page=splitted)
-                self._parse_page_a(soup, source_page=splitted)
+                self._parse_page_link(soup, source_page=splitted, depth=depth)
+                self._parse_page_a(soup, source_page=splitted, depth=depth)
                 self._parse_page_video(soup, source_page=splitted)
                 self._parse_page_picture(soup, source_page=splitted)
             except Exception as e:
                 self.output("ERROR on '%s': %s" % (url, e))
         else:
-            source_url = self.url_join(source_page) if source_page else '-//-'
             self.output(
                 "%s %s '%s' on '%s'" % (response.status_code, response.reason, url, source_url)
             )
@@ -222,23 +229,23 @@ class LinkChecker:
             src = script.get('src', '')
             self.queue_file(src, source_page=source_page)
 
-    def _parse_page_link(self, soup, source_page):
+    def _parse_page_link(self, soup, source_page, depth):
         """ Тэги <link> """
         for link in soup.findAll('link'):
             href = link.get('href', '')
             if link.get('itemprop'):
-                self.queue_page(href, source_page=source_page)
+                self.queue_page(href, source_page=source_page, depth=depth+1)
             else:
                 self.queue_file(href, source_page=source_page)
 
-    def _parse_page_a(self, soup, source_page):
+    def _parse_page_a(self, soup, source_page, depth):
         """ Тэги <a> """
         for a in soup.findAll('a'):
             href = a.get('href', '')
-            self.queue_page(href, source_page=source_page)
+            self.queue_page(href, source_page=source_page, depth=depth+1)
 
     def run(self, threads=10):
-        self.queue_page(self.url_join(self._start_url))
+        self.queue_page(self.url_join(self._start_url), depth=0)
         with ThreadPoolExecutor(max_workers=threads)as e:
             def task_queue():
                 result = []
@@ -276,6 +283,13 @@ if __name__ == '__main__':
         metavar='COUNT',
         help='Thread count',
     )
+    parser.add_argument('-d', '--depth',
+        action='store',
+        type=int,
+        default=32,
+        dest='depth',
+        help='Max depth',
+    )
     parser.add_argument('-p', '--proxy',
         action='store',
         type=str,
@@ -293,6 +307,6 @@ if __name__ == '__main__':
     )
 
     args = parser.parse_args()
-    checker = LinkChecker(args.url, proxy=args.proxy, verbosity=args.verbosity)
+    checker = LinkChecker(args.url, proxy=args.proxy, depth=args.depth, verbosity=args.verbosity)
     checker.run(threads=args.threads)
 
