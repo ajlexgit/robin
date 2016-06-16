@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 from django.conf import settings
-from django.shortcuts import redirect
 from django.utils.encoding import force_text
+from django.shortcuts import redirect, render, resolve_url
 from django.contrib.sites.shortcuts import get_current_site
 from .away import is_same_domain
 
@@ -17,7 +17,7 @@ def away(request):
 
     referer = urlparse(referer)
 
-    # Убеждаемся, что в REFERER валидный урл
+    # # Убеждаемся, что в REFERER валидный урл
     if '' in (referer.scheme, referer.netloc):
         return redirect(settings.LOGIN_REDIRECT_URL)
 
@@ -26,5 +26,7 @@ def away(request):
     if not is_same_domain(referer.netloc, site.domain):
         return redirect(settings.LOGIN_REDIRECT_URL)
 
-    url = request.GET.get('url') or 'index'
-    return redirect(url)
+    url = request.GET.get('url') or resolve_url('index')
+    return render(request, 'away/away.html', {
+        'url': url
+    })

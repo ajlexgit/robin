@@ -156,6 +156,13 @@ class LinkChecker:
             self.output("ERROR on '%s': %s" % (url, e))
             return
 
+        # Проверяем, что не было редиректа на внешний сайт
+        final_url = self.url_split(response.url)
+        if final_url.netloc != self._start_url.netloc:
+            # TODO
+            print('Redirected on %s' % url)
+            return
+
         if response.ok:
             soup = BeautifulSoup(response.text, 'html5lib')
             try:
@@ -264,7 +271,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--threads',
         action='store',
         type=int,
-        default=10,
+        default=20,
         dest='threads',
         metavar='COUNT',
         help='Thread count',
