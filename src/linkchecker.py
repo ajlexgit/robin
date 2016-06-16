@@ -281,29 +281,30 @@ if __name__ == '__main__':
         default=20,
         dest='threads',
         metavar='COUNT',
-        help='Thread count',
+        help='Thread count (default 20)',
     )
     parser.add_argument('-d', '--depth',
         action='store',
         type=int,
         default=32,
         dest='depth',
-        help='Max depth',
+        help='Max depth (default 32)',
     )
     parser.add_argument('-p', '--proxy',
         action='store',
         type=str,
         dest='proxy',
         metavar='HOST:PORT',
-        help='Proxy server',
+        help='Proxy server (e.g. 13.89.36.103:53)',
     )
     parser.add_argument('-v', '--verbosity',
         action='store',
         type=int,
+        default=0,
         choices=[0, 1, 2],
         dest='verbosity',
         metavar='LEVEL',
-        help='Verbosity',
+        help='Verbosity level (0, 1, 2)',
     )
 
     args = parser.parse_args()
