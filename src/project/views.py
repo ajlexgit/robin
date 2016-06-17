@@ -1,8 +1,8 @@
 from django.apps import apps
 from django.utils import timezone
+from django.views.i18n import javascript_catalog
 from django.views.decorators.http import last_modified
 from django.views.decorators.cache import cache_control
-from django.views.i18n import javascript_catalog
 
 
 last_modified_date = timezone.now()

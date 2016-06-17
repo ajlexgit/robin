@@ -319,6 +319,12 @@ label {
     margin: -33px 0 0 0;
   }
 }
+
+// хз как починить этот баг
+.popup .form-horizontal fieldset:first-of-type > .legend:first-child {
+  display: none;
+}
+
 .form-horizontal .inline-related.tabular fieldset > h2 {
   margin: 0 0 3px 10px;
 }
