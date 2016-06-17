@@ -70,10 +70,10 @@ class DetailView(CachedViewMixin, TemplateView):
         seo.set_title(self.config, default=self.config.header)
         seo.set_data(self.post, defaults={
             'title': self.post.header,
-            'image': self.post.preview.url,
+            'image': self.post.preview.url if self.post.preview else None,
             'description': self.post.note,
             'og_title': self.post.header,
-            'og_image': self.post.preview.url,
+            'og_image': self.post.preview.url if self.post.preview else None,
             'og_description': self.post.note,
         })
         seo.save(request)
