@@ -9,6 +9,10 @@ LOGIN_AS_REDIRECT_URL = getattr(settings, 'LOGIN_AS_REDIRECT_URL', 'index')
 @admin.site.admin_view
 def login_as(request, user_id):
     """ Войти как... """
+    if not request.user.is_superuser:
+        logout(request)
+        return redirect(settings.LOGIN_URL)
+
     UserModel = get_user_model()
     try:
         user = UserModel.objects.get(pk=user_id)

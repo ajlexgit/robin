@@ -9,17 +9,59 @@ from .metatags import Opengraph, TwitterCard
 
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
-SEODATA_META = ('title', 'keywords', 'description', 'canonical')
-SEODATA_OPENGRAPH = ('og_title', 'og_image', 'og_description')
+ALLOWED_SEO_KEYS = (
+    'title',
+    'keywords',
+    'description',
+    'canonical',
+
+    'og_title',
+    'og_image',
+    'og_description',
+
+    'text_header',
+    'text',
+)
+
+
+class TitleDescriptor:
+    def __init__(self, deque_name):
+        self.deque_name = deque_name
+
+    def __get__(self, instance, owner):
+        """ Возврат полного заголовка как строки """
+        title_deque = instance.__dict__.get(self.deque_name, None)
+        if title_deque is None:
+            title_deque = deque()
+
+        title_parts = list(filter(bool, map(str, title_deque)))
+        if TITLE_JOIN_WITH:
+            title = mark_safe(TITLE_JOIN_WITH.join(title_parts))
+        else:
+            title = mark_safe(title_parts[0]) if title_parts else ''
+
+        return title
+
+    def __set__(self, instance, value):
+        title_deque = instance.__dict__.get(self.deque_name, None)
+        if title_deque is None:
+            title_deque = deque()
+
+        title_deque.appendleft(value)
+        instance.__dict__[self.deque_name] = title_deque
 
 
 class Seo:
+    _title_deque = None
+    title = TitleDescriptor('_title_deque')
+
     def __init__(self, empty=False):
         super().__init__()
-        self.title_deque = deque()
         self.keywords = ''
         self.description = ''
         self.canonical = ''
+        self.text_header = ''
+        self.text = ''
 
         if not empty:
             site_seoconfig = SeoConfig.get_solo()
@@ -63,17 +105,14 @@ class Seo:
         else:
             raise TypeError('seodata must be an instance of Model or dict')
 
-        for fieldname in SEODATA_META + SEODATA_OPENGRAPH:
+        for fieldname in ALLOWED_SEO_KEYS:
             default = defaults.get(fieldname) if isinstance(defaults, dict) else None
 
             value = seodata.get(fieldname) or default
             if value is None:
                 continue
 
-            if fieldname == 'title':
-                self.title_deque.appendleft(value)
-            else:
-                setattr(self, fieldname, value)
+            setattr(self, fieldname, value)
 
     def set_title(self, entity, default=None):
         """
@@ -83,10 +122,10 @@ class Seo:
                 seo = Seo()
                 seo.set_title(shop, default=shop.title)
         """
-        seodata = self.get_for(entity) or {}
-        self.set(seodata, {
-            'title': default,
-        })
+        seodata = self.get_for(entity)
+        title = (seodata and getattr(seodata, 'title')) or default
+        if title:
+            self.title = title
 
     def set_data(self, entity, defaults=None):
         """
@@ -104,12 +143,6 @@ class Seo:
 
     def save(self, request):
         """ Сохранение данных в request, чтобы выводить их в шаблонах """
-        title_parts = list(filter(bool, map(str, self.title_deque)))
-        if TITLE_JOIN_WITH:
-            title = mark_safe(TITLE_JOIN_WITH.join(title_parts))
-        else:
-            title = mark_safe(title_parts[0]) if title_parts else ''
-
         # opengraph + twitter card
         social_data = {
             'url': request.build_absolute_uri(request.path_info),
@@ -126,11 +159,13 @@ class Seo:
 
         # Сохранение данных в request
         request.seo = {
-            'title': title,
-
+            'title': self.title,
             'keywords': self.keywords,
             'description': self.description,
             'canonical': self.canonical,
             'opengraph': opengraph,
             'twitter_card': twitter_card,
+
+            'text_header': self.text_header,
+            'text': self.text,
         }

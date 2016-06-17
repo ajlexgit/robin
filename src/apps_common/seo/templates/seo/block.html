@@ -2,12 +2,12 @@
 
 <div class="seo-text">
   <div class="grid-block">
-    {% if data.header %}
-      <div class="title title-h1">{{ data.header }}</div>
+    {% if seo.text_header %}
+      <div class="title title-h1">{{ seo.text_header }}</div>
     {% endif %}
 
     <div class="text text-styles">
-      {{ data.text|paragraphs|typograf|safe }}
+      {{ seo.text|paragraphs|typograf|safe }}
     </div>
   </div>
 </div>

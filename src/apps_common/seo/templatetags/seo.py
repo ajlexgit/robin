@@ -21,21 +21,20 @@ def seo_metatags(context, template='seo/metatags.html'):
 
 
 @register.simple_tag(takes_context=True)
-def seo_block(context, entity=None, template='seo/block.html'):
+def seo_block(context, template='seo/block.html'):
     request = context.get('request')
     if not request or not hasattr(request, 'seo'):
         return ''
 
-    if entity:
-        seodata = Seo.get_for(entity)
-    else:
-        seodata = getattr(request, 'seodata', None)
+    seo = getattr(request, 'seo', None)
+    if seo is None:
+        return ''
 
-    if not seodata or not seodata.text:
+    if not seo.get('text'):
         return ''
 
     return loader.render_to_string(template, {
-        'data': seodata,
+        'seo': seo,
     })
 
 
