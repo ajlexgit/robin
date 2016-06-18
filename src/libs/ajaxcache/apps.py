@@ -3,19 +3,21 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Config(AppConfig):
-    name = 'libs.ajax_cache'
+    name = 'libs.ajaxcache'
     verbose_name = _('AJAX Cache Blocks')
 
     def ready(self):
         from django.shortcuts import resolve_url
         from django.core.cache import caches
         from libs.js_storage import JS_STORAGE
-        from .conf import AJAX_CACHE_BACKEND
+        from . import conf
 
-        cache = caches[AJAX_CACHE_BACKEND]
+        # Очитска кэша
+        cache = caches[conf.AJAXCACHE_BACKEND]
         if hasattr(cache, 'delete_pattern'):
             cache.delete_pattern('template.cache.*')
 
         JS_STORAGE.update({
-            'ajax_cache_block': resolve_url('ajax_cache:ajax'),
+            'ajaxcache_url': resolve_url('ajaxcache:ajax'),
+            'ajaxcache_class': conf.AJAXCACHE_CSS_CLASS,
         })

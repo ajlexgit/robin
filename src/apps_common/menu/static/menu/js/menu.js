@@ -12,7 +12,6 @@
             menuActiveClass     - класс меню, когда оно активно
             buttonSelector      - селектор кнопки, активирующей меню
             buttonActiveClass   - класс кнопки, когда меню активно
-
             fullHeight          - должно ли меню быть на всю высоту
 
         События:
@@ -41,15 +40,8 @@
                 fullHeight: false
             }, options);
 
-            // элемент меню
-            this.$menu = $(this.opts.menuSelector).first();
-            if (!this.$menu.length) {
-                return this.raise('menu element not found');
-            }
-
-            var that = this;
-
             // клик на кнопку
+            var that = this;
             $(document).off('.menu').on('click.menu', this.opts.buttonSelector, function() {
                 return that.onClick($(this));
             });
@@ -61,67 +53,71 @@
             Обработчик нажатия кнопки
          */
         cls.onClick = function($button) {
+            var $menu = $(this.opts.menuSelector).first();
+            if (!$menu.length) {
+                this.error('menu element not found');
+                return false;
+            }
+
             var currently_active = $button.hasClass(this.opts.buttonActiveClass);
             if (currently_active) {
-                this.hide()
+                this.hide($menu)
             } else {
-                this.show()
+                this.show($menu)
             }
 
             return false;
         };
 
+        cls.update = function($menu) {
+            // на всю высоту окна
+            if (this.opts.fullHeight) {
+                $menu.height('auto');
+                var default_height = $menu.outerHeight();
+                $menu.outerHeight(Math.max(default_height, $.winHeight()));
+            }
+        };
+
         /*
             Показ меню
          */
-        cls.show = function() {
+        cls.show = function($menu) {
             if (this.trigger('before_show') === false) {
                 return false;
             }
 
-            if (this.opts.fullHeight) {
-                // на всю высоту окна
-                this.$menu.height('auto');
-                var default_height = this.$menu.outerHeight();
-                this.$menu.outerHeight(Math.max(default_height, $.winHeight()));
-            }
-
+            this.update($menu);
             $(this.opts.buttonSelector).addClass(this.opts.buttonActiveClass);
-            this.$menu.addClass(this.opts.menuActiveClass);
+            $menu.addClass(this.opts.menuActiveClass);
         };
 
         /*
             Скрытие меню
          */
-        cls.hide = function() {
+        cls.hide = function($menu) {
             if (this.trigger('before_hide') === false) {
                 return false;
             }
 
             $(this.opts.buttonSelector).removeClass(this.opts.buttonActiveClass);
-            this.$menu.removeClass(this.opts.menuActiveClass);
+            $menu.removeClass(this.opts.menuActiveClass);
         };
     });
 
     $(window).on('resize.menu', $.rared(function() {
         var winWidth = $.winWidth();
-        var winHeight = $.winHeight();
         $.each(menus, function() {
-            if (this.$menu.hasClass(this.opts.menuActiveClass)) {
-                if (this.opts.fullHeight) {
-                    // на всю высоту окна
-                    this.$menu.height('auto');
-                    var default_height = this.$menu.outerHeight();
-                    this.$menu.outerHeight(Math.max(default_height, winHeight));
-                }
-
-                this.trigger('resize', winWidth);
+            var $menu = $(this.opts.menuSelector).first();
+            if (!$menu.hasClass(this.opts.menuActiveClass)) {
+                return
             }
+
+            this.update($menu);
+            this.trigger('resize', winWidth);
         })
     }, 100));
-    
-    // главное меню
-    var initMainMenu = function() {
+
+    $(document).ready(function() {
         window.menu = Menu({
             fullHeight: true
         }).on('resize', function(winWidth) {
@@ -130,21 +126,6 @@
                 this.hide();
             }
         });
-    };
-
-    $(document).ready(function() {
-        var $menu = $('#mobile-menu');
-        if ($menu.length) {
-            initMainMenu();
-            return
-        }
-
-        var $placeholder = $('.ajax-cache-block[data-key^="template.cache.mobile-menu"]');
-        if ($placeholder.length) {
-            $placeholder.on('loaded', function() {
-                initMainMenu()
-            });
-        }
     })
 
 })(jQuery);

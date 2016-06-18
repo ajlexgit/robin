@@ -24,8 +24,8 @@ urlpatterns = [
     url(r'^dladmin/', include(admin.site.urls)),
 
     url(r'^away/$', 'libs.away.views.away', name='away'),
-    url(r'^cache/', include('libs.ajax_cache.urls', namespace='ajax_cache')),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
+    url(r'^ajaxcache/', include('libs.ajaxcache.urls', namespace='ajaxcache')),
     url(r'^social/', include('social_networks.urls', namespace='social_networks')),
     url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),

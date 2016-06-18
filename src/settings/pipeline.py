@@ -81,7 +81,7 @@ PIPELINE['JAVASCRIPT'].update({
             'js/text_styles.js',
 
             'attachable_blocks/js/async_blocks.js',
-            'ajax_cache/js/ajax_cache.js',
+            'ajaxcache/js/ajaxcache.js',
             'contacts/js/block.js',
             'menu/js/menu.js',
         ),

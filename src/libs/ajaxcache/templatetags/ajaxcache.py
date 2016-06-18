@@ -1,10 +1,11 @@
+from django.core.cache import caches
 from datetime import datetime, timedelta
-from django.core.cache import InvalidCacheBackendError, caches
 from django.core.cache.utils import make_template_fragment_key
 from django.template import Library, Node, TemplateSyntaxError, VariableDoesNotExist
-from ..conf import AJAX_CACHE_BACKEND, AJAX_CACHE_GAP
+from .. import conf
 
 register = Library()
+cache = caches[conf.AJAXCACHE_BACKEND]
 
 
 class CacheNode(Node):
@@ -27,27 +28,21 @@ class CacheNode(Node):
         if expire_time < 120:
             raise TemplateSyntaxError('"ajaxcache" tag got a timeout less than 120: %r' % expire_time)
 
-        try:
-            fragment_cache = caches[AJAX_CACHE_BACKEND]
-        except InvalidCacheBackendError:
-            raise TemplateSyntaxError('Invalid cache name specified for ajaxcache tag: %r' % AJAX_CACHE_BACKEND)
-
         vary_on = [var.resolve(context) for var in self.vary_on]
-
         cache_key = make_template_fragment_key(self.fragment_name, vary_on)
-        value = fragment_cache.get(cache_key)
+        value = cache.get(cache_key)
 
         expiration_key = 'expire.%s' % cache_key
-        expiration_date = fragment_cache.get(expiration_key)
+        expiration_date = cache.get(expiration_key)
 
         if value is None or expiration_date is None or expiration_date <= datetime.now():
             value = self.nodelist.render(context)
-            expiration_date = datetime.now() + timedelta(seconds=expire_time - AJAX_CACHE_GAP)
+            expiration_date = datetime.now() + timedelta(seconds=expire_time - conf.AJAXCACHE_GAP)
 
-            fragment_cache.set('time.%s' % cache_key, expire_time, expire_time)
-            fragment_cache.set(expiration_key, expiration_date, expire_time)
-            fragment_cache.set(cache_key, value, expire_time)
-        return '<div class="ajax-cache-block" data-key="%s"></div>' % cache_key
+            cache.set('time.%s' % cache_key, expire_time, expire_time)
+            cache.set(expiration_key, expiration_date, expire_time)
+            cache.set(cache_key, value, expire_time)
+        return '<div class="%s" data-key="%s"></div>' % (conf.AJAXCACHE_CSS_CLASS, cache_key)
 
 
 @register.tag('ajaxcache')

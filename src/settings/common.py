@@ -64,7 +64,7 @@ INSTALLED_APPS = (
     'social_networks',
 
     # Libs
-    'libs.ajax_cache',
+    'libs.ajaxcache',
     'libs.autocomplete',
     'libs.away',
     'libs.js_storage',

@@ -5,19 +5,21 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'libs.ajax_cache',
+                'libs.ajaxcache',
                 ...
             )
 
             PIPELINE = {
                 ...
-                'ajax_cache/js/ajax_cache.js',
+                'ajaxcache/js/ajaxcache.js',
                 ...
             }
 
+            AJAXCACHE_BACKEND = 'default'
+
         urls.py:
             ...
-            url(r'^ajax_cache/', include('libs.ajax_cache.urls', namespace='ajax_cache')),
+            url(r'^ajaxcache/', include('libs.ajaxcache.urls', namespace='ajaxcache')),
             ...
 
         Пример:
@@ -34,4 +36,4 @@
                 {% endajaxcache %}
 
 """
-default_app_config = 'libs.ajax_cache.apps.Config'
+default_app_config = 'libs.ajaxcache.apps.Config'
