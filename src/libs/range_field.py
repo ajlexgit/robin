@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 
 class RangeField(models.IntegerField):
     """
-        Поле, аналогичное IntegerField, добавляющее параметры min_value / max)value,
+        Поле, аналогичное IntegerField, добавляющее параметры min_value / max_value,
         которые добавляют к полю <input type="number"> атрибуты min / max.
 
         Пример:

@@ -1,6 +1,6 @@
 import os
-from datetime import datetime, timedelta
 from django.conf import settings
+from datetime import datetime, timedelta
 from django.core.management import call_command
 from project import celery_app
 
