@@ -1,17 +1,15 @@
 import pickle
-from django.conf import settings
 from django.forms import widgets
 from django.core.cache import caches
-from django.forms.models import ModelChoiceIterator
 from django.forms.utils import flatatt
 from django.shortcuts import resolve_url
 from django.utils.encoding import force_text
 from django.template.loader import render_to_string
+from django.forms.models import ModelChoiceIterator
 from django.utils.translation import ugettext_lazy as _, get_language
+from . import conf
 
-
-CACHE_BACKEND = getattr(settings,  'AUTOCOMPLETE_CACHE_BACKEND', 'default')
-cache = caches[CACHE_BACKEND]
+cache = caches[conf.AUTOCOMPLETE_CACHE_BACKEND]
 
 
 def default_format_item(obj):
@@ -125,7 +123,7 @@ class AutocompleteWidget(widgets.Widget):
             'format_item_module': self.format_item_module,
             'format_item_method': self.format_item_method,
             'dependencies': self.dependencies,
-        }), timeout=7200)
+        }), timeout=conf.CACHE_TIMEOUT)
 
     def get_url(self, name):
         """ Построение урла для запроса данных """

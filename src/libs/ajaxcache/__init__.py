@@ -32,7 +32,7 @@
                 {% load ajaxcache %}
 
                 {% ajaxcache 3600 unique_name %}
-                ...
+                    ...
                 {% endajaxcache %}
 
 """
