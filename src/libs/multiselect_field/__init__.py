@@ -5,20 +5,20 @@
     Пример:
         class SomeModel(models.Model):
             LANGUAGES = (
-                (1, _('English')),
-                (2, _('Russian')),
-                (3, _('Japanese')),
-                (4, _('Italian')),
+                ('en', _('English')),
+                ('ru', _('Russian')),
+                ('ja', _('Japanese')),
+                ('it', _('Italian')),
             )
 
-            langs = MultiSelectField(_('langs'), choices=LANGUAGES, blank=True)
+            langs = MultiSelectField(_('langs'), choices=LANGUAGES, coerce=str, blank=True)
 
     Пример значения в модели:
-        >>> instance.langs
-        >>> (1, 3)
+        > instance.langs
+        ('en', 'ja')
 
-        >>> instance_empty.langs
-        >>> ()
+        > instance_empty.langs
+        ()
 
 """
 from .fields import MultiSelectField

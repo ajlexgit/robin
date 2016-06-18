@@ -15,25 +15,32 @@
                 ...
             }
 
-            AJAXCACHE_BACKEND = 'default'
-
         urls.py:
             ...
             url(r'^ajaxcache/', include('libs.ajaxcache.urls', namespace='ajaxcache')),
             ...
 
-        Пример:
-            Первые два параметра - обязательны.
-            Первый - время кэширования (не меньше 120).
-            Второй - имя фрагмента в кэше
-            Остальные - дополнительные данные для составления ключа кэша
+    Необязательные настройки:
+        AJAXCACHE_BACKEND = 'default'
 
-            template.html:
-                {% load ajaxcache %}
+    Для отлова события загрузки всех блоков можно
+    использовать событие "ready.ajaxcache":
+        $(document).on('ready.ajaxcache', function() {
 
-                {% ajaxcache 3600 unique_name %}
-                    ...
-                {% endajaxcache %}
+        })
+
+    Пример:
+        Первые два параметра - обязательны.
+        Первый - время кэширования (не меньше 120).
+        Второй - имя фрагмента в кэше
+        Остальные - дополнительные данные для составления ключа кэша
+
+        # template.html:
+            {% load ajaxcache %}
+
+            {% ajaxcache 3600 unique_name %}
+                ...
+            {% endajaxcache %}
 
 """
 default_app_config = 'libs.ajaxcache.apps.Config'

@@ -1,3 +1,4 @@
+from collections import Iterable
 from django.db import models
 from django.core import exceptions, checks
 from .forms import MultiSelectFormField
@@ -5,7 +6,7 @@ from .forms import MultiSelectFormField
 
 class MultiSelectField(models.Field):
     def __init__(self, *args, coerce=int, splitter=',', **kwargs):
-        kwargs.setdefault('max_length', 64)
+        kwargs.setdefault('max_length', 255)
         self.coerce = coerce
         self.splitter = splitter
         super().__init__(*args, **kwargs)
@@ -79,15 +80,17 @@ class MultiSelectField(models.Field):
     def to_python(self, value):
         if value is None:
             return None
-        elif isinstance(value, set):
-            return value
-        elif isinstance(value, (tuple, list)):
-            return self._get_coerced_value(value)
-        elif isinstance(value, str):
+        elif isinstance(value, (str, bytes)):
             try:
                 return self._get_coerced_value(value.split(self.splitter))
-            except (TypeError, ValueError) as e:
-                raise exceptions.ValidationError(e)
+            except (TypeError, ValueError):
+                raise exceptions.ValidationError(
+                    self.error_messages['invalid'],
+                    code='invalid',
+                    params={'value': value},
+                )
+        elif isinstance(value, Iterable):
+            return self._get_coerced_value(value)
         else:
             raise exceptions.ValidationError(
                 self.error_messages['invalid'],

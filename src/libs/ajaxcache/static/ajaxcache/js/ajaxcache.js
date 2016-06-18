@@ -8,7 +8,7 @@
             jquery.utils.js
 
         Для отлова события загрузки всех блоков можно
-        отловить событие "ready.ajaxcache":
+        использовать событие "ready.ajaxcache":
             $(document).on('ready.ajaxcache', function() {
 
             })

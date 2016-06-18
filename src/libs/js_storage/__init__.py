@@ -12,7 +12,6 @@
 
             MIDDLEWARE_CLASSES = (
                 ...
-                # обязательно до ResolutionMiddleware, если она используется
                 'libs.js_storage.middleware.JSStorageMiddleware',
                 ...
             )
@@ -34,6 +33,7 @@
                 def ready(self):
                     from django.shortcuts import resolve_url
                     from libs.js_storage import JS_STORAGE
+
                     JS_STORAGE.update({
                         'ajax_register': resolve_url('users:ajax_register')
                     })

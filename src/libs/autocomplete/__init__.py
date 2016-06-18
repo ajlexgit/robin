@@ -48,11 +48,10 @@
                     }
 
 
-
-
     Также, включает фильтр для списка сущностей в админке:
         from django.utils.translation import get_language
         from libs.autocomplete import AutocompleteListFilter
+
 
         class PublicationTagFilter(AutocompleteListFilter):
             model = Tag
@@ -61,8 +60,6 @@
             def filter(self, queryset, value):
                 return queryset.filter(tags=value).distinct()
 
-
-        ...
 
         class PublicationAdmin(admin.ModelAdmin):
             ...
@@ -83,9 +80,7 @@
                         )
                     }
                 )
-
 """
-
 from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
 from .filters import AutocompleteListFilter
 
