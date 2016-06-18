@@ -1,8 +1,16 @@
 """
     Поле для выбора иконки из спрайта.
 
+    Установка:
+        settings.py:
+            INSTALLED_APS = (
+                ...
+                'libs.sprite_image',
+                ...
+            )
+
     Пример:
-        models.py:
+        # models.py:
             class MyModel(models.Model):
                 ICONS = (
                     ('no_defence', (-230, 0)),
@@ -24,7 +32,7 @@
                     background='#FFFFFF',
                 )
 
-        template.html:
+        # template.html:
             # Вывод имени ключа
             <div class="{{ object.icon }}">
 

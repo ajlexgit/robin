@@ -1,7 +1,8 @@
 import requests
+from django.conf import settings
 
 API_URL = 'https://www.googleapis.com/youtube/v3/'
-API_KEY = 'AIzaSyDUyHc1otYjl7Hprm-mL5UxwygSivJNfaE'
+API_KEY = getattr(settings, 'YOUTUBE_APIKEY', 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
 
 
 def _get(resource, data):

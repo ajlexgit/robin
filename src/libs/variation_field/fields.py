@@ -1,6 +1,5 @@
 import os
 import logging
-import tempfile
 from PIL import Image
 from django.db import models
 from django.db.models import signals

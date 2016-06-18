@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class ProviderMetaclass(type):
+    """ Автоматическая регистрация класса провайдера """
     def __init__(cls, name, bases, nmspc):
         super().__init__(name, bases, nmspc)
         if cls.name:
@@ -37,6 +38,7 @@ class BaseProvider(metaclass=ProviderMetaclass):
 
     @classmethod
     def build_url(cls, video_key):
+        """ Конструирование ссылки на видео по ключу """
         return cls.url_pattern.format(video_key)
 
     @classmethod

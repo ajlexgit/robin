@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.template import loader
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib.sites.shortcuts import get_current_site
 
 
 def send(request, receivers, subject, template, context=None):

@@ -3,7 +3,7 @@ def associative(data):
         Форматирует словарь данных запроса в ассоциативный массив:
 
         Пример:
-            $ associative({'plain': 1, 'list': [1,2], 'dict': {'a':1, 'b':2}})
+            > associative({'plain': 1, 'list': [1,2], 'dict': {'a':1, 'b':2}})
             {'plain': 1, 'list[0]': 1, 'list[1]': 2, 'dict[a]': 1, 'dict[b]': 2}
     """
     result = {}

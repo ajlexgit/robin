@@ -15,9 +15,10 @@
             ...
 
     В каждом индексируемом приложении должен быть файл с опрелением индексов indexes.py.
+    Либо, можно создать в одном из приложений единый файл indexes.py.
 
-    Пример индексации:
-        indexes.py:
+    Пример:
+        # indexes.py:
             from libs.sphinx import SphinxScheme, SphinxXMLIndex, ATTR_TYPE
             from .models import Post
 
@@ -45,7 +46,7 @@
                         'date': instance.date,
                     }
 
-        sphinx.conf:
+        # sphinx.conf:
             source news
             {
                 type                    = xmlpipe2
@@ -76,6 +77,7 @@
                 'text': 1,
             }
 
+            # Для выборки моделей из БД при использовании fetch_models()
             def news_queryset(self, model, ids):
                 return model.objects.filter(pk__in=ids).select_related('category')
 

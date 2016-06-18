@@ -17,7 +17,7 @@
             )
 
     Пример:
-        views.py:
+        # views.py:
             def my_page(request):
                 ...
                 request.js_storage['var1'] = 5
@@ -25,7 +25,7 @@
                 ...
 
         # Можно объявлять переменные для всего сайта:
-        apps.py:
+        # apps.py:
             class Config(AppConfig):
                 name = 'users'
                 verbose_name = "Пользователи"
