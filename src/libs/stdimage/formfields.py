@@ -34,3 +34,7 @@ class StdImageFormField(ImageField):
 
         result = super().clean(data, initial)
         return result, croparea
+
+    def has_changed(self, initial, data):
+        data, croparea = data
+        return super().has_changed(initial, data)

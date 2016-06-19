@@ -8,14 +8,11 @@ from libs.admin_utils import get_add_url, get_change_url, get_delete_url
 
 def add_query(request, url):
     parsed = parse.urlparse(url)
-    return parse.ParseResult(
-        scheme=parsed.scheme,
-        netloc=parsed.netloc,
-        path=parsed.path,
-        params=parsed.params,
-        query='&'.join(filter(bool, (parsed.query, request.GET.urlencode()))),
-        fragment=parsed.fragment,
-    ).geturl()
+    query = filter(bool, (parsed.query, request.GET.urlencode()))
+    parsed = parsed._replace(
+        query='&'.join(query)
+    )
+    return parsed.geturl()
 
 
 @admin.site.admin_view
