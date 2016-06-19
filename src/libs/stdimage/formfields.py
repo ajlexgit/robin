@@ -36,5 +36,6 @@ class StdImageFormField(ImageField):
         return result, croparea
 
     def has_changed(self, initial, data):
-        data, croparea = data
+        if isinstance(data, tuple):
+            data, croparea = data
         return super().has_changed(initial, data)
