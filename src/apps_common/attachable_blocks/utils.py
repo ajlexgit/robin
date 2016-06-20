@@ -82,9 +82,10 @@ def get_block(block_id, ct=None):
         Получение блока реального типа по его ID
     """
     from .models import AttachableBlock
-    if ct is None:
-        # Fallback
-        return AttachableBlock.objects.filter(pk=block_id).select_subclasses().first()
-    else:
-        # Ускоренная выборка
-        return ct.get_object_for_this_type(pk=block_id)
+    if ct:
+        block_model = ct.model_class()
+        if issubclass(block_model, AttachableBlock):
+            return block_model.objects.get(pk=block_id)
+
+    # Fallback
+    return AttachableBlock.objects.filter(pk=block_id).select_subclasses().first()

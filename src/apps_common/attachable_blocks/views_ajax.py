@@ -1,25 +1,30 @@
-from django.views.generic.base import View
-from libs.views_ajax import AjaxViewMixin
+from django.views.decorators.csrf import csrf_exempt
+from django.http.response import HttpResponseForbidden, JsonResponse
 from .utils import get_block, get_block_view
 
 
-class AsyncLoadView(AjaxViewMixin, View):
+@csrf_exempt
+def get_blocks(request):
+    if not request.is_ajax():
+        return HttpResponseForbidden()
 
-    def get(self, request):
-        block_id = request.GET.get('block_id')
+    result = {}
+    keys = request.POST.getlist('keys[]')
+    for block_id in keys:
         try:
             block_id = int(block_id)
         except (TypeError, ValueError):
-            return self.json_error(status=404)
+            continue
 
         real_block = get_block(block_id)
         if not real_block or not real_block.visible:
-            return self.json_error(status=404)
+            continue
 
         block_view = get_block_view(real_block)
         if not block_view:
-            return self.json_error(status=404)
+            continue
 
-        return self.json_response({
-            'html': block_view(request, real_block)
-        })
+        result[block_id] = block_view(request, real_block)
+
+    return JsonResponse(result)
+
