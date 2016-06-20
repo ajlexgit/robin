@@ -24,7 +24,7 @@
           <img class="slider-item" src="{{ item.image.wide.url }}"
                srcset="{{ item.image.wide.srcset }},
                        {{ item.image.normal.srcset }},
-                       {{ item.image.mobile.srcset }}" sizes="100vw">
+                       {{ item.image.mobile.srcset }}" sizes="100vw" alt="">
         {% endfor %}
 
         <div class="overlay">
@@ -45,7 +45,10 @@
         {% for item in config.gallery.items.all %}
           {% if item.is_image %}
             <div class="slider-item">
-              <img src="{{ item.image.preview.url }}" width="{{ item.image.preview.target_width }}" height="{{ item.image.preview.target_height }}">
+              <img src="{{ item.image.preview.url }}"
+                   width="{{ item.image.preview.target_width }}"
+                   height="{{ item.image.preview.target_height }}"
+                   alt="">
 
               <!-- popup content -->
               <script type="text/template">
@@ -54,13 +57,13 @@
                        srcset="{{ item.image.wide.srcset }},
                              {{ item.image.normal.srcset }},
                              {{ item.image.mobile.srcset }}"
-                       sizes="100vw">
+                       sizes="100vw" alt="">
                 </div>
               </script>
             </div>
           {% elif item.is_video_link %}
             <div class="slider-item">
-              <img src="{{ item.video_preview.preview.url }}">
+              <img src="{{ item.video_preview.preview.url }}" alt="">
 
               <!-- popup content -->
               <script type="text/template">
@@ -69,7 +72,7 @@
                        srcset="{{ item.video_preview.wide.srcset }},
                              {{ item.video_preview.normal.srcset }},
                              {{ item.video_preview.mobile.srcset }}"
-                       sizes="100vw">
+                       sizes="100vw" alt="">
 
                   <div class="play-btn"></div>
                 </div>

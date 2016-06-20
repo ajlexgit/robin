@@ -86,6 +86,8 @@ class TwitterCard(MetaTags):
         super().__init__(request)
         self._dict['card'] = 'summary'
 
+
+
     def _format_value(self, key, value):
         if key not in self.ALLOWED:
             return
