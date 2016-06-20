@@ -51,10 +51,12 @@ class AttachedBlocksFormset(BaseGenericInlineFormSet):
 
     def save_new(self, form, commit=True):
         setattr(form.instance, 'set_name', self.set_name)
+        setattr(form.instance, 'block_ct_id', form.cleaned_data.get('block_type'))
         return super().save_new(form, commit)
 
     def save_existing(self, form, instance, commit=True):
         setattr(form.instance, 'set_name', self.set_name)
+        setattr(form.instance, 'block_ct_id', form.cleaned_data.get('block_type'))
         return super().save_existing(form, instance, commit)
 
 

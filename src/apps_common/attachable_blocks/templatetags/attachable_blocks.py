@@ -20,13 +20,13 @@ def block_output(request, block, ajax=False, **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def render_attached_blocks(context, entity, set_name=None):
+def render_attached_blocks(context, entity, set_name='default'):
     request = context.get('request')
     if not request:
         return ''
 
     output = []
-    for blockref in get_visible_references(entity, set_name=set_name):
+    for blockref in get_visible_references(entity, set_name=set_name).only('block_ct_id', 'block_id', 'ajax'):
         block = get_block(blockref.block_id)
         if not block:
             continue

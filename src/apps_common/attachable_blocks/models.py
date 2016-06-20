@@ -95,6 +95,7 @@ class AttachableReference(models.Model):
     object_id = models.PositiveIntegerField()
     entity = GenericForeignKey('content_type', 'object_id')
 
+    block_ct = models.ForeignKey(ContentType, null=True, related_name='+')
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'), related_name='references')
     ajax = models.BooleanField(_('AJAX load'), default=False,
         help_text=_('load block through AJAX')
@@ -110,7 +111,7 @@ class AttachableReference(models.Model):
         index_together = (('content_type', 'object_id', 'set_name'), )
 
     def __str__(self):
-        block_type = dict(get_block_types()).get(self.block.block_content_type_id) or 'Undefined'
+        block_type = dict(get_block_types()).get(self.block_ct_id) or 'Undefined'
         instance = '%s.%s (#%s)' % (
             self.content_type.app_label,
             self.content_type.model,

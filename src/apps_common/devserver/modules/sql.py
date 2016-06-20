@@ -10,7 +10,7 @@ class SQLSummaryModule(DevServerModule):
     """
         Вывод длительности всех запросов
     """
-    logger_name = 'sql'
+    logger_name = 'db'
 
     def process_response(self, request, response):
         queries = [

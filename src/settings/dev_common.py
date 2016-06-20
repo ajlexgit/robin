@@ -69,8 +69,8 @@ LOGGING = {
             'level': 'ERROR',
         },
         'sql': {
-            'handlers': ['console'],
-            'level': 'INFO',
+            'handlers': ['null'],
+            'level': 'DEBUG',
         },
         'sphinx': {
             'handlers': ['console'],
