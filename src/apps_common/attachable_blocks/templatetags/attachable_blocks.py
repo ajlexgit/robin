@@ -26,8 +26,8 @@ def render_attached_blocks(context, entity, set_name='default'):
         return ''
 
     output = []
-    for blockref in get_visible_references(entity, set_name=set_name).only('block_ct_id', 'block_id', 'ajax'):
-        block = get_block(blockref.block_id)
+    for blockref in get_visible_references(entity, set_name=set_name).only('block_ct', 'block_id', 'ajax'):
+        block = get_block(blockref.block_id, ct=blockref.block_ct)
         if not block:
             continue
 

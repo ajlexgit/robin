@@ -77,9 +77,14 @@ def get_block_view(block):
     return view
 
 
-def get_block(block_id):
+def get_block(block_id, ct=None):
     """
         Получение блока реального типа по его ID
     """
     from .models import AttachableBlock
-    return AttachableBlock.objects.filter(pk=block_id).select_subclasses().first()
+    if ct is None:
+        # Fallback
+        return AttachableBlock.objects.filter(pk=block_id).select_subclasses().first()
+    else:
+        # Ускоренная выборка
+        return ct.get_object_for_this_type(pk=block_id)
