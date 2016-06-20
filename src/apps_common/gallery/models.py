@@ -736,11 +736,19 @@ class GalleryBase(models.Model):
 
     @cached_property
     def image_items(self):
-        return self.all_items.filter(model=self.IMAGE_MODEL)
+        ct = ContentType.objects.get_for_model(self)
+        return self.IMAGE_MODEL.objects.filter(
+            content_type=ct,
+            object_id=self.id,
+        )
 
     @cached_property
     def video_link_items(self):
-        return self.all_items.filter(model=self.VIDEO_LINK_MODEL)
+        ct = ContentType.objects.get_for_model(self)
+        return self.VIDEO_LINK_MODEL.objects.filter(
+            content_type=ct,
+            object_id=self.id,
+        )
 
     def clean(self):
         """ Ограничение на максимальное кол-во элементов """
