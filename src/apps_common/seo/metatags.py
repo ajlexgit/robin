@@ -94,7 +94,7 @@ class TwitterCard(MetaTags):
 
             if isinstance(image, ImageFieldFile):
                 image_size = image._get_image_dimensions()
-                is_large = image_size[0] >= 400 and image_size[1] >= 200
+                is_large = image_size[0] >= 500 and image_size[1] >= 250
                 self._dict['card'] = 'summary_large_image' if is_large else 'summary'
 
         super()._format()
