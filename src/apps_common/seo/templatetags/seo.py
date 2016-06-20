@@ -1,6 +1,5 @@
 from django.template import loader, Library
 from ..models import Counter
-from ..seo import Seo
 
 register = Library()
 
