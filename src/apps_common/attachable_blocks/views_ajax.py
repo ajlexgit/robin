@@ -8,9 +8,9 @@ def get_blocks(request):
     if not request.is_ajax():
         return HttpResponseForbidden()
 
-    keys = request.GET.get('keys', '')
+    keys = request.GET.get('keys')
     if not keys:
-        return ''
+        return JsonResponse({})
 
     result = {}
     for block_id in keys.split(','):

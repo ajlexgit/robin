@@ -10,9 +10,13 @@ def get_cached(request):
     if not request.is_ajax():
         return HttpResponseForbidden()
 
-    keys = request.POST.getlist('keys[]')
+    keys = request.GET.get('keys')
+    if not keys:
+        return JsonResponse({})
+
     keys = filter(lambda x: str(x).startswith('template.cache.'), keys)
     return JsonResponse({
         key: cache.get(key) or ''
         for key in keys
+        if key
     })

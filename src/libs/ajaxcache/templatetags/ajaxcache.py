@@ -1,6 +1,6 @@
-from django.core.cache import caches
+from hashlib import md5
 from datetime import datetime, timedelta
-from django.core.cache.utils import make_template_fragment_key
+from django.core.cache import caches
 from django.template import Library, Node, TemplateSyntaxError, VariableDoesNotExist
 from .. import conf
 
@@ -29,7 +29,8 @@ class CacheNode(Node):
             raise TemplateSyntaxError('"ajaxcache" tag got a timeout less than 120: %r' % expire_time)
 
         vary_on = [var.resolve(context) for var in self.vary_on]
-        cache_key = make_template_fragment_key(self.fragment_name, vary_on)
+        vary_key = md5(':'.join(str(var) for var in vary_on).encode()).hexdigest()
+        cache_key = '%s.%s' % (self.fragment_name, vary_key)
         value = cache.get(cache_key)
 
         expiration_key = 'expire.%s' % cache_key

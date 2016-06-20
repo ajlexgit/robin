@@ -31,9 +31,9 @@
         if (!keys.length) return;
         $.ajax({
             url: window.js_storage.ajaxcache_url,
-            type: 'POST',
+            type: 'GET',
             data: {
-                keys: keys
+                keys: keys.join(',')
             },
             dataType: 'json',
             success: function(response) {
