@@ -33,7 +33,10 @@ class SCCMiddleware:
             return response
 
         # Если не HTML-страница - выходим
-        if 'text/html' not in response['content-type']:
+        content_type = response['content-type']
+        is_html = 'text/html' in content_type
+        is_json = 'application/json' in content_type
+        if not is_html and not is_json:
             return response
 
         # Если нет юзера - выходим
