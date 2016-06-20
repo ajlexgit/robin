@@ -5,7 +5,7 @@ from PyLinkedinAPI.PyLinkedinAPI import PyLinkedinAPI
 from django.utils.timezone import now
 from django.core.management import BaseCommand
 from libs.description import description
-from ...models import SocialPost
+from ...models import FeedPost
 from ... import conf
 
 TWITTER_URL_LEN = 23
@@ -22,7 +22,7 @@ class Command(BaseCommand):
     linkedin_api = None
 
     def autopost_twitter(self):
-        posts = SocialPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
+        posts = FeedPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
         for post in posts:
             message = post.text
 
@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 post.save()
 
     def autopost_facebook(self):
-        posts = SocialPost.objects.filter(for_network=conf.NETWORK_FACEBOOK)[:MAX_POSTS_PER_CALL]
+        posts = FeedPost.objects.filter(for_network=conf.NETWORK_FACEBOOK)[:MAX_POSTS_PER_CALL]
         for post in posts:
             attachment = {}
             message = post.text
@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 post.save()
 
     def autopost_linkedin(self):
-        posts = SocialPost.objects.filter(for_network=conf.NETWORK_LINKEDIN)[:MAX_POSTS_PER_CALL]
+        posts = FeedPost.objects.filter(for_network=conf.NETWORK_LINKEDIN)[:MAX_POSTS_PER_CALL]
         for post in posts:
             message = post.text
 
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 message_len += len(post.url) + 1
             if message_len >= LINKEDIN_MAX_LEN:
                 message = description(message, 540, LINKEDIN_MAX_LEN)
-                
+
             if post.url:
                 message += '\n%s' % post.url
 

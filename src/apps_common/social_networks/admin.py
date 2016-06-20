@@ -9,8 +9,8 @@ from django.http.response import Http404, JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles.storage import staticfiles_storage
 from project.admin import ModelAdminMixin
-from .models import SocialPost
-from .forms import SocialPostForm, AutpostForm
+from .models import FeedPost
+from .forms import FeedPostForm, AutpostForm
 from . import conf
 
 re_newlines = re.compile(r'\n[\s\n]+')
@@ -25,8 +25,8 @@ SPRITE_ICONS = (
 )
 
 
-@admin.register(SocialPost)
-class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
+@admin.register(FeedPost)
+class FeedPostAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -41,7 +41,7 @@ class SocialPostAdmin(ModelAdminMixin, admin.ModelAdmin):
             ),
         }),
     )
-    form = SocialPostForm
+    form = FeedPostForm
     list_display = ('network_icon', '__str__', 'scheduled', 'created', 'posted')
     list_display_links = ('network_icon', '__str__')
     list_filter = ('network', 'created')
@@ -109,7 +109,7 @@ class AutoPostMixin(ModelAdminMixin):
 
     def has_autopost_permissions(self, request):
         """ Проверка, есть ли права на редактирование автопостинга """
-        return request.user.has_perm('social_networks.change_socialpost')
+        return request.user.has_perm('social_networks.change_feedpost')
 
     def get_autopost_text(self, obj):
         raise NotImplementedError
@@ -174,13 +174,13 @@ class AutoPostMixin(ModelAdminMixin):
             networks = form.cleaned_data.get('networks')
             for network in networks:
                 try:
-                    post = SocialPost.objects.get(
+                    post = FeedPost.objects.get(
                         network=network,
                         content_type=obj_ct,
                         object_id=obj.pk,
                     )
-                except SocialPost.DoesNotExist:
-                    SocialPost.objects.create(
+                except FeedPost.DoesNotExist:
+                    FeedPost.objects.create(
                         network=network,
                         url=request.build_absolute_uri(self.get_autopost_url(obj)),
                         text=text,

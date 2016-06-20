@@ -1,7 +1,7 @@
 from django.shortcuts import resolve_url
 from django.utils.html import strip_tags
 from django.contrib.syndication.views import Feed
-from .models import SocialPost
+from .models import FeedPost
 from . import conf
 
 
@@ -23,7 +23,7 @@ class SocialRssFeed(Feed):
         return resolve_url('social_networks:%s' % self.network)
 
     def items(self):
-        qs = SocialPost.objects.filter(for_network=self.network)
+        qs = FeedPost.objects.filter(for_network=self.network)
         return qs[:self.items_count]
 
     def item_link(self, item):

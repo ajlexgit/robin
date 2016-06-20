@@ -8,7 +8,7 @@ from libs.description import description
 from . import conf
 
 
-class SocialPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
+class FeedPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         # for_network
         for_network = kwargs.pop('for_network', None)
@@ -18,7 +18,7 @@ class SocialPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
         return qs
 
 
-class SocialPost(models.Model):
+class FeedPost(models.Model):
     network = models.CharField(_('social network'),
         choices=conf.ALL_NETWORKS,
         default=conf.NETWORK_FACEBOOK,
@@ -35,11 +35,11 @@ class SocialPost(models.Model):
 
     created = models.DateTimeField(_('created on'), default=now, editable=False)
     posted = models.DateTimeField(_('posted on'), null=True, editable=False)
-    objects = SocialPostQuerySet.as_manager()
+    objects = FeedPostQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _('post')
-        verbose_name_plural = _('posts')
+        verbose_name = _('feed post')
+        verbose_name_plural = _('feeds')
         ordering = ('-scheduled', '-created', )
         index_together = (('network', 'content_type', 'object_id'), )
 
