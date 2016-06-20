@@ -52,7 +52,7 @@
     };
 
     $(document).ready(function() {
-        loadBlocks();
+        setTimeout(loadBlocks, 0);
     });
 
 })(jQuery);
