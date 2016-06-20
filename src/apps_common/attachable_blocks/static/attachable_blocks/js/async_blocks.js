@@ -14,7 +14,7 @@
             })
      */
 
-    var loadBlocks = function() {
+    $(document).ready(function() {
         // собираем все ключи кэшированных блоков
         var keys = [];
         var $blocks = $('.async-block');
@@ -49,10 +49,6 @@
                 $(document).trigger('ready.ajax_blocks');
             }
         });
-    };
-
-    $(document).ready(function() {
-        setTimeout(loadBlocks, 0);
     });
 
 })(jQuery);
