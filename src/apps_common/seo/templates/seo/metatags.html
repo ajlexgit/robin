@@ -1,16 +1,20 @@
-<meta charset="utf-8">
-<meta name="keywords" content="{{ seo.keywords }}"/>
-<meta name="description" content="{{ seo.description }}"/>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{% load cache %}
 
-{% if seo.canonical %}
-  <link rel="canonical" href="{{ seo.canonical }}">
-{% endif %}
+{% cache 600 seo_meta request.path_info %}
+  <meta charset="utf-8">
+  <meta name="keywords" content="{{ seo.keywords }}"/>
+  <meta name="description" content="{{ seo.description }}"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% for key, value in seo.opengraph.data.items %}
-  <meta property="{{ key }}" content="{{ value }}">
-{% endfor %}
+  {% if seo.canonical %}
+    <link rel="canonical" href="{{ seo.canonical }}">
+  {% endif %}
 
-{% for key, value in seo.twitter_card.data.items %}
-  <meta name="twitter:{{ key }}" content="{{ value }}">
-{% endfor %}
+  {% for key, value in seo.opengraph.data.items %}
+    <meta property="{{ key }}" content="{{ value }}">
+  {% endfor %}
+
+  {% for key, value in seo.twitter_card.data.items %}
+    <meta name="twitter:{{ key }}" content="{{ value }}">
+  {% endfor %}
+{% endcache %}

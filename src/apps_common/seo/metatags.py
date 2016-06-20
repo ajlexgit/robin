@@ -45,10 +45,6 @@ class MetaTags:
             return self.request.build_absolute_uri(image)
 
     @property
-    def original_data(self):
-        return self._dict
-
-    @property
     def data(self):
         return self._dict
 
@@ -86,8 +82,6 @@ class TwitterCard(MetaTags):
         super().__init__(request)
         self._dict['card'] = 'summary'
 
-
-
     def _format_value(self, key, value):
         if key not in self.ALLOWED:
             return
@@ -97,6 +91,11 @@ class TwitterCard(MetaTags):
         image = self._dict.get('image')
         if image:
             self._dict['image'] = self._format_image(image)
+
+            if isinstance(image, ImageFieldFile):
+                image_size = image._get_image_dimensions()
+                is_large = image_size[0] >= 400 and image_size[1] >= 200
+                self._dict['card'] = 'summary_large_image' if is_large else 'summary'
 
         super()._format()
 
@@ -109,3 +108,4 @@ class TwitterCard(MetaTags):
         descr = self._dict.get('description')
         if descr:
             self._dict['description'] = description(descr, 30, 120)
+
