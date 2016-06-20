@@ -8,9 +8,12 @@ def get_blocks(request):
     if not request.is_ajax():
         return HttpResponseForbidden()
 
+    keys = request.GET.get('keys', '')
+    if not keys:
+        return ''
+
     result = {}
-    keys = request.POST.getlist('keys[]')
-    for block_id in keys:
+    for block_id in keys.split(','):
         try:
             block_id = int(block_id)
         except (TypeError, ValueError):
