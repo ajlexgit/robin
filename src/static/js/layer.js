@@ -8,6 +8,8 @@
             jquery.utils.js, media_inspector.js
 
         Параметры:
+            selector        - селектор элементов, которые будут перемещаться
+            outer           - перемещать элементы даже когда блок вне области видимости
             strategy        - стратегия перемещения блока (top / transform)
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
@@ -21,22 +23,9 @@
             // Перемещение начинается от точки, когда контейнер становится видимым
 
             $('.layer').layer({
-                onInit: function() {
-                    this.$ctnr = $('#ctnr');
-                },
-                calcOffset: function(win_scroll) {
-                    var ctnr_top = this.$ctnr.offset().top;
-                    var ctnr_height = this.$ctnr.outerHeight();
-                    var win_height = $.winHeight();
-
-                    var from_point = ctnr_top - win_height;
-                    var to_point = ctnr_top + ctnr_height;
-
-                    if ((win_scroll >= from_point) && (win_scroll <= to_point)) {
-                        return parseInt(0.5 * (win_scroll - from_point));
-                    } else {
-                        return false;
-                    }
+                selector: '.item',
+                calcOffset: function($item, params) {
+                    return parseInt(0.2 * params.scroll)
                 }
             })
 
@@ -54,24 +43,30 @@
         ];
 
         cls.defaults = {
+            selector: 'img',
+            outer: false,
             strategy: cls.STRATEGY_TOP,
             minEnabledWidth: 768,
 
             onInit: $.noop,
-            onDisable: $.noop,
-            calcOffset: function(win_scroll) {
-                return parseInt(0.5 * win_scroll)
+            onDisable: function() {
+                if (this.opts.strategy == 'top') {
+                    this.$items.css('top', '');
+                } else {
+                    this.$items.css('transform', '');
+                }
+            },
+            calcOffset: function($item, params) {
+                return parseInt(0.5 * params.scroll)
             }
         };
 
-        cls.DATA_KEY = 'layer';
 
-
-        cls.init = function(element, options) {
+        cls.init = function(root, options) {
             superclass.init.call(this);
 
-            this.$elem = $(element).first();
-            if (!this.$elem.length) {
+            this.$root = $(root).first();
+            if (!this.$root.length) {
                 return this.raise('block not found');
             }
 
@@ -81,24 +76,22 @@
                 return this.raise('undefined strategy');
             }
 
-            // отвязывание старого экземпляра
-            var old_instance = this.$elem.data(this.DATA_KEY);
-            if (old_instance) {
-                old_instance.destroy();
+            this.$items = this.$root.find(this.opts.selector);
+            if (!this.$items.length) {
+                return this.raise('items not found');
             }
 
             // Сохраняем объект в массив для использования в событиях
             layers.push(this);
-            this.$elem.data(this.DATA_KEY, this);
             this.opts.onInit.call(this);
 
             // Включение и выключение параллакса в зависимости
             // от ширины окна браузера
             var that = this;
-            $.mediaInspector.inspect(this.$elem, {
+            $.mediaInspector.inspect(this.$root, {
                 point: that.opts.minEnabledWidth,
-                afterCheck: function($elem, opts, state) {
-                    var old_state = this.getState($elem);
+                afterCheck: function($root, opts, state) {
+                    var old_state = this.getState($root);
                     if (state === old_state) {
                         return
                     }
@@ -117,8 +110,7 @@
          */
         cls.destroy = function() {
             this.disable();
-            $.mediaInspector.ignore(this.$elem);
-            this.$elem.removeData(this.DATA_KEY);
+            $.mediaInspector.ignore(this.$root);
 
             var index = layers.indexOf(this);
             if (index >= 0) {
@@ -151,36 +143,49 @@
                 this._enabled = false;
             }
 
-            if (this.opts.strategy == 'top') {
-                this.$elem.css('top', '');
-            } else {
-                this.$elem.css('transform', '');
-            }
-
             this.opts.onDisable.call(this);
         };
 
         /*
-            Расчет смещения картинки по текущему положению окна
+            Расчет смещения элемента по текущему положению окна
          */
         cls.process = function(win_scroll) {
             if (!this._enabled) {
                 return
             }
 
-            win_scroll = win_scroll || $window.scrollTop();
+            var params = {
+                scroll: win_scroll || $window.scrollTop()
+            };
+
+            // ограничение областью видимости блока
+            if (!this.opts.outer) {
+                params.root_top = this.$root.offset().top;
+                params.root_height = this.$root.outerHeight();
+                params.win_height = $.winHeight();
+
+                params.from_point = params.root_top - params.win_height;
+                params.to_point = params.root_top + params.root_height;
+                if ((win_scroll < params.from_point) || (win_scroll > params.to_point)) {
+                    return
+                }
+            }
 
             // рассчет смещения
-            var offset = this.opts.calcOffset.call(this, win_scroll);
-            if (offset === false) {
-                return
-            }
+            var that = this;
+            this.$items.each(function() {
+                var $item = $(this);
+                var offset = that.opts.calcOffset.call(that, $item, params);
+                if (offset === false) {
+                    return
+                }
 
-            if (this.opts.strategy == 'top') {
-                this.$elem.css('top', offset + 'px');
-            } else {
-                this.$elem.css('transform', 'translateY(' + offset + 'px)');
-            }
+                if (that.opts.strategy == 'top') {
+                    $item.css('top', offset + 'px');
+                } else {
+                    $item.css('transform', 'translateY(' + offset + 'px)');
+                }
+            });
         };
     });
 
@@ -194,7 +199,7 @@
         $.each(layers, function(i, item) {
             $.animation_frame(function() {
                 item.process(win_scroll);
-            })(item.$elem.get(0));
+            })(item.$root.get(0));
         });
     };
 
