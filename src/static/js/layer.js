@@ -9,12 +9,12 @@
 
         Параметры:
             selector        - селектор элементов, которые будут перемещаться
-            outer           - перемещать элементы даже когда блок вне области видимости
             strategy        - стратегия перемещения блока (top / transform)
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
             onInit          - функция, выполняемая после инициализации объекта.
             onDisable       - функция, выполняемая при отключении плагина
+            beforeCalc      - функция, выполняемая перед расчетом смещения. Если вернёт false - блок не сдвинется
             calcOffset      - функция, рассчитывающая смещение блока.
                               Если вернет false - блок останется на месте.
 
@@ -25,7 +25,8 @@
             $('.layer').layer({
                 selector: '.item',
                 calcOffset: function($item, params) {
-                    return parseInt(0.2 * params.scroll)
+                    var percentage = (params.scroll - params.from_point) / (params.to_point - params.from_point);
+                    return percentage * (params.win_height - $item.height());
                 }
             })
 
@@ -44,20 +45,30 @@
 
         cls.defaults = {
             selector: 'img',
-            outer: false,
-            strategy: cls.STRATEGY_TOP,
+            strategy: cls.STRATEGY_TRANSFORM,
             minEnabledWidth: 768,
 
             onInit: $.noop,
+            beforeCalc: function(params) {
+                params.root_top = this.$root.offset().top;
+                params.root_height = this.$root.outerHeight();
+                params.win_height = $.winHeight();
+
+                params.from_point = params.root_top - params.win_height;
+                params.to_point = params.root_top + params.root_height;
+                if ((params.scroll < params.from_point) || (params.scroll > params.to_point)) {
+                    return false
+                }
+            },
+            calcOffset: function($item, params) {
+                return parseInt(0.5 * params.scroll)
+            },
             onDisable: function() {
                 if (this.opts.strategy == 'top') {
                     this.$items.css('top', '');
                 } else {
                     this.$items.css('transform', '');
                 }
-            },
-            calcOffset: function($item, params) {
-                return parseInt(0.5 * params.scroll)
             }
         };
 
@@ -159,16 +170,8 @@
             };
 
             // ограничение областью видимости блока
-            if (!this.opts.outer) {
-                params.root_top = this.$root.offset().top;
-                params.root_height = this.$root.outerHeight();
-                params.win_height = $.winHeight();
-
-                params.from_point = params.root_top - params.win_height;
-                params.to_point = params.root_top + params.root_height;
-                if ((win_scroll < params.from_point) || (win_scroll > params.to_point)) {
-                    return
-                }
+            if (this.opts.beforeCalc.call(this, params) === false) {
+                return
             }
 
             // рассчет смещения
