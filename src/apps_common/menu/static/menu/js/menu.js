@@ -117,7 +117,7 @@
         })
     }, 100));
 
-    $(document).ready(function() {
+    $(document).on('ready.ajaxcache', function() {
         window.menu = Menu({
             fullHeight: true
         }).on('resize', function(winWidth) {
@@ -126,6 +126,6 @@
                 this.hide();
             }
         });
-    })
+    });
 
 })(jQuery);
