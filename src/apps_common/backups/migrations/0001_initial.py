@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Backup',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
             ],
             options={
-                'verbose_name_plural': 'backups',
                 'verbose_name': 'backup',
+                'verbose_name_plural': 'backups',
                 'managed': False,
                 'default_permissions': (),
             },
