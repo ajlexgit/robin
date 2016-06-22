@@ -61,5 +61,6 @@
             python3 manage.py autopost
 """
 from .rss import SocialRssFeed
+from .utils import post_to_twitter, post_to_facebook, post_to_linkedin
 
 default_app_config = 'social_networks.apps.Config'
