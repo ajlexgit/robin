@@ -29,7 +29,7 @@ def get_channel_info(channel_id):
 
     try:
         item = result['items'][0]
-    except KeyError:
+    except (KeyError, IndexError):
         return {}
 
     return {
@@ -95,7 +95,7 @@ def get_video_info(video_id):
 
     try:
         item = result['items'][0]
-    except KeyError:
+    except (KeyError, IndexError):
         return {}
 
     return {

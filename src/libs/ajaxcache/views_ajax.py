@@ -14,7 +14,7 @@ def get_cached(request):
     if not keys:
         return JsonResponse({})
 
-    keys = filter(lambda x: str(x).startswith('template.cache.'), keys)
+    keys = filter(lambda x: str(x).startswith('template.cache.'), keys.split(','))
     return JsonResponse({
         key: cache.get(key) or ''
         for key in keys

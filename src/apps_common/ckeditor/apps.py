@@ -7,4 +7,4 @@ class Config(AppConfig):
     verbose_name = _('CKEditor')
 
     def ready(self):
-        import ckeditor.signals.handlers
+        from .signals import handlers
