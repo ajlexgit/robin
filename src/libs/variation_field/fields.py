@@ -538,9 +538,6 @@ class VariationImageField(models.ImageField):
                 finally:
                     source_image.close()
 
-        # Удаляем загруженный исходник
-        self.storage.delete(field_file.name)
-
         # Записываем путь к исходнику
         setattr(instance, self.attname, source_path)
 
@@ -707,6 +704,9 @@ class VariationImageField(models.ImageField):
                 update_fields[self.attname] = source_path
         finally:
             field_file.close()
+
+            # Удаляем загруженный исходник
+            self.storage.delete(field_file.name)
 
         # Сохраняем область обрезки в поле, если оно указано
         if croparea and self.crop_field:
