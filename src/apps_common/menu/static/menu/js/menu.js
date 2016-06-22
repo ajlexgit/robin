@@ -117,7 +117,7 @@
         })
     }, 100));
 
-    $(document).on('ready.ajaxcache', function() {
+    $(document).on('loaded.ajaxcache', function() {
         window.menu = Menu({
             fullHeight: true
         }).on('resize', function(winWidth) {

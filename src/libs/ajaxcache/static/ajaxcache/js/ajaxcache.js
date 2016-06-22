@@ -8,8 +8,8 @@
             jquery.utils.js
 
         Для отлова события загрузки всех блоков можно
-        использовать событие "ready.ajaxcache":
-            $(document).on('ready.ajaxcache', function() {
+        использовать событие "loaded.ajaxcache":
+            $(document).on('loaded.ajaxcache', function() {
 
             })
      */
@@ -49,7 +49,7 @@
                 });
 
                 // callback event
-                $(document).trigger('ready.ajaxcache');
+                $(document).trigger('loaded.ajaxcache');
             }
         });
     });

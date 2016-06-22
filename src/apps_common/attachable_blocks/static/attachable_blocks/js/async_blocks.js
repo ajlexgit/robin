@@ -8,8 +8,8 @@
             jquery.utils.js
 
         Для отлова события загрузки всех блоков можно
-        использовать событие "ready.ajax_blocks":
-            $(document).on('ready.ajax_blocks', function() {
+        использовать событие "loaded.ajax_blocks":
+            $(document).on('loaded.ajax_blocks', function() {
 
             })
      */
@@ -46,7 +46,7 @@
                 });
 
                 // callback event
-                $(document).trigger('ready.ajax_blocks');
+                $(document).trigger('loaded.ajax_blocks');
             }
         });
     });
