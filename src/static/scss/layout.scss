@@ -81,6 +81,7 @@ body {
   }
 
   .section-image {
+    @include no-blur;
     @include centrizeImage($zIndex: 2);
   }
 
