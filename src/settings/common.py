@@ -112,6 +112,7 @@ SUIT_CONFIG = {
             'app': 'social_networks',
             'icon': 'icon-lock',
             'models': (
+                'SocialLinks',
                 'FeedPost',
             )
         },

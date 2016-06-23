@@ -1,11 +1,26 @@
 from django.db import models
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.contrib.contenttypes.models import ContentType
+from solo.models import SingletonModel
 from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.description import description
 from . import conf
+
+
+class SocialLinks(SingletonModel):
+    social_facebook = models.URLField(_('facebook'), max_length=255, blank=True)
+    social_twitter = models.URLField(_('twitter'), max_length=255, blank=True)
+    social_google = models.URLField(_('google plus'), max_length=255, blank=True)
+    updated = models.DateTimeField(_('change date'), auto_now=True)
+
+    class Meta:
+        verbose_name = _('Links')
+
+    def __str__(self):
+        return ugettext('Social links')
+
 
 
 class FeedPostQuerySet(AliasedQuerySetMixin, models.QuerySet):

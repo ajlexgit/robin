@@ -8,8 +8,10 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404, JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles.storage import staticfiles_storage
+from solo.admin import SingletonModelAdmin
+
 from project.admin import ModelAdminMixin
-from .models import FeedPost
+from .models import SocialLinks, FeedPost
 from .forms import FeedPostForm, AutpostForm
 from . import conf
 
@@ -23,6 +25,21 @@ SPRITE_ICONS = (
     'pinterest',
     'instagram',
 )
+
+
+@admin.register(SocialLinks)
+class SocialLinksAdmin(ModelAdminMixin, SingletonModelAdmin):
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'social_facebook', 'social_twitter', 'social_google',
+            ),
+        }),
+    )
+    suit_form_tabs = (
+        ('general', _('General')),
+    )
 
 
 @admin.register(FeedPost)
