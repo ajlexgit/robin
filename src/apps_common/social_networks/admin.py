@@ -68,12 +68,6 @@ class FeedPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         ('general', _('General')),
     )
 
-    def has_add_permission(self, request):
-        return request.user.is_superuser
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser
-
     def suit_cell_attributes(self, obj, column):
         """ Классы для ячеек списка """
         default = super().suit_cell_attributes(obj, column)
