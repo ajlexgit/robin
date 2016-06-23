@@ -27,7 +27,7 @@ class FeedPost(models.Model):
 
     text = models.TextField(_('text'))
     url = models.URLField(_('URL'))
-    scheduled = models.BooleanField(_('sheduled for sharing'), default=True)
+    scheduled = models.BooleanField(_('sheduled to share'), default=True)
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True, editable=False)
     object_id = models.PositiveIntegerField(null=True, blank=True, editable=False)

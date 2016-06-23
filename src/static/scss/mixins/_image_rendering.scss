@@ -1,0 +1,8 @@
+@import "conf";
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/image-rendering
+@mixin no-blur() {
+  image-rendering: -o-crisp-edges;            /* Opera                          */
+  image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+  image-rendering: crisp-edges;               /* CSS3 Proposed                  */
+}
