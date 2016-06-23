@@ -87,11 +87,11 @@ class FeedPostAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def action_schedule_posts(self, request, queryset):
         queryset.update(scheduled=True)
-    action_schedule_posts.short_description = _('Schedule %(verbose_name_plural)s to be published')
+    action_schedule_posts.short_description = _('Schedule %(verbose_name_plural)s to publish')
 
     def action_unschedule_posts(self, request, queryset):
         queryset.update(scheduled=False)
-    action_unschedule_posts.short_description = _('Unschedule %(verbose_name_plural)s to be published')
+    action_unschedule_posts.short_description = _('Unschedule %(verbose_name_plural)s to publish')
 
 
 class AutoPostMixin(ModelAdminMixin):
