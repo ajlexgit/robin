@@ -4,4 +4,4 @@ from django.utils.translation import ugettext_lazy as _
 
 class Config(AppConfig):
     name = 'social_networks'
-    verbose_name = _('Social Networks')
+    verbose_name = _('Social Media')
