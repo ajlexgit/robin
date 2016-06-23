@@ -16,10 +16,10 @@ class SocialLinks(SingletonModel):
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
-        verbose_name = _('Links')
+        verbose_name = _('Links to social networks')
 
     def __str__(self):
-        return ugettext('Social links')
+        return ugettext('Links to social networks')
 
 
 
