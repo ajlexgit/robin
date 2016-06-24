@@ -25,11 +25,9 @@
 
             <!-- Навигация -->
             {% if paginator.num_pages > 1 %}
-                <div class="grid">
-                    <div class="gc-wide-6 gc-6 gc-tablet-6 gc-mobile-4 gc-alone">
-                        {{ paginator }}
-                    </div>
-                </div>
+              <div class="grid-block">
+                {{ paginator }}
+              </div>
             {% endif %}
 
 
@@ -49,7 +47,7 @@
         с граничными, чьи номера будут показаны.
 
         Paginator.min_zip_pages - минимальное количествово страниц,
-        заменямых на None.
+        заменямых на многоточие.
 
     Примеры:
         1) page_neighbors = 2, side_neighbors = 0, min_zip_pages = 2
@@ -70,11 +68,18 @@
             1 ... (5) ... 10
             1 ... (8) 9 10
 
-    Для реализации постраничной навигации, при которой все
-    страницы изначально находятся на странице и навигация
-    осуществляется через показ/скрытие контейнеров через JS - добавлено
-    свойство Paginator.pages, возвращающее кортеж объектов Paginator.Page.
-
+    Для реализации постраничной навигации, при которой HTML-код всех
+    страниц присутствует на сайте полностью (навигация осуществляется
+    через показ/скрытие контейнеров через JS) - добавлено свойство Paginator.pages,
+    возвращающее кортеж объектов Paginator.pages:
+        {% for num, page in paginator.pages %}
+          <div class="page={{ num }}">
+            {% for item in page %}
+                {{ item.name }}
+                ...
+            {% endfor %}
+          </div>
+        {% endfor %}
 """
 
 from .paginator import Paginator, EmptyPage

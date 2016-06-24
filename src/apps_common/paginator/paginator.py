@@ -49,7 +49,7 @@ class Paginator(paginator.Paginator):
     def pages(self):
         """ Кортеж всех объектов страниц с их полными данными """
         self.object_list = self.object_list[:]      # принудительное выполнение запроса
-        return (self.page(page_num) for page_num in self.num_pages)
+        return tuple((page_num, self.page(page_num)) for page_num in self.num_pages)
 
     @cached_property
     def zipped_page_range(self):
