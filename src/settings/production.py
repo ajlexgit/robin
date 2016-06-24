@@ -55,9 +55,9 @@ LOGGING = {
             'level': 'INFO',
         },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'file'],
             'propagate': False,
-            'level': 'ERROR',
+            'level': 'WARNING',
         },
         '': {
             'handlers': ['file'],
