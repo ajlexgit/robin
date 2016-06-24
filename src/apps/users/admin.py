@@ -45,6 +45,7 @@ class CustomUserAdmin(ModelAdminMixin, UserAdmin):
             'fields': ('last_login', 'date_joined'),
         }),
     )
+    readonly_fields = ('last_login', 'date_joined')
     list_display = ('avatar_username', 'email', 'first_name', 'last_name', 'is_staff', 'login_as')
 
     def avatar_username(self, obj):
@@ -62,6 +63,27 @@ class CustomUserAdmin(ModelAdminMixin, UserAdmin):
             return tuple(default)
 
         return default
+
+    def get_fieldsets(self, request, obj=None):
+        """ Запрещаем не-суперюзеру создавать админов """
+        fieldsets = super().get_fieldsets(request, obj)
+        if not request.user.is_superuser:
+            fields_to_remove = ('is_superuser', 'user_permissions')
+            for key, opts in fieldsets:
+                opts['fields'] = tuple(
+                    fieldname
+                    for fieldname in opts.get('fields', [])
+                    if fieldname not in fields_to_remove
+                )
+
+        return fieldsets
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            return qs.exclude(is_superuser=True)
+        else:
+            return qs
 
     def login_as(self, obj):
         url = resolve_url('admin_users:login_as', user_id=obj.pk)
