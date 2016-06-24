@@ -14,9 +14,6 @@
                 {
                     'app': 'sitemap',
                     'icon': 'icon-file',
-                    'models': (
-                        'SitemapConfig',
-                    )
                 },
                 ...
             }
@@ -27,7 +24,7 @@
             ...
 
     Использование:
-        views.py:
+        # views.py:
 
             def _build_map(self):
                 sitemap = Map()
