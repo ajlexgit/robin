@@ -23,7 +23,6 @@ class SocialLinks(SingletonModel):
         return ugettext('Links to social media')
 
 
-
 class FeedPostQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
         # for_network
