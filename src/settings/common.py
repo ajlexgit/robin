@@ -278,44 +278,16 @@ SCC_DISABLED_URLS = [
     r'/dladmin/',
 ]
 
-#   Форматы вывода валют ValuteField в зависимости от языка
-#    decimal_places     - кол-во чисел после запятой
-#    decimal_mark       - разделитель целого и частного
-#    thousands          - разделитель тысячных разрядов
-#    trail              - не выводить дробную часть, если в ней только нули
-#    utf_format         - формат с использованием UTF-символов
-#    alternative_format - формат без использования UTF-символов
-#    widget_attrs       - дополнительные параметры виждета
-VALUTE_FORMATS = {
-    ('ru',): {
-        'decimal_places': 2,
-        'decimal_mark': '.',
-        'thousands': ' ',
-        'trail': True,
-
-        'utf_format': '{}\u20bd',
-        'alternative_format': '{} руб.',
-        'widget_attrs': {
-            'append': 'руб.',
-        },
-    },
-    ('en',): {
-        'decimal_places': 2,
-        'decimal_mark': '.',
-        'thousands': ',',
-        'trail': False,
-
-        'utf_format': '${}',
-        'alternative_format': '${}',
-        'widget_attrs': {
-            'prepend': '$',
-        },
-    }
-}
+# Формат валют (RUB / USD / EUR / GBP)
+# Для включения зависимости от языка сайта - задать None или удалить
+VALUTE_FORMAT = None
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
 # ==================================================================
+
+# DB
+DATABASES = {}
 
 # Cache
 CACHES = {
@@ -328,11 +300,6 @@ CACHES = {
             "PASSWORD": "",
         }
     }
-}
-
-# DB
-DATABASES = {
-
 }
 
 # Celery
