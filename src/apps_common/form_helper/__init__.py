@@ -49,8 +49,6 @@
             {% load form_helper %}
             ...
             <form action="" method="post">
-                {% csrf_token %}
-
                 {% render_form form %}
 
                 <input type="submit" value="Submit">

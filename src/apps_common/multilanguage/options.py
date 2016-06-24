@@ -13,7 +13,7 @@ MULTILANGUAGE_COOKIE_KEY = getattr(settings, 'MULTILANGUAGE_COOKIE_KEY', 'no_red
 # Имя GET-параметра, запрещающего авторедирект
 MULTILANGUAGE_GET_PARAM = 'no_redirect'
 
-# Строки в User-Agent, которые не должны редиректиться
+# Строки в User-Agent, для которых запещён редирект
 ROBOTS_UA = tuple(map(str.lower, (
     'Googlebot',
     'Mail.RU_Bot',
