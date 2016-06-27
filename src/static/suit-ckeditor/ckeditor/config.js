@@ -9,6 +9,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.linkShowTargetTab = false;
     config.dataIndentationChars = '  ';
     config.tabSpaces = 2;
+    config.extraAllowedContent = 'img(*)[*]';
 
     config.format_tags = "p;h2;h3;h4";
 

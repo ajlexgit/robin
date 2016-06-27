@@ -104,7 +104,6 @@
 
             // UPLOAD
             editor.addCommand("simplephotos", new CKEDITOR.dialogCommand("simplephotos", {
-                allowedContent: 'img(!simple-photo)[!src,alt,width,height,title,srcset,sizes,data-id]',
                 modes: {
                     wysiwyg: 1,
                     source: 0
