@@ -147,7 +147,7 @@ class Command(BaseCommand):
             try:
                 api.campaings.content(
                     campaign.remote_id,
-                    html=campaign.render_html(),
+                    html=campaign.render_html(scheme='http://'),
                     plain=campaign.render_plain(),
                 )
             except api.SubscribeAPIError as e:

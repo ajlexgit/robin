@@ -10,7 +10,9 @@ from ckeditor.fields import CKEditorUploadField
 from libs.color_field.fields import ColorField
 from libs.stdimage.fields import StdImageField
 from libs.storages.media_storage import MediaStorage
+from . import utils
 from . import conf
+
 
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
 re_newlines = re.compile(r'\n{3,}')
@@ -189,11 +191,14 @@ class Campaign(models.Model):
                     self.date_done = date_done
                     self.status = Campaign.STATUS_DONE
 
-    def render_html(self, request=None):
-        return loader.render_to_string('mailerlite/standart/html_version.html', {
+    def render_html(self, request=None, scheme='//'):
+        content = loader.render_to_string('mailerlite/standart/html_version.html', {
             'config': MailerConfig.get_solo(),
             'campaign': self,
-        }, request=request).replace('url(//', 'url(http://')
+        }, request=request)
+        content = content.replace('url(//', 'url(http://')
+        content = utils.absolute_links(content, scheme=scheme)
+        return content
 
     def render_plain(self, request=None):
         content = loader.render_to_string('mailerlite/standart/plain_version.html', {

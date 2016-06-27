@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load mailerlite %}
 
 <style>
   body {
@@ -138,7 +137,7 @@
              style="background: #FFFFFF" class="main">
         <tr>
           <td class="content">
-            {% absolute_links campaign.text|safe %}
+            {{ campaign.text|safe }}
           </td>
         </tr>
       </table>
