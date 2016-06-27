@@ -1,9 +1,32 @@
 {% load i18n %}
 
-<style>
+<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!--xmlns  fix Outlook Scaling-->
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Fix Outlook Scaling-->
+  <!--[if gte mso 9]><xml>
+  <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+  <o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings>
+  </xml><![endif]-->
+
+  <title>{{ config.company }}</title>
+
+  <style>
   body {
     margin: 0;
     padding: 0;
+  }
+
+  .ExternalClass * {
+    line-height: 100%;
   }
 
   body, table, td, p, a, li {
@@ -96,7 +119,8 @@
   }
 </style>
 
-
+</head>
+<body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="{{ config.bg_color }}"
        {% if config.bg_image %}
        style="background-image: url({{ config.bg_image.url }});"
@@ -219,3 +243,5 @@
   </tr>
   </tbody>
 </table>
+</body>
+</html>
