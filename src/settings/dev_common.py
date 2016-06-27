@@ -68,21 +68,13 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'ERROR',
         },
-        'sql': {
+        'requests': {
             'handlers': ['null'],
-            'level': 'DEBUG',
-        },
-        'sphinx': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-        'social_networks': {
-            'handlers': ['console'],
-            'level': 'INFO',
+            'propagate': False,
         },
         '': {
-            'handlers': ['null'],
-            'level': 'DEBUG',
+            'handlers': ['console'],
+            'level': 'INFO',
         }
     },
 }
