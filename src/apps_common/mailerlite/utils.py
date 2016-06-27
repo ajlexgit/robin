@@ -8,7 +8,7 @@ def absolute_links(html, scheme='//'):
     """
     site = get_current_site(None)
 
-    soup = Soup('<body>%s</body>' % html, 'html5lib')
+    soup = Soup(html, 'html5lib')
     for tag in soup.findAll('a'):
         href = tag.get('href')
         if not href:
