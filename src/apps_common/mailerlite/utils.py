@@ -1,8 +1,5 @@
-import re
 from bs4 import BeautifulSoup as Soup
 from django.contrib.sites.shortcuts import get_current_site
-
-re_http = re.compile(r'^https?://', re.IGNORECASE)
 
 
 def absolute_links(html, scheme='//'):
@@ -20,7 +17,7 @@ def absolute_links(html, scheme='//'):
         tag['target'] = '_blank'
         if href.startswith('//'):
             tag['href'] = '%s%s' % (scheme, href[2:])
-        elif not re_http.match(href):
+        elif href.startswith('/'):
             tag['href'] = '%s%s%s' % (scheme, site.domain, href)
 
     for tag in soup.findAll('img'):
@@ -30,7 +27,7 @@ def absolute_links(html, scheme='//'):
 
         if src.startswith('//'):
             tag['src'] = '%s%s' % (scheme, src[2:])
-        elif not re_http.match(src):
+        elif href.startswith('/'):
             tag['src'] = '%s%s%s' % (scheme, site.domain, src)
 
         # srcset
@@ -43,7 +40,7 @@ def absolute_links(html, scheme='//'):
             url, width = srcset_part.strip().split()
             if url.startswith('//'):
                 url = '%s%s' % (scheme, url[2:])
-            elif not re_http.match(url):
+            elif href.startswith('/'):
                 url = '%s%s%s' % (scheme, site.domain, url)
             srcset_final.append('%s %s' % (url, width))
         tag['srcset'] = ','.join(srcset_final)
