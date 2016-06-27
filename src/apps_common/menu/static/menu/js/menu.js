@@ -53,17 +53,11 @@
             Обработчик нажатия кнопки
          */
         cls.onClick = function($button) {
-            var $menu = $(this.opts.menuSelector).first();
-            if (!$menu.length) {
-                this.error('menu element not found');
-                return false;
-            }
-
             var currently_active = $button.hasClass(this.opts.buttonActiveClass);
             if (currently_active) {
-                this.hide($menu)
+                this.hide()
             } else {
-                this.show($menu)
+                this.show()
             }
 
             return false;
@@ -81,7 +75,12 @@
         /*
             Показ меню
          */
-        cls.show = function($menu) {
+        cls.show = function() {
+            var $menu = $(this.opts.menuSelector).first();
+            if (!$menu.length) {
+              return false;
+            }
+
             if (this.trigger('before_show') === false) {
                 return false;
             }
@@ -94,7 +93,12 @@
         /*
             Скрытие меню
          */
-        cls.hide = function($menu) {
+        cls.hide = function() {
+            var $menu = $(this.opts.menuSelector).first();
+            if (!$menu.length) {
+                return false;
+            }
+
             if (this.trigger('before_hide') === false) {
                 return false;
             }
@@ -108,7 +112,7 @@
         var winWidth = $.winWidth();
         $.each(menus, function() {
             var $menu = $(this.opts.menuSelector).first();
-            if (!$menu.hasClass(this.opts.menuActiveClass)) {
+            if (!$menu.length || !$menu.hasClass(this.opts.menuActiveClass)) {
                 return
             }
 
@@ -126,6 +130,6 @@
                 this.hide();
             }
         });
-    });
+    })
 
 })(jQuery);
