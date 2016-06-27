@@ -94,7 +94,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
         (_('Content'), {
             'fields': (
-                'subject', 'header_image', 'text',
+                'subject', 'preheader', 'header_image', 'text',
             )
         }),
         (_('Statistics'), {

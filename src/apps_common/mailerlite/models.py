@@ -112,6 +112,7 @@ class Campaign(models.Model):
 
     groups = models.ManyToManyField(Group)
     subject = models.CharField(_('subject'), max_length=255)
+    preheader = models.CharField(_('pre-header'), max_length=255, blank=True)
     header_image = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('mailerlite/campaigns'),
