@@ -1,11 +1,11 @@
 import re
 from html import unescape
-from django.utils.translation import get_language
 from bs4 import BeautifulSoup as Soup, NavigableString
 from softhyphen.html import get_hyphenator_for_language, SOFT_HYPHEN
 from django.core.cache import caches
-from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
+from django.utils.html import strip_tags, escape
+from django.utils.translation import get_language
 from django.template import Library, defaultfilters
 
 register = Library()

@@ -25,7 +25,6 @@ def get_referer_url(request):
 
     site = get_current_site(request)
     url_parts = list(urlparse(referer))
-    print(url_parts[1], site.domain)
     if url_parts[1] != site.domain:
         return resolve_url(options.MULTILANGUAGE_FALLBACK_URL)
 
