@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView
 from libs.views import CachedViewMixin
 from seo import Seo
+from mailerlite.models import Group
+from mailerlite import SubscribeForm
 from .models import MainPageConfig
 
 
@@ -13,6 +15,10 @@ class IndexView(CachedViewMixin, TemplateView):
         return self.config.updated
 
     def get(self, request, *args, **kwargs):
+        subscribe_form = SubscribeForm(initial={
+            'groups': Group.objects.all(),
+        })
+
         # SEO
         seo = Seo()
         seo.set_data(self.config)
@@ -20,5 +26,6 @@ class IndexView(CachedViewMixin, TemplateView):
 
         return self.render_to_response({
             'config': self.config,
+            'subscribe_form': subscribe_form,
             'is_main_page': True,       # отменяет <noindex> шапки и подвала
         })

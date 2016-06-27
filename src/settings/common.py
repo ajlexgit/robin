@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'gallery',
     'google_maps',
     'header',
+    'mailerlite',
     'menu',
     'paginator',
     'seo',
@@ -67,6 +68,7 @@ INSTALLED_APPS = (
     'libs.ajaxcache',
     'libs.autocomplete',
     'libs.away',
+    'libs.color_field',
     'libs.js_storage',
     'libs.management',
     'libs.pipeline',
@@ -114,6 +116,16 @@ SUIT_CONFIG = {
             'models': (
                 'SocialLinks',
                 'FeedPost',
+            )
+        },
+        {
+            'app': 'mailerlite',
+            'icon': 'icon-envelope',
+            'models': (
+                'Campaign',
+                'Group',
+                'Subscriber',
+                'MailerConfig',
             )
         },
         '-',
@@ -281,6 +293,9 @@ SCC_DISABLED_URLS = [
 # Формат валют (RUB / USD / EUR / GBP)
 # Для включения зависимости от языка сайта - задать None или удалить
 VALUTE_FORMAT = None
+
+# Mailer Lite
+MAILERLITE_APIKEY = '438b26c79cbd9acea454a4c1ad5eda05'
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

@@ -89,6 +89,7 @@ PIPELINE['JAVASCRIPT'].update({
     },
     'main': {
         'source_filenames': PopupGallery.js + (
+            'mailerlite/js/subscribe.js',
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',
