@@ -135,7 +135,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             return '%s %s' % (status_text, button)
         elif obj.status == self.model.STATUS_QUEUED:
             info = self.model._meta.app_label, self.model._meta.model_name
-            cancel_url = reverse('admin:%s_%s_start' % info, args=(obj.id,))
+            cancel_url = reverse('admin:%s_%s_cancel' % info, args=(obj.id,))
             button = '<a href="%s" class="btn btn-mini btn-danger" style="margin-left: 10px">Cancel</a>' % cancel_url
             return '%s %s' % (status_text, button)
         else:
@@ -149,7 +149,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         info = self.model._meta.app_label, self.model._meta.model_name
         submit_urls = [
             url(r'^(\d+)/start/$', self.admin_site.admin_view(self.start_campaign), name='%s_%s_start' % info),
-            url(r'^(\d+)/cancel/$', self.admin_site.admin_view(self.cancel_campaign), name='%s_%s_start' % info),
+            url(r'^(\d+)/cancel/$', self.admin_site.admin_view(self.cancel_campaign), name='%s_%s_cancel' % info),
         ]
         return submit_urls + urls
 
