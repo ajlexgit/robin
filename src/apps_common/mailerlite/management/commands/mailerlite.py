@@ -201,7 +201,7 @@ class Command(BaseCommand):
         logger.info("Export subscribers...")
         new_subscribers = Subscriber.objects.filter(
             groups=group,
-            date_created__gte=self.config.export_subscribers_date
+            remote_id=0,
         ).distinct()
         for subscriber in new_subscribers:
             try:
