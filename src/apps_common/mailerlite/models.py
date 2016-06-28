@@ -100,12 +100,16 @@ class Group(models.Model):
 
 class Campaign(models.Model):
     STATUS_DRAFT = 0
-    STATUS_QUEUED = 1
-    STATUS_RUNNING = 2
-    STATUS_DONE = 3
+    STATUS_QUEUED = 10
+    STATUS_PUBLISHED = 20
+    STATUS_CONTENT = 21
+    STATUS_RUNNING = 22
+    STATUS_DONE = 30
     STATUSES = (
         (STATUS_DRAFT, _('Draft')),
         (STATUS_QUEUED, _('Queued')),
+        (STATUS_PUBLISHED, _('Published')),
+        (STATUS_CONTENT, _('Content setted')),
         (STATUS_RUNNING, _('Running')),
         (STATUS_DONE, _('Done')),
     )
@@ -213,8 +217,8 @@ class Campaign(models.Model):
 
 class Subscriber(models.Model):
     STATUS_QUEUED = 0
-    STATUS_SUBSCRIBED = 1
-    STATUS_UNSUBSCRIBED = 2
+    STATUS_SUBSCRIBED = 10
+    STATUS_UNSUBSCRIBED = 20
     STATUSES = (
         (STATUS_QUEUED, _('Queued')),
         (STATUS_SUBSCRIBED, _('Subscribed')),

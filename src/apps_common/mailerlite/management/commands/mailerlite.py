@@ -128,42 +128,53 @@ class Command(BaseCommand):
     def export_campaigns(self):
         """ Отправка рассылок в MailerLite """
         logger.info("Export campaigns...")
-        for campaign in Campaign.objects.filter(status=Campaign.STATUS_QUEUED, remote_id=0):
-            try:
-                response = api.campaings.create(
-                    subject=campaign.subject,
-                    groups=[group.remote_id for group in campaign.groups.all()],
-                    from_email=self.config.from_email,
-                    from_name=self.config.from_name,
-                )
-            except api.SubscribeAPIError as e:
-                logging.error(e.message)
-                continue
-            else:
-                campaign.remote_id = response['id']
-                campaign.remote_mail_id = response['mail_id']
-                campaign.save()
+        campaigns = Campaign.objects.filter(
+            status__in=(Campaign.STATUS_QUEUED, Campaign.STATUS_PUBLISHED, Campaign.STATUS_CONTENT)
+        )
+        for campaign in campaigns:
+            # Publish campaign
+            if campaign.status == Campaign.STATUS_QUEUED:
+                try:
+                    response = api.campaings.create(
+                        subject=campaign.subject,
+                        groups=[group.remote_id for group in campaign.groups.all()],
+                        from_email=self.config.from_email,
+                        from_name=self.config.from_name,
+                    )
+                except api.SubscribeAPIError as e:
+                    logging.error(e.message)
+                    continue
+                else:
+                    campaign.status = Campaign.STATUS_PUBLISHED
+                    campaign.remote_id = response['id']
+                    campaign.remote_mail_id = response['mail_id']
+                    campaign.save()
+                    logger.info("Published campaign '%s'" % campaign.subject)
 
             # Set content
-            try:
-                api.campaings.content(
-                    campaign.remote_id,
-                    html=campaign.render_html(scheme='https://' if conf.HTTPS_ALLOWED else 'http://'),
-                    plain=campaign.render_plain(),
-                )
-            except api.SubscribeAPIError as e:
-                logging.error(e.message)
-                continue
+            if campaign.status == Campaign.STATUS_PUBLISHED:
+                try:
+                    api.campaings.content(
+                        campaign.remote_id,
+                        html=campaign.render_html(scheme='https://' if conf.HTTPS_ALLOWED else 'http://'),
+                        plain=campaign.render_plain(),
+                    )
+                except api.SubscribeAPIError as e:
+                    logging.error(e.message)
+                    continue
+                else:
+                    campaign.status = Campaign.STATUS_CONTENT
+                    campaign.save()
+                    logger.info("Setted content for campaign '%s'" % campaign.subject)
 
             # Start
-            try:
-                api.campaings.run(campaign.remote_id)
-            except api.SubscribeAPIError as e:
-                logging.error(e.message)
-            else:
-                campaign.status = Campaign.STATUS_RUNNING
-                campaign.save()
-                logger.info("Exported campaign '%s'" % campaign.subject)
+            if campaign.status == Campaign.STATUS_CONTENT:
+                try:
+                    api.campaings.run(campaign.remote_id)
+                except api.SubscribeAPIError as e:
+                    logging.error(e.message)
+                else:
+                    logger.info("Started campaign '%s'" % campaign.subject)
 
     def import_campaigns(self):
         """ Загрузка рассылок """
