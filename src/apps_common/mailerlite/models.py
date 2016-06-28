@@ -130,7 +130,7 @@ class Campaign(models.Model):
             ),
         ),
     )
-    text = CKEditorUploadField(_('text'), height=300, editor_options=conf.CKEDITOR_CONFIG)
+    text = CKEditorUploadField(_('text'), editor_options=conf.CKEDITOR_CONFIG)
 
     sent = models.PositiveIntegerField(_('sent emails'), default=0, editable=False)
     opened = models.PositiveIntegerField(_('opened emails'), default=0, editable=False)
