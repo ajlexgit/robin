@@ -163,6 +163,7 @@ class Command(BaseCommand):
             else:
                 campaign.status = Campaign.STATUS_RUNNING
                 campaign.save()
+                logger.info("Exported campaign '%s'" % campaign.subject)
 
     def import_campaigns(self):
         """ Загрузка рассылок """
@@ -218,6 +219,7 @@ class Command(BaseCommand):
             else:
                 subscriber.remote_id = response['id']
                 subscriber.save()
+                logger.info("Exported subscriber '%s'" % subscriber.email)
 
     def handle(self, *args, **options):
         self.config = MailerConfig.get_solo()
