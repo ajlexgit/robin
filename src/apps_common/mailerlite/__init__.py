@@ -37,6 +37,10 @@
             url(r'^mailerlite/', include('mailerlite.urls', namespace='mailerlite')),
             ...
 
+        # crontab
+            */10 * * * * ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -eg -ic -ec -es
+            5,35 * * * * ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -is
+
 
     Использование:
         # views.py:

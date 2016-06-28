@@ -2,11 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import libs.stdimage.fields
 import ckeditor.fields
 import django.utils.timezone
-import libs.stdimage.fields
-import libs.storages.media_storage
 import libs.color_field.fields
+import libs.storages.media_storage
 
 
 class Migration(migrations.Migration):
@@ -18,59 +18,60 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Campaign',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=255, verbose_name='subject')),
-                ('preheader', models.CharField(blank=True, max_length=255, verbose_name='pre-header')),
-                ('header_image', libs.stdimage.fields.StdImageField(variations={'admin': {'size': (480, 90)}, 'normal': {'size': (640, 150), 'quality': 95}}, min_dimensions=(640, 150), blank=True, verbose_name='preview', storage=libs.storages.media_storage.MediaStorage('mailerlite/campaigns'), upload_to='', aspects='normal')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('subject', models.CharField(verbose_name='subject', max_length=255)),
+                ('preheader', models.CharField(verbose_name='pre-header', max_length=255, blank=True)),
+                ('header_image', libs.stdimage.fields.StdImageField(verbose_name='preview', blank=True, storage=libs.storages.media_storage.MediaStorage('mailerlite/campaigns'), min_dimensions=(640, 150), aspects='normal', upload_to='', variations={'admin': {'size': (480, 90)}, 'normal': {'quality': 95, 'size': (640, 150)}})),
                 ('text', ckeditor.fields.CKEditorUploadField(verbose_name='text')),
-                ('sent', models.PositiveIntegerField(default=0, verbose_name='sent emails', editable=False)),
-                ('opened', models.PositiveIntegerField(default=0, verbose_name='opened emails', editable=False)),
-                ('clicked', models.PositiveIntegerField(default=0, verbose_name='clicks from emails', editable=False)),
-                ('status', models.SmallIntegerField(choices=[(0, 'Draft'), (1, 'Queued'), (2, 'Running'), (3, 'Done')], default=0, verbose_name='status')),
-                ('remote_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', default=0, db_index=True, editable=False)),
-                ('remote_mail_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', default=0, db_index=True, editable=False)),
-                ('date_created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date created', editable=False)),
-                ('date_started', models.DateTimeField(verbose_name='date started', editable=False, null=True)),
-                ('date_done', models.DateTimeField(verbose_name='date done', editable=False, null=True)),
+                ('sent', models.PositiveIntegerField(verbose_name='sent emails', editable=False, default=0)),
+                ('opened', models.PositiveIntegerField(verbose_name='opened emails', editable=False, default=0)),
+                ('clicked', models.PositiveIntegerField(verbose_name='clicks from emails', editable=False, default=0)),
+                ('status', models.SmallIntegerField(verbose_name='status', choices=[(0, 'Draft'), (10, 'Queued'), (20, 'Published'), (21, 'Content setted'), (22, 'Running'), (30, 'Done')], default=0)),
+                ('remote_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', db_index=True, editable=False, default=0)),
+                ('remote_mail_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', db_index=True, editable=False, default=0)),
+                ('date_created', models.DateTimeField(verbose_name='date created', editable=False, default=django.utils.timezone.now)),
+                ('date_started', models.DateTimeField(verbose_name='date started', null=True, editable=False)),
+                ('date_done', models.DateTimeField(verbose_name='date done', null=True, editable=False)),
             ],
             options={
-                'verbose_name_plural': 'campaigns',
                 'verbose_name': 'campaign',
                 'ordering': ('-date_created',),
+                'verbose_name_plural': 'campaigns',
             },
         ),
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='name')),
-                ('total', models.PositiveIntegerField(default=0, verbose_name='total subscribers', editable=False)),
-                ('active', models.PositiveIntegerField(default=0, verbose_name='active subscribers', editable=False)),
-                ('unsubscribed', models.PositiveIntegerField(default=0, verbose_name='unsubscribed', editable=False)),
-                ('sent', models.PositiveIntegerField(default=0, verbose_name='sent emails', editable=False)),
-                ('opened', models.PositiveIntegerField(default=0, verbose_name='opened emails', editable=False)),
-                ('clicked', models.PositiveIntegerField(default=0, verbose_name='clicks from emails', editable=False)),
-                ('remote_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', default=0, db_index=True, editable=False)),
-                ('date_created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date created', editable=False)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('name', models.CharField(verbose_name='name', max_length=255)),
+                ('total', models.PositiveIntegerField(verbose_name='total subscribers', editable=False, default=0)),
+                ('active', models.PositiveIntegerField(verbose_name='active subscribers', editable=False, default=0)),
+                ('unsubscribed', models.PositiveIntegerField(verbose_name='unsubscribed', editable=False, default=0)),
+                ('status', models.SmallIntegerField(verbose_name='status', choices=[(0, 'Queued'), (10, 'Published')], default=0)),
+                ('sent', models.PositiveIntegerField(verbose_name='sent emails', editable=False, default=0)),
+                ('opened', models.PositiveIntegerField(verbose_name='opened emails', editable=False, default=0)),
+                ('clicked', models.PositiveIntegerField(verbose_name='clicks from emails', editable=False, default=0)),
+                ('remote_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', db_index=True, editable=False, default=0)),
+                ('date_created', models.DateTimeField(verbose_name='date created', editable=False, default=django.utils.timezone.now)),
                 ('date_updated', models.DateTimeField(auto_now=True, verbose_name='date updated')),
             ],
             options={
-                'verbose_name_plural': 'groups',
                 'verbose_name': 'group',
                 'ordering': ('-date_created',),
+                'verbose_name_plural': 'groups',
             },
         ),
         migrations.CreateModel(
             name='MailerConfig',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('from_email', models.EmailField(help_text='should be real address', default='manager@example.com', max_length=254, verbose_name='sender email')),
-                ('from_name', models.CharField(help_text='should be real name', default='John Smith', max_length=255, verbose_name='sender name')),
-                ('bg_color', libs.color_field.fields.ColorField(blank=True, default='#BDC3C7', verbose_name='background color')),
-                ('bg_image', models.ImageField(blank=True, storage=libs.storages.media_storage.MediaStorage('mailerlite/campaigns'), verbose_name='background image', upload_to='')),
-                ('company', models.CharField(default='Example', max_length=255, verbose_name='company')),
-                ('website', models.CharField(default='example.com', max_length=255, verbose_name='website address')),
-                ('contact_email', models.EmailField(default='admin@example.com', max_length=254, verbose_name='contact email')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('from_email', models.EmailField(verbose_name='sender email', max_length=254, help_text='should be real address', default='manager@example.com')),
+                ('from_name', models.CharField(verbose_name='sender name', max_length=255, help_text='should be real name', default='John Smith')),
+                ('bg_color', libs.color_field.fields.ColorField(verbose_name='background color', blank=True, default='#BDC3C7')),
+                ('bg_image', models.ImageField(verbose_name='background image', blank=True, upload_to='', storage=libs.storages.media_storage.MediaStorage('mailerlite/campaigns'))),
+                ('company', models.CharField(verbose_name='company', max_length=255, default='Example')),
+                ('website', models.CharField(verbose_name='website address', max_length=255, default='example.com')),
+                ('contact_email', models.EmailField(verbose_name='contact email', max_length=254, default='admin@example.com')),
                 ('import_groups_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('import_campaigns_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('import_subscribers_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
@@ -85,23 +86,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Subscriber',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('email', models.EmailField(verbose_name='email', max_length=254, unique=True)),
-                ('name', models.CharField(blank=True, max_length=255, verbose_name='first name')),
-                ('last_name', models.CharField(blank=True, max_length=255, verbose_name='last name')),
-                ('company', models.CharField(blank=True, max_length=255, verbose_name='company')),
-                ('sent', models.PositiveIntegerField(default=0, verbose_name='sent emails', editable=False)),
-                ('opened', models.PositiveIntegerField(default=0, verbose_name='opened emails', editable=False)),
-                ('clicked', models.PositiveIntegerField(default=0, verbose_name='clicks from emails', editable=False)),
-                ('remote_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', default=0, db_index=True, editable=False)),
-                ('date_created', models.DateField(default=django.utils.timezone.now, verbose_name='date subscribed', editable=False)),
-                ('date_unsubscribe', models.DateField(verbose_name='date unsubscribed', editable=False, null=True)),
+                ('name', models.CharField(verbose_name='first name', max_length=255, blank=True)),
+                ('last_name', models.CharField(verbose_name='last name', max_length=255, blank=True)),
+                ('company', models.CharField(verbose_name='company', max_length=255, blank=True)),
+                ('status', models.SmallIntegerField(verbose_name='status', choices=[(0, 'Queued'), (10, 'Subscribed'), (20, 'Unsubscribed')], default=0)),
+                ('sent', models.PositiveIntegerField(verbose_name='sent emails', editable=False, default=0)),
+                ('opened', models.PositiveIntegerField(verbose_name='opened emails', editable=False, default=0)),
+                ('clicked', models.PositiveIntegerField(verbose_name='clicks from emails', editable=False, default=0)),
+                ('remote_id', models.PositiveIntegerField(verbose_name='ID in Mailerlite', db_index=True, editable=False, default=0)),
+                ('date_created', models.DateField(verbose_name='date subscribed', editable=False, default=django.utils.timezone.now)),
+                ('date_unsubscribe', models.DateField(verbose_name='date unsubscribed', null=True, editable=False)),
                 ('groups', models.ManyToManyField(to='mailerlite.Group')),
             ],
             options={
-                'verbose_name_plural': 'subscribers',
                 'verbose_name': 'subscriber',
                 'ordering': ('-date_created',),
+                'verbose_name_plural': 'subscribers',
             },
         ),
         migrations.AddField(
