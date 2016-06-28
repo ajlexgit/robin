@@ -38,7 +38,7 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'name',
+                'name', 'status',
             )
         }),
         (_('Subscribers'), {
@@ -53,15 +53,9 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     readonly_fields = (
-        'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'date_created', 'date_updated'
+        'status', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'date_created', 'date_updated'
     )
-    list_display = ('name', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked')
-
-    # def has_add_permission(self, request):
-    #     return False
-
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    list_display = ('name', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'status')
 
 
 class CampaignForm(forms.ModelForm):

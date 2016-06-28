@@ -50,10 +50,18 @@ class MailerConfig(SingletonModel):
 
 
 class Group(models.Model):
+    STATUS_QUEUED = 0
+    STATUS_PUBLISHED = 10
+    STATUSES = (
+        (STATUS_QUEUED, _('Queued')),
+        (STATUS_PUBLISHED, _('Published')),
+    )
+
     name = models.CharField(_('name'), max_length=255)
     total = models.PositiveIntegerField(_('total subscribers'), default=0, editable=False)
     active = models.PositiveIntegerField(_('active subscribers'), default=0, editable=False)
     unsubscribed = models.PositiveIntegerField(_('unsubscribed'), default=0, editable=False)
+    status = models.SmallIntegerField(_('status'), choices=STATUSES, default=STATUS_QUEUED)
 
     sent = models.PositiveIntegerField(_('sent emails'), default=0, editable=False)
     opened = models.PositiveIntegerField(_('opened emails'), default=0, editable=False)

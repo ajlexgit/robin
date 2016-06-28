@@ -93,13 +93,14 @@ class Command(BaseCommand):
         logger.info("Export groups...")
         for group in Group.objects.all():
             try:
-                if group.remote_id:
-                    response = api.groups.update(
-                        group.remote_id,
+                if group.status == Group.STATUS_QUEUED:
+                    response = api.groups.create(
                         name=group.name,
                     )
+                    group.status = Group.STATUS_PUBLISHED
                 else:
-                    response = api.groups.create(
+                    response = api.groups.update(
+                        group.remote_id,
                         name=group.name,
                     )
             except api.SubscribeAPIError as e:
