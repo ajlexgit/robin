@@ -65,7 +65,7 @@ LOGGING = {
             'level': 'WARNING',
         },
         'mailerlite': {
-            'handlers': ['mailerlite'],
+            'handlers': ['file_mailerlite'],
             'propagate': False,
             'level': 'INFO',
         },
