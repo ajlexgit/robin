@@ -64,6 +64,7 @@ class Message(models.Model):
     referer = models.CharField(_('from page'), max_length=255, blank=True, editable=False)
 
     class Meta:
+        default_permissions = ('delete', )
         verbose_name = _('message')
         verbose_name_plural = _('messages')
         ordering = ('-date',)
