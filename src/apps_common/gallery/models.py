@@ -185,6 +185,7 @@ class GalleryImageItem(GalleryItemBase):
     class Meta:
         verbose_name = _('image item')
         verbose_name_plural = _('image items')
+        ordering = ('object_id', 'sort_order', 'created',)
         default_permissions = ()
         abstract = True
 
@@ -477,6 +478,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
     class Meta:
         verbose_name = _('video item')
         verbose_name_plural = _('video items')
+        ordering = ('object_id', 'sort_order', 'created',)
         default_permissions = ()
         abstract = True
 
