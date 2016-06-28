@@ -127,7 +127,7 @@ class Command(BaseCommand):
     def export_campaigns(self):
         """ Отправка рассылок в MailerLite """
         logger.info("Export campaigns...")
-        for campaign in Campaign.objects.filter(status__in=(Campaign.STATUS_DRAFT, Campaign.STATUS_QUEUED)):
+        for campaign in Campaign.objects.filter(status=Campaign.STATUS_QUEUED):
             if not campaign.remote_id:
                 try:
                     response = api.campaings.create(
