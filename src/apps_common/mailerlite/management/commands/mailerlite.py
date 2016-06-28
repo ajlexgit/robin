@@ -175,6 +175,8 @@ class Command(BaseCommand):
                 except api.SubscribeAPIError as e:
                     logging.error(e.message)
                 else:
+                    campaign.status = Campaign.STATUS_RUNNING
+                    campaign.save()
                     logger.info("Started campaign '%s'" % campaign.subject)
 
     def import_campaigns(self):
@@ -246,15 +248,6 @@ class Command(BaseCommand):
             self.import_groups()
             self.config.import_groups_date = now()
 
-        # Campaigns
-        if options['export_campaigns']:
-            self.export_campaigns()
-            self.config.export_campaigns_date = now()
-
-        if options['import_campaigns']:
-            self.import_campaigns()
-            self.config.import_campaigns_date = now()
-
         # Subscribers
         if options['export_subscribers']:
             for group in Group.objects.all():
@@ -268,5 +261,14 @@ class Command(BaseCommand):
                 logging.error(e.message)
             else:
                 self.config.import_subscribers_date = now()
+
+        # Campaigns
+        if options['export_campaigns']:
+            self.export_campaigns()
+            self.config.export_campaigns_date = now()
+
+        if options['import_campaigns']:
+            self.import_campaigns()
+            self.config.import_campaigns_date = now()
 
         self.config.save()

@@ -53,9 +53,15 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     readonly_fields = (
-        'status', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'date_created', 'date_updated'
+        'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'date_created', 'date_updated'
     )
     list_display = ('name', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'status')
+
+    def get_readonly_fields(self, request, obj=None):
+        default = super().get_readonly_fields(request, obj)
+        if not request.user.is_superuser:
+            default += ('status', )
+        return default
 
 
 class CampaignForm(forms.ModelForm):
@@ -102,7 +108,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     )
     form = CampaignForm
     readonly_fields = (
-        'status', 'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done'
+        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done'
     )
     actions = ('action_start', )
     list_filter = ('status', )
@@ -110,9 +116,11 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display_links = ('short_subject', )
 
     def get_readonly_fields(self, request, obj=None):
-        default = self.readonly_fields
+        default = super().get_readonly_fields(request, obj)
         if obj and not obj.editable:
             default += ('groups', 'subject', 'preheader')
+        if not request.user.is_superuser:
+            default += ('status',)
         return default
 
     def short_subject(self, obj):
@@ -197,12 +205,18 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     readonly_fields = (
-        'groups', 'email', 'status', 'name', 'last_name', 'company',
+        'groups', 'email', 'name', 'last_name', 'company',
         'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe',
     )
     list_filter = ('status', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'groups_list', 'sent', 'opened', 'clicked', 'status')
+
+    def get_readonly_fields(self, request, obj=None):
+        default = super().get_readonly_fields(request, obj)
+        if not request.user.is_superuser:
+            default += ('status',)
+        return default
 
     def groups_list(self, obj):
         return ', '.join(group.name for group in obj.groups.all())
