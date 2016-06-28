@@ -126,6 +126,6 @@ class PostTag(models.Model):
     tag = models.ForeignKey(Tag, verbose_name=_('tag'))
 
     class Meta:
-        verbose_name = _('Tag')
-        verbose_name_plural = _('Tags')
+        verbose_name = _('post tag')
+        verbose_name_plural = _('post tags')
         unique_together = ('post', 'tag')
