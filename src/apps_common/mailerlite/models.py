@@ -212,11 +212,21 @@ class Campaign(models.Model):
 
 
 class Subscriber(models.Model):
+    STATUS_QUEUED = 0
+    STATUS_SUBSCRIBED = 1
+    STATUS_UNSUBSCRIBED = 2
+    STATUSES = (
+        (STATUS_QUEUED, _('Queued')),
+        (STATUS_SUBSCRIBED, _('Subscribed')),
+        (STATUS_UNSUBSCRIBED, _('Unsubscribed')),
+    )
+
     groups = models.ManyToManyField(Group)
     email = models.EmailField(_('email'), unique=True)
     name = models.CharField(_('first name'), max_length=255, blank=True)
     last_name = models.CharField(_('last name'), max_length=255, blank=True)
     company = models.CharField(_('company'), max_length=255, blank=True)
+    status = models.SmallIntegerField(_('status'), choices=STATUSES, default=STATUS_QUEUED)
 
     sent = models.PositiveIntegerField(_('sent emails'), default=0, editable=False)
     opened = models.PositiveIntegerField(_('opened emails'), default=0, editable=False)

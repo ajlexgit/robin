@@ -188,7 +188,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'groups', 'email',
+                'groups', 'email', 'status',
             )
         }),
         (_('Addition information'), {
@@ -203,11 +203,12 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     readonly_fields = (
-        'groups', 'email', 'name', 'last_name', 'company',
+        'groups', 'email', 'status', 'name', 'last_name', 'company',
         'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe',
     )
+    list_filter = ('status', )
     search_fields = ('email', 'name', 'last_name', 'company')
-    list_display = ('email', 'groups_list', 'sent', 'opened', 'clicked', 'date_created')
+    list_display = ('email', 'groups_list', 'sent', 'opened', 'clicked', 'status')
 
     def groups_list(self, obj):
         return ', '.join(group.name for group in obj.groups.all())

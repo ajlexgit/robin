@@ -202,7 +202,7 @@ class Command(BaseCommand):
         logger.info("Export subscribers...")
         new_subscribers = Subscriber.objects.filter(
             groups=group,
-            remote_id=0,
+            status=Subscriber.STATUS_QUEUED,
         ).distinct()
         for subscriber in new_subscribers:
             try:
@@ -217,6 +217,7 @@ class Command(BaseCommand):
             except api.SubscribeAPIError as e:
                 logging.error(e.message)
             else:
+                subscriber.status = Subscriber.STATUS_SUBSCRIBED
                 subscriber.remote_id = response['id']
                 subscriber.save()
                 logger.info("Exported subscriber '%s'" % subscriber.email)
