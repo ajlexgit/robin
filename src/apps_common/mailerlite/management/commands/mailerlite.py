@@ -3,6 +3,7 @@ from time import sleep
 from django.utils.timezone import now
 from django.core.management import BaseCommand
 from ...models import MailerConfig, Group, Campaign, Subscriber
+from ... import conf
 from ... import api
 
 logger = logging.getLogger('mailerlite')
@@ -127,31 +128,41 @@ class Command(BaseCommand):
     def export_campaigns(self):
         """ Отправка рассылок в MailerLite """
         logger.info("Export campaigns...")
-        for campaign in Campaign.objects.filter(status=Campaign.STATUS_QUEUED):
-            if not campaign.remote_id:
-                try:
-                    response = api.campaings.create(
-                        subject=campaign.subject,
-                        groups=[group.remote_id for group in campaign.groups.all()],
-                        from_email=self.config.from_email,
-                        from_name=self.config.from_name,
-                    )
-                except api.SubscribeAPIError as e:
-                    logging.error(e.message)
-                else:
-                    campaign.remote_id = response['id']
-                    campaign.remote_mail_id = response['mail_id']
-                    campaign.save()
+        for campaign in Campaign.objects.filter(status=Campaign.STATUS_QUEUED, remote_id=0):
+            try:
+                response = api.campaings.create(
+                    subject=campaign.subject,
+                    groups=[group.remote_id for group in campaign.groups.all()],
+                    from_email=self.config.from_email,
+                    from_name=self.config.from_name,
+                )
+            except api.SubscribeAPIError as e:
+                logging.error(e.message)
+                continue
+            else:
+                campaign.remote_id = response['id']
+                campaign.remote_mail_id = response['mail_id']
+                campaign.save()
 
             # Set content
             try:
                 api.campaings.content(
                     campaign.remote_id,
-                    html=campaign.render_html(scheme='http://'),
+                    html=campaign.render_html(scheme='https://' if conf.HTTPS_ALLOWED else 'http://'),
                     plain=campaign.render_plain(),
                 )
             except api.SubscribeAPIError as e:
                 logging.error(e.message)
+                continue
+
+            # Start
+            try:
+                api.campaings.run(campaign.remote_id)
+            except api.SubscribeAPIError as e:
+                logging.error(e.message)
+            else:
+                campaign.status = Campaign.STATUS_RUNNING
+                campaign.save()
 
     def import_campaigns(self):
         """ Загрузка рассылок """
