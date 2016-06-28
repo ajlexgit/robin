@@ -107,6 +107,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     readonly_fields = (
         'status', 'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done'
     )
+    actions = ('action_start', )
     list_filter = ('status', )
     list_display = ('view', 'short_subject', 'status', 'sent', 'opened', 'clicked')
     list_display_links = ('short_subject', )
@@ -121,6 +122,10 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return description(obj.subject, 30, 60)
     short_subject.short_description = _('Subject')
     short_subject.admin_order_field = 'subject'
+
+    def action_start(self, request, queryset):
+        queryset.filter(status=Campaign.STATUS_DRAFT).update(status=Campaign.STATUS_QUEUED)
+    action_start.short_description = _('Start campaign')
 
 
 @admin.register(Subscriber)
