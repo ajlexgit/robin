@@ -175,6 +175,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         except self.model.DoesNotExist:
             pass
         else:
+            campaign.remote_id = 0
             campaign.status = self.model.STATUS_DRAFT
             campaign.save()
 
