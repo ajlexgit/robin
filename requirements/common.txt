@@ -5,7 +5,7 @@ django-pipeline==1.6.8
 django-redis==3.5.1
 django-softhyphen==1.1.0
 django-solo==1.1.2
-django-suit==0.2.18
+django-suit==0.2.19
 django-suit-ckeditor==0.0.2
 beautifulsoup4==4.4.1
 html5lib==0.9999999
@@ -18,7 +18,7 @@ pytils==0.3
 pytz==2016.4
 psycopg2==2.6.1
 redis==2.10.5
-requests==2.9.1
+requests==2.10.0
 
 PyLinkedinAPI==0.1.5
 facebook-sdk==1.0.0

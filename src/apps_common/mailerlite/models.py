@@ -13,7 +13,6 @@ from libs.storages.media_storage import MediaStorage
 from . import utils
 from . import conf
 
-
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
 re_newlines = re.compile(r'\n{3,}')
 
@@ -43,6 +42,7 @@ class MailerConfig(SingletonModel):
     export_subscribers_date = models.DateTimeField(default=now, editable=False)
 
     class Meta:
+        default_permissions = ('change',)
         verbose_name = _('settings')
 
     def __str__(self):

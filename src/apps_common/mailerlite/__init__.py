@@ -24,8 +24,8 @@
                     'icon': 'icon-envelope',
                     'models': (
                         'Campaign',
-                        'Group',
                         'Subscriber',
+                        'Group',
                         'MailerConfig',
                     )
                 },

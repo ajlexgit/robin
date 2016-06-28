@@ -12,6 +12,29 @@ from libs.autocomplete.widgets import AutocompleteMultipleWidget
 from .models import MailerConfig, Group, Campaign, Subscriber
 
 
+class MailerConfigForm(forms.ModelForm):
+    class Meta:
+        model = MailerConfig
+        fields = '__all__'
+        widgets = {
+            'from_name': forms.TextInput(
+                attrs={
+                    'class': 'input-xlarge',
+                }
+            ),
+            'company': forms.TextInput(
+                attrs={
+                    'class': 'input-xlarge',
+                }
+            ),
+            'website': forms.TextInput(
+                attrs={
+                    'class': 'input-xlarge',
+                }
+            ),
+        }
+
+
 @admin.register(MailerConfig)
 class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
@@ -31,6 +54,7 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
             ),
         }),
     )
+    form = MailerConfigForm
 
 
 @admin.register(Group)
@@ -63,6 +87,13 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
             default += ('status', )
         return default
 
+    def has_delete_permission(self, request, obj=None):
+        """ Право на удаление суперюзеру """
+        if obj and obj.status == self.model.STATUS_DRAFT:
+            return True
+        else:
+            return super().has_delete_permission(request, obj)
+
 
 class CampaignForm(forms.ModelForm):
     class Meta:
@@ -92,17 +123,12 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'groups', 'status',
+                'groups',
             )
         }),
         (_('Content'), {
             'fields': (
                 'subject', 'preheader', 'header_image', 'text',
-            )
-        }),
-        (_('Statistics'), {
-            'fields': (
-                'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
             )
         }),
     )
@@ -124,16 +150,36 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return default
 
     def has_delete_permission(self, request, obj=None):
-        """  """
-        if obj and obj.status == self.model.STATUS_DRAFT:
+        """ Право на удаление суперюзеру """
+        if obj and obj.status in (self.model.STATUS_DRAFT, self.model.STATUS_QUEUED):
             return True
+        elif not request.user.is_superuser:
+            return False
         else:
             return super().has_delete_permission(request, obj)
+
+    def get_actions(self, request):
+        default = super().get_actions(request)
+        if not request.user.is_superuser and 'delete_selected' in default:
+            del default['delete_selected']
+        return default
 
     def get_changeform_initial_data(self, request):
         return {
             'groups': Group.objects.values_list('pk', flat=True),
         }
+
+    def get_fieldsets(self, request, obj=None):
+        default = super().get_fieldsets(request, obj)
+        if request.user.is_superuser:
+            default += (
+                (_('Statistics'), {
+                    'fields': (
+                        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
+                    )
+                }),
+            )
+        return default
 
     def short_subject(self, obj):
         return description(obj.subject, 30, 60)
@@ -142,16 +188,45 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def status_box(self, obj):
         status_text = dict(self.model.STATUSES).get(obj.status)
+        info = self.model._meta.app_label, self.model._meta.model_name
+        button_tpl = '<a href="{href}" class="btn btn-mini {classes}" style="margin-left: 5px">{text}</a>'
+
         if obj.status == self.model.STATUS_DRAFT:
-            info = self.model._meta.app_label, self.model._meta.model_name
-            start_url = reverse('admin:%s_%s_start' % info, args=(obj.id, ))
-            button = '<a href="%s" class="btn btn-mini btn-success" style="margin-left: 10px">Start</a>' % start_url
-            return '%s %s' % (status_text, button)
+            return """
+                <nobr>
+                    {text}&nbsp;{action}&nbsp;{delete}
+                </nobr>
+            """.format(
+                text=status_text,
+                action=button_tpl.format(
+                    href=reverse('admin:%s_%s_start' % info, args=(obj.id,)),
+                    classes='btn-success',
+                    text=_('Start')
+                ),
+                delete=button_tpl.format(
+                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
+                    classes='btn-danger',
+                    text=_('Delete')
+                ),
+            )
         elif obj.status == self.model.STATUS_QUEUED:
-            info = self.model._meta.app_label, self.model._meta.model_name
-            cancel_url = reverse('admin:%s_%s_cancel' % info, args=(obj.id,))
-            button = '<a href="%s" class="btn btn-mini btn-danger" style="margin-left: 10px">Cancel</a>' % cancel_url
-            return '%s %s' % (status_text, button)
+            return """
+                <nobr>
+                    {text}&nbsp;{action}&nbsp;{delete}
+                </nobr>
+            """.format(
+                text=status_text,
+                action=button_tpl.format(
+                    href=reverse('admin:%s_%s_cancel' % info, args=(obj.id,)),
+                    classes='btn-danger',
+                    text=_('Cancel')
+                ),
+                delete=button_tpl.format(
+                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
+                    classes='btn-danger',
+                    text=_('Delete')
+                ),
+            )
         else:
             return status_text
     status_box.short_description = _('Status')
@@ -210,24 +285,31 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'name', 'last_name', 'company',
             )
         }),
-        (_('Statistics'), {
-            'fields': (
-                'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe'
-            )
-        }),
     )
     readonly_fields = (
-        'groups', 'email', 'name', 'last_name', 'company',
+        'groups', 'name', 'last_name', 'company',
         'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe',
     )
     list_filter = ('status', )
     search_fields = ('email', 'name', 'last_name', 'company')
-    list_display = ('email', 'groups_list', 'sent', 'opened', 'clicked', 'status')
+    list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
         if not request.user.is_superuser:
-            default += ('status',)
+            default += ('status', 'email')
+        return default
+
+    def get_fieldsets(self, request, obj=None):
+        default = super().get_fieldsets(request, obj)
+        if request.user.is_superuser:
+            default += (
+                (_('Statistics'), {
+                    'fields': (
+                        'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe'
+                    )
+                }),
+            )
         return default
 
     def groups_list(self, obj):
