@@ -244,8 +244,8 @@ class Command(BaseCommand):
 
         # Subscribers
         if options['export_subscribers']:
-            for group_id in Group.objects.values_list('remote_id'):
-                self.export_subscribers(group_id)
+            for group in Group.objects.all():
+                self.export_subscribers(group)
             self.config.export_subscribers_date = now()
 
         if options['import_subscribers']:
