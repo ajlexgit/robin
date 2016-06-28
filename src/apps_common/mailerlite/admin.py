@@ -123,6 +123,18 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             default += ('status',)
         return default
 
+    def has_delete_permission(self, request, obj=None):
+        """  """
+        if obj and obj.status == self.model.STATUS_DRAFT:
+            return True
+        else:
+            return super().has_delete_permission(request, obj)
+
+    def get_changeform_initial_data(self, request):
+        return {
+            'groups': Group.objects.values_list('pk', flat=True),
+        }
+
     def short_subject(self, obj):
         return description(obj.subject, 30, 60)
     short_subject.short_description = _('Subject')

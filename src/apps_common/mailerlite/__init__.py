@@ -1,4 +1,5 @@
 # TODO: antispam
+# TODO: test email
 
 """
     Модуль подписки на рассылку.
