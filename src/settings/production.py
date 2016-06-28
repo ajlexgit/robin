@@ -43,6 +43,11 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.path.join(VZ_DIRECTORY, 'django_errors.log'),
         },
+        'file_mailerlite': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(VZ_DIRECTORY, 'mailerlite.log'),
+        },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
@@ -58,6 +63,11 @@ LOGGING = {
             'handlers': ['mail_admins', 'file'],
             'propagate': False,
             'level': 'WARNING',
+        },
+        'mailerlite': {
+            'handlers': ['mailerlite'],
+            'propagate': False,
+            'level': 'INFO',
         },
         '': {
             'handlers': ['file'],
