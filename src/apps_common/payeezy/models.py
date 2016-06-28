@@ -22,6 +22,7 @@ class Log(models.Model):
     created = models.DateTimeField(_('create date'), default=now, editable=False)
 
     class Meta:
+        default_permissions = ('delete',)
         verbose_name = _('log message')
         verbose_name_plural = _('log messages')
         ordering = ('-created', )

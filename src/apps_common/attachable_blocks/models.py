@@ -29,10 +29,10 @@ class AttachableBlock(models.Model):
     objects = AttachableBlockQuerySet.as_manager()
 
     class Meta:
+        default_permissions = ()
         verbose_name = _('attachable block')
         verbose_name_plural = _('attachable blocks')
         ordering = ('label', )
-        default_permissions = ()
 
     def save(self, *args, **kwargs):
         if not self.created:

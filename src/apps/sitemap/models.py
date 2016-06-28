@@ -10,6 +10,7 @@ class SitemapConfig(SingletonModel):
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
+        default_permissions = ('change', )
         verbose_name = _('settings')
 
     def get_absolute_url(self):

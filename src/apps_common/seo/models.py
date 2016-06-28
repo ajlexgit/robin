@@ -13,6 +13,7 @@ class SeoConfig(SingletonModel):
     description = models.TextField(_('site description'), max_length=255, blank=True)
 
     class Meta:
+        default_permissions = ('change',)
         verbose_name = _('Defaults')
 
     def __str__(self):
