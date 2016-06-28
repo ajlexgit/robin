@@ -118,7 +118,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         default = self.readonly_fields
         if obj and not obj.editable:
-            default += ('subject',)
+            default += ('groups', 'subject', 'preheader')
         return default
 
     def short_subject(self, obj):
