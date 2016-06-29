@@ -325,7 +325,7 @@ class VariationImageFileDescriptor(ImageFileDescriptor):
     def __set__(self, instance, value):
         if isinstance(value, VariationImageFieldFile):
             if self.field.crop_field:
-                value.set_crop_field(instance)
+                value.set_crop_field(instance, value.croparea)
 
         super().__set__(instance, value)
 
@@ -706,7 +706,8 @@ class VariationImageField(models.ImageField):
             field_file.close()
 
             # Удаляем загруженный исходник
-            self.storage.delete(field_file.name)
+            if is_uploaded:
+                self.storage.delete(field_file.name)
 
         # Сохраняем область обрезки в поле, если оно указано
         if croparea and self.crop_field:
