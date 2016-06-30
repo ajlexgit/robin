@@ -87,9 +87,9 @@
 
 
         HTML input:
-            <div id="slider no-slider">
-                <img class="slider-item">
-                <img class="slider-item">
+            <div class="slider no-slider">
+                <div class="slider-item">...
+                <div class="slider-item">
                 ...
             </div>
 

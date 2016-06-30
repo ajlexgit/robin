@@ -43,14 +43,13 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
             'name': 'paragraph',
             'items': ['BulletedList', 'NumberedList', 'Format']
         },
-        '/',
-        {
-            'name': 'insert',
-            'items': ['PagePhotos', 'PageVideos', 'PageFiles']
-        },
         {
             'name': 'links',
             'items': ['Link', 'Unlink']
+        },
+        {
+            'name': 'insert',
+            'items': ['PagePhotos', 'PageVideos', 'PageFiles']
         },
         {
             'name': 'document',
