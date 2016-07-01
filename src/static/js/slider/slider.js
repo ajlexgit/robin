@@ -195,13 +195,18 @@
             this.$list.addClass(this.opts.listClass);
 
             // создание обертки списка
-            this.$list.wrap('<div>');
-            this.$listWrapper = this.$list.parent().addClass(this.opts.listWrapperClass);
+            this.$listWrapper = this.$list.closest('.' + this.opts.listWrapperClass);
+            if (!this.$listWrapper.length) {
+                this.$list.wrap('<div>');
+                this.$listWrapper = this.$list.parent().addClass(this.opts.listWrapperClass);
+            }
 
             // создание корневого элемента слайдера
-            this.$listWrapper.wrap('<div>');
-            this.$root = this.$listWrapper.parent().addClass(this.opts.rootClass);
-
+            this.$root = this.$listWrapper.closest('.' + this.opts.rootClass);
+            if (!this.$root.length) {
+                this.$listWrapper.wrap('<div>');
+                this.$root = this.$listWrapper.parent().addClass(this.opts.rootClass);
+            }
 
             // сохраняем массив items
             this.$items = this.$list.find(this.opts.itemSelector);
