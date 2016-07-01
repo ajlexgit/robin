@@ -96,8 +96,14 @@
     margin: 1.6em 0;
   }
 
-  .page-images img {
-    width: 100%;
+  .page-images {
+    img {
+      width: 100%;
+    }
+
+    @at-root .js & > img:nth-of-type(n+1) {
+      display: none;
+    }
   }
 
   .object-description {

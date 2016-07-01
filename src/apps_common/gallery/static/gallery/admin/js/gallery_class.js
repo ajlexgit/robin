@@ -158,6 +158,11 @@
             var that = this;
             var item = $item.get(0);
 
+            var item_id = parseInt($item.data('id')) || 0;
+            if (!item_id) {
+                return $.Deferred();
+            }
+
             if (item.query) {
                 item.query.abort();
             }
@@ -168,7 +173,7 @@
                     model_name: this.model_name,
                     field_name: this.field_name,
                     gallery_id: this.gallery_id,
-                    item_id: parseInt($item.data('id')) || 0
+                    item_id: item_id
                 },
                 dataType: 'json',
                 beforeSend: function() {
@@ -566,8 +571,10 @@
                 this.uploader.removeFile($item.attr('id'));
             }
 
+            // Если еще не загружен - удаляем
             var that = this;
-            if ($item.hasClass(this.opts.loadingClass) || $item.hasClass(this.opts.errorClass)) {
+            var item_id = parseInt($item.data('id')) || 0;
+            if (!item_id || $item.hasClass(this.opts.loadingClass) || $item.hasClass(this.opts.errorClass)) {
                 // Удаление блока из DOM
                 var df = $.Deferred();
                 $item.animate({
