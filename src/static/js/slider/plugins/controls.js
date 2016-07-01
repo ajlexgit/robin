@@ -80,6 +80,7 @@
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowLeftClass)
                 .append('<span>')
+                .off('.controls')
                 .on('click.slider.controls', function() {
                     if ($(this).hasClass(that.opts.arrowDisabledClass)) {
                         return false
@@ -92,6 +93,7 @@
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowRightClass)
                 .append('<span>')
+                .off('.controls')
                 .on('click.slider.controls', function() {
                     if ($(this).hasClass(that.opts.arrowDisabledClass)) {
                         return false

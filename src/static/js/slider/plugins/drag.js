@@ -33,6 +33,10 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
 
+            if (this.drager) {
+              this.drager.destroy();
+            }
+            
             var that = this;
             this.drager = Drager(slider.$listWrapper, {
                 mouse: that.opts.mouse,

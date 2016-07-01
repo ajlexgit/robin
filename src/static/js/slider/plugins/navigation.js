@@ -88,7 +88,7 @@
                 that.$wrapper.append($item);
             });
 
-            this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
+            this.$wrapper.off('.navigation').on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
                 slider.slideTo(
