@@ -1,8 +1,5 @@
 from ._pipeline import PIPELINE, PopupGallery, Slider
 
-# ===============================
-#   Скрипты
-# ===============================
 
 PIPELINE['STYLESHEETS'].update({
     'core': {

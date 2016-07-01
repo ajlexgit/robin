@@ -30,6 +30,7 @@ $dot_active_color: rgba($white, 1);
   z-index: 9;
   text-align: center;
   @include border-box;
+  @include no_fontsize;
   @include valign_after;
   @include unselectable;
 
@@ -41,7 +42,6 @@ $dot_active_color: rgba($white, 1);
     text-align: center;
     cursor: pointer;
     z-index: 1;
-    @include no_fontsize;
     @include valign_after;
     @include media_map(margin-right, $area_gap);
     &:nth-last-of-type(1) {
