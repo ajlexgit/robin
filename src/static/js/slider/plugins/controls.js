@@ -12,10 +12,9 @@
             arrowDisabledClass: 'slider-arrow-disabled',
 
             container: null,
-            disableOnEnd: true
+            disableOnBounds: true
         });
-
-
+        
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {
@@ -43,14 +42,38 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
             this.createControls(slider);
-            this.checkAllowed(slider);
+            this.checkBounds(slider);
         };
 
         /*
             Деактивируем стрелки на границах сладера
          */
         cls.afterSetCurrentSlide = function(slider) {
-            this.checkAllowed(slider);
+            this.checkBounds(slider);
+        };
+
+        /*
+            Проверка и деактивация кнопок на границах
+         */
+        cls.checkBounds = function(slider) {
+            if (!this.opts.disableOnBounds) {
+                return
+            }
+
+            var $curr = slider.$currentSlide;
+            var $prev = slider.getPreviousSlide($curr);
+            if (!$prev || !$prev.length || ($curr.get(0) == $prev.get(0))) {
+                this.$left.addClass(this.opts.arrowDisabledClass)
+            } else {
+                this.$left.removeClass(this.opts.arrowDisabledClass)
+            }
+
+            var $next = slider.getNextSlide($curr);
+            if (!$next || !$next.length || ($curr.get(0) == $next.get(0))) {
+                this.$right.addClass(this.opts.arrowDisabledClass)
+            } else {
+                this.$right.removeClass(this.opts.arrowDisabledClass)
+            }
         };
 
         /*
@@ -103,27 +126,6 @@
                 });
 
             this.$container.append(this.$left, this.$right);
-        };
-
-        /*
-            Проверка и деактивация кнопок на границах
-         */
-        cls.checkAllowed = function(slider) {
-            var $curr = slider.$currentSlide;
-            var $next = slider.getNextSlide($curr);
-            var $prev = slider.getPreviousSlide($curr);
-
-            if (this.opts.disableOnEnd && (!$prev || !$prev.length || ($curr.get(0) == $prev.get(0)))) {
-                this.$left.addClass(this.opts.arrowDisabledClass)
-            } else {
-                this.$left.removeClass(this.opts.arrowDisabledClass)
-            }
-
-            if (this.opts.disableOnEnd && (!$next || !$next.length || ($curr.get(0) == $next.get(0)))) {
-                this.$right.addClass(this.opts.arrowDisabledClass)
-            } else {
-                this.$right.removeClass(this.opts.arrowDisabledClass)
-            }
         };
     });
 

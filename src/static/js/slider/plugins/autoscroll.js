@@ -10,8 +10,7 @@
             stopOnHover: true,
             interval: 3000
         });
-
-
+        
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {
@@ -29,7 +28,7 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-
+            
             if (this.opts.direction == 'prev') {
                 this._timerHandler = $.proxy(
                     slider.slidePrevious,

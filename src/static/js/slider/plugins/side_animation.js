@@ -1,14 +1,18 @@
 (function($) {
     'use strict';
 
+    var DIRECTION_RIGHT = 'right';
+    var DIRECTION_LEFT = 'left';
+
     window.SliderSideAnimation = Class(SliderPlugin, function SliderSideAnimation(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             name: 'side',
 
             margin: 0,          // в пикселях или процентах
             speed: 600,
-            showIntermediate: true,
-            easing: 'easeOutCubic'
+            stoppable: true,
+            easing: 'easeOutCubic',
+            showIntermediate: true
         });
 
         /*
@@ -29,7 +33,12 @@
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animation) {
-                return
+                if (this.opts.stoppable) {
+                    slider._animation.stop(true, true);
+                    slider._animation = null;
+                } else {
+                    return
+                }
             }
 
             var slide_info = {
@@ -42,28 +51,81 @@
                 return
             }
 
-            this.chooseSlideDirection(slider, $toSlide, animatedHeight, slide_info);
+            // выбор направления анимации
+            this.chooseSlideDirection(slider, slide_info);
+
+            slider.beforeSlide($toSlide);
+            var animations = this._make_animations(slider, $toSlide, slide_info);
+
+            slider._setCurrentSlide($toSlide);
+            this._animate(slider, $toSlide, animations);
+            slider.updateListHeight(animatedHeight);
         };
 
         /*
             Выбор направления анимации
          */
-        cls.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.chooseSlideDirection = function(slider, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slide_info.toIndex > slide_info.fromIndex) {
                 slide_info.count = diff;
-                this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
+                slide_info.direction = DIRECTION_RIGHT;
             } else {
                 slide_info.count = -diff;
-                this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
+                slide_info.direction = DIRECTION_LEFT;
             }
+        };
+
+        /*
+            Создание объектов для анимирования
+         */
+        cls._make_animations = function(slider, $toSlide, slide_info) {
+            var animations = [];
+            var animatedSlides = [];
+            var slide_left = 100 + this._getPercentGap(slider);
+
+            if (slide_info.direction == DIRECTION_RIGHT) {
+                var doStepSlide = slider.getNextSlide.bind(slider);
+            } else {
+                doStepSlide = slider.getPreviousSlide.bind(slider);
+            }
+
+            // определяем слайды, учавствующие в анимации
+            if (this.opts.showIntermediate) {
+                var i = 0;
+                var $slide = slider.$currentSlide;
+                while ($slide.length && (i++ <= slide_info.count)) {
+                    animatedSlides.push($slide);
+                    $slide = doStepSlide($slide);
+                }
+            } else {
+                animatedSlides.push(slider.$currentSlide);
+                animatedSlides.push($toSlide);
+            }
+
+            // заполнение данных о анимации каждого слайда
+            var animatedSlidesCount = animatedSlides.length;
+            var direction_multiplier = slide_info.direction == DIRECTION_RIGHT ? 1 : -1;
+            animatedSlides.forEach(function($animatedSlide, index) {
+                var left = index * slide_left * direction_multiplier;
+                $animatedSlide.css({
+                    left: left + '%'
+                });
+                animations.push({
+                    $animatedSlide: $animatedSlide,
+                    from_left: left,
+                    to_left: left - ((animatedSlidesCount - 1) * slide_left * direction_multiplier)
+                });
+            });
+
+            return animations;
         };
 
         /*
             Создание анимации перехода
          */
-        cls._slide = function(slider, $toSlide, animations) {
+        cls._animate = function(slider, $toSlide, animations) {
             var animation_from = {};
             var animation_to = {};
             animations.forEach(function(animation_data, index) {
@@ -94,92 +156,6 @@
                 }
             });
         };
-
-        /*
-            Появление нового слайда справа от текущего
-         */
-        cls.slideRight = function(slider, $toSlide, animatedHeight, slide_info) {
-            var animations = [];
-            var animatedSlides = [];
-            var slide_left = 100 + this._getPercentGap(slider);
-
-            slider.beforeSlide($toSlide);
-
-            // определяем слайды, учавствующие в анимации
-            if (this.opts.showIntermediate) {
-                var i = 0;
-                var $slide = slider.$currentSlide;
-                while ($slide.length && (i++ <= slide_info.count)) {
-                    animatedSlides.push($slide);
-
-                    $slide = slider.getNextSlide($slide);
-                }
-            } else {
-                animatedSlides.push(slider.$currentSlide);
-                animatedSlides.push($toSlide);
-            }
-
-            // заполнение данных о анимации каждого слайда
-            var animatedSlidesCount = animatedSlides.length;
-            animatedSlides.forEach(function($animatedSlide, index) {
-                var left = index * slide_left;
-                $animatedSlide.css({
-                    left: left + '%'
-                });
-                animations.push({
-                    $animatedSlide: $animatedSlide,
-                    from_left: left,
-                    to_left: left - ((animatedSlidesCount - 1) * slide_left)
-                });
-            });
-
-            slider._setCurrentSlide($toSlide);
-            this._slide(slider, $toSlide, animations);
-            slider.updateListHeight(animatedHeight);
-        };
-
-        /*
-            Появление нового слайда слева от текущего
-         */
-        cls.slideLeft = function(slider, $toSlide, animatedHeight, slide_info) {
-            var animations = [];
-            var animatedSlides = [];
-            var slide_left = 100 + this._getPercentGap(slider);
-
-            slider.beforeSlide($toSlide);
-
-            // определяем слайды, учавствующие в анимации
-            if (this.opts.showIntermediate) {
-                var i = 0;
-                var $slide = slider.$currentSlide;
-                while ($slide.length && (i++ <= slide_info.count)) {
-                    animatedSlides.push($slide);
-
-                    $slide = slider.getPreviousSlide($slide);
-                }
-            } else {
-                animatedSlides.push(slider.$currentSlide);
-                animatedSlides.push($toSlide);
-            }
-
-            // заполнение данных о анимации каждого слайда
-            var animatedSlidesCount = animatedSlides.length;
-            animatedSlides.forEach(function($animatedSlide, index) {
-                var left = -index * slide_left;
-                $animatedSlide.css({
-                    left: left + '%'
-                });
-                animations.push({
-                    $animatedSlide: $animatedSlide,
-                    from_left: left,
-                    to_left: left + ((animatedSlidesCount - 1) * slide_left)
-                });
-            });
-
-            slider._setCurrentSlide($toSlide);
-            this._slide(slider, $toSlide, animations);
-            slider.updateListHeight(animatedHeight);
-        };
     });
 
 
@@ -192,11 +168,10 @@
             name: 'side-shortest'
         });
 
-
         /*
             Выбор направления анимации
          */
-        cls.chooseSlideDirection = function(slider, $toSlide, animatedHeight, slide_info) {
+        cls.chooseSlideDirection = function(slider, slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
 
             if (slider.opts.loop) {
@@ -206,18 +181,18 @@
 
                 if (left_way < right_way) {
                     slide_info.count = left_way;
-                    this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
+                    slide_info.direction = DIRECTION_LEFT;
                 } else {
                     slide_info.count = right_way;
-                    this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
+                    slide_info.direction = DIRECTION_RIGHT;
                 }
             } else {
                 if (slide_info.toIndex > slide_info.fromIndex) {
                     slide_info.count = diff;
-                    this.slideRight.call(this, slider, $toSlide, animatedHeight, slide_info);
+                    slide_info.direction = DIRECTION_RIGHT;
                 } else {
                     slide_info.count = -diff;
-                    this.slideLeft.call(this, slider, $toSlide, animatedHeight, slide_info);
+                    slide_info.direction = DIRECTION_LEFT;
                 }
             }
         };

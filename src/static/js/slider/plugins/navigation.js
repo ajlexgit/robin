@@ -7,14 +7,11 @@
             animatedHeight: true,
 
             wrapperClass: 'slider-navigation',
-            wrapperDisabledClass: 'slider-navigation-disabled',
             itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
 
-            container: null,
-            dragOneSlide: false
+            container: null
         });
-
 
         cls.init = function(settings) {
             superclass.init.call(this, settings);
@@ -37,7 +34,7 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
             this.createNavigation(slider);
-            this.checkEnabled(slider);
+            this.checkOneSlide(slider);
         };
 
         /*
@@ -52,7 +49,18 @@
          */
         cls.afterSetItemsPerSlide = function(slider) {
             this.createNavigation(slider);
-            this.checkEnabled(slider);
+            this.checkOneSlide(slider);
+        };
+
+        /*
+            Деактивация навигации когда в слайдере всего один слайд
+         */
+        cls.checkOneSlide = function(slider) {
+            if (slider.$slides.length < 2) {
+                this.$wrapper.hide();
+            } else {
+                this.$wrapper.show();
+            }
         };
 
         /*
@@ -109,17 +117,6 @@
                 $item.addClass(this.opts.activeItemClass);
                 $item.siblings('.' + this.opts.itemClass + '.' + this.opts.activeItemClass)
                     .removeClass(this.opts.activeItemClass);
-            }
-        };
-
-        /*
-            Деактивация навигации когда в слайдере всего один слайд
-         */
-        cls.checkEnabled = function(slider) {
-            if (!this.opts.dragOneSlide && (slider.$slides.length < 2)) {
-                this.$wrapper.addClass(this.opts.wrapperDisabledClass);
-            } else {
-                this.$wrapper.removeClass(this.opts.wrapperDisabledClass);
             }
         };
     });

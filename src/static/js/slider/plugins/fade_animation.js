@@ -4,7 +4,9 @@
     window.SliderFadeAnimation = Class(SliderPlugin, function SliderFadeAnimation(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             name: 'fade',
+
             speed: 800,
+            stoppable: false,
             easing: 'linear'
         });
 
@@ -14,7 +16,12 @@
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animation) {
-                return
+                if (this.opts.stoppable) {
+                    slider._animation.stop(true, true);
+                    slider._animation = null;
+                } else {
+                    return
+                }
             }
 
             slider.beforeSlide($toSlide);
