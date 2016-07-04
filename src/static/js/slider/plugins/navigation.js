@@ -10,10 +10,7 @@
             itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
 
-            container: null,
-            checkEnabled: function(slider) {
-                return slider.$slides.length >= 2;
-            }
+            container: null
         });
 
         cls.init = function(settings) {
@@ -24,10 +21,7 @@
         };
 
         cls.destroy = function() {
-            if (this.$wrapper) {
-                this.$wrapper.remove();
-                this.$wrapper = null;
-            }
+            if (this.$wrapper) this.$wrapper.remove();
             superclass.destroy.call(this);
         };
 
@@ -37,7 +31,6 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
             this.createNavigation(slider);
-            this.checkEnabled(slider);
         };
 
         /*
@@ -52,22 +45,6 @@
          */
         cls.afterSetItemsPerSlide = function(slider) {
             this.createNavigation(slider);
-            this.checkEnabled(slider);
-        };
-
-        /*
-            Проверка, должен ли плагин быть включен
-         */
-        cls.checkEnabled = function(slider) {
-            var new_status = this.opts.checkEnabled.call(this, slider) !== false;
-            if (this._enabled === new_status) return;
-
-            this._enabled = new_status;
-            if (this._enabled) {
-                this.$wrapper.show();
-            } else {
-                this.$wrapper.hide();
-            }
         };
 
         /*

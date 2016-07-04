@@ -6,11 +6,15 @@
             animationName: '',
             animatedHeight: true,
 
-            direction: 'next',  // next / prev / random
+            interval: 3000,
+            direction: 'next',          // next / prev / random
             stopOnHover: true,
-            interval: 3000
+
+            checkEnabled: function(slider) {
+                return slider.$slides.length >= 2;
+            }
         });
-        
+
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {
@@ -18,8 +22,8 @@
             }
         };
 
-        cls.destroy = function() {
-            this.stopTimer();
+        cls.destroy = function(slider) {
+            this.stopTimer(slider);
             superclass.destroy.call(this);
         };
 
@@ -28,7 +32,7 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-            
+
             if (this.opts.direction == 'prev') {
                 this._timerHandler = $.proxy(
                     slider.slidePrevious,
@@ -47,25 +51,40 @@
                 );
             }
 
-            this.startTimer(slider);
+            this.checkEnabled(slider);
 
             // остановка таймера при наведении на слайдер
             if (this.opts.stopOnHover) {
                 var that = this;
                 slider.$root.on('mouseenter.slider.autoscroll', function() {
-                    that.stopTimer(slider);
+                    that.stopTimer();
                 }).on('mouseleave.slider.autoscroll', function() {
-                    that.startTimer(slider);
+                    that.startTimer();
                 });
             }
         };
-
 
         /*
             Переустановка таймера при изменении кол-ва слайдов
          */
         cls.afterSetItemsPerSlide = function(slider) {
-            this.startTimer(slider);
+            this.checkEnabled(slider);
+        };
+
+        /*
+            Включение плагина
+         */
+        cls.enable = function(slider) {
+            this.startTimer();
+            superclass.enable.call(this, slider);
+        };
+
+        /*
+            Выключение плагина
+         */
+        cls.disable = function(slider) {
+            this.stopTimer();
+            superclass.disable.call(this, slider);
         };
 
         /*
@@ -85,13 +104,9 @@
         /*
             Создание таймера
          */
-        cls.startTimer = function(slider) {
-            if (slider.$slides.length < 2) {
-                return
-            }
-
+        cls.startTimer = function() {
+            if (!this.enabled) return;
             this.stopTimer();
-
             this._timer = setInterval(this._timerHandler, this.opts.interval);
         };
 
@@ -99,10 +114,7 @@
             Остановка таймера
          */
         cls.stopTimer = function() {
-            if (this._timer) {
-                clearInterval(this._timer);
-                this._timer = null;
-            }
+            if (this._timer) clearInterval(this._timer);
         };
 
         /*

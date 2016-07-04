@@ -454,13 +454,11 @@
                     if (plugin instanceof window.SliderPlugin) {
                         that._plugins.push(plugin);
                         plugin.onAttach(that);
-                        plugin.afterAttach(that);
                     }
                 });
             } else if (plugins instanceof window.SliderPlugin) {
                 this._plugins.push(plugins);
                 plugins.onAttach(this);
-                plugins.afterAttach(this);
             }
             return this;
         };
@@ -662,15 +660,14 @@
     // ================================================
     window.SliderPlugin = Class(Object, function SliderPlugin(cls, superclass) {
         cls.defaults = {
-            afterAttach: $.noop
+            checkEnabled: $.noop
         };
-
 
         cls.init = function(settings) {
             this.opts = $.extend(true, {}, this.defaults, settings);
         };
 
-        cls.destroy = function() {
+        cls.destroy = function(slider) {
 
         };
 
@@ -679,14 +676,34 @@
 
         };
 
-        // Дополнительные действия после подключения плагина к слайдеру
-        cls.afterAttach = function(slider) {
-            this.opts.afterAttach.call(this, slider);
-        };
-
         // Событие изменения размера окна
         cls.onResize = function(slider) {
 
+        };
+
+        /*
+            Проверка включенности и включение / выключение
+         */
+        cls.checkEnabled = function(slider) {
+            var status = this.opts.checkEnabled.call(this, slider) !== false;
+            if (this.enabled === status) return;
+
+            this.enabled = status;
+            if (this.enabled) {
+                this.enable(slider);
+            } else {
+                this.disable(slider);
+            }
+        };
+
+        // Включение
+        cls.enable = function(slider) {
+            this.enabled = true;
+        };
+
+        // Выключение
+        cls.disable = function(slider) {
+            this.enabled = false;
         };
     });
 

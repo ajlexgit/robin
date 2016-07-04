@@ -14,7 +14,7 @@
             container: null,
             disableOnBounds: true
         });
-        
+
         cls.init = function(settings) {
             superclass.init.call(this, settings);
             if (!this.opts.animationName) {

@@ -15,16 +15,8 @@
 
             margin: 0,                  // в пикселях или процентах
             speed: 800,
-            easing: 'easeOutCubic',
-            dragOneSlide: false,
-
-            checkEnabled: $.noop
+            easing: 'easeOutCubic'
         });
-
-        cls.init = function(settings) {
-            superclass.init.call(this, settings);
-            this._enabled = true;
-        };
 
         cls.destroy = function() {
             if (this.drager) {
@@ -40,10 +32,6 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
 
-            if (this.drager) {
-              this.drager.destroy();
-            }
-
             var that = this;
             this.drager = Drager(slider.$listWrapper, {
                 mouse: that.opts.mouse,
@@ -53,7 +41,7 @@
                 momentum: false
             }).on('dragstart', function(evt) {
                 // если один слайд - выходим
-                if (!that.opts.dragOneSlide && (slider.$slides.length < 2)) {
+                if (slider.$slides.length < 2) {
                     this.setStartPoint(evt);
                     return false;
                 }
@@ -100,28 +88,29 @@
         };
 
         /*
-            Проверка, должен ли плагин быть включен
+            Включение плагина
          */
-        cls.checkEnabled = function(slider) {
-            var new_status = this.opts.checkEnabled.call(this, slider) !== false;
-            if (this._enabled === new_status) return;
+        cls.enable = function(slider) {
+            this.drager.attach();
+            superclass.enable.call(this, slider);
+        };
 
-            this._enabled = new_status;
-            if (this._enabled) {
-                this.drager.attach();
-            } else {
-                this.drager.detach();
-            }
+        /*
+            Выключение плагина
+         */
+        cls.disable = function(slider) {
+            this.drager.detach();
+            superclass.disable.call(this, slider);
         };
 
         /*
             Проверка, нужно ли блокировать выделение текста
          */
         cls.checkUnselectable = function(slider) {
-            if (!this.opts.dragOneSlide && (slider.$slides.length == 1)) {
-                slider.$root.removeClass('unselectable');
-            } else {
+            if (slider.$slides.length >= 2) {
                 slider.$root.addClass('unselectable');
+            } else {
+                slider.$root.removeClass('unselectable');
             }
         };
 
