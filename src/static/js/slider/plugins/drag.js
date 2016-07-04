@@ -39,7 +39,7 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-            
+
             if (this.drager) {
               this.drager.destroy();
             }
@@ -87,6 +87,7 @@
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
         cls.afterSetItemsPerSlide = function(slider) {
+            this.checkEnabled(slider);
             this.checkUnselectable(slider);
         };
 

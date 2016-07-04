@@ -10,7 +10,10 @@
             itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
 
-            container: null
+            container: null,
+            checkEnabled: function(slider) {
+                return slider.$slides.length >= 2;
+            }
         });
 
         cls.init = function(settings) {
@@ -34,7 +37,7 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
             this.createNavigation(slider);
-            this.checkOneSlide(slider);
+            this.checkEnabled(slider);
         };
 
         /*
@@ -49,17 +52,21 @@
          */
         cls.afterSetItemsPerSlide = function(slider) {
             this.createNavigation(slider);
-            this.checkOneSlide(slider);
+            this.checkEnabled(slider);
         };
 
         /*
-            Деактивация навигации когда в слайдере всего один слайд
+            Проверка, должен ли плагин быть включен
          */
-        cls.checkOneSlide = function(slider) {
-            if (slider.$slides.length < 2) {
-                this.$wrapper.hide();
-            } else {
+        cls.checkEnabled = function(slider) {
+            var new_status = this.opts.checkEnabled.call(this, slider) !== false;
+            if (this._enabled === new_status) return;
+
+            this._enabled = new_status;
+            if (this._enabled) {
                 this.$wrapper.show();
+            } else {
+                this.$wrapper.hide();
             }
         };
 
