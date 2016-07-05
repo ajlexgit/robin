@@ -33,6 +33,8 @@
 
             if (!this.$button.parent().hasClass('no-counter')) {
                 this.getShareCount();
+            } else {
+                this.updateData();
             }
         };
 
