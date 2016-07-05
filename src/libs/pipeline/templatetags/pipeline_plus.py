@@ -1,13 +1,18 @@
+import os
+import re
 import codecs
 import hashlib
+from django.conf import settings
 from django.core.cache import cache
 from django.utils.safestring import mark_safe
 from django.template import Library, TemplateSyntaxError, loader
 from django.contrib.staticfiles.storage import staticfiles_storage
 from pipeline.templatetags import pipeline
 from pipeline.utils import guess_type
+from pipeline.compressors import URL_DETECTOR
 
 register = Library()
+NON_REWRITABLE_URL = re.compile(r'^(#|http:|https:|data:|//|/)')
 
 
 class StylesheetNode(pipeline.StylesheetNode):
@@ -36,17 +41,24 @@ class InlineStylesheetNode(pipeline.StylesheetNode):
         if cache_key not in cache:
             cache.set(
                 cache_key,
-                self.render_individual_css(package, [path]),
+                self.render_individual_css(package, path),
                 timeout=3600
             )
         return cache.get(cache_key)
 
-    def render_individual_css(self, package, paths, **kwargs):
-        html = []
-        for path in paths:
-            with codecs.open(staticfiles_storage.path(path), 'r', 'utf-8') as f:
-                html.append(f.read())
-        html = '<style type="text/css">' + '\n'.join(html) + '</style>'
+    def render_individual_css(self, package, path, **kwargs):
+        with codecs.open(staticfiles_storage.path(path), 'r', 'utf-8') as f:
+            html = f.read()
+
+        path_prefix = os.path.dirname(path)
+
+        def reconstruct(match):
+            asset_url = match.group(2)
+            if not NON_REWRITABLE_URL.match(asset_url):
+                asset_url = os.path.normpath(os.path.join(settings.STATIC_URL, path_prefix, asset_url))
+            return "url(%s)" % asset_url
+
+        html = '<style type="text/css">' + re.sub(URL_DETECTOR, reconstruct, html) + '</style>'
         return mark_safe(html)
 
 
