@@ -1,14 +1,13 @@
 import os
 import re
-import codecs
 import hashlib
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.safestring import mark_safe
 from django.template import Library, TemplateSyntaxError, loader
 from django.contrib.staticfiles.storage import staticfiles_storage
-from pipeline.templatetags import pipeline
 from pipeline.utils import guess_type
+from pipeline.templatetags import pipeline
 from pipeline.compressors import URL_DETECTOR
 
 register = Library()
@@ -19,8 +18,8 @@ class StylesheetNode(pipeline.StylesheetNode):
     """
         Добавлено время изменения файла
     """
-    def render_css(self, package, path):
-        template_name = package.template_name or "pipeline/css_default.html"
+    def render_css(self, package, path, template_name=None):
+        template_name = package.template_name or template_name or "pipeline/css_default.html"
         modified = staticfiles_storage.modified_time(path).timestamp()
         context = package.extra_context
         context.update({
@@ -32,7 +31,18 @@ class StylesheetNode(pipeline.StylesheetNode):
 
 
 class InlineStylesheetNode(pipeline.StylesheetNode):
-    def render_css(self, package, path):
+    def expand_urls(self, package, content):
+        path_prefix = os.path.dirname(package.output_filename)
+
+        def reconstruct(match):
+            asset_url = match.group(2)
+            if not NON_REWRITABLE_URL.match(asset_url):
+                asset_url = os.path.normpath(os.path.join(settings.STATIC_URL, path_prefix, asset_url))
+            return "url(%s)" % asset_url
+
+        return re.sub(URL_DETECTOR, reconstruct, content)
+
+    def render_css(self, package, path, template_name=None):
         cache_key = ':'.join((
             self.name,
             str(staticfiles_storage.modified_time(path).timestamp()),
@@ -41,25 +51,17 @@ class InlineStylesheetNode(pipeline.StylesheetNode):
         if cache_key not in cache:
             cache.set(
                 cache_key,
-                self.render_individual_css(package, path),
+                self.render_individual_css(package, [path]),
                 timeout=3600
             )
         return cache.get(cache_key)
 
-    def render_individual_css(self, package, path, **kwargs):
-        with codecs.open(staticfiles_storage.path(path), 'r', 'utf-8') as f:
-            html = f.read()
-
-        path_prefix = os.path.dirname(path)
-
-        def reconstruct(match):
-            asset_url = match.group(2)
-            if not NON_REWRITABLE_URL.match(asset_url):
-                asset_url = os.path.normpath(os.path.join(settings.STATIC_URL, path_prefix, asset_url))
-            return "url(%s)" % asset_url
-
-        html = '<style type="text/css">' + re.sub(URL_DETECTOR, reconstruct, html) + '</style>'
-        return mark_safe(html)
+    def render_individual_css(self, package, paths, **kwargs):
+        html = ''.join(
+            self.expand_urls(package, open(staticfiles_storage.path(path), 'r').read())
+            for path in paths
+        )
+        return mark_safe('<style type="text/css">' + html + '</style>')
 
 
 class JavascriptNode(pipeline.JavascriptNode):
