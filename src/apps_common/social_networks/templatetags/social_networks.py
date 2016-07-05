@@ -17,7 +17,7 @@ def social_button(context, provider, text='', url='', title='', description='', 
     seo = getattr(request, 'seo', None)
     if seo is not None:
         opengraph = seo['opengraph']
-        social_data.update(opengraph.data)
+        social_data.update(opengraph._dict)
 
     # Возможность переопределения
     if url:
