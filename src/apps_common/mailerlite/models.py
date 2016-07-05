@@ -72,6 +72,7 @@ class Group(models.Model):
     date_updated = models.DateTimeField(_('date updated'), auto_now=True)
 
     class Meta:
+        default_permissions = ('change',)
         verbose_name = _('group')
         verbose_name_plural = _('groups')
         ordering = ('-date_created',)

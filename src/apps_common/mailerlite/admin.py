@@ -87,12 +87,18 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
             default += ('status', )
         return default
 
+    def has_add_permission(self, request):
+        """ Право на добавление суперюзеру """
+        return request.user.is_superuser
+
     def has_delete_permission(self, request, obj=None):
         """ Право на удаление суперюзеру """
-        if obj and obj.status == self.model.STATUS_DRAFT:
+        default = super().has_delete_permission(request, obj)
+        is_draft = obj and obj.status == self.model.STATUS_QUEUED
+        if request.user.is_superuser:
             return True
         else:
-            return super().has_delete_permission(request, obj)
+            return default and is_draft
 
 
 class CampaignForm(forms.ModelForm):
@@ -151,12 +157,12 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         """ Право на удаление суперюзеру """
-        if obj and obj.status in (self.model.STATUS_DRAFT, self.model.STATUS_QUEUED):
+        default = super().has_delete_permission(request, obj)
+        is_draft = obj and obj.status in (self.model.STATUS_DRAFT, self.model.STATUS_QUEUED)
+        if request.user.is_superuser:
             return True
-        elif not request.user.is_superuser:
-            return False
         else:
-            return super().has_delete_permission(request, obj)
+            return default and is_draft
 
     def get_actions(self, request):
         default = super().get_actions(request)
@@ -171,7 +177,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         default = super().get_fieldsets(request, obj)
-        if request.user.is_superuser:
+        if obj and request.user.is_superuser:
             default += (
                 (_('Statistics'), {
                     'fields': (
