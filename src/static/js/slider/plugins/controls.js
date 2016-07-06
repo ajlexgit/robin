@@ -82,23 +82,13 @@
         cls.createControls = function(slider) {
             if (this.opts.container) {
                 this.$container = slider.$root.find(this.opts.container).first();
-            } else {
+            }
+
+            if (!this.$container || !this.$container.length) {
                 this.$container = slider.$listWrapper;
             }
 
-            if (this.$container.length) {
-                this.createControlItems(slider);
-            } else {
-                this.$container = null;
-            }
-        };
-
-        /*
-            Добавление стрелок в DOM
-         */
-        cls.createControlItems = function(slider) {
             var that = this;
-
             this.$left = $('<div>')
                 .addClass(this.opts.arrowClass)
                 .addClass(this.opts.arrowLeftClass)

@@ -38,11 +38,11 @@ PopupGallery = namedtuple('PopupGallery', ['css', 'js'])(
         'gallery/scss/gallery_popup.scss',
     ),
     js=(
-           'js/jquery.youtube.js',
-           'js/jquery.vimeo.js',
-       ) + Slider.js + (
-           'gallery/js/gallery_popup.js',
-       )
+        'js/jquery.youtube.js',
+        'js/jquery.vimeo.js',
+    ) + Slider.js + (
+        'gallery/js/gallery_popup.js',
+    )
 )
 
 

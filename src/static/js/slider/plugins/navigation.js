@@ -49,6 +49,7 @@
          */
         cls.afterSetItemsPerSlide = function(slider) {
             this.updateNavigationItems(slider);
+            this.activateNavigationItemBySlide(slider, slider.$currentSlide);
             this.checkEnabled(slider);
         };
 
@@ -74,34 +75,17 @@
         cls.createNavigation = function(slider) {
             if (this.opts.container) {
                 this.$container = slider.$root.find(this.opts.container).first();
-            } else {
-                this.$container = slider.$root
             }
 
-            if (this.$container.length) {
-                this.createNavigationItems(slider);
-                this.activateNavigationItemBySlide(slider, slider.$currentSlide);
-            } else {
-                this.$container = null;
+            if (!this.$container || !this.$container.length) {
+                this.$container = slider.$root;
             }
-        };
 
-        /*
-            Добавление кнопок в DOM
-         */
-        cls.createNavigationItems = function(slider) {
-            // удаление старых точек навигации
             this.$container.find('.' + this.opts.wrapperClass).remove();
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
             var that = this;
-            $.each(slider.$slides, function(index) {
-                var $item = $('<a>').addClass(that.opts.itemClass).data('slideIndex', index);
-                $item.append($('<span>').text(index + 1));
-                that.$wrapper.append($item);
-            });
-
-            this.$wrapper.off('.navigation').on('click.slider.navigation', '.' + this.opts.itemClass, function() {
+            this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
                 var $self = $(this);
                 var slideIndex = $self.data('slideIndex') || 0;
                 slider.slideTo(
@@ -110,6 +94,9 @@
                     that.opts.animatedHeight
                 );
             });
+
+            this.updateNavigationItems(slider);
+            this.activateNavigationItemBySlide(slider, slider.$currentSlide);
         };
 
         /*
