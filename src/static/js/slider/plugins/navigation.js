@@ -10,7 +10,10 @@
             itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
 
-            container: null
+            container: null,
+            checkEnabled: function(slider) {
+                return slider.$slides.length >= 2
+            }
         });
 
         cls.init = function(settings) {
@@ -31,6 +34,7 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
             this.createNavigation(slider);
+            this.checkEnabled(slider);
         };
 
         /*
@@ -44,7 +48,24 @@
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
         cls.afterSetItemsPerSlide = function(slider) {
-            this.createNavigation(slider);
+            this.updateNavigationItems(slider);
+            this.checkEnabled(slider);
+        };
+
+        /*
+            Включение плагина
+         */
+        cls.enable = function(slider) {
+            this.$wrapper.show();
+            superclass.enable.call(this, slider);
+        };
+
+        /*
+            Выключение плагина
+         */
+        cls.disable = function(slider) {
+            this.$wrapper.hide();
+            superclass.disable.call(this, slider);
         };
 
         /*
@@ -88,6 +109,21 @@
                     that.opts.animationName,
                     that.opts.animatedHeight
                 );
+            });
+        };
+
+        /*
+            Обновление кол-ва кнопок в DOM
+         */
+        cls.updateNavigationItems = function(slider) {
+            // удаление старых точек навигации
+            this.$wrapper.find('.' + this.opts.itemClass).remove();
+
+            var that = this;
+            $.each(slider.$slides, function(index) {
+                var $item = $('<a>').addClass(that.opts.itemClass).data('slideIndex', index);
+                $item.append($('<span>').text(index + 1));
+                that.$wrapper.append($item);
             });
         };
 
