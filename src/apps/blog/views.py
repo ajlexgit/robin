@@ -46,6 +46,19 @@ class IndexView(CachedViewMixin, TemplateView):
         })
         seo.save(request)
 
+        # Unique title
+        title_appends = ' | '.join(filter(bool, [
+            self.tag.title if self.tag else '',
+            'Page %d/%d' % (paginator.num_page, paginator.num_pages) if paginator.num_page >= 2 else '',
+        ]))
+        if title_appends:
+            if seo._title_deque:
+                seo._title_deque[0] += ' | %s' % title_appends
+
+            seo.set({
+                'description': '',
+            })
+
         return self.render_to_response({
             'config': self.config,
             'paginator': paginator,

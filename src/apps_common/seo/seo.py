@@ -108,7 +108,10 @@ class Seo:
         for fieldname in ALLOWED_SEO_KEYS:
             default = defaults.get(fieldname) if isinstance(defaults, dict) else None
 
-            value = seodata.get(fieldname) or default
+            value = seodata.get(fieldname)
+            if value is None:
+                value = default
+
             if value is None:
                 continue
 
