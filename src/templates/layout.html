@@ -30,6 +30,7 @@
   {# === STYLES === #}
   {% include 'pipeline/_loadcss.html' %}
 
+  {% inline_stylesheet 'critical' %}
   {% stylesheet 'core' %}
   {% block static_head %}{% endblock static_head %}
 
