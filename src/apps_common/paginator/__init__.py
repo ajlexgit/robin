@@ -17,6 +17,8 @@
             ...
 
         # template.html
+            {% load paginator %}
+
             <!-- Элементы текущей страницы -->
             {% for item in paginator.current_page %}
                 {{ item.name }}
@@ -26,7 +28,7 @@
             <!-- Навигация -->
             {% if paginator.num_pages > 1 %}
               <div class="grid-block">
-                {{ paginator }}
+                {% paginator paginator %}
               </div>
             {% endif %}
 

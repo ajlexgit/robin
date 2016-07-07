@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% load pipeline_plus %}
+{% load paginator %}
 {% load cache %}
 {% load text %}
 {% load i18n %}
@@ -91,7 +92,7 @@
     {% if paginator.num_pages > 1 %}
       <div id="paginator">
         <div class="grid-block">
-          {{ paginator }}
+          {% paginator paginator %}
         </div>
       </div>
     {% endif %}
