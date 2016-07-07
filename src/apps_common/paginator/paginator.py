@@ -28,7 +28,10 @@ class Paginator(paginator.Paginator):
         if not self.allow_empty_first_page and self.count == 0:
             raise EmptyPage('That page contains no results')
 
-    def real_page_number(self, number):
+    @property
+    def num_page(self):
+        """ Номер текущей страницы """
+        number = self.request.GET.get(self.parameter_name, 1)
         try:
             number = self.validate_number(number)
         except PageNotAnInteger:
@@ -41,9 +44,7 @@ class Paginator(paginator.Paginator):
     @cached_property
     def current_page(self):
         """ Объект текущей страницы """
-        new_number = self.request.GET.get(self.parameter_name, 1)
-        new_number = self.real_page_number(new_number)
-        return self.page(new_number)
+        return self.page(self.num_page)
 
     @cached_property
     def pages(self):
@@ -70,13 +71,6 @@ class Paginator(paginator.Paginator):
 
         return result
 
-    def href(self, number):
-        """ Построение ссылки на страницу с номером number """
-        if number == 1:
-            return '?'
-        else:
-            return '?%s=%s' % (self.parameter_name, number)
-
     def __str__(self):
         if not self.current_page.has_other_pages():
             return ''
@@ -84,5 +78,4 @@ class Paginator(paginator.Paginator):
         return loader.render_to_string(self.template, {
             'paginator': self,
             'page': self.current_page,
-            'anchor': self.anchor,
         })

@@ -4,10 +4,14 @@ register = Library()
 
 
 @register.simple_tag
-def href(paginator, number, anchor):
+def href(paginator, number):
     """ Генерация ссылки на страницу навигации """
-    number = paginator.real_page_number(number)
-    link = paginator.href(number)
-    if anchor:
-        link += '#' + anchor
+    if number == 1:
+        link = '?'
+    else:
+        link = '?%s=%s' % (paginator.parameter_name, number)
+
+    if paginator.anchor:
+        link += '#' + paginator.anchor
+
     return link

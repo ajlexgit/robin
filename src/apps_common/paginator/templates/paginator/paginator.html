@@ -5,7 +5,7 @@
   {% if not page.has_previous %}
     <span class="nav-item prev-page disabled">{% trans 'Previous' %}</span>
   {% else %}
-    <a href="{% href paginator page.previous_page_number anchor %}"
+    <a href="{% href paginator page.previous_page_number %}"
        class="nav-item prev-page"
        data-page="{{ page.previous_page_number }}">{% trans 'Previous' %}</a>
   {% endif %}
@@ -17,7 +17,7 @@
       {% elif page.number == page_num %}
         <span class="page active">{{ page_num }}</span>
       {% else %}
-        <a href="{% href paginator page_num anchor %}" itemprop="url"
+        <a href="{% href paginator page_num %}" itemprop="url"
            class="page link {% if page.number == page_num %}active{% endif %}"
            data-page="{{ page_num }}">{{ page_num }}</a>
       {% endif %}
@@ -27,7 +27,7 @@
   {% if not page.has_next %}
     <span class="nav-item next-page disabled">{% trans 'Next' %}</span>
   {% else %}
-    <a href="{% href paginator page.next_page_number anchor %}"
+    <a href="{% href paginator page.next_page_number %}"
        class="nav-item next-page"
        data-page="{{ page.next_page_number }}">{% trans 'Next' %}</a>
   {% endif %}
