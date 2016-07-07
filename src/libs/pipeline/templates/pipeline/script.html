@@ -1,3 +1,78 @@
 <script>
-  !function(e){"use strict";function t(e,t,n){e.addEventListener?e.addEventListener(t,n,!1):e.attachEvent&&e.attachEvent("on"+t,n)}function n(t,n){return e.localStorage&&localStorage[t+"_content"]&&localStorage[t+"_file"]===n}function a(t,a){if(e.localStorage&&e.XMLHttpRequest)n(t,a)?o(localStorage[t+"_content"]):l(t,a);else{var s=r.createElement("link");s.href=a,s.id=t,s.rel="stylesheet",s.type="text/css",r.getElementsByTagName("head")[0].appendChild(s),r.cookie=t}}function l(e,t){var n=new XMLHttpRequest;n.open("GET",t,!0),n.onreadystatechange=function(){4===n.readyState&&200===n.status&&(o(n.responseText),localStorage[e+"_content"]=n.responseText,localStorage[e+"_file"]=t)},n.send()}function o(e){var t=r.createElement("style");t.setAttribute("type","text/css"),r.getElementsByTagName("head")[0].appendChild(t),t.styleSheet?t.styleSheet.cssText=e:t.innerHTML=e}var r=e.document;e.loadCSS=function(e,t,n){var a,l=r.createElement("link");if(t)a=t;else{var o;o=r.querySelectorAll?r.querySelectorAll("style,link[rel=stylesheet],script"):(r.body||r.getElementsByTagName("head")[0]).childNodes,a=o[o.length-1]}var s=r.styleSheets;l.rel="stylesheet",l.href=e,l.media="only x",a.parentNode.insertBefore(l,t?a:a.nextSibling);var c=function(e){for(var t=l.href,n=s.length;n--;)if(s[n].href===t)return e();setTimeout(function(){c(e)})};return l.onloadcssdefined=c,c(function(){l.media=n||"all"}),l},e.loadLocalStorageCSS=function(l,o){n(l,o)||r.cookie.indexOf(l)>-1?a(l,o):t(e,"load",function(){a(l,o)})}}(this);
+  !function(e) {
+    "use strict";
+    function t(e, t, n) {
+      e.addEventListener ? e.addEventListener(t, n, !1) : e.attachEvent && e.attachEvent("on" + t, n)
+    }
+
+    function n(t, n) {
+      return e.localStorage && localStorage[t + "_content"] && localStorage[t + "_file"] === n
+    }
+
+    function o(t, o) {
+      if (e.localStorage && e.XMLHttpRequest)n(t, o) ? r(localStorage[t + "_content"]) : a(t, o); else {
+        var i = l.createElement("link");
+        i.href = o, i.id = t, i.rel = "stylesheet", i.type = "text/css", l.getElementsByTagName("head")[0].appendChild(i), l.cookie = t
+      }
+    }
+
+    function a(e, t) {
+      var n = new XMLHttpRequest;
+      n.open("GET", t, !0), n.onreadystatechange = function() {
+        4 === n.readyState && 200 === n.status && (r(n.responseText), localStorage[e + "_content"] = n.responseText, localStorage[e + "_file"] = t)
+      }, n.send()
+    }
+
+    function r(e) {
+      var t = l.createElement("style");
+      t.setAttribute("type", "text/css"), l.getElementsByTagName("head")[0].appendChild(t), t.styleSheet ? t.styleSheet.cssText = e : t.innerHTML = e
+    }
+
+    var l = e.document, i = function(e, t, n) {
+      function o(e) {
+        return l.body ? e() : void setTimeout(function() {
+          o(e)
+        })
+      }
+
+      function a() {
+        i.addEventListener && i.removeEventListener("load", a), i.media = n || "all"
+      }
+
+      var r, i = l.createElement("link");
+      if (t)r = t; else {
+        var s = (l.body || l.getElementsByTagName("head")[0]).childNodes;
+        r = s[s.length - 1]
+      }
+      var c = l.styleSheets;
+      i.rel = "stylesheet", i.href = e, i.media = "only x", o(function() {
+        r.parentNode.insertBefore(i, t ? r : r.nextSibling)
+      });
+      var d = function(e) {
+        for (var t = i.href, n = c.length; n--;)if (c[n].href === t)return e();
+        setTimeout(function() {
+          d(e)
+        })
+      };
+      return i.addEventListener && i.addEventListener("load", a), i.onloadcssdefined = d, d(a), i
+    };
+    "undefined" != typeof exports ? exports.loadCSS = i : e.loadCSS = i, e.loadLocalStorageCSS = function(a, r) {
+      n(a, r) || l.cookie.indexOf(a) > -1 ? o(a, r) : t(e, "load", function() {
+        o(a, r)
+      })
+    };
+    var s = {};
+    s.support = function() {
+      try {
+        return l.createElement("link").relList.supports("preload")
+      } catch (e) {
+        return !1
+      }
+    }, s.poly = function() {
+      for (var e = l.getElementsByTagName("link"), t = 0; t < e.length; t++) {
+        var n = e[t];
+        "preload" === n.rel && "style" === n.getAttribute("as") && (i(n.href, n), n.rel = null)
+      }
+    }, s.support() || s.poly()
+  }(this);
 </script>

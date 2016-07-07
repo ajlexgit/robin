@@ -6,7 +6,7 @@
 {% load seo %}
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" class="no-js" lang="{{ LANGUAGE_CODE }}">
+<html xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns#" class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
   {% seo_metatags %}
@@ -15,6 +15,7 @@
   {# === PREFETCH === #}
   {% for domain in MEDIA_URLS %}
     <link rel="dns-prefetch" href="{{ domain }}">
+    <link rel="preconnect" href="{{ domain }}">
   {% endfor %}
 
   {# === SCRIPTS === #}

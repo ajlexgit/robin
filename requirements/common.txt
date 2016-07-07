@@ -1,6 +1,6 @@
 Django==1.8.13
-django-model-utils==2.4
-django-mptt==0.8.3
+django-model-utils==2.5
+django-mptt==0.8.4
 django-pipeline==1.6.8
 django-redis==3.5.1
 django-softhyphen==1.1.0
