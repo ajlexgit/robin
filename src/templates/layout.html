@@ -18,20 +18,22 @@
     <link rel="preconnect" href="{{ domain }}">
   {% endfor %}
 
+  <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
+  <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
+
   {# === SCRIPTS === #}
-  {#  Асинхронная подгрузка CSS  #}
-  {% include 'pipeline/script.html' %}
   <script>
     var docElement = document.documentElement;
     docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
   </script>
 
   {# === STYLES === #}
-  <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
-  <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
-  {% stylesheet 'core' %}
+  {% include 'pipeline/_loadcss.html' %}
 
+  {% stylesheet 'core' %}
   {% block static_head %}{% endblock static_head %}
+
+  {% include 'pipeline/_preloadcss.html' %}
 
   {% seo_counters 'head' %}
 </head>

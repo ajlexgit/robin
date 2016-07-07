@@ -1,0 +1,18 @@
+<script>
+  !function(e) {
+    "use strict";
+    var l = e.document, s = {};
+    s.support = function() {
+      try {
+        return l.createElement("link").relList.supports("preload")
+      } catch (e) {
+        return !1
+      }
+    }, s.poly = function() {
+      for (var e = l.getElementsByTagName("link"), t = 0; t < e.length; t++) {
+        var n = e[t];
+        "preload" === n.rel && "style" === n.getAttribute("as") && (e.loadCSS(n.href, n), n.rel = null)
+      }
+    }, s.support() || s.poly()
+  }(this);
+</script>
