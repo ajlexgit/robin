@@ -101,7 +101,6 @@
     $(window).on('resize.bg_inspector', $.rared(function() {
         $.bgInspector.checkAll();
     }, 60)).on('load', function() {
-       // из-за бага хрома с шириной картинок
         $.bgInspector.checkAll();
     });
 

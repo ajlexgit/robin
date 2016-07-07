@@ -71,6 +71,8 @@
 
     $(window).on('resize.media_inspector', $.rared(function() {
         $.mediaInspector.checkAll();
-    }, 100));
+    }, 100)).on('load.media_inspector', function() {
+        $.mediaInspector.checkAll();
+    });
 
 })(jQuery);
