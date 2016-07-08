@@ -48,6 +48,11 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
                 'bg_color', 'bg_image',
             ),
         }),
+        (_('Email header'), {
+            'fields': (
+                'logo', 'preheader',
+            ),
+        }),
         (_('Email footer'), {
             'fields': (
                 'company', 'website', 'contact_email',
@@ -134,7 +139,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
         (_('Content'), {
             'fields': (
-                'subject', 'preheader', 'header_image', 'text',
+                'subject', 'header_image', 'text',
             )
         }),
     )

@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorUploadField
+from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
 from libs.stdimage.fields import StdImageField
-from libs.storages.media_storage import MediaStorage
 from . import utils
 from . import conf
 
@@ -29,6 +29,9 @@ class MailerConfig(SingletonModel):
     bg_image = models.ImageField(_('background image'), blank=True,
         storage=MediaStorage('mailerlite/campaigns')
     )
+
+    logo = models.ImageField(_('logo'), storage=MediaStorage('mailerlite/logo'), blank=True)
+    preheader = models.TextField(_('pre-header'), blank=True)
 
     company = models.CharField(_('company'), max_length=255, default='Example')
     website = models.CharField(_('website address'), max_length=255, default='example.com')
@@ -125,21 +128,20 @@ class Campaign(models.Model):
 
     groups = models.ManyToManyField(Group)
     subject = models.CharField(_('subject'), max_length=255)
-    preheader = models.CharField(_('pre-header'), max_length=255, blank=True)
     header_image = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('mailerlite/campaigns'),
-        min_dimensions=(640, 150),
+        min_dimensions=(640, 200),
         admin_variation='admin',
         crop_area=True,
         aspects='normal',
         variations=dict(
             normal=dict(
-                size=(640, 150),
+                size=(640, 200),
                 quality=95,
             ),
             admin=dict(
-                size=(480, 90),
+                size=(480, 150),
             ),
         ),
     )

@@ -33,15 +33,21 @@ DATABASES.update({
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s [%(asctime)s]: %(message)s'
+        },
+    },
     'handlers': {
         'null': {
             'level': 'DEBUG',
             'class': 'django.utils.log.NullHandler',
         },
         'file': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': os.path.join(VZ_DIRECTORY, 'django_errors.log'),
+            'formatter': 'verbose',
         },
     },
     'loggers': {

@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Menu: выделение из вьюхи
 # Admin: функция "скопировать из"
 # crop each variation
 # Кнопка подтверждения заказа в админке

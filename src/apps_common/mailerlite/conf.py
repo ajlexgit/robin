@@ -6,7 +6,7 @@ API_KEY = getattr(settings, 'MAILERLITE_APIKEY')
 HTTPS_ALLOWED = False
 
 CKEDITOR_CONFIG = {
-    'extraPlugins': 'textlen,enterfix,simplephotos',
+    'extraPlugins': 'textlen,enterfix,pagephotos,simplephotos',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
         settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
@@ -23,11 +23,15 @@ CKEDITOR_CONFIG = {
         },
         {
             'name': 'links',
-            'items': ['Link', 'Unlink', 'Format']
+            'items': ['Link', 'Unlink']
+        },
+        {
+            'name': 'insert',
+            'items': ['PagePhotos']
         },
         {
             'name': 'document',
-            'items': ['Source']
+            'items': ['Format', 'Source']
         },
     ]
 }
