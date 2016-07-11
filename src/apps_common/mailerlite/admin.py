@@ -131,6 +131,8 @@ class CampaignForm(forms.ModelForm):
 
 @admin.register(Campaign)
 class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
+    change_form_template = 'mailerlite/admin/change_form.html'
+
     fieldsets = (
         (None, {
             'fields': (
@@ -151,6 +153,16 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_filter = ('status', )
     list_display = ('view', 'short_subject', 'sent', 'opened', 'clicked', 'status_box')
     list_display_links = ('short_subject', )
+
+    class Media:
+        js = (
+            'mailerlite/admin/js/sendtest.js',
+        )
+        css = {
+            'all': (
+                'mailerlite/admin/css/sendtest.css',
+            )
+        }
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
@@ -191,6 +203,8 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
                 }),
             )
         return default
+
+
 
     def short_subject(self, obj):
         return description(obj.subject, 30, 60)
@@ -250,6 +264,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         submit_urls = [
             url(r'^(\d+)/start/$', self.admin_site.admin_view(self.start_campaign), name='%s_%s_start' % info),
             url(r'^(\d+)/cancel/$', self.admin_site.admin_view(self.cancel_campaign), name='%s_%s_cancel' % info),
+            url(r'^(\d+)/sendtest/$', self.admin_site.admin_view(self.sendtest), name='%s_%s_sendtest' % info),
         ]
         return submit_urls + urls
 

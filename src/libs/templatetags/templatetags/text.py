@@ -13,7 +13,7 @@ register = Library()
 re_nbsp = re.compile('(?<![\w’\'"])([\w’]{1,3})\s+')
 re_clean_newlines = re.compile('[ \r\t\xa0]*\n')
 re_many_newlines = re.compile('\n{2,}')
-re_not_numbers = re.compile('[^\d]+')
+re_not_numbers = re.compile('[^+\d]+')
 
 
 def get_hybernator():
@@ -161,8 +161,8 @@ def softhyphen(value):
 
 
 @register.filter(is_safe=True)
-def numbers(value):
+def telephone(value):
     """
-        Оставляет только цифры
+        Оставляет только цифры и знак плюса
     """
     return re_not_numbers.sub('', value)

@@ -1,0 +1,33 @@
+{% extends 'admin/change_form.html' %}
+
+{% load i18n %}
+
+{% block object-tools-items %}
+  <li>
+    <a href="javascript: void(0)" class="social-share-btn">
+      <i class="icon-envelope icon-alpha75"></i>
+      {% trans "Send test e-mail" %}
+    </a>
+  </li>
+
+  {{ block.super }}
+{% endblock object-tools-items %}
+
+
+{% block content %}
+  {{ block.super }}
+
+  <div id="autopost-dialog" class="hide" data-campaign="{{ original.pk }}">
+    <form action="{{ sendtest_form_url }}" method="post" class="sendtest-form">
+      {% csrf_token %}
+
+      {% for field in share_form %}
+        <div class="field">
+          {{ field.label_tag }}
+          {{ field }}
+        </div>
+      {% endfor %}
+    </form>
+  </div>
+
+{% endblock content %}
