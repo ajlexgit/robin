@@ -50,7 +50,7 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
         }),
         (_('Email header'), {
             'fields': (
-                'logo', 'preheader',
+                'preheader',
             ),
         }),
         (_('Email footer'), {

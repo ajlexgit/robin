@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <!--xmlns  fix Outlook Scaling-->
 <head>
@@ -31,32 +31,6 @@
       {% endif %}>
     <tr>
       <td align="center" class="base-column">
-
-        <!-- шапка письма -->
-        {% block header %}
-          <table align="center" width="640" cellspacing="0" cellpadding="0" border="0" class="header">
-            <tr>
-              <td align="left" width="120" class="logo">
-                <a href="http://{{ config.website }}/" target="_blank">
-                  <img src="{{ config.logo.url }}" alt="" border="0">
-                </a>
-              </td>
-
-              <td style="width: 20px"></td>
-
-              <td align="left" width="280" class="preheader">
-                {{ config.preheader|linebreaksbr }}
-              </td>
-
-              <td style="width: 20px"></td>
-
-              <td align="right" width="200" class="backlink">
-                {% trans "Can't see images?" %}
-                <a style="color:#FFFFFF" href="{$url}" target="_blank">{% trans "Click here..." %}</a>
-              </td>
-            </tr>
-          </table>
-        {% endblock header %}
 
         <!-- контент -->
         {% block content %}{% endblock content %}

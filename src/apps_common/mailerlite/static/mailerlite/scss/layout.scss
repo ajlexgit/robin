@@ -125,15 +125,3 @@ td[class="base-column"], table[class="responsive"] {
   }
 }
 
-/* Шапка */
-table[class="header"] {
-  @media only screen and (max-width: 680px) {
-    display: none;
-  }
-
-  td {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    vertical-align: bottom;
-  }
-}

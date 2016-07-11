@@ -30,7 +30,6 @@ class MailerConfig(SingletonModel):
         storage=MediaStorage('mailerlite/campaigns')
     )
 
-    logo = models.ImageField(_('logo'), storage=MediaStorage('mailerlite/logo'), blank=True)
     preheader = models.TextField(_('pre-header'), blank=True)
 
     footer_text = models.TextField(_('text'), blank=True)
