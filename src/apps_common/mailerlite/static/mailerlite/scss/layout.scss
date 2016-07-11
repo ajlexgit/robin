@@ -1,0 +1,139 @@
+@import "mixins";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px !important;
+}
+
+.ExternalClass * {
+  line-height: 100%;
+}
+
+body, table, td, p, a, li {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  mso-table-lspace: 0;
+  mso-table-rspace: 0;
+}
+
+table, td {
+  mso-table-lspace: 0;
+  mso-table-rspace: 0;
+}
+
+table td {
+  border-collapse: collapse;
+}
+
+h1, h2, h3, td, a, p, span, li {
+  line-height: 1.6;
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+h1, h2, h3 {
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 2.25em;
+  line-height: 1.223;
+  @media only screen and (max-width: 680px) {
+    font-size: 2em !important;
+  }
+}
+
+h2 {
+  font-size: 1.75em;
+  line-height: 1.25;
+  @media only screen and (max-width: 680px) {
+    font-size: 1.5em !important;
+  }
+}
+
+h3 {
+  font-size: 1.375em;
+  line-height: 1.25;
+  @media only screen and (max-width: 680px) {
+    font-size: 1.25em !important;
+  }
+}
+
+a {
+  word-break: break-word;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+
+ol {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: my-counter;
+}
+
+ol li {
+  position: relative;
+  padding-left: 1.4em;
+  z-index: 1;
+}
+
+ol li:before {
+  content: counter(my-counter) ". ";
+  counter-increment: my-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+ul {
+  padding-left: 1em;
+  list-style: none;
+}
+
+ul li {
+  position: relative;
+  z-index: 1;
+}
+
+ul li:before {
+  content: '●';
+  position: absolute;
+  left: -1.1em;
+  top: 0;
+  font-size: 0.8em;
+}
+
+/* Главная таблица */
+td[class="base-column"], table[class="responsive"] {
+  @media only screen and (max-width: 680px) {
+    min-width: 200px !important;
+    width: 100% !important;
+  }
+}
+
+/* Шапка */
+table[class="header"] {
+  @media only screen and (max-width: 680px) {
+    display: none;
+  }
+
+  td {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    vertical-align: bottom;
+  }
+}

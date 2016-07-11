@@ -17,73 +17,14 @@
   </o:OfficeDocumentSettings>
   </xml><![endif]-->
 
-  <title>{% block title %}{{ config.company }}{% endblock title %}</title>
+  <title>{% block title %}{{ campaign.subject }}{% endblock title %}</title>
 </head>
 <body>
 
-  {# Базовые стили #}
-  {% block base_styles %}
-    <style scoped>
-      body {
-        margin: 0;
-        padding: 0;
-        font-size: 16px !important;
-      }
+  <!-- Стили -->
+  {% block styles %}{% endblock styles %}
 
-      .ExternalClass * {
-        line-height: 100%;
-      }
-
-      body, table, td, p, a, li {
-        -webkit-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-      }
-
-      table {
-        border-spacing: 0;
-        border-collapse: collapse;
-        mso-table-lspace: 0;
-        mso-table-rspace: 0;
-      }
-
-      table, td {
-        mso-table-lspace: 0;
-        mso-table-rspace: 0;
-      }
-
-      table td {
-        border-collapse: collapse;
-      }
-
-      h1 {
-        line-height: 1.223;
-      }
-
-      h2, h3 {
-        line-height: 1.375;
-      }
-
-      a {
-        word-break: break-word;
-      }
-
-      @media only screen and (max-width: 680px) {
-        td[class="base-column"], td[class="base-column"] > table {
-          min-width: 200px !important;
-          width: 100% !important;
-        }
-
-        table[class="mail-header"] {
-          display: none;
-        }
-      }
-    </style>
-  {% endblock base_styles %}
-
-  {# Пользовательские стили #}
-  {% block extra_styles %}{% endblock extra_styles %}
-
-
+  <!-- Содержимое -->
   <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="{{ config.bg_color }}"
       {% if config.bg_image %}
          style="background-image: url({{ config.bg_image.url }});"
@@ -91,25 +32,25 @@
     <tr>
       <td align="center" class="base-column">
 
-        {# Шапка письма #}
+        <!-- шапка письма -->
         {% block header %}
-          <table align="center" width="640" cellspacing="0" cellpadding="0" border="0" class="mail-header">
+          <table align="center" width="640" cellspacing="0" cellpadding="0" border="0" class="header">
             <tr>
-              <td align="left" width="120" style="padding:15px 0; color:#FFFFFF; line-height:120%;">
+              <td align="left" width="120" class="logo">
                 <a href="http://{{ config.website }}/" target="_blank">
-                  <img src="{{ config.logo.url }}">
+                  <img src="{{ config.logo.url }}" alt="" border="0">
                 </a>
               </td>
 
               <td style="width: 20px"></td>
 
-              <td align="left" width="280" style="padding:15px 0;" class="preheader">
+              <td align="left" width="280" class="preheader">
                 {{ config.preheader|linebreaksbr }}
               </td>
 
               <td style="width: 20px"></td>
 
-              <td align="right" width="200" style="padding:15px 0;" class="backlink">
+              <td align="right" width="200" class="backlink">
                 {% trans "Can't see images?" %}
                 <a style="color:#FFFFFF" href="{$url}" target="_blank">{% trans "Click here..." %}</a>
               </td>
@@ -117,16 +58,14 @@
           </table>
         {% endblock header %}
 
-        {# Контент #}
-        {% block content %}
+        <!-- контент -->
+        {% block content %}{% endblock content %}
 
-        {% endblock content %}
-
-        {# Лого Mailerlite #}
+        <!-- Mailerlite logo -->
         {% block mailerlite %}
-          <table align="center" width="640" cellspacing="0" cellpadding="0" border="0">
+          <table align="center" width="640" cellspacing="0" cellpadding="0" border="0" class="responsive">
             <tr>
-              <td width="640" height="30px"></td>
+              <td height="30px"></td>
             </tr>
 
             <tr>
@@ -138,7 +77,7 @@
             </tr>
 
             <tr>
-              <td width="640" height="30px"></td>
+              <td height="30px"></td>
             </tr>
           </table>
         {% endblock mailerlite %}

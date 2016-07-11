@@ -55,7 +55,7 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
         }),
         (_('Email footer'), {
             'fields': (
-                'company', 'website', 'contact_email',
+                'footer_text', 'website', 'contact_email',
             ),
         }),
     )

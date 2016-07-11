@@ -33,7 +33,7 @@ class MailerConfig(SingletonModel):
     logo = models.ImageField(_('logo'), storage=MediaStorage('mailerlite/logo'), blank=True)
     preheader = models.TextField(_('pre-header'), blank=True)
 
-    company = models.CharField(_('company'), max_length=255, default='Example')
+    footer_text = models.TextField(_('text'), blank=True)
     website = models.CharField(_('website address'), max_length=255, default='example.com')
     contact_email = models.EmailField(_('contact email'), default='admin@example.com')
 

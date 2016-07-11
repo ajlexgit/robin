@@ -7,6 +7,7 @@
     Зависит от:
         libs.associative_request
         libs.color_field
+        libs.pipeline
         libs.templatetags
 
     Установка:

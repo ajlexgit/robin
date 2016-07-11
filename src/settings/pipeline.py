@@ -27,18 +27,25 @@ PIPELINE['STYLESHEETS'].update({
         ),
         'output_filename': 'css_build/head_core.css',
     },
-    'main': {
-        'source_filenames': PopupGallery.css + (
-            'scss/section_slider.scss',
-            'main/scss/index.scss',
+    'mailerlite_standart': {
+        'source_filenames': (
+            'mailerlite/scss/layout.scss',
+            'mailerlite/scss/standart.scss',
         ),
-        'output_filename': 'css_build/main.css',
+        'output_filename': 'css/mailerlite_standart.css',
     },
     'error': {
         'source_filenames': (
             'scss/error_page.scss',
         ),
         'output_filename': 'css_build/error.css',
+    },
+    'main': {
+        'source_filenames': PopupGallery.css + (
+            'scss/section_slider.scss',
+            'main/scss/index.scss',
+        ),
+        'output_filename': 'css_build/main.css',
     },
     'contacts': {
         'source_filenames': (

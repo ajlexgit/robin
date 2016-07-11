@@ -45,4 +45,4 @@ def absolute_links(html, scheme='//'):
             srcset_final.append('%s %s' % (url, width))
         tag['srcset'] = ','.join(srcset_final)
 
-    return soup.body.decode_contents()
+    return soup.decode_contents()
