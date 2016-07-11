@@ -261,7 +261,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         except self.model.DoesNotExist:
             pass
         else:
-            content = campaign.render_html(request, test=True)
+            content = campaign.render_html(request, scheme='http://', test=True)
             plain = campaign.render_plain(request, test=True)
 
             try:
