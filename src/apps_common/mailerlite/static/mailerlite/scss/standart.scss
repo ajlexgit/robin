@@ -81,7 +81,7 @@ td[class="footer"] {
 .socials {
   vertical-align: middle;
   @media only screen and (max-width: 680px) {
-    padding-top: 20px;
+    padding-top: 20px !important;
   }
 
   a {
