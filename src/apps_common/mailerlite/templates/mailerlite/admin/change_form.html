@@ -4,7 +4,7 @@
 
 {% block object-tools-items %}
   <li>
-    <a href="javascript: void(0)" class="social-share-btn">
+    <a href="javascript: void(0)" class="sendtest-btn">
       <i class="icon-envelope icon-alpha75"></i>
       {% trans "Send test e-mail" %}
     </a>
@@ -17,16 +17,14 @@
 {% block content %}
   {{ block.super }}
 
-  <div id="autopost-dialog" class="hide" data-campaign="{{ original.pk }}">
-    <form action="{{ sendtest_form_url }}" method="post" class="sendtest-form">
+  <div id="sendtest-dialog" class="hide">
+    <form action="{{ sendtest_url }}" method="post" class="sendtest-form">
       {% csrf_token %}
 
-      {% for field in share_form %}
-        <div class="field">
-          {{ field.label_tag }}
-          {{ field }}
-        </div>
-      {% endfor %}
+      <div class="field">
+        <label for="sendtest-email">E-mail</label>
+        <input type="email" id="sendtest-email" name="receiver" required>
+      </div>
     </form>
   </div>
 

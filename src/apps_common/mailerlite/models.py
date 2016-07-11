@@ -206,22 +206,40 @@ class Campaign(models.Model):
                     self.date_done = date_done
                     self.status = Campaign.STATUS_DONE
 
-    def render_html(self, request=None, scheme='//'):
+    def render_html(self, request=None, scheme='//', test=False):
         content = loader.render_to_string('mailerlite/standart/html_version.html', {
             'config': MailerConfig.get_solo(),
             'campaign': self,
         }, request=request)
         content = content.replace('url(//', 'url(http://')
         content = utils.absolute_links(content, scheme=scheme)
+
+        if test:
+            content = content.replace('{$url}', '#')
+            content = content.replace('{$unsubscribe}', '#')
+            content = content.replace('{$email}', 'john@smithmail.com')
+            content = content.replace('{$name}', 'John')
+            content = content.replace('{$last_name}', 'Smith')
+            content = content.replace('{$company}', 'Microsoft')
+
         return content
 
-    def render_plain(self, request=None):
+    def render_plain(self, request=None, test=False):
         content = loader.render_to_string('mailerlite/standart/plain_version.html', {
             'config': MailerConfig.get_solo(),
             'campaign': self,
         }, request=request)
         content = re_newline_spaces.sub('\n', content)
         content = re_newlines.sub('\n\n', content)
+
+        if test:
+            content = content.replace('{$url}', '#')
+            content = content.replace('{$unsubscribe}', '#')
+            content = content.replace('{$email}', 'john@smithmail.com')
+            content = content.replace('{$name}', 'John')
+            content = content.replace('{$last_name}', 'Smith')
+            content = content.replace('{$company}', 'Microsoft')
+
         return content.strip()
 
 

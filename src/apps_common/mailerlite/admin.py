@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import url
 from django.shortcuts import redirect
@@ -187,11 +188,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             del default['delete_selected']
         return default
 
-    def get_changeform_initial_data(self, request):
-        return {
-            'groups': Group.objects.values_list('pk', flat=True),
-        }
-
     def get_fieldsets(self, request, obj=None):
         default = super().get_fieldsets(request, obj)
         if obj and request.user.is_superuser:
@@ -204,7 +200,80 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             )
         return default
 
+    def get_changeform_initial_data(self, request):
+        return {
+            'groups': Group.objects.values_list('pk', flat=True),
+        }
 
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        if not add:
+            info = self.model._meta.app_label, self.model._meta.model_name
+            context.update({
+                'sendtest_url': reverse('admin:%s_%s_sendtest' % info, args=(obj.pk,)),
+            })
+        return super().render_change_form(request, context, add, change, form_url, obj)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        submit_urls = [
+            url(r'^(\d+)/start/$', self.admin_site.admin_view(self.start_campaign), name='%s_%s_start' % info),
+            url(r'^(\d+)/cancel/$', self.admin_site.admin_view(self.cancel_campaign), name='%s_%s_cancel' % info),
+            url(r'^(\d+)/sendtest/$', self.admin_site.admin_view(self.sendtest), name='%s_%s_sendtest' % info),
+        ]
+        return submit_urls + urls
+
+    def start_campaign(self, request, campaign_id):
+        try:
+            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_DRAFT)
+        except self.model.DoesNotExist:
+            pass
+        else:
+            campaign.status = self.model.STATUS_QUEUED
+            campaign.save()
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return redirect('admin:%s_%s_changelist' % info)
+
+    def cancel_campaign(self, request, campaign_id):
+        try:
+            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_QUEUED)
+        except self.model.DoesNotExist:
+            pass
+        else:
+            campaign.remote_id = 0
+            campaign.status = self.model.STATUS_DRAFT
+            campaign.save()
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return redirect('admin:%s_%s_changelist' % info)
+
+    def sendtest(self, request, campaign_id):
+        from django.http import JsonResponse, Http404
+        from django.core.mail import send_mail, BadHeaderError
+
+        receiver = request.POST.get('receiver')
+        if not receiver:
+            raise Http404
+
+        try:
+            campaign = self.model.objects.get(pk=campaign_id)
+        except self.model.DoesNotExist:
+            pass
+        else:
+            content = campaign.render_html(request, test=True)
+            plain = campaign.render_plain(request, test=True)
+
+            try:
+                send_mail(
+                    campaign.subject, plain, settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[receiver],
+                    html_message=content
+                )
+            except BadHeaderError:
+                pass
+
+        return JsonResponse({})
 
     def short_subject(self, obj):
         return description(obj.subject, 30, 60)
@@ -258,44 +327,9 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     status_box.admin_order_field = 'status'
     status_box.allow_tags = True
 
-    def get_urls(self):
-        urls = super().get_urls()
-        info = self.model._meta.app_label, self.model._meta.model_name
-        submit_urls = [
-            url(r'^(\d+)/start/$', self.admin_site.admin_view(self.start_campaign), name='%s_%s_start' % info),
-            url(r'^(\d+)/cancel/$', self.admin_site.admin_view(self.cancel_campaign), name='%s_%s_cancel' % info),
-            url(r'^(\d+)/sendtest/$', self.admin_site.admin_view(self.sendtest), name='%s_%s_sendtest' % info),
-        ]
-        return submit_urls + urls
-
     def action_start(self, request, queryset):
         queryset.filter(status=self.model.STATUS_DRAFT).update(status=self.model.STATUS_QUEUED)
     action_start.short_description = _('Start campaign')
-
-    def start_campaign(self, request, campaign_id):
-        try:
-            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_DRAFT)
-        except self.model.DoesNotExist:
-            pass
-        else:
-            campaign.status = self.model.STATUS_QUEUED
-            campaign.save()
-
-        info = self.model._meta.app_label, self.model._meta.model_name
-        return redirect('admin:%s_%s_changelist' % info)
-
-    def cancel_campaign(self, request, campaign_id):
-        try:
-            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_QUEUED)
-        except self.model.DoesNotExist:
-            pass
-        else:
-            campaign.remote_id = 0
-            campaign.status = self.model.STATUS_DRAFT
-            campaign.save()
-
-        info = self.model._meta.app_label, self.model._meta.model_name
-        return redirect('admin:%s_%s_changelist' % info)
 
 
 @admin.register(Subscriber)

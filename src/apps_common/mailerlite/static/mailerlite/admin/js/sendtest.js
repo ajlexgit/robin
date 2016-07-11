@@ -3,20 +3,20 @@
     var $form;
 
     $(document).ready(function() {
-        $form = $('#autopost-dialog').find('form').detach();
+        $form = $('#sendtest-dialog').find('form').detach();
     });
 
-    $(document).on('click', '.social-share-btn', function() {
+    $(document).on('click', '.sendtest-btn', function() {
         if (!$form.length) {
             return false;
         }
 
         var $dialog_form = $form.clone();
         $dialog_form.get(0).reset();
-        $dialog_form.attr('id', 'autopost-form');
+        $dialog_form.attr('id', 'sendtest-form');
         $dialog_form.dialog({
             title: gettext('Share to social networks'),
-            minWidth: 550,
+            minWidth: 200,
             closeText: '',
             modal: true,
             resizable: false,
@@ -27,16 +27,6 @@
             hide: {
                 effect: "fadeOut",
                 duration: 100
-            },
-            open: function() {
-                var $form = $(this);
-                var dialog = $form.dialog('instance');
-
-                var $textareas = $form.find('textarea');
-                if ($.fn.autosize) {
-                    $textareas.autosize();
-                    dialog._position();
-                }
             },
             close: function() {
                 $(this).dialog('destroy');
@@ -62,7 +52,7 @@
                         var $form = $(this);
                         var dialog = $form.dialog('instance');
 
-                        if (dialog.uiDialog.hasClass('autopost-preload')) {
+                        if (dialog.uiDialog.hasClass('sendtest-preload')) {
                             return
                         }
 
@@ -71,7 +61,7 @@
                             type: $form.attr('method'),
                             data: $form.serialize(),
                             beforeSend: function() {
-                                dialog.uiDialog.addClass('autopost-preload');
+                                dialog.uiDialog.addClass('sendtest-preload');
                             },
                             success: function() {
                                 dialog.close();
@@ -101,7 +91,7 @@
                                 }
                             },
                             complete: function() {
-                                dialog.uiDialog.removeClass('autopost-preload');
+                                dialog.uiDialog.removeClass('sendtest-preload');
                             }
                         });
                     }

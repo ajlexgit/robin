@@ -5,23 +5,11 @@ from .models import Campaign
 
 def preview_campaign(request, campaign_id):
     campaign = get_object_or_404(Campaign, pk=campaign_id)
-    content = campaign.render_html(request)
-    content = content.replace('{$url}', '#')
-    content = content.replace('{$unsubscribe}', '#')
-    content = content.replace('{$email}', 'john@smithmail.com')
-    content = content.replace('{$name}', 'John')
-    content = content.replace('{$last_name}', 'Smith')
-    content = content.replace('{$company}', 'Microsoft')
+    content = campaign.render_html(request, test=True)
     return HttpResponse(content)
 
 
 def preview_campaign_plain(request, campaign_id):
     campaign = get_object_or_404(Campaign, pk=campaign_id)
-    content = campaign.render_plain(request)
-    content = content.replace('{$url}', '#')
-    content = content.replace('{$unsubscribe}', '#')
-    content = content.replace('{$email}', 'john@smithmail.com')
-    content = content.replace('{$name}', 'John')
-    content = content.replace('{$last_name}', 'Smith')
-    content = content.replace('{$company}', 'Microsoft')
+    content = campaign.render_plain(request, test=True)
     return HttpResponse('<pre>%s</pre>' % content.strip())

@@ -7,7 +7,7 @@
     }
 }
 
-.ui-dialog.autopost-preload:before {
+.ui-dialog.sendtest-preload:before {
     content: '';
     position: absolute;
     left: 0;
@@ -21,7 +21,7 @@
     animation: social-opacity 0.1s forwards linear;
 }
 
-.ui-dialog.autopost-preload:after {
+.ui-dialog.sendtest-preload:after {
     content: '';
     position: absolute;
     left: 50%;
@@ -40,37 +40,10 @@
     animation: social-opacity 0.1s forwards linear;
 }
 
-.autopost-form .field {
+.sendtest-form .field {
     margin-top: 12px;
 }
 
-.autopost-form label {
+.sendtest-form label {
     font-weight: bold;
-}
-
-.autopost-form ul {
-    margin: 0;
-    list-style: none;
-}
-
-.autopost-form ul label {
-    display: inline-block;
-    font-weight: normal;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.autopost-form ul input {
-    margin: -2px 2px 0 0;
-}
-
-.autopost-form textarea {
-    overflow: hidden;
-    margin: 0;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
 }
