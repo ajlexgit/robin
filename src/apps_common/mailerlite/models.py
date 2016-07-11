@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from premailer import transform
 from django.db import models
 from django.template import loader
 from django.utils.timezone import now
@@ -222,7 +223,7 @@ class Campaign(models.Model):
             content = content.replace('{$last_name}', 'Smith')
             content = content.replace('{$company}', 'Microsoft')
 
-        return content
+        return transform(content)
 
     def render_plain(self, request=None, test=False):
         content = loader.render_to_string('mailerlite/standart/plain_version.html', {
