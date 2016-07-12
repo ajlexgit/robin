@@ -15,7 +15,7 @@
         $dialog_form.get(0).reset();
         $dialog_form.attr('id', 'sendtest-form');
         $dialog_form.dialog({
-            title: gettext('Share to social networks'),
+            title: gettext('Send test e-mail'),
             minWidth: 200,
             closeText: '',
             modal: true,

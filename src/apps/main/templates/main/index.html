@@ -4,6 +4,7 @@
 {% load pipeline_plus %}
 {% load staticfiles %}
 {% load form_helper %}
+{% load instagram %}
 
 {% block static_head %}
   {{ block.super }}
@@ -86,13 +87,9 @@
     </div>
   </div>
 
-  <div id="subscribe">
+  <div class="instagram">
     <div class="grid-block">
-      <form action="" method="post">
-        {% render_form subscribe_form %}
-
-        <input type="submit" value="Subscribe" class="btn">
-      </form>
+      {% instagram_widget limit=2 %}
     </div>
   </div>
 

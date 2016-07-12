@@ -58,7 +58,6 @@ INSTALLED_APPS = (
     'gallery',
     'google_maps',
     'header',
-    'mailerlite',
     'menu',
     'paginator',
     'seo',
@@ -116,16 +115,6 @@ SUIT_CONFIG = {
             'models': (
                 'SocialLinks',
                 'FeedPost',
-            )
-        },
-        {
-            'app': 'mailerlite',
-            'icon': 'icon-envelope',
-            'models': (
-                'Campaign',
-                'Subscriber',
-                'Group',
-                'MailerConfig',
             )
         },
         '-',
@@ -281,6 +270,9 @@ LINKEDIN_TOKEN = 'AQVDPMVg20HqmE0bJWq9pm27iFe116GKlrH9o7vHu_Xp1O89yS' \
                  '8oJ-33qDg_GxHw-Yi7C5DzunRuV_ab5fQxZRN8elsuukWx29kl' \
                  '_B-yamd4gOH8nHA-Uv5FESS7Ul2MM'
 
+# Виджет Instagram
+INSTAGRAM_TOKEN = '481470271.0a39b8a.872bb1e18c044e6fbadf88b9a422970b'
+
 # Smart Cache-Control
 SCC_ENABLED = True
 SCC_MAX_AGE_PRIVATE = 0
@@ -293,9 +285,6 @@ SCC_DISABLED_URLS = [
 # Формат валют (RUB / USD / EUR / GBP)
 # Для включения зависимости от языка сайта - задать None или удалить
 VALUTE_FORMAT = None
-
-# Mailer Lite
-MAILERLITE_APIKEY = '438b26c79cbd9acea454a4c1ad5eda05'
 
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================

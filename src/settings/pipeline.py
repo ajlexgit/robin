@@ -27,13 +27,6 @@ PIPELINE['STYLESHEETS'].update({
         ),
         'output_filename': 'css_build/head_core.css',
     },
-    'mailerlite_standart': {
-        'source_filenames': (
-            'mailerlite/scss/layout.scss',
-            'mailerlite/scss/standart.scss',
-        ),
-        'output_filename': 'css/mailerlite_standart.css',
-    },
     'error': {
         'source_filenames': (
             'scss/error_page.scss',
@@ -99,7 +92,7 @@ PIPELINE['JAVASCRIPT'].update({
     },
     'main': {
         'source_filenames': PopupGallery.js + (
-            'mailerlite/js/subscribe.js',
+            'social_networks/js/instagram.js',
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',
