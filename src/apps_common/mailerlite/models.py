@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from premailer import Premailer
 from django.db import models
 from django.template import loader
 from django.utils.timezone import now
@@ -30,10 +31,9 @@ class MailerConfig(SingletonModel):
         storage=MediaStorage('mailerlite/campaigns')
     )
 
-    logo = models.ImageField(_('logo'), storage=MediaStorage('mailerlite/logo'), blank=True)
     preheader = models.TextField(_('pre-header'), blank=True)
 
-    company = models.CharField(_('company'), max_length=255, default='Example')
+    footer_text = models.TextField(_('text'), blank=True)
     website = models.CharField(_('website address'), max_length=255, default='example.com')
     contact_email = models.EmailField(_('contact email'), default='admin@example.com')
 
@@ -207,22 +207,40 @@ class Campaign(models.Model):
                     self.date_done = date_done
                     self.status = Campaign.STATUS_DONE
 
-    def render_html(self, request=None, scheme='//'):
+    def render_html(self, request=None, scheme='//', test=False):
         content = loader.render_to_string('mailerlite/standart/html_version.html', {
             'config': MailerConfig.get_solo(),
             'campaign': self,
         }, request=request)
         content = content.replace('url(//', 'url(http://')
         content = utils.absolute_links(content, scheme=scheme)
-        return content
 
-    def render_plain(self, request=None):
+        if test:
+            content = content.replace('{$url}', '#')
+            content = content.replace('{$unsubscribe}', '#')
+            content = content.replace('{$email}', 'john@smithmail.com')
+            content = content.replace('{$name}', 'John')
+            content = content.replace('{$last_name}', 'Smith')
+            content = content.replace('{$company}', 'Microsoft')
+
+        return Premailer(content, strip_important=False).transform()
+
+    def render_plain(self, request=None, test=False):
         content = loader.render_to_string('mailerlite/standart/plain_version.html', {
             'config': MailerConfig.get_solo(),
             'campaign': self,
         }, request=request)
         content = re_newline_spaces.sub('\n', content)
         content = re_newlines.sub('\n\n', content)
+
+        if test:
+            content = content.replace('{$url}', '#')
+            content = content.replace('{$unsubscribe}', '#')
+            content = content.replace('{$email}', 'john@smithmail.com')
+            content = content.replace('{$name}', 'John')
+            content = content.replace('{$last_name}', 'Smith')
+            content = content.replace('{$company}', 'Microsoft')
+
         return content.strip()
 
 

@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from seo import Seo
 from paginator import Paginator, EmptyPage
 from libs.views import CachedViewMixin
+from libs.description import description
 from .models import BlogConfig, BlogPost, Tag
 
 
@@ -44,7 +45,6 @@ class IndexView(CachedViewMixin, TemplateView):
             'title': self.config.header,
             'og_title': self.config.header,
         })
-        seo.save(request)
 
         # Unique title
         title_appends = ' | '.join(filter(bool, [
@@ -59,6 +59,8 @@ class IndexView(CachedViewMixin, TemplateView):
                 'description': '',
             })
 
+        seo.save(request)
+        
         return self.render_to_response({
             'config': self.config,
             'paginator': paginator,
@@ -83,7 +85,7 @@ class DetailView(CachedViewMixin, TemplateView):
         seo.set_title(self.config, default=self.config.header)
         seo.set_data(self.post, defaults={
             'title': self.post.header,
-            'description': self.post.note,
+            'description': description(self.post.note, 50, 160),
             'og_title': self.post.header,
             'og_image': self.post.preview,
             'og_description': self.post.note,

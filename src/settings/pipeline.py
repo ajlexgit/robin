@@ -27,18 +27,18 @@ PIPELINE['STYLESHEETS'].update({
         ),
         'output_filename': 'css_build/head_core.css',
     },
+    'error': {
+        'source_filenames': (
+            'scss/error_page.scss',
+        ),
+        'output_filename': 'css_build/error.css',
+    },
     'main': {
         'source_filenames': PopupGallery.css + (
             'scss/section_slider.scss',
             'main/scss/index.scss',
         ),
         'output_filename': 'css_build/main.css',
-    },
-    'error': {
-        'source_filenames': (
-            'scss/error_page.scss',
-        ),
-        'output_filename': 'css_build/error.css',
     },
     'contacts': {
         'source_filenames': (
@@ -92,7 +92,7 @@ PIPELINE['JAVASCRIPT'].update({
     },
     'main': {
         'source_filenames': PopupGallery.js + (
-            'mailerlite/js/subscribe.js',
+            'social_networks/js/instagram.js',
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',

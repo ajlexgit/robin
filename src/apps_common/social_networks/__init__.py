@@ -1,6 +1,6 @@
 """
     Плагин соцкнопок.
-    Включает кнопки для расшаривания и автопостинг.
+    Включает соцкнопки "Поделиться", автопостинг в соцсети, виджет Instagram.
 
     Установка:
         settings.py:
@@ -15,6 +15,10 @@
                 {
                     'app': 'social_networks',
                     'icon': 'icon-bullhorn',
+                    'models': (
+                        'FeedPost',
+                        'SocialLinks',
+                    ),
                 },
                 ...
             }
@@ -33,13 +37,16 @@
                              'qDg_GxHw-Yi7C5DzunRuV_ab5fQxZRN8elsuukWx29kl_B-yamd4g' \
                              'OH8nHA-Uv5FESS7Ul2MM'
 
+            # Виджет Instagram
+            INSTAGRAM_TOKEN = '481470271.0a39b8a.872bb1e18c044e6fbadf88b9a422970b'
+
         urls.py:
             ...
             url(r'^social/', include('social_networks.urls', namespace='social_networks')),
             ...
 
 
-    Пример вывода кнопок для расшаривания:
+    Соцкнопки "Поделиться":
         # Нужно подключить JS и SCSS
 
         template.html:
@@ -54,11 +61,32 @@
               {% social_button 'pn' %}
             </div>
 
+    Виджет Instagram:
+        # Нужно подключить JS и SCSS
+
+        template.html:
+            {% load instagram %}
+
+            <!-- Вывод постов юзера -->
+            {% instagram_widget user_id=1485581141 limit=6 %}
+
+            <!-- Вывод постов по хэштегу -->
+            {% instagram_widget tag="Moscow" limit=6 %}
 
     Автопостинг:
         Для Google Plus необходимо зарегистрироваться в https://hootsuite.com
         Для остальных соцсетей нужно настроить cron на выполнение
             python3 manage.py autopost
+
+        admin.py:
+            from social_networks.admin import AutoPostMixin
+            ...
+
+            class PostAdmin(SeoModelAdminMixin, AutoPostMixin, admin.ModelAdmin):
+                ...
+                def get_autopost_text(self, obj):
+                    return obj.note
+
 """
 from .rss import SocialRssFeed
 from .utils import post_to_twitter, post_to_facebook, post_to_linkedin

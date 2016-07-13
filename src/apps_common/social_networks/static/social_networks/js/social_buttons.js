@@ -273,12 +273,24 @@
     });
 
     $(document).ready(function() {
-        window.VkProvider('.social-vk');
-        window.FacebookProvider('.social-fb');
-        window.TwitterProvider('.social-tw');
-        window.GooglePlusProvider('.social-gp');
-        window.LinkedInProvider('.social-li');
-        window.PinterestProvider('.social-pn');
+        $('.social-vk').each(function() {
+            window.VkProvider(this);
+        });
+        $('.social-fb').each(function() {
+            window.FacebookProvider(this);
+        });
+        $('.social-tw').each(function() {
+            window.TwitterProvider(this);
+        });
+        $('.social-gp').each(function() {
+            window.GooglePlusProvider(this);
+        });
+        $('.social-li').each(function() {
+            window.LinkedInProvider(this);
+        });
+        $('.social-pn').each(function() {
+            window.PinterestProvider(this);
+        });
     });
 
 })(jQuery);

@@ -73,12 +73,12 @@
         };
 
 
-        cls.init = function(root, options) {
+        cls.init = function(element, options) {
             superclass.init.call(this);
 
-            this.$root = $(root).first();
+            this.$root = $(element).first();
             if (!this.$root.length) {
-                return this.raise('block not found');
+                return this.raise('root element not found');
             }
 
             // настройки

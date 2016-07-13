@@ -1,5 +1,5 @@
 # TODO: antispam
-# TODO: test email
+# TODO: test email inline styles
 
 """
     Модуль подписки на рассылку.
@@ -7,6 +7,7 @@
     Зависит от:
         libs.associative_request
         libs.color_field
+        libs.pipeline
         libs.templatetags
 
     Установка:

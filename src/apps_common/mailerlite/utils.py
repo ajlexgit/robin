@@ -27,7 +27,7 @@ def absolute_links(html, scheme='//'):
 
         if src.startswith('//'):
             tag['src'] = '%s%s' % (scheme, src[2:])
-        elif href.startswith('/'):
+        elif src.startswith('/'):
             tag['src'] = '%s%s%s' % (scheme, site.domain, src)
 
         # srcset
@@ -40,9 +40,9 @@ def absolute_links(html, scheme='//'):
             url, width = srcset_part.strip().split()
             if url.startswith('//'):
                 url = '%s%s' % (scheme, url[2:])
-            elif href.startswith('/'):
+            elif src.startswith('/'):
                 url = '%s%s%s' % (scheme, site.domain, url)
             srcset_final.append('%s %s' % (url, width))
         tag['srcset'] = ','.join(srcset_final)
 
-    return soup.body.decode_contents()
+    return soup.decode_contents()

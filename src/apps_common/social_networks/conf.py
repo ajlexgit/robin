@@ -2,12 +2,15 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 
+#============================================================
+#                   Автопостинг
+#============================================================
+
+# Все доступные соцсети для автопостинга
 NETWORK_GOOGLE = 'google'
 NETWORK_TWITTER = 'twitter'
 NETWORK_FACEBOOK = 'facebook'
 NETWORK_LINKEDIN = 'linkedin'
-
-# Все доступные соцсети
 ALL_NETWORKS = (
     (NETWORK_FACEBOOK, _('Facebook')),
     (NETWORK_TWITTER, _('Twitter')),
@@ -23,15 +26,15 @@ ALLOWED_NETWORK_NAMES = (
     NETWORK_LINKEDIN,
 )
 
-# Часть ALL_NETWORKS, включающая только доступные сети
+# Часть ALL_NETWORKS, включающая только доступные сети (для choices в модели)
 ALLOWED_NETWORKS = tuple(
     pair
     for pair in ALL_NETWORKS
     if pair[0] in ALLOWED_NETWORK_NAMES
 )
 
-
-TEXT_MAX_LENGTH = 1024
+# Максимальная длина текста для поста
+TEXT_MAX_LENGTH = 2048
 
 # ============== API KEYS =====================
 
@@ -48,3 +51,10 @@ TWITTER_TOKEN_SECRET = getattr(settings, 'TWITTER_TOKEN_SECRET', '')
 # https://www.linkedin.com/developer/apps/
 # https://apigee.com/console/linkedin
 LINKEDIN_TOKEN = getattr(settings, 'LINKEDIN_TOKEN', '')
+
+
+# ============================================================
+#                   Виджет Instagram
+# ============================================================
+
+INSTAGRAM_TOKEN = getattr(settings, 'INSTAGRAM_TOKEN', '')
