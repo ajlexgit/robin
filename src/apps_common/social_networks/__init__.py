@@ -67,7 +67,11 @@
         template.html:
             {% load instagram %}
 
+            <!-- Вывод постов юзера -->
             {% instagram_widget user_id=1485581141 limit=6 %}
+
+            <!-- Вывод постов по хэштегу -->
+            {% instagram_widget tag="Moscow" limit=6 %}
 
     Автопостинг:
         Для Google Plus необходимо зарегистрироваться в https://hootsuite.com

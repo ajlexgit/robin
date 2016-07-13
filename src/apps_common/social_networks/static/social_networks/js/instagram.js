@@ -1,14 +1,13 @@
 (function($) {
     'use strict';
 
-    var instagram_id = 0;
-
     window.InstagramWidget = Class(EventedObject, function InstagramWidget(cls, superclass) {
         cls.DATA_KEY = 'instagram';
 
         cls.defaults = {
             token: '',
             user_id: '',
+            tag: '',
             limit: 0
         };
 
@@ -21,14 +20,13 @@
             }
 
             // настройки
-            var root_data = this.$root.data();
             this.opts = $.extend({}, this.defaults, options);
-            this.opts.token = this.opts.token || root_data.access_token;
             if (!this.opts.token) {
                 return this.raise('"access_token" undefined');
             }
-            this.opts.user_id = this.opts.user_id || root_data.user_id || 'self';
-            this.opts.limit = this.opts.limit || parseInt(root_data.limit);
+            if (!this.opts.user_id && !this.opts.tag) {
+                return this.raise('one of ["user_id", "tag"] should be defined');
+            }
 
             // отвязывание старого экземпляра
             var old_instance = this.$root.data(this.DATA_KEY);
@@ -36,16 +34,12 @@
                 old_instance.destroy();
             }
 
-            // добавление обработчика загрузки
-            var that = this;
-            this.id = instagram_id++;
-            window['instagramWidgetLoaded' + this.id] = function(data) {
-                that.onLoad(data);
-                delete window['instagramWidgetLoaded' + that.id];
-            };
-
             // запрос данных с Instagram
-            this._fetchData();
+            if (this.opts.tag) {
+                this.fetchData(this.tagMediaURL());
+            } else {
+                this.fetchData(this.userMediaURL());
+            }
 
             this.$root.data(this.DATA_KEY, this);
         };
@@ -55,35 +49,62 @@
             superclass.destroy.call(this);
         };
 
-        cls._getFeedURL = function() {
-            return 'https://api.instagram.com/v1/users/' + this.opts.user_id +
-                   '/media/recent/?access_token=' + this.opts.token +
-                   '&count=' + this.opts.limit + '&callback=instagramWidgetLoaded' + this.id;
+        cls.userMediaURL = function() {
+            return 'https://api.instagram.com/v1/users/' + this.opts.user_id + '/media/recent/';
         };
 
-        cls._fetchData = function() {
-            var script = document.createElement('script');
-            script.src = this._getFeedURL();
-            document.body.appendChild(script);
+        cls.tagMediaURL = function() {
+            return 'https://api.instagram.com/v1/tags/' + this.opts.tag + '/media/recent/';
         };
 
-        /*
-            Событие загрузки данных инстаграмма
-         */
-        cls.onLoad = function(data) {
-            if (parseInt(data.meta.code) != 200) {
-                this.error(data.meta.error_message + ' (code ' + data.meta.code + ')');
-                this.trigger('error', data);
-            } else {
-                this.trigger('success', data);
-            }
+        cls.fetchData = function(url) {
+            var that = this;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'jsonp',
+                data: {
+                    access_token: this.opts.token,
+                    count: this.opts.limit
+                },
+                success: function(data) {
+                    if (parseInt(data.meta.code) != 200) {
+                        that.error(data.meta.error_message + ' (code ' + data.meta.code + ')');
+                        that.trigger('error', data);
+                    } else {
+                        that.trigger('success', data);
+                    }
+                },
+                error: function(xhr, status) {
+                    that.error(xhr.status_text + ' (code ' + status + ')');
+                    that.trigger('error', data);
+                }
+            });
         };
     });
 
+
     $(document).ready(function() {
         $('.instagram-widget').each(function() {
-            window.InstagramWidget(this).on('success', function(response) {
-                console.log(response.data)
+            var $elem = $(this);
+            var elem_data = $elem.data();
+
+            window.InstagramWidget($elem, {
+                token: elem_data.access_token,
+                user_id: elem_data.user_id || 'self',
+                tag: elem_data.tag || 'self',
+                limit: elem_data.limit
+            }).on('success', function(response) {
+                console.log(response);
+                response.data.forEach(function(obj) {
+                    $elem.append(
+                        $('<img>').attr({
+                            src: obj.images.low_resolution.url
+                        })
+                    );
+                })
+            }).on('error', function() {
+                $elem.remove();
             });
         })
     });

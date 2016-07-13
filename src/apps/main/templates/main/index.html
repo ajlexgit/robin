@@ -4,7 +4,6 @@
 {% load pipeline_plus %}
 {% load staticfiles %}
 {% load form_helper %}
-{% load instagram %}
 
 {% block static_head %}
   {{ block.super }}
@@ -84,12 +83,6 @@
         {% endfor %}
       </div>
 
-    </div>
-  </div>
-
-  <div class="instagram">
-    <div class="grid-block">
-      {% instagram_widget limit=2 %}
     </div>
   </div>
 
