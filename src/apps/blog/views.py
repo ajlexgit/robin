@@ -45,7 +45,6 @@ class IndexView(CachedViewMixin, TemplateView):
             'title': self.config.header,
             'og_title': self.config.header,
         })
-        seo.save(request)
 
         # Unique title
         title_appends = ' | '.join(filter(bool, [
@@ -60,6 +59,8 @@ class IndexView(CachedViewMixin, TemplateView):
                 'description': '',
             })
 
+        seo.save(request)
+        
         return self.render_to_response({
             'config': self.config,
             'paginator': paginator,
