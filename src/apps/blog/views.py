@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from seo import Seo
 from paginator import Paginator, EmptyPage
 from libs.views import CachedViewMixin
+from libs.description import description
 from .models import BlogConfig, BlogPost, Tag
 
 
@@ -83,7 +84,7 @@ class DetailView(CachedViewMixin, TemplateView):
         seo.set_title(self.config, default=self.config.header)
         seo.set_data(self.post, defaults={
             'title': self.post.header,
-            'description': self.post.note,
+            'description': description(self.post.note, 50, 160),
             'og_title': self.post.header,
             'og_image': self.post.preview,
             'og_description': self.post.note,
