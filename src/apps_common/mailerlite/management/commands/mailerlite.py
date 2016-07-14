@@ -186,7 +186,9 @@ class Command(BaseCommand):
                 )
             except Campaign.DoesNotExist:
                 # создание локальной рассылки если её нет
-                local_campaign = Campaign()
+                local_campaign = Campaign(
+                    remote_mail_id=remote_campaign['id']
+                )
                 logger.info("Campaign '%s' created." % remote_campaign['subject'])
 
             # обновляем поля локальной группы
