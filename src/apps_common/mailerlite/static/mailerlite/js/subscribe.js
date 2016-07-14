@@ -20,6 +20,7 @@
                 $form.get(0).reset();
 
                 $.popup({
+                    classes: 'subscribe-popup subscribe-success-popup',
                     content: '<h1>You have successfully subscribed to the newsletter!</h1>'
                 }).show();
             },

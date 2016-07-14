@@ -49,7 +49,7 @@ td[class="content"] {
     text-decoration: none;
 
     &:hover {
-      @include opacity(0.75);
+      opacity: 0.75;
     }
   }
 
@@ -89,10 +89,10 @@ td[class="footer"] {
     margin-left: 6px;
     width: 30px;
     height: 30px;
+    opacity: 0.5;
     vertical-align: middle;
     background: url(../img/mail_icons.png) no-repeat 0 0;
     @include no_fontsize;
-    @include opacity(0.5);
     @include transition(opacity 0.3s);
 
     &:first-child {
@@ -100,7 +100,7 @@ td[class="footer"] {
     }
 
     &:hover {
-      @include opacity(1);
+      opacity: 1;
     }
 
     &.mail {

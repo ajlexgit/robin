@@ -1,3 +1,4 @@
+from copy import deepcopy
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -116,16 +117,11 @@ class CampaignForm(forms.ModelForm):
                 expressions='name__icontains',
                 minimum_input_length=0,
             ),
-            'from_name': forms.TextInput(
-                attrs={
-                    'class': 'input-xlarge',
-                }
-            ),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and not self.instance.editable:
+        if self.instance and self.instance.published:
             self.fields['header_image'].widget = ReadonlyFileWidget()
             self.fields['text'].widget.attrs['readonly'] = 'readonly'
 
@@ -148,7 +144,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     )
     form = CampaignForm
     readonly_fields = (
-        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done'
+        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done', 'remote_id'
     )
     actions = ('action_start', )
     list_filter = ('status', )
@@ -167,10 +163,8 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
-        if obj and not obj.editable:
-            default += ('groups', 'subject', 'preheader')
-        if not request.user.is_superuser:
-            default += ('status',)
+        if obj and obj.published:
+            default += ('subject', 'groups',)
         return default
 
     def has_delete_permission(self, request, obj=None):
@@ -189,15 +183,17 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return default
 
     def get_fieldsets(self, request, obj=None):
-        default = super().get_fieldsets(request, obj)
+        default = deepcopy(super().get_fieldsets(request, obj))
         if obj and request.user.is_superuser:
-            default += (
-                (_('Statistics'), {
-                    'fields': (
-                        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
-                    )
-                }),
-            )
+            default[0][1]['fields'] += ('status', 'published', 'remote_id')
+            if obj.published:
+                default += (
+                    (_('Statistics'), {
+                        'fields': (
+                            'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
+                        )
+                    }),
+                )
         return default
 
     def get_changeform_initial_data(self, request):
@@ -222,6 +218,62 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             url(r'^(\d+)/sendtest/$', self.admin_site.admin_view(self.sendtest), name='%s_%s_sendtest' % info),
         ]
         return submit_urls + urls
+
+    def short_subject(self, obj):
+        return description(obj.subject, 30, 60)
+    short_subject.short_description = _('Subject')
+    short_subject.admin_order_field = 'subject'
+
+    def status_box(self, obj):
+        status_text = dict(self.model.STATUSES).get(obj.status)
+        info = self.model._meta.app_label, self.model._meta.model_name
+        button_tpl = '<a href="{href}" class="btn btn-mini {classes}" style="margin-left: 5px">{text}</a>'
+
+        if obj.status == self.model.STATUS_DRAFT:
+            return """
+                <nobr>
+                    {text}&nbsp;{action}&nbsp;{delete}
+                </nobr>
+            """.format(
+                text=status_text,
+                action=button_tpl.format(
+                    href=reverse('admin:%s_%s_start' % info, args=(obj.id,)),
+                    classes='btn-success',
+                    text=_('Start')
+                ),
+                delete=button_tpl.format(
+                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
+                    classes='btn-danger',
+                    text=_('Delete')
+                ),
+            )
+        elif obj.status == self.model.STATUS_QUEUED and not obj.published:
+            return """
+                <nobr>
+                    {text}&nbsp;{action}&nbsp;{delete}
+                </nobr>
+            """.format(
+                text=status_text,
+                action=button_tpl.format(
+                    href=reverse('admin:%s_%s_cancel' % info, args=(obj.id,)),
+                    classes='btn-danger',
+                    text=_('Cancel')
+                ),
+                delete=button_tpl.format(
+                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
+                    classes='btn-danger',
+                    text=_('Delete')
+                ),
+            )
+        else:
+            return status_text
+    status_box.short_description = _('Status')
+    status_box.admin_order_field = 'status'
+    status_box.allow_tags = True
+
+    def action_start(self, request, queryset):
+        queryset.filter(status=self.model.STATUS_DRAFT).update(status=self.model.STATUS_QUEUED)
+    action_start.short_description = _('Start campaign')
 
     def start_campaign(self, request, campaign_id):
         try:
@@ -274,62 +326,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
                 pass
 
         return JsonResponse({})
-
-    def short_subject(self, obj):
-        return description(obj.subject, 30, 60)
-    short_subject.short_description = _('Subject')
-    short_subject.admin_order_field = 'subject'
-
-    def status_box(self, obj):
-        status_text = dict(self.model.STATUSES).get(obj.status)
-        info = self.model._meta.app_label, self.model._meta.model_name
-        button_tpl = '<a href="{href}" class="btn btn-mini {classes}" style="margin-left: 5px">{text}</a>'
-
-        if obj.status == self.model.STATUS_DRAFT:
-            return """
-                <nobr>
-                    {text}&nbsp;{action}&nbsp;{delete}
-                </nobr>
-            """.format(
-                text=status_text,
-                action=button_tpl.format(
-                    href=reverse('admin:%s_%s_start' % info, args=(obj.id,)),
-                    classes='btn-success',
-                    text=_('Start')
-                ),
-                delete=button_tpl.format(
-                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
-                    classes='btn-danger',
-                    text=_('Delete')
-                ),
-            )
-        elif obj.status == self.model.STATUS_QUEUED:
-            return """
-                <nobr>
-                    {text}&nbsp;{action}&nbsp;{delete}
-                </nobr>
-            """.format(
-                text=status_text,
-                action=button_tpl.format(
-                    href=reverse('admin:%s_%s_cancel' % info, args=(obj.id,)),
-                    classes='btn-danger',
-                    text=_('Cancel')
-                ),
-                delete=button_tpl.format(
-                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
-                    classes='btn-danger',
-                    text=_('Delete')
-                ),
-            )
-        else:
-            return status_text
-    status_box.short_description = _('Status')
-    status_box.admin_order_field = 'status'
-    status_box.allow_tags = True
-
-    def action_start(self, request, queryset):
-        queryset.filter(status=self.model.STATUS_DRAFT).update(status=self.model.STATUS_QUEUED)
-    action_start.short_description = _('Start campaign')
 
 
 @admin.register(Subscriber)

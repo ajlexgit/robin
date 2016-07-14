@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-from premailer import Premailer
 from django.db import models
 from django.template import loader
 from django.utils.timezone import now
@@ -76,8 +75,8 @@ class Group(models.Model):
 
     class Meta:
         default_permissions = ('change',)
-        verbose_name = _('group')
-        verbose_name_plural = _('groups')
+        verbose_name = _('list')
+        verbose_name_plural = _('lists')
         ordering = ('-date_created',)
 
     def __str__(self):
@@ -113,15 +112,11 @@ class Group(models.Model):
 class Campaign(models.Model):
     STATUS_DRAFT = 0
     STATUS_QUEUED = 10
-    STATUS_PUBLISHED = 20
-    STATUS_CONTENT = 21
-    STATUS_RUNNING = 22
+    STATUS_RUNNING = 20
     STATUS_DONE = 30
     STATUSES = (
         (STATUS_DRAFT, _('Draft')),
         (STATUS_QUEUED, _('Queued')),
-        (STATUS_PUBLISHED, _('Published')),
-        (STATUS_CONTENT, _('Content setted')),
         (STATUS_RUNNING, _('Running')),
         (STATUS_DONE, _('Done')),
     )
@@ -152,6 +147,7 @@ class Campaign(models.Model):
     clicked = models.PositiveIntegerField(_('clicks from emails'), default=0, editable=False)
 
     status = models.SmallIntegerField(_('status'), choices=STATUSES, default=STATUS_DRAFT)
+    published = models.BooleanField(_('published'), default=False)
     remote_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
     remote_mail_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
     date_created = models.DateTimeField(_('date created'), default=now, editable=False)
@@ -175,10 +171,6 @@ class Campaign(models.Model):
         subject = subject.replace('{$last_name}', 'Smith')
         return subject
 
-    @property
-    def editable(self):
-        return self.status == self.STATUS_DRAFT
-
     def update_from(self, json_data, version=2):
         if version == 2:
             self.remote_id = json_data['id']
@@ -195,6 +187,7 @@ class Campaign(models.Model):
                 pass
             else:
                 if date_started:
+                    self.published = True
                     self.date_started = date_started
                     self.status = Campaign.STATUS_RUNNING
 
@@ -204,6 +197,7 @@ class Campaign(models.Model):
                 pass
             else:
                 if date_done:
+                    self.published = True
                     self.date_done = date_done
                     self.status = Campaign.STATUS_DONE
 
@@ -223,7 +217,7 @@ class Campaign(models.Model):
             content = content.replace('{$last_name}', 'Smith')
             content = content.replace('{$company}', 'Microsoft')
 
-        return Premailer(content, strip_important=False).transform()
+        return content
 
     def render_plain(self, request=None, test=False):
         content = loader.render_to_string('mailerlite/standart/plain_version.html', {
@@ -267,7 +261,7 @@ class Subscriber(models.Model):
 
     remote_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
     date_created = models.DateField(_('date subscribed'), default=now, editable=False)
-    date_unsubscribe = models.DateField(_('date unsubscribed'), null=True, editable=False)
+    date_unsubscribe = models.DateTimeField(_('date unsubscribed'), null=True, editable=False)
 
     class Meta:
         verbose_name = _('subscriber')
@@ -293,12 +287,13 @@ class Subscriber(models.Model):
         self.clicked = json_data['clicked'] or 0
 
         try:
-            date_created = datetime.strptime(json_data['date_created'], '%Y-%m-%d %H:%M:%S')
+            date_created = datetime.strptime(json_data['date_created'], '%Y-%m-%d')
         except (ValueError, TypeError):
             pass
         else:
             if date_created:
                 self.date_created = date_created
+                self.status = Subscriber.STATUS_SUBSCRIBED
 
         try:
             date_unsubscribe = datetime.strptime(json_data['date_unsubscribe'], '%Y-%m-%d %H:%M:%S')
@@ -307,3 +302,4 @@ class Subscriber(models.Model):
         else:
             if date_unsubscribe:
                 self.date_unsubscribe = date_unsubscribe
+                self.status = Subscriber.STATUS_UNSUBSCRIBED

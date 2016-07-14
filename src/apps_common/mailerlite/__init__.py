@@ -40,7 +40,7 @@
 
         # crontab
             */10 * * * * ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -eg -ic -ec -es
-            5,35 * * * * ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -is
+            5,35 * * * * ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -es -is
 
 
     Использование:

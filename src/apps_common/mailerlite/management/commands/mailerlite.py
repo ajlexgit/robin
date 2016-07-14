@@ -119,6 +119,7 @@ class Command(BaseCommand):
                 # создание локальной группы если её нет
                 local_group = Group(
                     name=remote_group['name'],
+                    status=Group.STATUS_PUBLISHED,
                 )
                 logger.info("Group '%s' created." % remote_group['name'])
 
@@ -129,31 +130,28 @@ class Command(BaseCommand):
     def export_campaigns(self):
         """ Отправка рассылок в MailerLite """
         logger.info("Export campaigns...")
-        campaigns = Campaign.objects.filter(
-            status__in=(Campaign.STATUS_QUEUED, Campaign.STATUS_PUBLISHED, Campaign.STATUS_CONTENT)
-        )
+        campaigns = Campaign.objects.filter(status=Campaign.STATUS_QUEUED)
         for campaign in campaigns:
-            # Publish campaign
-            if campaign.status == Campaign.STATUS_QUEUED:
-                try:
-                    response = api.campaings.create(
-                        subject=campaign.subject,
-                        groups=[group.remote_id for group in campaign.groups.all()],
-                        from_email=self.config.from_email,
-                        from_name=self.config.from_name,
-                    )
-                except api.SubscribeAPIError as e:
-                    logging.error(e.message)
-                    continue
-                else:
-                    campaign.status = Campaign.STATUS_PUBLISHED
-                    campaign.remote_id = response['id']
-                    campaign.remote_mail_id = response['mail_id']
-                    campaign.save()
-                    logger.info("Published campaign '%s'" % campaign.subject)
+            if not campaign.published:
+                # Publish campaign
+                if not campaign.remote_id:
+                    try:
+                        response = api.campaings.create(
+                            subject=campaign.subject,
+                            groups=[group.remote_id for group in campaign.groups.all()],
+                            from_email=self.config.from_email,
+                            from_name=self.config.from_name,
+                        )
+                    except api.SubscribeAPIError as e:
+                        logging.error(e.message)
+                        continue
+                    else:
+                        campaign.remote_id = response['id']
+                        campaign.remote_mail_id = response['mail_id']
+                        campaign.save()
+                        logger.info("Published campaign '%s'" % campaign.subject)
 
-            # Set content
-            if campaign.status == Campaign.STATUS_PUBLISHED:
+                # Set content
                 try:
                     api.campaings.content(
                         campaign.remote_id,
@@ -164,27 +162,28 @@ class Command(BaseCommand):
                     logging.error(e.message)
                     continue
                 else:
-                    campaign.status = Campaign.STATUS_CONTENT
+                    campaign.published = True
                     campaign.save()
                     logger.info("Setted content for campaign '%s'" % campaign.subject)
 
             # Start
-            if campaign.status == Campaign.STATUS_CONTENT:
-                try:
-                    api.campaings.run(campaign.remote_id)
-                except api.SubscribeAPIError as e:
-                    logging.error(e.message)
-                else:
-                    campaign.status = Campaign.STATUS_RUNNING
-                    campaign.save()
-                    logger.info("Started campaign '%s'" % campaign.subject)
+            try:
+                api.campaings.run(campaign.remote_id)
+            except api.SubscribeAPIError as e:
+                logging.error(e.message)
+            else:
+                campaign.status = Campaign.STATUS_RUNNING
+                campaign.save()
+                logger.info("Started campaign '%s'" % campaign.subject)
 
     def import_campaigns(self):
         """ Загрузка рассылок """
         logger.info('Import campaigns...')
         for remote_campaign in self.all_pages_v1(api.campaings.get_all):
             try:
-                local_campaign = Campaign.objects.get(remote_mail_id=remote_campaign['id'])
+                local_campaign = Campaign.objects.get(
+                    remote_mail_id=remote_campaign['id']
+                )
             except Campaign.DoesNotExist:
                 # создание локальной рассылки если её нет
                 local_campaign = Campaign()
