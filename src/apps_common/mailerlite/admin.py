@@ -1,4 +1,5 @@
 from copy import deepcopy
+from premailer import Premailer
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -55,9 +56,14 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
                 'preheader',
             ),
         }),
+        (_('Contact us'), {
+            'fields': (
+                'contact_text',
+            ),
+        }),
         (_('Email footer'), {
             'fields': (
-                'footer_text', 'website', 'contact_email',
+                'footer_text', 'facebook', 'website', 'contact_email',
             ),
         }),
     )
@@ -164,7 +170,9 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
         if obj and obj.published:
-            default += ('subject', 'groups',)
+            default += ('subject',)
+            if not request.user.is_superuser:
+                default += ('groups',)
         return default
 
     def has_delete_permission(self, request, obj=None):
@@ -314,6 +322,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             pass
         else:
             content = campaign.render_html(request, scheme='http://', test=True)
+            content = Premailer(content, strip_important=False).transform()
             plain = campaign.render_plain(request, test=True)
 
             try:
