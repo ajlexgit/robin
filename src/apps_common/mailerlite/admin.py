@@ -56,14 +56,9 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
                 'preheader',
             ),
         }),
-        (_('Contact us'), {
-            'fields': (
-                'contact_text',
-            ),
-        }),
         (_('Email footer'), {
             'fields': (
-                'footer_text', 'facebook', 'website', 'contact_email',
+                'footer_text', 'website', 'contact_email',
             ),
         }),
     )
@@ -127,7 +122,7 @@ class CampaignForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.published:
+        if self.instance and self.instance.published and not self.current_user.is_superuser:
             self.fields['header_image'].widget = ReadonlyFileWidget()
             self.fields['text'].widget.attrs['readonly'] = 'readonly'
 
@@ -169,10 +164,8 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
-        if obj and obj.published:
-            default += ('subject',)
-            if not request.user.is_superuser:
-                default += ('groups',)
+        if obj and obj.published and not request.user.is_superuser:
+            default += ('subject', 'groups',)
         return default
 
     def has_delete_permission(self, request, obj=None):
@@ -189,6 +182,11 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         if not request.user.is_superuser and 'delete_selected' in default:
             del default['delete_selected']
         return default
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj=obj, **kwargs)
+        form.current_user = request.user
+        return form
 
     def get_fieldsets(self, request, obj=None):
         default = deepcopy(super().get_fieldsets(request, obj))

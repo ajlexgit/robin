@@ -21,7 +21,7 @@ def absolute_links(html, scheme='//'):
             tag['href'] = '%s%s%s' % (scheme, site.domain, href)
 
     for tag in soup.findAll('img'):
-        if 'height' in tag:
+        if tag.has_attr('height'):
             del tag['height']
 
         src = tag.get('src')
