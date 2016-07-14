@@ -4,6 +4,7 @@ from django.db import models
 from django.template import loader
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
+from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorUploadField
@@ -15,6 +16,7 @@ from . import conf
 
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
 re_newlines = re.compile(r'\n{3,}')
+re_domain_urls = re.compile(r'(url\()(/[^/])')
 
 
 class MailerConfig(SingletonModel):
@@ -208,6 +210,9 @@ class Campaign(models.Model):
         }, request=request)
         content = content.replace('url(//', 'url(http://')
         content = utils.absolute_links(content, scheme=scheme)
+
+        site = get_current_site(request)
+        content = re_domain_urls.sub('\\1{}{}\\2'.format(scheme, site.domain), content)
 
         if test:
             content = content.replace('{$url}', '#')
