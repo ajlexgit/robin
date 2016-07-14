@@ -1,19 +1,27 @@
 (function($) {
 
-    $(document).on('submit', '#subscribe form', function() {
+    $(document).on('submit', '#subscribe-form', function() {
         var $form = $(this);
+        if ($form.hasClass('sending')) {
+            return false;
+        } else {
+            $form.addClass('sending');
+        }
 
         $.ajax({
             url: window.js_storage.subscribe_url,
             type: 'POST',
             data: $form.serialize(),
             dataType: 'json',
-            success: function(response) {
+            beforeSend: function() {
                 $form.find('.invalid').removeClass('invalid');
+            },
+            success: function() {
                 $form.get(0).reset();
 
-                // TODO
-                alert('Subscribed!');
+                $.popup({
+                    content: '<h1>You have successfully subscribed to the newsletter!</h1>'
+                }).show();
             },
             error: $.parseError(function(response) {
                 if (response && response.errors) {
@@ -22,7 +30,10 @@
                         $field.addClass(record.class);
                     })
                 }
-            })
+            }),
+            complete: function() {
+                $form.removeClass('sending');
+            }
         });
 
         return false;

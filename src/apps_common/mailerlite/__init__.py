@@ -1,5 +1,4 @@
 # TODO: antispam
-# TODO: test email inline styles
 
 """
     Модуль подписки на рассылку.
@@ -53,16 +52,14 @@
                 def get(self, request, *args, **kwargs):
                     ...
                     return self.render_to_response({
-                        subscribe_form': SubscribeForm(initial={
-                            'groups': Group.objects.all(),
-                        }),
+                        subscribe_form': SubscribeForm(),
                         ...
                     })
 
         # template.html:
             {% load form_helper %}
 
-            <form action="" method="post">
+            <form action="" method="post" id="subscribe-form">
               {% render_form subscribe_form %}
               <input type="submit" value="Subscribe" class="btn">
             </form>

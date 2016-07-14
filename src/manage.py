@@ -1,7 +1,7 @@
 import os
 import sys
 
-# Instagram
+# Mailer antispam, proves
 # Menu: выделение из вьюхи
 # Admin: функция "скопировать из"
 # crop each variation
