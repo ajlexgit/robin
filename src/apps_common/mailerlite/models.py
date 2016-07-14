@@ -121,7 +121,7 @@ class Campaign(models.Model):
         (STATUS_DONE, _('Done')),
     )
 
-    groups = models.ManyToManyField(Group)
+    groups = models.ManyToManyField(Group, verbose_name=_('lists'))
     subject = models.CharField(_('subject'), max_length=255)
     header_image = StdImageField(_('preview'),
         blank=True,

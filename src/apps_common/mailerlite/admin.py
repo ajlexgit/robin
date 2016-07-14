@@ -154,7 +154,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     )
     actions = ('action_start', )
     list_filter = ('status', )
-    list_display = ('view', 'short_subject', 'sent', 'opened', 'clicked', 'status_box')
+    list_display = ('view', 'short_subject', 'sent', 'opened', 'clicked', 'status_box', 'date_created')
     list_display_links = ('short_subject', )
 
     class Media:
