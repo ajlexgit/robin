@@ -33,7 +33,7 @@ table td {
   border-collapse: collapse;
 }
 
-h1, h2, h3, td, a, p, span, li {
+h1, h2, h3, td, p, li {
   line-height: 1.6;
   font-family: Tahoma, Helvetica, Arial, sans-serif;
 }
@@ -42,9 +42,13 @@ h1, h2, h3 {
   text-transform: uppercase;
 }
 
+h1, h2, h3 {
+  margin: 1.1em 0 0.5em;
+}
+
 h1 {
   font-size: 2.25em;
-  line-height: 1.223;
+  line-height: 1.278;
   @media only screen and (max-width: 680px) {
     font-size: 2em !important;
   }
@@ -70,8 +74,12 @@ a {
   word-break: break-word;
 }
 
-p:last-child {
-  margin-bottom: 0;
+p {
+  margin: 0 0 1.2em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 img {
@@ -82,10 +90,12 @@ img {
 
 ol {
   padding-left: 1.4em;
+  margin: 1.1em 0;
 }
 
 ul {
   padding-left: 1em;
+  margin: 1.1em 0;
 }
 
 li {
