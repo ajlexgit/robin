@@ -232,7 +232,8 @@ class RotateItem(GalleryView):
             self.item.image.rotate(90)
 
         return self.json_response({
-            'preview_url': self.item.admin_variation.url_nocache
+            'preview_url': self.item.admin_variation.url_nocache,
+            'source_url': self.item.image.url_nocache,
         })
 
 

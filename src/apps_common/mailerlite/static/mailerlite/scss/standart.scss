@@ -76,6 +76,7 @@ body[yahoo] {
       color: $text;
       font-size: 0.875em;
       @include media_interval(0, $media_mobile) {
+        width: 100% !important;
         text-align: center !important;
       }
     }
@@ -123,11 +124,5 @@ body[yahoo] {
         background-position: -60px 0;
       }
     }
-  }
-}
-
-@media screen and (max-device-width: 600px) {
-  *[class~=content] {
-    background-color: red !important;
   }
 }

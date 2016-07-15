@@ -638,7 +638,9 @@
             return this.ajaxItem($item, {
                 url: window.admin_gallery_rotate_item + '?direction=' + direction,
                 success: function(response) {
-                    $item.find('img').attr({
+                    $item.data({
+                        source_url: response.source_url
+                    }).find('img').attr({
                         src: response.preview_url
                     });
                 }
