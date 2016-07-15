@@ -128,13 +128,13 @@ class Campaign(models.Model):
     header_image = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('mailerlite/campaigns'),
-        min_dimensions=(640, 200),
+        min_dimensions=(680, 200),
         admin_variation='admin',
         crop_area=True,
         aspects='normal',
         variations=dict(
             normal=dict(
-                size=(640, 200),
+                size=(680, 200),
                 quality=95,
             ),
             admin=dict(
