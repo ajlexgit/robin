@@ -157,6 +157,7 @@ class Campaign(models.Model):
     date_done = models.DateTimeField(_('date done'), null=True, editable=False)
 
     class Meta:
+        default_permissions = ('add', 'change')
         verbose_name = _('campaign')
         verbose_name_plural = _('campaigns')
         ordering = ('-date_created',)

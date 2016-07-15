@@ -215,9 +215,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         """ Право на удаление суперюзеру """
         if request.user.is_superuser:
             return True
-
-        default = super().has_delete_permission(request, obj)
-        return default and obj and obj.status == self.model.STATUS_DRAFT
+        return obj and obj.status == self.model.STATUS_DRAFT
 
     def get_actions(self, request):
         """ Массовое удаление только для суперюзера """
@@ -394,8 +392,8 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         default = list(super().get_readonly_fields(request, obj))
-        if obj is None:
-            for field in ('email', 'name', 'last_name', 'company'):
+        if obj is None or obj.status == self.model.STATUS_QUEUED:
+            for field in ('email', ):
                 if field in default:
                     default.remove(field)
         if request.user.is_superuser:
@@ -409,8 +407,9 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
             obj.groups.add(*Group.objects.all())
 
     def has_delete_permission(self, request, obj=None):
-        """ Удалять подписчиков может только суперадмин """
-        return request.user.is_superuser
+        if request.user.is_superuser:
+            return True
+        return obj and obj.status == self.model.STATUS_DRAFT
 
     def groups_list(self, obj):
         return ', '.join(group.name for group in obj.groups.all())
