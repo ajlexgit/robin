@@ -18,12 +18,11 @@
   </xml><![endif]-->
 
   <title>{% block title %}{{ campaign.subject }}{% endblock title %}</title>
-</head>
-<body>
 
   <!-- Стили -->
   {% block styles %}{% endblock styles %}
-
+</head>
+<body>
   <!-- Содержимое -->
   <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="{{ config.bg_color }}"
       {% if config.bg_image %}

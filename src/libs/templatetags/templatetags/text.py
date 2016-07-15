@@ -161,7 +161,7 @@ def softhyphen(value):
 
 
 @register.filter(is_safe=True)
-def telephone(value):
+def phone(value):
     """
         Оставляет только цифры и знак плюса
     """

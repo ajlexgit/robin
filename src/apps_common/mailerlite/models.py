@@ -269,6 +269,7 @@ class Subscriber(models.Model):
     date_unsubscribe = models.DateTimeField(_('date unsubscribed'), null=True, editable=False)
 
     class Meta:
+        default_permissions = ('add', 'change')
         verbose_name = _('subscriber')
         verbose_name_plural = _('subscribers')
         ordering = ('-date_created', )

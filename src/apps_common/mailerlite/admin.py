@@ -132,11 +132,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     change_form_template = 'mailerlite/admin/change_form.html'
 
     fieldsets = (
-        (None, {
-            'fields': (
-                'groups',
-            )
-        }),
         (_('Content'), {
             'fields': (
                 'subject', 'header_image', 'text',
@@ -147,7 +142,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     readonly_fields = (
         'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done', 'remote_id'
     )
-    actions = ('action_start', )
     list_filter = ('status', )
     list_display = ('view', 'short_subject', 'sent', 'opened', 'clicked', 'status_box', 'date_created')
     list_display_links = ('short_subject', )
@@ -162,25 +156,54 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             )
         }
 
+    def get_fieldsets(self, request, obj=None):
+        default = deepcopy(super().get_fieldsets(request, obj))
+        if not obj:
+            return default
+
+        # Показываем группы, если их больше одной
+        groups_count = Group.objects.count()
+        if groups_count > 1:
+            default = (
+                (None, {
+                    'fields': (
+                        'groups',
+                    )
+                }),
+            ) + default
+
+        # Показ статистики
+        if obj.published:
+            default += (
+                (_('Statistics'), {
+                    'fields': (
+                        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
+                    )
+                }),
+            )
+
+        # Доп инфа для суперадмина
+        if request.user.is_superuser:
+            default = (
+                (_('Information'), {
+                    'fields': (
+                        'status', 'published', 'remote_id'
+                    )
+                }),
+            ) + default
+        return default
+
+    def save_model(self, request, obj, form, change):
+        """ Автоматически добавляем все группы, если они не заданы """
+        super().save_model(request, obj, form, change)
+        if not obj.groups.count() and Group.objects.count() <= 1:
+            obj.groups.add(*Group.objects.all())
+
     def get_readonly_fields(self, request, obj=None):
+        """ Если опубликован и не суперюзер - запрещаем редактирование """
         default = super().get_readonly_fields(request, obj)
         if obj and obj.published and not request.user.is_superuser:
             default += ('subject', 'groups',)
-        return default
-
-    def has_delete_permission(self, request, obj=None):
-        """ Право на удаление суперюзеру """
-        default = super().has_delete_permission(request, obj)
-        is_draft = obj and obj.status in (self.model.STATUS_DRAFT, self.model.STATUS_QUEUED)
-        if request.user.is_superuser:
-            return True
-        else:
-            return default and is_draft
-
-    def get_actions(self, request):
-        default = super().get_actions(request)
-        if not request.user.is_superuser and 'delete_selected' in default:
-            del default['delete_selected']
         return default
 
     def get_form(self, request, obj=None, **kwargs):
@@ -188,18 +211,19 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         form.current_user = request.user
         return form
 
-    def get_fieldsets(self, request, obj=None):
-        default = deepcopy(super().get_fieldsets(request, obj))
-        if obj and request.user.is_superuser:
-            default[0][1]['fields'] += ('status', 'published', 'remote_id')
-            if obj.published:
-                default += (
-                    (_('Statistics'), {
-                        'fields': (
-                            'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
-                        )
-                    }),
-                )
+    def has_delete_permission(self, request, obj=None):
+        """ Право на удаление суперюзеру """
+        if request.user.is_superuser:
+            return True
+
+        default = super().has_delete_permission(request, obj)
+        return default and obj and obj.status == self.model.STATUS_DRAFT
+
+    def get_actions(self, request):
+        """ Массовое удаление только для суперюзера """
+        default = super().get_actions(request)
+        if not request.user.is_superuser and 'delete_selected' in default:
+            del default['delete_selected']
         return default
 
     def get_changeform_initial_data(self, request):
@@ -256,7 +280,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         elif obj.status == self.model.STATUS_QUEUED and not obj.published:
             return """
                 <nobr>
-                    {text}&nbsp;{action}&nbsp;{delete}
+                    {text}&nbsp;{action}
                 </nobr>
             """.format(
                 text=status_text,
@@ -265,11 +289,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
                     classes='btn-danger',
                     text=_('Cancel')
                 ),
-                delete=button_tpl.format(
-                    href=reverse('admin:%s_%s_delete' % info, args=(obj.id,)),
-                    classes='btn-danger',
-                    text=_('Delete')
-                ),
             )
         else:
             return status_text
@@ -277,13 +296,9 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     status_box.admin_order_field = 'status'
     status_box.allow_tags = True
 
-    def action_start(self, request, queryset):
-        queryset.filter(status=self.model.STATUS_DRAFT).update(status=self.model.STATUS_QUEUED)
-    action_start.short_description = _('Start campaign')
-
     def start_campaign(self, request, campaign_id):
         try:
-            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_DRAFT)
+            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_DRAFT, published=False)
         except self.model.DoesNotExist:
             pass
         else:
@@ -295,7 +310,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def cancel_campaign(self, request, campaign_id):
         try:
-            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_QUEUED)
+            campaign = self.model.objects.get(pk=campaign_id, status=self.model.STATUS_QUEUED, published=False)
         except self.model.DoesNotExist:
             pass
         else:
@@ -340,40 +355,62 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'groups', 'email', 'status',
+                'email',
             )
         }),
-        (_('Addition information'), {
+        (_('Person'), {
             'fields': (
                 'name', 'last_name', 'company',
             )
         }),
     )
     readonly_fields = (
-        'groups', 'name', 'last_name', 'company',
+        'email', 'groups', 'status',
         'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe',
     )
     list_filter = ('status', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
 
-    def get_readonly_fields(self, request, obj=None):
-        default = super().get_readonly_fields(request, obj)
-        if not request.user.is_superuser:
-            default += ('status', 'email')
+    def get_fieldsets(self, request, obj=None):
+        default = deepcopy(super().get_fieldsets(request, obj))
+        if obj is None:
+            return default
+
+        groups_count = Group.objects.count()
+        if groups_count > 1:
+            default[0][1]['fields'] += ('groups', )
+
+        default[0][1]['fields'] += ('status',)
+
+        default += (
+            (_('Statistics'), {
+                'fields': (
+                    'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe'
+                )
+            }),
+        )
         return default
 
-    def get_fieldsets(self, request, obj=None):
-        default = super().get_fieldsets(request, obj)
+    def get_readonly_fields(self, request, obj=None):
+        default = list(super().get_readonly_fields(request, obj))
+        if obj is None:
+            for field in ('email', 'name', 'last_name', 'company'):
+                if field in default:
+                    default.remove(field)
         if request.user.is_superuser:
-            default += (
-                (_('Statistics'), {
-                    'fields': (
-                        'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe'
-                    )
-                }),
-            )
-        return default
+            default.remove('status')
+        return tuple(default)
+
+    def save_model(self, request, obj, form, change):
+        """ Автоматически добавляем все группы, если они не заданы """
+        super().save_model(request, obj, form, change)
+        if not obj.groups.count() and Group.objects.count() <= 1:
+            obj.groups.add(*Group.objects.all())
+
+    def has_delete_permission(self, request, obj=None):
+        """ Удалять подписчиков может только суперадмин """
+        return request.user.is_superuser
 
     def groups_list(self, obj):
         return ', '.join(group.name for group in obj.groups.all())

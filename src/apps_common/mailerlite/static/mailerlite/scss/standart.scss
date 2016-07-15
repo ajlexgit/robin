@@ -61,7 +61,7 @@ td[class="footer"] {
     color: $text;
     font-size: 0.875em;
     @media only screen and (max-width: 680px) {
-      text-align: center;
+      text-align: center !important;
     }
 
     a {
