@@ -4,7 +4,6 @@
 {% load staticfiles %}
 {% load i18n %}
 
-
 {% block styles %}
   {{ block.super }}
   {% inline_stylesheet 'mailerlite_standart' %}
@@ -12,11 +11,10 @@
 
 
 {% block content %}
-
   <!-- шапка письма -->
-  <table align="center" width="640" cellspacing="0" cellpadding="0" border="0" class="header">
+  <table align="center" cellspacing="0" cellpadding="0" border="0" class="header-table full-width">
     <tr>
-      <td align="left" width="120" class="logo">
+      <td align="left" class="logo">
         <a href="http://{{ config.website }}/" target="_blank">
           <img src="{% static 'mailerlite/img/mail_logo.png' %}" alt="" border="0" width="110" height="32">
         </a>
@@ -24,25 +22,24 @@
 
       <td style="width: 20px"></td>
 
-      <td align="left" width="280" class="preheader">
+      <td align="left" class="preheader">
         {{ config.preheader|linebreaksbr }}
       </td>
 
       <td style="width: 20px"></td>
 
-      <td align="right" width="200" class="backlink">
+      <td align="right" class="backlink">
         {% trans "Can't see images?" %}
         <a style="color:#FFFFFF" href="{$url}" target="_blank">{% trans "Click here..." %}</a>
       </td>
     </tr>
   </table>
 
-
   <!-- Картинка в заголовке -->
   {% if campaign.header_image %}
-    <table align="center" width="640" cellpadding="0" cellspacing="0" border="0" class="responsive">
+    <table cellpadding="0" cellspacing="0" border="0" class="full-width">
       <tr>
-        <td align="center" class="header-img">
+        <td align="center" class="header-img full-width">
           <img border="0" width="{{ campaign.header_image.normal.target_width }}"
                height="{{ campaign.header_image.normal.target_height }}" alt=""
                src="{{ campaign.header_image.normal.url }}">
@@ -51,9 +48,8 @@
     </table>
   {% endif %}
 
-
   <!-- Контент -->
-  <table align="center" width="640" cellpadding="0" cellspacing="0" border="0" class="responsive">
+  <table cellpadding="0" cellspacing="0" border="0" class="full-width">
     <tr>
       <td class="content">
         {{ campaign.text|safe }}
@@ -61,36 +57,50 @@
     </tr>
   </table>
 
+  <!-- Contact us -->
+  <table cellpadding="0" cellspacing="0" border="0" class="full-width">
+    <tr>
+      <td class="contact full-width">
+        {{ config.contact_text|linebreaksbr }}
+        <br>
+        <a class="contact-btn" lang="x-contact-btn" href="{% url 'contacts:index' %}" target="_blank">
+          {% trans 'Contact us' %}
+        </a>
+      </td>
+    </tr>
+  </table>
 
   <!-- Подвал -->
-  <table align="center" width="640" cellpadding="0" cellspacing="0" border="0" class="responsive">
+  <table cellpadding="0" cellspacing="0" border="0" class="full-width">
     <tr>
-      <td class="footer">
+      <td class="footer full-width">
 
         <!-- Левая часть -->
-        <table align="left" width="400" cellpadding="0" cellspacing="0" border="0" class="responsive">
+        <table align="left" cellpadding="0" cellspacing="0" border="0" class="left-table">
           <tr>
-            <td align="left" class="column">
+            <td align="left">
               {{ config.footer_text|linebreaksbr }}
-
               <a href="{$unsubscribe}" target="_blank">{% trans 'Unsubscribe' %}</a>
             </td>
           </tr>
         </table>
 
         <!-- Правая часть -->
-        <table align="right" width="240" cellpadding="0" cellspacing="0" border="0" class="responsive">
+        <table align="right" cellpadding="0" cellspacing="0" border="0" class="right-table">
           <tr>
-            <td align="right" class="column socials">
+            <td align="right" class="socials">
+              {% if config.facebook %}
+                <a href="{{ config.facebook }}" class="facebook" target="_blank"></a>
+              {% endif %}
               <a href="mailto:{{ config.contact_email }}" class="mail" target="_blank"></a>
             </td>
           </tr>
         </table>
 
         <!-- Нижняя часть -->
-        <table width="640" cellspacing="0" cellpadding="0" border="0" class="responsive">
+        <table cellspacing="0" cellpadding="0" border="0" class="full-width">
           <tr>
-            <td class="column" style="padding-top: 20px">
+            <td style="padding-top: 20px" class="full-width">
               <a href="mailto:{{ config.contact_email }}">{{ config.contact_email }}</a>
               <span style="display: inline-block; height: 1em; width: 1.2em;"></span>
               <a href="http://{{ config.website }}/" target="_blank">{{ config.website }}</a>

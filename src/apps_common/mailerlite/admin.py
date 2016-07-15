@@ -409,7 +409,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         if request.user.is_superuser:
             return True
-        return obj and obj.status == self.model.STATUS_DRAFT
+        return obj and obj.status == self.model.STATUS_QUEUED
 
     def groups_list(self, obj):
         return ', '.join(group.name for group in obj.groups.all())

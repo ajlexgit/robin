@@ -17,46 +17,65 @@
   </o:OfficeDocumentSettings>
   </xml><![endif]-->
 
-  <title>{% block title %}{{ campaign.subject }}{% endblock title %}</title>
+  <!--[if (gte mso 9)|(IE)]>
+    <style type="text/css">
+        table {border-collapse: collapse;}
+    </style>
+  <![endif]-->
+
+  <title></title>
 
   <!-- Стили -->
   {% block styles %}{% endblock styles %}
 </head>
-<body>
-  <!-- Содержимое -->
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="{{ config.bg_color }}"
-      {% if config.bg_image %}
-         style="background-image: url({{ config.bg_image.url }});"
-      {% endif %}>
-    <tr>
-      <td align="center" height="100%" class="base-column">
+<body yahoo>
+  <center class="wrapper" style="background-color: {{ config.bg_color }}; {% if config.bg_image %}background-image: url({{ config.bg_image.url }}); {% endif %}">
+    <div class="webkit">
 
-        <!-- контент -->
-        {% block content %}{% endblock content %}
+      <!--[if (gte mso 9)|(IE)]>
+      <table width="640" align="center">
+      <tr>
+      <td>
+      <![endif]-->
+      <table class="outer">
+        <tr>
+          <td align="left">
 
-        <!-- Mailerlite logo -->
-        {% block mailerlite %}
-          <table align="center" width="640" cellspacing="0" cellpadding="0" border="0" class="responsive">
-            <tr>
-              <td height="30px"></td>
-            </tr>
+            <!-- контент -->
+            {% block content %}{% endblock content %}
 
-            <tr>
-              <td align="center">
-                <a style="display: inline-block; margin: 0; border: none;" href="https://www.mailerlite.com">
-                  <img border="0" alt="MailerLite" src="https://static1.mailerlite.com/images/builder/powered-by-mailerlite.png">
-                </a>
-              </td>
-            </tr>
+            <!-- Mailerlite logo -->
+            {% block mailerlite %}
+              <table align="center" cellspacing="0" cellpadding="0" border="0" class="full-width">
+                <tr>
+                  <td height="30px"></td>
+                </tr>
 
-            <tr>
-              <td height="30px"></td>
-            </tr>
-          </table>
-        {% endblock mailerlite %}
+                <tr>
+                  <td align="center">
+                    <a style="display: inline-block; margin: 0; border: none;" href="https://www.mailerlite.com">
+                      <img border="0" alt="MailerLite"
+                           src="https://static1.mailerlite.com/images/builder/powered-by-mailerlite.png">
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td height="30px"></td>
+                </tr>
+              </table>
+            {% endblock mailerlite %}
+
+          </td>
+        </tr>
+      </table>
+      <!--[if (gte mso 9)|(IE)]>
       </td>
-    </tr>
-  </table>
+      </tr>
+      </table>
+      <![endif]-->
 
+    </div>
+  </center>
 </body>
 </html>

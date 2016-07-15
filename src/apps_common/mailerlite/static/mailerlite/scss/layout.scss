@@ -3,16 +3,12 @@
 body {
   margin: 0;
   padding: 0;
+  min-width: 100%;
   font-size: 16px !important;
 }
 
 .ExternalClass * {
   line-height: 100%;
-}
-
-body, table, td, p, a, li {
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
 }
 
 table {
@@ -29,7 +25,8 @@ table, td {
   mso-table-rspace: 0;
 }
 
-table td {
+td {
+  padding: 0;
   border-collapse: collapse;
 }
 
@@ -86,6 +83,7 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+  border: 0;
 }
 
 ol {
@@ -103,10 +101,36 @@ li {
   margin: 0;
 }
 
-/* Главная таблица */
-td[class="base-column"], table[class="responsive"] {
-  @media only screen and (max-width: 680px) {
-    min-width: 200px !important;
-    width: 100% !important;
+/* Windows Phone Viewport Fix */
+@-ms-viewport {
+  width: device-width;
+}
+
+body[yahoo] {
+  .wrapper {
+    width: 100%;
+    table-layout: fixed;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  .webkit {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .outer {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .full-width {
+    width: 100%;
+    max-width: 100%;
+    @include media_interval(0, 680px) {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
   }
 }
