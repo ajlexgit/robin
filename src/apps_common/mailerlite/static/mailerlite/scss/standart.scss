@@ -47,14 +47,6 @@ td[class="content"] {
   a {
     color: $blue;
     text-decoration: none;
-
-    &:hover {
-      opacity: 0.75;
-    }
-  }
-
-  img {
-    width: 100%;
   }
 }
 
@@ -89,18 +81,12 @@ td[class="footer"] {
     margin-left: 6px;
     width: 30px;
     height: 30px;
-    opacity: 0.5;
     vertical-align: middle;
     background: url(../img/mail_icons.png) no-repeat 0 0;
     @include no_fontsize;
-    @include transition(opacity 0.3s);
 
     &:first-child {
       margin-left: 0;
-    }
-
-    &:hover {
-      opacity: 1;
     }
 
     &.mail {
