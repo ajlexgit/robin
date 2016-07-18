@@ -17,11 +17,6 @@ def subscribe(request):
         else:
             if subscriber.status == Subscriber.STATUS_UNSUBSCRIBED:
                 subscriber.status = Subscriber.STATUS_QUEUED
-            else:
-                subscribe_form.add_field_error('email', 'unique')
-                return JsonResponse({
-                    'errors': subscribe_form.error_dict,
-                }, status=400)
 
         subscriber.save()
         subscriber.groups.clear()

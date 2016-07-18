@@ -300,7 +300,6 @@ class Subscriber(models.Model):
         else:
             if date_created:
                 self.date_created = date_created
-                self.status = Subscriber.STATUS_SUBSCRIBED
 
         try:
             date_unsubscribe = datetime.strptime(json_data['date_unsubscribe'], '%Y-%m-%d %H:%M:%S')
@@ -309,4 +308,9 @@ class Subscriber(models.Model):
         else:
             if date_unsubscribe:
                 self.date_unsubscribe = date_unsubscribe
-                self.status = Subscriber.STATUS_UNSUBSCRIBED
+
+        subscriber_type = json_data.get('type', 'active')
+        if subscriber_type == 'active':
+            self.status = Subscriber.STATUS_SUBSCRIBED
+        elif subscriber_type == 'unsubscribed':
+            self.status = Subscriber.STATUS_UNSUBSCRIBED
