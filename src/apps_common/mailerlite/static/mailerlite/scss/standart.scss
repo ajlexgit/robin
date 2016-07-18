@@ -88,14 +88,14 @@ body[yahoo] {
     .left-table {
       width: 400px;
       @include media_interval(0, $media_mobile) {
-        width: 100%;
+        width: 100% !important;
       }
     }
 
     .right-table {
       width: 240px;
       @include media_interval(0, $media_mobile) {
-        width: 100%;
+        width: 100% !important;
       }
     }
   }
