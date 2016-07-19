@@ -2,7 +2,6 @@ import os
 import sys
 
 # PIP -> jpegtran
-# rm exif rotate
 # Schema.org: per page + get data from models
 # Mailer antispam, proves
 # Menu: выделение из вьюхи
