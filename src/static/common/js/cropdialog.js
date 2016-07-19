@@ -95,9 +95,11 @@
 
             // открытие окна при наступлении событий eventTypes
             var that = this;
-            this.$root.on(this.opts.eventTypes, this.opts.buttonSelector, function() {
-                return that.eventHandler($(this));
-            });
+            if (this.opts.buttonSelector) {
+                this.$root.on(this.opts.eventTypes, this.opts.buttonSelector, function() {
+                    return that.eventHandler($(this));
+                });
+            }
 
             this.$root.data(this.DATA_KEY, this);
         };
@@ -267,9 +269,8 @@
                             primary: "ui-icon-cancel"
                         },
                         click: function() {
-                            var coords = that.getCropCoords();
                             that.closeDialog();
-                            that.cropCancelled($button, coords);
+                            that.cropCancelled($button);
                         }
                     },
                     {
@@ -432,8 +433,8 @@
         /*
             Событие, возникающее при отмене обрезки
          */
-        cls.cropCancelled = function($button, coords) {
-            this.opts.onCancel.call(this, $button, coords);
+        cls.cropCancelled = function($button) {
+            this.opts.onCancel.call(this, $button);
         };
 
         /*

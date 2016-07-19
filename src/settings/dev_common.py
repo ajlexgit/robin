@@ -5,6 +5,8 @@ SESSION_COOKIE_DOMAIN = DOMAIN
 CSRF_COOKIE_DOMAIN = DOMAIN
 ALLOWED_HOSTS = (
     DOMAIN,
+    'localhost',
+    '127.0.0.1',
 )
 
 DEBUG = True

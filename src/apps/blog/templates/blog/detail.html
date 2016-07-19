@@ -39,30 +39,32 @@
       </div>
     {% endcache %}
 
-    <div class="grid-block">
-      <time datetime="{{ post.date|date:"c" }}" class="date" itemprop="datePublished">
-        {{ post.date|date }}
-      </time>
+    <div class="grid">
+      <div class="gc-wide-6 gc-6 gc-center">
+        <time datetime="{{ post.date|date:"c" }}" class="date" itemprop="datePublished">
+          {{ post.date|date }}
+        </time>
 
-      <h1 class="title title-h1" itemprop="headline">{{ post.header }}</h1>
+        <h1 class="title title-h1" itemprop="headline">{{ post.header }}</h1>
 
-      {% if post.preview %}
-        <img class="preview" src="{{ post.preview.normal.url }}"
-             srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
-             sizes="100vw">
-      {% endif %}
+        {% if post.preview %}
+          <img class="preview" src="{{ post.preview.normal.url }}"
+               srcset="{{ post.preview.normal.srcset }}, {{ post.preview.mobile.srcset }}"
+               sizes="100vw">
+        {% endif %}
 
-      <div class="text text-styles" itemprop="articleBody">
-        {% away post.text|typograf %}
-      </div>
+        <div class="text text-styles" itemprop="articleBody">
+          {% away post.text|typograf %}
+        </div>
 
-      <div class="social-buttons no-counter">
-        {% social_button 'vk' %}
-        {% social_button 'fb' %}
-        {% social_button 'tw' %}
-        {% social_button 'gp' %}
-        {% social_button 'li' %}
-        {% social_button 'pn' %}
+        <div class="social-buttons no-counter">
+          {% social_button 'vk' %}
+          {% social_button 'fb' %}
+          {% social_button 'tw' %}
+          {% social_button 'gp' %}
+          {% social_button 'li' %}
+          {% social_button 'pn' %}
+        </div>
       </div>
     </div>
   </div>

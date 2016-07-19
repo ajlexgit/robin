@@ -11,10 +11,10 @@ beautifulsoup4==4.4.1
 html5lib==0.9999999
 csscompressor==0.9.4
 jsmin==2.2.1
-ipython==4.1.2
+ipython==5.0.0
 pillow==3.2.0
 premailer==3.0.1
-psycopg2==2.6.1
+psycopg2==2.6.2
 pysyge==0.2.0
 pytils==0.3
 pytz==2016.4

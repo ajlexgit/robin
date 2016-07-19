@@ -11,6 +11,7 @@
 .jcrop-holder {
   direction: ltr;
   text-align: left;
+  overflow: hidden;
 }
 /* Selection Border */
 .jcrop-vline,

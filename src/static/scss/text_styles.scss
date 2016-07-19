@@ -101,7 +101,7 @@
       width: 100%;
     }
 
-    @at-root .js & > img:nth-of-type(n+1) {
+    @at-root .js & > img:nth-of-type(n+2) {
       display: none;
     }
   }
