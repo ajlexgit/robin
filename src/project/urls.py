@@ -12,7 +12,6 @@ urlpatterns = [
     url(r'^500/$', 'django.views.defaults.server_error'),
 
     url(r'^blog/', include('blog.urls', namespace='blog')),
-    url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^contact/', include('contacts.urls', namespace='contacts')),
 
     url(r'^admin/', include(honeypot_site.urls)),
