@@ -153,7 +153,7 @@ def upload_chunked_file(request, param_name, allow_memory=True):
         # генерируем имя, которое можно восстановить при получении
         # следующих чанков
         name, ext = os.path.splitext(file.name)
-        hashname = '%s.%s' % (request.session.session_key, name)
+        hashname = '%s.%s' % (request.META.get('REMOTE_ADDR'), name)
         hashname = hashlib.md5(hashname.encode()).hexdigest()
         tempfile_name = '%s.upload%s' % (hashname, ext)
         tempfile_path = os.path.join(tempfile.gettempdir(), tempfile_name)
