@@ -1,6 +1,5 @@
 Django==1.8.13
 django-model-utils==2.5
-django-mptt==0.8.4
 django-pipeline==1.6.8
 django-redis==3.5.1
 django-softhyphen==1.1.0
@@ -13,16 +12,17 @@ csscompressor==0.9.4
 jsmin==2.2.1
 ipython==5.0.0
 pillow==3.2.0
-premailer==3.0.1
 psycopg2==2.6.2
-pysyge==0.2.0
 pytils==0.3
 pytz==2016.4
 redis==2.10.5
 requests==2.10.0
 
-PyLinkedinAPI==0.1.5
-facebook-sdk==1.0.0
-python-twitter==3.1
-celery==3.1.23
+# PyLinkedinAPI==0.1.5
+# facebook-sdk==1.0.0
+# python-twitter==3.1
+# pysyge==0.2.0
+# premailer==3.0.1
+# django-mptt==0.8.4
+# celery==3.1.23
 # django-celery-email==1.1.4
