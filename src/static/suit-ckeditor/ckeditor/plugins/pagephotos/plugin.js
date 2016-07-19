@@ -1,24 +1,5 @@
 (function() {
 
-    // Показ окна изменения изображения в модальном окне
-    var showChangePopup = function (editor, wnd, page_photo_id) {
-        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
-        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
-        var w = 800,
-            h = 600,
-            left = dualScreenLeft + Math.round(window.outerWidth/2 - w/2),
-            top = dualScreenTop + Math.round(window.outerHeight/2 - h/2);
-
-        var win = wnd.open(
-            editor.config.PAGEPHOTOS_EDIT_URL.replace('1', page_photo_id) + '?_popup=1',
-            'page_photo',
-            'height=' + h + ',width=' + w + ',top=' + top + ',left=' + left + ',resizable=yes,scrollbars=yes'
-        );
-        win.focus();
-        return false
-    };
-
-
     CKEDITOR.plugins.add("pagephotos", {
         requires: 'dialog',
         icons: 'pagephotos',
@@ -63,12 +44,13 @@
             // IMAGE DESCRIPTION
             editor.addCommand("pagephotos_image_description", new CKEDITOR.dialogCommand("pagephotos_image_description"));
 
-            // EDIT
-            editor.addCommand("ChangeImage", {
+            // CROP
+            editor.addCommand("CropImage", {
                 canUndo: false,
-                modes: { wysiwyg:1 },
-                exec: function (editor) {
-                    var element = editor.getSelection().getStartElement(),
+                modes: {wysiwyg: 1},
+                exec: function(editor) {
+                    var selection = editor.getSelection(),
+                        element = selection.getStartElement(),
                         image_id = parseInt(element.data('id')) || 0;
 
                     if (!image_id) {
@@ -76,10 +58,104 @@
                         return
                     }
 
-                    showChangePopup(editor, editor.window.$, image_id)
+                    CropDialog(editor.element.$, {
+                        buttonSelector: '',
+
+                        beforeOpen: function() {
+                            this.id = $(element.$).data('id');
+                        },
+                        getImage: function() {
+                            return $(element.$).data('source');
+                        },
+                        getMinSize: function() {
+                            return editor.config.PAGEPHOTOS_MIN_DIMENSIONS;
+                        },
+                        getMaxSize: function() {
+                            return editor.config.PAGEPHOTOS_MAX_DIMENSIONS;
+                        },
+                        getAspects: function() {
+                            return editor.config.PAGEPHOTOS_ASPECTS;
+                        },
+                        getCropCoords: function() {
+                            return this.formatCoords($(element.$).data('crop'));
+                        },
+
+                        onCrop: function($button, coords) {
+                            $.ajax({
+                                url: editor.config.PAGEPHOTOS_CROP_URL,
+                                data: {
+                                    id: this.id,
+                                    croparea: coords.join(':')
+                                },
+                                dataType: 'json',
+                                success: function(response) {
+                                    var new_tag = CKEDITOR.dom.element.createFromHtml(response.tag, editor.document);
+                                    new_tag.insertAfter(element);
+                                    element.remove();
+
+                                    var selection = editor.getSelection();
+                                    if (selection.getSelectedElement().$ == new_tag.$) {
+                                        var range = selection.getRanges()[0];
+                                        var newRange = new CKEDITOR.dom.range(range.document);
+                                        newRange.moveToPosition(new_tag, CKEDITOR.POSITION_AFTER_END);
+                                        newRange.select();
+                                    }
+                                }
+                            });
+
+                            element.setAttribute('data-crop', coords.join(':'));
+                        }
+                    }).eventHandler();
                 }
             });
 
+            // ROTATE
+            var rotate = function(direction) {
+                return function(editor) {
+                    var selection = editor.getSelection(),
+                        element = selection.getStartElement(),
+                        image_id = parseInt(element.data('id')) || 0;
+
+                    if (!image_id) {
+                        alert(lang.badImage);
+                        return
+                    }
+
+                    $.ajax({
+                        url: editor.config.PAGEPHOTOS_ROTATE_URL,
+                        data: {
+                            id: image_id,
+                            direction: direction
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            var new_tag = CKEDITOR.dom.element.createFromHtml(response.tag, editor.document);
+                            new_tag.insertAfter(element);
+                            element.remove();
+
+                            var selection = editor.getSelection();
+                            if (selection.getSelectedElement().$ == new_tag.$) {
+                                var range = selection.getRanges()[0];
+                                var newRange = new CKEDITOR.dom.range(range.document);
+                                newRange.moveToPosition(new_tag, CKEDITOR.POSITION_AFTER_END);
+                                newRange.select();
+                            }
+                        }
+                    });
+                }
+            };
+
+            editor.addCommand("RotateCW", {
+                canUndo: false,
+                modes: {wysiwyg: 1},
+                exec: rotate('right')
+            });
+
+            editor.addCommand("RotateCCW", {
+                canUndo: false,
+                modes: {wysiwyg: 1},
+                exec: rotate('left')
+            });
 
             // ======================================
             //      CONTEXT MENU
@@ -89,25 +165,39 @@
             editor.addMenuGroup('images');
             editor.addMenuItems({
                 _crop_command : {
-                    label : lang.contextMenuEdit,
+                    label : lang.contextMenuCrop,
                     icon: this.path + 'edit.png',
-                    command : 'ChangeImage',
+                    command : 'CropImage',
                     group : 'images',
                     order: 1
+                },
+                _rotate_left: {
+                    label: lang.contextMenuRotateCW,
+                    icon: this.path + 'rotate-cw.png',
+                    command: 'RotateCW',
+                    group: 'images',
+                    order: 2
+                },
+                _rotate_right: {
+                    label: lang.contextMenuRotateCCW,
+                    icon: this.path + 'rotate-ccw.png',
+                    command: 'RotateCCW',
+                    group: 'images',
+                    order: 3
                 },
                 _photos_block_description : {
                     label : lang.contextMenuBlockDescr,
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_block_description',
                     group : 'images',
-                    order: 2
+                    order: 4
                 },
                 _photos_image_description : {
                     label : lang.contextMenuImageDescr,
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_image_description',
                     group : 'images',
-                    order: 3
+                    order: 5
                 }
             });
             editor.contextMenu.addListener(function (element) {
@@ -119,6 +209,8 @@
                     if (isImage && isInGallery) {
                         return {
                             _crop_command : CKEDITOR.TRISTATE_OFF,
+                            _rotate_left : CKEDITOR.TRISTATE_OFF,
+                            _rotate_right : CKEDITOR.TRISTATE_OFF,
                             _photos_block_description : CKEDITOR.TRISTATE_OFF,
                             _photos_image_description : CKEDITOR.TRISTATE_OFF
                         }
@@ -134,15 +226,6 @@
 
 
             editor.on('contentDom', function () {
-                // Обновление тега изображения при изменении
-                editor.window.$.dismissPhotoChangePopup = function(win, newTag, newId) {
-                    var element = editor.document.$.querySelector('img[data-id="' + newId + '"]');
-                    if (element) {
-                        element.outerHTML = newTag.trim();
-                    }
-                    win.close();
-                };
-
                 // Обновление класса галереи при удалении картинок через Backspace и Delete
                 editor.on('key', function (evt) {
                     if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {

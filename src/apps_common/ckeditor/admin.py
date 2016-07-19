@@ -3,13 +3,9 @@ import mimetypes
 from django.apps import apps
 from django.contrib import admin
 from django.forms.utils import flatatt
-from django.utils.html import escapejs
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-from django.contrib.admin.options import IS_POPUP_VAR
 from django.http import JsonResponse, Http404, HttpResponse
-from django.template.response import SimpleTemplateResponse
-from project.admin import ModelAdminMixin
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 from .models import PagePhoto, PageFile, SimplePhoto
 
@@ -22,50 +18,17 @@ def pagephoto_tag(instance, nocache=False):
             instance.photo.normal.srcset_nocache,
             instance.photo.mobile.srcset_nocache
         )),
-        'width': instance.photo.wide.width,
-        'height': instance.photo.wide.height,
+        'width': instance.photo.normal.width,
+        'height': instance.photo.normal.height,
         'sizes': '100vw',
+        'data-id': instance.id,
+        'data-source': instance.photo.url_nocache,
+        'data-crop': instance.photo.croparea,
     })
 
-    return """<img data-id="{id}" alt="" {attrs}>""".format(
-        id=instance.id,
+    return """<img alt="" {attrs}>""".format(
         attrs=attrs,
     )
-
-
-@admin.register(PagePhoto)
-class PagePhotoAdmin(ModelAdminMixin, admin.ModelAdmin):
-    exclude = ('app_name', 'model_name', 'instance_id')
-
-    class Media:
-        js = (
-            'admin/js/jquery-ui.min.js',
-            'common/js/jquery.Jcrop.js',
-        )
-        css = {
-            'all': (
-                'admin/css/jquery-ui/jquery-ui.min.css',
-                'common/css/jcrop/jquery.Jcrop.css',
-            )
-        }
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def has_module_permission(self, request):
-        return False
-
-    def response_change(self, request, obj):
-        if IS_POPUP_VAR in request.POST:
-            return SimpleTemplateResponse('ckeditor/popup_response.html', {
-                'newTag': escapejs(pagephoto_tag(obj, nocache=True)),
-                'newId': obj.id,
-            })
-
-        return super().response_change(request, obj)
 
 
 @admin.site.admin_view
@@ -114,6 +77,66 @@ def upload_pagephoto(request):
     })
 
 
+@admin.site.admin_view
+def rotate_pagephoto(request):
+    photo_id = request.GET.get('id')
+    app_label = request.GET.get('app_label')
+    model_name = request.GET.get('model_name')
+    direction = request.GET.get('direction')
+
+    instance_model = apps.get_model(app_label, model_name)
+    if not instance_model:
+        raise Http404
+
+    try:
+        pagephoto = PagePhoto.objects.get(
+            id=photo_id,
+            app_name=app_label,
+            model_name=model_name,
+        )
+    except PagePhoto.DoesNotExist:
+        raise Http404
+
+    if direction == 'left':
+        pagephoto.photo.rotate(-90)
+    else:
+        pagephoto.photo.rotate(90)
+
+    return JsonResponse({
+        'tag': pagephoto_tag(pagephoto, nocache=True),
+    })
+
+
+@admin.site.admin_view
+def crop_pagephoto(request):
+    photo_id = request.GET.get('id')
+    app_label = request.GET.get('app_label')
+    model_name = request.GET.get('model_name')
+
+    instance_model = apps.get_model(app_label, model_name)
+    if not instance_model:
+        raise Http404
+
+    try:
+        pagephoto = PagePhoto.objects.get(
+            id=photo_id,
+            app_name=app_label,
+            model_name=model_name,
+        )
+    except PagePhoto.DoesNotExist:
+        raise Http404
+
+    try:
+        croparea = request.GET.get('croparea', '')
+        pagephoto.photo.recut(croparea=croparea)
+    except ValueError:
+        raise Http404
+
+    return JsonResponse({
+        'tag': pagephoto_tag(pagephoto, nocache=True),
+    })
+
+
 def pagefile_tag(instance, classes=''):
     return """
         <div class="page-file {classes}" data-id="{id}">
@@ -129,41 +152,6 @@ def pagefile_tag(instance, classes=''):
         }),
         display=os.path.splitext(instance.file.name)[0],
     )
-
-
-@admin.register(PageFile)
-class PageFileAdmin(ModelAdminMixin, admin.ModelAdmin):
-    exclude = ('app_name', 'model_name', 'instance_id')
-
-    class Media:
-        js = (
-            'admin/js/jquery-ui.min.js',
-            'common/js/jquery.Jcrop.js',
-        )
-        css = {
-            'all': (
-                'admin/css/jquery-ui/jquery-ui.min.css',
-                'common/css/jcrop/jquery.Jcrop.css',
-            )
-        }
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def has_module_permission(self, request):
-        return False
-
-    def response_change(self, request, obj):
-        if IS_POPUP_VAR in request.POST:
-            return SimpleTemplateResponse('ckeditor/popup_response.html', {
-                'newTag': escapejs(pagefile_tag(obj)),
-                'newId': obj.id,
-            })
-
-        return super().response_change(request, obj)
 
 
 @admin.site.admin_view

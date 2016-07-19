@@ -21,38 +21,33 @@ class PagePhoto(models.Model):
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
     photo = StdImageField(_('image'),
+        blank=True,
         storage=MediaStorage('page_photos'),
         upload_to=page_photo_filename,
-        blank=True,
         admin_variation='admin_thumbnail',
-        min_dimensions=(900, 500),
+        min_dimensions=(1024, 768),
         crop_area=True,
+        aspects='normal',
         variations=dict(
             wide=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=1440,
-                quality=95,
+                size=(1440, 990),
+                stretch=True
             ),
             normal=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=800,
+                size=(1024, 704),
             ),
             mobile=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=480,
+                size=(768, 528),
             ),
             admin_thumbnail=dict(
-                size=(234, 130),
+                size=(240, 165),
             ),
         ))
 
     class Meta:
+        default_permissions = ()
         verbose_name = _('page photo')
         verbose_name_plural = _('page photos')
-        default_permissions = ('change', )
 
     def __str__(self):
         return _('Image #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s') % {
@@ -96,9 +91,9 @@ class PageFile(models.Model):
     )
 
     class Meta:
+        default_permissions = ()
         verbose_name = _('page file')
         verbose_name_plural = _('page files')
-        default_permissions = ('change',)
 
     def __str__(self):
         return _('File #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s') % {
@@ -136,9 +131,9 @@ class SimplePhoto(models.Model):
     )
 
     class Meta:
+        default_permissions = ()
         verbose_name = _('simple photo')
         verbose_name_plural = _('simple photos')
-        default_permissions = ('change', )
 
     def __str__(self):
         return _('Image #%(pk)s for entry %(app)s.%(model)s #%(entry_id)s') % {

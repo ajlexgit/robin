@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from django.utils.translation import get_language
 from suit_ckeditor.widgets import CKEditorWidget as DefaultWidget
+from .models import PagePhoto
 
 
 class CKEditorWidget(DefaultWidget):
@@ -42,9 +43,6 @@ class CKEditorUploadWidget(CKEditorWidget):
     """ Виджет редактора, добавляющий данные для определения модели при загрузке файлов """
 
     model = None
-    upload_pagephoto_url = None
-    upload_pagefile_url = None
-    upload_simplephoto_url = None
 
     class Media:
         extend = True
@@ -61,43 +59,56 @@ class CKEditorUploadWidget(CKEditorWidget):
         simple_photos = data.get(name + '-simple-photos', '')
         return [text, page_photos, page_files, simple_photos]
 
+    def _build_url(self, base_url, **kwargs):
+        """ Добавление к базовому адресу GET-параметров """
+        urlparts = list(parse.urlparse(base_url))
+        query = dict(parse.parse_qsl(urlparts[4]))
+        query.update(kwargs)
+        urlparts[4] = parse.urlencode(query)
+        return parse.urlunparse(urlparts)
+
     def render(self, name, value, attrs=None):
-        # Формируем урл загрузки файлов
-        upload_pagephoto_url_parts = list(parse.urlparse(self.upload_pagephoto_url))
-        query = dict(parse.parse_qsl(upload_pagephoto_url_parts[4]))
-        query.update({
-            'app_label': self.model._meta.app_label,
-            'model_name': self.model._meta.model_name,
-            'field_name': name,
-        })
-        upload_pagephoto_url_parts[4] = parse.urlencode(query)
-        self.editor_options['PAGEPHOTOS_UPLOAD_URL'] = parse.urlunparse(upload_pagephoto_url_parts)
+        # URL загрузки фоток
+        self.editor_options['PAGEPHOTOS_UPLOAD_URL'] = self._build_url(
+            resolve_url('admin_ckeditor:upload_pagephoto'),
+            app_label=self.model._meta.app_label,
+            model_name=self.model._meta.model_name,
+            field_name=name,
+        )
 
-        # Формируем урл загрузки файлов
-        upload_pagefile_url_parts = list(parse.urlparse(self.upload_pagefile_url))
-        query = dict(parse.parse_qsl(upload_pagefile_url_parts[4]))
-        query.update({
-            'app_label': self.model._meta.app_label,
-            'model_name': self.model._meta.model_name,
-            'field_name': name,
-        })
-        upload_pagefile_url_parts[4] = parse.urlencode(query)
-        self.editor_options['PAGEFILES_UPLOAD_URL'] = parse.urlunparse(upload_pagefile_url_parts)
+        # URL поворота фоток
+        self.editor_options['PAGEPHOTOS_ROTATE_URL'] = self._build_url(
+            resolve_url('admin_ckeditor:rotate_pagephoto'),
+            app_label=self.model._meta.app_label,
+            model_name=self.model._meta.model_name,
+        )
 
-        # Формируем урл загрузки файлов
-        upload_simplephoto_url_parts = list(parse.urlparse(self.upload_simplephoto_url))
-        query = dict(parse.parse_qsl(upload_simplephoto_url_parts[4]))
-        query.update({
-            'app_label': self.model._meta.app_label,
-            'model_name': self.model._meta.model_name,
-            'field_name': name,
-        })
-        upload_simplephoto_url_parts[4] = parse.urlencode(query)
-        self.editor_options['SIMPLEPHOTOS_UPLOAD_URL'] = parse.urlunparse(upload_simplephoto_url_parts)
+        # Crop фоток
+        field = PagePhoto._meta.get_field('photo')
+        self.editor_options['PAGEPHOTOS_MIN_DIMENSIONS'] = field.min_dimensions
+        self.editor_options['PAGEPHOTOS_MAX_DIMENSIONS'] = field.max_dimensions
+        self.editor_options['PAGEPHOTOS_ASPECTS'] = field.aspects
+        self.editor_options['PAGEPHOTOS_CROP_URL'] = self._build_url(
+            resolve_url('admin_ckeditor:crop_pagephoto'),
+            app_label=self.model._meta.app_label,
+            model_name=self.model._meta.model_name,
+        )
 
-        # Шаблон урла окна редактирования изображения
-        self.editor_options['PAGEPHOTOS_EDIT_URL'] = resolve_url('admin:ckeditor_pagephoto_change', 1)
-        self.editor_options['PAGEFILES_EDIT_URL'] = resolve_url('admin:ckeditor_pagefile_change', 1)
+        # URL загрузки файлов
+        self.editor_options['PAGEFILES_UPLOAD_URL'] = self._build_url(
+            resolve_url('admin_ckeditor:upload_pagefile'),
+            app_label=self.model._meta.app_label,
+            model_name=self.model._meta.model_name,
+            field_name=name,
+        )
+
+        # URL загрузки простых фоток
+        self.editor_options['SIMPLEPHOTOS_UPLOAD_URL'] = self._build_url(
+            resolve_url('admin_ckeditor:upload_simplephoto'),
+            app_label=self.model._meta.app_label,
+            model_name=self.model._meta.model_name,
+            field_name=name,
+        )
 
         # Размер фото на странице
         self.editor_options['PAGEPHOTOS_THUMB_SIZE'] = (192, 108)
