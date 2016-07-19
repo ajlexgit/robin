@@ -166,7 +166,7 @@
             editor.addMenuItems({
                 _crop_command : {
                     label : lang.contextMenuCrop,
-                    icon: this.path + 'edit.png',
+                    icon: this.path + 'crop.png',
                     command : 'CropImage',
                     group : 'images',
                     order: 1
@@ -185,17 +185,17 @@
                     group: 'images',
                     order: 3
                 },
+                _photos_image_description: {
+                    label: lang.contextMenuImageDescr,
+                    icon: this.path + 'descr.png',
+                    command: 'pagephotos_image_description',
+                    group: 'images',
+                    order: 4
+                },
                 _photos_block_description : {
                     label : lang.contextMenuBlockDescr,
                     icon: this.path + 'descr.png',
                     command : 'pagephotos_block_description',
-                    group : 'images',
-                    order: 4
-                },
-                _photos_image_description : {
-                    label : lang.contextMenuImageDescr,
-                    icon: this.path + 'descr.png',
-                    command : 'pagephotos_image_description',
                     group : 'images',
                     order: 5
                 }
