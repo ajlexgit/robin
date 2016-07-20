@@ -7,7 +7,7 @@ from libs.stdimage import StdImageField
 from libs.storages import MediaStorage
 
 
-def page_photo_filename(instance, filename):
+def split_by_dirs(instance, filename):
     """ Разбиваем картинки по папкам по 1000 файлов максимум """
     directory = ''
     if instance.pk:
@@ -23,7 +23,7 @@ class PagePhoto(models.Model):
     photo = StdImageField(_('image'),
         blank=True,
         storage=MediaStorage('page_photos'),
-        upload_to=page_photo_filename,
+        upload_to=split_by_dirs,
         admin_variation='admin_thumbnail',
         min_dimensions=(1024, 768),
         crop_area=True,
@@ -59,14 +59,6 @@ class PagePhoto(models.Model):
         }
 
 
-def page_file_filename(instance, filename):
-    """ Разбиваем файлы по папкам по 1000 файлов максимум """
-    directory = ''
-    if instance.pk:
-        directory = '%04d' % (instance.pk // 1000)
-    return os.path.join(directory, os.path.basename(filename))
-
-
 class PageFile(models.Model):
     """ Модель файла на страницу """
     MIME_CLASSES = {
@@ -86,9 +78,9 @@ class PageFile(models.Model):
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
     file = models.FileField(_('file'),
-        storage=MediaStorage('page_files'),
-        upload_to=page_file_filename,
         blank=True,
+        storage=MediaStorage('page_files'),
+        upload_to=split_by_dirs,
     )
 
     class Meta:
@@ -117,9 +109,9 @@ class SimplePhoto(models.Model):
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
     photo = StdImageField(_('image'),
-        storage=MediaStorage('simple_photos'),
-        upload_to=page_photo_filename,
         blank=True,
+        storage=MediaStorage('simple_photos'),
+        upload_to=split_by_dirs,
         admin_variation='mobile',
         max_source_dimensions=(3072, 3072),
         variations=dict(
