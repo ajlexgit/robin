@@ -8,11 +8,7 @@ register = Library()
 @register.simple_tag(takes_context=True)
 def main_menu(context, template='menu/menu.html'):
     """ Главное меню """
-    request = context.get('request')
-    if not request:
-        return ''
-
-    menu = Menu(request)
+    menu = Menu(request=context.get('request'))
     menu.append(
         MenuItem(
             title=_('Blog'),

@@ -6,4 +6,7 @@ register = Library()
 @register.simple_tag(takes_context=True)
 def footer(context, template='footer/footer.html'):
     """ Футер """
+    context.update({
+        
+    })
     return loader.render_to_string(template, context)

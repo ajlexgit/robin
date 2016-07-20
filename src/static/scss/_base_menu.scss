@@ -32,12 +32,8 @@
       }
     }
 
-    &.active {
+    &.active a {
       color: map-get($conf, 'active');
-
-      a:hover {
-        color: map-get($conf, 'active');
-      }
     }
   }
 }

@@ -1,6 +1,7 @@
 import os
 import sys
 
+# HTML5 Manifest
 # PIP -> jpegtran
 # Schema.org: per page + get data from models
 # Mailer antispam, proves

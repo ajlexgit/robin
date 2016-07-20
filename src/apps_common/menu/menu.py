@@ -130,7 +130,7 @@ class Menu(BaseMenuList):
     """
     item_class = MenuItem
 
-    def __init__(self, request, config=None):
+    def __init__(self, request=None, config=None):
         super().__init__()
         self.request = request
         if config:
@@ -138,7 +138,9 @@ class Menu(BaseMenuList):
 
     def render(self, template):
         """ Рендер шаблона """
-        set_active(self, self.request)
+        if self.request is not None:
+            set_active(self, self.request)
+
         return loader.render_to_string(template, {
             'items': self
         })
