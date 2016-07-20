@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-from celery.schedules import crontab
 from django.utils.translation import ugettext_lazy as _
 from .pipeline import PIPELINE
 
@@ -304,29 +303,30 @@ CACHES = {
 }
 
 # Celery
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ('pickle', 'json')
-CELERY_TIMEZONE = 'Europe/Moscow'
-CELERY_SEND_TASK_ERROR_EMAILS = True
-CELERYBEAT_SCHEDULE = {
-    # создание бэкапа дважды в месяц
-    'make_backup': {
-        'task': 'project.tasks.make_backup',
-        'schedule': crontab(day_of_month='1,15', hour='9', minute='0'),
-        'kwargs': {
-            'max_count': 10,
-        }
-    },
-
-    # очистка старых логов
-    'clean_admin_log': {
-        'task': 'project.tasks.clean_admin_log',
-        'schedule': crontab(day_of_month='1', hour='9', minute='0'),
-        'kwargs': {
-            'days': 90,
-        }
-    },
-}
+# from celery.schedules import crontab
+# BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_ACCEPT_CONTENT = ('pickle', 'json')
+# CELERY_TIMEZONE = 'Europe/Moscow'
+# CELERY_SEND_TASK_ERROR_EMAILS = True
+# CELERYBEAT_SCHEDULE = {
+#     # создание бэкапа дважды в месяц
+#     'make_backup': {
+#         'task': 'project.tasks.make_backup',
+#         'schedule': crontab(day_of_month='1,15', hour='9', minute='0'),
+#         'kwargs': {
+#             'max_count': 10,
+#         }
+#     },
+#
+#     # очистка старых логов
+#     'clean_admin_log': {
+#         'task': 'project.tasks.clean_admin_log',
+#         'schedule': crontab(day_of_month='1', hour='9', minute='0'),
+#         'kwargs': {
+#             'days': 90,
+#         }
+#     },
+# }
 
 # Templates
 TEMPLATES = [
