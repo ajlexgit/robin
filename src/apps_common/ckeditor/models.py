@@ -31,7 +31,8 @@ class PagePhoto(models.Model):
         variations=dict(
             wide=dict(
                 size=(1440, 990),
-                stretch=True
+                stretch=True,
+                quality=95,
             ),
             normal=dict(
                 size=(1024, 704),
