@@ -997,7 +997,7 @@
     $(document).ready(function() {
         var lang = document.documentElement.getAttribute('lang');
         var script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=init_google_maps&libraries=places&language=' + lang;
+        script.src = 'https://maps.googleapis.com/maps/api/js?callback=init_google_maps&libraries=places&language=' + lang;
         document.body.appendChild(script);
     });
 

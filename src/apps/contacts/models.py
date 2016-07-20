@@ -27,7 +27,9 @@ class Address(models.Model):
     """ Адрес """
     city = models.CharField(_('city'), max_length=255)
     address = models.CharField(_('address'), max_length=255, blank=True)
-    phones = models.CharField(_('phones'), max_length=255, blank=True)
+    region = models.CharField(_('region'), max_length=64, blank=True)
+    zip = models.CharField(_('zip'), max_length=32, blank=True)
+    phone = models.CharField(_('phone'), max_length=255, blank=True)
     coords = GoogleCoordsField(_('coords'), blank=True)
 
     sort_order = models.PositiveIntegerField(_('sort order'))

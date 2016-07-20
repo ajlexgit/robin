@@ -1,6 +1,7 @@
 import os
 import sys
 
+# GMap marker label: http://stackoverflow.com/questions/35274487/google-maps-api-get-place-text-like-on-iframe-map
 # HTML5 Manifest
 # PIP -> jpegtran
 # Schema.org: per page + get data from models

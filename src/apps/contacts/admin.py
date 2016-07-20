@@ -50,10 +50,10 @@ class AddressAdmin(ModelAdminMixin, SortableModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('city', 'address', 'phones', 'coords'),
+            'fields': ('address', 'city', 'region', 'zip', 'phone', 'coords'),
         }),
     )
-    list_display = ('city', 'address')
+    list_display = ('city', 'address', 'phone')
     sortable = 'sort_order'
     suit_form_tabs = (
         ('general', _('General')),
