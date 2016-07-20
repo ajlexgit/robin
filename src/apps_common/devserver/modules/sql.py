@@ -34,3 +34,5 @@ class SQLSummaryModule(DevServerModule):
                 calls=num_queries,
                 dupes=num_queries - len(unique),
             ))
+
+        super().process_response(request, response)

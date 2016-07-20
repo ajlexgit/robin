@@ -24,7 +24,7 @@ class DevServerModule(object):
         pass
 
     def process_response(self, request, response):
-        pass
+        self.logger.flush()
 
     def process_exception(self, request, exception):
         pass

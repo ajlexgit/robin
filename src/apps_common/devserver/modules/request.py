@@ -12,6 +12,7 @@ class RequestModule(DevServerModule):
     logger_name = 'status'
 
     def process_request(self, request):
+        super().process_request(request)
         date = ' %s ' % datetime.now().strftime('%H:%m:%S')
         date = date.center(30, '=')
         self.logger.info(date, indent='', prefix='')
@@ -41,4 +42,4 @@ class RequestModule(DevServerModule):
             msg = style.HTTP_SERVER_ERROR(msg)
 
         self.logger.info(msg)
-        self.logger.flush()
+        super().process_response(request, response)

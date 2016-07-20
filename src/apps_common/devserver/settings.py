@@ -1,9 +1,9 @@
 from django.conf import settings
 
 DEVSERVER_MODULES = getattr(settings, 'DEVSERVER_MODULES', (
-    'devserver.modules.request.RequestModule',
     'devserver.modules.render.ProfileRenderModule',
     'devserver.modules.sql.SQLSummaryModule',
+    'devserver.modules.request.RequestModule',
 ))
 
 DEVSERVER_IGNORED_PREFIXES = getattr(settings, 'DEVSERVER_IGNORED_PREFIXES', (
