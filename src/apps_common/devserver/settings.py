@@ -10,4 +10,5 @@ DEVSERVER_IGNORED_PREFIXES = getattr(settings, 'DEVSERVER_IGNORED_PREFIXES', (
     settings.STATIC_URL,
     settings.MEDIA_URL,
     '/favicon',
+    '/jsi18n',
 ))

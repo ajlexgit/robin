@@ -19,10 +19,11 @@ class DevServerMiddleware(object):
             for mod in MODULES:
                 mod.process_request(request)
 
-    def process_view(self, request, view_func, view_args, view_kwargs):
+    def process_template_response(self, request, response):
         if self.should_process(request):
             for mod in MODULES:
-                mod.process_view(request, view_func, view_args, view_kwargs)
+                mod.process_template_response(request, response)
+        return response
 
     def process_exception(self, request, exception):
         if self.should_process(request):

@@ -81,8 +81,9 @@ class ThreadedConsoleLogger(logging.Logger):
 
     def _log(self, level, msg, args, exc_info=None, extra=None, stack_info=False, **kwargs):
         indent = kwargs.pop('indent', '    ')
+        name = kwargs.pop('name', self.name)
 
-        prefix = colorize('[{name}] ', fg='green', opts=('bold', ))
+        prefix = colorize('[{}] '.format(name), fg='green', opts=('bold', ))
         duration = kwargs.pop('duration', None)
         if duration:
             prefix += colorize('(%dms) ' % duration, fg='white')
