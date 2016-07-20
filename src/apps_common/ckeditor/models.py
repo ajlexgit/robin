@@ -24,26 +24,34 @@ class PagePhoto(models.Model):
         blank=True,
         storage=MediaStorage('page_photos'),
         upload_to=split_by_dirs,
-        admin_variation='admin_thumbnail',
         min_dimensions=(1024, 768),
+        admin_variation='mobile',
         crop_area=True,
+        crop_field='photo_crop',
         aspects='normal',
         variations=dict(
             wide=dict(
-                size=(1440, 990),
-                stretch=True,
+                size=(0, 0),
+                crop=False,
+                max_width=1440,
                 quality=95,
             ),
             normal=dict(
-                size=(1024, 704),
+                size=(0, 0),
+                crop=False,
+                max_width=800,
             ),
             mobile=dict(
-                size=(768, 528),
-            ),
-            admin_thumbnail=dict(
-                size=(240, 165),
+                size=(0, 0),
+                crop=False,
+                max_width=480,
             ),
         ))
+    photo_crop = models.CharField(_('crop'),
+        max_length=32,
+        blank=True,
+        editable=False,
+    )
 
     class Meta:
         default_permissions = ()

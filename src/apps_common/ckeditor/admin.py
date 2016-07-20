@@ -18,8 +18,8 @@ def pagephoto_tag(instance, nocache=False):
             instance.photo.normal.srcset_nocache,
             instance.photo.mobile.srcset_nocache
         )),
-        'width': instance.photo.normal.width,
-        'height': instance.photo.normal.height,
+        'width': instance.photo.wide.width,
+        'height': instance.photo.wide.height,
         'sizes': '100vw',
         'data-id': instance.id,
         'data-source': instance.photo.url_nocache,

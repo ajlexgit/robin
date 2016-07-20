@@ -65,7 +65,13 @@
                             this.id = $(element.$).data('id');
                         },
                         getImage: function() {
-                            return $(element.$).data('source');
+                            var source = $(element.$).data('source');
+                            if (!source) {
+                                // fallback
+                                source = $(element.$).attr('src');
+                                source = source.replace(/([^\.]+)\.[^\.]+(\.\w+)$/, '$1$2');
+                            }
+                            return source;
                         },
                         getMinSize: function() {
                             return editor.config.PAGEPHOTOS_MIN_DIMENSIONS;

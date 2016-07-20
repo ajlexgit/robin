@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('app_name', models.CharField(verbose_name='application', max_length=30, blank=True)),
                 ('model_name', models.CharField(verbose_name='model', max_length=30, blank=True)),
                 ('instance_id', models.IntegerField(verbose_name='entry id', db_index=True, default=0)),
-                ('file', models.FileField(verbose_name='file', storage=libs.storages.media_storage.MediaStorage('page_files'), upload_to=ckeditor.models.page_file_filename, blank=True)),
+                ('file', models.FileField(verbose_name='file', storage=libs.storages.media_storage.MediaStorage('page_files'), upload_to=ckeditor.models.split_by_dirs, blank=True)),
             ],
             options={
                 'verbose_name': 'page file',
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('app_name', models.CharField(verbose_name='application', max_length=30, blank=True)),
                 ('model_name', models.CharField(verbose_name='model', max_length=30, blank=True)),
                 ('instance_id', models.IntegerField(verbose_name='entry id', db_index=True, default=0)),
-                ('photo', libs.stdimage.fields.StdImageField(verbose_name='image', storage=libs.storages.media_storage.MediaStorage('page_photos'), blank=True, variations={'wide': {'size': (1440, 990), 'stretch': True}, 'admin_thumbnail': {'size': (240, 165)}, 'normal': {'size': (1024, 704)}, 'mobile': {'size': (768, 528)}}, min_dimensions=(1024, 768), aspects='normal', upload_to=ckeditor.models.page_photo_filename)),
+                ('photo', libs.stdimage.fields.StdImageField(verbose_name='image', storage=libs.storages.media_storage.MediaStorage('page_photos'), blank=True, variations={'wide': {'size': (1440, 990), 'stretch': True}, 'admin_thumbnail': {'size': (240, 165)}, 'normal': {'size': (1024, 704)}, 'mobile': {'size': (768, 528)}}, min_dimensions=(1024, 768), aspects='normal', upload_to=ckeditor.models.split_by_dirs)),
             ],
             options={
                 'verbose_name': 'page photo',
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('app_name', models.CharField(verbose_name='application', max_length=30, blank=True)),
                 ('model_name', models.CharField(verbose_name='model', max_length=30, blank=True)),
                 ('instance_id', models.IntegerField(verbose_name='entry id', db_index=True, default=0)),
-                ('photo', libs.stdimage.fields.StdImageField(verbose_name='image', max_source_dimensions=(3072, 3072), storage=libs.storages.media_storage.MediaStorage('simple_photos'), blank=True, variations={'mobile': {'max_width': 512, 'size': (0, 0), 'crop': False}}, aspects=(), upload_to=ckeditor.models.page_photo_filename)),
+                ('photo', libs.stdimage.fields.StdImageField(verbose_name='image', max_source_dimensions=(3072, 3072), storage=libs.storages.media_storage.MediaStorage('simple_photos'), blank=True, variations={'mobile': {'max_width': 512, 'size': (0, 0), 'crop': False}}, aspects=(), upload_to=ckeditor.models.split_by_dirs)),
             ],
             options={
                 'verbose_name': 'simple photo',
