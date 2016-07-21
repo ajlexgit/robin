@@ -103,7 +103,7 @@ $mobile_active_color: $menu_active_color;
     }
   }
 
-  &.active {
+  @at-root .main-menu-opened &
     right: 0;
   }
 }
@@ -117,7 +117,7 @@ $mobile_active_color: $menu_active_color;
   height: 3 * $menu_burger_line_height + 2 * $menu_burger_line_space;
   cursor: pointer;
   text-align: left;
-  z-index: 55;
+  z-index: 60;
   vertical-align: middle;
   @include unselectable;
   @include media_interval($mobile_menu_interval) {
@@ -148,7 +148,7 @@ $mobile_active_color: $menu_active_color;
     @include transition-delay(0s, 0s, 0.45s);
   }
 
-  &.active {
+  @at-root .main-menu-opened &
     &:before {
       top: 50%;
       @include box-shadow(transparent 0 0 0 0);

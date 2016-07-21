@@ -9,7 +9,7 @@ PIPELINE['STYLESHEETS'].update({
             'scss/buttons.scss',
 
             'header/scss/header.scss',
-            'menu/scss/menu.scss',
+            'menu/scss/main_menu.scss',
         ),
         'output_filename': 'css_build/critical.css',
     },
@@ -86,7 +86,7 @@ PIPELINE['JAVASCRIPT'].update({
             'attachable_blocks/js/async_blocks.js',
             'ajaxcache/js/ajaxcache.js',
             'contacts/js/block.js',
-            'menu/js/menu.js',
+            'menu/js/main_menu.js',
         ),
         'output_filename': 'js_build/core.js',
     },
