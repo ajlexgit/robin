@@ -1,5 +1,4 @@
 @import 'mixins';
-@import 'base_menu';
 
 $menu_text_color: #404040;
 $menu_hover_color: #82BD36;
@@ -13,19 +12,32 @@ $mobile_active_color: $menu_active_color;
 
 #main-menu {
   display: inline-block;
-  @include horizontal_menu((
-    space: 10px,
-    padding: 5px,
-    color: $menu_text_color,
-    hover: $menu_hover_color,
-    active: $menu_active_color,
-  ));
+  @include no_fontsize;
   @include media_interval($mobile_menu_interval) {
     display: none;
   }
 
-  a {
-    @include font-size(18px, 20px);
+  li {
+    display: inline-block;
+    margin-right: 10px;
+    color: $menu_text_color;
+    &:nth-last-of-type(1) {
+      margin-right: 0;
+    }
+
+    a {
+      display: inline-block;
+      padding: 5px;
+      @include fontsize_default;
+
+      &:hover {
+        color: $menu_hover_color;
+      }
+    }
+
+    &.active a {
+      color: $menu_active_color;
+    }
   }
 }
 
