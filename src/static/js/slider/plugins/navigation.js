@@ -16,13 +16,6 @@
             }
         });
 
-        cls.init = function(settings) {
-            superclass.init.call(this, settings);
-            if (!this.opts.animationName) {
-                return this.raise('animationName required');
-            }
-        };
-
         cls.destroy = function() {
             if (this.$wrapper) this.$wrapper.remove();
             superclass.destroy.call(this);
@@ -84,16 +77,19 @@
             this.$container.find('.' + this.opts.wrapperClass).remove();
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
-            var that = this;
-            this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
-                var $self = $(this);
-                var slideIndex = $self.data('slideIndex') || 0;
-                slider.slideTo(
-                    slider.$slides.eq(slideIndex),
-                    that.opts.animationName,
-                    that.opts.animatedHeight
-                );
-            });
+            // событие клика на кнопку
+            if (this.opts.animationName) {
+                var that = this;
+                this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
+                    var $self = $(this);
+                    var slideIndex = $self.data('slideIndex') || 0;
+                    slider.slideTo(
+                        slider.$slides.eq(slideIndex),
+                        that.opts.animationName,
+                        that.opts.animatedHeight
+                    );
+                });
+            }
 
             this.updateNavigationItems(slider);
             this.activateNavigationItemBySlide(slider, slider.$currentSlide);
