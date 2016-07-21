@@ -103,25 +103,10 @@ def typograf(html):
 
 
 @register.filter(is_safe=True, needs_autoescape=True)
-def paragraphs(text, autoescape=True):
+def linewraps(text, tagname='p', autoescape=True):
     """
-        Разбивка текста на параграфы в местах переносов строк
-    """
-    text = re_clean_newlines.sub('\n', text)
-    text = re_many_newlines.sub('\n', text)
-    text_lines = text.strip().split('\n')
-
-    if autoescape:
-        text_lines = map(escape, text_lines)
-
-    result = '<p>%s</p>' % '</p><p>'.join(text_lines)
-    return mark_safe(result)
-
-
-@register.filter(is_safe=True, needs_autoescape=True)
-def lines(text, autoescape=True):
-    """
-        Разбивка текста на список по строкам
+        Разбивка текста на строки и оборачивание строк тэгом tagname.
+        Пустые строки удаляются.
     """
     text = re_clean_newlines.sub('\n', text)
     text = re_many_newlines.sub('\n', text)
@@ -130,7 +115,8 @@ def lines(text, autoescape=True):
     if autoescape:
         text_lines = map(escape, text_lines)
 
-    result = '<li>%s</li>' % '</li><li>'.join(text_lines)
+    result = '</{0}><{0}>'.format(tagname).join(text_lines)
+    result = '<{0}>{1}</{0}>'.format(tagname, result)
     return mark_safe(result)
 
 

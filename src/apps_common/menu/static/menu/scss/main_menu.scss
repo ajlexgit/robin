@@ -72,7 +72,6 @@ $mobile_active_color: $menu_active_color;
 
   li {
     margin: 24px 0;
-    color: $mobile_text_color;
 
     &:nth-of-type(1) {
       margin-top: 0;
@@ -82,24 +81,21 @@ $mobile_active_color: $menu_active_color;
       margin-bottom: 0;
     }
 
-    &.active {
-      color: $mobile_active_color;
-
-      a:hover {
-        color: $mobile_active_color;
-      }
-    }
-
     a {
       display: inline-block;
       padding: 5px;
       font-weight: bold;
       vertical-align: top;
+      color: $mobile_text_color;
       @include font-size(22px, 28px);
 
       &:hover {
         color: $mobile_hover_color;
       }
+    }
+
+    &.active a {
+      color: $mobile_active_color;
     }
   }
 
