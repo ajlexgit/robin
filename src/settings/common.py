@@ -208,39 +208,6 @@ EMAIL_SUBJECT_PREFIX = '[%s] ' % (SUIT_CONFIG['ADMIN_NAME'], )
 #     'rate_limit': '10/m',
 # }
 
-# Получатели писем о ошибках при DEBUG = False
-ADMINS = (
-    ('pix', 'pix666@ya.ru'),
-)
-
-# Получатели писем о битых ссылках при DEBUG=False
-# Требуется подключить django.middleware.common.BrokenLinkEmailsMiddleware
-MANAGERS = (
-    ('pix', 'pix666@ya.ru'),
-)
-
-# Список скомпилированных регулярных выражений адресов страниц,
-# сообщения о 404 на которых не должны отправляться на почту (MANAGERS)
-IGNORABLE_404_URLS = (
-    re.compile(r'^/apple-touch-icon.*\.png$'),
-    re.compile(r'^/favicon\.ico$'),
-    re.compile(r'^/robots\.txt$'),
-)
-
-# Домен для куки CSRF (".example.com")
-CSRF_COOKIE_DOMAIN = None
-
-# Домен для куки сессий (".example.com")
-SESSION_COOKIE_DOMAIN = None
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
-SESSION_CACHE_ALIAS = 'default'
-SESSION_COOKIE_AGE = 30 * 24 * 3600
-
-# Список скомпилированных регулярных выражений
-# запретных юзер-агентов
-DISALLOWED_USER_AGENTS = ()
-
-
 # ==================================================================
 # ==================== APPS SETTINGS ===============================
 # ==================================================================
@@ -250,6 +217,9 @@ BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
 
 # Директория для robots.txt и других открытых файлов
 PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
+
+# Google Map API
+GOOGLE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
 
 # Youtube Data API
 # для ckeditor, videolink_field, youtube
@@ -285,6 +255,38 @@ VALUTE_FORMAT = None
 # ==================================================================
 # ==================== END APPS SETTINGS ===========================
 # ==================================================================
+
+# Домен для куки сессий (".example.com")
+SESSION_COOKIE_DOMAIN = None
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 30 * 24 * 3600
+
+# Домен для куки CSRF (".example.com")
+CSRF_COOKIE_DOMAIN = None
+
+# Список скомпилированных регулярных выражений
+# запретных юзер-агентов
+DISALLOWED_USER_AGENTS = ()
+
+# Получатели писем о ошибках при DEBUG = False
+ADMINS = (
+    ('pix', 'pix666@ya.ru'),
+)
+
+# Получатели писем о битых ссылках при DEBUG=False
+# Требуется подключить django.middleware.common.BrokenLinkEmailsMiddleware
+MANAGERS = (
+    ('pix', 'pix666@ya.ru'),
+)
+
+# Список скомпилированных регулярных выражений адресов страниц,
+# сообщения о 404 на которых не должны отправляться на почту (MANAGERS)
+IGNORABLE_404_URLS = (
+    re.compile(r'^/apple-touch-icon.*\.png$'),
+    re.compile(r'^/favicon\.ico$'),
+    re.compile(r'^/robots\.txt$'),
+)
 
 # DB
 DATABASES = {}
@@ -341,7 +343,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
-                'libs.storages.context_processors.media_urls',
+                'google_maps.context_processors.google_apikey',
             ),
             'loaders': (
                 ('django.template.loaders.cached.Loader', (

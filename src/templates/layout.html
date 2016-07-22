@@ -6,7 +6,8 @@
 {% load seo %}
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns#" class="no-js" lang="{{ LANGUAGE_CODE }}">
+<html xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns#" class="no-js"
+      lang="{{ LANGUAGE_CODE }}" google-apikey="{{ GOOGLE_APIKEY }}">
 <head>
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
   {% seo_metatags %}

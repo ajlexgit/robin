@@ -13,6 +13,22 @@
                 ...
             )
 
+            TEMPLATES = [
+                {
+                    ...
+                    'OPTIONS': {
+                        'context_processors': (
+                            ...
+                            'google_maps.context_processors.google_apikey',
+                        ),
+                    }
+                },
+            ]
+
+            GOOGLE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
+
+
+
     Настройки (settings.py):
         ADMIN_GOOGLE_MAP_WIDTH - ширина карты в админке (по умолчанию 100%)
         ADMIN_GOOGLE_MAP_HEIGHT - высота карты в админке (по умолчанию 300px)
@@ -87,3 +103,5 @@ from .fields import GoogleCoordsField
 from .widgets import GoogleCoordsAdminWidget
 
 __all__ = ['geocode', 'geocode_cached', 'GoogleCoordsField']
+
+default_app_config = 'google_maps.apps.Config'

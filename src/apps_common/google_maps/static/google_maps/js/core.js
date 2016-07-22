@@ -994,13 +994,6 @@
         $(document).trigger('google-maps-ready');
     };
 
-    $(document).ready(function() {
-        var lang = document.documentElement.getAttribute('lang');
-        var script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?callback=init_google_maps&libraries=places&language=' + lang;
-        document.body.appendChild(script);
-    });
-
     /*
         Выполнение callback, когда JS GoogleMaps загружен и готов
      */
@@ -1011,5 +1004,11 @@
             $(document).one('google-maps-ready', callback);
         }
     };
+
+    var key = document.documentElement.getAttribute('google-apikey');
+    var lang = document.documentElement.getAttribute('lang');
+    var script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?callback=init_google_maps&libraries=places&language=' + lang + '&key=' + (key || '');
+    document.head.appendChild(script);
 
 })(jQuery);
