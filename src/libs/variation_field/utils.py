@@ -428,7 +428,8 @@ def variation_resize(image, variation, target_format):
             image.thumbnail(img_size, resample=Image.ANTIALIAS)
 
         if need_bg:
-            masked = mode == 'RGBA'
+            # masked = mode == 'RGBA'
+            masked = False # баг потери качества PNG при наложении
             image = put_on_bg(image, target_size, masked=masked, **bg_options)
 
     image.format = image_format
