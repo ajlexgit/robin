@@ -28,6 +28,7 @@ class Service(models.Model):
     description = models.TextField(_('short description'), max_length=1024)
     text = CKEditorUploadField(_('text'))
     sort_order = models.PositiveIntegerField(_('order'), default=0)
+    updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:
         verbose_name = _('service')
