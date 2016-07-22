@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% load attachable_blocks %}
+{% load pipeline_plus %}
+{% load text %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'service_page' %}
+{% endblock static_head %}
+
+{% block static_js %}
+  {{ block.super }}
+  {% javascript 'service_page' %}
+{% endblock static_js %}
+
+
+{% block content %}
+
+
+  {% render_attached_blocks service %}
+
+{% endblock content %}
