@@ -78,7 +78,7 @@
                              height="{{ item.image.normal.dimensions.1 }}">
                     {% endfor %}
                 ...
-            {%endif
+            {% endif %}
 
     Перенарезка всех картинок галереи:
         1) MyImageItem.recut_all('mobile')

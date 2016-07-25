@@ -314,7 +314,7 @@ def variation_crop(image, croparea=None):
         croparea.width = image.size[0] - croparea.x
 
     if croparea.y2 > image.size[1]:
-        croparea.hight = image.size[1] - croparea.y
+        croparea.height = image.size[1] - croparea.y
 
     cropped = image.crop((
         croparea.x,
