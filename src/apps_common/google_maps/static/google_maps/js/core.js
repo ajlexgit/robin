@@ -290,7 +290,7 @@
             superclass.init.call(this);
 
             this.lat = this._formatCoord(lat);
-            if (this.lat ===  false) {
+            if (this.lat === false) {
                 return this.raise('invalid latitude: ' + lat);
             }
 
@@ -347,6 +347,83 @@
 
 
     /*
+        Метка на карте (точка и текст)
+     */
+    window.GMapLabel = Class(window.GMapOverlayBase, function GMapLabel(cls, superclass) {
+        cls.layer = 'overlayShadow';
+
+        cls.defaults = $.extend({}, superclass.defaults, {
+            text: '',
+            position: null
+        });
+
+        /*
+            Вызывается при добавлении оверлея на карту
+         */
+        cls.onInit = function() {
+            if (!this.opts.position) {
+                return this.raise('position required');
+            }
+
+            if (this.opts.position instanceof GMapPoint) {
+                this.marker = null;
+            } else if (this.opts.position instanceof GMapMarker) {
+                this.marker = this.opts.position;
+            } else {
+                return this.raise('position should be a GMapPoint or GMapMarker instance');
+            }
+
+            this.$container = $('<div>').addClass('gmap-label').css({
+                position: 'absolute',
+                minWidth: '1px'
+            }).append(
+                $('<span/>').addClass('gmap-label-text')
+            );
+
+            this.text(this.opts.text);
+            superclass.onInit.call(this);
+        };
+
+        /*
+            Отрисовка оверлея
+         */
+        cls.draw = function() {
+            var overlayProjection = this.native.getProjection();
+            if (this.marker) {
+                var coords = overlayProjection.fromLatLngToDivPixel(this.marker.position().native);
+            } else {
+                coords = overlayProjection.fromLatLngToDivPixel(this.opts.position.native);
+            }
+
+            this.$container.css({
+                left: coords.x,
+                top: coords.y
+            })
+        };
+
+        /*
+            Получение / установка текста метки
+         */
+        cls.text = function(value) {
+            if (value === undefined) {
+                // получение иконки
+                return this.$container.find('span').text();
+            }
+
+            if (value) {
+                if (typeof value != 'string') {
+                    this.error('value should be a string');
+                    return this;
+                }
+
+                this.$container.find('span').text(value);
+            }
+
+            return this;
+        };
+    });
+
+    /*
         Маркер на карте
      */
     window.GMapMarker = Class(window.GMapObject, function GMapMarker(cls, superclass) {
@@ -354,6 +431,7 @@
             position: null,
             icon: '',
             hint: '',
+            label: '',
             draggable: false,
             balloonContent: ''
         });
@@ -388,6 +466,7 @@
             this.position(this.opts.position);
             this.icon(this.opts.icon);
             this.hint(this.opts.hint);
+            this.label(this.opts.label);
             this.draggable(this.opts.draggable);
         };
 
@@ -396,6 +475,12 @@
          */
         cls.destroy = function() {
             google.maps.event.clearInstanceListeners(this.native);
+
+            if (this._label) {
+                this._label.destroy();
+                this._label = null;
+            }
+
             superclass.destroy.call(this);
         };
 
@@ -440,6 +525,27 @@
         };
 
         /*
+            Получение / установка иконки
+         */
+        cls.icon = function(value) {
+            if (value === undefined) {
+                // получение иконки
+                return this.native.getIcon();
+            }
+
+            if (value) {
+                if ((typeof value != 'string') && (typeof value != 'object')) {
+                    this.error('value should be a string or object');
+                    return this;
+                }
+
+                this.native.setIcon(value);
+            }
+
+            return this;
+        };
+
+        /*
             Получение / установка подсказки
          */
         cls.hint = function(value) {
@@ -461,21 +567,40 @@
         };
 
         /*
-            Получение / установка иконки
+            Получение / установка метки
          */
-        cls.icon = function(value) {
+        cls.label = function(value) {
             if (value === undefined) {
-                // получение иконки
-                return this.native.getIcon();
+                // получение метки
+                return this.native.getTitle();
             }
 
             if (value) {
-                if ((typeof value != 'string') && (typeof value != 'object')) {
-                    this.error('value should be a string or object');
+                if (typeof value != 'string') {
+                    this.error('value should be a string');
                     return this;
                 }
 
-                this.native.setIcon(value);
+                if (this._label) {
+                    this._label.text(value);
+                } else {
+                    // создание метки
+                    this._label = window.GMapLabel({
+                        map: this._map,
+                        text: value,
+                        position: this
+                    });
+
+                    var that = this;
+                    this.on('position_changed', function() {
+                        that._label.draw();
+                    });
+                }
+            } else {
+                if (this._label) {
+                    this._label.destroy();
+                    this._label = null;
+                }
             }
 
             return this;

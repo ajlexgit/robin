@@ -42,6 +42,7 @@ PIPELINE['STYLESHEETS'].update({
     },
     'contacts': {
         'source_filenames': (
+            'google_maps/scss/labels.scss',
             'contacts/scss/index.scss',
         ),
         'output_filename': 'css_build/contacts.css',

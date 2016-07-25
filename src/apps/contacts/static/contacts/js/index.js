@@ -21,6 +21,7 @@
             var marker = gmap.markers[0];
             if (marker) {
                 marker.position(point);
+                marker.label($address.find('[itemprop="streetAddress"]').text());
             }
 
             $address.addClass('active').siblings().removeClass('active');
@@ -34,11 +35,12 @@
 
             gmap = GMap('#google-map .map', {
                 center: pointByAddr($first),
-                zoom: 14
+                zoom: 15
             }).on('ready', function() {
                 GMapMarker({
                     map: this,
-                    position: this.center()
+                    position: this.center(),
+                    label: $first.find('[itemprop="streetAddress"]').text()
                 });
 
                 $first.addClass('active');
