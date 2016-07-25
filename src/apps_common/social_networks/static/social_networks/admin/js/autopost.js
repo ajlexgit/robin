@@ -16,10 +16,8 @@
         $dialog_form.attr('id', 'autopost-form');
         $dialog_form.dialog({
             title: gettext('Share to social networks'),
-            minWidth: 550,
+            width: 550,
             closeText: '',
-            modal: true,
-            resizable: false,
             show: {
                 effect: "fadeIn",
                 duration: 100
@@ -28,18 +26,13 @@
                 effect: "fadeOut",
                 duration: 100
             },
-            open: function() {
-                var $form = $(this);
-                var dialog = $form.dialog('instance');
-
-                var $textareas = $form.find('textarea');
-                if ($.fn.autosize) {
-                    $textareas.autosize();
-                    dialog._position();
-                }
-            },
-            close: function() {
-                $(this).dialog('destroy');
+            modal: true,
+            draggable: false,
+            resizable: false,
+            position: {
+                my: "center center",
+                at: "center center",
+                of: window
             },
             buttons: [
                 {
@@ -59,17 +52,17 @@
                         primary: "ui-icon-check"
                     },
                     click: function() {
-                        var $form = $(this);
-                        var dialog = $form.dialog('instance');
+                        var $this = $(this);
+                        var dialog = $this.dialog('instance');
 
                         if (dialog.uiDialog.hasClass('autopost-preload')) {
                             return
                         }
 
                         $.ajax({
-                            url: $form.attr('action'),
-                            type: $form.attr('method'),
-                            data: $form.serialize(),
+                            url: $this.attr('action'),
+                            type: $this.attr('method'),
+                            data: $this.serialize(),
                             beforeSend: function() {
                                 dialog.uiDialog.addClass('autopost-preload');
                             },
@@ -106,7 +99,24 @@
                         });
                     }
                 }
-            ]
+            ],
+            open: function() {
+                var $this = $(this);
+                var dialog = $this.dialog('instance');
+                var $textarea = $this.find('textarea');
+                if ($.fn.autosize) {
+                    $textarea.autosize({
+                        callback: function() {
+                            if (dialog.widget().outerHeight() < $.winHeight()) {
+                                dialog._position();
+                            }
+                        }
+                    });
+                }
+            },
+            close: function() {
+                $(this).dialog('destroy');
+            }
         });
 
         return false;

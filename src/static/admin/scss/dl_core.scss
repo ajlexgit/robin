@@ -545,6 +545,17 @@ $footer_1col: $media480;
     }
   }
 
+  textarea {
+    overflow: hidden;
+    margin: 0;
+    width: 100%;
+    min-height: 100px;
+    font-size: 14px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
   // footer
   .ui-dialog-buttonpane {
     margin-top: 0;

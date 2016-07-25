@@ -109,7 +109,6 @@
         }
 
         var $template = $('<div>')
-            .attr('id', 'description-dialog')
             .append('<textarea>')
             .appendTo('body');
 
@@ -117,9 +116,9 @@
         gallery.getItemDescription($item).done(function(response) {
             $template.find('textarea').val(response.description);
 
-            var dialog = $template.dialog({
+            $template.dialog({
                 title: gettext('Set description'),
-                width: 540,
+                width: 460,
                 closeText: '',
                 show: {
                     effect: "fadeIn",
@@ -130,6 +129,7 @@
                     duration: 100
                 },
                 modal: true,
+                draggable: false,
                 resizable: false,
                 position: {
                     my: "center center",
@@ -146,15 +146,28 @@
                     {
                         text: gettext('Ok'),
                         click: function() {
-                            $(this).dialog('close');
-                            gallery.setItemDescription($item, $template.find('textarea').val());
+                            var $this = $(this);
+                            $this.dialog('close');
+                            gallery.setItemDescription($item, $this.find('textarea').val());
                         }
                     }
                 ],
+                open: function() {
+                    var $this = $(this);
+                    var dialog = $this.dialog('instance');
+                    var $textarea = $this.find('textarea');
+                    if ($.fn.autosize) {
+                        $textarea.autosize({
+                            callback: function() {
+                                if (dialog.widget().outerHeight() < $.winHeight()) {
+                                    dialog._position();
+                                }
+                            }
+                        });
+                    }
+                },
                 close: function() {
-                    dialog.empty();
-                    dialog.remove();
-                    dialog = null;
+                    $(this).dialog('destroy');
                     $template.remove();
                 }
             });
