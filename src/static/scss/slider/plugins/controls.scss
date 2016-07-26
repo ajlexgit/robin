@@ -8,8 +8,7 @@ $arrow_area_width: (
 );
 
 // размеры стрелки
-$arrow_image_width: 26px;
-$arrow_image_height: 50px;
+$arrow_image_size: 16px;
 $arrow_image_maxwidth: (
     ($media768, 0px): 50%,
     ($media480, $media768): 40%,
@@ -31,40 +30,24 @@ $arrow_image_maxwidth: (
     position: absolute;
     left: 50%;
     top: 50%;
-    width: $arrow_image_width;
+    width: $arrow_image_size;
+    height: $arrow_image_size;
+    border-top: 4px solid rgba($white, 0.66);
+    border-right: 4px solid rgba($white, 0.66);
     @include media_map(max-width, $arrow_image_maxwidth);
-    @include transform(translate(-50%, -50%));
-
-    &:before {
-      content: '';
-      display: block;
-      height: 0;
-      padding-bottom: #{100 * ($arrow_image_height / $arrow_image_width) + "%"};
-      background: $sprite_url no-repeat rel-background-position($arrow_image_width, $arrow_image_height, 0px, -56px);
-      background-size: rel-background-size($arrow_image_width, $arrow_image_height);
-    }
+    @include transform(translate(-50%, -50%) rotate(45deg));
   }
 
   &.slider-arrow-left {
     left: 0;
 
     span {
-      // фикс оптической иллюзии, что стрелка не по центру
-      @include transform(translate(-62%, -50%));
+      @include transform(translate(-50%, -50%) rotate(-135deg));
     }
   }
 
   &.slider-arrow-right {
     right: 0;
-
-    span {
-      // фикс оптической иллюзии, что стрелка не по центру
-      @include transform(translate(-38%, -50%));
-
-      &:before {
-        @include transform(rotate(180deg));
-      }
-    }
   }
 
   &.slider-arrow-disabled {
