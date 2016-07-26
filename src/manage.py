@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Mobile tables
+# Images: alt, title, file name
 # HTML5 Manifest
 # PIP -> jpegtran
 # Schema.org: per page + get data from models
