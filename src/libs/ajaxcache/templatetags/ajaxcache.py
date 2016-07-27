@@ -36,7 +36,7 @@ class CacheNode(Node):
         expiration_key = 'expire.%s' % cache_key
         expiration_date = cache.get(expiration_key)
 
-        if value is None or expiration_date is None or expiration_date <= datetime.now():
+        if not AJAXCACHE_ENABLED or value is None or expiration_date is None or expiration_date <= datetime.now():
             value = self.nodelist.render(context)
             expiration_date = datetime.now() + timedelta(seconds=expire_time - conf.AJAXCACHE_GAP)
 
