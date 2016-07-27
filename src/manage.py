@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Images: alt, title, file name
 # HTML5 Manifest
