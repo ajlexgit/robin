@@ -58,12 +58,12 @@
             var vpHeight = $.winHeight();
             var rect = $element.get(0).getBoundingClientRect();
 
-            var visible = rect.bottom >= opts.bottom;
-            visible = visible && (rect.right >= opts.right);
-            visible = visible && ((vpHeight - rect.top) >= opts.top);
-            visible = visible && ((vpWidth - rect.left) >= opts.left);
+            var from_top = (rect.top >= 0) && ((vpHeight - rect.top) >= opts.top);
+            var from_bottom = (rect.bottom >= opts.bottom) && (rect.bottom <= vpHeight);
+            var from_left = (rect.left >= 0) && ((vpWidth - rect.left) >= opts.left);
+            var from_right = (rect.right >= opts.right) && (rect.right <= vpWidth);
 
-            return visible;
+            return (from_top || from_bottom) && (from_left || from_right);
         };
 
         cls._afterCheck = function($element, opts, state) {
