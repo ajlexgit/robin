@@ -7,7 +7,6 @@ from libs.autoslug import AutoSlugField
 
 
 class ServicesConfig(SingletonModel):
-    """ Главная страница """
     header = models.CharField(_('header'), max_length=255)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
