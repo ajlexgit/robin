@@ -27,6 +27,6 @@ requests==2.10.0
 # python-twitter==3.1
 # pysyge==0.2.0
 # premailer==3.0.1
-# django-mptt==0.8.4
+# django-mptt==0.8.5
 # celery==3.1.23
 # django-celery-email==1.1.4
