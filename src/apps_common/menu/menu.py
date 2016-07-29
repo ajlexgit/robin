@@ -143,4 +143,4 @@ class Menu(BaseMenuList):
 
         return loader.render_to_string(template, {
             'items': self
-        })
+        }, request=self.request)

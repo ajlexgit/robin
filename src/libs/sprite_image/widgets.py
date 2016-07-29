@@ -6,7 +6,7 @@ from django.utils.encoding import force_text
 
 class SpriteImageWidget(forms.Widget):
     """ Виджет выбора картинки из спрайта """
-    template = 'sprite_image/widget.html'
+    template = 'sprite_image/admin/widget.html'
 
     class Media:
         css = {

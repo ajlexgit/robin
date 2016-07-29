@@ -95,7 +95,6 @@
                 tag: elem_data.tag || 'self',
                 limit: elem_data.limit
             }).on('success', function(response) {
-                console.log(response);
                 response.data.forEach(function(obj) {
                     $elem.append(
                         $('<img>').attr({

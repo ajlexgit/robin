@@ -53,7 +53,7 @@ class StdImageWidget(BaseStdImageWidget):
 
 
 class StdImageAdminWidget(BaseStdImageWidget):
-    template = 'stdimage/admin_widget.html'
+    template = 'stdimage/admin/widget.html'
 
     class Media:
         js = (

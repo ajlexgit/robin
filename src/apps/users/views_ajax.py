@@ -1,3 +1,4 @@
+from operator import truediv
 from django.forms import model_to_dict
 from django.http.response import Http404
 from django.views.generic import View, FormView
@@ -196,6 +197,8 @@ class AvatarUploadView(AjaxViewMixin, View):
             'normal_avatar': request.user.normal_avatar,
             'profile_avatar_html': self.render_to_string('users/profile_avatar.html', {
                 'profile_user': request.user,
+                'aspect': truediv(*request.user.avatar.variations.normal.size),
+                'min_dimensions': 'x'.join(request.user.avatar.variations.normal.size),
             })
         })
 
@@ -228,6 +231,8 @@ class AvatarCropView(AjaxViewMixin, View):
             'normal_avatar': request.user.normal_avatar,
             'profile_avatar_html': self.render_to_string('users/profile_avatar.html', {
                 'profile_user': request.user,
+                'aspect': truediv(*request.user.avatar.variations.normal.size),
+                'min_dimensions': 'x'.join(request.user.avatar.variations.normal.size),
             })
         })
 
@@ -248,5 +253,7 @@ class AvatarRemoveView(AjaxViewMixin, View):
             'normal_avatar': request.user.normal_avatar,
             'profile_avatar_html': self.render_to_string('users/profile_avatar.html', {
                 'profile_user': request.user,
+                'aspect': truediv(*request.user.avatar.variations.normal.size),
+                'min_dimensions': 'x'.join(request.user.avatar.variations.normal.size),
             })
         })

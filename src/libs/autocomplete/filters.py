@@ -7,7 +7,7 @@ class AutocompleteListFilter(ListFilter):
     title = None
     parameter_name = None
     empty_values = (None, '', [], ())
-    template = 'autocomplete/filter.html'
+    template = 'autocomplete/admin/filter.html'
 
     width = 170                         # ширина виджета
     model = None                        # модель для выборки

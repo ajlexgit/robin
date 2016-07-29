@@ -1,7 +1,7 @@
-from django.conf import settings
+from .conf import GOOGLE_APIKEY
 
 
 def google_apikey(request):
     return {
-        'GOOGLE_APIKEY': getattr(settings, 'GOOGLE_APIKEY', ''),
+        'GOOGLE_APIKEY': GOOGLE_APIKEY,
     }

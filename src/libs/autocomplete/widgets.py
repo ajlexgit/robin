@@ -62,7 +62,7 @@ class AutocompleteWidget(widgets.Widget):
         }
 
     def __init__(self, attrs=None, dependencies=(), expressions='title__icontains',
-                 minimum_input_length=2, format_item=None, template='autocomplete/field.html'):
+                 minimum_input_length=2, format_item=None, template='autocomplete/admin/field.html'):
         default_attrs = {
             'style': 'width: 220px',
             'placeholder': _('Search element'),

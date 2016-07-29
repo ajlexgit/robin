@@ -93,7 +93,6 @@ PIPELINE['JAVASCRIPT'].update({
     },
     'main': {
         'source_filenames': PopupGallery.js + (
-            'social_networks/js/instagram.js',
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',

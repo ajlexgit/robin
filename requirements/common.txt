@@ -10,13 +10,17 @@ beautifulsoup4==4.4.1
 html5lib==0.9999999
 csscompressor==0.9.4
 jsmin==2.2.1
-ipython==5.0.0
+ipython==4.2.1
 pillow==3.2.0
 psycopg2==2.6.2
 pytils==0.3
 pytz==2016.4
 redis==2.10.5
 requests==2.10.0
+
+# jinja2==2.7.3
+# django_jinja==2.2.0
+# jinja2-django-tags==0.4
 
 # PyLinkedinAPI==0.1.5
 # facebook-sdk==1.0.0

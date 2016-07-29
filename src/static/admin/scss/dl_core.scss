@@ -91,6 +91,7 @@ $footer_1col: $media480;
   background: #F5F9FC;
   border-right: 1px solid #DADADA;
   @include flex-basis(220px);
+  @include order(-1);
 }
 
 #left-nav {
