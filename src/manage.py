@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Menu: выделение из вьюхи
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Images: alt, title, file name
@@ -8,7 +9,6 @@ import sys
 # PIP -> jpegtran
 # Schema.org: per page + get data from models
 # Mailer antispam, proves
-# Menu: выделение из вьюхи
 # Admin: функция "скопировать из"
 # crop each variation
 # Кнопка подтверждения заказа в админке

@@ -2,7 +2,7 @@ import os
 from zipfile import ZipFile
 from urllib import request, error
 from django.core.management import BaseCommand
-from ... import options as geocity_options
+from ... import conf
 
 
 class Command(BaseCommand):
@@ -25,11 +25,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            filename, headers = request.urlretrieve(geocity_options.DB_UPDATE_URL, reporthook=self.reporthook)
+            filename, headers = request.urlretrieve(conf.DB_UPDATE_URL, reporthook=self.reporthook)
         except error.HTTPError as e:
             self.stdout.write(e)
             return
 
         with ZipFile(filename, 'r') as zf:
-            zf.extract(geocity_options.DB_NAME, os.path.dirname(geocity_options.DB_PATH))
+            zf.extract(conf.DB_NAME, os.path.dirname(conf.DB_PATH))
         self.stdout.write('\nDone')
