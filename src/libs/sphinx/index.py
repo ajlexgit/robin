@@ -2,9 +2,9 @@ import logging
 import numbers
 from datetime import datetime
 from collections import namedtuple, Iterable
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.html import escape
+from django.core.exceptions import ValidationError
 
 
 AttrType = namedtuple('AttrType', 'BOOL INT BIGINT FLOAT STRING TIMESTAMP MULTI JSON')

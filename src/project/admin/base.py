@@ -5,10 +5,14 @@ from django.contrib.admin.utils import quote
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
 from suit.widgets import AutosizedTextarea
-from google_maps import GoogleCoordsField, GoogleCoordsAdminWidget
-from libs.color_field import ColorField, ColorFormField, ColorOpacityField, ColorOpacityFormField
-from libs.stdimage import StdImageField, StdImageAdminWidget
-from libs.valute_field import ValuteField, ValuteFormField
+from google_maps.fields import GoogleCoordsField
+from google_maps.widgets import GoogleCoordsAdminWidget
+from libs.color_field.fields import ColorField, ColorOpacityField
+from libs.color_field.forms import ColorFormField, ColorOpacityFormField
+from libs.stdimage.fields import StdImageField
+from libs.stdimage.widgets import StdImageAdminWidget
+from libs.valute_field.fields import ValuteField
+from libs.valute_field.forms import ValuteFormField
 from libs.widgets import SplitDateTimeWidget, URLWidget
 
 

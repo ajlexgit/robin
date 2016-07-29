@@ -1,7 +1,7 @@
 from django import forms
 from django.core import checks
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.admin import BaseGenericInlineFormSet
+from django.contrib.contenttypes.admin import BaseGenericInlineFormSet, GenericInlineModelAdminChecks
 from suit.admin import SortableGenericTabularInline, SortableGenericStackedInline
 from project.admin import ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
@@ -60,6 +60,24 @@ class AttachedBlocksFormset(BaseGenericInlineFormSet):
         return super().save_existing(form, instance, commit)
 
 
+class BaseAttachedBlocksMixinChecks(GenericInlineModelAdminChecks):
+    def check(self, cls, parent_model, **kwargs):
+        errors = super().check(cls, parent_model, **kwargs)
+        errors.extend(self._check_set_name(cls, parent_model))
+        return errors
+
+    def _check_set_name(self, cls, parent_model):
+        if not cls.set_name:
+            return [
+                checks.Error(
+                    'set_name can\'t be empty',
+                    obj=cls
+                )
+            ]
+        else:
+            return []
+
+
 class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
     """ Базовый класс inline-моделей """
     form = AttachedBlocksForm
@@ -70,24 +88,6 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
     readonly_fields = ('set_name',)
     extra = 0
     set_name = 'default'
-
-    @classmethod
-    def check(cls, model, **kwargs):
-        errors = super().check(model, **kwargs)
-        errors.extend(cls._check_set_name(model, **kwargs))
-        return errors
-
-    @classmethod
-    def _check_set_name(cls, model, **kwargs):
-        if not cls.set_name:
-            return [
-                checks.Error(
-                    'set_name can\'t be empty',
-                    obj=cls
-                )
-            ]
-        else:
-            return []
 
     def get_formset(self, request, obj=None, **kwargs):
         FormSet = super().get_formset(request, obj, **kwargs)
@@ -101,9 +101,11 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
 
 class AttachedBlocksTabularInline(BaseAttachedBlocksMixin, SortableGenericTabularInline):
     """ Родительская модель для tabular инлайнов """
+    checks_class = BaseAttachedBlocksMixinChecks
     sortable = 'sort_order'
 
 
 class AttachedBlocksStackedInline(BaseAttachedBlocksMixin, SortableGenericStackedInline):
     """ Родительская модель для stacked инлайнов """
+    checks_class = BaseAttachedBlocksMixinChecks
     sortable = 'sort_order'
