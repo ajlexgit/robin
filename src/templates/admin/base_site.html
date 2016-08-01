@@ -19,6 +19,10 @@
 {% block extrahead %}
   {% url 'jsi18n' as jsi18nurl %}
   <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+  <script type="text/javascript">
+    window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";
+    window.is_superuser = {{ user.is_superuser|yesno:"true, false" }};
+  </script>
 {% endblock %}
 
 {% block header_time %}
