@@ -48,7 +48,7 @@ class PhoneNumberAdmin(ModelAdminInlineMixin, SortableTabularInline):
     model = PhoneNumber
     extra = 0
     sortable = 'sort_order'
-    suit_classes = 'suit-tab suit-tab-general'
+    suit_classes = 'suit-tab suit-tab-phones'
 
 
 @admin.register(Address)
@@ -65,6 +65,7 @@ class AddressAdmin(ModelAdminMixin, SortableModelAdmin):
     inlines = (PhoneNumberAdmin,)
     suit_form_tabs = (
         ('general', _('General')),
+        ('phones', _('Phones')),
     )
 
     class Media:

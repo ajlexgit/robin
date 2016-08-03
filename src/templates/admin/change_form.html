@@ -2,12 +2,9 @@
 {% load i18n admin_static admin_modify suit_tags admin_urls %}
 {% load url from suit_compat %}
 
-{% block extrahead %}{{ block.super }}
-  {% url 'admin:jsi18n' as jsi18nurl %}
-  <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
-
+{% block extrahead %}
+  {{ block.super }}
   {{ media }}
-
 {% endblock %}
 
 
@@ -40,10 +37,6 @@
     }(Suit.$))
   </script>
 
-{% endblock %}
-
-{% block extrastyle %}
-  {{ block.super }}
 {% endblock %}
 
 {% block content_title_value %}
