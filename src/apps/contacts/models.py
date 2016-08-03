@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from solo.models import SingletonModel
 from attachable_blocks.models import AttachableBlock
@@ -29,7 +30,6 @@ class Address(models.Model):
     address = models.CharField(_('address'), max_length=255)
     region = models.CharField(_('region'), max_length=64, blank=True)
     zip = models.CharField(_('zip'), max_length=32, blank=True)
-    phone = models.CharField(_('phone'), max_length=255, blank=True)
     coords = GoogleCoordsField(_('coords'), blank=True)
 
     sort_order = models.PositiveIntegerField(_('sort order'))
@@ -40,8 +40,26 @@ class Address(models.Model):
         verbose_name_plural = _('addresses')
         ordering = ('sort_order', )
 
+    @cached_property
+    def phones(self):
+        return tuple(PhoneNumber.objects.filter(address_id=self.id).values_list('number', flat=True))
+
     def __str__(self):
         return ', '.join(filter(bool, (self.city, self.address)))
+
+
+class PhoneNumber(models.Model):
+    address = models.ForeignKey(Address, related_name='+')
+    number = models.CharField(_('number'), max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField(_('sort order'))
+
+    class Meta:
+        verbose_name = _('phone')
+        verbose_name_plural = _('phones')
+        ordering = ('sort_order',)
+
+    def __str__(self):
+        return self.number
 
 
 class NotifyReceiver(models.Model):

@@ -40,7 +40,7 @@
             <li class="address" data-lat="{{ addr.coords.lat }}" data-lng="{{ addr.coords.lng }}"
                 itemscope itemtype="http://schema.org/PostalAddress">
               <p itemprop="streetAddress">{{ addr }}</p>
-              <p itemprop="telephone">{{ addr.phones }}</p>
+              <p itemprop="telephone">{{ addr.phones.0 }}</p>
             </li>
           {% endfor %}
         </ul>
