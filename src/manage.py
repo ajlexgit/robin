@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Blocks kwars on ajax
 # Menu: выделение из вьюхи
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
