@@ -1,3 +1,4 @@
+from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponseForbidden, JsonResponse
 from .utils import get_block, get_block_view
@@ -27,7 +28,7 @@ def get_blocks(request):
         if not block_view:
             continue
 
-        result[block_id] = block_view(request, real_block)
+        result[block_id] = block_view(RequestContext(request), real_block)
 
     return JsonResponse(result)
 
