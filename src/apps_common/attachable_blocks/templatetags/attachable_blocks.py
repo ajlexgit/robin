@@ -5,7 +5,7 @@ from ..utils import get_block, get_block_view, get_visible_references
 register = Library()
 
 
-def block_output(request, block, ajax=False, **kwargs):
+def block_output(context, block, ajax=False, **kwargs):
     block_view = get_block_view(block)
     if not block_view:
         return ''
@@ -14,17 +14,13 @@ def block_output(request, block, ajax=False, **kwargs):
         # Блок, загружаемый через AJAX
         block_html = '<div class="async-block" data-id="%s"></div>' % block.id
     else:
-        block_html = block_view(request, block, **kwargs)
+        block_html = block_view(context, block, **kwargs)
 
     return block_html
 
 
 @register.simple_tag(takes_context=True)
 def render_attached_blocks(context, instance, set_name='default'):
-    request = context.get('request')
-    if not request:
-        return ''
-
     output = []
     references = get_visible_references(
         instance,
@@ -35,7 +31,7 @@ def render_attached_blocks(context, instance, set_name='default'):
         if not block:
             continue
 
-        block_html = block_output(request, block, instance=instance, ajax=reference.ajax)
+        block_html = block_output(context, block, instance=instance, ajax=reference.ajax)
         if block_html:
             output.append(block_html)
 
@@ -44,10 +40,6 @@ def render_attached_blocks(context, instance, set_name='default'):
 
 @register.simple_tag(takes_context=True)
 def render_attachable_block(context, block, instance=None, ajax=False, **kwargs):
-    request = context.get('request')
-    if not request:
-        return ''
-
     if not block:
         return ''
 
@@ -55,7 +47,7 @@ def render_attachable_block(context, block, instance=None, ajax=False, **kwargs)
     if not real_block or not real_block.visible:
         return ''
 
-    return block_output(request, real_block, instance=instance, ajax=ajax, **kwargs)
+    return block_output(context, real_block, instance=instance, ajax=ajax, **kwargs)
 
 
 @register.simple_tag(takes_context=True)

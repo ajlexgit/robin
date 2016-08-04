@@ -64,8 +64,8 @@ class IndexView(CachedViewMixin, TemplateView):
             })
 
 
-def contact_block_render(request, block, **kwargs):
+def contact_block_render(context, block, **kwargs):
     """ Рендеринг подключаемого блока контактов """
     return loader.render_to_string('contacts/block.html', {
         'block': block,
-    }, request=request)
+    }, request=context.get('request'))
