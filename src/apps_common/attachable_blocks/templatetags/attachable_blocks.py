@@ -22,8 +22,10 @@ def block_output(context, block, ajax=False, **kwargs):
 @register.simple_tag(takes_context=True)
 def render_attached_blocks(context, instance, set_name='default'):
     output = []
+    kwargs.setdefault('instance', entity)
+
     references = get_visible_references(
-        instance,
+        entity,
         set_name=set_name
     ).select_related('block_ct').only('block_ct', 'block_id', 'ajax')
     for reference in references:
@@ -31,7 +33,7 @@ def render_attached_blocks(context, instance, set_name='default'):
         if not block:
             continue
 
-        block_html = block_output(context, block, instance=instance, ajax=reference.ajax)
+        block_html = block_output(context, block, ajax=reference.ajax, **kwargs)
         if block_html:
             output.append(block_html)
 
@@ -39,7 +41,7 @@ def render_attached_blocks(context, instance, set_name='default'):
 
 
 @register.simple_tag(takes_context=True)
-def render_attachable_block(context, block, instance=None, ajax=False, **kwargs):
+def render_attachable_block(context, block, ajax=False, **kwargs):
     if not block:
         return ''
 
@@ -47,11 +49,11 @@ def render_attachable_block(context, block, instance=None, ajax=False, **kwargs)
     if not real_block or not real_block.visible:
         return ''
 
-    return block_output(context, real_block, instance=instance, ajax=ajax, **kwargs)
+    return block_output(context, real_block, ajax=ajax, **kwargs)
 
 
 @register.simple_tag(takes_context=True)
-def render_first_attachable_block(context, model, instance=None, ajax=False, **kwargs):
+def render_first_attachable_block(context, model, ajax=False, **kwargs):
     if not '.' in model:
         return ''
 
@@ -65,5 +67,5 @@ def render_first_attachable_block(context, model, instance=None, ajax=False, **k
     if not block:
         return ''
 
-    return render_attachable_block(context, block, instance=instance, ajax=ajax)
+    return render_attachable_block(context, block, ajax=ajax)
     
