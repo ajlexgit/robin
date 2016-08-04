@@ -20,7 +20,7 @@ def block_output(request, block, ajax=False, **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def render_attached_blocks(context, entity, set_name='default'):
+def render_attached_blocks(context, instance, set_name='default'):
     request = context.get('request')
     if not request:
         return ''
