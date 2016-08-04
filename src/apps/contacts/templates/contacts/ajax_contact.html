@@ -1,7 +1,7 @@
 {% load form_helper %}
 {% load i18n %}
 
-<p class="title title-h1">{{ config.header }}</p>
+<p class="title title-h1">{% trans 'Contact Us' %}</p>
 
 {{ form.media }}
 <form method="post" action="{% url 'contacts:index' %}" id="ajax-contact-form" autocomplete="off">
