@@ -64,7 +64,7 @@
 
 
         # blocks/views.py:
-            def my_block_render(request, block):
+            def my_block_render(request, block, instance, **kwargs):
                 context = RequestContext(request, {
                     'block': block,
                 })
