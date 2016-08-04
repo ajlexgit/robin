@@ -47,23 +47,25 @@
 {% endblock %}
 
 {% block footer %}
-  <div id="footer" class="footer">
-    <div class="content">
-      <div class="help-box">
-        <p>Please contact us if you have any problems</p>
-      </div>
+  {% if not is_popup %}
+    <div id="footer" class="footer">
+      <div class="content">
+        <div class="help-box">
+          <p>Please contact us if you have any problems</p>
+        </div>
 
-      <div class="phone-box">
-        <p>+1 267 626 2554</p>
-      </div>
+        <div class="phone-box">
+          <p>+1 267 626 2554</p>
+        </div>
 
-      <div class="email-box">
-        <p><a href="mailto:office@directlinedev.com">office@directlinedev.com</a></p>
-      </div>
+        <div class="email-box">
+          <p><a href="mailto:office@directlinedev.com">office@directlinedev.com</a></p>
+        </div>
 
-      <div class="logo-box">
-        <a href="http://directlinedev.com" target="_blank"></a>
+        <div class="logo-box">
+          <a href="http://directlinedev.com" target="_blank"></a>
+        </div>
       </div>
     </div>
-  </div>
+  {% endif %}
 {% endblock footer %}
