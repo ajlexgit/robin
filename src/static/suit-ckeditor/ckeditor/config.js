@@ -9,7 +9,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.linkShowTargetTab = false;
     config.dataIndentationChars = '  ';
     config.tabSpaces = 2;
-    config.extraAllowedContent = 'img(*)[*]';
+    config.extraAllowedContent = '*(*);img[*]';
 
     config.format_tags = "p;h2;h3;h4";
 
@@ -59,9 +59,5 @@ CKEDITOR.editorConfig = function( config ) {
 
 CKEDITOR.stylesSet.add('default', [
     // Block Styles
-    {
-        name: 'No margin',
-        element: 'p',
-        attributes: {'class': 'no-margin'}
-    }
+    {name: 'No margin', element: ['p', 'h2', 'h3', 'h4'], attributes: {'class': 'no-margin'}}
 ]);

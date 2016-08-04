@@ -12,7 +12,6 @@
                 elements: [{
                     id: 'description',
                     type: 'textarea',
-                    style: 'width:100%;height:7em;resize:none;',
                     label: lang.dialogImageDescrTextarea
                 }]
             }],
