@@ -57,3 +57,21 @@ def render_attachable_block(context, block, instance=None, ajax=False, **kwargs)
 
     return block_output(request, real_block, instance=instance, ajax=ajax, **kwargs)
 
+
+@register.simple_tag(takes_context=True)
+def render_first_attachable_block(context, model, instance=None, ajax=False, **kwargs):
+    if not '.' in model:
+        return ''
+
+    app, modelname = model.rsplit('.', 1)
+    try:
+        model = apps.get_model(app, modelname)
+    except LookupError:
+        return ''
+
+    block = model.objects.first()
+    if not block:
+        return ''
+
+    return render_attachable_block(context, block, instance=instance, ajax=ajax)
+    
