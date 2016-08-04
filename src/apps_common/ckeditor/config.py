@@ -19,11 +19,11 @@ CKEDITOR_CONFIG_DEFAULT = {
         },
         {
             'name': 'links',
-            'items': ['Link', 'Unlink', 'Styles', 'Format']
+            'items': ['Link', 'Unlink']
         },
         {
             'name': 'document',
-            'items': ['Source']
+            'items': ['Styles', 'Format', 'Source']
         },
     ]
 }
@@ -41,7 +41,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList', 'Format']
+            'items': ['BulletedList', 'NumberedList']
         },
         {
             'name': 'links',
@@ -51,9 +51,10 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
             'name': 'insert',
             'items': ['PagePhotos', 'PageVideos', 'PageFiles']
         },
+        '/',
         {
             'name': 'document',
-            'items': ['Source']
+            'items': ['Styles', 'Format', 'Source']
         },
     ]
 }
