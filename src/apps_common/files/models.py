@@ -34,6 +34,7 @@ class PageFile(models.Model):
     class Meta:
         verbose_name = _('file')
         verbose_name_plural = _('files')
+        index_together = (('content_type', 'object_id', 'set_name'), )
         ordering = ('sort_order', )
 
     def __str__(self, *args, **kwargs):

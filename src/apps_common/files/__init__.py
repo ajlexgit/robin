@@ -22,7 +22,9 @@
             from django.contrib.contenttypes import generic
 
             class Module(models.Model):
-                files = generic.GenericRelation(PageFile)
+                files = generic.GenericRelation(PageFile, limit_choices_to={
+                    'set_name': 'module-files'
+                })
 
         # admin.py:
             from files.admin import PageFileInline

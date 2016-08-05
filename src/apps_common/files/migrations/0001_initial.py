@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import libs.storages.media_storage
 import files.fields
 import files.models
-import libs.storages.media_storage
 
 
 class Migration(migrations.Migration):
@@ -17,18 +17,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PageFile',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('file', files.fields.PageFileFileField(upload_to=files.models.generate_filepath, storage=libs.storages.media_storage.MediaStorage('files'), max_length=150, verbose_name='file')),
-                ('name', models.CharField(help_text='If you leave it empty the file name will be used', blank=True, verbose_name='name', max_length=150)),
-                ('set_name', models.CharField(default='default', max_length=32, verbose_name='set name')),
+                ('file', files.fields.PageFileFileField(storage=libs.storages.media_storage.MediaStorage('files'), max_length=150, upload_to=files.models.generate_filepath, verbose_name='file')),
+                ('name', models.CharField(help_text='If you leave it empty the file name will be used', max_length=150, verbose_name='name', blank=True)),
+                ('set_name', models.CharField(max_length=32, default='default', verbose_name='set name')),
                 ('sort_order', models.PositiveIntegerField(verbose_name='sort order')),
-                ('content_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', related_name='+')),
             ],
             options={
-                'verbose_name_plural': 'files',
-                'ordering': ('sort_order',),
                 'verbose_name': 'file',
+                'ordering': ('sort_order',),
+                'verbose_name_plural': 'files',
             },
+        ),
+        migrations.AlterIndexTogether(
+            name='pagefile',
+            index_together=set([('content_type', 'object_id', 'set_name')]),
         ),
     ]
