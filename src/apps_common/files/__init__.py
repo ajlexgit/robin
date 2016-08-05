@@ -3,6 +3,7 @@
 
     Зависит от:
         libs.storages
+        libs.download
 
     Установка:
         settings.py:
@@ -12,26 +13,27 @@
                 ...
             )
 
+        urls.py:
+            ...
+            url(r'^files/', include('files.urls', namespace='files')),
+
     Пример:
-        models.py:
-            from files import PageFile
+        # models.py:
+            from django.contrib.contenttypes import generic
 
-            class ModuleFile(PageFile):
-                STORAGE_LOCATION = 'module/files'
+            class Module(models.Model):
+                files = generic.GenericRelation(PageFile)
 
-                module = models.ForeignKey(Module, related_name='files'
+        # admin.py:
+            from files.admin import PageFileInline
 
-        admin.py:
-            from suit.admin import SortableStackedInline
-            from files.admin import PageFileInlineMixin
-            from .models import ModuleFile
-
-            class ModuleFileInline(PageFileInlineMixin, SortableStackedInline):
-                model = ModuleFile
+            class ModuleFileInline(PageFileInline):
+                set_name = 'module-files'
+                suit_classes = 'suit-tab suit-tab-general'
 """
 
-from .models import PageFile
+from .admin import PageFileInline
 
-__all__ = ['PageFile']
+__all__ = ['PageFileInline']
 
 default_app_config = 'files.apps.Config'

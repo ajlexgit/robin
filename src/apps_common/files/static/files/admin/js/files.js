@@ -1,12 +1,17 @@
 (function($) {
 
-    $(document).on('input', '.file-on-page', function() {
-        // генерация имени файла для отображения
-        var self = $(this),
-            short_name = /[^/\\]+$/.exec(self.val()),
-            name_field = self.closest('.form-row').find('.file-on-page-name');
+    $(document).on('change', '.file-on-page', function() {
+        var $input = $(this);
+        var formset_prefix = $input.attr('name').split('-').slice(0, -1).join('-');
+        var $name = $('#id_' + formset_prefix + '-name');
 
-        name_field.val(short_name);
+        console.log();
+        if ($name.val()) return;
+
+        var short_name = /[^/\\]+$/.exec($input.val());
+        if (short_name) {
+            $name.val(short_name);
+        }
     });
 
 })(jQuery);
