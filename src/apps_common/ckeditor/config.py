@@ -45,7 +45,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList']
+            'items': ['BulletedList', 'NumberedList', '-', 'Indent', 'Outdent']
         },
         {
             'name': 'insert',

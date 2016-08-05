@@ -84,6 +84,12 @@
     }
   }
 
+  ul ul > li:before {
+    content: '—';
+    top: 0;
+    @include transform(none);
+  }
+
   ol {
     padding-left: 1.6em;
     list-style: decimal;
