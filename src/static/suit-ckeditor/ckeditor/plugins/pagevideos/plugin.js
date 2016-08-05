@@ -76,7 +76,7 @@
                 command: 'pagevideos',
                 toolbar: 'insert'
             });
-            
+
 
             editor.on('contentDom', function () {
                 // Удаление контейнера при удалении видео через Backspace и Delete
