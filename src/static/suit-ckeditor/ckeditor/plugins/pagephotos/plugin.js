@@ -6,24 +6,16 @@
         lang: 'en,ru',
         init: function (editor) {
             var lang = editor.lang.pagephotos;
-
-            editor.ui.addButton("PagePhotos", {
-                label: lang.buttonTitle,
-                command: "pagephotos",
-                toolbar: 'insert'
-            });
-
             editor.addContentsCss(this.path + 'styles/editor.css');
 
             // ======================================
-            //      DIALOGS
+            //      Dialogs
             // ======================================
-
             CKEDITOR.dialog.add("pagephotosDialog", this.path + "dialogs/dlg_upload.js");
             CKEDITOR.dialog.add("pagephotos_block_description", this.path + "dialogs/block_description.js");
 
             // ======================================
-            //      COMMANDS
+            //      Commands
             // ======================================
 
             // UPLOAD
@@ -154,7 +146,7 @@
             });
 
             // ======================================
-            //      CONTEXT MENU
+            //      Context menu
             // ======================================
 
             // Добавление пунктов в контекстное меню
@@ -208,6 +200,15 @@
                         }
                     }
                 }
+            });
+
+            // ======================================
+            //      Buttons
+            // ======================================
+            editor.ui.addButton("PagePhotos", {
+                label: lang.buttonTitle,
+                command: "pagephotos",
+                toolbar: 'insert'
             });
 
 

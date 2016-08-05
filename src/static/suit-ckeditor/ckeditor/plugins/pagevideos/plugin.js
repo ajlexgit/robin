@@ -5,28 +5,19 @@
         lang: 'en,ru',
         init: function (editor) {
             var lang = editor.lang.pagevideos;
-
-            editor.ui.addButton('PageVideos', {
-                label: lang.buttonTitle,
-                command: 'pagevideos',
-                toolbar: 'insert'
-            });
-
+            editor.addContentsCss(this.path + 'styles/editor.css');
             CKEDITOR.scriptLoader.load(
                 CKEDITOR.getUrl(this.path + 'libs/jquery.oembed.js')
             );
 
-            editor.addContentsCss(this.path + 'styles/editor.css');
-
             // ======================================
-            //      DIALOGS
+            //      Dialogs
             // ======================================
-
             CKEDITOR.dialog.add('pagevideosDialog', this.path + 'dialogs/dlg_upload.js');
             CKEDITOR.dialog.add('pagevideos_block_description', this.path + 'dialogs/block_description.js');
 
             // ======================================
-            //      COMMANDS
+            //      Commands
             // ======================================
 
             // UPLOAD
@@ -47,7 +38,7 @@
 
 
             // ======================================
-            //      CONTEXT MENU
+            //      Context menu
             // ======================================
 
             // Добавление пунктов в контекстное меню
@@ -77,6 +68,15 @@
                 return null
             });
 
+            // ======================================
+            //      Buttons
+            // ======================================
+            editor.ui.addButton('PageVideos', {
+                label: lang.buttonTitle,
+                command: 'pagevideos',
+                toolbar: 'insert'
+            });
+            
 
             editor.on('contentDom', function () {
                 // Удаление контейнера при удалении видео через Backspace и Delete

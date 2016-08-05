@@ -14,7 +14,7 @@
             CKEDITOR.dialog.add('fileDialog', this.path + 'dialogs/file_widget.js');
 
             // ======================================
-            //      Widget
+            //      Widgets
             // ======================================
             editor.widgets.add('file_widget', {
                 dialog: 'fileDialog',

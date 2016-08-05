@@ -8,7 +8,7 @@
             editor.addContentsCss(this.path + 'styles/widget.css');
 
             // ======================================
-            //      Widget
+            //      Widgets
             // ======================================
             editor.widgets.add(WIDGET_NAME, {
                 button: 'Two columns',

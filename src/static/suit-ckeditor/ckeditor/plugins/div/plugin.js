@@ -8,13 +8,13 @@
             editor.addContentsCss(this.path + 'styles/widget.css');
 
             // ======================================
-            //      Dialog
+            //      Dialogs
             // ======================================
 
             CKEDITOR.dialog.add("divDialog", this.path + "dialogs/div.js");
 
             // ======================================
-            //      Widget
+            //      Widgets
             // ======================================
             editor.widgets.add(WIDGET_NAME, {
                 button: 'Add Div Container',

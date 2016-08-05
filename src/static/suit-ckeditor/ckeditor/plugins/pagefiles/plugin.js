@@ -21,7 +21,7 @@
             }));
 
             // ======================================
-            //      Button
+            //      Buttons
             // ======================================
             editor.ui.addButton("PageFiles", {
                 label: lang.buttonTitle,
