@@ -13,9 +13,9 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.format_tags = "p;h2;h3;h4";
 
-    config.plugins = "basicstyles,toolbar,wysiwygarea,contextmenu,elementspath," +
-        "entities,format,htmlwriter,enterkey,justify,sourcearea,undo,pastefromword,pastetext," +
-        "list,link,removeformat,specialchar,stylescombo";
+    config.plugins = "basicstyles,contextmenu,elementspath,enterkey,entities," +
+        "format,htmlwriter,justify,list,link,pastefromword,pastetext," +
+        "removeformat,sourcearea,specialchar,stylescombo,toolbar,undo,wysiwygarea";
 
     config.forcePasteAsPlainText = true;
     config.autoGrow_maxHeight = 540;
