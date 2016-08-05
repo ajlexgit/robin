@@ -11,15 +11,15 @@ CKEDITOR_CONFIG_DEFAULT = {
     'toolbar': [
         {
             'name': 'basicstyles',
-            'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
-        },
-        {
-            'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList']
+            'items': ['Bold', 'Italic', '-', 'RemoveFormat']
         },
         {
             'name': 'links',
             'items': ['Link', 'Unlink']
+        },
+        {
+            'name': 'paragraph',
+            'items': ['BulletedList', 'NumberedList']
         },
         {
             'name': 'document',
@@ -37,15 +37,15 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
     'toolbar': [
         {
             'name': 'basicstyles',
-            'items': ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']
-        },
-        {
-            'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList']
+            'items': ['Bold', 'Italic', '-', 'RemoveFormat']
         },
         {
             'name': 'links',
             'items': ['Link', 'Unlink']
+        },
+        {
+            'name': 'paragraph',
+            'items': ['BulletedList', 'NumberedList']
         },
         {
             'name': 'insert',
