@@ -49,7 +49,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         },
         {
             'name': 'insert',
-            'items': ['PagePhotos', 'PageVideos', 'PageFiles', 'Columns', 'Div']
+            'items': ['PagePhotos', 'PageVideos', 'PageFiles', '-', 'Columns', 'Div']
         },
         '/',
         {
