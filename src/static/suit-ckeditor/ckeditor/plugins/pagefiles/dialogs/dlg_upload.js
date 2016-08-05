@@ -76,7 +76,7 @@
         })
     };
 
-    CKEDITOR.dialog.add("pagefiles", function (editor) {
+    CKEDITOR.dialog.add("pagefilesDialog", function (editor) {
         var lang = editor.lang.pagefiles;
         return {
             title: lang.dialogTitle,
@@ -90,9 +90,8 @@
                     html: '<div class="ckupload-files ckupload-page-files">' + lang.loading + '</div>'
                 }]
             }],
-
             onLoad: function() {
-                $(this._.element.$).addClass('ckupload_dialog');
+                this.getElement().addClass('ckupload_dialog');
 
                 // CSS приходится грузить JS-ом из-за переопределения стилей
                 if (editor.config.PLUPLOADER_CSS) {
@@ -104,7 +103,6 @@
                 // Инициализация загрузчика
                 InitPluploader(editor);
             },
-
             onOk: function() {
                 var uploader = $('.ckupload-page-files'),
                     uploaded=[],
@@ -181,7 +179,6 @@
                     }
                 }
             },
-
             onCancel: function() {
                 // Очистка очереди
                 var $uploader = $('.ckupload-page-files');

@@ -6,37 +6,49 @@
         lang: 'en,ru',
         init: function(editor) {
             var lang = editor.lang.file_widget;
+            editor.addContentsCss(this.path + 'styles/editor.css');
 
+            // ======================================
+            //      Dialogs
+            // ======================================
+            CKEDITOR.dialog.add('fileDialog', this.path + 'dialogs/file_widget.js');
+
+            // ======================================
+            //      Widget
+            // ======================================
             editor.widgets.add('file_widget', {
-                dialog: 'file_widget_dlg',
+                dialog: 'fileDialog',
                 upcast: function(element) {
                     return element.hasClass('page-file')
                 }
             });
 
-            CKEDITOR.dialog.add('file_widget_dlg', this.path + 'dialogs/file_widget.js');
-            editor.addCommand("file_widget_edit", new CKEDITOR.dialogCommand("file_widget_dlg"));
-            editor.addContentsCss(this.path + 'styles/editor.css');
+            // ======================================
+            //      Commands
+            // ======================================
+            editor.addCommand("file_widget_edit", new CKEDITOR.dialogCommand('fileDialog'));
 
-            editor.addMenuGroup('files');
-            editor.addMenuItems({
-                _edit_files: {
+            // ======================================
+            //      Context Menu
+            // ======================================
+            if (editor.contextMenu) {
+                editor.addMenuGroup('filesGroup');
+                editor.addMenuItem('editFileItem', {
                     label: lang.contextMenuEdit,
-                    icon: this.path + 'edit.png',
+                    icon: this.path + 'icons/edit.png',
                     command: 'file_widget_edit',
-                    group: 'files',
-                    order: 1
-                }
-            });
-            editor.contextMenu.addListener(function(element) {
-                if (element && element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
-                    return {
-                        _edit_files: CKEDITOR.TRISTATE_OFF
-                    }
-                }
+                    group: 'filesGroup'
+                });
 
-                return null
-            });
+                editor.contextMenu.addListener(function(element) {
+                    if (element && element.hasAttribute('data-cke-widget-id') && element.findOne('.page-file')) {
+                        return {
+                            editFileItem: CKEDITOR.TRISTATE_OFF
+                        }
+                    }
+                });
+            }
+
 
             editor.on('dragend', function(evt) {
                 setTimeout(function() {

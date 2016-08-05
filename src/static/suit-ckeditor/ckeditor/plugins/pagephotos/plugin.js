@@ -19,30 +19,20 @@
             //      DIALOGS
             // ======================================
 
-            CKEDITOR.dialog.add("pagephotos", this.path + "dialogs/dlg_upload.js");
+            CKEDITOR.dialog.add("pagephotosDialog", this.path + "dialogs/dlg_upload.js");
             CKEDITOR.dialog.add("pagephotos_block_description", this.path + "dialogs/block_description.js");
-            CKEDITOR.dialog.add("pagephotos_image_description", this.path + "dialogs/image_description.js");
-
 
             // ======================================
             //      COMMANDS
             // ======================================
 
             // UPLOAD
-            editor.addCommand("pagephotos", new CKEDITOR.dialogCommand("pagephotos", {
-                allowedContent: 'p(!page-images,single-image,multi-image);',
-                modes: {
-                    wysiwyg: 1,
-                    source: 0
-                },
-                canUndo: true
+            editor.addCommand("pagephotos", new CKEDITOR.dialogCommand("pagephotosDialog", {
+                allowedContent: 'p(!page-images,single-image,multi-image);'
             }));
 
             // BLOCK DESCRIPTION
             editor.addCommand("pagephotos_block_description", new CKEDITOR.dialogCommand("pagephotos_block_description"));
-
-            // IMAGE DESCRIPTION
-            editor.addCommand("pagephotos_image_description", new CKEDITOR.dialogCommand("pagephotos_image_description"));
 
             // CROP
             editor.addCommand("CropImage", {
@@ -168,42 +158,35 @@
             // ======================================
 
             // Добавление пунктов в контекстное меню
-            editor.addMenuGroup('images');
+            editor.addMenuGroup('images', 150);
             editor.addMenuItems({
                 _crop_command : {
                     label : lang.contextMenuCrop,
-                    icon: this.path + 'crop.png',
+                    icon: this.path + 'icons/crop.png',
                     command : 'CropImage',
                     group : 'images',
                     order: 1
                 },
                 _rotate_left: {
                     label: lang.contextMenuRotateCW,
-                    icon: this.path + 'rotate-cw.png',
+                    icon: this.path + 'icons/rotate-cw.png',
                     command: 'RotateCW',
                     group: 'images',
                     order: 2
                 },
                 _rotate_right: {
                     label: lang.contextMenuRotateCCW,
-                    icon: this.path + 'rotate-ccw.png',
+                    icon: this.path + 'icons/rotate-ccw.png',
                     command: 'RotateCCW',
                     group: 'images',
                     order: 3
                 },
-                _photos_image_description: {
-                    label: lang.contextMenuImageDescr,
-                    icon: this.path + 'descr.png',
-                    command: 'pagephotos_image_description',
-                    group: 'images',
-                    order: 4
-                },
                 _photos_block_description : {
                     label : lang.contextMenuBlockDescr,
-                    icon: this.path + 'descr.png',
+                    icon: this.path + 'icons/descr.png',
                     command : 'pagephotos_block_description',
                     group : 'images',
-                    order: 5
+                    order: 4
                 }
             });
             editor.contextMenu.addListener(function (element) {
@@ -217,8 +200,7 @@
                             _crop_command : CKEDITOR.TRISTATE_OFF,
                             _rotate_left : CKEDITOR.TRISTATE_OFF,
                             _rotate_right : CKEDITOR.TRISTATE_OFF,
-                            _photos_block_description : CKEDITOR.TRISTATE_OFF,
-                            _photos_image_description : CKEDITOR.TRISTATE_OFF
+                            _photos_block_description : CKEDITOR.TRISTATE_OFF
                         }
                     } else if (isGallery) {
                         return {
@@ -226,8 +208,6 @@
                         }
                     }
                 }
-
-                return null
             });
 
 

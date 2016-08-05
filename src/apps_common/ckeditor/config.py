@@ -3,7 +3,7 @@ from django.conf import settings
 
 # Конфигурация CKEditorField по умолчанию
 CKEDITOR_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix',
+    'extraPlugins': 'textlen,enterfix,image_attrs',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
         settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
@@ -29,7 +29,7 @@ CKEDITOR_CONFIG_DEFAULT = {
 }
 
 CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix,pagephotos,pagevideos,pagefiles,simplephotos,columns',
+    'extraPlugins': 'textlen,enterfix,image_attrs,pagephotos,pagevideos,pagefiles,simplephotos,columns,div',
     'contentsCss': (
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
         settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
@@ -49,7 +49,7 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         },
         {
             'name': 'insert',
-            'items': ['PagePhotos', 'PageVideos', 'PageFiles', 'Columns']
+            'items': ['PagePhotos', 'PageVideos', 'PageFiles', 'Columns', 'Div']
         },
         '/',
         {

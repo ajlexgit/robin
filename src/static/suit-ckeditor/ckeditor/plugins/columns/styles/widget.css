@@ -23,6 +23,10 @@
     margin-top: 0;
 }
 
+.columns .column > *:last-child {
+    margin-bottom: 0;
+}
+
 .columns .column-left {
     margin-right: 1.2%;
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
-CKEDITOR.editorConfig = function( config ) {
+CKEDITOR.editorConfig = function(config) {
     // Define changes to default configuration here. For example:
     config.linkShowAdvancedTab = false;
     config.linkShowTargetTab = false;
@@ -13,9 +13,9 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.format_tags = "p;h2;h3;h4";
 
-    config.plugins = "basicstyles,contextmenu,elementspath,enterkey,entities," +
-        "format,htmlwriter,justify,list,link,pastefromword,pastetext," +
-        "removeformat,sourcearea,specialchar,stylescombo,toolbar,undo,wysiwygarea";
+    config.plugins = "basicstyles,contextmenu,elementspath," +
+        "entities,format,htmlwriter,enterkey,justify,sourcearea,pastefromword,pastetext," +
+        "list,link,removeformat,specialchar,stylescombo,toolbar,undo,wysiwygarea";
 
     config.forcePasteAsPlainText = true;
     config.autoGrow_maxHeight = 540;
@@ -61,3 +61,81 @@ CKEDITOR.stylesSet.add('default', [
     // Block Styles
     {name: 'No margin', element: ['p', 'h2', 'h3', 'h4'], attributes: {'class': 'no-margin'}}
 ]);
+
+
+// Утилиты
+CKEDITOR.utils = {
+    // getWidget: function(editor, element, widgetName) {
+    //     var widget;
+    //     if (element && (widget = editor.widgets.getByElement(element))) {
+    //         if (!widgetName || (widget.name == widgetName)) return widget;
+    //     }
+    //
+    //     widget = null;
+    //     var wrapper = editor.elementPath(editor.elementPath(element).blockLimit).contains(function(node) {
+    //         widget = editor.widgets.getByElement(node);
+    //         return !widgetName || (widget.name == widgetName);
+    //     }, 1);
+    //
+    //     return wrapper && widget;
+    // },
+    getAllowedStyles: function(editor, tagName) {
+        var result = [];
+        editor.getStylesSet(function(styleSet) {
+            if (styleSet) {
+                for (var i = 0; i < styleSet.length; i++) {
+                    var isAllowed = true;
+                    var style = styleSet[i];
+
+                    if (tagName) {
+                        var allowedTags = $.isArray(style.element) ? style.element : [style.element];
+                        isAllowed = isAllowed && allowedTags.map(function(item) {
+                                return item.toLowerCase()
+                            }).indexOf(tagName.toLowerCase()) >= 0;
+                        if (!isAllowed) continue;
+                    }
+
+                    result.push(style);
+                }
+            }
+        });
+        return result;
+    },
+    getActiveStyle: function(editor, element) {
+        var result;
+        editor.getStylesSet(function(styleSet) {
+            if (!styleSet) return;
+            for (var i = 0; i < styleSet.length; i++) {
+                var isAllowed = true;
+                var style = $.extend(true, {}, styleSet[i]);
+
+                // проверка тэга
+                var currentTag = element.$.tagName.toLowerCase();
+                if (style.element) {
+                    var allowedTags = $.isArray(style.element) ? style.element : [style.element];
+                    isAllowed = isAllowed && allowedTags.map(function(item) {
+                            return item.toLowerCase()
+                        }).indexOf(currentTag) >= 0;
+                    if (!isAllowed) continue;
+                }
+                style.element = currentTag;
+
+                // проверка класса
+                if (style.attributes && style.attributes.class) {
+                    isAllowed = isAllowed && element.hasClass(style.attributes.class);
+                    if (!isAllowed) continue;
+                    delete style.attributes.class;
+                }
+
+                // проверка стилей
+                var styleObj = new CKEDITOR.style(style);
+                isAllowed = isAllowed && styleObj.checkElementMatch(element);
+                if (isAllowed) {
+                    result = style;
+                    return false;
+                }
+            }
+        });
+        return result;
+    }
+};

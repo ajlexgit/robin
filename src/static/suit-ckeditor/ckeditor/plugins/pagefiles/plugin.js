@@ -6,23 +6,28 @@
         lang: 'en,ru',
         init: function(editor) {
             var lang = editor.lang.pagefiles;
+            editor.addContentsCss(this.path + 'styles/editor.css');
 
+            // ======================================
+            //      Dialogs
+            // ======================================
+            CKEDITOR.dialog.add("pagefilesDialog", this.path + "dialogs/dlg_upload.js");
+
+            // ======================================
+            //      Commands
+            // ======================================
+            editor.addCommand("pagefiles", new CKEDITOR.dialogCommand("pagefilesDialog", {
+                allowedContent: 'div(!page-file)[!data-id]; span'
+            }));
+
+            // ======================================
+            //      Button
+            // ======================================
             editor.ui.addButton("PageFiles", {
                 label: lang.buttonTitle,
                 command: "pagefiles",
                 toolbar: 'insert'
             });
-
-            CKEDITOR.dialog.add("pagefiles", this.path + "dialogs/dlg_upload.js");
-            editor.addCommand("pagefiles", new CKEDITOR.dialogCommand("pagefiles", {
-                allowedContent: 'div(*); div(!page-file)[!data-id]; span',
-                modes: {
-                    wysiwyg: 1,
-                    source: 0
-                },
-                canUndo: true
-            }));
-            editor.addContentsCss(this.path + 'styles/editor.css');
 
             editor.on('key', function(evt) {
                 if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {

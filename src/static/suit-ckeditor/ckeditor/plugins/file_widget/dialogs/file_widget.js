@@ -1,6 +1,6 @@
 (function() {
 
-    CKEDITOR.dialog.add('file_widget_dlg', function(editor) {
+    CKEDITOR.dialog.add('fileDialog', function(editor) {
         var lang = editor.lang.file_widget;
         return {
             title: lang.dialogTitle,
@@ -31,15 +31,16 @@
                 }]
             }],
             onShow: function() {
-                var selection = editor.getSelection();
-                var element = selection.getStartElement();
+                var element = editor.getSelection().getStartElement();
                 var widget = editor.widgets.getByElement(element);
-
-                this.widget = widget;
-                this.setupContent(widget);
+                if (widget) {
+                    this.setupContent(this._widget = widget);
+                }
             },
             onOk: function() {
-                this.commitContent(this.widget);
+                if (this._widget) {
+                    this.commitContent(this._widget);
+                }
             }
         };
     });

@@ -6,9 +6,9 @@
         init: function (editor) {
             var lang = editor.lang.pagevideos;
 
-            editor.ui.addButton("PageVideos", {
+            editor.ui.addButton('PageVideos', {
                 label: lang.buttonTitle,
-                command: "pagevideos",
+                command: 'pagevideos',
                 toolbar: 'insert'
             });
 
@@ -22,32 +22,25 @@
             //      DIALOGS
             // ======================================
 
-            CKEDITOR.dialog.add("pagevideos", this.path + "dialogs/dlg_upload.js");
-            CKEDITOR.dialog.add("pagevideos_block_description", this.path + "dialogs/block_description.js");
-
+            CKEDITOR.dialog.add('pagevideosDialog', this.path + 'dialogs/dlg_upload.js');
+            CKEDITOR.dialog.add('pagevideos_block_description', this.path + 'dialogs/block_description.js');
 
             // ======================================
             //      COMMANDS
             // ======================================
 
             // UPLOAD
-            editor.addCommand("pagevideos", new CKEDITOR.dialogCommand("pagevideos", {
-                allowedContent: 'p(!page-video);' +
-                                'p[!data-url];p iframe[*]',
-                modes: {
-                    wysiwyg: 1,
-                    source: 0
-                },
-                canUndo: true
+            editor.addCommand('pagevideos', new CKEDITOR.dialogCommand('pagevideosDialog', {
+                allowedContent: 'p(!page-video);p[!data-url];p iframe[*]'
             }));
 
             // BLOCK DESCRIPTION
-            editor.addCommand("pagevideos_block_description", new CKEDITOR.dialogCommand("pagevideos_block_description"));
+            editor.addCommand('pagevideos_block_description', new CKEDITOR.dialogCommand('pagevideos_block_description'));
 
             // CHANGE VIDEO
-            editor.addCommand("ChangeVideo", {
+            editor.addCommand('ChangeVideo', {
                 exec: function (editor) {
-                    editor.openDialog('pagevideos')
+                    editor.openDialog('pagevideosDialog')
                 },
                 canUndo: false
             });
@@ -58,17 +51,17 @@
             // ======================================
 
             // Добавление пунктов в контекстное меню
-            editor.addMenuGroup('videos');
+            editor.addMenuGroup('videos', 150);
             editor.addMenuItems({
                 _change_video : {
                     label : lang.contextMenuEdit,
-                    icon: this.path + 'edit.png',
+                    icon: this.path + 'icons/edit.png',
                     command : 'ChangeVideo',
                     group : 'videos'
                 },
                 _video_block_description : {
                     label : lang.contextMenuBlockDescr,
-                    icon: this.path + 'descr.png',
+                    icon: this.path + 'icons/descr.png',
                     command : 'pagevideos_block_description',
                     group : 'videos'
                 }

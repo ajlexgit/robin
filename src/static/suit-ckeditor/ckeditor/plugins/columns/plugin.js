@@ -1,4 +1,5 @@
 (function() {
+    var WIDGET_NAME = 'columns';
 
     CKEDITOR.plugins.add("columns", {
         requires: 'widget',
@@ -9,7 +10,7 @@
             // ======================================
             //      Widget
             // ======================================
-            editor.widgets.add('columns', {
+            editor.widgets.add(WIDGET_NAME, {
                 button: 'Two columns',
                 requiredContent: 'div(columns)',
                 template: '<div class="columns">' +
@@ -32,7 +33,7 @@
             editor.widgets.on('instanceCreated', function(evt) {
                 var widget = evt.data;
                 widget.on('key', function(event) {
-                    if ((event.data.keyCode == 13) && this.name == 'columns') {
+                    if ((event.data.keyCode == 13) && (event.sender.name == WIDGET_NAME)) {
                         var p = editor.document.createElement('p');
                         p.setHtml('&nbsp;');
                         p.insertAfter(this.wrapper);
@@ -43,6 +44,7 @@
                         newRange.moveToPosition(p, CKEDITOR.POSITION_BEFORE_START);
                         newRange.select();
                         selection.scrollIntoView();
+                        return false
                     }
                 });
             });

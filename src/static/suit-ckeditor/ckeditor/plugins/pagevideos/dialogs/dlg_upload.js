@@ -1,6 +1,6 @@
 (function($) {
 
-    CKEDITOR.dialog.add("pagevideos", function (editor) {
+    CKEDITOR.dialog.add('pagevideosDialog', function (editor) {
         var lang = editor.lang.pagevideos;
         return {
             title: lang.dialogTitle,
@@ -23,7 +23,6 @@
                     }
                 ]
             }],
-
             onShow: function() {
                 var element = editor.getSelection().getStartElement();
                 var embedCode = this.getContentElement('tab-basic', 'embedCode').getInputElement();
@@ -34,7 +33,6 @@
 
                 embedCode.focus(true);
             },
-
             onOk: function() {
                 var element = editor.getSelection().getStartElement();
                 var url = this.getValueOf('tab-basic', 'embedCode');

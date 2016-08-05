@@ -87,57 +87,7 @@
     };
 
     CKEDITOR.plugins.add("simplephotos", {
-        lang: 'en,ru',
         init: function(editor) {
-            var lang = editor.lang.simplephotos;
-
-            // ======================================
-            //      DIALOGS
-            // ======================================
-
-            CKEDITOR.dialog.add("simplephotos_image_description", this.path + "dialogs/image_description.js");
-
-
-            // ======================================
-            //      COMMANDS
-            // ======================================
-
-            // UPLOAD
-            editor.addCommand("simplephotos", new CKEDITOR.dialogCommand("simplephotos", {
-                modes: {
-                    wysiwyg: 1,
-                    source: 0
-                },
-                canUndo: true
-            }));
-
-            // IMAGE DESCRIPTION
-            editor.addCommand("simplephotos_image_description", new CKEDITOR.dialogCommand("simplephotos_image_description"));
-
-
-            // ======================================
-            //      CONTEXT MENU
-            // ======================================
-
-            // Добавление пунктов в контекстное меню
-            editor.addMenuGroup('images');
-            editor.addMenuItems({
-                _simple_image_description : {
-                    label : lang.contextMenuImageDescr,
-                    icon: this.path + 'descr.png',
-                    command : 'simplephotos_image_description',
-                    group : 'images'
-                }
-            });
-            editor.contextMenu.addListener(function(element) {
-                if (element && element.is('img') && element.hasClass('simple-photo')) {
-                    return {
-                        _simple_image_description : CKEDITOR.TRISTATE_OFF
-                    }
-                }
-                return null
-            });
-
             var path = this.path;
             editor.on('contentDom', function() {
                 InitUploader(editor, path);
