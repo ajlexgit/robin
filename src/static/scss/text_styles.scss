@@ -207,7 +207,6 @@
     .column {
       @include media_interval($media900, 0) {
         min-height: 1em;
-        @include flex(1 1 auto);
 
         & > *:first-child {
           margin-top: 0;
@@ -219,19 +218,10 @@
       }
 
       @include media_interval($media1200, 0) {
-        max-width: calc(50% - 25px);
+        @include flex-columns(2, 50px);
       }
       @include media_interval($media900, $media1200) {
-        max-width: calc(50% - 20px);
-      }
-    }
-
-    .column-left {
-      @include media_interval($media1200, 0) {
-        margin-right: 50px;
-      }
-      @include media_interval($media900, $media1200) {
-        margin-right: 40px;
+        @include flex-columns(2, 40px);
       }
     }
   }

@@ -26,45 +26,27 @@
 #gallery {
 
   .slider-item {
-    margin-right: 20px;
     cursor: pointer;
     @include border-box;
-    @include flex(1 0 0);
     @include media_interval($media1024, 0) {
-      // 4 items
-      max-width: calc((100% - 3 * 20px) / 4);
-      &:nth-child(n+4) {
-        margin-right: 0;
-      }
+      @include flex-columns(4, 20px);
       &:nth-child(n+5) {
         display: none;
       }
     }
     @include media_interval($media640, $media1024) {
-      // 3 items
-      max-width: calc((100% - 2 * 20px) / 3);
-      &:nth-child(n+3) {
-        margin-right: 0;
-      }
+      @include flex-columns(3, 20px);
       &:nth-child(n+4) {
         display: none;
       }
     }
     @include media_interval($media400, $media640) {
-      // 2 items
-      max-width: calc((100% - 20px) / 2);
-      &:nth-child(n+2) {
-        margin-right: 0;
-      }
+      @include flex-columns(2, 20px);
       &:nth-child(n+3) {
         display: none;
       }
     }
     @include media_interval(0, $media400) {
-      // 1 item
-      &:nth-child(n+1) {
-        margin-right: 0;
-      }
       &:nth-child(n+2) {
         display: none;
       }
