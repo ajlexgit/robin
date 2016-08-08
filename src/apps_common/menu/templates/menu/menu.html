@@ -1,7 +1,7 @@
 <ul itemscope itemtype="http://schema.org/SiteNavigationElement">
   {% for item in items %}
-    <li class="{% if item.active %}active{% endif %}">
-      <a href="{{ item.link }}" class="{{ item.classes }}" {{ item.flat_attrs }} itemprop="url">
+    <li class="{% if item.is_active %}active{% endif %}">
+      <a href="{{ item.url }}" class="{{ item.classes }}" {{ item.attrs }} itemprop="url">
         <span>{{ item.title }}</span>
       </a>
 

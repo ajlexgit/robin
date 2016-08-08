@@ -15,12 +15,12 @@
       <span id="mobile-menu-button"></span>
 
       <nav id="main-menu">
-        {% main_menu %}
+        {% menu 'main' %}
       </nav>
 
       {% ajaxcache 1800 mobile-menu request.path_info %}
         <div id="mobile-menu">
-          {% main_menu %}
+          {% menu 'main' %}
         </div>
       {% endajaxcache %}
     </div>

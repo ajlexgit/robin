@@ -171,6 +171,7 @@ MIDDLEWARE_CLASSES = (
     'libs.cache.middleware.SCCMiddleware',
     'libs.middleware.xss.XSSProtectionMiddleware',
     'libs.middleware.utm.UTMMiddleware',
+    'menu.middleware.MenuMiddleware',
     'seo.middleware.RedirectMiddleware',
 )
 

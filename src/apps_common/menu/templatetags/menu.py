@@ -1,23 +1,17 @@
-from django.template import Library
-from django.utils.translation import ugettext_lazy as _
-from ..menu import Menu, MenuItem
+from django.template import Library, loader
 
 register = Library()
 
-
 @register.simple_tag(takes_context=True)
-def main_menu(context, template='menu/menu.html'):
-    """ Главное меню """
-    menu = Menu(request=context.get('request'))
-    menu.append(
-        MenuItem(
-            title=_('Blog'),
-            url='blog:index',
-        ),
-        MenuItem(
-            title=_('Contacts'),
-            url='contacts:index',
-        ),
-    )
+def menu(context, name, template='menu/menu.html'):
+    request = context.get('request')
+    if not request:
+        return ''
 
-    return menu.render(template)
+    menus = getattr(request, '_menus', None)
+    if not menus:
+        return ''
+
+    return loader.render_to_string(template, {
+        'items': menus.get(name, ()),
+    }, request=context.get('request'))

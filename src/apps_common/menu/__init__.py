@@ -8,49 +8,50 @@
             ...
         )
 
-    Можно создать объект меню, передав ему список пунктов меню из конфигурации:
-        menu = Menu(request, config_list)
-
-    Формат пункта меню:
-        dict(
-            # Текст ссылки
-            title='Публикация 2',
-
-            # Ссылка, геренируемая по шаблону
-            url='module:detail',
-            url_args=(),
-            url_kwargs={
-                'post_id': 2,
-            },
-
-            # Аттрибуты ссылки
-            attrs={
-                'target': '_blank',
-                'class': 'menu-item',
-            },
-
-            # Дочерние пункты меню
-            childs=[],
+        MIDDLEWARE_CLASSES = (
+            ...
+            'menu.middleware.MenuMiddleware',
+            ...
         )
 
+    Пример:
+        # menu/menus.py
+            menu = Menu()
+            menu.append(
+                MenuItem('News', '/news/').append(
+                    MenuItem('Post 1', '/news/post-1/'),
+                    MenuItem('Post 2', '/news/post-2/'),
+                ),
+                MenuItem('Articles', '/articles/', search_id='articles'),
+            )
 
-    Также можно создавать меню на лету, пользуясь методами списка меню:
-        menu = Menu(request)
-        menu.append(
-            MenuItem('Test', '/test/').append(
-                MenuItem('Subtest1', '/subtest/'),
-            ),
-            MenuItem('Test2', '/test2/'),
-        )
-        menu.insert(0,
-            MenuItem('Test3', '/test3/', attrs={
-                'target': '_blank',
-                'class': 'my-menu red-item'
-            }),
-        )
-        menu.render(template='menu/menu.html')
+        # template.html
+            {% load menu %}
+
+            ...
+            {% menu 'main' %}
+            ...
+
+        # views.py:
+            from menu import activate_menu
+            ...
+            # Ручная установка активного пункта меню по его search_id
+            activate_menu(request, search_id='articles')
 """
 
-from .menu import Menu
+def activate_menu(request, search_id):
+    """
+        Активация пункта во всех меню по его search_id.
+    """
+    menus = getattr(request, '_menus', None)
+    if not menus:
+        return
 
-__all__ = ['Menu']
+    for menu in menus.values():
+        if menu.is_active:
+            continue
+
+        for item in menu.items:
+            if item.search_id == search_id:
+                item.activate()
+                break
