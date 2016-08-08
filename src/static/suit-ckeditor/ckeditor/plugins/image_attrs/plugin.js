@@ -22,7 +22,8 @@
                     label: 'Edit image attributes',
                     icon: this.path + 'icons/image_attrs.png',
                     command: 'imageAttrs',
-                    group: 'imageGroup'
+                    group: 'imageGroup',
+                    order: 10
                 });
 
                 editor.contextMenu.addListener(function(element) {

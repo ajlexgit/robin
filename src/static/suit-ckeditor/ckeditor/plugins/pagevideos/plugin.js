@@ -42,19 +42,21 @@
             // ======================================
 
             // Добавление пунктов в контекстное меню
-            editor.addMenuGroup('videos', 150);
+            editor.addMenuGroup('pageVideo', 150);
             editor.addMenuItems({
                 _change_video : {
                     label : lang.contextMenuEdit,
                     icon: this.path + 'icons/edit.png',
                     command : 'ChangeVideo',
-                    group : 'videos'
+                    group : 'pageVideo',
+                    order: 10
                 },
                 _video_block_description : {
                     label : lang.contextMenuBlockDescr,
                     icon: this.path + 'icons/descr.png',
                     command : 'pagevideos_block_description',
-                    group : 'videos'
+                    group : 'pageVideo',
+                    order: 20
                 }
             });
             editor.contextMenu.addListener(function (element) {

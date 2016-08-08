@@ -150,37 +150,41 @@
             // ======================================
 
             // Добавление пунктов в контекстное меню
-            editor.addMenuGroup('images', 150);
             editor.addMenuItems({
                 _crop_command : {
                     label : lang.contextMenuCrop,
                     icon: this.path + 'icons/crop.png',
                     command : 'CropImage',
-                    group : 'images',
+                    group : 'imageGroup',
                     order: 1
                 },
                 _rotate_left: {
                     label: lang.contextMenuRotateCW,
                     icon: this.path + 'icons/rotate-cw.png',
                     command: 'RotateCW',
-                    group: 'images',
+                    group: 'imageGroup',
                     order: 2
                 },
                 _rotate_right: {
                     label: lang.contextMenuRotateCCW,
                     icon: this.path + 'icons/rotate-ccw.png',
                     command: 'RotateCCW',
-                    group: 'images',
+                    group: 'imageGroup',
                     order: 3
-                },
-                _photos_block_description : {
-                    label : lang.contextMenuBlockDescr,
-                    icon: this.path + 'icons/descr.png',
-                    command : 'pagephotos_block_description',
-                    group : 'images',
-                    order: 4
                 }
             });
+
+            editor.addMenuGroup('pagePhotos', 150);
+            editor.addMenuItems({
+                _photos_block_description: {
+                    label: lang.contextMenuBlockDescr,
+                    icon: this.path + 'icons/descr.png',
+                    command: 'pagephotos_block_description',
+                    group: 'pagePhotos',
+                    order: 10
+                }
+            });
+
             editor.contextMenu.addListener(function (element) {
                 if (element) {
                     var isImage = element.is('img') && !element.isReadOnly(),

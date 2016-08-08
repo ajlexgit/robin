@@ -65,20 +65,6 @@ CKEDITOR.stylesSet.add('default', [
 
 // Утилиты
 CKEDITOR.utils = {
-    // getWidget: function(editor, element, widgetName) {
-    //     var widget;
-    //     if (element && (widget = editor.widgets.getByElement(element))) {
-    //         if (!widgetName || (widget.name == widgetName)) return widget;
-    //     }
-    //
-    //     widget = null;
-    //     var wrapper = editor.elementPath(editor.elementPath(element).blockLimit).contains(function(node) {
-    //         widget = editor.widgets.getByElement(node);
-    //         return !widgetName || (widget.name == widgetName);
-    //     }, 1);
-    //
-    //     return wrapper && widget;
-    // },
     getAllowedStyles: function(editor, tagName) {
         var result = [];
         editor.getStylesSet(function(styleSet) {
