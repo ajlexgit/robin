@@ -1,3 +1,13 @@
+/*
+  Пример:
+    input {
+      color: #808080;
+      ...
+      @include placeholder {
+        color: red;
+      }
+    }
+*/
 @mixin placeholder() {
   &::-webkit-input-placeholder {
     @content;
@@ -5,11 +15,9 @@
   &::-moz-placeholder {
     @content;
   }
-  /* Firefox 19+ */
   &:-moz-placeholder {
     @content;
   }
-  /* Firefox 18- */
   &:-ms-input-placeholder {
     @content;
   }

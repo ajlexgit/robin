@@ -1,25 +1,5 @@
 @import "conf";
 
-
-@function legacy-value($value) {
-  $conversion-map: (
-    border-box: border,
-    padding-box: padding,
-    content-box: content,
-  );
-
-  @if map-has-key($conversion-map, $value) {
-    @return map-get($conversion-map, $value);
-  }
-};
-
-// @include background-clip(border-box);
-@mixin background-clip($value) {
-  -webkit-background-clip: legacy-value($value);
-  -moz-background-clip: legacy-value($value);
-  background-clip: $value;
-}
-
 // background-size: rel-background-size(30px, 30px);
 @function rel-background-size($img_w, $img_h, $sprite_w:$sprite_width, $sprite_h:$sprite_height) {
   $offset_left: 100 * $sprite_w / $img_w;
@@ -41,15 +21,4 @@
   }
 
   @return #{$offset_left + "%"} #{$offset_top + "%"}
-}
-
-// Полифилл для IE8-9.
-// Поддерживает только cover / contain.
-@mixin background-size($value) {
-  $polyfilled: (cover, contain);
-
-  background-size: $value;
-  @if ($value in $polyfilled) {
-    -ms-behavior: url(/static/polyfills/backgroundsize.min.htc);
-  }
 }

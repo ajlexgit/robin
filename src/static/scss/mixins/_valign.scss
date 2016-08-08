@@ -1,12 +1,14 @@
-// Вертикальное центрирование
-
-@mixin valign_flex() {
-  @include flexbox;
-  @include align-items(center);
-  @include justify-content(center);
+// Вертикальное центрирование. Применяется к родителю
+@mixin valign_before() {
+  &:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    min-height: inherit;
+    vertical-align: middle;
+  }
 }
 
-// Применяется к родителю
 @mixin valign_after() {
   &:after {
     content: '';
