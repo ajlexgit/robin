@@ -20,7 +20,7 @@ def block_output(context, block, ajax=False, **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def render_attached_blocks(context, instance, set_name='default'):
+def render_attached_blocks(context, entity, set_name='default', **kwargs):
     output = []
     kwargs.setdefault('instance', entity)
 
@@ -68,4 +68,3 @@ def render_first_attachable_block(context, model, ajax=False, **kwargs):
         return ''
 
     return render_attachable_block(context, block, ajax=ajax)
-    
