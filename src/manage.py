@@ -1,13 +1,11 @@
 import os
 import sys
 
+# pm delete_app
 # Blocks kwars on ajax
-# Menu: выделение из вьюхи
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Images: alt, title, file name
-# HTML5 Manifest
-# PIP -> jpegtran
 # Schema.org: per page + get data from models
 # Mailer antispam, proves
 # Admin: функция "скопировать из"

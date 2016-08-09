@@ -49,7 +49,7 @@ body {
   display: table-cell;
   position: relative;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
   vertical-align: top;
 }
 
@@ -62,7 +62,7 @@ body {
   display: table-cell;
   position: relative;
   height: 0;
-  z-index: 2;
+  z-index: 1;
   vertical-align: top;
 }
 

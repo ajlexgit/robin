@@ -39,6 +39,9 @@ class ValuteField(models.DecimalField):
 
     def get_db_prep_save(self, value, connection):
         value = self.to_python(value)
+        if value is None:
+            return None
+
         return connection.ops.value_to_db_decimal(
             value.as_decimal(),
             self.max_digits,

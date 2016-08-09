@@ -533,7 +533,7 @@
             Определение того, что клик произошел вне окна и нужно его закрыть (если hideOnClick = true)
          */
         cls.isOutClick = function($target) {
-            return $target.closest(this.$window).length == 0;
+            return $target.closest('body').length && !$target.closest(this.$window).length;
         };
 
         /*
