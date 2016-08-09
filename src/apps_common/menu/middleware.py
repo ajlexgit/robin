@@ -3,7 +3,7 @@ from .menus import *
 
 class MenuMiddleware:
     @staticmethod
-    def process_view(request, *args, **kwargs):
+    def process_request(request):
         """ Создание экземпляров меню """
         request._menus = {
             'main': get_main_menu(),
