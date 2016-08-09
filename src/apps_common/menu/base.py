@@ -45,11 +45,11 @@ class Menu(BaseMenuObject):
         result = []
 
         for item in root.childs:
-            if key(item):
-                result.append(item)
-
             if item.childs:
                 result.extend(self._recursive_search(item, key))
+
+            if key(item):
+                result.append(item)
 
         return result
 

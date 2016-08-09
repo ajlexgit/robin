@@ -22,12 +22,13 @@ class MenuMiddleware:
         if request.path_info == '/':
             return response
 
+        current_url = request.path_info
         for menu in menus.values():
             if menu.is_active:
                 continue
 
             for item in menu.items:
-                if request.path_info.startswith(item.url):
+                if current_url.startswith(item.url):
                     item.activate()
                     break
 
