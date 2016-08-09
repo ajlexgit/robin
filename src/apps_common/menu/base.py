@@ -61,14 +61,14 @@ class Menu(BaseMenuObject):
 class MenuItem(BaseMenuObject):
     """ Пункт меню """
     __slots__ = Menu.__slots__ + (
-        '_parent', '_search_id',
+        '_parent', '_item_id',
         '_title', '_url', '_classes', '_attrs',
     )
 
-    def __init__(self, title, url, attrs=None, search_id=''):
+    def __init__(self, title, url, attrs=None, item_id=''):
         super().__init__()
         self._parent = None
-        self._search_id = search_id
+        self._item_id = item_id
         self._title = str(title)
         self._url = resolve_url(url)
         if attrs is None:
@@ -79,7 +79,7 @@ class MenuItem(BaseMenuObject):
             self._attrs = flatatt(attrs)
 
     def __repr__(self):
-        return '{classname}({item.title!r}, {item.url!r}, {item.attrs!r}, {item._search_id!r})'.format(
+        return '{classname}({item.title!r}, {item.url!r}, {item.attrs!r}, {item._item_id!r})'.format(
             classname=self.__class__.__name__,
             item=self
         )
@@ -101,8 +101,8 @@ class MenuItem(BaseMenuObject):
         return self._attrs
 
     @property
-    def search_id(self):
-        return self._search_id
+    def item_id(self):
+        return self._item_id
 
     def activate(self):
         super().activate()

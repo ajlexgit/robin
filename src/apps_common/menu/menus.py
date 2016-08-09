@@ -15,7 +15,6 @@ def get_main_menu():
         MenuItem(
             title=_('Contacts'),
             url='contacts:index',
-            search_id='contact'
         ),
     )
     return menu
