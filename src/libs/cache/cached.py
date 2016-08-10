@@ -1,5 +1,6 @@
 from hashlib import md5
 from random import randint
+from functools import wraps
 from inspect import signature
 from django.core.cache import caches
 
@@ -82,6 +83,7 @@ def cached(*key, time=5*60, backend='default'):
             for k, v in sig.parameters.items()
         }
 
+        @wraps(func)
         def wrapper(*args, **kwargs):
             bind_args = sig.bind(*args, **kwargs)
             bind_args = dict(defaults, **bind_args.arguments)

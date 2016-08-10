@@ -1,12 +1,12 @@
 Django==1.8.13
-django-model-utils==2.5
+django-model-utils==2.5.2
 django-pipeline==1.6.8
 django-redis==4.4.4
 django-softhyphen==1.1.0
 django-solo==1.1.2
 django-suit==0.2.19
 django-suit-ckeditor==0.0.2
-beautifulsoup4==4.5.0
+beautifulsoup4==4.5.1
 html5lib==0.999999999
 csscompressor==0.9.4
 jsmin==2.2.1
@@ -16,7 +16,7 @@ psycopg2==2.6.2
 pytils==0.3
 pytz==2016.6.1
 redis==2.10.5
-requests==2.10.0
+requests==2.11.0
 
 # jinja2==2.7.3
 # django_jinja==2.2.0
