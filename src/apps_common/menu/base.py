@@ -1,5 +1,6 @@
 from django.forms.utils import flatatt
 from django.shortcuts import resolve_url
+from django.core.urlresolvers import NoReverseMatch
 from django.utils.functional import cached_property
 
 
@@ -70,7 +71,12 @@ class MenuItem(BaseMenuObject):
         self._parent = None
         self._item_id = item_id
         self._title = str(title)
-        self._url = resolve_url(url)
+
+        try:
+            self._url = resolve_url(url)
+        except NoReverseMatch:
+            self._url = url
+
         if attrs is None:
             self._classes = ''
             self._attrs = ''
