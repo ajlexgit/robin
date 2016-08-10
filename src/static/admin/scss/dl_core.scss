@@ -21,13 +21,12 @@ $footer_1col: $media480;
       text-shadow: none;
       font-weight: normal;
       @include font-size(24px);
-
     }
   }
 
   #user-tools {
     padding-top: 17px;
-    @include font-size(16px);
+    @include font-size(15px);
 
     .username {
       color: #2C3035;
@@ -96,7 +95,7 @@ $footer_1col: $media480;
 
 #left-nav {
   margin-top: 0;
-  @include font-size(14px);
+  @include font-size(13px);
 
   ul {
     border-bottom: none;
@@ -221,9 +220,9 @@ $footer_1col: $media480;
 
 // стилизация хлебных крошек
 .breadcrumb, .breadcrumbs {
-  padding: 20px;
+  padding: 12px 20px;
   margin: 0;
-  @include font-size(16px);
+  @include font-size(14px);
 }
 
 // правка сообщений
@@ -237,7 +236,7 @@ $footer_1col: $media480;
   color: #333333;
   text-shadow: none;
   border: none;
-  @include font-size(14px);
+  @include font-size(13px, 16px);
   @include box-shadow(inset 0px 0px 0px 1px #d0d0d0);
   @include border_radius(7px);
   @include linear-gradient(to bottom, #f0f0f0, #e0e0e0);
@@ -422,8 +421,9 @@ $footer_1col: $media480;
     }
 
     p {
+      margin: 4px 0 0;
       color: #2C3035;
-      @include font-size(14px, 16px);
+      @include font-size(13px, 16px);
     }
 
     .help-box {
@@ -440,10 +440,6 @@ $footer_1col: $media480;
     .email-box {
       @include media_interval(0, $media400) {
         display: none;
-      }
-
-      a {
-        @include font-size(14px, 16px);
       }
     }
 
@@ -467,10 +463,10 @@ $footer_1col: $media480;
   ======================================
 */
 .ui-widget {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Roboto', sans-serif;
 
   input, select, textarea, button {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Roboto', sans-serif;
   }
 }
 

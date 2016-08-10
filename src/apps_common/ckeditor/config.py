@@ -5,7 +5,7 @@ from django.conf import settings
 CKEDITOR_CONFIG_DEFAULT = {
     'extraPlugins': 'textlen,enterfix,image_attrs',
     'contentsCss': (
-        'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
+        'https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic',
         settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
     ),
     'toolbar': [
@@ -31,7 +31,7 @@ CKEDITOR_CONFIG_DEFAULT = {
 CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
     'extraPlugins': 'textlen,enterfix,image_attrs,pagephotos,pagevideos,pagefiles,simplephotos,columns,div',
     'contentsCss': (
-        'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic',
+        'https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic',
         settings.STATIC_URL + 'ckeditor/admin/css/ckeditor.css',
     ),
     'toolbar': [

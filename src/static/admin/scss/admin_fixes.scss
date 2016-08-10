@@ -1,8 +1,8 @@
 @import "mixins";
 
 body {
-  font-family: 'Source Sans Pro', sans-serif;
-  @include font-size(14px);
+  font-family: 'Roboto', sans-serif;
+  @include font-size(13px);
 
   button, select, textarea, input[type="text"], input[type="password"],
   input[type="datetime"], input[type="datetime-local"],
@@ -10,17 +10,21 @@ body {
   input[type="week"], input[type="number"], input[type="email"],
   input[type="url"], input[type="search"], input[type="tel"],
   input[type="color"], .uneditable-input {
-    font-family: 'Source Sans Pro', sans-serif;
-    @include font-size(14px);
+    font-family: 'Roboto', sans-serif;
+    @include font-size(13px);
   }
 
-  select, textarea, input[type="text"], input[type="password"],
+  select, input[type="text"], input[type="password"],
   input[type="datetime"], input[type="datetime-local"],
   input[type="date"], input[type="month"], input[type="time"],
   input[type="week"], input[type="number"], input[type="email"],
   input[type="url"], input[type="search"], input[type="tel"],
   input[type="color"], .uneditable-input {
     padding: 6px;
+  }
+
+  textarea {
+    padding: 4px 6px;
   }
 }
 
@@ -58,6 +62,11 @@ input[type=number] {
 
 .controls .file-upload .clearable-file-input input {
   margin: 7px 7px 0 0;
+}
+
+.controls .file-upload .clearable-file-input label {
+  margin: 0;
+  line-height: 1.2;
 }
 
 // правка полей EnclosedInput
@@ -293,7 +302,7 @@ td, th {
 
 // уменьшаем столбец с заголовками полей
 label {
-  @include font-size(13px);
+  @include font-size(12px);
 }
 
 .form-horizontal .control-group:first-child .control-label,
@@ -307,7 +316,7 @@ label {
 }
 
 .form-horizontal .inline-related h3 a {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 .form-horizontal .inline-related h3 b {
@@ -317,11 +326,6 @@ label {
 // увеличиваем отступ между инлайнами
 .form-horizontal .inline-related:not(:first-of-type) h3 {
   margin-top: 8px;
-}
-
-// увеличиваем шрифт заголовка инлайнов
-.form-horizontal .inline-related h3 {
-  @include font-size(14px);
 }
 
 // отступ между инлайнами
@@ -357,13 +361,8 @@ tr.selected .select2-chosen {
 }
 
 // правка из-за шрифта
-[class^="icon-"], [class*=" icon-"] {
-  margin-top: 2px;
-}
-
-// правка из-за шрифта
 input[type="radio"], input[type="checkbox"] {
-  margin: 2px 0 0;
+  margin: 0;
 }
 
 select, input[type="file"] {
@@ -379,7 +378,7 @@ select, input[type="file"] {
   Font-size
 */
 .nav-tabs-suit li a {
-  @include font-size(14px);
+  @include font-size(13px);
   @include box-shadow(none);
 }
 
