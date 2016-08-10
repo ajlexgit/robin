@@ -16,18 +16,18 @@
 
     Пример:
         # menu/menus.py
-            menu = Menu()
-            menu.append(
-                MenuItem('News', '/news/').append(
-                    MenuItem('Post 1', '/news/post-1/'),
-                    MenuItem('Post 2', '/news/post-2/'),
-                ),
-                MenuItem('Articles', '/articles/', item_id='articles'),
-            )
+            def main():
+                menu = Menu()
+                menu.append(
+                    MenuItem('News', '/news/').append(
+                        MenuItem('Post 1', '/news/post-1/'),
+                        MenuItem('Post 2', '/news/post-2/'),
+                    ),
+                    MenuItem('Articles', '/articles/', item_id='articles'),
+                )
+                return menu
 
         # template.html
-            {% load menu %}
-
             ...
             {% menu 'main' %}
             ...
