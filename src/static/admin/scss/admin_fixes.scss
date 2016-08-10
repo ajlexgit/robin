@@ -315,8 +315,8 @@ label {
   min-width: 100px;
 }
 
-.form-horizontal .inline-related h3 a {
-  margin-left: 10px;
+.form-horizontal .inline-related h3 > a {
+  display: none;
 }
 
 .form-horizontal .inline-related h3 b {
