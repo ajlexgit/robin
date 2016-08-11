@@ -8,9 +8,9 @@ from libs.storages import MediaStorage
 
 
 class SeoConfig(SingletonModel):
-    title = models.CharField(_('site title'), max_length=128)
-    keywords = models.TextField(_('site keywords'), max_length=255, blank=True)
-    description = models.TextField(_('site description'), max_length=255, blank=True)
+    title = models.CharField(_('meta title'), max_length=128)
+    keywords = models.TextField(_('meta keywords'), max_length=255, blank=True)
+    description = models.TextField(_('meta description'), max_length=255, blank=True)
 
     class Meta:
         default_permissions = ('change',)
@@ -25,9 +25,9 @@ class SeoData(models.Model):
     object_id = models.PositiveIntegerField()
     entity = generic.GenericForeignKey()
 
-    title = models.CharField(_('title'), max_length=128, blank=True)
-    keywords = models.TextField(_('keywords'), max_length=255, blank=True)
-    description = models.TextField(_('description'), max_length=255, blank=True)
+    title = models.CharField(_('meta title'), max_length=128, blank=True)
+    keywords = models.TextField(_('meta keywords'), max_length=255, blank=True)
+    description = models.TextField(_('meta description'), max_length=255, blank=True)
     canonical = models.URLField(_('canonical URL'), blank=True)
 
     # opengraph
