@@ -263,18 +263,21 @@ def put_on_bg(image, bg_size, color=(255,255,255,0), offset=(0.5, 0.5), center=(
     background = Image.new('RGBA', bg_size, color)
 
     if center:
-        fianl_offset = (
+        final_offset = (
             max(0, int(background.size[0] * center[0] - image.size[0] / 2)),
             max(0, int(background.size[1] * center[1] - image.size[1] / 2))
         )
     else:
         size_diff = list(itertools.starmap(operator.sub, zip(background.size, image.size)))
-        fianl_offset = (int(size_diff[0] * offset[0]), int(size_diff[1] * offset[1]))
+        final_offset = (int(size_diff[0] * offset[0]), int(size_diff[1] * offset[1]))
 
     if masked:
-        background.paste(image, fianl_offset, image)
+        try:
+            background.paste(image, final_offset, image)
+        except ValueError:
+            background.paste(image, final_offset)
     else:
-        background.paste(image, fianl_offset)
+        background.paste(image, final_offset)
     return background
 
 
@@ -410,7 +413,7 @@ def variation_resize(image, variation, target_format):
                 image_size.max_height(max_height)
 
         # если размер вычисляется автоматически и нет прозрачности - накладывать на фон не нужно
-        need_bg = target_size != (0, 0) or mode == 'RGBA'
+        need_bg = target_size != (0, 0) or mode == 'RGBA' or bg_options['color'][3] != 0
 
         # Определение размера холста
         target_size = list(target_size)
@@ -429,7 +432,7 @@ def variation_resize(image, variation, target_format):
 
         if need_bg:
             # masked = mode == 'RGBA'
-            masked = False # баг потери качества PNG при наложении
+            masked = bg_options['color'][3] != 0 # баг потери качества PNG при наложении
             image = put_on_bg(image, target_size, masked=masked, **bg_options)
 
     image.format = image_format
