@@ -18,7 +18,7 @@ class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
 
 
 class NotifyReceiverAdmin(ModelAdminInlineMixin, admin.TabularInline):
-    """ Инлайн получалей сообщений """
+    """ Получатели сообщений """
     model = NotifyReceiver
     extra = 0
     min_num = 1

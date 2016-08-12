@@ -6,7 +6,7 @@
         var address = $('#id_address').val();
         var gmap = $('#id_coords').next('.google-map').data(GMap.prototype.DATA_KEY);
 
-        gmap.geocode(city + address, function(point) {
+        gmap.geocode(city + ' ' + address, function(point) {
             var marker = this.markers[0];
             if (marker) {
                 marker.position(point);
