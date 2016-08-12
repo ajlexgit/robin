@@ -17,7 +17,11 @@ re_not_numbers = re.compile('[^+\d]+')
 
 
 def get_hybernator():
-    hybernator = get_hyphenator_for_language(get_language())
+    lang = get_language()
+    if lang == 'ru':
+        lang = 'ru-RU'
+
+    hybernator = get_hyphenator_for_language(lang)
     hybernator.left = 4
     hybernator.right = 3
     return hybernator
