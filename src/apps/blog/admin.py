@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.utils import dateformat
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
+from suit.admin import SortableModelAdmin
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from attachable_blocks.admin import AttachedBlocksStackedInline
@@ -41,7 +42,7 @@ class BlogConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
 
 
 @admin.register(Tag)
-class TagAdmin(ModelAdminMixin, admin.ModelAdmin):
+class TagAdmin(ModelAdminMixin, SortableModelAdmin):
     """ Тэг """
     fieldsets = (
         (None, {

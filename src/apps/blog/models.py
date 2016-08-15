@@ -36,19 +36,21 @@ class TagQuerySet(AliasedQuerySetMixin, models.QuerySet):
         return self.filter(
             posts__status=BlogPost.STATUS_PUBLIC,
             posts__date__lte=now()
-        ).distinct('pk')
+        ).order_by('pk', 'sort_order').distinct('pk')
 
 
 class Tag(models.Model):
     """ Тэг """
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
+    sort_order = models.IntegerField(_('order'), default=0)
 
     objects = TagQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('Tag')
         verbose_name_plural = _('Tags')
+        ordering = ('sort_order', )
 
     def __str__(self):
         return self.title
