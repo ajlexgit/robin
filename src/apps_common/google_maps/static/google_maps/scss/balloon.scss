@@ -70,16 +70,17 @@ $arrow_space: 6px;      // расстояние между маркером и �
 // ====================
 
 .gmap-balloon {
-  width: 80%;
   max-width: 350px;
 
   .gmap-balloon-content {
     width: 350px;
     padding: 20px;
-    @include box-shadow(8px 8px 10px $balloon_shadow);
     @include border_radius(10px);
+    @include font-size(14px, 18px);
+    @include box-shadow(8px 8px 10px $balloon_shadow);
     @include media_interval(0, $media768) {
       padding: 14px;
+      @include font-size(12px);
     }
   }
 

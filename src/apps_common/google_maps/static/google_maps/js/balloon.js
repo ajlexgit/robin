@@ -434,10 +434,16 @@
             var icon = this._anchor.icon();
             if (icon) {
                 if (icon.scaledSize) {
-                    return icon.scaledSize.height;
+                    var offset_y =  icon.scaledSize.height;
                 } else if (icon.size) {
-                    return icon.size.height;
+                    offset_y = icon.size.height;
                 }
+
+                if (icon.anchor) {
+                    offset_y -= parseInt(icon.anchor.y) || 0;
+                }
+
+                return offset_y;
             }
 
             return 40;
