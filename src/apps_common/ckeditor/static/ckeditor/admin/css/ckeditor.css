@@ -47,10 +47,14 @@ li {
 }
 
 blockquote {
-    margin: 0 0 1em;
-    padding: 1em 1em 1px;
+    margin: 1.2em 0;
+    padding: 1em;
     color: white;
-    background-color: #2C2F35;
+    background-color: #ff5001;
+}
+
+blockquote > *:last-child {
+    margin-bottom: 0;
 }
 
 .no-margin {
