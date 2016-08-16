@@ -59,6 +59,7 @@ CKEDITOR.editorConfig = function(config) {
 
 CKEDITOR.stylesSet.add('default', [
     // Block Styles
+    {name: 'Default', element: ['p', 'h2', 'h3', 'h4'], attributes: {'class': ' '}},
     {name: 'No margin', element: ['p', 'h2', 'h3', 'h4'], attributes: {'class': 'no-margin'}}
 ]);
 
