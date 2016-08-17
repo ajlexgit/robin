@@ -34,7 +34,7 @@
             if (!this.$button.parent().hasClass('no-counter')) {
                 this.getShareCount();
             } else {
-                this.updateData();
+                this.fetchMeta();
             }
         };
 
@@ -43,7 +43,7 @@
             this.$button.removeData(this.DATA_KEY);
         };
 
-        cls.updateData = function() {
+        cls.fetchMeta = function() {
             var data = this.$button.data();
             var parent_data = this.$button.parent().data();
 
@@ -79,24 +79,10 @@
             if (!this.description) {
                 this.description = $('meta[name="description"]').text();
             }
-
-
-            if (this.url) {
-                this.url = encodeURIComponent(this.url);
-            }
-            if (this.title) {
-                this.title = encodeURIComponent(this.title);
-            }
-            if (this.image) {
-                this.image = encodeURIComponent(this.image);
-            }
-            if (this.description) {
-                this.description = encodeURIComponent(this.description);
-            }
         };
 
         cls.getShareCount = function() {
-            this.updateData();
+            this.fetchMeta();
             return '';
         };
 
@@ -175,7 +161,7 @@
                 that.shareCountFetched(count);
             };
 
-            this._shareCountScript('https://vk.com/share.php?act=count&url=' + this.url);
+            this._shareCountScript('https://vk.com/share.php?act=count&url=' + encodeURIComponent(this.url));
         };
     });
 
@@ -193,7 +179,7 @@
                 }
             };
 
-            this._shareCountScript('https://api.facebook.com/method/links.getStats?urls=' + this.url + '&format=json&callback=social_facebook');
+            this._shareCountScript('https://api.facebook.com/method/links.getStats?urls=' + encodeURIComponent(this.url) + '&format=json&callback=social_facebook');
         };
     });
 
@@ -230,7 +216,7 @@
                 that.shareCountFetched(parseInt(count));
             };
 
-            this._shareCountScript('https://share.yandex.ru/gpp.xml?url=' + this.url);
+            this._shareCountScript('https://share.yandex.ru/gpp.xml?url=' + encodeURIComponent(this.url));
         };
     });
 
@@ -249,7 +235,7 @@
                 that.shareCountFetched(data['count']);
             };
 
-            this._shareCountScript('https://www.linkedin.com/countserv/count/share?url=' + this.url + '&callback=social_linkedIn');
+            this._shareCountScript('https://www.linkedin.com/countserv/count/share?url=' + encodeURIComponent(this.url) + '&callback=social_linkedIn');
         };
     });
 
@@ -268,7 +254,7 @@
                 that.shareCountFetched(data['count']);
             };
 
-            this._shareCountScript('https://widgets.pinterest.com/v1/urls/count.json?url=' + this.url + '&callback=social_pinterest');
+            this._shareCountScript('https://widgets.pinterest.com/v1/urls/count.json?url=' + encodeURIComponent(this.url) + '&callback=social_pinterest');
         };
     });
 

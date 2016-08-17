@@ -1,6 +1,8 @@
 from urllib.parse import urlencode
 from collections import defaultdict
 from django.template import loader, Library
+from libs.description import description
+from ..utils import TWITTER_MAX_LEN, TWITTER_URL_LEN, LINKEDIN_MAX_LEN
 
 register = Library()
 
@@ -47,7 +49,7 @@ def social_button(context, provider, text='', url='', title='', description='', 
     elif provider == 'tw':
         social_data = {
             'url': social_data['url'],
-            'text': social_data['description'],
+            'text': description(social_data['description'], 100, TWITTER_MAX_LEN - TWITTER_URL_LEN - 1)
         }
         share_url = 'http://twitter.com/share?%s' % urlencode(social_data)
     elif provider == 'gp':
@@ -61,7 +63,7 @@ def social_button(context, provider, text='', url='', title='', description='', 
             'url': social_data['url'],
             'title': social_data['title'],
             'image': social_data['image'],
-            'summary': social_data['description'],
+            'summary': description(social_data['description'], 540, LINKEDIN_MAX_LEN),
         }
         share_url = 'http://www.linkedin.com/shareArticle?%s' % urlencode(social_data)
     elif provider == 'pn':
