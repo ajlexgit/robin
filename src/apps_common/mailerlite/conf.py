@@ -1,8 +1,6 @@
 from django.conf import settings
 
-API_URL = 'https://api.mailerlite.com/api/'
-API_KEY = getattr(settings, 'MAILERLITE_APIKEY')
-
+# При конвертации ссылок для Mailerlite вставлять "https://" вместо "http://"
 HTTPS_ALLOWED = False
 
 CKEDITOR_CONFIG = {

@@ -1,6 +1,6 @@
 import requests
+from django.conf import settings
 from libs.associative_request import associative
-from .. import conf
 
 __all__ = ['SubscribeAPIError', 'request']
 
@@ -17,9 +17,9 @@ class SubscribeAPIError(Exception):
 
 def request(api_method, method='GET', params=None, data=None, version=2):
     """ Запрос к API """
-    url = '%sv%d/%s' % (conf.API_URL, version, api_method)
+    url = 'https://api.mailerlite.com/api/v%d/%s' % (version, api_method)
     headers = {
-        'X-MailerLite-ApiKey': conf.API_KEY,
+        'X-MailerLite-ApiKey': settings.MAILERLITE_APIKEY,
     }
     response = requests.request(method, url,
         headers=headers,

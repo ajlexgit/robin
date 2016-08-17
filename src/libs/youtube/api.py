@@ -1,17 +1,14 @@
 import requests
 from django.conf import settings
 
-API_URL = 'https://www.googleapis.com/youtube/v3/'
-API_KEY = getattr(settings, 'YOUTUBE_APIKEY', 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
-
 
 def _get(resource, data):
     default = {
-        'key': API_KEY,
+        'key': settings.YOUTUBE_APIKEY,
     }
     default.update(data)
 
-    url = '%s%s' % (API_URL, resource)
+    url = 'https://www.googleapis.com/youtube/v3/%s' % resource
     response = requests.get(url, params=default)
     if response.status_code == 200:
         return response.json()

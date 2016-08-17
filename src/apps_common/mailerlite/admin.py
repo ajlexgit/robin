@@ -1,5 +1,4 @@
 from copy import deepcopy
-from premailer import Premailer
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -185,7 +184,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         # Доп инфа для суперадмина
         if request.user.is_superuser:
             default = (
-                (_('Information'), {
+                (_('Additional information'), {
                     'fields': (
                         'status', 'published', 'remote_id'
                     )
@@ -320,6 +319,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return redirect('admin:%s_%s_changelist' % info)
 
     def sendtest(self, request, campaign_id):
+        from premailer import Premailer
         from django.http import JsonResponse, Http404
         from django.core.mail import send_mail, BadHeaderError
 
@@ -356,7 +356,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'email',
             )
         }),
-        (_('Person'), {
+        (_('Additional information'), {
             'fields': (
                 'name', 'last_name', 'company',
             )
