@@ -62,7 +62,6 @@ class ShopCategory(MPTTModel):
     )
     title = models.CharField(_('title'), max_length=128)
     slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
-    is_visible = models.BooleanField(_('visible'), default=True, db_index=True)
     product_count = models.PositiveIntegerField(
         default=0,
         editable=False,
@@ -73,9 +72,10 @@ class ShopCategory(MPTTModel):
         editable=False,
         help_text=_('count of visible products'),
     )
-    sort_order = models.PositiveIntegerField(_('sort order'))
+    is_visible = models.BooleanField(_('visible'), default=True, db_index=True)
     created = models.DateTimeField(_('create date'), default=now, editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
+    sort_order = models.IntegerField(_('order'), default=0)
 
     objects = ShopCategoryTreeManager()
 
@@ -195,10 +195,6 @@ class ShopProductGalleryImageItem(GalleryImageItem):
             size=(300, 300),
             crop=False,
         ),
-        small=dict(
-            size=(160, 160),
-            crop=False,
-        ),
         admin=dict(
             size=(160, 120),
             crop=False,
@@ -232,7 +228,7 @@ class ShopProduct(models.Model):
     )
     gallery = GalleryField(ShopProductGallery, verbose_name=_('gallery'), blank=True, null=True)
     description = CKEditorField(_('description'), blank=True)
-    price = ValuteField(_('price'), validators=[MinValueValidator(0)])
+    price = ValuteField(_('price'))
     is_visible = models.BooleanField(_('visible'), default=True)
     created = models.DateTimeField(_('create date'), default=now, editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
@@ -447,7 +443,7 @@ class OrderRecord(models.Model):
     """ Продукты заказа """
     order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='records')
     product = models.ForeignKey(ShopProduct, verbose_name=_('product'))
-    order_price = ValuteField(_('price per unit'), validators=[MinValueValidator(0)])
+    order_price = ValuteField(_('price per unit'))
     count = models.PositiveSmallIntegerField(_('count'))
 
     class Meta:
