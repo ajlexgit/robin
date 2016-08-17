@@ -20,11 +20,11 @@ re_domain_urls = re.compile(r'(url\()(/[^/])')
 
 
 class MailerConfig(SingletonModel):
-    from_email = models.EmailField(_('sender email'), default='manager@example.com',
-        help_text=_('should be real address')
+    from_email = models.EmailField(_('e-mail'), default='manager@example.com',
+        help_text=_('must be valid and actually exists')
     )
-    from_name = models.CharField(_('sender name'), max_length=255, default='John Smith',
-        help_text=_('should be real name')
+    from_name = models.CharField(_('name'), max_length=255, default='John Smith',
+        help_text=_('should be your name')
     )
 
     bg_color = ColorField(_('background color'), blank=True, default='#BDC3C7')
