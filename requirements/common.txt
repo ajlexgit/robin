@@ -19,7 +19,7 @@ redis==2.10.5
 requests==2.11.0
 
 # jinja2==2.7.3
-# django_jinja==2.2.0
+# django_jinja==2.2.1
 # jinja2-django-tags==0.4
 
 # PyLinkedinAPI==0.1.5

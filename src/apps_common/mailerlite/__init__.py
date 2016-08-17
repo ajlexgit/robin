@@ -2,6 +2,7 @@
     Модуль подписки на рассылку.
 
     Зависит от:
+        premailer
         libs.associative_request
         libs.color_field
         libs.pipeline
@@ -29,7 +30,7 @@
                 },
             }
 
-            MAILERLITE_APIKEY = '438b26c79cbd9acea454a4c1ad5eda05'
+            MAILERLITE_APIKEY = '438b16c79cbd9acea354a1c1ad5eda08'
 
         # urls.py:
             ...
@@ -44,7 +45,6 @@
     Использование:
         # views.py:
             from mailerlite import SubscribeForm
-            from mailerlite.models import Group
 
             class IndexView(View):
                 def get(self, request, *args, **kwargs):
