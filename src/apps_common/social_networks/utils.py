@@ -4,10 +4,6 @@ from PyLinkedinAPI.PyLinkedinAPI import PyLinkedinAPI
 from libs.description import description
 from . import conf
 
-TWITTER_URL_LEN = 23
-TWITTER_MAX_LEN = 140
-LINKEDIN_MAX_LEN = 600
-
 
 def post_to_twitter(message, url=None):
     twitter_api = twitter.Api(
@@ -20,9 +16,9 @@ def post_to_twitter(message, url=None):
     # Проверка длинны
     message_len = len(message)
     if url:
-        message_len += TWITTER_URL_LEN
-    if message_len >= TWITTER_MAX_LEN:
-        message = description(message, 100, TWITTER_MAX_LEN - TWITTER_URL_LEN - 1)
+        message_len += conf.TWITTER_URL_LEN
+    if message_len >= conf.TWITTER_MAX_LEN:
+        message = description(message, conf.TWITTER_START_CUT, conf.TWITTER_MAX_LEN - conf.TWITTER_URL_LEN - 1)
 
     if url:
         message += '\n%s' % url
@@ -47,8 +43,8 @@ def post_to_linkedin(message, url=None):
     message_len = len(message)
     if url:
         message_len += len(url) + 1
-    if message_len >= LINKEDIN_MAX_LEN:
-        message = description(message, 540, LINKEDIN_MAX_LEN)
+    if message_len >= conf.LINKEDIN_MAX_LEN:
+        message = description(message, conf.LINKEDIN_START_CUT, conf.LINKEDIN_MAX_LEN)
 
     if url:
         message += '\n%s' % url

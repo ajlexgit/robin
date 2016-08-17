@@ -2,6 +2,12 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 
+TWITTER_URL_LEN = 23
+TWITTER_START_CUT = 100
+TWITTER_MAX_LEN = 140
+LINKEDIN_START_CUT = 540
+LINKEDIN_MAX_LEN = 600
+
 #============================================================
 #                   Автопостинг
 #============================================================
