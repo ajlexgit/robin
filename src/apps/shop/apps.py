@@ -10,10 +10,10 @@ class Config(AppConfig):
         import shop.signals.handlers
         from django.shortcuts import resolve_url
         from libs.js_storage import JS_STORAGE
-        from . import options
+        from . import conf
 
         JS_STORAGE.update({
             'save_cart': resolve_url('shop:save_cart'),
             'clear_cart': resolve_url('shop:clear_cart'),
-            'max_product_count': options.MAX_PRODUCT_COUNT,
+            'max_product_count': conf.MAX_PRODUCT_COUNT,
         })

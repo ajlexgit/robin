@@ -89,7 +89,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, SortableMPTTModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'title', 'alias', 'is_visible'
+                'title', 'slug', 'is_visible'
             ),
         }),
     )
@@ -99,7 +99,9 @@ class ShopCategoryAdmin(SeoModelAdminMixin, SortableMPTTModelAdmin):
     actions = ('action_hide', 'action_show')
     list_display = ('view', 'title', 'is_visible', 'product_count', 'total_product_count')
     list_display_links = ('title',)
-    prepopulated_fields = {'alias': ('title',)}
+    prepopulated_fields = {
+        'slug': ('title',)
+    }
     sortable = 'sort_order'
     suit_form_tabs = (
         ('general', _('General')),
@@ -177,7 +179,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'category', 'title', 'alias', 'serial', 'gallery', 'price',
+                'category', 'title', 'slug', 'serial', 'gallery', 'price',
                 'is_visible', 'description',
             ),
         }),
@@ -192,7 +194,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     list_display_links = ('micropreview', '__str__', )
     list_filter = (StatusShopProductCategoryFilter, )
     prepopulated_fields = {
-        'alias': ('title', ),
+        'slug': ('title', ),
         'serial': ('title', ),
     }
     suit_form_tabs = (

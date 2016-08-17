@@ -21,7 +21,7 @@
 
     <img src="{{ product.photo.normal.url }}" class="photo">
 
-    <div class="price">Price: {{ product.price }}</div>
+    <div class="price">{% trans 'Price' %}: {{ product.price }}</div>
 
     <div class="text-styles">
       {{ product.description|clean }}

@@ -3,7 +3,7 @@ from django.views.generic import View
 from libs.views_ajax import AjaxViewMixin
 from libs.cookies import set_cookie
 from .models import ShopProduct
-from . import options
+from . import conf
 
 
 class CartProducts:
@@ -52,8 +52,8 @@ class CartProducts:
             count = self._unformatted[product.id]
             if count > 0:
                 count = max(0, count)
-            if options.MAX_PRODUCT_COUNT:
-                count = min(count, options.MAX_PRODUCT_COUNT)
+            if conf.MAX_PRODUCT_COUNT:
+                count = min(count, conf.MAX_PRODUCT_COUNT)
             if count:
                 counts.append(count)
                 products.append(product)
@@ -70,7 +70,7 @@ class CartProducts:
         self._counts = ()
 
         try:
-            del request.session[options.SESSION_CART_NAME]
+            del request.session[conf.SESSION_CART_NAME]
         except KeyError:
             pass
 
@@ -85,7 +85,7 @@ class CartProducts:
         cart = cls()
 
         cart._unformatted = {}
-        data = request.session.get(options.SESSION_CART_NAME) or {}
+        data = request.session.get(conf.SESSION_CART_NAME) or {}
         for product_id, count in data.items():
             try:
                 product_id = int(product_id)
@@ -152,7 +152,7 @@ class CartProducts:
         """
             Сохранение данных в сессию
         """
-        request.session[options.SESSION_CART_NAME] = self._unformatted
+        request.session[conf.SESSION_CART_NAME] = self._unformatted
 
 
 class SaveCart(AjaxViewMixin, View):

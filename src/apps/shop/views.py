@@ -34,7 +34,7 @@ class CategoryView(TemplateView):
         config = ShopConfig.get_solo()
 
         try:
-            category = ShopCategory.objects.get(alias=kwargs['category_alias'], is_visible=True)
+            category = ShopCategory.objects.get(slug=kwargs['category_slug'], is_visible=True)
         except (ShopCategory.DoesNotExist, ShopCategory.MultipleObjectsReturned):
             raise Http404
 
@@ -43,7 +43,7 @@ class CategoryView(TemplateView):
         for parent_category in category.get_ancestors():
             request.breadcrumbs.add(
                 parent_category.title,
-                resolve_url('shop:category', category_alias=parent_category.alias)
+                resolve_url('shop:category', category_slug=parent_category.slug)
             )
         request.breadcrumbs.add(category.title)
 
@@ -69,12 +69,12 @@ class DetailView(TemplateView):
         config = ShopConfig.get_solo()
 
         try:
-            category = ShopCategory.objects.get(alias=kwargs['category_alias'], is_visible=True)
+            category = ShopCategory.objects.get(slug=kwargs['category_slug'], is_visible=True)
         except (ShopCategory.DoesNotExist, ShopCategory.MultipleObjectsReturned):
             raise Http404
 
         try:
-            product = ShopProduct.objects.get(alias=kwargs['alias'], is_visible=True)
+            product = ShopProduct.objects.get(slug=kwargs['slug'], is_visible=True)
         except (ShopProduct.DoesNotExist, ShopProduct.MultipleObjectsReturned):
             raise Http404
 
@@ -83,7 +83,7 @@ class DetailView(TemplateView):
         for parent_category in category.get_ancestors(include_self=True):
             request.breadcrumbs.add(
                 parent_category.title,
-                resolve_url('shop:category', category_alias=parent_category.alias)
+                resolve_url('shop:category', category_slug=parent_category.slug)
             )
         request.breadcrumbs.add(product.title)
 

@@ -21,12 +21,12 @@ urlpatterns = [
         name='index'
     ),
     url(
-        r'^(?P<category_alias>{0})/$'.format(ALIAS_REGEXP),
+        r'^(?P<category_slug>{0})/$'.format(ALIAS_REGEXP),
         views.CategoryView.as_view(),
         name='category'
     ),
     url(
-        r'^(?P<category_alias>{0})/(?P<alias>{0})/$'.format(ALIAS_REGEXP),
+        r'^(?P<category_slug>{0})/(?P<slug>{0})/$'.format(ALIAS_REGEXP),
         views.DetailView.as_view(),
         name='detail'
     ),

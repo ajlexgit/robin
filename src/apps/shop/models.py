@@ -61,7 +61,7 @@ class ShopCategory(MPTTModel):
         related_name='children'
     )
     title = models.CharField(_('title'), max_length=128)
-    alias = AutoSlugField(_('alias'), populate_from='title', unique=True)
+    slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
     is_visible = models.BooleanField(_('visible'), default=True, db_index=True)
     product_count = models.PositiveIntegerField(
         default=0,
@@ -155,7 +155,7 @@ class ShopCategory(MPTTModel):
         }
 
     def get_absolute_url(self):
-        return resolve_url('shop:category', category_alias=self.alias)
+        return resolve_url('shop:category', category_slug=self.slug)
 
 
 class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
@@ -223,11 +223,7 @@ class ShopProduct(models.Model):
         related_name='immediate_products'
     )
     title = models.CharField(_('title'), max_length=128)
-    alias = AutoSlugField(_('alias'),
-        populate_from='title',
-        unique=True,
-        help_text=_('Leave it blank to auto generate it')
-    )
+    slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
     serial = models.SlugField(_('serial number'),
         max_length=64,
         unique=True,
@@ -253,8 +249,8 @@ class ShopProduct(models.Model):
 
     def get_absolute_url(self):
         return resolve_url('shop:detail',
-            category_alias=self.category.alias,
-            alias=self.alias
+            category_slug=self.category.slug,
+            slug=self.slug
         )
 
     def save(self, *args, **kwargs):
