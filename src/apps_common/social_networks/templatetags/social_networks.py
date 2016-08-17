@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 from collections import defaultdict
 from django.template import loader, Library
 from libs.description import description
-from ..utils import TWITTER_MAX_LEN, TWITTER_URL_LEN, LINKEDIN_MAX_LEN
+from .. import conf
 
 register = Library()
 
@@ -25,7 +25,7 @@ def fb(social_data):
 def tw(social_data):
     return 'http://twitter.com/share?%s' % urlencode({
         'url': social_data['url'],
-        'text': description(social_data['description'], 100, TWITTER_MAX_LEN - TWITTER_URL_LEN - 1),
+        'text': description(social_data['description'], conf.TWITTER_START_CUT, conf.TWITTER_MAX_LEN - conf.TWITTER_URL_LEN - 1),
     })
 
 
@@ -41,7 +41,7 @@ def li(social_data):
         'url': social_data['url'],
         'title': social_data['title'],
         'image': social_data['image'],
-        'summary': description(social_data['description'], 540, LINKEDIN_MAX_LEN),
+        'summary': description(social_data['description'], conf.LINKEDIN_START_CUT, conf.LINKEDIN_MAX_LEN),
     })
 
 
