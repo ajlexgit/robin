@@ -4,7 +4,6 @@ from django.utils.timezone import now
 from django.shortcuts import resolve_url
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
-from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 from gallery import *
 from solo.models import SingletonModel
