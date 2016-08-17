@@ -179,8 +179,13 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'category', 'title', 'slug', 'serial', 'gallery', 'price',
-                'is_visible', 'description',
+                'category', 'title', 'slug', 'serial', 'price', 'is_visible',
+            ),
+        }),
+        (_('Additional information'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'gallery', 'description',
             ),
         }),
     )
@@ -204,7 +209,11 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     def micropreview(self, obj):
         if not obj.photo:
             return '-//-'
-        return '<img src="{}">'.format(obj.photo.admin_micro.url)
+        return '<img src="{}" width="{}" height="{}">'.format(
+            obj.photo.admin_micro.url,
+            obj.photo.admin_micro.target_width,
+            obj.photo.admin_micro.target_height,
+        )
     micropreview.short_description = _('Preview')
     micropreview.allow_tags = True
 

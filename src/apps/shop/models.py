@@ -89,6 +89,9 @@ class ShopCategory(MPTTModel):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return resolve_url('shop:category', category_slug=self.slug)
+
     def save(self, *args, **kwargs):
         is_add = self.pk is None
         original = None if is_add else self.__class__.objects.select_related('parent').only(
@@ -154,9 +157,6 @@ class ShopCategory(MPTTModel):
             'text': '–' * obj.level + ' ' + obj.title,
         }
 
-    def get_absolute_url(self):
-        return resolve_url('shop:category', category_slug=self.slug)
-
 
 class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
     def aliases(self, qs, kwargs):
@@ -201,10 +201,11 @@ class ShopProductGalleryImageItem(GalleryImageItem):
         ),
         admin=dict(
             size=(160, 120),
+            crop=False,
             background=(255, 255, 255, 255),
         ),
         admin_micro=dict(
-            size=(60, 60),
+            size=(40, 40),
             crop=False,
             background=(255, 255, 255, 255),
         )
