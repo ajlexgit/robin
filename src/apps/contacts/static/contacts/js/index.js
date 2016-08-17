@@ -29,7 +29,7 @@
     });
 
     $(document).ready(function() {
-        var $addresses = $('#google-map').find('.address');
+        var $addresses = $('#addresses').find('.address');
         if ($addresses.length) {
             var $first = $addresses.first();
 

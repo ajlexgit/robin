@@ -32,19 +32,19 @@
 
   <div id="google-map">
     <div class="map"></div>
+  </div>
 
-    <div class="overlay">
-      <div class="grid-block">
-        <ul class="address-list">
-          {% for addr in addresses %}
-            <li class="address" data-lat="{{ addr.coords.lat }}" data-lng="{{ addr.coords.lng }}"
-                itemscope itemtype="http://schema.org/PostalAddress">
-              <p itemprop="streetAddress">{{ addr }}</p>
-              <p itemprop="telephone">{{ addr.phones.0 }}</p>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
+  <div id="addresses" class="block">
+    <div class="grid-block">
+      <ul>
+        {% for addr in addresses %}
+          <li class="address" data-lat="{{ addr.coords.lat }}" data-lng="{{ addr.coords.lng }}"
+              itemscope itemtype="http://schema.org/PostalAddress">
+            <p itemprop="streetAddress">{{ addr }}</p>
+            <p itemprop="telephone">{{ addr.phones.0 }}</p>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 
