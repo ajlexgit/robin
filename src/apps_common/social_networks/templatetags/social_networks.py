@@ -7,6 +7,52 @@ from ..utils import TWITTER_MAX_LEN, TWITTER_URL_LEN, LINKEDIN_MAX_LEN
 register = Library()
 
 
+def vk(social_data):
+    return 'http://vk.com/share.php?%s' % urlencode({
+        'url': social_data['url'],
+        'title': social_data['title'],
+        'image': social_data['image'],
+        'description': social_data['description'],
+    })
+
+
+def fb(social_data):
+    return 'http://www.facebook.com/sharer/sharer.php?%s' % urlencode({
+        'u': social_data['url'],
+    })
+
+
+def tw(social_data):
+    return 'http://twitter.com/share?%s' % urlencode({
+        'url': social_data['url'],
+        'text': description(social_data['description'], 100, TWITTER_MAX_LEN - TWITTER_URL_LEN - 1),
+    })
+
+
+def gp(social_data):
+    return 'https://plus.google.com/share?%s' % urlencode({
+        'url': social_data['url'],
+    })
+
+
+def li(social_data):
+    return 'http://www.linkedin.com/shareArticle?%s' % urlencode({
+        'mini': 'true',
+        'url': social_data['url'],
+        'title': social_data['title'],
+        'image': social_data['image'],
+        'summary': description(social_data['description'], 540, LINKEDIN_MAX_LEN),
+    })
+
+
+def pn(social_data):
+    return 'http://www.pinterest.com/pin/create/button/?%s' % urlencode({
+        'url': social_data['url'],
+        'media': social_data['image'],
+        'description': social_data['description'],
+    })
+
+
 @register.simple_tag(takes_context=True)
 def social_button(context, provider, text='', url='', title='', description='', image=''):
     request = context.get('request')
@@ -34,45 +80,17 @@ def social_button(context, provider, text='', url='', title='', description='', 
     # Построение URL для расшаривания
     provider = provider.lower()
     if provider == 'vk':
-        social_data = {
-            'url': social_data['url'],
-            'title': social_data['title'],
-            'image': social_data['image'],
-            'description': social_data['description'],
-        }
-        share_url = 'http://vk.com/share.php?%s' % urlencode(social_data)
+        share_url = vk(social_data)
     elif provider == 'fb':
-        social_data = {
-            'u': social_data['url'],
-        }
-        share_url = 'http://www.facebook.com/sharer/sharer.php?%s' % urlencode(social_data)
+        share_url = fb(social_data)
     elif provider == 'tw':
-        social_data = {
-            'url': social_data['url'],
-            'text': description(social_data['description'], 100, TWITTER_MAX_LEN - TWITTER_URL_LEN - 1)
-        }
-        share_url = 'http://twitter.com/share?%s' % urlencode(social_data)
+        share_url = tw(social_data)
     elif provider == 'gp':
-        social_data = {
-            'url': social_data['url'],
-        }
-        share_url = 'https://plus.google.com/share?%s' % urlencode(social_data)
+        share_url = gp(social_data)
     elif provider == 'li':
-        social_data = {
-            'mini': 'true',
-            'url': social_data['url'],
-            'title': social_data['title'],
-            'image': social_data['image'],
-            'summary': description(social_data['description'], 540, LINKEDIN_MAX_LEN),
-        }
-        share_url = 'http://www.linkedin.com/shareArticle?%s' % urlencode(social_data)
+        share_url = li(social_data)
     elif provider == 'pn':
-        social_data = {
-            'url': social_data['url'],
-            'media': social_data['image'],
-            'description': social_data['description'],
-        }
-        share_url = 'http://www.pinterest.com/pin/create/button/?%s' % urlencode(social_data)
+        share_url = pn(social_data)
     else:
         return ''
 
