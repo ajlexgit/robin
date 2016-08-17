@@ -16,14 +16,15 @@
             beforeSend: function() {
                 $form.find('.invalid').removeClass('invalid');
             },
-            success: function() {
+            success: function(response) {
                 $form.get(0).reset();
 
-                $.popup({
-                    classes: 'subscribe-popup subscribe-success-popup',
-                    content: '<h1 class="title-h1">You have successfully subscribed to the newsletter!</h1>' +
-                             '<button class="btn close-popup">Done</button>'
-                }).show();
+                if (response.success_message) {
+                    $.popup({
+                        classes: 'subscribe-popup subscribe-success-popup',
+                        content: response.success_message
+                    }).show();
+                }
             },
             error: $.parseError(function(response) {
                 if (response && response.errors) {
