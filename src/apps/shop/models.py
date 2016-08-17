@@ -406,7 +406,9 @@ class ShopOrder(models.Model):
     def products_cost(self):
         """ Стоимость товаров """
         return self.records.aggregate(
-            cost=Coalesce(models.Sum('order_price', field='order_price*count'), 0)
+            cost=Coalesce(models.Sum(
+                models.F('order_price') * models.F('count'), output_field=ValuteField()
+            ), 0)
         )['cost']
 
     @property
@@ -446,7 +448,7 @@ class OrderRecord(models.Model):
     order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='records')
     product = models.ForeignKey(ShopProduct, verbose_name=_('product'))
     order_price = ValuteField(_('price per unit'))
-    count = models.PositiveSmallIntegerField(_('count'))
+    count = models.PositiveIntegerField(_('count'))
 
     class Meta:
         verbose_name = _('product')

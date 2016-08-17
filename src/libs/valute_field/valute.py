@@ -173,6 +173,8 @@ class Valute:
             return self.__class__(self._value.__mul__(other._value))
         return self.__class__(self._value.__mul__(other))
 
+    __rmul__ = __mul__
+
     def __truediv__(self, other):
         if isinstance(other, Valute):
             return self.__class__(self._value.__truediv__(other._value))
