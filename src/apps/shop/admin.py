@@ -179,7 +179,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'category', 'title', 'slug', 'serial', 'price', 'is_visible',
+                'category', 'title', 'slug', 'price', 'is_visible',
             ),
         }),
         (_('Additional information'), {
@@ -192,7 +192,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     form = ShopProductForm
     actions = ('action_hide', 'action_show')
     list_display = (
-        'view', 'micropreview', '__str__', 'serial', 'category_link',
+        'view', 'micropreview', '__str__', 'category_link',
         'price_alternative', 'is_visible',
     )
     search_fields = ('title', 'category__title')
@@ -200,7 +200,6 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     list_filter = (StatusShopProductCategoryFilter, )
     prepopulated_fields = {
         'slug': ('title', ),
-        'serial': ('title', ),
     }
     suit_form_tabs = (
         ('general', _('General')),

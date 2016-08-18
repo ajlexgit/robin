@@ -220,11 +220,6 @@ class ShopProduct(models.Model):
     )
     title = models.CharField(_('title'), max_length=128)
     slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
-    serial = models.SlugField(_('serial number'),
-        max_length=64,
-        unique=True,
-        help_text=_('Unique identifier of the product')
-    )
     gallery = GalleryField(ShopProductGallery, verbose_name=_('gallery'), blank=True, null=True)
     description = CKEditorField(_('description'), blank=True)
     price = ValuteField(_('price'))

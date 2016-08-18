@@ -6,7 +6,6 @@
       <tr>
         <th>{% trans 'Image' %}</th>
         <th>{% trans 'Title' %}</th>
-        <th>{% trans 'Serial number' %}</th>
         <th>{% trans 'Price per unit' %}</th>
         <th>{% trans 'Count' %}</th>
         <th>{% trans 'Total cost' %}</th>
@@ -23,9 +22,6 @@
             <a href="{% url 'admin:shop_shopproduct_change' order_product.product.pk %}"
                target="_blank">{{ order_product.product.title }}</a>
           </td>
-          <td>
-            {{ order_product.product.serial }}
-          </td>
           <td style="font-size: 14px; font-weight: bold; white-space: nowrap">
             {{ order_product.order_price.alternative }}
           </td>
@@ -41,7 +37,7 @@
 
     <tfoot>
       <tr>
-        <td colspan="5">
+        <td colspan="4">
           {% trans 'Total cost of products' %}
         </td>
         <td style="font-size: 15px; font-weight: bold; color: green; white-space: nowrap">
@@ -49,7 +45,7 @@
         </td>
       </tr>
       <tr>
-        <td colspan="5">
+        <td colspan="4">
           {% trans 'Total' %}
         </td>
         <td style="font-size: 18px; font-weight: bold; color: green; white-space: nowrap">
