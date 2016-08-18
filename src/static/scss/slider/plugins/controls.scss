@@ -9,7 +9,6 @@ $arrow_area_width: (
 
 // размеры стрелки
 $arrow_image_size: 20px;
-$arrow_image_maxwidth: 50%;
 
 
 .slider-arrow {
@@ -28,7 +27,6 @@ $arrow_image_maxwidth: 50%;
     top: 50%;
     width: $arrow_image_size;
     height: $arrow_image_size;
-    @include media_map(max-width, $arrow_image_maxwidth);
     @include transform(translate(-50%, -50%));
 
     &:before {
@@ -39,7 +37,7 @@ $arrow_image_maxwidth: 50%;
       border-top: 4px solid $white;
       border-right: 4px solid $white;
       @include border-box;
-      @include transform(rotate(45deg));
+      @include transform(translate(-25%, 0) rotate(45deg));
     }
   }
 
