@@ -2,16 +2,17 @@ import uuid
 from django.db import models
 from django.utils.timezone import now
 from django.shortcuts import resolve_url
+from django.db.models.functions import Coalesce
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from gallery import *
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
-from libs.aliased_queryset import AliasedQuerySetMixin
-from libs.valute_field import ValuteField
-from libs.autoslug import AutoSlugField
 from libs.mptt import *
+from libs.autoslug import AutoSlugField
+from libs.valute_field import ValuteField
+from libs.aliased_queryset import AliasedQuerySetMixin
 from .signals import products_changed, categories_changed
 
 
@@ -381,7 +382,7 @@ class ShopOrder(models.Model):
         ordering = ('-created', )
 
     def __str__(self):
-        return 'Order #%s' % self.pk
+        return _('Order #%s') % self.pk
 
     def clean(self):
         errors = {}
@@ -399,7 +400,11 @@ class ShopOrder(models.Model):
     @property
     def products_cost(self):
         """ Стоимость товаров """
-        return sum(item.order_price * item.count for item in self.records.all())
+        return self.records.aggregate(
+            cost=Coalesce(models.Sum(
+                models.F('order_price') * models.F('count'), output_field=ValuteField()
+            ), 0)
+        )['cost']
 
     @property
     def total_cost(self):
@@ -438,7 +443,7 @@ class OrderRecord(models.Model):
     order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='records')
     product = models.ForeignKey(ShopProduct, verbose_name=_('product'))
     order_price = ValuteField(_('price per unit'))
-    count = models.PositiveSmallIntegerField(_('count'))
+    count = models.PositiveIntegerField(_('count'))
 
     class Meta:
         verbose_name = _('product')
