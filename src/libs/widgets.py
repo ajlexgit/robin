@@ -1,9 +1,10 @@
 from django import forms
 from django.forms import widgets
 from django.utils.encoding import force_str
+from django.utils.safestring import mark_safe
 from django.utils.html import format_html, smart_urlquote
 from django.forms.utils import flatatt, to_current_timezone
-from suit.widgets import SuitDateWidget, HTML5Input
+from suit.widgets import SuitDateWidget, HTML5Input, AutosizedTextarea as DefaultAutosizedTextarea
 
 
 class LinkWidget(forms.Widget):
@@ -136,3 +137,15 @@ class CheckboxSelectMultiple(forms.CheckboxSelectMultiple):
         помещает <input> перед <label> (для стилизации).
     """
     renderer = CheckboxFieldRenderer
+
+
+class AutosizedTextarea(DefaultAutosizedTextarea):
+    """ Фикс бага раннего вызова, из-за которого высота не устанавливается при открытии страницы """
+    def render(self, name, value, attrs=None):
+        output = super(DefaultAutosizedTextarea, self).render(name, value, attrs)
+        output += mark_safe(
+            "<script type=\"text/javascript\">"
+            "Suit.$(function(){ Suit.$('#id_%s').autosize(); })"
+            "</script>"
+            % name)
+        return output

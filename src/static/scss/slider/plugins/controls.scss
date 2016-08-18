@@ -8,12 +8,8 @@ $arrow_area_width: (
 );
 
 // размеры стрелки
-$arrow_image_size: 16px;
-$arrow_image_maxwidth: (
-    ($media768, 0px): 50%,
-    ($media480, $media768): 40%,
-    (0px, $media480): 16px,
-);
+$arrow_image_size: 20px;
+$arrow_image_maxwidth: 50%;
 
 
 .slider-arrow {
@@ -32,18 +28,24 @@ $arrow_image_maxwidth: (
     top: 50%;
     width: $arrow_image_size;
     height: $arrow_image_size;
-    border-top: 4px solid rgba($white, 0.66);
-    border-right: 4px solid rgba($white, 0.66);
     @include media_map(max-width, $arrow_image_maxwidth);
-    @include transform(translate(-50%, -50%) rotate(45deg));
+    @include transform(translate(-50%, -50%));
+
+    &:before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-top: 4px solid $white;
+      border-right: 4px solid $white;
+      @include border-box;
+      @include transform(rotate(45deg));
+    }
   }
 
   &.slider-arrow-left {
     left: 0;
-
-    span {
-      @include transform(translate(-50%, -50%) rotate(-135deg));
-    }
+    @include transform(scaleX(-1));
   }
 
   &.slider-arrow-right {
