@@ -3,26 +3,30 @@
 
 <header>
   <div class="grid-block">
-    <div class="logo-box">
-      {% if is_main_page %}
-        <div class="logo"></div>
-      {% else %}
-        <a href="/" class="logo"></a>
-      {% endif %}
-    </div>
 
-    <div class="menu-box">
-      <span id="mobile-menu-button"></span>
+    <div class="flex">
+      <div class="logo-box">
+        {% if is_main_page %}
+          <div class="logo"></div>
+        {% else %}
+          <a href="/" class="logo"></a>
+        {% endif %}
+      </div>
 
-      <nav id="main-menu">
-        {% menu 'main' %}
-      </nav>
+      <div class="menu-box">
+        <span id="mobile-menu-button"></span>
 
-      {% ajaxcache 1800 mobile-menu request.path_info %}
-        <div id="mobile-menu">
+        <nav id="main-menu">
           {% menu 'main' %}
-        </div>
-      {% endajaxcache %}
+        </nav>
+
+        {% ajaxcache 1800 mobile-menu request.path_info %}
+          <div id="mobile-menu">
+            {% menu 'main' %}
+          </div>
+        {% endajaxcache %}
+      </div>
     </div>
+
   </div>
 </header>

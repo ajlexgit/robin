@@ -7,7 +7,7 @@ $logo_height: 54px;
   padding: 30px 0;
   background-color: #D0D0D0;
 
-  .grid-block {
+  .flex {
     @include flexbox;
     @include align-items(center);
     @include justify-content(flex-start);
