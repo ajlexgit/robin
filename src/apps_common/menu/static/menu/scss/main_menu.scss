@@ -132,16 +132,16 @@ $mobile_active_color: $menu_active_color;
     top: 0;
     @include box-shadow($menu_burger_color 0 ($menu_burger_line_height + $menu_burger_line_space) 0 0);
     @include transform(translate3d(0, 0, 0) rotate(0deg));
-    @include transition-property(-webkit-transform, transform, box-shadow, top);
-    @include transition-duration(0.55s, 0.55s, 0.2s, 0.2s);
-    @include transition-delay(0s, 0s, 0.45s, 0.45s);
+    @include transition-property(transform, box-shadow, top);
+    @include transition-duration(0.55s, 0.2s, 0.2s);
+    @include transition-delay(0s, 0.45s, 0.45s);
   }
   &:after {
     top: 100%;
     @include transform(translate3d(0, -100%, 0) rotate(0deg));
-    @include transition-property(-webkit-transform, transform, top);
-    @include transition-duration(0.55s, 0.55s, 0.2s);
-    @include transition-delay(0s, 0s, 0.45s);
+    @include transition-property(transform, top);
+    @include transition-duration(0.55s, 0.2s);
+    @include transition-delay(0s, 0.45s);
   }
 
   @at-root .main-menu-opened & {
