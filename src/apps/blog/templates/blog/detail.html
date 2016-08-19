@@ -32,11 +32,14 @@
         </div>
         <meta itemprop="name" content="{{ config.microdata_author }}">
       </div>
-      <div style="display: none" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
-        <link itemprop="url" href="{{ post.preview.normal.url }}"/>
-        <meta itemprop="width" content="{{ post.preview.normal.target_width }}"/>
-        <meta itemprop="height" content="{{ post.preview.normal.target_height }}"/>
-      </div>
+
+      {% if post.preview %}
+        <div style="display: none" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
+          <link itemprop="url" href="{{ post.preview.normal.url }}"/>
+          <meta itemprop="width" content="{{ post.preview.normal.target_width }}"/>
+          <meta itemprop="height" content="{{ post.preview.normal.target_height }}"/>
+        </div>
+      {% endif %}
     {% endcache %}
 
     <div class="grid">
