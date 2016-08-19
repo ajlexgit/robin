@@ -1,13 +1,15 @@
-<h2>Search</h2>
+{% load i18n %}
+
+<h2>{% trans 'Search' %}</h2>
 
 <form method="get" action=".">
   <input type="search" name="q" value="{{ query|default:'' }}">
-  <input type="submit" value="Search">
+  <input type="submit" value="{% trans 'Search' %}">
 </form>
 
 
 {% if query %}
-  <h3>Results</h3>
+  <h3>{% trans 'Results' %}</h3>
 
   <ol>
     {% for result in queryset %}
