@@ -88,6 +88,8 @@ class BaseAttachedBlocksMixin(ModelAdminInlineMixin):
     readonly_fields = ('set_name',)
     extra = 0
     set_name = 'default'
+    verbose_name = _('block')
+    verbose_name_plural = _('Page blocks')
 
     def get_formset(self, request, obj=None, **kwargs):
         FormSet = super().get_formset(request, obj, **kwargs)
