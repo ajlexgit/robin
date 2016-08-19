@@ -2,17 +2,16 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import libs.valute_field.fields
-import mptt.fields
-import libs.storages.media_storage
-import django.core.validators
-import django.utils.timezone
-import uuid
-import libs.autoslug
-import ckeditor.fields
-import gallery.models
 import django.db.models.deletion
 import gallery.fields
+import libs.storages.media_storage
+import gallery.models
+import libs.autoslug
+import django.utils.timezone
+import mptt.fields
+import uuid
+import ckeditor.fields
+import libs.valute_field.fields
 
 
 class Migration(migrations.Migration):
@@ -37,8 +36,8 @@ class Migration(migrations.Migration):
             name='OrderRecord',
             fields=[
                 ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('order_price', libs.valute_field.fields.ValuteField(validators=[django.core.validators.MinValueValidator(0)], verbose_name='price per unit')),
-                ('count', models.PositiveSmallIntegerField(verbose_name='count')),
+                ('order_price', libs.valute_field.fields.ValuteField(verbose_name='price per unit')),
+                ('count', models.PositiveIntegerField(verbose_name='count')),
             ],
             options={
                 'verbose_name_plural': 'products',
@@ -50,18 +49,18 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=128, verbose_name='title')),
-                ('slug', libs.autoslug.AutoSlugField(unique=True, verbose_name='slug', populate_from='title')),
-                ('is_visible', models.BooleanField(default=True, verbose_name='visible', db_index=True)),
-                ('product_count', models.PositiveIntegerField(default=0, help_text='count of immediate visible products', editable=False)),
-                ('total_product_count', models.PositiveIntegerField(default=0, help_text='count of visible products', editable=False)),
-                ('sort_order', models.PositiveIntegerField(verbose_name='sort order')),
-                ('created', models.DateTimeField(default=django.utils.timezone.now, editable=False, verbose_name='create date')),
+                ('slug', libs.autoslug.AutoSlugField(populate_from='title', verbose_name='slug', unique=True)),
+                ('product_count', models.PositiveIntegerField(help_text='count of immediate visible products', default=0, editable=False)),
+                ('total_product_count', models.PositiveIntegerField(help_text='count of visible products', default=0, editable=False)),
+                ('is_visible', models.BooleanField(db_index=True, default=True, verbose_name='visible')),
+                ('created', models.DateTimeField(editable=False, default=django.utils.timezone.now, verbose_name='create date')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
-                ('lft', models.PositiveIntegerField(editable=False, db_index=True)),
-                ('rght', models.PositiveIntegerField(editable=False, db_index=True)),
-                ('tree_id', models.PositiveIntegerField(editable=False, db_index=True)),
-                ('level', models.PositiveIntegerField(editable=False, db_index=True)),
-                ('parent', mptt.fields.TreeForeignKey(null=True, related_name='children', blank=True, verbose_name='parent category', to='shop.ShopCategory')),
+                ('sort_order', models.IntegerField(default=0, verbose_name='order')),
+                ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
+                ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
+                ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
+                ('level', models.PositiveIntegerField(db_index=True, editable=False)),
+                ('parent', mptt.fields.TreeForeignKey(verbose_name='parent category', null=True, related_name='children', blank=True, to='shop.ShopCategory')),
             ],
             options={
                 'verbose_name_plural': 'categories',
@@ -84,9 +83,9 @@ class Migration(migrations.Migration):
             name='ShopOrder',
             fields=[
                 ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('uuid', models.UUIDField(default=uuid.uuid4, unique=True, editable=False, verbose_name='UUID')),
+                ('uuid', models.UUIDField(editable=False, unique=True, default=uuid.uuid4, verbose_name='UUID')),
                 ('session', models.CharField(max_length=64, editable=False, verbose_name='session')),
-                ('is_confirmed', models.BooleanField(default=False, help_text='Confirmed by the user', editable=False, verbose_name='confirmed')),
+                ('is_confirmed', models.BooleanField(help_text='Confirmed by the user', editable=False, default=False, verbose_name='confirmed')),
                 ('confirm_date', models.DateTimeField(null=True, editable=False, verbose_name='confirm date')),
                 ('is_cancelled', models.BooleanField(default=False, verbose_name='cancelled')),
                 ('cancel_date', models.DateTimeField(null=True, editable=False, verbose_name='cancel date')),
@@ -96,11 +95,11 @@ class Migration(migrations.Migration):
                 ('pay_date', models.DateTimeField(null=True, editable=False, verbose_name='pay date')),
                 ('is_archived', models.BooleanField(default=False, verbose_name='archived')),
                 ('archivation_date', models.DateTimeField(null=True, editable=False, verbose_name='archivation date')),
-                ('created', models.DateTimeField(default=django.utils.timezone.now, editable=False, verbose_name='create date')),
+                ('created', models.DateTimeField(editable=False, default=django.utils.timezone.now, verbose_name='create date')),
             ],
             options={
-                'verbose_name_plural': 'orders',
                 'ordering': ('-created',),
+                'verbose_name_plural': 'orders',
                 'verbose_name': 'order',
             },
         ),
@@ -109,18 +108,17 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=128, verbose_name='title')),
-                ('slug', libs.autoslug.AutoSlugField(unique=True, verbose_name='slug', populate_from='title')),
-                ('serial', models.SlugField(max_length=64, verbose_name='serial number', unique=True, help_text='Unique identifier of the product')),
+                ('slug', libs.autoslug.AutoSlugField(populate_from='title', verbose_name='slug', unique=True)),
                 ('description', ckeditor.fields.CKEditorField(blank=True, verbose_name='description')),
-                ('price', libs.valute_field.fields.ValuteField(validators=[django.core.validators.MinValueValidator(0)], verbose_name='price')),
+                ('price', libs.valute_field.fields.ValuteField(verbose_name='price')),
                 ('is_visible', models.BooleanField(default=True, verbose_name='visible')),
-                ('created', models.DateTimeField(default=django.utils.timezone.now, editable=False, verbose_name='create date')),
+                ('created', models.DateTimeField(editable=False, default=django.utils.timezone.now, verbose_name='create date')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
-                ('category', models.ForeignKey(related_name='immediate_products', verbose_name='category', to='shop.ShopCategory')),
+                ('category', models.ForeignKey(verbose_name='category', related_name='immediate_products', to='shop.ShopCategory')),
             ],
             options={
-                'verbose_name_plural': 'products',
                 'ordering': ('-created',),
+                'verbose_name_plural': 'products',
                 'verbose_name': 'product',
             },
         ),
@@ -139,15 +137,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ShopProductGalleryImageItem',
             fields=[
-                ('galleryitembase_ptr', models.OneToOneField(serialize=False, parent_link=True, auto_created=True, primary_key=True, to='gallery.GalleryItemBase')),
+                ('galleryitembase_ptr', models.OneToOneField(primary_key=True, auto_created=True, serialize=False, parent_link=True, to='gallery.GalleryItemBase')),
                 ('image', gallery.fields.GalleryImageField(upload_to=gallery.models.generate_filepath, storage=libs.storages.media_storage.MediaStorage(), verbose_name='image')),
-                ('image_crop', models.CharField(max_length=32, blank=True, editable=False, verbose_name='stored_crop')),
+                ('image_crop', models.CharField(max_length=32, editable=False, blank=True, verbose_name='stored_crop')),
             ],
             options={
-                'verbose_name_plural': 'image items',
                 'ordering': ('object_id', 'sort_order', 'created'),
-                'default_permissions': (),
+                'verbose_name_plural': 'image items',
                 'abstract': False,
+                'default_permissions': (),
                 'verbose_name': 'image item',
             },
             bases=('gallery.galleryitembase',),
@@ -155,12 +153,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='shopproduct',
             name='gallery',
-            field=gallery.fields.GalleryField(null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, verbose_name='gallery', to='shop.ShopProductGallery'),
+            field=gallery.fields.GalleryField(on_delete=django.db.models.deletion.SET_NULL, verbose_name='gallery', null=True, to='shop.ShopProductGallery', blank=True),
         ),
         migrations.AddField(
             model_name='orderrecord',
             name='order',
-            field=models.ForeignKey(related_name='records', verbose_name='order', to='shop.ShopOrder'),
+            field=models.ForeignKey(verbose_name='order', related_name='records', to='shop.ShopOrder'),
         ),
         migrations.AddField(
             model_name='orderrecord',
