@@ -33,7 +33,7 @@
         {% endwith %}
         {% with email=profile_user.email %}
           {% if email %}
-            <p><b>E-mail</b>: {{ email }}</p>
+            <p><b>{% trans 'E-mail' %}</b>: {{ email }}</p>
           {% endif %}
         {% endwith %}
         {% if profile_user == request.user %}
