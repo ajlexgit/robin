@@ -7,12 +7,8 @@ from .sitemaps import site_sitemaps
 
 
 urlpatterns = [
-    url(r'^$', main_views.IndexView.as_view(), name='index'),
     url(r'^404/$', 'django.views.defaults.page_not_found'),
     url(r'^500/$', 'django.views.defaults.server_error'),
-
-    url(r'^blog/', include('blog.urls', namespace='blog')),
-    url(r'^contact/', include('contacts.urls', namespace='contacts')),
 
     url(r'^admin/', include(honeypot_site.urls)),
     url(r'^dladmin/autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
@@ -30,6 +26,10 @@ urlpatterns = [
     url(r'^jsi18n/$', 'project.views.cached_javascript_catalog', name='jsi18n'),
 
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps}),
+
+    url(r'^$', main_views.IndexView.as_view(), name='index'),
+    url(r'^blog/', include('blog.urls', namespace='blog')),
+    url(r'^contact/', include('contacts.urls', namespace='contacts')),
 ]
 
 

@@ -17,7 +17,7 @@
 
 
 {% block content %}
-  <div id="main-slider" class="section section-slider section-full-height">
+  <div id="main-slider" class="section section-slider">
     <div class="section-inner">
 
       <div class="slider no-slider">
@@ -27,12 +27,6 @@
                        {{ item.image.normal.srcset }},
                        {{ item.image.mobile.srcset }}" sizes="100vw" alt="">
         {% endfor %}
-
-        <div class="overlay">
-          <div class="grid-block">
-            <div class="title title-h1">Example title</div>
-          </div>
-        </div>
       </div>
 
     </div>

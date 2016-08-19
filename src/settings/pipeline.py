@@ -1,4 +1,4 @@
-from ._pipeline import PIPELINE, PopupGallery, Slider
+from ._pipeline import PIPELINE, Slider
 
 
 PIPELINE['STYLESHEETS'].update({
@@ -34,8 +34,7 @@ PIPELINE['STYLESHEETS'].update({
         'output_filename': 'css_build/error.css',
     },
     'main': {
-        'source_filenames': PopupGallery.css + (
-            'scss/section_slider.scss',
+        'source_filenames': Slider.css + (
             'main/scss/index.scss',
         ),
         'output_filename': 'css_build/main.css',
@@ -92,7 +91,7 @@ PIPELINE['JAVASCRIPT'].update({
         'output_filename': 'js_build/core.js',
     },
     'main': {
-        'source_filenames': PopupGallery.js + (
+        'source_filenames': Slider.js + (
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',
