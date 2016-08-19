@@ -2,12 +2,12 @@
 {% load paginator %}
 
 <div class="navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
-  {% if not page.has_previous %}
-    <span class="nav-item prev-page disabled">{% trans 'Previous' %}</span>
-  {% else %}
+  {% if page.has_previous %}
     <a href="{% href paginator page.previous_page_number %}"
        class="nav-item prev-page"
        data-page="{{ page.previous_page_number }}">{% trans 'Previous' %}</a>
+  {% else %}
+    <span class="nav-item prev-page disabled">{% trans 'Previous' %}</span>
   {% endif %}
 
   <div class="pages">
@@ -24,11 +24,11 @@
     {% endfor %}
   </div>
 
-  {% if not page.has_next %}
-    <span class="nav-item next-page disabled">{% trans 'Next' %}</span>
-  {% else %}
+  {% if page.has_next %}
     <a href="{% href paginator page.next_page_number %}"
        class="nav-item next-page"
        data-page="{{ page.next_page_number }}">{% trans 'Next' %}</a>
+  {% else %}
+    <span class="nav-item next-page disabled">{% trans 'Next' %}</span>
   {% endif %}
 </div>
