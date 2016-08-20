@@ -85,7 +85,7 @@ class BlogPost(models.Model):
     text = CKEditorUploadField(_('text'))
     date = models.DateTimeField(_('publication date'), default=now)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=STATUS_DRAFT)
-    tags = models.ManyToManyField(Tag, verbose_name=_('tags'), through='PostTag', related_name='posts')
+    tags = models.ManyToManyField(Tag, verbose_name=_('tags'), related_name='posts')
 
     preview = StdImageField(_('preview'),
         blank=True,
@@ -121,13 +121,3 @@ class BlogPost(models.Model):
     def get_absolute_url(self):
         return resolve_url('blog:detail', slug=self.slug)
 
-
-class PostTag(models.Model):
-    """ Модель связи тэга и поста """
-    post = models.ForeignKey(BlogPost, verbose_name=_('post'))
-    tag = models.ForeignKey(Tag, verbose_name=_('tag'))
-
-    class Meta:
-        verbose_name = _('post tag')
-        verbose_name_plural = _('post tags')
-        unique_together = ('post', 'tag')

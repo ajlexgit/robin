@@ -6,12 +6,12 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
 from solo.admin import SingletonModelAdmin
-from project.admin import ModelAdminMixin, ModelAdminInlineMixin
-from attachable_blocks.admin import AttachedBlocksStackedInline
+from project.admin import ModelAdminMixin
 from seo.admin import SeoModelAdminMixin
 from social_networks.admin import AutoPostMixin
-from libs.autocomplete import AutocompleteWidget
-from .models import BlogConfig, BlogPost, Tag, PostTag
+from attachable_blocks.admin import AttachedBlocksStackedInline
+from libs.autocomplete.widgets import AutocompleteMultipleWidget
+from .models import BlogConfig, BlogPost, Tag
 
 
 class BlogConfigBlocksInline(AttachedBlocksStackedInline):
@@ -54,20 +54,13 @@ class TagAdmin(ModelAdminMixin, SortableModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
-class PostTagForm(forms.ModelForm):
-    """ Форма связи тэга и поста """
+class BlogPostForm(forms.ModelForm):
     class Meta:
+        model = BlogPost
+        fields = '__all__'
         widgets = {
-            'tag': AutocompleteWidget(),
+            'tags': AutocompleteMultipleWidget(),
         }
-
-
-class PostTagAdmin(ModelAdminInlineMixin, admin.TabularInline):
-    """ Инлайн тэгов поста """
-    model = PostTag
-    form = PostTagForm
-    extra = 0
-    suit_classes = 'suit-tab suit-tab-tags'
 
 
 @admin.register(BlogPost)
@@ -76,24 +69,23 @@ class BlogPostAdmin(SeoModelAdminMixin, AutoPostMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('preview', 'header', 'slug', 'status', 'date'),
+            'fields': ('preview', 'header', 'slug', 'tags', 'status', 'date'),
         }),
         (_('Content'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('note', 'text'),
         }),
     )
-    inlines = (PostTagAdmin, )
-    list_display = ('view', '__str__', 'tags_list', 'date_fmt', 'status')
-    list_display_links = ('__str__',)
+    form = BlogPostForm
     list_filter = ('status',)
     search_fields = ('title',)
+    list_display = ('view', '__str__', 'tags_list', 'date_fmt', 'status')
+    list_display_links = ('__str__',)
     actions = ('make_public_action', 'make_draft_action')
     prepopulated_fields = {'slug': ('header', )}
 
     suit_form_tabs = (
         ('general', _('General')),
-        ('tags', _('Tags')),
     )
 
     def tags_list(self, obj):
