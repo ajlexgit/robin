@@ -34,7 +34,7 @@ PIPELINE['STYLESHEETS'].update({
         'output_filename': 'css_build/error.css',
     },
     'main': {
-        'source_filenames': Slider.css + (
+        'source_filenames': (
             'main/scss/index.scss',
         ),
         'output_filename': 'css_build/main.css',
@@ -75,12 +75,11 @@ PIPELINE['JAVASCRIPT'].update({
 
             'js/inspectors/inspector.js',
             'js/inspectors/bg_inspector.js',
-
-            'js/jquery.fitvids.js',
-            'js/jquery.scrollTo.js',
+            'js/inspectors/media_inspector.js',
 
             'js/popups/jquery.popups.js',
             'js/popups/preloader.js',
+            'js/jquery.fitvids.js',
             'js/text_styles.js',
 
             'attachable_blocks/js/async_blocks.js',
@@ -91,7 +90,7 @@ PIPELINE['JAVASCRIPT'].update({
         'output_filename': 'js_build/core.js',
     },
     'main': {
-        'source_filenames': Slider.js + (
+        'source_filenames': (
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',

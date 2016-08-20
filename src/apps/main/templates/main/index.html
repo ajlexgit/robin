@@ -2,8 +2,6 @@
 
 {% load attachable_blocks %}
 {% load pipeline_plus %}
-{% load staticfiles %}
-{% load form_helper %}
 
 {% block static_head %}
   {{ block.super }}
@@ -17,115 +15,7 @@
 
 
 {% block content %}
-  <div id="main-slider" class="section section-slider">
-    <div class="section-inner">
 
-      <div class="slider no-slider">
-        {% for item in config.gallery.image_items %}
-          <img class="slider-item" src="{{ item.image.wide.url }}"
-               srcset="{{ item.image.wide.srcset }},
-                       {{ item.image.normal.srcset }},
-                       {{ item.image.mobile.srcset }}" sizes="100vw" alt="">
-        {% endfor %}
-      </div>
-
-    </div>
-  </div>
-
-
-  <div id="gallery" class="block">
-    <div class="grid-block">
-
-      <div class="slider no-slider">
-        {% for item in config.gallery.items.all %}
-          {% if item.is_image %}
-            <div class="slider-item">
-              <img src="{{ item.image.preview.url }}"
-                   width="{{ item.image.preview.target_width }}"
-                   height="{{ item.image.preview.target_height }}"
-                   alt="">
-
-              <!-- popup content -->
-              <script type="text/template">
-                <div class="image-item">
-                  <img src="{{ item.image.wide.url }}"
-                       srcset="{{ item.image.wide.srcset }},
-                             {{ item.image.normal.srcset }},
-                             {{ item.image.mobile.srcset }}"
-                       sizes="100vw" alt="">
-                </div>
-              </script>
-            </div>
-          {% elif item.is_video_link %}
-            <div class="slider-item">
-              <img src="{{ item.video_preview.preview.url }}" alt="">
-
-              <!-- popup content -->
-              <script type="text/template">
-                <div class="video-item" data-provider="{{ item.video.provider.name }}" data-key="{{ item.video.key }}">
-                  <img src="{{ item.video_preview.wide.url }}"
-                       srcset="{{ item.video_preview.wide.srcset }},
-                             {{ item.video_preview.normal.srcset }},
-                             {{ item.video_preview.mobile.srcset }}"
-                       sizes="100vw" alt="">
-
-                  <div class="play-btn"></div>
-                </div>
-              </script>
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-    </div>
-  </div>
-
-  <div class="block">
-    <div class="grid-block">
-      <form>
-        <div class="field">
-          <input type="checkbox" name="chk" value="1" id="chk1" checked>
-          <label for="chk1" ondblclick="return false">One</label>
-        </div>
-
-        <div class="field">
-          <input type="checkbox" name="chk" value="2" id="chk2">
-          <label for="chk2">Two</label>
-        </div>
-
-        <div class="field">
-          <input type="checkbox" name="chk" value="2" id="chk3" disabled>
-          <label for="chk3">Two</label>
-        </div>
-
-        <div class="field">
-          <input type="checkbox" name="chk" value="2" id="chk3" disabled checked>
-          <label for="chk3">Two</label>
-        </div>
-
-
-        <div class="field">
-          <input type="radio" name="rad" value="1" id="rad1" checked>
-          <label for="rad1" ondblclick="return false">One</label>
-        </div>
-
-        <div class="field">
-          <input type="radio" name="rad" value="2" id="rad2">
-          <label for="rad2">Two</label>
-        </div>
-
-        <div class="field">
-          <input type="radio" name="rad" value="2" id="rad3" disabled>
-          <label for="rad3">Two</label>
-        </div>
-
-        <div class="field">
-          <input type="radio" name="rad2" value="2" id="rad3" disabled checked>
-          <label for="rad3">Two</label>
-        </div>
-      </form>
-    </div>
-  </div>
 
   {% render_attached_blocks config %}
 
