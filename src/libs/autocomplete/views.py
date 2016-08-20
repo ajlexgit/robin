@@ -41,11 +41,11 @@ def autocomplete_widget(request, application, model_name, name):
 
     # Зависимое поле
     query = Q()
-    dependencies = tuple(item[0] for item in redis_data['dependencies'])
-    is_multiple = tuple(item[2] for item in redis_data['dependencies'])
+    filters = tuple(item[0] for item in redis_data['filters'])
+    is_multiple = tuple(item[2] for item in redis_data['filters'])
 
     values = request.POST.get('values', '').split(';')
-    for index, key in enumerate(dependencies):
+    for index, key in enumerate(filters):
         try:
             value = values[index]
             multiple = is_multiple[index]

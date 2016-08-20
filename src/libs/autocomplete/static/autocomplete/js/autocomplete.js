@@ -5,14 +5,6 @@
     // чтобы запросить их одним махом.
     var mass_requests = {};
 
-
-    var formatResult = function(state) {
-        if (!state.id) {
-            return state.text;
-        }
-        return state.text;
-    };
-
     var formatSelection = function(state) {
         if (!state.id) {
             return state.text;
@@ -24,9 +16,9 @@
     window.Autocomplete = Class(Object, function Autocomplete(cls, superclass) {
         cls.defaults = {
             url: '',
-            depends: [],
+            min_chars: 2,
+            filters: [],
             expressions: 'title__icontains',
-            minimum_input_length: 2,
             multiple: false
         };
 
@@ -59,29 +51,29 @@
             }
 
             // Поля, от которых зависит текущее поле
-            var depends = this.opts.depends;
-            if (typeof depends == 'string') {
-                depends = depends.split(',');
+            var filters = this.opts.filters;
+            if (typeof filters == 'string') {
+                filters = filters.split(',');
             } else {
-                depends = depends.concat();
+                filters = filters.concat();
             }
 
             if (this.name.indexOf('-') >= 0) {
                 var formset_prefix = this.name.split('-').slice(0, -1).join('-');
-                depends = depends.map(function(item) {
+                filters = filters.map(function(item) {
                     return document.getElementById('id_' + item.replace('__prefix__', formset_prefix));
                 })
             } else {
-                depends = depends.map(function(item) {
+                filters = filters.map(function(item) {
                     return document.getElementById('id_' + item);
                 })
             }
-            this.$depends = $(depends.filter(Boolean));
+            this.$filters = $(filters.filter(Boolean));
 
             // при изменении зависимости вызываем событие изменения на текущем элементе
             var that = this;
             this.event_ns = event_ns++;
-            this.$depends.on('change.autocomplete' + this.event_ns, function() {
+            this.$filters.on('change.autocomplete' + this.event_ns, function() {
                 that.$elem.select2('data', null);
             });
 
@@ -95,7 +87,7 @@
             Освобождение ресурсов
          */
         cls.destroy = function() {
-            this.$depends.off('.autocomplete' + this.event_ns);
+            this.$filters.off('.autocomplete' + this.event_ns);
             this.$elem.removeData(this.DATA_KEY);
             this.$elem.select2('destroy');
         };
@@ -104,7 +96,7 @@
             Возвращает значения, от которых зависит текущее поле
          */
         cls._parentValues = function() {
-            return Array.prototype.map.call(this.$depends, function(item) {
+            return Array.prototype.map.call(this.$filters, function(item) {
                 return $(item).val()
             }).join(';');
         };
@@ -116,15 +108,10 @@
             var that = this;
             this.$elem.select2({
                 multiple: this.opts.multiple,
-                minimumInputLength: this.opts.minimum_input_length,
-                formatResult: formatResult,
+                minimumInputLength: this.opts.min_chars,
                 formatSelection: formatSelection,
-                cache_key: function(query) {
-                    return {
-                        page: query.page,
-                        term: query.term,
-                        values: that._parentValues()
-                    }
+                getCacheName: function(query) {
+                    return query.page + ':' + query.term + ':' + that._parentValues();
                 },
                 ajax: {
                     url: this.opts.url,
@@ -158,7 +145,7 @@
                         id: id,
                         object: that,
                         callback: callback,
-                        depends: that.$depends.length
+                        filters: that.$filters.length
                     };
 
                     if (key in mass_requests) {
@@ -185,21 +172,21 @@
 
         // Запрос собранных данных
         $.each(mass_requests, function(url, records) {
-            var with_depends = [];
-            var without_depends = [];
+            var with_filters = [];
+            var without_filters = [];
 
             // распределение зависимых и независимых объектов
             records.forEach(function(record) {
-                if (record.depends) {
-                    with_depends.push(record);
+                if (record.filters) {
+                    with_filters.push(record);
                 } else {
-                    without_depends.push(record);
+                    without_filters.push(record);
                 }
             });
 
             // запрос независимых объектов
-            if (without_depends.length) {
-                var ids = $.unique(without_depends.map(function(record) {
+            if (without_filters.length) {
+                var ids = $.unique(without_filters.map(function(record) {
                     return record.id
                 }));
 
@@ -224,7 +211,7 @@
                         });
 
                         // обработка каждого поля
-                        $.each(without_depends, function(i, record) {
+                        $.each(without_filters, function(i, record) {
                             if (!record.object.opts.multiple) {
                                 data = {
                                     id: record.id,
@@ -248,7 +235,7 @@
             }
 
             // запрос зависимых объектов
-            with_depends.forEach(function(record) {
+            with_filters.forEach(function(record) {
                 $.ajax(url, {
                     type: 'POST',
                     dataType: "json",

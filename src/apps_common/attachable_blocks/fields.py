@@ -33,7 +33,6 @@ class AttachableBlockField(models.ForeignKey):
         defaults = {
             'widget': AutocompleteWidget(
                 expressions='label__icontains',
-                minimum_input_length=0,
                 format_item=blocks_format_item,
             )
         }

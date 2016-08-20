@@ -1,37 +1,20 @@
 (function($) {
 
+    /*
+        Дополнение к Select2, сохраняющее данные AJAX-запроса
+        для последующего использования.
+     */
     $.extend($.fn.select2.defaults, {
-        closeOnSelect: true,
-        dropdownCssClass: "bigdrop",
-        allowClear: true,
+        _cache: {},
 
-        cache_key: function(query) {
-            return {
-                page: query.page,
-                term: query.term
-            }
-        },
-        calc_cache: function(query) {
-            var result = [];
-            var cache_key = this.cache_key(query);
-            for (var key in cache_key) {
-                if (cache_key.hasOwnProperty(key)) {
-                    result.push(key);
-                    result.push(cache_key[key].toString());
-                }
-            }
-            return result.join(':');
+        getCacheName: function(query) {
+            return query.page + ':' + query.term;
         },
 
         query: function(query) {
-            if (this.__cache == undefined) {
-                this.__cache = {};
-            }
-            var CACHE = this.__cache;
-
-            var cache_key = this.calc_cache(query);
-            if (CACHE[cache_key]) {
-                query.callback(CACHE[cache_key]);
+            var cache_name = this.getCacheName(query);
+            if (this._cache[cache_name]) {
+                query.callback(this._cache[cache_name]);
                 return
             }
 
@@ -50,6 +33,7 @@
                 }
             }
 
+            var that = this;
             $.extend(params, {
                 url: url,
                 type: options.type,
@@ -57,7 +41,7 @@
                 dataType: options.dataType,
                 success: function(data) {
                     var results = options.results(data, query.page, query);
-                    CACHE[cache_key] = results;
+                    that._cache[cache_name] = results;
                     query.callback(results);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

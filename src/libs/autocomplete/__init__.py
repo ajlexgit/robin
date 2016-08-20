@@ -36,13 +36,13 @@
                 class Meta:
                     widgets = {
                         'post_subtype': AutocompleteWidget(
-                            dependencies = (
+                            filters = (
                                 ('sections', 'sections', True),
                             ),
                             attrs = {
                                 'style': 'width:50%',
                             },
-                            minimum_input_length = 0,
+                            min_chars = 2,
                             format_item = SubType.autocomplete_item,
                         )
                     }

@@ -58,10 +58,7 @@ class PostTagForm(forms.ModelForm):
     """ Форма связи тэга и поста """
     class Meta:
         widgets = {
-            'tag': AutocompleteWidget(
-                minimum_input_length=0,
-                expressions="title__icontains",
-            )
+            'tag': AutocompleteWidget(),
         }
 
 

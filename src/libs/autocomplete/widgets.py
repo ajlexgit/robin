@@ -24,7 +24,7 @@ class AutocompleteWidget(widgets.Widget):
         Виджет для автокомплит-полей.
 
         Параметры:
-            dependencies: list/tuple
+            filters: list/tuple
                 Список кортежей из трех элементов:
                     1) имя поля в FK-модели (ключ фильтра)
                     2) имя поля для получения значения (значение фильтра).
@@ -41,7 +41,7 @@ class AutocompleteWidget(widgets.Widget):
                 Функция, возвращающая представление объекта для селектбокса.
                 Должна вернуть словарь, который обязан включать ключи "id" и "text"
 
-            minimum_input_length: int
+            min_chars: int
                 Минимальное количество введенных символов для запуска автокомплита
     """
     _choices = ()
@@ -61,8 +61,14 @@ class AutocompleteWidget(widgets.Widget):
             )
         }
 
-    def __init__(self, attrs=None, dependencies=(), expressions='title__icontains',
-                 minimum_input_length=2, format_item=None, template='autocomplete/admin/field.html'):
+    def __init__(self,
+        attrs=None,
+        filters=(),
+        expressions='title__icontains',
+        min_chars=0,
+        format_item=None,
+        template='autocomplete/admin/field.html'
+    ):
         default_attrs = {
             'style': 'width: 220px',
             'placeholder': _('Search element'),
@@ -71,8 +77,8 @@ class AutocompleteWidget(widgets.Widget):
         super().__init__(default_attrs)
 
         self.template = template
-        self.dependencies = dependencies
-        self.minimum_input_length = int(minimum_input_length)
+        self.filters = filters
+        self.min_chars = int(min_chars)
 
         # модуль и имя функции, форматирующей каждый элемент
         # выпадающего списка автокомплита
@@ -103,8 +109,7 @@ class AutocompleteWidget(widgets.Widget):
     @staticmethod
     def get_short_name(name):
         """
-            Получение имени поля без индекса inline-формы,
-            которые добавляются от inline-форм.
+            Получение имени поля без индекса inline-формы.
 
             Пример:
                 model-0-field -> model-field
@@ -122,7 +127,7 @@ class AutocompleteWidget(widgets.Widget):
             'query': self.choices.queryset.query,
             'format_item_module': self.format_item_module,
             'format_item_method': self.format_item_method,
-            'dependencies': self.dependencies,
+            'filters': self.filters,
         }), timeout=conf.CACHE_TIMEOUT)
 
     def get_url(self, name):
@@ -139,10 +144,10 @@ class AutocompleteWidget(widgets.Widget):
 
         # Аттрибуты
         final_attrs = self.build_attrs(attrs, name=name, **{
-            'data-minimum_input_length': self.minimum_input_length,
-            'data-expressions': self.expressions,
-            'data-depends': ','.join(item[1] for item in self.dependencies),
             'data-url': self.get_url(short_name),
+            'data-min_chars': self.min_chars,
+            'data-expressions': self.expressions,
+            'data-filters': ','.join(item[1] for item in self.filters),
         })
 
         # Добавляем класс

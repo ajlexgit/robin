@@ -20,9 +20,8 @@ class AttachedBlocksForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'block': AutocompleteWidget(
-                dependencies=(('block_content_type', '__prefix__-block_type', False),),
+                filters=(('block_content_type', '__prefix__-block_type', False),),
                 expressions="label__icontains",
-                minimum_input_length=0,
             ),
         }
 

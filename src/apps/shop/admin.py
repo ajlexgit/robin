@@ -61,7 +61,6 @@ class ShopCategoryForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'parent': AutocompleteWidget(
-                minimum_input_length=0,
                 format_item=ShopCategory.autocomplete_item,
                 attrs={
                     'style': 'width:50%',
@@ -163,7 +162,6 @@ class ShopProductForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'category': AutocompleteWidget(
-                minimum_input_length=0,
                 format_item=ShopCategory.autocomplete_item,
                 attrs={
                     'style': 'width:50%',
