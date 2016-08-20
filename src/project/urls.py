@@ -28,7 +28,6 @@ urlpatterns = [
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': site_sitemaps}),
 
     url(r'^$', main_views.IndexView.as_view(), name='index'),
-    url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^contact/', include('contacts.urls', namespace='contacts')),
 ]
 

@@ -1,4 +1,4 @@
-from ._pipeline import PIPELINE, Slider
+from ._pipeline import PIPELINE
 
 
 PIPELINE['STYLESHEETS'].update({
@@ -46,20 +46,6 @@ PIPELINE['STYLESHEETS'].update({
         ),
         'output_filename': 'css_build/contacts.css',
     },
-    'blog': {
-        'source_filenames': (
-            'paginator/scss/paginator.scss',
-            'blog/scss/index.scss',
-        ),
-        'output_filename': 'css_build/blog.css',
-    },
-    'blog_detail': {
-        'source_filenames': Slider.css + (
-            'social_networks/scss/social_buttons.scss',
-            'blog/scss/detail.scss',
-        ),
-        'output_filename': 'css_build/blog_detail.css',
-    },
 })
 
 PIPELINE['JAVASCRIPT'].update({
@@ -101,19 +87,6 @@ PIPELINE['JAVASCRIPT'].update({
             'contacts/js/index.js',
         ),
         'output_filename': 'js_build/contacts.js',
-    },
-    'blog': {
-        'source_filenames': (
-            'blog/js/index.js',
-        ),
-        'output_filename': 'js_build/blog.js',
-    },
-    'blog_detail': {
-        'source_filenames': Slider.js + (
-            'social_networks/js/social_buttons.js',
-            'blog/js/detail.js',
-        ),
-        'output_filename': 'js_build/blog_detail.js',
     },
 })
 

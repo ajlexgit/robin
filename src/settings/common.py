@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'suit_ckeditor',
 
     # Apps
-    'blog',
     'contacts',
     'main',
     'users',
@@ -87,15 +86,6 @@ SUIT_CONFIG = {
         {
             'app': 'main',
             'icon': 'icon-file',
-        },
-        {
-            'app': 'blog',
-            'icon': 'icon-file',
-            'models': (
-                'BlogPost',
-                'Tag',
-                'BlogConfig',
-            )
         },
         {
             'app': 'contacts',
