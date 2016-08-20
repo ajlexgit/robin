@@ -84,7 +84,7 @@
      */
     var update_buttons = function(object) {
         var block_id = object.$elem.val();
-        var $content_type_field = object.$depends;
+        var $content_type_field = object.$filters;
         var content_type = $content_type_field.val();
         if (content_type) {
             update_add_button(object.$elem.siblings('.add-related'), content_type);
@@ -105,14 +105,14 @@
         }
 
         var obj = $field.data(Autocomplete.prototype.DATA_KEY);
-        if (!obj || (obj.$depends.length != 1)) {
+        if (!obj || (obj.$filters.length != 1)) {
             return
         }
 
         // кнопка удаления
         var $delete_button = generate_delete_button($field);
         $field.after($delete_button);
-        
+
         // кнопка редактирования
         var $change_button = generate_change_button($field);
         $field.after($change_button);
@@ -123,7 +123,7 @@
 
 
         // обновление при изменении типа блока
-        var $content_type_field = obj.$depends.first();
+        var $content_type_field = obj.$filters.first();
         $content_type_field.on('change', function() {
             update_buttons(obj);
         });
