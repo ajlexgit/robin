@@ -2,101 +2,101 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import google_maps.fields
 import django.utils.timezone
+import google_maps.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('attachable_blocks', '0001_initial'),
+        ('attachable_blocks', '__first__'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Address',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('city', models.CharField(max_length=255, verbose_name='city')),
-                ('address', models.CharField(max_length=255, verbose_name='address')),
-                ('region', models.CharField(max_length=64, blank=True, verbose_name='region')),
-                ('zip', models.CharField(max_length=32, blank=True, verbose_name='zip')),
-                ('coords', google_maps.fields.GoogleCoordsField(help_text='Double click on the map places marker', blank=True, verbose_name='coords')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('city', models.CharField(verbose_name='city', max_length=255)),
+                ('address', models.CharField(verbose_name='address', max_length=255)),
+                ('region', models.CharField(verbose_name='region', blank=True, max_length=64)),
+                ('zip', models.CharField(verbose_name='zip', blank=True, max_length=32)),
+                ('coords', google_maps.fields.GoogleCoordsField(verbose_name='coords', blank=True, help_text='Double click on the map places marker')),
                 ('sort_order', models.PositiveIntegerField(verbose_name='sort order')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
+                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
             ],
             options={
+                'verbose_name': 'address',
                 'ordering': ('sort_order',),
                 'verbose_name_plural': 'addresses',
-                'verbose_name': 'address',
             },
         ),
         migrations.CreateModel(
             name='ContactBlock',
             fields=[
-                ('attachableblock_ptr', models.OneToOneField(primary_key=True, auto_created=True, serialize=False, parent_link=True, to='attachable_blocks.AttachableBlock')),
-                ('header', models.CharField(max_length=128, blank=True, verbose_name='header')),
+                ('attachableblock_ptr', models.OneToOneField(parent_link=True, serialize=False, to='attachable_blocks.AttachableBlock', auto_created=True, primary_key=True)),
+                ('header', models.CharField(verbose_name='header', blank=True, max_length=128)),
             ],
             options={
-                'verbose_name_plural': 'Contact blocks',
                 'verbose_name': 'Contact block',
+                'verbose_name_plural': 'Contact blocks',
             },
             bases=('attachable_blocks.attachableblock',),
         ),
         migrations.CreateModel(
             name='ContactsConfig',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('header', models.CharField(max_length=128, verbose_name='header')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('header', models.CharField(verbose_name='header', max_length=128)),
+                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
             ],
             options={
-                'default_permissions': ('change',),
                 'verbose_name': 'settings',
+                'default_permissions': ('change',),
             },
         ),
         migrations.CreateModel(
             name='Message',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128, verbose_name='name')),
-                ('phone', models.CharField(max_length=32, blank=True, verbose_name='phone')),
-                ('email', models.EmailField(max_length=254, blank=True, verbose_name='e-mail')),
-                ('message', models.TextField(max_length=2048, verbose_name='message')),
-                ('date', models.DateTimeField(editable=False, default=django.utils.timezone.now, verbose_name='date sent')),
-                ('referer', models.CharField(max_length=255, editable=False, blank=True, verbose_name='from page')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('name', models.CharField(verbose_name='name', max_length=128)),
+                ('phone', models.CharField(verbose_name='phone', blank=True, max_length=32)),
+                ('email', models.EmailField(verbose_name='e-mail', blank=True, max_length=254)),
+                ('message', models.TextField(verbose_name='message', max_length=2048)),
+                ('date', models.DateTimeField(editable=False, verbose_name='date sent', default=django.utils.timezone.now)),
+                ('referer', models.CharField(editable=False, verbose_name='from page', blank=True, max_length=255)),
             ],
             options={
+                'verbose_name': 'message',
                 'ordering': ('-date',),
                 'verbose_name_plural': 'messages',
                 'default_permissions': ('delete',),
-                'verbose_name': 'message',
             },
         ),
         migrations.CreateModel(
             name='NotifyReceiver',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254, verbose_name='e-mail')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('email', models.EmailField(verbose_name='e-mail', max_length=254)),
                 ('config', models.ForeignKey(related_name='receivers', to='contacts.ContactsConfig')),
             ],
             options={
-                'verbose_name_plural': 'notify receivers',
                 'verbose_name': 'notify receiver',
+                'verbose_name_plural': 'notify receivers',
             },
         ),
         migrations.CreateModel(
             name='PhoneNumber',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=255, blank=True, verbose_name='number')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('number', models.CharField(verbose_name='number', blank=True, max_length=255)),
                 ('sort_order', models.PositiveIntegerField(verbose_name='sort order')),
                 ('address', models.ForeignKey(related_name='+', to='contacts.Address')),
             ],
             options={
+                'verbose_name': 'phone',
                 'ordering': ('sort_order',),
                 'verbose_name_plural': 'phones',
-                'verbose_name': 'phone',
             },
         ),
     ]
