@@ -78,11 +78,13 @@ class BlogPostAdmin(SeoModelAdminMixin, AutoPostMixin, admin.ModelAdmin):
     )
     form = BlogPostForm
     list_filter = ('status',)
-    search_fields = ('title',)
+    search_fields = ('header',)
     list_display = ('view', '__str__', 'tags_list', 'date_fmt', 'status')
     list_display_links = ('__str__',)
     actions = ('make_public_action', 'make_draft_action')
-    prepopulated_fields = {'slug': ('header', )}
+    prepopulated_fields = {
+        'slug': ('header', )
+    }
 
     suit_form_tabs = (
         ('general', _('General')),
