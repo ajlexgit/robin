@@ -13,6 +13,8 @@ class CKEditorField(models.Field):
         editor_options = editor_options or config.CKEDITOR_CONFIG_DEFAULT
         self.editor_options = editor_options.copy()
         self.editor_options['height'] = int(height)
+        if 'contentsCss' not in self.editor_options:
+            self.editor_options['contentsCss'] = config.CKEDITOR_DEFAULT_CSS
         super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
@@ -63,6 +65,8 @@ class CKEditorUploadField(models.Field):
         editor_options = editor_options or config.CKEDITOR_UPLOAD_CONFIG_DEFAULT
         self.editor_options = editor_options.copy()
         self.editor_options['height'] = int(height)
+        if 'contentsCss' not in self.editor_options:
+            self.editor_options['contentsCss'] = config.CKEDITOR_DEFAULT_CSS
         self.upload_pagephoto_url = upload_pagephoto_url or '/dladmin/ckeditor/upload_pagephoto/'
         self.upload_pagefile_url = upload_pagefile_url or '/dladmin/ckeditor/upload_pagefile/'
         self.upload_simplephoto_url = upload_simplephoto_url or '/dladmin/ckeditor/upload_simplephoto/'
