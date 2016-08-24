@@ -8,7 +8,7 @@ from libs.storages import MediaStorage
 
 
 class SeoConfig(SingletonModel):
-    title = models.CharField(_('meta title'), max_length=128)
+    title = models.CharField(_('meta title'), max_length=128, blank=True)
     keywords = models.TextField(_('meta keywords'), max_length=255, blank=True)
     description = models.TextField(_('meta description'), max_length=255, blank=True)
 
