@@ -11,7 +11,7 @@
       }
     }
 */
-@mixin flex-columns($columns, $margin-right:0, $margin-top:0) {
+@mixin flex-columns($columns, $margin-right:null, $margin-top:null) {
   max-width: calc(#{100% / $columns} - #{(($columns - 1) * $margin-right) / $columns});
   @include flex(0 1 100%);
 
