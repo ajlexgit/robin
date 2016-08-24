@@ -7,8 +7,10 @@ $arrow_area_width: (
     (0px, $media480): 50px,
 );
 
-// размеры стрелки
-$arrow_image_size: 20px;
+// параметры стрелки
+$arrow_width: 2px;
+$arrow_color: #D0D0D0;
+$arrow_size: 20px;
 
 
 .slider-arrow {
@@ -25,8 +27,8 @@ $arrow_image_size: 20px;
     position: absolute;
     left: 50%;
     top: 50%;
-    width: $arrow_image_size;
-    height: $arrow_image_size;
+    width: $arrow_size;
+    height: $arrow_size;
     @include transform(translate(-50%, -50%));
 
     &:before {
@@ -34,8 +36,8 @@ $arrow_image_size: 20px;
       display: block;
       width: 100%;
       height: 100%;
-      border-top: 4px solid $white;
-      border-right: 4px solid $white;
+      border-top: $arrow_width solid $arrow_color;
+      border-right: $arrow_width solid $arrow_color;
       @include border-box;
       @include transform(translate(-25%, 0) rotate(45deg));
     }
