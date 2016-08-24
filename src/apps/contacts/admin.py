@@ -100,6 +100,9 @@ class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+    def has_change_permission(self, request, obj=None):
+        return True
+
     def message_fmt(self, obj):
         return description(obj.message, 60, 80)
     message_fmt.short_description = _('Message')

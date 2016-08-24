@@ -1,27 +1,14 @@
-{% extends 'layout.html' %}
+{% extends '404.html' %}
 
-{% load pipeline_plus %}
 {% load i18n %}
-
-{% block static_head %}
-  {{ block.super }}
-  {% stylesheet 'error' %}
-{% endblock static_head %}
-
 
 {% block title %}{% trans 'Server error' %}{% endblock %}
 
-{% block content %}
-
-  <div id="error" class="grid-block block">
-    <div class="block-name title-h1">500</div>
-    <div class="text text-styles">
-      {% blocktrans %}
-        The server encountered an internal error or misconfiguration and was unable to complete your request.<br>
-        You can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
-        looking for.
-      {% endblocktrans %}
-    </div>
-  </div>
-
-{% endblock content %}
+{% block code %}500{% endblock code %}
+{% block text %}
+  {% blocktrans %}
+    The server encountered an internal error or misconfiguration and was unable to complete your request.<br>
+    You can return back to the site’s <a href="/">homepage</a> and see if you can find what you are
+    looking for.
+  {% endblocktrans %}
+{% endblock text %}
