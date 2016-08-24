@@ -81,7 +81,6 @@ body {
   }
 
   .section-image {
-    @include sharp-image;
     @include centrizeImage($zIndex: 5);
   }
 
