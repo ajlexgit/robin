@@ -6,7 +6,7 @@ from .models import ShopProduct
 from . import conf
 
 
-class CartProducts:
+class Cart:
     """
         Список товаров в корзине
     """
@@ -38,7 +38,7 @@ class CartProducts:
         return sum(self._counts)
 
     @property
-    def total_cost(self):
+    def total_price(self):
         return sum(prod.price * count for prod, count in self.products_counts)
 
     def _format(self):
@@ -158,7 +158,7 @@ class CartProducts:
 class SaveCart(AjaxViewMixin, View):
     def post(self, request):
         """ Установка всех товаров в корзине """
-        cart = CartProducts.from_data(request.POST)
+        cart = Cart.from_data(request.POST)
         cart.to_session(request)
         return self.json_response()
 
@@ -166,6 +166,6 @@ class SaveCart(AjaxViewMixin, View):
 class ClearCart(AjaxViewMixin, View):
     def post(self, request):
         """ Очистка корзины """
-        cart = CartProducts.from_session(request)
+        cart = Cart.from_session(request)
         cart.clear(request)
         return self.json_response()
