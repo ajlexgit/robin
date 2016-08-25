@@ -6,7 +6,7 @@
       </a>
 
       {% if item.childs %}
-        {% include 'menu/menu.html' with items=item.childs level=level+1 %}
+        {% include 'menu/menu.html' with items=item.childs level=level|add:1 %}
       {% endif %}
     </li>
   {% endfor %}
