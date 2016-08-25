@@ -13,7 +13,10 @@
 */
 @mixin flex-columns($columns, $margin-right:null, $margin-top:null) {
   max-width: calc(#{100% / $columns} - #{(($columns - 1) * $margin-right) / $columns});
-  @include flex(0 1 100%);
+
+  $min_width: 100% / ($columns + 1);
+  $max_width: 100% / $columns;
+  @include flex(1 0 #{($min_width + $max_width) / 2});
 
   @if ($margin-right) {
     margin-right: $margin-right;
