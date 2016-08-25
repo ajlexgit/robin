@@ -13,5 +13,6 @@ def menu(context, name, template='menu/menu.html'):
         return ''
 
     return loader.render_to_string(template, {
+        'level': 1,
         'items': menus.get(name, ()),
     }, request=context.get('request'))

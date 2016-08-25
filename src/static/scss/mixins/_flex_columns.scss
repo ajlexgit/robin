@@ -12,23 +12,25 @@
     }
 */
 @mixin flex-columns($columns, $margin-right:null, $margin-top:null) {
-  max-width: calc(#{100% / $columns} - #{(($columns - 1) * $margin-right) / $columns});
-
-  $min_width: 100% / ($columns + 1);
-  $max_width: 100% / $columns;
-  $basis: min($min_width + 0.5%, ($min_width + $max_width) / 2);
+  $min_basis: 100% / ($columns + 1);
+  $max_basis: 100% / $columns;
+  $basis: min($min_basis + 0.5%, ($min_basis + $max_basis) / 2);
   @include flex(1 0 $basis);
-
-  @if ($margin-right) {
-    margin-right: $margin-right;
-    &:nth-of-type(#{$columns}n) {
-      margin-right: 0;
-    }
-  }
 
   @if ($margin-top) {
     &:nth-of-type(n+#{$columns+1}) {
       margin-top: $margin-top;
     }
+  }
+
+  @if ($margin-right) {
+    $max_width: calc(#{$max_basis} - #{(($columns - 1) * $margin-right) / $columns});
+
+    margin-right: $margin-right;
+    &:nth-of-type(#{$columns}n) {
+      margin-right: 0;
+    }
+  } @else {
+    max-width: $max_basis;
   }
 }
