@@ -545,7 +545,7 @@
             }
 
             // высота не меняется - выходим
-            var current_height = this.$list.outerHeight();
+            var current_height = this.$list.height();
             if (current_height == final_height) {
                 return
             }
