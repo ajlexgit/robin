@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% if entity %}
-  <table class="admin-table">
+  <table class="table admin-table">
     <thead>
       <tr>
         <th>{% trans 'Image' %}</th>
@@ -46,7 +46,7 @@
       </tr>
       <tr>
         <td colspan="4">
-          {% trans 'Total' %}
+          {% trans 'Total cost' %}
         </td>
         <td style="font-size: 18px; font-weight: bold; color: green; white-space: nowrap">
           {{ entity.total_cost.alternative }}

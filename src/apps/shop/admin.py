@@ -328,9 +328,11 @@ class ShopOrderForm(forms.ModelForm):
 class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     """ Заказ """
     fieldsets = (
-        (_('Cost'), {
+        (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('fmt_products_cost', 'fmt_total_cost', ),
+            'fields': (
+                'fmt_products_cost', 'fmt_total_cost', 'created',
+            ),
         }),
 
         (_('Checked'), {
@@ -361,12 +363,6 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
             'classes': ('suit-tab', 'suit-tab-status'),
             'fields': (
                 'is_confirmed', 'confirm_date',
-            ),
-        }),
-        (_('Created'), {
-            'classes': ('suit-tab', 'suit-tab-status'),
-            'fields': (
-                'created',
             ),
         }),
     )
