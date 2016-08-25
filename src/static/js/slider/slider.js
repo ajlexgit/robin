@@ -564,13 +564,13 @@
                     progress: function() {
                         var height = this.height;
                         $.animation_frame(function() {
-                            that.$list.outerHeight(height);
+                            that.$list.height(height);
                         }, that.$list.get(0))();
                     }
                 });
             } else {
                 // мгновенно
-                this.$list.outerHeight(final_height);
+                this.$list.height(final_height);
             }
             this.afterUpdateListHeight(current_height, final_height);
         };

@@ -9,7 +9,7 @@
     display: none;
   }
 
-  .active {
+  .btn.active {
     color: black;
     background: 0 -10px #72e472;
     @include linear-gradient(to bottom, #62c462 0%, #72e472 100%);

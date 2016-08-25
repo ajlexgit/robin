@@ -23,6 +23,7 @@
   height: inherit;
   min-height: inherit;
   z-index: 1;
+  @include border-box;
   @include valign_after;
 }
 
@@ -44,6 +45,8 @@
 }
 
 .no-slider {
+  @include border-box;
+
   // Скрытие всех слайдов, кроме первого
   .slider-slide:first-child {
     position: relative;
