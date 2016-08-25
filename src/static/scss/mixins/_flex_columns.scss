@@ -24,8 +24,7 @@
   }
 
   @if ($margin-right) {
-    $max_width: calc(#{$max_basis} - #{(($columns - 1) * $margin-right) / $columns});
-
+    max-width: calc(#{$max_basis} - #{(($columns - 1) * $margin-right) / $columns});
     margin-right: $margin-right;
     &:nth-of-type(#{$columns}n) {
       margin-right: 0;
