@@ -1,5 +1,4 @@
 from django.core import paginator
-from django.template import loader
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.utils.functional import cached_property
 
@@ -82,12 +81,3 @@ class Paginator(paginator.Paginator):
             result += list(range(right_page + 1, self.num_pages + 1))
 
         return result
-
-    def __str__(self):
-        if not self.current_page.has_other_pages():
-            return ''
-
-        return loader.render_to_string(self.template, {
-            'paginator': self,
-            'page': self.current_page,
-        })

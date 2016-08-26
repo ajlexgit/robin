@@ -12,7 +12,7 @@ def paginator(context, paginator):
 
     return loader.render_to_string(paginator.template, {
         'paginator': paginator,
-        'page': paginator.current_page,
+        'current_page_number': paginator.current_page_number,
     }, request=request)
 
 
