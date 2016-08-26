@@ -29,10 +29,7 @@
 
     window.Cart = Class(EventedObject, function Cart(cls, superclass) {
         cls.defaults = {
-            prefix: 'cart',
-            onSave: $.noop,
-            onUpdate: $.noop,
-            onClear: $.noop
+            prefix: 'cart'
         };
 
 
@@ -62,6 +59,7 @@
          */
         cls.clear = function(options) {
             localStorage.removeItem(this.opts.prefix);
+            $.removeCookie('clear_cart', {path: '/'});
 
             if (this._clearQuery) {
                 this._clearQuery.abort();
@@ -135,9 +133,14 @@
                 return $.Deferred().reject();
             }
 
+            count = Math.max(0, parseInt(count) || 0);
+            if (!count) {
+                this.error('zero count');
+                return $.Deferred().reject();
+            }
+
             var storage = this.getStorage();
-            var oldCount = parseInt(storage[product_id]) || 0;
-            var finalCount = oldCount + Math.max(0, parseInt(count) || 0);
+            var finalCount = (parseInt(storage[product_id]) || 0) + count;
             if (window.js_storage.max_product_count) {
                 finalCount = Math.min(finalCount, window.js_storage.max_product_count);
             }
@@ -157,6 +160,14 @@
             var storage = this.getStorage();
             if (product_id in storage) {
                 delete storage[product_id];
+            }
+
+            var total_count = 0;
+            $.each(storage, function(id, count) {
+                total_count += count;
+            });
+            if (!total_count) {
+                return this.clear();
             }
 
             this.saveStorage(storage);

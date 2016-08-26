@@ -1,5 +1,5 @@
-from django.template import loader
 from django.core import paginator
+from django.template import loader
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.utils.functional import cached_property
 
@@ -28,8 +28,8 @@ class Paginator(paginator.Paginator):
         if not self.allow_empty_first_page and self.count == 0:
             raise EmptyPage('That page contains no results')
 
-    @property
-    def num_page(self):
+    @cached_property
+    def current_page_number(self):
         """ Номер текущей страницы """
         number = self.request.GET.get(self.parameter_name, 1)
         try:
@@ -42,9 +42,21 @@ class Paginator(paginator.Paginator):
             return number
 
     @cached_property
+    def next_page_number(self):
+        """ Номер следующей страницы """
+        if self.current_page.has_next():
+            return self.current_page.next_page_number()
+
+    @cached_property
+    def previous_page_number(self):
+        """ Номер предыдущей страницы """
+        if self.current_page.has_previous():
+            return self.current_page.previous_page_number()
+
+    @cached_property
     def current_page(self):
         """ Объект текущей страницы """
-        return self.page(self.num_page)
+        return self.page(self.current_page_number)
 
     @cached_property
     def pages(self):

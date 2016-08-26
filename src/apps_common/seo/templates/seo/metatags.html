@@ -7,6 +7,15 @@
   <link rel="canonical" href="{{ seo.canonical }}">
 {% endif %}
 
+{% if seo.next %}
+  <link rel="next" href="{{ seo.next }}">
+{% endif %}
+
+{% if seo.prev %}
+  <link rel="prev" href="{{ seo.prev }}">
+{% endif %}
+
+
 {% for key, value in seo.opengraph.data.items %}
   <meta property="{{ key }}" content="{{ value }}">
 {% endfor %}

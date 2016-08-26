@@ -4,15 +4,15 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def paginator(context, obj):
+def paginator(context, paginator):
     request = context.get('request')
 
-    if not obj.current_page.has_other_pages():
+    if not paginator.current_page.has_other_pages():
         return ''
 
-    return loader.render_to_string(obj.template, {
-        'paginator': obj,
-        'page': obj.current_page,
+    return loader.render_to_string(paginator.template, {
+        'paginator': paginator,
+        'page': paginator.current_page,
     }, request=request)
 
 

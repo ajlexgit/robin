@@ -13,7 +13,10 @@ ALLOWED_SEO_KEYS = (
     'title',
     'keywords',
     'description',
+
     'canonical',
+    'next',
+    'prev',
 
     'og_title',
     'og_image',
@@ -57,9 +60,6 @@ class Seo:
 
     def __init__(self, empty=False):
         super().__init__()
-        self.keywords = ''
-        self.description = ''
-        self.canonical = ''
         self.text_header = ''
         self.text = ''
 
@@ -159,11 +159,15 @@ class Seo:
         # Сохранение данных в request
         request.seo = {
             'title': self.title,
-            'keywords': self.keywords,
-            'description': self.description,
-            'canonical': self.canonical,
+            'keywords': getattr(self, 'keywords', ''),
+            'description': getattr(self, 'description', ''),
+
             'opengraph': opengraph,
             'twitter_card': twitter_card,
+
+            'canonical': getattr(self, 'canonical', ''),
+            'next': getattr(self, 'next', ''),
+            'prev': getattr(self, 'prev', ''),
 
             'text_header': self.text_header,
             'text': self.text,

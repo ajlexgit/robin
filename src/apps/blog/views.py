@@ -46,10 +46,19 @@ class IndexView(CachedViewMixin, TemplateView):
             'og_title': self.config.header,
         })
 
+        if paginator.previous_page_number:
+            seo.set({
+                'prev': request.build_absolute_uri(request.path_info) + '?page=%d' % paginator.previous_page_number,
+            })
+        if paginator.next_page_number:
+            seo.set({
+                'next': request.build_absolute_uri(request.path_info) + '?page=%d' % paginator.next_page_number,
+            })
+
         # Unique title
         title_appends = ' | '.join(filter(bool, [
             self.tag.title if self.tag else '',
-            'Page %d/%d' % (paginator.num_page, paginator.num_pages) if paginator.num_page >= 2 else '',
+            'Page %d/%d' % (paginator.current_page_number, paginator.num_pages) if paginator.current_page_number >= 2 else '',
         ]))
         if title_appends:
             if seo._title_deque:
@@ -60,7 +69,7 @@ class IndexView(CachedViewMixin, TemplateView):
             })
 
         seo.save(request)
-        
+
         return self.render_to_response({
             'config': self.config,
             'paginator': paginator,
