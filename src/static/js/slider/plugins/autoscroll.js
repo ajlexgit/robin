@@ -6,10 +6,14 @@
             animationName: '',
             animatedHeight: true,
 
+            progress_interval: 40,
             interval: 3000,
             direction: 'next',          // next / prev / random
             stopOnHover: true,
 
+            onProgress: function(progress) {
+
+            },
             checkEnabled: function(slider) {
                 return slider.$slides.length >= 2;
             }
@@ -51,6 +55,8 @@
                 );
             }
 
+            this._total_steps = Math.ceil(this.opts.interval / this.opts.progress_interval);
+            this._steps_done = 0;
             this.checkEnabled(slider);
 
             // остановка таймера при наведении на слайдер
@@ -98,7 +104,7 @@
             Переустановка таймера при перетаскивании
          */
         cls.stopDrag = function(slider) {
-            this.startTimer(slider);
+            this.checkEnabled(slider);
         };
 
         /*
@@ -107,7 +113,17 @@
         cls.startTimer = function() {
             if (!this.enabled) return;
             this.stopTimer();
-            this._timer = setInterval(this._timerHandler, this.opts.interval);
+
+            var that = this;
+            this._timer = setInterval(function() {
+                that._steps_done += 1;
+                if (that._steps_done >= that._total_steps) {
+                    that._steps_done = 0;
+                    that._timerHandler();
+                }
+
+                that.opts.onProgress(that._steps_done / that._total_steps);
+            }, this.opts.progress_interval);
         };
 
         /*
