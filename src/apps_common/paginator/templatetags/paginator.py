@@ -16,19 +16,7 @@ def paginator(context, paginator):
     }, request=request)
 
 
-@register.simple_tag(takes_context=True)
-def href(context, paginator, number):
+@register.simple_tag
+def href(paginator, number):
     """ Генерация ссылки на страницу навигации """
-    if number == 1:
-        request = context.get('request')
-        if request:
-            link = request.path_info
-        else:
-            link = '?'
-    else:
-        link = '?%s=%s' % (paginator.parameter_name, number)
-
-    if paginator.anchor:
-        link += '#' + paginator.anchor
-
-    return link
+    return paginator.link_to(number)

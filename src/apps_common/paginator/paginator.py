@@ -57,6 +57,18 @@ class Paginator(paginator.Paginator):
         """ Объект текущей страницы """
         return self.page(self.current_page_number)
 
+    def link_to(self, number, anchor=True):
+        """ Ссылка на страницу """
+        link = self.request.path_info
+
+        if number > 1:
+            link += '?%s=%s' % (self.parameter_name, number)
+
+        if anchor and self.anchor:
+            link += '#' + self.anchor
+
+        return link
+
     @cached_property
     def pages(self):
         """ Кортеж всех объектов страниц с их полными данными """

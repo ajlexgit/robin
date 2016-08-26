@@ -85,5 +85,6 @@
 """
 
 from .paginator import Paginator, EmptyPage
+from .utils import get_paginator_meta
 
-__all__ = ['Paginator', 'EmptyPage']
+__all__ = ['Paginator', 'EmptyPage', 'get_paginator_meta']

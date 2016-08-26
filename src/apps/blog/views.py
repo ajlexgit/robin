@@ -3,7 +3,7 @@ from django.http.response import Http404
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from seo import Seo
-from paginator import Paginator, EmptyPage
+from paginator import Paginator, EmptyPage, get_paginator_meta
 from libs.views import CachedViewMixin
 from libs.description import description
 from .models import BlogConfig, BlogPost, Tag
@@ -41,19 +41,11 @@ class IndexView(CachedViewMixin, TemplateView):
 
         # SEO
         seo = Seo()
+        seo.set(get_paginator_meta(paginator))
         seo.set_data(self.config, defaults={
             'title': self.config.header,
             'og_title': self.config.header,
         })
-
-        if paginator.previous_page_number:
-            seo.set({
-                'prev': request.build_absolute_uri(request.path_info) + '?page=%d' % paginator.previous_page_number,
-            })
-        if paginator.next_page_number:
-            seo.set({
-                'next': request.build_absolute_uri(request.path_info) + '?page=%d' % paginator.next_page_number,
-            })
 
         # Unique title
         title_appends = ' | '.join(filter(bool, [
