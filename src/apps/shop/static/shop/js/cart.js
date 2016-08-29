@@ -55,29 +55,6 @@
         };
 
         /*
-            Очистка заказа в localStorage и сессии
-         */
-        cls.clear = function(options) {
-            localStorage.removeItem(this.opts.prefix);
-            $.removeCookie('clear_cart', {path: '/'});
-
-            if (this._clearQuery) {
-                this._clearQuery.abort();
-            }
-
-            var that = this;
-            return this._clearQuery = $.ajax($.extend(true, {
-                url: window.js_storage.clear_cart,
-                type: 'POST',
-                dataType: 'json',
-                success: function() {
-                    that.trigger('clear');
-                },
-                error: $.parseError()
-            }, options));
-        };
-
-        /*
             Получение хранилища заказа из localStorage
           */
         cls.getStorage = function() {
@@ -94,31 +71,49 @@
             Сохранение заказа в localStorage
           */
         cls.saveStorage = function(storage) {
-            var json = JSON.stringify(storage || {});
-            localStorage.setItem(this.opts.prefix, json);
-        };
+            // проверка на пустоту
+            var total_count = 0;
+            $.each(storage, function(id, count) {
+                total_count += count;
+            });
 
-        /*
-            Отправка localStorage на сервер для сохранения в сессии
-          */
-        cls.sendStorage = function(storage, options) {
-            if (this._sendQuery) {
-                this._sendQuery.abort();
+            if (this._query) {
+                this._query.abort();
             }
 
             var that = this;
-            return this._sendQuery = $.ajax($.extend(true, {
-                url: window.js_storage.save_cart,
-                type: 'POST',
-                data: {
-                    cart: storage || {}
-                },
-                dataType: 'json',
-                success: function(response) {
-                    that.trigger('save', response);
-                },
-                error: $.parseError()
-            }, options));
+            if (!total_count) {
+                // корзина пуста
+                localStorage.removeItem(this.opts.prefix);
+                $.removeCookie('clear_cart', {path: '/'});
+
+                return this._query = $.ajax({
+                    url: window.js_storage.clear_cart,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(response) {
+                        that.trigger('clear', response);
+                    },
+                    error: $.parseError()
+                });
+            } else {
+                // корзина не пуста
+                var json = JSON.stringify(storage || {});
+                localStorage.setItem(this.opts.prefix, json);
+
+                return this._query = $.ajax({
+                    url: window.js_storage.save_cart,
+                    type: 'POST',
+                    data: {
+                        cart: storage || {}
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        that.trigger('save', response);
+                    },
+                    error: $.parseError()
+                });
+            }
         };
 
         /*
@@ -146,8 +141,7 @@
             }
             storage[product_id] = finalCount;
 
-            this.saveStorage(storage);
-            return this.sendStorage(storage);
+            return this.saveStorage(storage);
         };
 
         /*
@@ -162,16 +156,7 @@
                 delete storage[product_id];
             }
 
-            var total_count = 0;
-            $.each(storage, function(id, count) {
-                total_count += count;
-            });
-            if (!total_count) {
-                return this.clear();
-            }
-
-            this.saveStorage(storage);
-            return this.sendStorage(storage);
+            return this.saveStorage(storage);
         };
     });
 
