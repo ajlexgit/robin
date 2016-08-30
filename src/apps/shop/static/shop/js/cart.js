@@ -32,7 +32,6 @@
             prefix: 'cart'
         };
 
-
         cls.init = function(options) {
             superclass.init.call(this);
             this.opts = $.extend({}, this.defaults, options);
@@ -40,8 +39,7 @@
             // очистка корзины в localStorage, если стоит кука
             var force_clean = $.cookie('clear_cart');
             if (force_clean) {
-                localStorage.removeItem(this.opts.prefix);
-                $.removeCookie('clear_cart', {path: '/'});
+                this._clearLocal();
                 this.trigger('clear');
             }
 
@@ -55,9 +53,27 @@
         };
 
         /*
-            Получение хранилища заказа из localStorage
-          */
-        cls.getStorage = function() {
+            Форматирование корзины.
+            Допустимы только числовые ключи (больше 0) и такие же значения.
+         */
+        cls._formatStorage = function(storage) {
+            var result = {};
+            $.each(storage || {}, function(key, value) {
+                key = parseInt(key) || 0;
+                if (key <= 0) return;
+
+                value = parseInt(value) || 0;
+                if (value <= 0) return;
+
+                result[key] = value;
+            });
+            return result
+        };
+
+        /*
+            Получение корзины из localStorage
+         */
+        cls._getLocal = function() {
             var json = localStorage.getItem(this.opts.prefix);
             try {
                 var storage = $.parseJSON(json);
@@ -68,44 +84,71 @@
         };
 
         /*
-            Сохранение заказа в localStorage
+            Сохранение корзины в localStorage
+         */
+        cls._saveToLocal = function(storage) {
+            var json = JSON.stringify(storage || {});
+            localStorage.setItem(this.opts.prefix, json);
+        };
+
+        /*
+            Очистка корзины в localStorage
+         */
+        cls._clearLocal = function() {
+            localStorage.removeItem(this.opts.prefix);
+            $.removeCookie('clear_cart', {path: '/'});
+        };
+
+
+        /*
+            Получение хранилища заказа из localStorage
+          */
+        cls.getStorage = function() {
+            var storage = this._getLocal();
+            return this._formatStorage(storage);
+        };
+
+        /*
+            Проверка localStorage на пустоту
+          */
+        cls.isEmpty = function() {
+            var storage = this.getStorage();
+            return $.isEmptyObject(storage);
+        };
+
+        /*
+            Сохранение заказа в localStorage и в сессию
           */
         cls.saveStorage = function(storage) {
-            // проверка на пустоту
-            var total_count = 0;
-            $.each(storage, function(id, count) {
-                total_count += count;
-            });
+            storage = this._formatStorage(storage);
 
             if (this._query) {
                 this._query.abort();
             }
 
             var that = this;
-            if (!total_count) {
+            if ($.isEmptyObject(storage)) {
                 // корзина пуста
-                localStorage.removeItem(this.opts.prefix);
-                $.removeCookie('clear_cart', {path: '/'});
+                this._clearLocal();
 
                 return this._query = $.ajax({
                     url: window.js_storage.clear_cart,
                     type: 'POST',
                     dataType: 'json',
-                    success: function(response) {
-                        that.trigger('clear', response);
+                    success: function() {
+                        that.trigger('clear');
                     },
                     error: $.parseError()
                 });
             } else {
                 // корзина не пуста
-                var json = JSON.stringify(storage || {});
-                localStorage.setItem(this.opts.prefix, json);
+                this._saveToLocal(storage);
 
                 return this._query = $.ajax({
                     url: window.js_storage.save_cart,
                     type: 'POST',
                     data: {
-                        cart: storage || {}
+                        cart: storage
                     },
                     dataType: 'json',
                     success: function(response) {
@@ -114,6 +157,22 @@
                     error: $.parseError()
                 });
             }
+        };
+
+        /*
+            Обновление корзины в localStorage из сессии
+          */
+        cls.loadStorage = function() {
+            var that = this;
+            return $.ajax({
+                url: window.js_storage.load_cart,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    that.saveStorage(response.cart);
+                },
+                error: $.parseError()
+            });
         };
 
         /*
@@ -135,11 +194,11 @@
             }
 
             var storage = this.getStorage();
-            var finalCount = (parseInt(storage[product_id]) || 0) + count;
+            var new_count = (parseInt(storage[product_id]) || 0) + count;
             if (window.js_storage.max_product_count) {
-                finalCount = Math.min(finalCount, window.js_storage.max_product_count);
+                new_count = Math.min(new_count, window.js_storage.max_product_count);
             }
-            storage[product_id] = finalCount;
+            storage[product_id] = new_count;
 
             return this.saveStorage(storage);
         };
@@ -154,9 +213,10 @@
             var storage = this.getStorage();
             if (product_id in storage) {
                 delete storage[product_id];
+                return this.saveStorage(storage);
+            } else {
+                return $.Deferred().resolve();
             }
-
-            return this.saveStorage(storage);
         };
     });
 
@@ -168,9 +228,9 @@
         т.к. ключ сессии изменится.
       */
     $(document).on('login.auth.users logout.auth.users', function() {
-        var storage = window.cart.getStorage();
-        if (!$.isEmptyObject(storage)) {
-            window.cart.sendStorage(storage);
+        if (!window.cart.isEmpty()) {
+            var storage = window.cart.getStorage();
+            window.cart.saveStorage(storage);
         }
     });
 

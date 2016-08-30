@@ -1,6 +1,7 @@
 import os
 import sys
 
+# admin SEO json-LD
 # CKEditor internal link
 # pm delete_app
 # Blocks kwars on ajax

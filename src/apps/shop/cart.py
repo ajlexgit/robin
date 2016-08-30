@@ -163,6 +163,15 @@ class SaveCart(AjaxViewMixin, View):
         return self.json_response()
 
 
+class LoadCart(AjaxViewMixin, View):
+    def get(self, request):
+        """ Получение всех товаров из сессии """
+        cart = Cart.from_session(request)
+        return self.json_response({
+            'cart': cart._unformatted,
+        })
+
+
 class ClearCart(AjaxViewMixin, View):
     def post(self, request):
         """ Очистка корзины """

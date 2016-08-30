@@ -14,6 +14,7 @@ class Config(AppConfig):
 
         JS_STORAGE.update({
             'save_cart': resolve_url('shop:save_cart'),
+            'load_cart': resolve_url('shop:load_cart'),
             'clear_cart': resolve_url('shop:clear_cart'),
             'max_product_count': conf.MAX_PRODUCT_COUNT,
         })
