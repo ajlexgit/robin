@@ -28,6 +28,7 @@
 
         cls.destroy = function(slider) {
             this.stopTimer(slider);
+            this._steps_done = 0;
             superclass.destroy.call(this);
         };
 
@@ -74,6 +75,7 @@
             Переустановка таймера при изменении кол-ва слайдов
          */
         cls.afterSetItemsPerSlide = function(slider) {
+            this.disable();
             this.checkEnabled(slider);
         };
 
@@ -113,6 +115,9 @@
         cls.startTimer = function() {
             if (!this.enabled) return;
             this.stopTimer();
+
+            // инициализация
+            this.opts.onProgress(this._steps_done / this._total_steps);
 
             var that = this;
             this._timer = setInterval(function() {
