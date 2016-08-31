@@ -92,13 +92,15 @@
             window.InstagramWidget($elem, {
                 token: elem_data.access_token,
                 user_id: elem_data.user_id || 'self',
-                tag: elem_data.tag || 'self',
+                tag: elem_data.tag || '',
                 limit: elem_data.limit
             }).on('success', function(response) {
                 response.data.forEach(function(obj) {
                     $elem.append(
                         $('<img>').attr({
-                            src: obj.images.low_resolution.url
+                            src: obj.images.low_resolution.url,
+                            width: 320,
+                            height: 320
                         })
                     );
                 })

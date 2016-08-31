@@ -47,8 +47,13 @@ class Command(BaseCommand):
             if not app_models:
                 continue
 
-            app_models = [model.__name__ for model in app_models]
-            imports.append((app.__name__, app_models))
+            modules = {}
+            for model in app_models:
+                data = modules.setdefault(model.__module__, [])
+                data.append(model.__name__)
+
+            for module, models in modules.items():
+                imports.append((module, models))
 
         if verbose:
             self.stdout.write('Autoload modules:\n')
