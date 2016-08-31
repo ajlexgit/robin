@@ -5,31 +5,35 @@
 </p>
 
 <table border="1" cellpadding="10" cellspacing="0">
-  <tr>
-    <th style="background: #EAEAEA; text-align: left" colspan="3">{% trans 'Products' %}</th>
-  </tr>
+  <thead>
+    <tr bgcolor="#EAEAEA">
+      <th>{% trans 'Item' %}</th>
+      <th>{% trans 'Item Price' %}</th>
+      <th>{% trans 'Quantity' %}</th>
+      <th>{% trans 'Total Price' %}</th>
+    </tr>
+  </thead>
 
-  {% for record in order.records.all %}
+  {% for record in order.records.all() %}
     <tr>
       <td>{{ record.product.title }}</td>
-      <td>{{ record.order_price.alternative }} x {{ record.count }}</td>
+      <td>{{ record.order_price.alternative }}</td>
+      <td>{{ record.count }}</td>
       <td>{{ record.total_cost.alternative }}</td>
     </tr>
   {% endfor %}
 
-  <tr>
-    <th style="background: #EAEAEA; text-align: left" colspan="3">{% trans 'Cost' %}</th>
-  </tr>
+  <tfoot>
+    <tr>
+      <td colspan="3" align="right" bgcolor="#EAEAEA">{% trans 'Products price' %}</td>
+      <th>{{ order.products_cost.alternative }}</th>
+    </tr>
 
-  <tr>
-    <td>{% trans 'Products cost' %}</td>
-    <td colspan="2">{{ order.products_cost.alternative }}</td>
-  </tr>
-
-  <tr>
-    <td><em>{% trans 'Total cost' %}</em></td>
-    <td colspan="2"><b><em>{{ order.total_cost.alternative }}</em></b></td>
-  </tr>
+    <tr>
+      <td colspan="3" align="right" bgcolor="#EAEAEA"><b>{% trans 'Total' %}</b></td>
+      <th><h3>{{ order.total_cost.alternative }}</h3></th>
+    </tr>
+  </tfoot>
 </table>
 
 <p>

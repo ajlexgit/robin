@@ -331,10 +331,16 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'fmt_products_cost', 'fmt_total_cost', 'created',
+                'created',
             ),
         }),
 
+        (_('Confirmed'), {
+            'classes': ('suit-tab', 'suit-tab-status'),
+            'fields': (
+                'is_confirmed', 'confirm_date',
+            ),
+        }),
         (_('Checked'), {
             'classes': ('suit-tab', 'suit-tab-status'),
             'fields': (
@@ -359,17 +365,11 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'is_archived', 'archivation_date',
             ),
         }),
-        (_('Confirmed'), {
-            'classes': ('suit-tab', 'suit-tab-status'),
-            'fields': (
-                'is_confirmed', 'confirm_date',
-            ),
-        }),
     )
     form = ShopOrderForm
     date_hierarchy = 'created'
     readonly_fields = (
-        'fmt_products_cost', 'fmt_total_cost', 'created',
+        'products_cost', 'fmt_total_cost', 'created',
         'is_confirmed', 'confirm_date',
         'cancel_date', 'check_date', 'pay_date', 'archivation_date',
     )
@@ -380,8 +380,8 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_filter = (StatusShopOrderFilter, 'created')
     suit_form_tabs = (
         ('general', _('General')),
-        ('status', _('Status')),
         ('products', _('Products')),
+        ('status', _('Status')),
     )
     suit_form_includes = (
         ('shop/admin/products.html', 'top', 'products'),
@@ -401,14 +401,10 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         if obj.is_paid:
             return {'class': 'success'}
 
-    def fmt_products_cost(self, obj):
-        return obj.products_cost.alternative
-    fmt_products_cost.short_description = _('Products cost')
-    fmt_products_cost.admin_order_field = 'products_cost'
-
     def fmt_total_cost(self, obj):
         return obj.total_cost.alternative
     fmt_total_cost.short_description = _('Total cost')
+    fmt_total_cost.admin_order_field = 'products_cost'
 
     def has_add_permission(self, request):
         return False

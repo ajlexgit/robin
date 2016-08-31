@@ -5,10 +5,10 @@
     <thead>
       <tr>
         <th>{% trans 'Image' %}</th>
-        <th>{% trans 'Title' %}</th>
-        <th>{% trans 'Price per unit' %}</th>
-        <th>{% trans 'Count' %}</th>
-        <th>{% trans 'Total cost' %}</th>
+        <th>{% trans 'Item' %}</th>
+        <th>{% trans 'Item Price' %}</th>
+        <th>{% trans 'Quantity' %}</th>
+        <th>{% trans 'Total Price' %}</th>
       </tr>
     </thead>
 
@@ -38,7 +38,7 @@
     <tfoot>
       <tr>
         <td colspan="4">
-          {% trans 'Total cost of products' %}
+          {% trans 'Products price' %}
         </td>
         <td style="font-size: 15px; font-weight: bold; color: green; white-space: nowrap">
           {{ entity.products_cost.alternative }}
@@ -46,7 +46,7 @@
       </tr>
       <tr>
         <td colspan="4">
-          {% trans 'Total cost' %}
+          {% trans 'Total' %}
         </td>
         <td style="font-size: 18px; font-weight: bold; color: green; white-space: nowrap">
           {{ entity.total_cost.alternative }}

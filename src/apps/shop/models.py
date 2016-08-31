@@ -372,6 +372,7 @@ class ShopOrder(models.Model):
         editable=False,
     )
 
+    products_cost = ValuteField(_('products cost'), editable=False)
     created = models.DateTimeField(_('create date'), default=now, editable=False)
 
     objects = ShopOrderQuerySet.as_manager()
@@ -397,9 +398,8 @@ class ShopOrder(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    @property
-    def products_cost(self):
-        """ Стоимость товаров """
+    def calculate_products_cost(self):
+        """ Рассчет стоимости товаров """
         return self.records.aggregate(
             cost=Coalesce(models.Sum(
                 models.F('order_price') * models.F('count'), output_field=ValuteField()
@@ -441,9 +441,9 @@ class ShopOrder(models.Model):
 class OrderRecord(models.Model):
     """ Продукты заказа """
     order = models.ForeignKey(ShopOrder, verbose_name=_('order'), related_name='records')
-    product = models.ForeignKey(ShopProduct, verbose_name=_('product'))
-    order_price = ValuteField(_('price per unit'))
-    count = models.PositiveIntegerField(_('count'))
+    product = models.ForeignKey(ShopProduct, verbose_name=_('product'), null=True, on_delete=models.SET_NULL)
+    order_price = ValuteField(_('price per item'))
+    count = models.PositiveIntegerField(_('quantity'))
 
     class Meta:
         verbose_name = _('product')
@@ -455,7 +455,8 @@ class OrderRecord(models.Model):
         return self.order_price * self.count
 
     def __str__(self):
-        return '%s (x%s)' % (self.product.title, self.count)
+        product_name = self.product.title if self.product else _('Unknown')
+        return '%s (x%s)' % (product_name, self.count)
 
 
 class NotifyReceiver(models.Model):
