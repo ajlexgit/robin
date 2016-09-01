@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.utils.safestring import mark_safe
 from .models import SeoConfig, SeoData
-from .metatags import Opengraph, TwitterCard
+from .opengraph import Opengraph, TwitterCard
 
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
 

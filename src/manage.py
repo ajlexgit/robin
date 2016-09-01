@@ -4,8 +4,6 @@ import sys
 # $.fn.scrolltextarea + autosize
 # admin SEO json-LD
 # CKEditor internal link
-# pm delete_app
-# Blocks kwars on ajax
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Images: alt, title, file name
