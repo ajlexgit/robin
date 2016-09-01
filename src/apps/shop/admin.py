@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib import admin
 from django.utils.timezone import now
 from django.db.models import F, Func, Value
+from django.utils.encoding import force_text
 from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
@@ -257,7 +258,11 @@ class StatusShopOrderFilter(SimpleListFilter):
         ('paid', _('Paid')),
         ('cancelled', _('Cancelled')),
         ('archived', _('Archived')),
+        ('all', _('All')),
     )
+
+    def value(self):
+        return super().value() or 'non_checked'
 
     def lookups(self, request, model_admin):
         result = []
@@ -267,8 +272,15 @@ class StatusShopOrderFilter(SimpleListFilter):
 
         return result
 
-    def value(self):
-        return super().value() or None
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
 
     def queryset(self, request, queryset, value=None):
         value = value or self.value()
