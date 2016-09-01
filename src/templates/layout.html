@@ -9,7 +9,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns#" class="no-js"
       lang="{{ LANGUAGE_CODE }}" google-apikey="{{ GOOGLE_APIKEY }}">
 <head>
-  <title>{% block title %}{% if request.seo %}{{ request.seo.title }}{% endif %}{% endblock %}</title>
+  <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
   {% seo_metatags %}
   {% block extra_meta %}{% endblock extra_meta %}
 
