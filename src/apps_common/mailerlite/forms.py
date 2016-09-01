@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from form_helper import FormHelperMixin
+from libs.form_helper import FormHelperMixin
 from .models import Group
 
 

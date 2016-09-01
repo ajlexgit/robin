@@ -1,10 +1,12 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import (
+    AuthenticationForm, UserCreationForm,
+    PasswordResetForm as DefaultPasswordResetForm,
+    SetPasswordForm as DefaultSetPasswordForm
+)
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
-                                       PasswordResetForm as DefaultPasswordResetForm,
-                                       SetPasswordForm as DefaultSetPasswordForm)
-from form_helper import FormHelperMixin
+from libs.form_helper import FormHelperMixin
 
 UserModel = get_user_model()
 
