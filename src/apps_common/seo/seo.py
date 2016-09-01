@@ -116,6 +116,11 @@ class Seo(metaclass=SeoMetaClass):
             Получение SeoData из объекта instance и установка данных из него.
         """
         defaults = defaults or {}
+
+        # если у объекта объявлен get_absolute_url - ставим его как canonical по умолчанию
+        if hasattr(instance, 'get_absolute_url') and not self.canonical and not defaults.get('canonical'):
+            defaults['canonical'] = getattr(instance, 'get_absolute_url')()
+
         seodata = self.get_for(instance)
         if seodata is None:
             self.set(defaults)
@@ -142,10 +147,6 @@ class Seo(metaclass=SeoMetaClass):
             key: seodata_formatted.get(key) or defaults.get(key) or None
             for key in self._fields
         }
-
-        # если у объекта объявлен get_absolute_url - ставим его как canonical по умолчанию
-        if hasattr(instance, 'get_absolute_url') and not self.canonical and not data.get('canonical'):
-            data['canonical'] = getattr(instance, 'get_absolute_url')()
 
         # присваивание первого не ложного значения к соответствующему аттрибуту
         self.set(data)
