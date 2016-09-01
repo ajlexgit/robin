@@ -347,7 +347,7 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
             ),
         }),
 
-        (_('Confirmed'), {
+        (_('Confirmed by user'), {
             'classes': ('suit-tab', 'suit-tab-status'),
             'fields': (
                 'is_confirmed', 'confirm_date',

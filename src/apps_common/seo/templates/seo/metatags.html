@@ -15,7 +15,7 @@
   {% endif %}
 
   {% if seo.noindex %}
-    <meta name="robots" content="noindex">
+    <meta name="robots" content="noindex,follow">
   {% endif %}
 
   {% for key, value in seo.opengraph.data.items %}

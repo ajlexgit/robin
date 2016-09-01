@@ -337,8 +337,7 @@ class ShopOrder(models.Model):
     session = models.CharField(_('session'), max_length=64, editable=False)
 
     # Подтвержден плательщиком
-    is_confirmed = models.BooleanField(_('confirmed'), default=False, editable=False,
-        help_text=_('Confirmed by the user'))
+    is_confirmed = models.BooleanField(_('confirmed'), default=False, editable=False)
     confirm_date = models.DateTimeField(_('confirm date'),
         null=True,
         editable=False,

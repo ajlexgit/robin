@@ -1130,7 +1130,7 @@
         }
     };
 
-    var key = document.documentElement.getAttribute('google-apikey');
+    var key = document.documentElement.getAttribute('data-google-apikey');
     var lang = document.documentElement.getAttribute('lang');
     var script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?callback=init_google_maps&libraries=places&language=' + lang + '&key=' + (key || '');
