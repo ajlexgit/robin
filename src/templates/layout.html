@@ -10,8 +10,12 @@
       lang="{{ LANGUAGE_CODE }}" google-apikey="{{ GOOGLE_APIKEY }}">
 <head>
   <title>{% block title %}{{ request.seo.title }}{% endblock %}</title>
-  {% seo_metatags %}
-  {% block extra_meta %}{% endblock extra_meta %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% block metatags %}
+    {% include 'seo/metatags.html' %}
+  {% endblock metatags %}
 
   {# === PREFETCH === #}
   {% for domain in MEDIA_URLS %}

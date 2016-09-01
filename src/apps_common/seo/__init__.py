@@ -44,22 +44,12 @@
                 })
                 seo.save(request)
 
-            Если нет возможности указать entity для seo_block, можно указать
-            параметр seodata в request:
-                from seo import Seo
-                request.seodata = Seo.get_for(entity)
-
-            P.S: Если в представлениях используется метод seo.set_data(),
-            то request.seodata устанавливается автоматически.
-
     Счетчики и SEO-текст:
         {% load seo %}
 
         <head>
             <title>{{ request.seo.title }}</title>
-            <meta name="keywords" content="{{ request.seo.keywords }}" />
-            <meta name="description" content="{{ request.seo.description }}" />
-            ...
+            {% include 'seo/metatags.html' %}
             {% seo_counters 'head' %}
         </head>
         <body>

@@ -38,9 +38,7 @@ class LoginView(FormView):
 
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Authorization')
-        })
+        seo.title = _('Authorization')
         seo.save(request)
 
         return super().get(request, *args, **kwargs)
@@ -78,9 +76,7 @@ class RegisterView(FormView):
 
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Registration')
-        })
+        seo.title = _('Registration')
         seo.save(request)
 
         return super().get(request, *args, **kwargs)
@@ -113,9 +109,7 @@ class PasswordResetView(TemplateView):
     def get(self, request, *args, **kwargs):
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Password reset')
-        })
+        seo.title = _('Password reset')
         seo.save(request)
 
         if request.user.is_authenticated():
@@ -138,9 +132,7 @@ class PasswordResetView(TemplateView):
 
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Password reset')
-        })
+        seo.title = _('Password reset')
         seo.save(request)
 
         return password_reset(request,
@@ -164,9 +156,7 @@ class ResetDoneView(TemplateView):
 
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Password reset')
-        })
+        seo.title = _('Password reset')
         seo.save(request)
 
         return self.render_to_response({
@@ -191,9 +181,7 @@ class ResetConfirmView(TemplateView):
 
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Password reset')
-        })
+        seo.title = _('Password reset')
         seo.save(request)
 
         try:
@@ -216,9 +204,7 @@ class ResetConfirmView(TemplateView):
     def post(self, request, uidb64=None, token=None):
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Password reset')
-        })
+        seo.title = _('Password reset')
         seo.save(request)
 
         if request.user.is_authenticated():
@@ -251,9 +237,7 @@ class ResetCompleteView(TemplateView):
     def get(self, request, *args, **kwargs):
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Password reset')
-        })
+        seo.title = _('Password reset')
         seo.save(request)
 
         if request.user.is_authenticated():
@@ -291,9 +275,7 @@ class ProfileView(TemplateView):
 
         # Seo
         seo = Seo()
-        seo.set({
-            'title': _('Profile of «%(username)s»') % {'username': user.username}
-        })
+        seo.title = _('Profile of «%(username)s»') % {'username': user.username}
         seo.save(request)
 
         return self.render_to_response({

@@ -1,119 +1,156 @@
+import inspect
 from collections import deque
 from django.conf import settings
-from django.db.models import Model
-from django.forms.models import model_to_dict
-from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
+from django.utils.safestring import mark_safe
 from .models import SeoConfig, SeoData
 from .metatags import Opengraph, TwitterCard
 
-
 TITLE_JOIN_WITH = str(getattr(settings, 'SEO_TITLE_JOIN_WITH', ' | '))
-ALLOWED_SEO_KEYS = (
-    'title',
-    'keywords',
-    'description',
-
-    'canonical',
-    'next',
-    'prev',
-
-    'og_title',
-    'og_image',
-    'og_description',
-
-    'text_header',
-    'text',
-)
 
 
 class TitleDescriptor:
+    """
+        Дескриптор аттрибута, который инкапсулирует дэк частей <title>.
+        Присваивание значения этому аттрибуту добавляет это значение в дэк.
+    """
     def __init__(self, deque_name):
         self.deque_name = deque_name
 
     def __get__(self, instance, owner):
-        """ Возврат полного заголовка как строки """
+        """ Возврат полного заголовка в виде строки """
         title_deque = instance.__dict__.get(self.deque_name, None)
         if title_deque is None:
-            title_deque = deque()
+            instance.__dict__[self.deque_name] = title_deque = deque()
 
-        title_parts = list(filter(bool, map(str, title_deque)))
-        if TITLE_JOIN_WITH:
-            title = mark_safe(TITLE_JOIN_WITH.join(title_parts))
-        else:
-            title = mark_safe(title_parts[0]) if title_parts else ''
-
-        return title
+        return title_deque
 
     def __set__(self, instance, value):
         title_deque = instance.__dict__.get(self.deque_name, None)
         if title_deque is None:
-            title_deque = deque()
+            instance.__dict__[self.deque_name] = title_deque = deque()
 
         title_deque.appendleft(value)
-        instance.__dict__[self.deque_name] = title_deque
 
 
-class Seo:
-    _title_deque = None
+class SeoMetaClass(type):
+    """
+        Запоминаем все не вызываемые члены класса, чтобы
+        по ним фильтровать сео-данные.
+    """
+    def __new__(mcs, *args, **kwargs):
+        cls = super().__new__(mcs, *args, **kwargs)
+        members = inspect.getmembers(cls, lambda x: not callable(x))
+        cls._fields = tuple(name for name, field in members if not name.startswith('_'))
+        return cls
+
+
+class Seo(metaclass=SeoMetaClass):
     title = TitleDescriptor('_title_deque')
+    keywords = ''
+    description = ''
 
-    def __init__(self, empty=False):
-        super().__init__()
-        self.text_header = ''
-        self.text = ''
+    # мета-информация
+    canonical = ''
+    next = ''
+    prev = ''
+    noindex = False
 
-        if not empty:
-            site_seoconfig = SeoConfig.get_solo()
-            self.set(site_seoconfig)
+    # Share-информация
+    og_title = ''
+    og_image = ''
+    og_description = ''
+
+    # seo-текст
+    text_header = ''
+    text = ''
+
+    def __init__(self):
+        site_seoconfig = SeoConfig.get_solo()
+        self.set({
+            'title': site_seoconfig.title,
+            'keywords': site_seoconfig.keywords,
+            'description': site_seoconfig.description,
+        })
 
     @staticmethod
-    def get_for(entity):
+    def get_for(instance):
         """ Получение SeoData для объекта """
-        ct = ContentType.objects.get_for_model(type(entity))
+        ct = ContentType.objects.get_for_model(type(instance))
         try:
             return SeoData.objects.get(
                 content_type=ct,
-                object_id=entity.pk
+                object_id=instance.pk
             )
         except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
             return None
 
     @staticmethod
-    def get_or_create_for(entity):
+    def get_or_create_for(instance):
         """ Получение или создание SeoData для объекта """
-        ct = ContentType.objects.get_for_model(type(entity))
+        ct = ContentType.objects.get_for_model(type(instance))
         try:
             return SeoData.objects.get(
                 content_type=ct,
-                object_id=entity.pk
+                object_id=instance.pk
             )
         except (SeoData.DoesNotExist, SeoData.MultipleObjectsReturned):
             return SeoData(
                 content_type=ct,
-                object_id=entity.pk
+                object_id=instance.pk
             )
 
-    def set(self, seodata, defaults=None):
+    def set(self, dictionary):
         """
-            Установка SEO-данных из экземпляра модели SeoData или словаря.
+            Присваивание данных словаря в аттрибуты текущего объекта.
         """
-        if isinstance(seodata, Model):
-            seodata = model_to_dict(seodata)
-        elif isinstance(seodata, dict):
-            pass
-        else:
-            raise TypeError('seodata must be an instance of Model or dict')
+        if not isinstance(dictionary, dict):
+            raise TypeError("'Seo.apply_dict()' requires a dict instance. %s ")
 
-        for fieldname in ALLOWED_SEO_KEYS:
-            default = defaults.get(fieldname) if isinstance(defaults, dict) else None
-            value = seodata.get(fieldname) or default
-            if value is None:
-                continue
+        for key, value in dictionary.items():
+            if value is not None and hasattr(self, key):
+                setattr(self, key, value)
 
-            setattr(self, fieldname, value)
+    def set_data(self, instance, defaults=None):
+        """
+            Получение SeoData из объекта instance и установка данных из него.
+        """
+        defaults = defaults or {}
+        seodata = self.get_for(instance)
+        if seodata is None:
+            self.set(defaults)
+            return
 
-    def set_title(self, entity, default=None):
+        # конвертация SeoData в словарь, совместимый с Seo-объектом
+        seodata_formatted = {
+            'title': seodata.title,
+            'keywords': seodata.keywords,
+            'description': seodata.description,
+
+            'canonical': seodata.canonical,
+            'noindex': seodata.noindex,
+
+            'og_title': seodata.og_title,
+            'og_image': seodata.og_image,
+            'og_description': seodata.og_description,
+
+            'text_header': seodata.header,
+            'text': seodata.text,
+        }
+
+        data = {
+            key: seodata_formatted.get(key) or defaults.get(key)
+            for key in self._fields
+        }
+
+        # если у объекта объявлен get_absolute_url - ставим его как canonical по умолчанию
+        if hasattr(instance, 'get_absolute_url') and not self.canonical and not data.get('canonical'):
+            data['canonical'] = getattr(instance, 'get_absolute_url')()
+
+        # присваивание первого не ложного значения к соответствующему аттрибуту
+        self.set(data)
+
+    def set_title(self, instance, default=None):
         """
             Алиас для упрощения добавления заголовков из родительских категорий.
 
@@ -121,54 +158,65 @@ class Seo:
                 seo = Seo()
                 seo.set_title(shop, default=shop.title)
         """
-        seodata = self.get_for(entity)
-        title = (seodata and getattr(seodata, 'title')) or default
+        seodata = self.get_for(instance)
+        title = (seodata and seodata.title) or default
         if title:
             self.title = title
 
-    def set_data(self, entity, defaults=None):
-        """
-            Алиас для упрощения добавления данных, которые не нужно модифицировать
-
-            Пример:
-                seo = Seo()
-                seo.set_data(shop, defaults={
-                    'title': shop.title,
-                    'og_title': shop.title,
-                })
-        """
-        seodata = self.get_for(entity) or {}
-        self.set(seodata, defaults)
-
     def save(self, request):
-        """ Сохранение данных в request, чтобы выводить их в шаблонах """
-        # opengraph + twitter card
-        social_data = {
-            'url': request.build_absolute_uri(request.path_info),
-            'title': getattr(self, 'og_title', None),
-            'image': getattr(self, 'og_image', None),
-            'description': getattr(self, 'og_description', None),
+        """
+            Рендеринг Seo-данных в итоговый словарь
+        """
+        result = {}
+
+        # Title
+        title_parts = list(filter(bool, map(str, self.title)))
+        if TITLE_JOIN_WITH:
+            result['title'] = mark_safe(TITLE_JOIN_WITH.join(title_parts))
+        else:
+            result['title'] = mark_safe(title_parts[0]) if title_parts else ''
+
+        # keywords, description
+        for attrname in ('keywords', 'description'):
+            value = getattr(self, attrname)
+            if value:
+                result[attrname] = str(value)
+
+        # canonical
+        if self.canonical:
+            result['canonical'] = request.build_absolute_uri(self.canonical)
+
+        # next
+        if self.next:
+            result['next'] = request.build_absolute_uri(self.next)
+
+        # prev
+        if self.prev:
+            result['prev'] = request.build_absolute_uri(self.prev)
+
+        # noindex
+        if self.noindex:
+            result['noindex'] = True
+
+        # Share-данные
+        share_data = {
+            'url': request.build_absolute_uri(self.canonical or request.path_info),
+            'title': self.og_title,
+            'image': self.og_image,
+            'description': self.og_description,
         }
 
         opengraph = Opengraph(request)
-        opengraph.update(social_data)
+        opengraph.update(share_data)
+        result['opengraph'] = opengraph
 
         twitter_card = TwitterCard(request)
-        twitter_card.update(social_data)
+        twitter_card.update(share_data)
+        result['twitter_card'] = twitter_card
 
-        # Сохранение данных в request
-        request.seo = {
-            'title': self.title,
-            'keywords': getattr(self, 'keywords', ''),
-            'description': getattr(self, 'description', ''),
+        # SEO-текст
+        if self.text:
+            result['text_header'] = self.text_header
+            result['text'] = self.text
 
-            'opengraph': opengraph,
-            'twitter_card': twitter_card,
-
-            'canonical': getattr(self, 'canonical', ''),
-            'next': getattr(self, 'next', ''),
-            'prev': getattr(self, 'prev', ''),
-
-            'text_header': self.text_header,
-            'text': self.text,
-        }
+        request.seo = result

@@ -53,12 +53,9 @@ class IndexView(CachedViewMixin, TemplateView):
             'Page %d/%d' % (paginator.current_page_number, paginator.num_pages) if paginator.current_page_number >= 2 else '',
         ]))
         if title_appends:
-            if seo._title_deque:
-                seo._title_deque[0] += ' | %s' % title_appends
-
-            seo.set({
-                'description': '',
-            })
+            default_title = seo.title.popleft()
+            seo.title = '%s | %s' % (default_title, title_appends)
+            seo.description = ''
 
         seo.save(request)
 

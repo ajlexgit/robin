@@ -5,21 +5,6 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def seo_metatags(context, template='seo/metatags.html'):
-    request = context.get('request')
-    if not request:
-        return ''
-
-    seo = getattr(request, 'seo', None)
-    if seo is None:
-        return ''
-
-    return loader.render_to_string(template, {
-        'seo': seo,
-    })
-
-
-@register.simple_tag(takes_context=True)
 def seo_block(context, template='seo/block.html'):
     request = context.get('request')
     if not request or not hasattr(request, 'seo'):
@@ -29,7 +14,7 @@ def seo_block(context, template='seo/block.html'):
     if seo is None:
         return ''
 
-    if not seo.get('text'):
+    if 'text' not in seo:
         return ''
 
     return loader.render_to_string(template, {

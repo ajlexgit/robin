@@ -13,9 +13,7 @@ class IndexView(TemplateView):
     def _build_map(self):
         """ Генерация карты """
         sitemap = Map()
-
         sitemap.add_child(MainPageConfig.get_solo())
-
         return sitemap
 
     def get(self, request, *args, **kwargs):
@@ -25,6 +23,7 @@ class IndexView(TemplateView):
         seo = Seo()
         seo.set_data(config, defaults={
             'title': config.header,
+            'noindex': True,
         })
         seo.save(request)
 

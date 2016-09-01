@@ -25,10 +25,11 @@ class SeoData(models.Model):
     object_id = models.PositiveIntegerField()
     entity = generic.GenericForeignKey()
 
-    title = models.CharField(_('meta title'), max_length=128, blank=True)
-    keywords = models.TextField(_('meta keywords'), max_length=255, blank=True)
-    description = models.TextField(_('meta description'), max_length=255, blank=True)
+    title = models.CharField(_('title'), max_length=128, blank=True)
+    keywords = models.TextField(_('keywords'), max_length=255, blank=True)
+    description = models.TextField(_('description'), max_length=255, blank=True)
     canonical = models.URLField(_('canonical URL'), blank=True)
+    noindex = models.BooleanField(_('noindex'), default=False, help_text=_('the text on the page should not be indexed'))
 
     # opengraph
     og_title = models.CharField(_('title'), max_length=255, blank=True)

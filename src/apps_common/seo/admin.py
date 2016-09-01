@@ -42,14 +42,20 @@ class CounterAdmin(ModelAdminMixin, admin.ModelAdmin):
 class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
     model = SeoData
     fieldsets = (
-        (_('SEO common'), {
-            'fields': ('title', 'keywords', 'description', 'canonical'),
-        }),
-        (_('SEO text'), {
-            'fields': ('header', 'text',),
+        (_('Meta tags'), {
+            'fields': (
+                'title', 'keywords', 'description', 'canonical', 'noindex',
+            ),
         }),
         (_('Opengraph'), {
-            'fields': ('og_title', 'og_image', 'og_description'),
+            'fields': (
+                'og_title', 'og_image', 'og_description',
+            ),
+        }),
+        (_('SEO text'), {
+            'fields': (
+                'header', 'text',
+            ),
         }),
     )
 

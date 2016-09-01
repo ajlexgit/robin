@@ -3,6 +3,7 @@
 {% load i18n %}
 
 {% block extra_meta %}
+  {{ block.super() }}
   <meta http-equiv="refresh" content="5; url={{ redirect|default:"/" }}"/>
 {% endblock extra_meta %}
 
