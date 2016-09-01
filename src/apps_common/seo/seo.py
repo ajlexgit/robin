@@ -139,7 +139,7 @@ class Seo(metaclass=SeoMetaClass):
         }
 
         data = {
-            key: seodata_formatted.get(key) or defaults.get(key)
+            key: seodata_formatted.get(key) or defaults.get(key) or None
             for key in self._fields
         }
 
