@@ -9,7 +9,6 @@ class ValuteFormField(forms.DecimalField):
 
     def to_python(self, value):
         value = super().to_python(value)
-
         if value is None:
             return None
 
@@ -19,7 +18,9 @@ class ValuteFormField(forms.DecimalField):
             raise exceptions.ValidationError(e)
 
     def validate(self, value):
-        return super().validate(value.as_decimal())
+        if isinstance(value, Valute):
+            value = value.as_decimal()
+        return super().validate(value)
 
     def widget_attrs(self, widget):
         attrs = super().widget_attrs(widget)

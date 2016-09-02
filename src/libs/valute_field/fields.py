@@ -40,7 +40,7 @@ class ValuteField(models.DecimalField):
     def get_db_prep_save(self, value, connection):
         value = self.to_python(value)
         if value is None:
-            return None
+            return None if self.null else 0
 
         return connection.ops.value_to_db_decimal(
             value.as_decimal(),
