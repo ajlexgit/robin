@@ -17,11 +17,11 @@ class AttachmentResponse(FileResponse):
     """
     block_size = 128 * 1024
 
-    def __init__(self, request, stream, filename=None):
+    def __init__(self, request, stream, filename=None, *args, **kwargs):
         if isinstance(stream, str):
             stream = open(stream, 'rb')
 
-        super().__init__(streaming_content=stream)
+        super().__init__(streaming_content=stream, *args, **kwargs)
 
         # filename
         if filename is None:
