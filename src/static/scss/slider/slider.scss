@@ -25,6 +25,7 @@
   z-index: 1;
   @include border-box;
   @include valign_after;
+  @include backface-visibility(hidden);
 }
 
 .slider-slide {
