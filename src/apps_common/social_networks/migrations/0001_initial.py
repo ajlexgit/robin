@@ -15,15 +15,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FeedPost',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('network', models.CharField(verbose_name='social network', default='facebook', choices=[('facebook', 'Facebook'), ('twitter', 'Twitter'), ('google', 'Google Plus'), ('linkedin', 'Linked In')], max_length=32)),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('network', models.CharField(default='facebook', verbose_name='social network', max_length=32, choices=[('facebook', 'Facebook'), ('twitter', 'Twitter'), ('google', 'Google Plus'), ('linkedin', 'Linked In')])),
                 ('text', models.TextField(verbose_name='text')),
                 ('url', models.URLField(verbose_name='URL')),
-                ('scheduled', models.BooleanField(verbose_name='sheduled to share', default=True)),
-                ('object_id', models.PositiveIntegerField(editable=False, null=True, blank=True)),
-                ('created', models.DateTimeField(editable=False, verbose_name='created on', default=django.utils.timezone.now)),
-                ('posted', models.DateTimeField(editable=False, null=True, verbose_name='posted on')),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType', editable=False, null=True, blank=True)),
+                ('scheduled', models.BooleanField(default=True, verbose_name='sheduled to share')),
+                ('object_id', models.PositiveIntegerField(blank=True, null=True, editable=False)),
+                ('created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created on', editable=False)),
+                ('posted', models.DateTimeField(null=True, verbose_name='posted on', editable=False)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True, editable=False)),
             ],
             options={
                 'verbose_name': 'feed post',
@@ -34,15 +34,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SocialLinks',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('social_facebook', models.URLField(verbose_name='facebook', blank=True, max_length=255)),
-                ('social_twitter', models.URLField(verbose_name='twitter', blank=True, max_length=255)),
-                ('social_google', models.URLField(verbose_name='google plus', blank=True, max_length=255)),
-                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('social_facebook', models.URLField(blank=True, verbose_name='facebook', max_length=255)),
+                ('social_twitter', models.URLField(blank=True, verbose_name='twitter', max_length=255)),
+                ('social_google', models.URLField(blank=True, verbose_name='google plus', max_length=255)),
+                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
             ],
             options={
-                'verbose_name': 'Links',
                 'default_permissions': ('change',),
+                'verbose_name': 'Links',
             },
         ),
         migrations.AlterIndexTogether(
