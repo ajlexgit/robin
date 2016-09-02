@@ -26,6 +26,8 @@
 
             max_size            - строка или число, являющеся ограничением на вес загружаемого файла
 
+            mime_types          - массив фильтров файлов в диалоговом окне
+
             zIndex              - z-index элемента загрузки файла
 
             onInit              - Событие инициализации загрузчика
@@ -78,6 +80,9 @@
             fileName: 'image',
             resize: {},
             max_size: 0,
+            mime_types: [
+                {title: "Image files", extensions: "jpg,jpeg,png,bmp,gif"}
+            ],
             zIndex: 1,
 
             onInit: $.noop,
@@ -129,9 +134,7 @@
                 resize: this.opts.resize,
                 filters: {
                     max_file_size: this.opts.max_size,
-                    mime_types: [
-                        {title: "Image files", extensions: "jpg,jpeg,png,bmp,gif"}
-                    ]
+                    mime_types: this.opts.mime_types
                 },
                 headers: {
                     'X-CSRFToken': $.cookie('csrftoken'),
@@ -178,6 +181,8 @@
                 } else {
                     config['browse_button'] = this.opts.buttonSelector;
                 }
+            } else {
+                config['browse_button'] = this.$root.get(0);
             }
 
             // область перетаскивания файлов
