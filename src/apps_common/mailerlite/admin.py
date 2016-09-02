@@ -1,16 +1,22 @@
+import io
+import csv
 from copy import deepcopy
 from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import url
+from django.http.response import JsonResponse
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.contrib.messages import add_message, SUCCESS
+from django.utils.translation import ugettext_lazy as _, get_language
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from libs.description import description
 from libs.widgets import ReadonlyFileWidget
+from libs.download import AttachmentResponse
 from libs.autocomplete.widgets import AutocompleteMultipleWidget
+from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 from .models import MailerConfig, Group, Campaign, Subscriber
 
 
@@ -42,7 +48,7 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
         (_('Email sender'), {
             'fields': (
-                'from_name', 'from_email', 
+                'from_name', 'from_email',
             ),
         }),
         (_('Email style'), {
@@ -349,6 +355,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 @admin.register(Subscriber)
 class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
+    change_list_template = 'mailerlite/admin/subscribers_change_list.html'
     fieldsets = (
         (None, {
             'fields': (
@@ -368,6 +375,19 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_filter = ('status', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
+
+    class Media:
+        js = (
+            'common/js/plupload/plupload.full.min.js',
+            'common/js/plupload/i18n/%s.js' % (get_language(),),
+            'common/js/uploader.js',
+            'mailerlite/admin/js/upload_csv.js',
+        )
+        css = {
+            'all': (
+                'mailerlite/admin/css/upload_csv.css',
+            )
+        }
 
     def get_fieldsets(self, request, obj=None):
         default = deepcopy(super().get_fieldsets(request, obj))
@@ -398,6 +418,60 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         if request.user.is_superuser:
             default.remove('status')
         return tuple(default)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        csv_urls = [
+            url(r'^upload_csv/$', self.admin_site.admin_view(self.upload_csv), name='%s_%s_upload_csv' % info),
+            url(r'^download_csv/$', self.admin_site.admin_view(self.download_csv), name='%s_%s_download_csv' % info),
+        ]
+        return csv_urls + urls
+
+    def download_csv(self, request):
+        class Echo(object):
+            def write(self, value):
+                return value
+
+        pseudo_buffer = Echo()
+        csv_writer = csv.writer(pseudo_buffer)
+        stream = (
+            csv_writer.writerow(subscriber)
+            for subscriber in Subscriber.objects.filter(
+                status__in=(Subscriber.STATUS_SUBSCRIBED, Subscriber.STATUS_QUEUED)
+            ).values_list('email', 'name', 'last_name')
+        )
+        return AttachmentResponse(request, stream, filename='subscribers.csv')
+
+    def upload_csv(self, request):
+        try:
+            csvfile = upload_chunked_file(request, 'csv')
+        except TemporaryFileNotFoundError as e:
+            return JsonResponse({
+                'message': str(e),
+            }, status=400)
+        except NotLastChunk:
+            return JsonResponse({})
+
+        added_count = 0
+        csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
+        for row in csv_reader:
+            email = row[0]
+            if not email:
+                continue
+
+            try:
+                Subscriber.objects.get(email=email)
+            except Subscriber.DoesNotExist:
+                data = dict(zip(('email', 'name', 'last_name'), row))
+                Subscriber.objects.create(**data)
+                added_count += 1
+            else:
+                pass
+
+        csvfile.close()
+        add_message(request, SUCCESS, '%d subscribers were added successfully!' % added_count)
+        return JsonResponse({})
 
     def save_model(self, request, obj, form, change):
         """ Автоматически добавляем все группы, если они не заданы """
