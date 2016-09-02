@@ -42,7 +42,7 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
         (_('Email sender'), {
             'fields': (
-                'from_email', 'from_name',
+                'from_name', 'from_email', 
             ),
         }),
         (_('Email style'), {

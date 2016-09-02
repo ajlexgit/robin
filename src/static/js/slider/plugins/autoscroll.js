@@ -80,6 +80,14 @@
         };
 
         /*
+            Переустановка таймера при переключении слайда
+         */
+        cls.beforeSlide = function(slider) {
+            this.disable();
+            this.checkEnabled(slider);
+        };
+
+        /*
             Включение плагина
          */
         cls.enable = function(slider) {

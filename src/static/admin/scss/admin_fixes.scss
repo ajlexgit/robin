@@ -249,6 +249,9 @@ td, th {
 }
 
 // удаление непонятных отступов
+.search-container {
+  margin-top: 0;
+}
 .search-container input, .search-container select {
   margin-top: 0;
 }
