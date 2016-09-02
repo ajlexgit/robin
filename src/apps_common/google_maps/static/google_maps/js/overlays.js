@@ -66,6 +66,7 @@
          */
         cls.draw = function() {
             var overlayProjection = this.native.getProjection();
+            if (!overlayProjection) return;
 
             var bottomleft = this.bounds.getSouthWest();
             var righttop = this.bounds.getNorthEast();

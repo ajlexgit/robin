@@ -389,6 +389,8 @@
          */
         cls.draw = function() {
             var overlayProjection = this.native.getProjection();
+            if (!overlayProjection) return;
+
             if (this.marker) {
                 var coords = overlayProjection.fromLatLngToDivPixel(this.marker.position().native);
             } else {
