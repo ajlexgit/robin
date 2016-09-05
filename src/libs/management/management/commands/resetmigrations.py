@@ -14,11 +14,12 @@ class Command(BaseCommand):
     @staticmethod
     def get_resetable_apps(app_labels=()):
         """ Список приложений, чьи миграции нужно сбросить """
-        local_apps = {
-            app.__name__.rsplit('.', 1)[0]: os.path.dirname(app.__file__)
-            for app in apps.get_apps()
-            if app.__file__.startswith(settings.BASE_DIR)
-        }
+        local_apps = {}
+        for app in apps.get_apps():
+            app_path = apps._get_app_path(app)
+            if app_path.startswith(settings.BASE_DIR):
+                app_name = app.__name__.rsplit('.', 1)[0]
+                local_apps[app_name] = app_path
 
         if app_labels:
             result_apps = {}
