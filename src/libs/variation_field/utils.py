@@ -351,6 +351,7 @@ def variation_resize(image, variation, target_format):
     stretch = bool(variation['stretch'])
 
     source_size = image.size
+    need_bg = bg_options['color'][3] != 0 or mode == 'RGBA' or target_format == 'JPEG'
 
     if crop:
         # Быстрое уменьшение картинки, если целевой размер намного меньше
@@ -371,10 +372,6 @@ def variation_resize(image, variation, target_format):
                 pass
             else:
                 image = ImageOps.fit(image, (new_width, new_height), method=Image.ANTIALIAS, centering=bg_options['center'])
-
-        # При сохранении PNG/GIF в JPEG прозрачный фон становится черным. Накладываем на фон
-        if mode == 'RGBA' and target_format == 'JPEG':
-            image = put_on_bg(image, image.size, masked=True, **bg_options)
     else:
         # Размеры картинки, вписываемой в холст
         image_size = Size(*source_size)
@@ -413,7 +410,7 @@ def variation_resize(image, variation, target_format):
                 image_size.max_height(max_height)
 
         # если размер вычисляется автоматически и нет прозрачности - накладывать на фон не нужно
-        need_bg = target_size != (0, 0) or mode == 'RGBA' or bg_options['color'][3] != 0
+        need_bg = need_bg or target_size != (0, 0)
 
         # Определение размера холста
         target_size = list(target_size)
@@ -430,10 +427,11 @@ def variation_resize(image, variation, target_format):
             # OLD: INSRIBE
             image.thumbnail(img_size, resample=Image.ANTIALIAS)
 
-        if need_bg:
-            # masked = mode == 'RGBA'
-            masked = bg_options['color'][3] != 0 # баг потери качества PNG при наложении
-            image = put_on_bg(image, target_size, masked=masked, **bg_options)
+
+    # Накладываем на фон
+    if need_bg:
+        masked = bg_options['color'][3] != 0  # баг потери качества PNG при наложении
+        image = put_on_bg(image, target_size, masked=masked, **bg_options)
 
     image.format = image_format
     return image
