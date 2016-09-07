@@ -55,8 +55,6 @@
                     })
 
         # template.html:
-            {% load form_helper %}
-
             <form action="" method="post" id="subscribe-form">
               {% render_form subscribe_form %}
               <input type="submit" value="Subscribe" class="btn">

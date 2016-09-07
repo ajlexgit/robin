@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Shop cart example + discounts
+# autocomplete: filters with aliases
 # $.fn.scrolltextarea + autosize
 # admin SEO json-LD
 # CKEditor internal link

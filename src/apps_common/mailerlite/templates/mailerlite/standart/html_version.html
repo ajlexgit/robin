@@ -14,23 +14,16 @@
   <!-- шапка письма -->
   <table align="center" cellspacing="0" cellpadding="0" border="0" class="header-table full-width">
     <tr>
-      <td align="left" class="logo">
-        <a href="http://{{ config.website }}/" target="_blank">
-          <img src="{% static 'mailerlite/img/mail_logo.png' %}" alt="" border="0" width="110" height="32">
+      <td style="width: 100px"></td>
+
+      <td align="center" class="header-cell">
+        <a href="http://{{ config.website }}/" target="_blank" class="logo">
+          <img src="{% static 'mailerlite/img/logo.png' %}" alt="" border="0" width="170" height="52">
         </a>
       </td>
 
-      <td style="width: 20px"></td>
-
-      <td align="left" class="preheader">
-        {{ config.preheader|linebreaksbr }}
-      </td>
-
-      <td style="width: 20px"></td>
-
-      <td align="right" class="backlink">
-        {% trans "Can't see images?" %}
-        <a style="color:#FFFFFF" href="{$url}" target="_blank">{% trans "Click here..." %}</a>
+      <td align="right" style="width: 100px">
+        <a href="{$url}" target="_blank" class="backlink">{% trans 'open in browser' %}</a>
       </td>
     </tr>
   </table>
@@ -51,7 +44,7 @@
   <!-- Контент -->
   <table cellpadding="0" cellspacing="0" border="0" class="full-width">
     <tr>
-      <td class="content">
+      <td class="content-cell full-width">
         {{ campaign.text|safe }}
       </td>
     </tr>
@@ -65,8 +58,8 @@
         <!-- Левая часть -->
         <table align="left" cellpadding="0" cellspacing="0" border="0" class="left-table">
           <tr>
-            <td align="left">
-              {{ config.footer_text|linebreaksbr }}
+            <td align="left" class="left-cell">
+              <span class="note">{{ config.footer_text|linebreaksbr }} </span>
               <a href="{$unsubscribe}" target="_blank">{% trans 'Unsubscribe' %}</a>
             </td>
           </tr>
@@ -75,22 +68,22 @@
         <!-- Правая часть -->
         <table align="right" cellpadding="0" cellspacing="0" border="0" class="right-table">
           <tr>
-            <td align="right" class="socials">
-              {% if config.facebook %}
-                <a href="{{ config.facebook }}" class="facebook" target="_blank"></a>
-              {% endif %}
-              <a href="mailto:{{ config.contact_email }}" class="mail" target="_blank"></a>
+            <td align="right" class="right-cell">
+              <a style="display: inline-block; margin: 0; border: none;" href="https://www.mailerlite.com">
+                <img border="0" alt="MailerLite"
+                     src="https://static1.mailerlite.com/images/builder/powered-by-mailerlite.png">
+              </a>
             </td>
           </tr>
         </table>
 
         <!-- Нижняя часть -->
-        <table cellspacing="0" cellpadding="0" border="0" class="full-width">
+        <table cellspacing="0" cellpadding="0" border="0" class="bottom-table full-width">
           <tr>
-            <td style="padding-top: 20px" class="full-width">
-              <a href="mailto:{{ config.contact_email }}">{{ config.contact_email }}</a>
-              <span style="display: inline-block; height: 1em; width: 1.2em;"></span>
+            <td class="bottom-cell full-width">
               <a href="http://{{ config.website }}/" target="_blank">{{ config.website }}</a>
+              <span style="display: inline-block; height: 1em; width: 1.2em;"></span>
+              <a href="mailto:{{ config.contact_email }}">{{ config.contact_email }}</a>
             </td>
           </tr>
         </table>
@@ -100,3 +93,5 @@
   </table>
 
 {% endblock content %}
+
+{% block mailerlite %}{% endblock mailerlite %}

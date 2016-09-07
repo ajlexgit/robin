@@ -56,11 +56,6 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
                 'bg_color', 'bg_image',
             ),
         }),
-        (_('Email header'), {
-            'fields': (
-                'preheader',
-            ),
-        }),
         (_('Email footer'), {
             'fields': (
                 'footer_text', 'website', 'contact_email',
@@ -136,9 +131,14 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     change_form_template = 'mailerlite/admin/change_form.html'
 
     fieldsets = (
+        (_('Subject'), {
+            'fields': (
+                'subject',
+            )
+        }),
         (_('Content'), {
             'fields': (
-                'subject', 'header_image', 'text',
+                'header_image', 'text',
             )
         }),
     )

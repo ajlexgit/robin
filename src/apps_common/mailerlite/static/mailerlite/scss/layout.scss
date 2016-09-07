@@ -1,9 +1,11 @@
 @import "mixins";
+@import "conf";
 
 body {
   margin: 0;
   padding: 0;
   min-width: 100%;
+  color: $text_color;
   font-size: 16px !important;
 }
 
@@ -27,56 +29,42 @@ table, td {
 
 td {
   padding: 0;
+  vertical-align: top;
   border-collapse: collapse;
 }
 
-h1, h2, h3, td, p, li {
-  line-height: 1.6;
+h1, h2, td, p, li {
+  font-size: 14px;
+  line-height: 1.786;
   font-family: Tahoma, Helvetica, Arial, sans-serif;
 }
 
-h1, h2, h3 {
-  text-transform: uppercase;
-}
-
-h1, h2, h3 {
-  margin: 1.1em 0 0.5em;
-}
-
 h1 {
-  font-size: 2.25em;
-  line-height: 1.278;
-  @media only screen and (max-width: 680px) {
-    font-size: 2em !important;
-  }
+  margin-bottom: 15px;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: normal;
 }
 
 h2 {
-  font-size: 1.75em;
-  line-height: 1.25;
-  @media only screen and (max-width: 680px) {
-    font-size: 1.5em !important;
-  }
-}
-
-h3 {
-  font-size: 1.375em;
-  line-height: 1.25;
-  @media only screen and (max-width: 680px) {
-    font-size: 1.25em !important;
-  }
-}
-
-a {
-  word-break: break-word;
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: normal;
 }
 
 p {
-  margin: 0 0 1.4em;
+  margin: 0 0 1.6em;
 
   &:last-child {
     margin-bottom: 0;
   }
+}
+
+a {
+  color: $link_color;
+  word-break: break-word;
+  text-decoration: underline;
 }
 
 img {
@@ -115,20 +103,20 @@ body[yahoo] {
   }
 
   .webkit {
-    max-width: 640px;
     margin: 0 auto;
+    max-width: $max_width;
   }
 
   .outer {
     margin: 0 auto;
     width: 100%;
-    max-width: 640px;
+    max-width: $max_width;
   }
 
   .full-width {
     width: 100%;
     max-width: 100%;
-    @include media_interval(0, 680px) {
+    @include media_interval(0, $media_mobile) {
       width: 100% !important;
       max-width: 100% !important;
     }

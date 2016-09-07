@@ -1,11 +1,9 @@
-from django.conf import settings
-
 # При конвертации ссылок для Mailerlite вставлять "https://" вместо "http://"
 HTTPS_ALLOWED = False
 
 CKEDITOR_CONFIG = {
     'extraPlugins': 'textlen,enterfix,pagephotos,simplephotos',
-    'format_tags': 'p;h1;h2;h3',
+    'format_tags': 'p;h1;h2',
     'toolbar': [
         {
             'name': 'basicstyles',

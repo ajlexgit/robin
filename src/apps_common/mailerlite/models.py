@@ -32,8 +32,6 @@ class MailerConfig(SingletonModel):
         storage=MediaStorage('mailerlite/campaigns')
     )
 
-    preheader = models.TextField(_('pre-header'), blank=True)
-
     footer_text = models.TextField(_('text'), blank=True)
     website = models.CharField(_('website address'), max_length=255, default='example.com')
     contact_email = models.EmailField(_('contact email'), default='admin@example.com')
@@ -128,21 +126,21 @@ class Campaign(models.Model):
     header_image = StdImageField(_('preview'),
         blank=True,
         storage=MediaStorage('mailerlite/campaigns'),
-        min_dimensions=(680, 200),
+        min_dimensions=(640, 320),
         admin_variation='admin',
         crop_area=True,
         aspects='normal',
         variations=dict(
             normal=dict(
-                size=(680, 200),
+                size=(640, 320),
                 quality=95,
             ),
             admin=dict(
-                size=(480, 150),
+                size=(320, 160),
             ),
         ),
     )
-    text = CKEditorUploadField(_('text'), editor_options=conf.CKEDITOR_CONFIG)
+    text = CKEditorUploadField(_('text'), height=350, editor_options=conf.CKEDITOR_CONFIG)
 
     sent = models.PositiveIntegerField(_('sent emails'), default=0, editable=False)
     opened = models.PositiveIntegerField(_('opened emails'), default=0, editable=False)

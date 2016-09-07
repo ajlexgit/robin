@@ -1,128 +1,57 @@
 @import "mixins";
+@import "conf";
 
-$media_mobile: 680px;
-
-$blue: #5e92dd;
-$text: #333333;
-
-h1, h2, h3 {
-  color: $blue;
-}
 
 body[yahoo] {
   /* Шапка */
   .header-table {
-    @include media_interval(0, $media_mobile) {
-      display: none;
-    }
-
-    td {
-      padding-top: 15px;
-      padding-bottom: 15px;
-      vertical-align: bottom;
-    }
-
     .logo {
-      width: 120px;
-    }
-
-    .preheader {
-      width: 280px;
-      color: #bcd3f1;
-      font-size: 0.875em;
-      line-height: 1.2;
+      display: inline-block;
+      width: 170px;
     }
 
     .backlink {
-      width: 200px;
-      color: #ffffff;
-      font-size: 0.875em;
+      display: inline-block;
+      margin-top: 60px;
+      color: $gray;
+      font-size: 0.75em;
     }
   }
 
-  .header-img {
-    max-width: 640px;
+  .header-cell {
+    padding-top: 25px;
+    padding-bottom: 18px;
   }
 
-  /* Content */
-  .content {
-    padding: 40px 40px;
-    max-width: 560px;
-    background-color: #ffffff;
-    @include media_interval(0, $media_mobile) {
-      padding: 30px 20px !important;
-      font-size: 14px !important;
-      max-width: 600px !important;
-    }
-
-    h1:first-child {
-      margin-top: 0;
-    }
-
-    a {
-      color: $blue;
-      text-decoration: none;
-    }
+  .content-cell {
+    padding: 30px 55px 46px;
+    background-color: $white;
   }
 
   /* Footer */
   .footer {
-    padding-top: 25px;
-    @include media_interval(0, $media_mobile) {
-      padding: 25px 20px 0 !important;
-    }
-
-    td {
-      color: $text;
-      font-size: 0.875em;
-      @include media_interval(0, $media_mobile) {
-        width: 100% !important;
-        text-align: center !important;
-      }
-    }
-
-    a {
-      color: $text;
-    }
+    padding: 20px 0 30px;
 
     .left-table {
-      width: 400px;
-      @include media_interval(0, $media_mobile) {
-        width: 100% !important;
+      width: 530px;
+
+      .left-cell {
+        color: $gray;
+        @include font-size(11px, 18px);
+
+        a {
+          color: $gray;
+          @include font-size(11px, 18px);
+        }
       }
     }
 
     .right-table {
-      width: 240px;
-      @include media_interval(0, $media_mobile) {
-        width: 100% !important;
-      }
-    }
-  }
-
-  /* Соцкнопки */
-  .socials {
-    vertical-align: middle;
-    @include media_interval(0, $media_mobile) {
-      padding-top: 20px !important;
+      width: 110px;
     }
 
-    a {
-      display: inline-block;
-      margin-left: 6px;
-      width: 30px;
-      height: 30px;
-      vertical-align: middle;
-      background: url(../img/mail_icons.png) no-repeat 0 0;
-      @include no_fontsize;
-
-      &:first-child {
-        margin-left: 0;
-      }
-
-      &.mail {
-        background-position: -60px 0;
-      }
+    .bottom-cell {
+      @include font-size(12px, 18px);
     }
   }
 }
