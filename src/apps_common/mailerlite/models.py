@@ -246,13 +246,15 @@ class Campaign(models.Model):
 
 
 class Subscriber(models.Model):
+    STATUS_NOEXISTS = -20
+    STATUS_UNSUBSCRIBED = -10
     STATUS_QUEUED = 0
     STATUS_SUBSCRIBED = 10
-    STATUS_UNSUBSCRIBED = 20
     STATUSES = (
         (STATUS_QUEUED, _('Queued')),
         (STATUS_SUBSCRIBED, _('Subscribed')),
         (STATUS_UNSUBSCRIBED, _('Unsubscribed')),
+        (STATUS_NOEXISTS, _('Not exists')),
     )
 
     groups = models.ManyToManyField(Group)

@@ -1,17 +1,19 @@
 import io
 import csv
 from copy import deepcopy
+from itertools import islice
 from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import url
-from django.http.response import JsonResponse
+from django.db import transaction
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+from django.http.response import JsonResponse, Http404
 from django.contrib.messages import add_message, SUCCESS
 from django.utils.translation import ugettext_lazy as _, get_language
 from solo.admin import SingletonModelAdmin
-from project.admin import ModelAdminMixin
+from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from libs.cookies import set_cookie
 from libs.description import description
 from libs.widgets import ReadonlyFileWidget
@@ -326,7 +328,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def sendtest(self, request, campaign_id):
         from premailer import Premailer
-        from django.http import JsonResponse, Http404
         from django.core.mail import send_mail, BadHeaderError
 
         receiver = request.POST.get('receiver')
@@ -362,7 +363,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'email',
+                'email', 'status',
             )
         }),
         (_('Additional information'), {
@@ -373,9 +374,10 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     )
     readonly_fields = (
         'email', 'groups', 'status',
-        'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe',
+        'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
     )
     list_filter = ('status', )
+    actions = ('action_mark_subscribed', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
 
@@ -401,12 +403,10 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         if groups_count > 1:
             default[0][1]['fields'] += ('groups', )
 
-        default[0][1]['fields'] += ('status',)
-
         default += (
             (_('Statistics'), {
                 'fields': (
-                    'sent', 'opened', 'clicked', 'date_created', 'date_unsubscribe'
+                    'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe'
                 )
             }),
         )
@@ -440,9 +440,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         csv_writer = csv.writer(pseudo_buffer)
         stream = (
             csv_writer.writerow(subscriber)
-            for subscriber in Subscriber.objects.filter(
-                status__in=(Subscriber.STATUS_SUBSCRIBED, Subscriber.STATUS_QUEUED)
-            ).values_list('email', 'name', 'last_name')
+            for subscriber in Subscriber.objects.all().values_list('email', 'name', 'last_name', 'company', 'status')
         )
         return AttachmentResponse(request, stream, filename='subscribers.csv')
 
@@ -459,20 +457,23 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         added_count = 0
         all_groups = tuple(Group.objects.all())
         csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
-        for row in csv_reader:
-            email = row[0]
-            if not email:
-                continue
+        while True:
+            group = tuple(
+                dict(zip(('email', 'name', 'last_name', 'company', 'status'), row))
+                for row in islice(csv_reader, 3)
+            )
+            if not group:
+                break
 
-            try:
-                Subscriber.objects.get(email=email)
-            except Subscriber.DoesNotExist:
-                data = dict(zip(('email', 'name', 'last_name'), row))
-                subscriber = Subscriber.objects.create(**data)
-                subscriber.groups.add(*all_groups)
-                added_count += 1
-            else:
-                pass
+            with transaction.atomic():
+                for record in group:
+                    if not record.get('email'):
+                        continue
+
+                    subscriber, created = Subscriber.objects.get_or_create(**record)
+                    if created:
+                        subscriber.groups.add(*all_groups)
+                        added_count += 1
 
         csvfile.close()
         add_message(request, SUCCESS, '%d subscribers were added successfully!' % added_count)
@@ -488,6 +489,10 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         if request.user.is_superuser:
             return True
         return obj and obj.status == self.model.STATUS_QUEUED
+
+    def action_mark_subscribed(self, request, queryset):
+        queryset.update(status=Subscriber.STATUS_SUBSCRIBED)
+    action_mark_subscribed.short_description = _('Change the status of the selected %(verbose_name_plural)s to "Subscribed"')
 
     def groups_list(self, obj):
         return ', '.join(group.name for group in obj.groups.all())

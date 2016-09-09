@@ -1,7 +1,8 @@
 import logging
-from django.db.utils import IntegrityError
 from time import sleep
+from django.db import models
 from django.utils.timezone import now
+from django.db.utils import IntegrityError
 from django.core.management import BaseCommand
 from ...models import MailerConfig, Group, Campaign, Subscriber
 from ... import conf
@@ -202,16 +203,22 @@ class Command(BaseCommand):
         for group in Group.objects.all():
             for remote_subscriber in self.all_pages(api.groups.subscribers, group.remote_id):
                 try:
-                    local_subscriber = Subscriber.objects.get(remote_id=remote_subscriber['id'])
+                    local_subscriber = Subscriber.objects.get(
+                        models.Q(remote_id=remote_subscriber['id']) |
+                        models.Q(email=remote_subscriber['email'], remote_id=0)
+                    )
+                except Subscriber.MultipleObjectsReturned:
+                    logger.info("MultipleObjectsReturned for ({0[id]}, {0[email]}).".format(remote_subscriber))
+                    continue
                 except Subscriber.DoesNotExist:
                     local_subscriber = Subscriber()
-                    logger.info("Subscriber '%s' created." % remote_subscriber['email'])
+                    logger.info("Subscriber '{0[email]}' created.".format(remote_subscriber))
 
                 local_subscriber.update_from(remote_subscriber)
                 try:
                     local_subscriber.save()
                 except IntegrityError:
-                    logger.warn("IntegrityError for ID '{0[id]}' email '{0[email]}'".format(remote_subscriber))
+                    logger.warn("IntegrityError for ({0[id]}, {0[email]})".format(remote_subscriber))
                     continue
 
                 if not local_subscriber.groups.filter(pk=group.pk).exists():

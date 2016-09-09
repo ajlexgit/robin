@@ -1,4 +1,3 @@
-from django.http.response import JsonResponse
 from django.views.generic.base import View
 from libs.views_ajax import AjaxViewMixin
 from .forms import SubscribeForm
