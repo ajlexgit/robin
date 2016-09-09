@@ -2,7 +2,6 @@
 
 {% load pipeline_plus %}
 {% load paginator %}
-{% load cache %}
 {% load text %}
 {% load i18n %}
 
@@ -41,19 +40,10 @@
     <div id="posts">
       {% for post in paginator.current_page %}
         <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-          {% cache 3600 post_microdata post.pk %}
-            <meta itemprop="author" content="{{ config.microdata_author }}">
-            <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
-            <meta itemprop="dateModified" content="{{ post.updated|date:"c" }}"/>
-            <div style="display:none;" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
-              <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-                <img itemprop="url" itemprop="image" src="{{ config.microdata_publisher_logo.url }}"/>
-                <meta itemprop="width" content="{{ config.microdata_publisher_logo.width }}">
-                <meta itemprop="height" content="{{ config.microdata_publisher_logo.height }}">
-              </div>
-              <meta itemprop="name" content="{{ config.microdata_author }}">
-            </div>
-          {% endcache %}
+          <meta itemprop="dateModified" content="{{ post.updated|date:"c" }}"/>
+          <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
+          <!-- <link itemprop="author" href="#MyOrg"/>
+          <link itemprop="publisher" href="#MyOrg"/> -->
 
           <div class="grid-block">
             <header>

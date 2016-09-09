@@ -2,7 +2,6 @@
 
 {% load social_networks %}
 {% load pipeline_plus %}
-{% load cache %}
 {% load away %}
 {% load text %}
 
@@ -20,27 +19,14 @@
 {% block content %}
 
   <div id="blog-post" class="block" itemscope itemtype="http://schema.org/Article">
-    {% cache 3600 post_microdata post.pk %}
-      <meta itemprop="author" content="{{ config.microdata_author }}">
-      <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
-      <meta itemprop="dateModified" content="{{ post.updated|date:"c" }}"/>
-      <div style="display:none;" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
-        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-          <img itemprop="url" itemprop="image" src="{{ config.microdata_publisher_logo.url }}"/>
-          <meta itemprop="width" content="{{ config.microdata_publisher_logo.width }}">
-          <meta itemprop="height" content="{{ config.microdata_publisher_logo.height }}">
-        </div>
-        <meta itemprop="name" content="{{ config.microdata_author }}">
-      </div>
-
-      {% if post.preview %}
-        <div style="display: none" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
-          <link itemprop="url" href="{{ post.preview.normal.url }}"/>
-          <meta itemprop="width" content="{{ post.preview.normal.target_width }}"/>
-          <meta itemprop="height" content="{{ post.preview.normal.target_height }}"/>
-        </div>
-      {% endif %}
-    {% endcache %}
+    <meta itemprop="dateModified" content="{{ post.updated|date:"c" }}"/>
+    <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
+    <!-- <link itemprop="author" href="#MyOrg"/>
+    <link itemprop="publisher" href="#MyOrg"/> -->
+    
+    {% if post.preview %}
+      <link itemprop="image" href="{{ post.preview.normal.url }}"/>
+    {% endif %}
 
     <div class="grid">
       <div class="gc-wide-6 gc-6 gc-center">

@@ -27,12 +27,6 @@ class BlogConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('header', ),
         }),
-        (_('Schema.org defaults'), {
-            'classes': ('suit-tab', 'suit-tab-seo'),
-            'fields': (
-                'microdata_author', 'microdata_publisher_logo',
-            ),
-        }),
     )
     inlines = (BlogConfigBlocksInline, )
     suit_form_tabs = (
