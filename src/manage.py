@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Mailerlite: clear subscribers from remote + limit reached + bulk export
+# Redirects: last usage
 # Shop cart example + discounts
 # autocomplete: filters with aliases
 # $.fn.scrolltextarea + autosize
