@@ -460,7 +460,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         while True:
             group = tuple(
                 dict(zip(('email', 'name', 'last_name', 'company', 'status'), row))
-                for row in islice(csv_reader, 3)
+                for row in islice(csv_reader, 100)
             )
             if not group:
                 break
