@@ -12,6 +12,7 @@ from django.contrib.messages import add_message, SUCCESS
 from django.utils.translation import ugettext_lazy as _, get_language
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
+from libs.cookies import set_cookie
 from libs.description import description
 from libs.widgets import ReadonlyFileWidget
 from libs.download import AttachmentResponse
@@ -350,7 +351,9 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             except BadHeaderError:
                 pass
 
-        return JsonResponse({})
+        response = JsonResponse({})
+        set_cookie(response, 'last_receiver', receiver)
+        return response
 
 
 @admin.register(Subscriber)
@@ -454,6 +457,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
             return JsonResponse({})
 
         added_count = 0
+        all_groups = tuple(Group.objects.all())
         csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
         for row in csv_reader:
             email = row[0]
@@ -464,7 +468,8 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                 Subscriber.objects.get(email=email)
             except Subscriber.DoesNotExist:
                 data = dict(zip(('email', 'name', 'last_name'), row))
-                Subscriber.objects.create(**data)
+                subscriber = Subscriber.objects.create(**data)
+                subscriber.groups.add(*all_groups)
                 added_count += 1
             else:
                 pass

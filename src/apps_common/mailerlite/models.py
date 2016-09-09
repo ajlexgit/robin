@@ -8,6 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorUploadField
+from social_networks.models import SocialLinks
 from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
 from libs.stdimage.fields import StdImageField
@@ -205,10 +206,11 @@ class Campaign(models.Model):
     def render_html(self, request=None, scheme='//', test=False):
         content = loader.render_to_string('mailerlite/standart/html_version.html', {
             'config': MailerConfig.get_solo(),
+            'socials': SocialLinks.get_solo(),
             'campaign': self,
         }, request=request)
         content = content.replace('url(//', 'url(http://')
-        content = utils.absolute_links(content, scheme=scheme)
+        content = utils.format_html(content, scheme=scheme)
 
         site = get_current_site(request)
         content = re_domain_urls.sub('\\1{}{}\\2'.format(scheme, site.domain), content)
@@ -226,6 +228,7 @@ class Campaign(models.Model):
     def render_plain(self, request=None, test=False):
         content = loader.render_to_string('mailerlite/standart/plain_version.html', {
             'config': MailerConfig.get_solo(),
+            'socials': SocialLinks.get_solo(),
             'campaign': self,
         }, request=request)
         content = re_newline_spaces.sub('\n', content)
@@ -271,7 +274,7 @@ class Subscriber(models.Model):
         default_permissions = ('add', 'change')
         verbose_name = _('subscriber')
         verbose_name_plural = _('subscribers')
-        ordering = ('-date_created', )
+        ordering = ('-date_created', 'id')
 
     def __str__(self):
         return self.email

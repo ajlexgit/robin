@@ -38,8 +38,8 @@
             ...
 
         # crontab
-            */10 * * * * . $HOME/.profile; ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -ic -ec -es
-            5,35 * * * * . $HOME/.profile; ~/django/env/bin/python3 ~/django/src/manage.py mailerlite -ig -eg -es -is
+            */15 * * * * . $HOME/.profile; ~/aor.com/env/bin/python3 ~/aor.com/src/manage.py mailerlite -ig -es -ic -ec
+            10 * * * * . $HOME/.profile; ~/aor.com/env/bin/python3 ~/aor.com/src/manage.py mailerlite -ig -eg -es -is
 
 
     Использование:

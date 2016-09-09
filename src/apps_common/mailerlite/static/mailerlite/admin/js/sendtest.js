@@ -13,6 +13,7 @@
 
         var $dialog_form = $form.clone();
         $dialog_form.get(0).reset();
+        $dialog_form.find('[name="receiver"]').val($.cookie('last_receiver') || '');
         $dialog_form.attr('id', 'sendtest-form');
         $dialog_form.on('submit', function() {
             var $form = $(this);

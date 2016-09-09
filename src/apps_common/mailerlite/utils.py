@@ -2,9 +2,10 @@ from bs4 import BeautifulSoup as Soup
 from django.contrib.sites.shortcuts import get_current_site
 
 
-def absolute_links(html, scheme='//'):
+def format_html(html, scheme='//'):
     """
-        Все ссылки становятся абсолютными с target=_blank
+        1. Все ссылки становятся абсолютными с target=_blank.
+        2. Ко всем таблицам добавляются аттрибуты cellpadding, cellspacing и border
     """
     site = get_current_site(None)
 
@@ -47,5 +48,11 @@ def absolute_links(html, scheme='//'):
                 url = '%s%s%s' % (scheme, site.domain, url)
             srcset_final.append('%s %s' % (url, width))
         tag['srcset'] = ','.join(srcset_final)
+
+    # Добавление аттрибутов к таблицам
+    for tag in soup.findAll('table'):
+        for attr in ('border', 'cellpadding', 'cellspacing'):
+            if not tag.has_attr(attr):
+                tag[attr] = '0'
 
     return soup.decode_contents()

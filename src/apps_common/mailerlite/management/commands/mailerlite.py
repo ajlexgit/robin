@@ -1,4 +1,5 @@
 import logging
+from django.db.utils import IntegrityError
 from time import sleep
 from django.utils.timezone import now
 from django.core.management import BaseCommand
@@ -207,7 +208,11 @@ class Command(BaseCommand):
                     logger.info("Subscriber '%s' created." % remote_subscriber['email'])
 
                 local_subscriber.update_from(remote_subscriber)
-                local_subscriber.save()
+                try:
+                    local_subscriber.save()
+                except IntegrityError:
+                    logger.warn("IntegrityError for ID '{0[id]}' email '{0[email]}'".format(remote_subscriber))
+                    continue
 
                 if not local_subscriber.groups.filter(pk=group.pk).exists():
                     local_subscriber.groups.add(group)

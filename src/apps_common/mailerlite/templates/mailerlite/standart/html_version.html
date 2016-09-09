@@ -12,25 +12,31 @@
 
 {% block content %}
   <!-- шапка письма -->
-  <table align="center" cellspacing="0" cellpadding="0" border="0" class="header-table full-width">
+  <table class="full-width">
     <tr>
-      <td style="width: 100px"></td>
+      <td class="header full-width" align="center">
 
-      <td align="center" class="header-cell">
-        <a href="http://{{ config.website }}/" target="_blank" class="logo">
-          <img src="{% static 'mailerlite/img/logo.png' %}" alt="" border="0" width="170" height="52">
-        </a>
-      </td>
+        <table align="center" class="header-table full-width">
+          <tr>
+            <td class="logo-cell" align="left">
+              <a href="http://{{ config.website }}/" target="_blank" class="logo">
+                <img src="{% static 'mailerlite/img/logo.png' %}" alt="" border="0" width="170" height="52">
+              </a>
+            </td>
 
-      <td align="right" style="width: 100px">
-        <a href="{$url}" target="_blank" class="backlink">{% trans 'open in browser' %}</a>
+            <td class="backlink-cell" align="right">
+              <a href="{$url}" target="_blank" class="backlink">{% trans 'open in browser' %}</a>
+            </td>
+          </tr>
+        </table>
+
       </td>
     </tr>
   </table>
 
   <!-- Картинка в заголовке -->
   {% if campaign.header_image %}
-    <table cellpadding="0" cellspacing="0" border="0" class="full-width">
+    <table class="full-width">
       <tr>
         <td align="center" class="header-img full-width">
           <img border="0" width="{{ campaign.header_image.normal.target_width }}"
@@ -42,7 +48,7 @@
   {% endif %}
 
   <!-- Контент -->
-  <table cellpadding="0" cellspacing="0" border="0" class="full-width">
+  <table class="full-width">
     <tr>
       <td class="content-cell full-width">
         {{ campaign.text|safe }}
@@ -51,43 +57,34 @@
   </table>
 
   <!-- Подвал -->
-  <table cellpadding="0" cellspacing="0" border="0" class="full-width">
+  <table class="full-width">
     <tr>
-      <td class="footer full-width">
+      <td class="footer full-width" align="center">
 
-        <!-- Левая часть -->
-        <table align="left" cellpadding="0" cellspacing="0" border="0" class="left-table">
+        <!-- Верхняя часть -->
+        <table class="top-table full-width">
           <tr>
-            <td align="left" class="left-cell">
+            <td class="top-cell full-width">
               <span class="note">{{ config.footer_text|linebreaksbr }} </span>
               <a href="{$unsubscribe}" target="_blank">{% trans 'Unsubscribe' %}</a>
             </td>
           </tr>
         </table>
 
-        <!-- Правая часть -->
-        <table align="right" cellpadding="0" cellspacing="0" border="0" class="right-table">
-          <tr>
-            <td align="right" class="right-cell">
-              <a style="display: inline-block; margin: 0; border: none;" href="https://www.mailerlite.com">
-                <img border="0" alt="MailerLite"
-                     src="https://static1.mailerlite.com/images/builder/powered-by-mailerlite.png">
-              </a>
-            </td>
-          </tr>
-        </table>
-
         <!-- Нижняя часть -->
-        <table cellspacing="0" cellpadding="0" border="0" class="bottom-table full-width">
+        <table class="bottom-table full-width">
           <tr>
-            <td class="bottom-cell full-width">
+            <td class="left-cell" align="left">
               <a href="http://{{ config.website }}/" target="_blank">{{ config.website }}</a>
               <span style="display: inline-block; height: 1em; width: 1.2em;"></span>
               <a href="mailto:{{ config.contact_email }}">{{ config.contact_email }}</a>
             </td>
+
+            <td class="right-cell" align="rigth">
+              <a href="https://www.mailerlite.com" class="mailerlite">MailerLite</a>
+            </td>
           </tr>
         </table>
-
       </td>
     </tr>
   </table>

@@ -4,6 +4,7 @@
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
   min-width: 100%;
   color: $text_color;
   font-size: 16px !important;
@@ -31,9 +32,11 @@ td {
   padding: 0;
   vertical-align: top;
   border-collapse: collapse;
+  font-size: 0;
+  font-family: Tahoma, Helvetica, Arial, sans-serif;
 }
 
-h1, h2, td, p, li {
+h1, h2, p, li {
   font-size: 14px;
   line-height: 1.786;
   font-family: Tahoma, Helvetica, Arial, sans-serif;
@@ -55,9 +58,12 @@ h2 {
 
 p {
   margin: 0 0 1.6em;
+  @include media_interval(0, $media_mobile) {
+    margin-bottom: 1.4em !important;
+  }
 
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
 }
 
@@ -116,9 +122,5 @@ body[yahoo] {
   .full-width {
     width: 100%;
     max-width: 100%;
-    @include media_interval(0, $media_mobile) {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
   }
 }
