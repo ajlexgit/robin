@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Files: dowload count
 # Mailerlite: clear subscribers from remote + limit reached + bulk export
 # Redirects: last usage
 # Shop cart example + discounts

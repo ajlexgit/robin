@@ -9,7 +9,7 @@
         }
 
         $.ajax({
-            url: window.js_storage.subscribe_url,
+            url: window.js_storage.ajax_subscribe,
             type: 'POST',
             data: $form.serialize(),
             dataType: 'json',

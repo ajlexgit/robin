@@ -11,5 +11,5 @@ class Config(AppConfig):
         from django.core.urlresolvers import reverse
 
         JS_STORAGE.update({
-            'subscribe_url': reverse('mailerlite:subscribe')
+            'ajax_subscribe': reverse('mailerlite:ajax_subscribe')
         })
