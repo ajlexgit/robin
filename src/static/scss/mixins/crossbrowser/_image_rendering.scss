@@ -23,7 +23,7 @@
 
 // Пример: @include image-rendering(crisp-edges);
 @mixin image-rendering($value) {
-  image-rendering: legacy-image-rendering($value, mozilla);
+  // image-rendering: legacy-image-rendering($value, mozilla);
   image-rendering: legacy-image-rendering($value, opera);
   image-rendering: legacy-image-rendering($value, webkit);
   image-rendering: $value;
