@@ -2,7 +2,9 @@ from collections import Iterable
 
 
 def _process(result, key, data):
-    if isinstance(data, str):
+    if data is None:
+        return
+    elif isinstance(data, str):
         result.append((key, data))
     elif isinstance(data, dict):
         for index, inner_data in data.items():

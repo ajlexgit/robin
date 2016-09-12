@@ -26,7 +26,7 @@ def fetch_activity(id_or_email):
     return request('subscribers/%s/activity' % id_or_email)
 
 
-def prepare_subscriber(email, first_name='', last_name='', company='', status='unconfirmed'):
+def prepare_subscriber(email, first_name='', last_name='', company='', status='active'):
     """ Создание объекта подписчика для передачи в create или bulk_create """
     fields = {
         'name': first_name,
@@ -40,14 +40,14 @@ def prepare_subscriber(email, first_name='', last_name='', company='', status='u
     }
 
 
-def create(group_id, *args, resubscribe=True, **kwargs):
+def create(group_id, *args, resubscribe=False, **kwargs):
     """ Создание подписчика """
     subscriber = prepare_subscriber(*args, **kwargs)
     subscriber['resubscribe'] = 'true' if resubscribe else 'false',
     return request('groups/%d/subscribers' % group_id, method='POST', data=subscriber)
 
 
-def bulk_create(group_id, subscribers, resubscribe=True):
+def bulk_create(group_id, subscribers, resubscribe=False):
     """
         Создание множества подписчиков
     """

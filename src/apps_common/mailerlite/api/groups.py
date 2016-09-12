@@ -6,7 +6,7 @@ def get_all(limit=100, offset=0, filters=None):
     return request('groups', params={
         'limit': limit,
         'offset': offset,
-        'filters': filters or {},
+        'filters': filters,
     })
 
 
@@ -29,17 +29,23 @@ def update(group_id, name):
     })
 
 
-def subscribers(group_id, limit=100, offset=0, filters=None, status='active'):
+def subscribers(group_id, limit=100, offset=0, filters=None, status=None):
     """
         Получение подписчиков из списка.
         Параметр status: active/unsubscribed/bounced/junk/unconfirmed
     """
-    return request('groups/%d/subscribers' % group_id, params={
-        'limit': limit,
-        'offset': offset,
-        'filters': filters or {},
-        'type': status,
-    })
+    if status:
+        return request('groups/%d/subscribers/%s' % (group_id, status), params={
+            'limit': limit,
+            'offset': offset,
+            'filters': filters,
+        })
+    else:
+        return request('groups/%d/subscribers' % group_id, params={
+            'limit': limit,
+            'offset': offset,
+            'filters': filters,
+        })
 
 
 def delete(group_id):

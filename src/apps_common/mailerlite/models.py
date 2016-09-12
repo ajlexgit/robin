@@ -317,3 +317,5 @@ class Subscriber(models.Model):
             self.status = Subscriber.STATUS_SUBSCRIBED
         elif subscriber_type == 'unsubscribed':
             self.status = Subscriber.STATUS_UNSUBSCRIBED
+        elif subscriber_type == 'bounced':
+            self.status = Subscriber.STATUS_NOEXISTS

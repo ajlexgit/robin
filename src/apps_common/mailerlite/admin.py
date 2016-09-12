@@ -13,7 +13,7 @@ from django.http.response import JsonResponse, Http404
 from django.contrib.messages import add_message, SUCCESS
 from django.utils.translation import ugettext_lazy as _, get_language
 from solo.admin import SingletonModelAdmin
-from project.admin import ModelAdminMixin, ModelAdminInlineMixin
+from project.admin import ModelAdminMixin
 from libs.cookies import set_cookie
 from libs.description import description
 from libs.widgets import ReadonlyFileWidget
@@ -83,12 +83,12 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
         (_('Statistics'), {
             'fields': (
-                'sent', 'opened', 'clicked', 'date_created', 'date_updated',
+                'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated',
             )
         }),
     )
     readonly_fields = (
-        'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'date_created', 'date_updated'
+        'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated'
     )
     list_display = ('name', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'status')
 
@@ -377,7 +377,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
     )
     list_filter = ('status', )
-    actions = ('action_mark_subscribed', )
+    actions = ('action_mark_queued', 'action_mark_subscribed', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
 
@@ -489,6 +489,10 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         if request.user.is_superuser:
             return True
         return obj and obj.status == self.model.STATUS_QUEUED
+
+    def action_mark_queued(self, request, queryset):
+        queryset.update(status=Subscriber.STATUS_QUEUED)
+    action_mark_queued.short_description = _('Change the status of the selected %(verbose_name_plural)s to "Queued"')
 
     def action_mark_subscribed(self, request, queryset):
         queryset.update(status=Subscriber.STATUS_SUBSCRIBED)

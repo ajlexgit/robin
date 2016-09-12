@@ -4,7 +4,7 @@ from .base import request
 def get_all(page=0, limit=100):
     """ Получение всех рассылок """
     return request('campaigns', params={
-        'page': page+1,
+        'page': page + 1,
         'limit': limit,
     }, version=1)['Results']
 

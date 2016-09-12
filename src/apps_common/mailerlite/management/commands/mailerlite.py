@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 break
             else:
                 page += 1
-                sleep(0.2)
+                sleep(0.1)
 
     def all_pages_v1(self, import_func, *args, limit=1000, **kwargs):
         page = 0
@@ -89,7 +89,7 @@ class Command(BaseCommand):
                 break
             else:
                 page += 1
-                sleep(0.2)
+                sleep(0.1)
 
     def export_groups(self):
         """ Отправка групп в MailerLite """
@@ -228,32 +228,32 @@ class Command(BaseCommand):
     def export_subscribers(self, group):
         """ Отправка новых подписчиков в MailerLite """
         logger.info("Export subscribers...")
-        new_subscribers = Subscriber.objects.filter(
+        subscribers = Subscriber.objects.filter(
             groups=group,
             status=Subscriber.STATUS_QUEUED,
         ).distinct()
+        subscribers_iter = subscribers.iterator()
 
         while True:
-            subscribers_pack = islice(new_subscribers, 100)
-            subscribers = tuple(
+            data = tuple(
                 api.subscribers.prepare_subscriber(
                     subscriber.email,
                     first_name=subscriber.name,
                     last_name=subscriber.last_name,
                     company=subscriber.company,
                 )
-                for subscriber in subscribers_pack
+                for subscriber in islice(subscribers_iter, 100)
             )
-            if not subscribers:
+            if not data:
                 break
 
             try:
-                response = api.subscribers.bulk_create(group.remote_id, subscribers)
+                response = api.subscribers.bulk_create(group.remote_id, data, resubscribe=True)
             except api.SubscribeAPIError as e:
                 logging.error(e.message)
             else:
                 for row in chain(response['imported'], response['updated'], response['unchanged']):
-                    subscribers_pack.filter(email=row['email']).update(
+                    subscribers.filter(email=row['email']).update(
                         remote_id=row['id'],
                         status=Subscriber.STATUS_SUBSCRIBED,
                     )
