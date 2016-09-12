@@ -1,5 +1,6 @@
 import logging
 from time import sleep
+from itertools import islice, chain
 from django.db import models
 from django.utils.timezone import now
 from django.db.utils import IntegrityError
@@ -231,23 +232,35 @@ class Command(BaseCommand):
             groups=group,
             status=Subscriber.STATUS_QUEUED,
         ).distinct()
-        for subscriber in new_subscribers:
-            try:
-                response = api.subscribers.create(
-                    group.remote_id,
-                    email=subscriber.email,
+
+        while True:
+            subscribers_pack = islice(new_subscribers, 100)
+            subscribers = tuple(
+                api.subscribers.prepare_subscriber(
+                    subscriber.email,
                     first_name=subscriber.name,
                     last_name=subscriber.last_name,
                     company=subscriber.company,
-                    status='subscribed',
                 )
+                for subscriber in subscribers_pack
+            )
+            if not subscribers:
+                break
+
+            try:
+                response = api.subscribers.bulk_create(group.remote_id, subscribers)
             except api.SubscribeAPIError as e:
                 logging.error(e.message)
             else:
-                subscriber.status = Subscriber.STATUS_SUBSCRIBED
-                subscriber.remote_id = response['id']
-                subscriber.save()
-                logger.info("Exported subscriber '%s'" % subscriber.email)
+                for row in chain(response['imported'], response['updated'], response['unchanged']):
+                    subscribers_pack.filter(email=row['email']).update(
+                        remote_id=row['id'],
+                        status=Subscriber.STATUS_SUBSCRIBED,
+                    )
+                    logger.info("Exported subscriber '{0[email]}'".format(row))
+
+                for row in response['errors']:
+                    logger.error('%r' % row)
 
     def handle(self, *args, **options):
         self.config = MailerConfig.get_solo()

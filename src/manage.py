@@ -2,8 +2,8 @@ import os
 import sys
 
 # Remove buttons from social network
-# Files: dowload count
-# Mailerlite: clear subscribers from remote + limit reached + bulk export
+# Files: download count
+# Mailerlite: clear subscribers from remote + limit reached
 # Redirects: last usage
 # Shop cart example + discounts
 # autocomplete: filters with aliases
