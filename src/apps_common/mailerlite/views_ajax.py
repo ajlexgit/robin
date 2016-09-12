@@ -5,6 +5,14 @@ from .models import Subscriber
 
 
 class SubscribeView(AjaxViewMixin, View):
+    def get(self, request):
+        form = SubscribeForm()
+        return self.json_response({
+            'form': self.render_to_string('mailerlite/ajax_subscribe.html', {
+                'form': form,
+            }),
+        })
+
     def post(self, request):
         subscribe_form = SubscribeForm(request.POST, request.FILES)
         if subscribe_form.is_valid():
@@ -26,7 +34,7 @@ class SubscribeView(AjaxViewMixin, View):
             subscriber.groups.add(*groups)
 
             return self.json_response({
-                'success_message': self.render_to_string('mailerlite/ajax_success.html')
+                'success_message': self.render_to_string('mailerlite/ajax_subscribe_success.html')
             })
         else:
             return self.json_error({

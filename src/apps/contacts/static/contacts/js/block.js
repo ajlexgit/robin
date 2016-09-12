@@ -16,74 +16,12 @@
                         classes: 'contact-popup contact-form-popup',
                         content: response.form
                     }).show();
-
-                    InitContactPopup(popup);
                 }
             },
-            error: $.parseError(function(response) {
+            error: $.parseError(function() {
                 alert(window.DEFAULT_AJAX_ERROR);
                 $.popup().hide();
             })
-        });
-    };
-
-    /*
-        Инициализация окна контактов
-     */
-    var InitContactPopup = function(popup) {
-        var $form = popup.$content.find('form');
-
-        $form.on('submit', function() {
-            $.preloader();
-
-            if ($form.hasClass('sending')) {
-                return false;
-            }
-
-            // добавление адреса страницы, откуда отправлена форма
-            var data = $(this).serializeArray();
-            data.push({
-                name: 'referer',
-                value: location.href
-            });
-
-            $.ajax({
-                url: window.js_storage.ajax_contact,
-                type: 'post',
-                data: data,
-                dataType: 'json',
-                beforeSend: function() {
-                    $form.addClass('sending');
-                },
-                success: function(response) {
-                    if (response.success_message) {
-                        // сообщение о успешной отправке
-                        $.popup({
-                            classes: 'contact-popup contact-success-popup',
-                            content: response.success_message
-                        }).show();
-                    }
-                },
-                error: $.parseError(function(response) {
-                    if (response && response.form) {
-                        // ошибки формы
-                        var popup = $.popup({
-                            classes: 'contact-popup contact-form-popup',
-                            content: response.form
-                        }).show();
-
-                        InitContactPopup(popup);
-                    } else {
-                        alert(window.DEFAULT_AJAX_ERROR);
-                        $.popup().hide();
-                    }
-                }),
-                complete: function() {
-                    $form.removeClass('sending');
-                }
-            });
-
-            return false;
         });
     };
 
@@ -93,6 +31,65 @@
      */
     $(document).on('click', '.open-contact-popup', function() {
         contactPopup();
+        return false;
+    });
+
+
+    /*
+        Отправка AJAX-формы
+     */
+    $(document).on('submit', '#ajax-contact-form', function() {
+        var $form = $(this);
+        if ($form.hasClass('sending')) {
+            return false;
+        }
+
+        // добавление адреса страницы, откуда отправлена форма
+        var data = $(this).serializeArray();
+        data.push({
+            name: 'referer',
+            value: location.href
+        });
+
+        $.ajax({
+            url: window.js_storage.ajax_contact,
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            beforeSend: function() {
+                $form.addClass('sending');
+                $form.find('.invalid').removeClass('invalid');
+            },
+            success: function(response) {
+                if (response.success_message) {
+                    // сообщение о успешной отправке
+                    $.popup({
+                        classes: 'contact-popup contact-success-popup',
+                        content: response.success_message
+                    }).show();
+
+                    $form.get(0).reset();
+                }
+            },
+            error: $.parseError(function(response) {
+                if (response && response.errors) {
+                    // ошибки формы
+                    response.errors.forEach(function(record) {
+                        var $field = $form.find('.' + record.fullname);
+                        if ($field.length) {
+                            $field.addClass(record.class);
+                        }
+                    });
+                } else {
+                    alert(window.DEFAULT_AJAX_ERROR);
+                    $.popup().hide();
+                }
+            }),
+            complete: function() {
+                $form.removeClass('sending');
+            }
+        });
+
         return false;
     });
 
