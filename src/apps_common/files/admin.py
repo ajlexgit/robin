@@ -60,8 +60,8 @@ class PageFileInlineMixin(ModelAdminInlineMixin):
     model = PageFile
     form = PageFileForm
     formset = PageFileFormset
-    fields = ['file', 'name']
-    readonly_fields = ('set_name',)
+    fields = ['file', 'name', 'downloads']
+    readonly_fields = ('set_name', 'downloads')
     extra = 0
     set_name = ''
 
