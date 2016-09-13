@@ -102,7 +102,7 @@ input[type=checkbox] {
       width: nth($checkbox_icon_size, 1);
       height: nth($checkbox_icon_size, 2);
       z-index: 1;
-      background: $sprite_url no-repeat -264px 0;
+      background: $sprite_url no-repeat -268px 0;
       @include opacity(0);
       @include transition(opacity 0.1s);
     }

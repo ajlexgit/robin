@@ -5,6 +5,7 @@ $icon_size: 32px;
 .social-button {
   display: inline-block;
   margin-right: 5px;
+  overflow: hidden;
   width: 32px;
   cursor: pointer;
   @include fontsize_default;
@@ -22,21 +23,21 @@ $icon_size: 32px;
   }
 
   &.social-fb:before {
-    background-position: rel-background-position($icon_size, $icon_size, -30px, -90px);
+    background-position: rel-background-position($icon_size, $icon_size, -30px, -56px);
   }
   &.social-tw:before {
-    background-position: rel-background-position($icon_size, $icon_size, -64px, -90px);
+    background-position: rel-background-position($icon_size, $icon_size, -64px, -56px);
   }
   &.social-gp:before {
-    background-position: rel-background-position($icon_size, $icon_size, -98px, -90px);
+    background-position: rel-background-position($icon_size, $icon_size, -98px, -56px);
   }
   &.social-li:before {
-    background-position: rel-background-position($icon_size, $icon_size, -132px, -90px);
+    background-position: rel-background-position($icon_size, $icon_size, -132px, -56px);
   }
   &.social-pn:before {
-    background-position: rel-background-position($icon_size, $icon_size, -166px, -90px);
+    background-position: rel-background-position($icon_size, $icon_size, -166px, -56px);
   }
   &.social-vk:before {
-    background-position: rel-background-position($icon_size, $icon_size, -200px, -90px);
+    background-position: rel-background-position($icon_size, $icon_size, -200px, -56px);
   }
 }
