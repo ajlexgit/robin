@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Remove buttons from social network
 # Files: download count
 # Mailerlite: clear subscribers from remote + limit reached
 # Redirects: last usage

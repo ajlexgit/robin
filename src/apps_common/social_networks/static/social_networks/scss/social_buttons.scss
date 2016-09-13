@@ -1,35 +1,42 @@
 @import "mixins";
 
+$icon_size: 32px;
+
 .social-button {
   display: inline-block;
   margin-right: 5px;
-  width: 40px;
-  height: 40px;
+  width: 32px;
   cursor: pointer;
-  background: url(../img/buttons.png) no-repeat;
   @include fontsize_default;
   @include border_radius(45%);
-
   &:last-child {
     margin-right: 0;
   }
 
-  &.social-vk {
-    background-position: 0 0;
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+    background: $sprite_url no-repeat;
+    background-size: rel-background-size($icon_size, $icon_size);
   }
-  &.social-fb {
-    background-position: -42px 0;
+
+  &.social-fb:before {
+    background-position: rel-background-position($icon_size, $icon_size, -30px, -90px);
   }
-  &.social-tw {
-    background-position: -84px 0;
+  &.social-tw:before {
+    background-position: rel-background-position($icon_size, $icon_size, -64px, -90px);
   }
-  &.social-gp {
-    background-position: -126px 0;
+  &.social-gp:before {
+    background-position: rel-background-position($icon_size, $icon_size, -98px, -90px);
   }
-  &.social-li {
-    background-position: -168px 0;
+  &.social-li:before {
+    background-position: rel-background-position($icon_size, $icon_size, -132px, -90px);
   }
-  &.social-pn {
-    background-position: -210px 0;
+  &.social-pn:before {
+    background-position: rel-background-position($icon_size, $icon_size, -166px, -90px);
+  }
+  &.social-vk:before {
+    background-position: rel-background-position($icon_size, $icon_size, -200px, -90px);
   }
 }
