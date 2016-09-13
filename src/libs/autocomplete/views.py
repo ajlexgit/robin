@@ -40,11 +40,10 @@ def autocomplete_widget(request, application, model_name, name):
     queryset.query = redis_data['query']
 
     # Зависимое поле
-    query = Q()
+    query = {}
+    values = request.POST.get('values', '').split(';')
     filters = tuple(item[0] for item in redis_data['filters'])
     is_multiple = tuple(item[2] for item in redis_data['filters'])
-
-    values = request.POST.get('values', '').split(';')
     for index, key in enumerate(filters):
         try:
             value = values[index]
@@ -58,9 +57,9 @@ def autocomplete_widget(request, application, model_name, name):
             value = value.split(',')
             key += '__in'
 
-        query &= Q((key, value))
+        query[key] = value
 
-    queryset = queryset.filter(query)
+    queryset = queryset.filter(**query)
 
     # Поиск по выражениям
     expressions = request.POST.get('expressions')

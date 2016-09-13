@@ -1,12 +1,9 @@
 import os
 import sys
 
-# Files: download count
 # Mailerlite: clear subscribers from remote + limit reached
 # Shop cart example + discounts
-# autocomplete: filters with aliases
 # $.fn.scrolltextarea + autosize
-# admin SEO json-LD
 # CKEditor internal link
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
