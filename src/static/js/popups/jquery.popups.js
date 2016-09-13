@@ -403,7 +403,6 @@
             var that = this;
             $(document).off('.popup.close').on('click.popup.close', '.' + this.CLOSE_BUTTON_CLASS, function() {
                 that.hide();
-                return false;
             });
 
             this.trigger('after_show');
