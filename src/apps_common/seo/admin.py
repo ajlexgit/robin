@@ -245,7 +245,7 @@ class DummyRobotsAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 @admin.register(Redirect)
 class RedirectAdmin(ModelAdminMixin, admin.ModelAdmin):
-    list_display = ('old_path', 'new_path', 'permanent', 'short_note', 'created')
+    list_display = ('old_path', 'new_path', 'permanent', 'short_note', 'created', 'last_usage')
     search_fields = ('old_path', 'new_path')
 
     def short_note(self, obj):

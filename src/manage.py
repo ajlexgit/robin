@@ -3,7 +3,6 @@ import sys
 
 # Files: download count
 # Mailerlite: clear subscribers from remote + limit reached
-# Redirects: last usage
 # Shop cart example + discounts
 # autocomplete: filters with aliases
 # $.fn.scrolltextarea + autosize

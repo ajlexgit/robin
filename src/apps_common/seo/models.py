@@ -57,6 +57,7 @@ class Redirect(models.Model):
     permanent = models.BooleanField(_('permanent'), default=True)
     note = models.TextField(_('note'), blank=True, max_length=255)
     created = models.DateField(_('created'), default=now, editable=False)
+    last_usage = models.DateField(_('last usage'), null=True, editable=False)
 
     class Meta:
         verbose_name = _('redirect')

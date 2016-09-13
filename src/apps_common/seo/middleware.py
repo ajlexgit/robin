@@ -1,5 +1,6 @@
 from django import http
 from django.conf import settings
+from django.utils.timezone import now
 from .models import Redirect
 
 
@@ -31,6 +32,9 @@ class RedirectMiddleware(object):
 
         if redirect.new_path == '':
             return http.HttpResponseGone()
+
+        redirect.last_usage = now()
+        redirect.save()
 
         if redirect.permanent:
             return http.HttpResponsePermanentRedirect(redirect.new_path)
