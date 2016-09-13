@@ -1,6 +1,7 @@
 {% load i18n %}
+{% load text %}
 
-{{ campaign.text|striptags }}
+{{ campaign.text|striptags|unescape_html }}
 
 ---------------------------------------------------------------------------------
 

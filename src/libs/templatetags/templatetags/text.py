@@ -156,3 +156,9 @@ def phone(value):
         Оставляет только цифры и знак плюса
     """
     return re_not_numbers.sub('', value)
+
+
+@register.filter(is_safe=True)
+def unescape_html(html):
+    return unescape(html)
+
