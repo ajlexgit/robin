@@ -25,9 +25,17 @@ table {
 th, td {
     border: 1px solid #808080 !important;
     padding: 3px 5px;
+    width: 1%;
 }
 th {
+    text-align: left;
     background-color: #dadada;
+}
+td {
+    vertical-align: top;
+}
+td p {
+    margin-bottom: 0.8em;
 }
 
 p {

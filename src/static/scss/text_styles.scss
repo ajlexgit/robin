@@ -197,6 +197,32 @@
     }
   }
 
+  // Таблицы
+  .page-table {
+    overflow-x: auto;
+  }
+
+  table {
+    th, td {
+      padding: 20px 16px;
+      width: 1%;
+      min-width: 90px;
+      border-bottom: 2px solid #BABABA;
+      @include font-size(14px, 18px);
+      @include media_interval(0, $media1024) {
+        padding: 14px 10px;
+      }
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    td p {
+      margin-bottom: 0.8em;
+    }
+  }
+
   // две колонки
   .columns {
     @include media_interval($media900, 0) {

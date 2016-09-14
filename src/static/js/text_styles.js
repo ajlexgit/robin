@@ -36,6 +36,13 @@
     };
 
     $(document).ready(function() {
+        // оборачивание таблиц
+        $('.text-styles table').each(function() {
+            $(this).wrap(
+                $('<div/>').addClass('page-table')
+            )
+        });
+
         // замена описаний на тег span
         $('.page-video, .single-image').each(function() {
             var description = cut_description(this);
