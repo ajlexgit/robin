@@ -1,4 +1,4 @@
-(function($) {
+(function() {
     var WIDGET_NAME = 'div';
 
     CKEDITOR.plugins.add("div", {
@@ -109,4 +109,4 @@
         }
     });
 
-})(jQuery);
+})();

@@ -12,6 +12,7 @@
             // ======================================
             editor.widgets.add(WIDGET_NAME, {
                 button: 'Two columns',
+                allowedContent: 'div',
                 requiredContent: 'div(columns)',
                 template: '<div class="columns">' +
                               '<div class="column column-left"></div>' +

@@ -117,7 +117,7 @@
                                 var key = provider.templateRegex.exec(url)[1];
                                 var apikey = editor.config.YOUTUBE_APIKEY;
                                 $.ajax({
-                                    url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=' + apikey + '&part=player',
+                                    url: 'https://www.googleapis.com/youtube/v3/videos?id=' + key + '&key=' + apikey + '&part=snippet,player&fields=items(snippet/thumbnails,player/embedHtml)',
                                     dataType: "jsonp",
                                     success: function (data) {
                                         if (!data.items || !data.items.length) {
@@ -142,7 +142,20 @@
                                             });
                                         }
 
-                                        $(element.$).find('iframe').replaceWith($code);
+                                        var preview = item.snippet.thumbnails;
+                                        if (preview.maxres) {
+                                            preview = preview.maxres.url;
+                                        } else if (preview.standard) {
+                                            preview = preview.standard.url;
+                                        } else if (preview.high) {
+                                            preview = preview.high.url;
+                                        } else {
+                                            preview = '';
+                                        }
+
+                                        $(element.$).attr({
+                                            "data-preview": preview
+                                        }).find('iframe').replaceWith($code);
                                     }
                                 });
                             }
