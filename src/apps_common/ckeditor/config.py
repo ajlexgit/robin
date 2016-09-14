@@ -9,7 +9,7 @@ CKEDITOR_DEFAULT_CSS = (
 
 # Конфигурация CKEditorField по умолчанию
 CKEDITOR_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix,image_attrs',
+    'extraPlugins': 'textlen,enterfix,image_attrs,table,tabletools',
     'toolbar': [
         {
             'name': 'basicstyles',
@@ -31,7 +31,7 @@ CKEDITOR_CONFIG_DEFAULT = {
 }
 
 CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix,image_attrs,pagephotos,pagevideos,pagefiles,simplephotos,columns,div',
+    'extraPlugins': 'textlen,enterfix,image_attrs,pagephotos,pagevideos,pagefiles,simplephotos,columns,div,table,tabletools',
     'toolbar': [
         {
             'name': 'basicstyles',
