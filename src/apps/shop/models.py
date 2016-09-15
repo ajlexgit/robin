@@ -115,7 +115,10 @@ class ShopCategory(MPTTModel):
             # скрытие категории - скрываем потомков
             self.get_descendants().filter(is_visible=True).update(is_visible=False)
 
-        super().save(*args, **kwargs)
+        try:
+            super().save(*args, **kwargs)
+        except InvalidMove:
+            pass
 
         # Кол-во продуктов
         if is_add:
