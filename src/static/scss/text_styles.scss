@@ -301,7 +301,16 @@
 
     > ul, > ol {
       margin-bottom: 0;
-      padding-bottom: 1.6em;
+      padding-bottom: 1.1em;
+    }
+
+    > li {
+      @include media_interval($media768, 0) {
+        padding-bottom: 0.2em;
+        &:last-child {
+          padding-bottom: 0;
+        }
+      }
     }
 
     > * {
