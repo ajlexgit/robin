@@ -6,13 +6,14 @@ from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
 from google_maps.fields import GoogleCoordsField
 from google_maps.widgets import GoogleCoordsAdminWidget
+from libs.file_field import FileField
 from libs.color_field.fields import ColorField, ColorOpacityField
 from libs.color_field.forms import ColorFormField, ColorOpacityFormField
 from libs.stdimage.fields import StdImageField
 from libs.stdimage.widgets import StdImageAdminWidget
 from libs.valute_field.fields import ValuteField
 from libs.valute_field.forms import ValuteFormField
-from libs.widgets import SplitDateTimeWidget, URLWidget, AutosizedTextarea
+from libs.widgets import SplitDateTimeWidget, URLWidget, FileWidget, AutosizedTextarea
 
 
 class BaseModelAdminMixin:
@@ -44,7 +45,7 @@ class BaseModelAdminMixin:
             })
         },
         models.DateTimeField: {
-            'widget': SplitDateTimeWidget
+            'widget': SplitDateTimeWidget,
         },
         models.TimeField: {
             'localize': True,
@@ -53,20 +54,23 @@ class BaseModelAdminMixin:
                 'placeholder': 'e.g. "11:00 am"',
             }),
         },
+        FileField: {
+            'widget': FileWidget,
+        },
         StdImageField: {
-            'widget': StdImageAdminWidget
+            'widget': StdImageAdminWidget,
         },
         ColorField: {
-            'form_class': ColorFormField
+            'form_class': ColorFormField,
         },
         ColorOpacityField: {
-            'form_class': ColorOpacityFormField
+            'form_class': ColorOpacityFormField,
         },
         ValuteField: {
-            'form_class': ValuteFormField
+            'form_class': ValuteFormField,
         },
         GoogleCoordsField: {
-            'widget': GoogleCoordsAdminWidget
+            'widget': GoogleCoordsAdminWidget,
         },
     }
 

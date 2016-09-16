@@ -4,8 +4,8 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from libs.file_field import FileField
 from libs.storages import MediaStorage
-from .fields import PageFileFileField
 
 
 def generate_filepath(instance, filename):
@@ -18,7 +18,7 @@ class PageFile(models.Model):
     content_type = models.ForeignKey(ContentType, related_name='+')
     object_id = models.PositiveIntegerField()
     entity = GenericForeignKey('content_type', 'object_id')
-    file = PageFileFileField(_('file'),
+    file = FileField(_('file'),
         storage=MediaStorage('files'),
         upload_to=generate_filepath,
         max_length=150,

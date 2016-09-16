@@ -29,25 +29,6 @@ class LinkWidget(forms.Widget):
         )
 
 
-class ReadonlyFileWidget(forms.Widget):
-    """ Виджет ссылки на файл """
-    def __init__(self, attrs=None):
-        super().__init__(attrs=attrs)
-        self.attrs.setdefault('target', '_blank')
-
-    def render(self, name, value, attrs=None):
-        final_attrs = self.build_attrs(attrs)
-        if value and hasattr(value, "url"):
-            return format_html(
-                '<a href="{href}" {attrs}>{text}</a>',
-                href=smart_urlquote(value.url),
-                attrs=flatatt(final_attrs),
-                text=force_str(value),
-            )
-        else:
-            return ''
-
-
 class URLWidget(forms.URLInput):
     """ Виджет URL """
     @staticmethod
@@ -70,6 +51,12 @@ class URLWidget(forms.URLInput):
             html=html,
             append=self.append(value)
         )
+
+
+class FileWidget(forms.FileInput):
+    """ Виджет выбора файла """
+    def render(self, name, value, attrs=None):
+        return super().render(name, value, attrs)
 
 
 class SplitDateTimeWidget(forms.SplitDateTimeWidget):

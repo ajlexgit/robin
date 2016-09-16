@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from libs.stdimage import StdImageField
 from libs.storages import MediaStorage
+from libs.file_field import FileField
 
 
 def split_by_dirs(instance, filename):
@@ -85,7 +86,7 @@ class PageFile(models.Model):
     app_name = models.CharField(_('application'), max_length=30, blank=True)
     model_name = models.CharField(_('model'), max_length=30, blank=True)
     instance_id = models.IntegerField(_('entry id'), db_index=True, default=0)
-    file = models.FileField(_('file'),
+    file = FileField(_('file'),
         blank=True,
         storage=MediaStorage('page_files'),
         upload_to=split_by_dirs,

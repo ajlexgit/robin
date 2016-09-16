@@ -295,6 +295,7 @@ class VariationImageFieldFile(ImageFieldFile):
         if self.field.crop_field:
             self.set_crop_field(self.instance, '')
         super().save(name, content, save)
+    save.alters_data = True
 
     def delete(self, save=True):
         """ Удаление картинки """
@@ -306,6 +307,7 @@ class VariationImageFieldFile(ImageFieldFile):
         if self.field.crop_field:
             self.set_crop_field(self.instance, '')
         super().delete(save)
+    delete.alters_data = True
 
 
 class VariationImageFileDescriptor(ImageFileDescriptor):

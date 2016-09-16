@@ -1,17 +1,18 @@
 from django.db import models
 from django.db.models import signals
-from django.db.models.fields.files import FieldFile
+from django.db.models.fields import files
 
 
-class PageFileFieldFile(FieldFile):
+class FieldFile(files.FieldFile):
     def save(self, name, content, save=True):
         newfile_attrname = '_{}_new_file'.format(self.field.name)
         setattr(self.instance, newfile_attrname, True)
         super().save(name, content, save)
+    save.alters_data = True
 
 
-class PageFileFileField(models.FileField):
-    attr_class = PageFileFieldFile
+class FileField(models.FileField):
+    attr_class = FieldFile
 
     def contribute_to_class(self, cls, name, **kwargs):
         super().contribute_to_class(cls, name, **kwargs)
@@ -44,4 +45,3 @@ class PageFileFileField(models.FileField):
     def _post_delete(self, instance=None, **kwargs):
         field_file = self.value_from_object(instance)
         field_file.delete(save=False)
-

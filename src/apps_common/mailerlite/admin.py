@@ -16,7 +16,6 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from libs.cookies import set_cookie
 from libs.description import description
-from libs.widgets import ReadonlyFileWidget
 from libs.download import AttachmentResponse
 from libs.autocomplete.widgets import AutocompleteMultipleWidget
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
@@ -122,12 +121,6 @@ class CampaignForm(forms.ModelForm):
             ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.instance and self.instance.published and not self.current_user.is_superuser:
-            self.fields['header_image'].widget = ReadonlyFileWidget()
-            self.fields['text'].widget.attrs['readonly'] = 'readonly'
-
 
 @admin.register(Campaign)
 class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
@@ -205,13 +198,6 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         if not obj.groups.count() and Group.objects.count() <= 1:
             obj.groups.add(*Group.objects.all())
-
-    def get_readonly_fields(self, request, obj=None):
-        """ Если опубликован и не суперюзер - запрещаем редактирование """
-        default = super().get_readonly_fields(request, obj)
-        if obj and obj.published and not request.user.is_superuser:
-            default += ('subject', 'groups',)
-        return default
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj=obj, **kwargs)

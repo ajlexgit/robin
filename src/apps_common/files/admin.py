@@ -4,6 +4,7 @@ from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 from django.contrib.contenttypes.admin import GenericInlineModelAdminChecks
 from project.admin.base import ModelAdminInlineMixin
 from suit.admin import SortableGenericStackedInline
+from libs.widgets import FileWidget
 from .models import PageFile
 
 
@@ -17,7 +18,7 @@ class PageFileForm(forms.ModelForm):
         model = PageFile
         fields = '__all__'
         widgets = {
-            'file': forms.ClearableFileInput(attrs={'class': 'file-on-page'}),
+            'file': FileWidget(attrs={'class': 'file-on-page'}),
         }
 
 
