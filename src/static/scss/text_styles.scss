@@ -95,6 +95,44 @@
     list-style: decimal;
   }
 
+  table {
+    margin: 1.6em 0;
+    width: 100%;
+    @include media_interval(0, $media1024) {
+      display: block;
+      overflow-x: auto;
+    }
+
+    th, td {
+      padding: 16px;
+      width: 1%;
+      min-width: 90px;
+      border-bottom: 2px solid #BABABA;
+      @include font-size(14px, 18px);
+      @include media_interval(0, $media1024) {
+        padding: 12px 10px;
+      }
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    td {
+      p {
+        margin-bottom: 0.8em;
+      }
+
+      > *:first-child {
+        margin-top: 0;
+      }
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   .page-images, .page-video, .page-files {
     margin: 1.6em 0;
   }
@@ -132,7 +170,7 @@
     }
   }
 
-  // Video
+  // Видео
   .page-video {
     position: relative;
     text-align: left;
@@ -199,27 +237,15 @@
 
   // Таблицы
   .page-table {
+    margin: 1.6em 0;
     overflow-x: auto;
-  }
 
-  table {
-    th, td {
-      padding: 20px 16px;
-      width: 1%;
-      min-width: 90px;
-      border-bottom: 2px solid #BABABA;
-      @include font-size(14px, 18px);
+    & > table {
+      margin: 0;
       @include media_interval(0, $media1024) {
-        padding: 14px 10px;
+        display: table;
+        overflow-x: visible;
       }
-    }
-
-    th {
-      font-weight: bold;
-    }
-
-    td p {
-      margin-bottom: 0.8em;
     }
   }
 

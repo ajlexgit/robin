@@ -9,7 +9,7 @@ CKEDITOR_DEFAULT_CSS = (
 
 # Конфигурация CKEditorField по умолчанию
 CKEDITOR_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix,image_attrs,table,tabletools',
+    'extraPlugins': 'textlen,enterfix,image_attrs,table,tabletools,columns,div,',
     'toolbar': [
         {
             'name': 'basicstyles',
@@ -21,7 +21,7 @@ CKEDITOR_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList']
+            'items': ['BulletedList', 'NumberedList', '-', 'Table', 'Columns', 'Div']
         },
         {
             'name': 'document',
@@ -31,7 +31,7 @@ CKEDITOR_CONFIG_DEFAULT = {
 }
 
 CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix,image_attrs,pagephotos,pagevideos,pagefiles,simplephotos,columns,div,table,tabletools',
+    'extraPlugins': 'textlen,enterfix,image_attrs,table,tabletools,columns,div,pagephotos,pagevideos,pagefiles,simplephotos',
     'toolbar': [
         {
             'name': 'basicstyles',
@@ -43,11 +43,11 @@ CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
         },
         {
             'name': 'paragraph',
-            'items': ['BulletedList', 'NumberedList', '-', 'Indent', 'Outdent']
+            'items': ['BulletedList', 'NumberedList', '-', 'Table', 'Columns', 'Div']
         },
         {
             'name': 'insert',
-            'items': ['PagePhotos', 'PageVideos', 'PageFiles', '-', 'Columns', 'Div']
+            'items': ['PagePhotos', 'PageVideos', 'PageFiles']
         },
         '/',
         {
