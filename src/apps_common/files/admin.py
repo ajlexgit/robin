@@ -2,7 +2,7 @@ from django.core import checks
 from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 from django.contrib.contenttypes.admin import GenericInlineModelAdminChecks
 from project.admin.base import ModelAdminInlineMixin
-from suit.admin import SortableGenericStackedInline
+from suit.admin import SortableGenericTabularInline
 from .models import PageFile
 
 
@@ -59,6 +59,13 @@ class PageFileInlineMixin(ModelAdminInlineMixin):
         return queryset.filter(set_name=self.set_name)
 
 
-class PageFileInline(PageFileInlineMixin, SortableGenericStackedInline):
+class PageFileInline(PageFileInlineMixin, SortableGenericTabularInline):
     checks_class = PageFileInlineMixinChecks
     sortable = 'sort_order'
+
+    class Media:
+        css = {
+            'all': (
+                'files/admin/css/files_tablular.css',
+            )
+        }
