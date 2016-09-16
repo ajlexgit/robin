@@ -72,3 +72,20 @@ blockquote > *:last-child {
 .no-margin + * {
     margin-top: 0;
 }
+
+.two-columns {
+    -webkit-perspective: 1px;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    -webkit-column-gap: 36px;
+    -moz-column-gap: 36px;
+    column-gap: 36px;
+}
+.two-columns > * {
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+}
+.two-columns > *:last-child {
+    margin-bottom: 0;
+}

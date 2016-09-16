@@ -278,6 +278,49 @@
     }
   }
 
+  // Две колонки через класс
+  .two-columns {
+    @include media_interval($media1200, 0) {
+      @include column-count(2);
+      @include column-gap(50px);
+    }
+    @include media_interval($media768, $media1200) {
+      @include column-count(2);
+      @include column-gap(40px);
+    }
+
+    > p {
+      margin-bottom: 0;
+      padding-bottom: 1em;
+    }
+
+    > h2, > h3, > h4 {
+      margin-bottom: 0;
+      padding-bottom: .5em;
+    }
+
+    > ul, > ol {
+      margin-bottom: 0;
+      padding-bottom: 1.6em;
+    }
+
+    > * {
+      @include column-break-inside(avoid);
+
+      &:last-child {
+        @include media_interval($media768, 0) {
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+      }
+    }
+
+    &:last-child > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
   .no-margin {
     margin-bottom: 0;
 
