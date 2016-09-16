@@ -6,14 +6,14 @@ from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
 from google_maps.fields import GoogleCoordsField
 from google_maps.widgets import GoogleCoordsAdminWidget
-from libs.file_field import FileField
+from libs.file_field import FileField, FileWidget
 from libs.color_field.fields import ColorField, ColorOpacityField
 from libs.color_field.forms import ColorFormField, ColorOpacityFormField
 from libs.stdimage.fields import StdImageField
 from libs.stdimage.widgets import StdImageAdminWidget
 from libs.valute_field.fields import ValuteField
 from libs.valute_field.forms import ValuteFormField
-from libs.widgets import SplitDateTimeWidget, URLWidget, FileWidget, AutosizedTextarea
+from libs.widgets import SplitDateTimeWidget, URLWidget, AutosizedTextarea
 
 
 class BaseModelAdminMixin:

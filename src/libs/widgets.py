@@ -53,12 +53,6 @@ class URLWidget(forms.URLInput):
         )
 
 
-class FileWidget(forms.FileInput):
-    """ Виджет выбора файла """
-    def render(self, name, value, attrs=None):
-        return super().render(name, value, attrs)
-
-
 class SplitDateTimeWidget(forms.SplitDateTimeWidget):
     """ Виджет даты-времени """
     def __init__(self, attrs=None):

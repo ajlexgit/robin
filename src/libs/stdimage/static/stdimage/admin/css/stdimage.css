@@ -15,6 +15,11 @@
     z-index: 3;
 }
 
+.stdimage .btn i {
+    margin-left: -4px;
+    margin-right: 2px;
+}
+
 /* Подсказка */
 .stdimage .hint {
     margin-left: 10px;

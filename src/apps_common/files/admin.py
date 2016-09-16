@@ -1,25 +1,9 @@
-from django import forms
 from django.core import checks
 from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 from django.contrib.contenttypes.admin import GenericInlineModelAdminChecks
 from project.admin.base import ModelAdminInlineMixin
 from suit.admin import SortableGenericStackedInline
-from libs.widgets import FileWidget
 from .models import PageFile
-
-
-class PageFileForm(forms.ModelForm):
-    class Media:
-        js = (
-            'files/admin/js/files.js',
-        )
-
-    class Meta:
-        model = PageFile
-        fields = '__all__'
-        widgets = {
-            'file': FileWidget(attrs={'class': 'file-on-page'}),
-        }
 
 
 class PageFileFormset(BaseGenericInlineFormSet):
@@ -59,7 +43,6 @@ class PageFileInlineMixinChecks(GenericInlineModelAdminChecks):
 class PageFileInlineMixin(ModelAdminInlineMixin):
     """ Базовый класс inline-моделей """
     model = PageFile
-    form = PageFileForm
     formset = PageFileFormset
     fields = ['file', 'name', 'downloads']
     readonly_fields = ('set_name', 'downloads')

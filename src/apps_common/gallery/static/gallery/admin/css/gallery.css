@@ -14,6 +14,10 @@
 .gallery .buttons button:last-child {
     margin-right: 0;
 }
+.gallery .buttons .btn i {
+    margin-left: -4px;
+    margin-right: 2px;
+}
 
 .gallery-wrapper {
     position: relative;

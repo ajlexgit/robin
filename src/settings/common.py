@@ -64,6 +64,7 @@ INSTALLED_APPS = (
     'libs.autocomplete',
     'libs.away',
     'libs.color_field',
+    'libs.file_field',
     'libs.form_helper',
     'libs.js_storage',
     'libs.management',

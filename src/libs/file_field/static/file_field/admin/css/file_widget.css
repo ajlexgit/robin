@@ -1,0 +1,25 @@
+.file-widget {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.file-widget input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+}
+
+.file-widget button i {
+    margin-left: -4px;
+    margin-right: 2px;
+}
+
