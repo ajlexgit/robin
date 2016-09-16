@@ -36,9 +36,6 @@ class SeoData(models.Model):
     og_image = models.ImageField(_('image'), blank=True, storage=MediaStorage('seo'))
     og_description = models.TextField(_('description'), blank=True)
 
-    header = models.CharField(_('header'), max_length=128, blank=True)
-    text = models.TextField(_('text'), blank=True)
-
     class Meta:
         default_permissions = ('change', )
         verbose_name = _('SEO data')

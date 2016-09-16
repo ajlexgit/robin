@@ -61,10 +61,6 @@ class Seo(metaclass=SeoMetaClass):
     og_image = ''
     og_description = ''
 
-    # seo-текст
-    text_header = ''
-    text = ''
-
     def __init__(self):
         site_seoconfig = SeoConfig.get_solo()
         self.set({
@@ -138,9 +134,6 @@ class Seo(metaclass=SeoMetaClass):
             'og_title': seodata.og_title,
             'og_image': seodata.og_image,
             'og_description': seodata.og_description,
-
-            'text_header': seodata.header,
-            'text': seodata.text,
         }
 
         data = {
@@ -214,10 +207,5 @@ class Seo(metaclass=SeoMetaClass):
         twitter_card = TwitterCard(request)
         twitter_card.update(share_data)
         result['twitter_card'] = twitter_card
-
-        # SEO-текст
-        if self.text:
-            result['text_header'] = self.text_header
-            result['text'] = self.text
 
         request.seo = result

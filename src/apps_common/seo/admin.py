@@ -52,11 +52,6 @@ class SeoDataAdmin(ModelAdminInlineMixin, admin.ModelAdmin):
                 'og_title', 'og_image', 'og_description',
             ),
         }),
-        (_('SEO text'), {
-            'fields': (
-                'header', 'text',
-            ),
-        }),
     )
 
 
