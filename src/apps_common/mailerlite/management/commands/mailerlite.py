@@ -170,14 +170,17 @@ class Command(BaseCommand):
                     logger.info("Setted content for campaign '%s'" % campaign.subject)
 
             # Start
-            try:
-                api.campaings.run(campaign.remote_id)
-            except api.SubscribeAPIError as e:
-                logging.error(e.message)
+            if campaign.remote_id:
+                try:
+                    api.campaings.run(campaign.remote_id)
+                except api.SubscribeAPIError as e:
+                    logging.error(e.message)
+                else:
+                    campaign.status = Campaign.STATUS_RUNNING
+                    campaign.save()
+                    logger.info("Started campaign '%s'" % campaign.subject)
             else:
-                campaign.status = Campaign.STATUS_RUNNING
-                campaign.save()
-                logger.info("Started campaign '%s'" % campaign.subject)
+                logger.warn("Campaign #%s doesn\'t have remote ID" % campaign.pk)
 
     def import_campaigns(self):
         """ Загрузка рассылок """

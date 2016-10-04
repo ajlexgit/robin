@@ -1,7 +1,7 @@
 import os
 import sys
 
-# Mailerlite: lowercase, clear subscribers from remote + limit reached
+# Mailerlite: clear subscribers from remote + limit reached + select groups on import
 # Shop cart example + discounts
 # $.fn.scrolltextarea + autosize
 # CKEditor internal link

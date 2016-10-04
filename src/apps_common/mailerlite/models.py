@@ -281,6 +281,9 @@ class Subscriber(models.Model):
     def __str__(self):
         return self.email
 
+    def clean(self):
+        self.email = self.email.lower()
+
     def update_from(self, json_data):
         subscriber_fields = {
             field['key']: field['value']

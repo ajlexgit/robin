@@ -456,6 +456,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                     if not record.get('email'):
                         continue
 
+                    record['email'] = record['email'].lower()
                     subscriber, created = Subscriber.objects.get_or_create(**record)
                     if created:
                         subscriber.groups.add(*all_groups)
