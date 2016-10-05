@@ -1,12 +1,26 @@
 {% extends 'admin/change_form.html' %}
 
+{% block extrajs %}
+  {{ block.super }}
+
+  {% if suit_tabs %}
+    <script type="text/javascript">
+      (function($) {
+        $(function() {
+          $('#suit_form_tabs').suit_form_tabs();
+        });
+      }(Suit.$))
+    </script>
+  {% endif %}
+{% endblock extrajs %}
+
 {% block field_sets %}
   {% for fieldset in adminform %}
     {% if fieldset.fields %}
       {% include "admin/includes/fieldset.html" %}
     {% endif %}
   {% endfor %}
-{% endblock %}
+{% endblock field_sets %}
 
 {% block suit_form_tabs %}
   {% if suit_tabs %}
@@ -16,4 +30,4 @@
       {% endfor %}
     </ul>
   {% endif %}
-{% endblock %}
+{% endblock suit_form_tabs %}
