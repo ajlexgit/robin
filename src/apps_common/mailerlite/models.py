@@ -61,7 +61,7 @@ class Group(models.Model):
     )
 
     name = models.CharField(_('name'), max_length=255)
-    subscribable = models.BooleanField(_('subscribable'), default=True)
+    subscribable = models.BooleanField(_('subscribable'), default=False)
     total = models.PositiveIntegerField(_('total subscribers'), default=0, editable=False)
     active = models.PositiveIntegerField(_('active subscribers'), default=0, editable=False)
     unsubscribed = models.PositiveIntegerField(_('unsubscribed'), default=0, editable=False)
