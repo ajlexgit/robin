@@ -27,4 +27,4 @@ class SubscribeForm(FormHelperMixin, forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.initial['groups'] = Group.objects.all()
+        self.initial['groups'] = Group.objects.filter(subscribable=True)

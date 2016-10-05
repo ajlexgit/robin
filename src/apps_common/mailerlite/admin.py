@@ -1,6 +1,5 @@
 import io
 import csv
-from copy import deepcopy
 from itertools import islice
 from django import forms
 from django.conf import settings
@@ -72,7 +71,7 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'name', 'status',
+                'name', 'status', 'subscribable',
             )
         }),
         (_('Subscribers'), {
@@ -89,7 +88,9 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
     readonly_fields = (
         'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated'
     )
-    list_display = ('name', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'status')
+    list_display = (
+        'name', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'subscribable', 'status'
+    )
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
@@ -325,6 +326,18 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return response
 
 
+class SubscriberForm(forms.ModelForm):
+    class Meta:
+        model = Subscriber
+        fields = '__all__'
+        widgets = {
+            'groups': AutocompleteMultipleWidget(
+                expressions='name__icontains',
+                minimum_input_length=0,
+            ),
+        }
+
+
 @admin.register(Subscriber)
 class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     change_list_template = 'mailerlite/admin/subscribers_change_list.html'
@@ -348,6 +361,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
             )
         }),
     )
+    form = SubscriberForm
     readonly_fields = (
         'email', 'groups', 'status',
         'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
@@ -377,7 +391,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         default = list(super().get_readonly_fields(request, obj))
         if obj is None or obj.status == self.model.STATUS_QUEUED:
-            for field in ('email', ):
+            for field in ('email', 'groups'):
                 if field in default:
                     default.remove(field)
         if request.user.is_superuser:
@@ -416,8 +430,13 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         except NotLastChunk:
             return JsonResponse({})
 
+        all_groups = tuple(Group.objects.filter(subscribable=True))
+        if not all_groups:
+            return JsonResponse({
+                'message': _('There are no subscribable lists'),
+            }, status=400)
+
         added_count = 0
-        all_groups = tuple(Group.objects.all())
         csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
         while True:
             group = tuple(
