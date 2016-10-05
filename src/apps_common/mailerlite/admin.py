@@ -333,7 +333,6 @@ class SubscriberForm(forms.ModelForm):
         widgets = {
             'groups': AutocompleteMultipleWidget(
                 expressions='name__icontains',
-                minimum_input_length=0,
             ),
         }
 
