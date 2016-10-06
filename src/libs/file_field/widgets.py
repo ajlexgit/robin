@@ -30,7 +30,7 @@ class FileWidget(forms.FileInput):
             for_label=attrs.get('id', ''),
             btn_label=_('Select file'),
             input=super().render(name, value, attrs),
-            view_url=value.url if value else '#',
+            view_url=value.url if value and hasattr(value, 'url') else '#',
             view_title=_('View file'),
         )
 

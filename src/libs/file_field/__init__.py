@@ -6,5 +6,5 @@
 
 """
 
-from .fields import FileField
+from .fields import FileField, ImageField
 from .widgets import FileWidget
