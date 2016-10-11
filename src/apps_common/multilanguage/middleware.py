@@ -31,7 +31,7 @@ class LanguageRedirectMiddleware:
             return
 
         # Проверяем запрет авторедиректа для определенных User-Agent
-        ua_string = request.META.get('HTTP_USER_AGENT').lower()
+        ua_string = request.META.get('HTTP_USER_AGENT', '').lower()
         for pattern in options.ROBOTS_UA:
             if pattern in ua_string:
                 return
