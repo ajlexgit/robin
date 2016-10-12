@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-12 16:24+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: admin.py:41
+msgid "Limits"
+msgstr "Ограничения"
+
+#: admin.py:51
+msgid "General"
+msgstr "Основные"
+
+#: admin.py:57
+msgid "Strategy"
+msgstr "Стратегия"
+
+#: admin.py:61
+msgid "Times Used"
+msgstr "Использован"
+
+#: admin.py:67
+msgid "Unlimited"
+msgstr "Не ограниченно"
+
+#: admin.py:69
+msgid "Redemption limit"
+msgstr "Максимальное количество"
+
+#: apps.py:7
+msgid "Promo codes"
+msgstr "Промокоды"
+
+#: models.py:13
+msgid "code"
+msgstr "код"
+
+#: models.py:14
+msgid "strategy"
+msgstr "стратегия"
+
+#: models.py:15
+msgid "parameter"
+msgstr "параметр"
+
+#: models.py:17
+msgid "redemption limit"
+msgstr "максимальное количество"
+
+#: models.py:18
+msgid "zero sets the limit to unlimited"
+msgstr "нулевое значение означает отсутствие ограничений"
+
+#: models.py:20
+msgid "start time"
+msgstr "дата начала"
+
+#: models.py:21
+msgid "end time"
+msgstr "дата окончания"
+
+#: models.py:23 models.py:81
+msgid "created on"
+msgstr "дата создания"
+
+#: models.py:24
+msgid "change date"
+msgstr "дата изменения"
+
+#: models.py:27 models.py:75
+msgid "promo code"
+msgstr "промокод"
+
+#: models.py:28
+msgid "promo codes"
+msgstr "промокоды"
+
+#: models.py:49 models.py:51
+msgid "This promo code has expired"
+msgstr "Срок действия промокода истёк"
+
+#: models.py:65
+msgid "This promo code has reached its redemption limit"
+msgstr "Достигнуто максимальное количество использований промокода"
+
+#: models.py:84
+msgid "promo code usage"
+msgstr "использование промокода"
+
+#: models.py:85
+msgid "promo code usages"
+msgstr "использование промокода"
+
+#: strategies.py:29
+msgid "Fixed amount"
+msgstr "Фиксированная сумма"
+
+#: strategies.py:37
+#, python-format
+msgid "Discount %s"
+msgstr "Скидка %s"
+
+#: strategies.py:43 strategies.py:80
+msgid "This field cannot be blank."
+msgstr "Это поле не может быть пустым."
+
+#: strategies.py:49 strategies.py:86
+msgid "Invalid value"
+msgstr "Некорректное значение"
+
+#: strategies.py:53 strategies.py:90
+msgid "Ensure this value is greater than 0"
+msgstr "Значение должно быть больше нуля"
+
+#: strategies.py:66
+msgid "By a percent"
+msgstr "Процент от стоимости"
+
+#: strategies.py:74
+#, python-format
+msgid "Discount %s%%"
+msgstr "Скидка %s%%"

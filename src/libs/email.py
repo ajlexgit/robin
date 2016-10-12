@@ -1,3 +1,5 @@
+import logging
+from smtplib import SMTPDataError
 from django.conf import settings
 from django.template import loader
 from django.core.mail import send_mail, BadHeaderError
@@ -37,6 +39,9 @@ def send(request, receivers, subject, template, context=None):
             recipient_list=receivers,
             html_message=message
         )
+    except SMTPDataError:
+        logger = logging.getLogger(__name__)
+        logger.exception()
     except BadHeaderError:
         return False
 

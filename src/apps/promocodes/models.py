@@ -1,0 +1,116 @@
+from django.utils.timezone import now
+from django.db import models, connection
+from django.core.validators import MinLengthValidator
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+from solo.models import SingletonModel
+from .strategies import BaseStrategy, STRATEGIES, STRATEGY_CHOICES
+from . import exceptions
+
+
+class PromoCode(models.Model):
+    code = models.CharField(_('code'), max_length=32, validators=[MinLengthValidator(4)], unique=True)
+    strategy_name = models.CharField(_('strategy'), max_length=64, choices=STRATEGY_CHOICES)
+    parameter = models.CharField(_('parameter'), max_length=32, blank=True, default='0')
+
+    redemption_limit = models.PositiveIntegerField(_('redemption limit'), default=1,
+        help_text=_('zero sets the limit to unlimited')
+    )
+    start_date = models.DateTimeField(_('start time'), blank=True, null=True)
+    end_date = models.DateTimeField(_('end time'), blank=True, null=True)
+
+    created = models.DateTimeField(_('created on'), default=now, editable=False)
+    updated = models.DateTimeField(_('change date'), auto_now=True)
+
+    class Meta:
+        verbose_name = _('promo code')
+        verbose_name_plural = _('promo codes')
+        ordering = ('-created', )
+
+    def __str__(self):
+        return '%s (%s)' % (self.code, self.strategy.short_description(self))
+
+    def save(self, *args, **kwargs):
+        """
+            Приведение кода к верхнему регистру.
+        """
+        self.code = self.code.upper()
+        super().save(*args, **kwargs)
+
+    def add_order(self, order, ignore_date=False):
+        """
+            Добавление нового случая использования промокода.
+            Проверяет максимальное кол-во и дату.
+        """
+        if not ignore_date:
+            now_date = now()
+            if self.start_date and now_date < self.start_date:
+                raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
+            if self.end_date and now_date > self.end_date:
+                raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
+
+        cursor = connection.cursor()
+        cursor.execute('BEGIN WORK')
+        cursor.execute('LOCK TABLE %s IN ACCESS EXCLUSIVE MODE' % (PromoCodeUsage._meta.db_table, ))
+        try:
+            redemption_count = self.usages.count()
+            if self.redemption_limit == 0 or (redemption_count < self.redemption_limit):
+                usage = self.usages.create(
+                    promocode=self,
+                    entity=order,
+                )
+                return usage
+            else:
+                raise exceptions.PromoCodeLimitReachedError(
+                    _('This promo code has reached its redemption limit')
+                )
+        finally:
+            cursor.execute('COMMIT')
+
+    @property
+    def strategy(self) -> BaseStrategy:
+        """ Получение класса стратегии """
+        return STRATEGIES[self.strategy_name]
+
+    @property
+    def short_description(self):
+        """ Делегируемый метод для получения краткого описания стратегии промокода """
+        return self.strategy.short_description(self)
+
+    @property
+    def full_description(self):
+        """ Делегируемый метод для получения полного описания стратегии промокода """
+        return self.strategy.full_description(self)
+
+    def calculate(self, order):
+        """ Делегируемый метод для рассчета размера скидки """
+        return self.strategy.calculate(self, order)
+
+
+class PromoCodeUsage(models.Model):
+    """
+        Не стоит явно создавать объекты этого класса (из-за риска ошибок при многопоточности).
+        Вместо этого следует использовать PromoCode.add_order().
+    """
+    promocode = models.ForeignKey(PromoCode, verbose_name=_('promo code'), related_name='usages')
+
+    content_type = models.ForeignKey(ContentType, related_name='+')
+    object_id = models.PositiveIntegerField()
+    entity = GenericForeignKey('content_type', 'object_id')
+
+    created = models.DateTimeField(_('created on'), default=now, editable=False)
+
+    class Meta:
+        verbose_name = _('promo code usage')
+        verbose_name_plural = _('promo code usages')
+        ordering = ('-created',)
+        unique_together = ('promocode', 'content_type', 'object_id')
+
+    def __str__(self):
+        instance = '%s.%s (#%s)' % (
+            self.content_type.app_label,
+            self.content_type.model,
+            self.object_id
+        )
+        return '%s → %s' % (self.promocode, instance)
