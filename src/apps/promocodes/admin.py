@@ -11,22 +11,18 @@ class PromoCodeForm(forms.ModelForm):
         model = PromoCode
         fields = '__all__'
         widgets = {
+            'code': forms.TextInput({
+                'class': 'input-large'
+            }),
             'parameter': forms.TextInput({
                 'class': 'input-small'
-            })
-        }
-
-    class Media:
-        css = {
-            'all': (
-                'promocodes/admin/css/promocode.css',
-            )
+            }),
         }
 
     def clean(self):
         cleaned_data = super().clean()
         strategy_name = cleaned_data.get('strategy_name', '')
-        return STRATEGIES[strategy_name].validate(self, cleaned_data)
+        return STRATEGIES[strategy_name].validate_form(self, cleaned_data)
 
 
 @admin.register(PromoCode)
@@ -35,7 +31,13 @@ class PromoCodeAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'code', 'strategy_name', 'parameter',
+                'title', 'code',
+            ),
+        }),
+        (_('Action'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'strategy_name', 'parameter',
             ),
         }),
         (_('Limits'), {
@@ -46,7 +48,10 @@ class PromoCodeAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
     )
     form = PromoCodeForm
-    list_display = ('code', 'strategy_format', 'times_used', 'redemption_limit_format', 'start_date', 'end_date')
+    list_display = (
+        '__str__', 'code', 'strategy_format', 'times_used', 'redemption_limit_format', 'start_date', 'end_date'
+    )
+    list_display_links = ('__str__', 'code')
     suit_form_tabs = (
         ('general', _('General')),
     )

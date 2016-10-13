@@ -10,8 +10,9 @@ from . import exceptions
 
 
 class PromoCode(models.Model):
-    code = models.CharField(_('code'), max_length=32, validators=[MinLengthValidator(4)], unique=True)
-    strategy_name = models.CharField(_('strategy'), max_length=64, choices=STRATEGY_CHOICES)
+    title = models.CharField(_('title'), max_length=128)
+    code = models.CharField(_('code'), max_length=24, validators=[MinLengthValidator(4)], unique=True)
+    strategy_name = models.CharField(_('action'), max_length=64, choices=STRATEGY_CHOICES)
     parameter = models.CharField(_('parameter'), max_length=32, blank=True, default='0')
 
     redemption_limit = models.PositiveIntegerField(_('redemption limit'), default=1,
@@ -29,14 +30,7 @@ class PromoCode(models.Model):
         ordering = ('-created', )
 
     def __str__(self):
-        return '%s (%s)' % (self.code, self.strategy.short_description(self))
-
-    def save(self, *args, **kwargs):
-        """
-            Приведение кода к верхнему регистру.
-        """
-        self.code = self.code.upper()
-        super().save(*args, **kwargs)
+        return self.title
 
     def add_order(self, order, ignore_date=False):
         """
@@ -49,6 +43,9 @@ class PromoCode(models.Model):
                 raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
             if self.end_date and now_date > self.end_date:
                 raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
+
+        # валидация заказа
+        self.strategy.validate_order(order)
 
         cursor = connection.cursor()
         cursor.execute('BEGIN WORK')

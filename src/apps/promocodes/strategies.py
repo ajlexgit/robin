@@ -16,8 +16,19 @@ class BaseStrategy:
         raise NotImplementedError
 
     @classmethod
-    def validate(cls, form, cleaned_data):
+    def validate_form(cls, form, cleaned_data):
+        """
+            Валидация формы админки при добавлении/редактировании промокода.
+        """
         return cleaned_data
+
+    @classmethod
+    def validate_order(cls, order):
+        """
+            Проверка, что промокод может быть привязан к заказу.
+            Если промокод не может быть привязан - должно вызываться исключение PromoCodeValidationError
+        """
+        pass
 
     @classmethod
     def calculate(cls, promo, order):
@@ -27,7 +38,7 @@ class BaseStrategy:
 class FixedAmountStrategy(BaseStrategy):
     """ Фиксированная скидка, например 100 рублей """
     name = 'fixed_amount'
-    description = _('Fixed amount')
+    description = _('Fixed monetary amount')
 
     @classmethod
     def short_description(cls, promo):
@@ -38,7 +49,7 @@ class FixedAmountStrategy(BaseStrategy):
         return _('Discount %s') % Valute(promo.parameter)
 
     @classmethod
-    def validate(cls, form, cleaned_data):
+    def validate_form(cls, form, cleaned_data):
         parameter = cleaned_data.get('parameter', '')
         if not parameter:
             form.add_error('parameter', _('This field cannot be blank.'))
@@ -58,14 +69,14 @@ class FixedAmountStrategy(BaseStrategy):
 
     @classmethod
     def calculate(cls, promo, order):
-        amount = Valute(promo.parameter)
+        amount = min(order.products_cost, Valute(promo.parameter))
         return amount
 
 
 class PercentageStrategy(BaseStrategy):
     """ Процентная скидка, например 10% """
     name = 'percent'
-    description = _('By a percent')
+    description = _('Percentage discount')
 
     @classmethod
     def short_description(cls, promo):
@@ -76,7 +87,7 @@ class PercentageStrategy(BaseStrategy):
         return _('Discount %s%%') % Decimal(promo.parameter)
 
     @classmethod
-    def validate(cls, form, cleaned_data):
+    def validate_form(cls, form, cleaned_data):
         parameter = cleaned_data.get('parameter', '')
         if not parameter:
             form.add_error('parameter', _('This field cannot be blank.'))

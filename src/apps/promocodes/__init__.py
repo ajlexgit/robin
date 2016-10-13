@@ -26,12 +26,11 @@
         вычисляет размер скидки.
 
         Промокод может быть ограничен по времени и/или по количеству использований.
-        При каждом использовании промокода (подтверждении заказа пользователем),
-        нужно вызывать метод:
+        При каждом использовании промокода нужно вызывать метод PromoCode.add_order():
             from promocodes.exceptions import PromoCodeError
 
             try:
-                PromoCode.add_order(order)
+                promocode.add_order(order)
             except PromoCodeError as e:
                 ...
 

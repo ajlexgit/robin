@@ -3,6 +3,10 @@ class PromoCodeError(Exception):
     pass
 
 
+class PromoCodeValidationError(PromoCodeError):
+    pass
+
+
 class PromoCodeLimitReachedError(PromoCodeError):
     pass
 
