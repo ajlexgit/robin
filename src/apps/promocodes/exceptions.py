@@ -1,6 +1,8 @@
 class PromoCodeError(Exception):
     """ Базовый класс исключений """
-    pass
+    def __init__(self, message, *args):
+        self.message = message
+        super().__init__(*args)
 
 
 class PromoCodeValidationError(PromoCodeError):
