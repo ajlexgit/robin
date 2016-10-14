@@ -23,15 +23,15 @@ class BaseStrategy:
         return cleaned_data
 
     @classmethod
-    def validate_order(cls, order):
+    def validate(cls, *args, **kwargs):
         """
-            Проверка, что промокод может быть привязан к заказу.
-            Если промокод не может быть привязан - должно вызываться исключение PromoCodeValidationError
+            Персональная для стратегии валидация, что промокод может быть использован.
+            В случае ошибки следует вызвать исключение подкласса PromoCodeError
         """
         pass
 
     @classmethod
-    def calculate(cls, promo, order):
+    def calculate(cls, promo, products_cost, **kwargs):
         raise NotImplementedError
 
 
@@ -68,8 +68,8 @@ class FixedAmountStrategy(BaseStrategy):
         return cleaned_data
 
     @classmethod
-    def calculate(cls, promo, order):
-        amount = min(order.products_cost, Valute(promo.parameter))
+    def calculate(cls, promo, products_cost, **kwargs):
+        amount = min(products_cost, Valute(promo.parameter))
         return amount
 
 
@@ -106,9 +106,9 @@ class PercentageStrategy(BaseStrategy):
         return cleaned_data
 
     @classmethod
-    def calculate(cls, promo, order):
+    def calculate(cls, promo, products_cost, **kwargs):
         percentage = Decimal(promo.parameter)
-        return order.products_cost * percentage / 100
+        return products_cost * percentage / 100
 
 
 ALL_STRATEGIES = (FixedAmountStrategy, PercentageStrategy)

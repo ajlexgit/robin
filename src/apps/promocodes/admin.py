@@ -57,12 +57,13 @@ class PromoCodeAdmin(ModelAdminMixin, admin.ModelAdmin):
     )
 
     def strategy_format(self, obj):
-        return obj.strategy.full_description(obj)
+        strategy = STRATEGIES.get(obj.strategy_name)
+        return strategy.full_description(obj) if strategy else None
     strategy_format.admin_order_field = 'strategy'
     strategy_format.short_description = _('Strategy')
 
     def times_used(self, obj):
-        return obj.usages.count()
+        return obj.times_used
     times_used.short_description = _('Times Used')
 
     def redemption_limit_format(self, obj):

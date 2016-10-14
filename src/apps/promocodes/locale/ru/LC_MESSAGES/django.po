@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-13 10:08+0400\n"
+"POT-Creation-Date: 2016-10-14 17:01+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,31 +19,31 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:44
+#: admin.py:37
 msgid "Action"
 msgstr "Действие"
 
-#: admin.py:50
+#: admin.py:43
 msgid "Limits"
 msgstr "Ограничения"
 
-#: admin.py:63
+#: admin.py:56
 msgid "General"
 msgstr "Основные"
 
-#: admin.py:69
+#: admin.py:63
 msgid "Strategy"
 msgstr "Стратегия"
 
-#: admin.py:73
+#: admin.py:67
 msgid "Times Used"
 msgstr "Использован"
 
-#: admin.py:79
+#: admin.py:73
 msgid "Unlimited"
 msgstr "Не ограниченно"
 
-#: admin.py:81
+#: admin.py:75
 msgid "Redemption limit"
 msgstr "Максимальное количество"
 
@@ -83,7 +83,7 @@ msgstr "дата начала"
 msgid "end time"
 msgstr "дата окончания"
 
-#: models.py:24 models.py:103
+#: models.py:24 models.py:90
 msgid "created on"
 msgstr "дата создания"
 
@@ -91,7 +91,7 @@ msgstr "дата создания"
 msgid "change date"
 msgstr "дата изменения"
 
-#: models.py:28 models.py:97
+#: models.py:28 models.py:83
 msgid "promo code"
 msgstr "промокод"
 
@@ -99,48 +99,52 @@ msgstr "промокод"
 msgid "promo codes"
 msgstr "промокоды"
 
-#: models.py:50 models.py:52
+#: models.py:68 models.py:71
 msgid "This promo code has expired"
 msgstr "Срок действия промокода истёк"
 
-#: models.py:67
-msgid "This promo code has reached its redemption limit"
+#: models.py:75
+msgid "This promo code has reached it's redemption limit"
 msgstr "Достигнуто максимальное количество использований промокода"
 
-#: models.py:106
-msgid "promo code usage"
+#: models.py:89
+msgid "applied"
+msgstr "использован"
+
+#: models.py:93
+msgid "promo code reference"
 msgstr "использование промокода"
 
-#: models.py:107
-msgid "promo code usages"
-msgstr "использование промокода"
+#: models.py:94
+msgid "promo code references"
+msgstr "использования промокодов"
 
-#: strategies.py:30
+#: strategies.py:41
 msgid "Fixed monetary amount"
 msgstr "Фиксированная скидка"
 
-#: strategies.py:38
+#: strategies.py:49
 #, python-format
 msgid "Discount %s"
 msgstr "Скидка %s"
 
-#: strategies.py:44 strategies.py:82
+#: strategies.py:55 strategies.py:93
 msgid "This field cannot be blank."
 msgstr "Это поле не может быть пустым."
 
-#: strategies.py:50 strategies.py:88
+#: strategies.py:61 strategies.py:99
 msgid "Invalid value"
 msgstr "Некорректное значение"
 
-#: strategies.py:54 strategies.py:92
+#: strategies.py:65 strategies.py:103
 msgid "Ensure this value is greater than 0"
 msgstr "Значение должно быть больше нуля"
 
-#: strategies.py:68
+#: strategies.py:79
 msgid "Percentage discount"
 msgstr "Процентная скидка"
 
-#: strategies.py:76
+#: strategies.py:87
 #, python-format
 msgid "Discount %s%%"
 msgstr "Скидка %s%%"

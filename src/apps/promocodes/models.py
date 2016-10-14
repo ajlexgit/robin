@@ -1,5 +1,5 @@
+from django.db import models
 from django.utils.timezone import now
-from django.db import models, connection
 from django.core.validators import MinLengthValidator
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -32,38 +32,10 @@ class PromoCode(models.Model):
     def __str__(self):
         return self.title
 
-    def add_order(self, order, ignore_date=False):
-        """
-            Добавление нового случая использования промокода.
-            Проверяет максимальное кол-во и дату.
-        """
-        if not ignore_date:
-            now_date = now()
-            if self.start_date and now_date < self.start_date:
-                raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
-            if self.end_date and now_date > self.end_date:
-                raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
-
-        # валидация заказа
-        self.strategy.validate_order(order)
-
-        cursor = connection.cursor()
-        cursor.execute('BEGIN WORK')
-        cursor.execute('LOCK TABLE %s IN ACCESS EXCLUSIVE MODE' % (PromoCodeUsage._meta.db_table, ))
-        try:
-            redemption_count = self.usages.count()
-            if self.redemption_limit == 0 or (redemption_count < self.redemption_limit):
-                usage = self.usages.create(
-                    promocode=self,
-                    entity=order,
-                )
-                return usage
-            else:
-                raise exceptions.PromoCodeLimitReachedError(
-                    _('This promo code has reached its redemption limit')
-                )
-        finally:
-            cursor.execute('COMMIT')
+    @property
+    def times_used(self):
+        """ Сколько раз использован промокод """
+        return self.references.filter(applied=True).count()
 
     @property
     def strategy(self) -> BaseStrategy:
@@ -80,27 +52,46 @@ class PromoCode(models.Model):
         """ Делегируемый метод для получения полного описания стратегии промокода """
         return self.strategy.full_description(self)
 
-    def calculate(self, order):
+    def calculate(self, *args, **kwargs):
         """ Делегируемый метод для рассчета размера скидки """
-        return self.strategy.calculate(self, order)
+        return self.strategy.calculate(self, *args, **kwargs)
+
+    def validate(self, *args, **kwargs):
+        """
+            Проверка возможности использования промокода.
+            ВНИМАНИЕ! Потоконебезопасно! Если следом идёт добавление PromoCodeReference,
+            то это должно происходить внутри блокировки таблицы.
+        """
+        now_date = now()
+
+        if self.start_date and now_date < self.start_date:
+            raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
+
+        if self.end_date and now_date > self.end_date:
+            raise exceptions.PromoCodeExpiredError(_('This promo code has expired'))
+
+        if self.redemption_limit and (self.times_used >= self.redemption_limit):
+            raise exceptions.PromoCodeLimitReachedError(
+                _('This promo code has reached it\'s redemption limit')
+            )
+
+        # дополнительная валидация стратегии
+        self.strategy.validate(*args, **kwargs)
 
 
-class PromoCodeUsage(models.Model):
-    """
-        Не стоит явно создавать объекты этого класса (из-за риска ошибок при многопоточности).
-        Вместо этого следует использовать PromoCode.add_order().
-    """
-    promocode = models.ForeignKey(PromoCode, verbose_name=_('promo code'), related_name='usages')
+class PromoCodeReference(models.Model):
+    promocode = models.ForeignKey(PromoCode, verbose_name=_('promo code'), related_name='references')
 
     content_type = models.ForeignKey(ContentType, related_name='+')
     object_id = models.PositiveIntegerField()
     entity = GenericForeignKey('content_type', 'object_id')
 
+    applied = models.BooleanField(_('applied'), default=False, editable=False)
     created = models.DateTimeField(_('created on'), default=now, editable=False)
 
     class Meta:
-        verbose_name = _('promo code usage')
-        verbose_name_plural = _('promo code usages')
+        verbose_name = _('promo code reference')
+        verbose_name_plural = _('promo code references')
         ordering = ('-created',)
         unique_together = ('promocode', 'content_type', 'object_id')
 
@@ -111,3 +102,17 @@ class PromoCodeUsage(models.Model):
             self.object_id
         )
         return '%s → %s' % (self.promocode, instance)
+
+    @property
+    def short_description(self):
+        """ Делегируемый метод для получения краткого описания стратегии промокода """
+        return self.promocode.short_description
+
+    @property
+    def full_description(self):
+        """ Делегируемый метод для получения полного описания стратегии промокода """
+        return self.promocode.full_description
+
+    def calculate(self, *args, **kwargs):
+        """ Делегируемый метод для рассчета размера скидки """
+        return self.promocode.calculate(*args, **kwargs)

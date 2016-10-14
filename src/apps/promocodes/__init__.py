@@ -1,6 +1,9 @@
 """
     Модуль промокодов для заказов.
 
+    Зависит от:
+        libs.valute_field
+
     Установка:
         settings.py:
             INSTALLED_APPS = (
@@ -26,23 +29,60 @@
         вычисляет размер скидки.
 
         Промокод может быть ограничен по времени и/или по количеству использований.
-        При каждом использовании промокода нужно вызывать метод PromoCode.add_order():
+
+
+        Перед привязкой промокода, нужно пройти проверку промокода на доступность:
             from promocodes.exceptions import PromoCodeError
 
             try:
-                promocode.add_order(order)
+                promocode.validate(order)
             except PromoCodeError as e:
+                logger.error(e.message)
+
+        P.S. Для потокобезопасности рекомендуется проводить валидацию с добавлением промокода
+        внутри транзакции с эксклюзивным доступом.
+
+
+        Для возможности крепления промокода к ещё не подтвержденному заказу,
+        у PromoCodeReference есть поле applied, которое отделяет подтвержденные использования
+        промокода от ещё не подтвержденных.
+
+        При подтверждении (оплате) заказа необходимо подтвердить использованные промокоды:
+            order.promocode_refs.update(applied=True)
+
+        P.S. При этом не проверяются ограничения использования промокода, т.к. иначе
+        пришлось бы сообщать клиенту, что его промокод некорректен уже после того, как клиент
+        добавил промокод к своему заказу, что не совсем корректно. Поэтому, теоретически,
+        использований промокода может быть больше, чем заявлено в ограничениях.
+
+    Пример:
+        # models.py:
+            class Order(model.Model):
                 ...
-
-        Этот метод создает связь промокода с заказом и тем самым увеличит счётчик кол-ва использований промокода.
-        !!! ВНИМАНИЕ !!! Этот метод может генерировать исключения из promocodes.exceptions
+                promocode_refs = GenericRelation(PromoCodeReference, verbose_name=_('promo codes'))
 
 
-        Для получения всех промокодов нужно вызвать функцию:
-            promocodes.utils.get_promocodes(order)
+        # views.py:
+            class AddPromocodeView(View):
+                ...
+                cursor = connection.cursor()
+                cursor.execute('BEGIN WORK')
+                cursor.execute('LOCK TABLE %s IN ACCESS EXCLUSIVE MODE' % (PromoCodeReference._meta.db_table,))
 
-        Она вернёт кортеж объектов PromoCode с дополнительным полем calculated_discount,
-        хранящим рассчитанную для заказа скидку в формате Valute.
+                try:
+                    promocode.validate()
+                except PromoCodeError as e:
+                    raise Http404
+                else:
+                    order.references.create(
+                        promocode=promocode,
+                    )
+                finally:
+                    cursor.execute('COMMIT')
+
+
+            class ConfirmOrder(View):
+                ...
 
 """
 default_app_config = 'promocodes.apps.Config'
