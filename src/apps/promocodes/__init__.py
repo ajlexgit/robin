@@ -83,6 +83,7 @@
 
             class ConfirmOrder(View):
                 ...
+                order.promocode_refs.update(applied=True)
 
 """
 default_app_config = 'promocodes.apps.Config'
