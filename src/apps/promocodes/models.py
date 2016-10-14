@@ -32,6 +32,10 @@ class PromoCode(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        self.code = self.code.upper()
+        super().save(*args, **kwargs)
+
     @property
     def times_used(self):
         """ Сколько раз использован промокод """

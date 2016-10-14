@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from project.admin.base import ModelAdminMixin
 from .models import PromoCode
@@ -19,10 +20,32 @@ class PromoCodeForm(forms.ModelForm):
             }),
         }
 
+    class Media:
+        css = {
+            'all': (
+                'promocodes/admin/css/promocode.css',
+            )
+        }
+
     def clean(self):
         cleaned_data = super().clean()
+
+        code = cleaned_data.get('code')
+        try:
+            self._meta.model.objects.get(code__iexact=code)
+        except self._meta.model.DoesNotExist:
+            pass
+        else:
+            self.add_error('code', _("%(model_name)s with this %(field_label)s already exists.") % {
+                'model_name': self._meta.model._meta.verbose_name.capitalize(),
+                'field_label': 'code',
+            })
+
         strategy_name = cleaned_data.get('strategy_name', '')
-        return STRATEGIES[strategy_name].validate_form(self, cleaned_data)
+        if strategy_name:
+            cleaned_data = STRATEGIES[strategy_name].validate_form(self, cleaned_data)
+
+        return cleaned_data
 
 
 @admin.register(PromoCode)
