@@ -9,10 +9,10 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorUploadField
 from social_networks.models import SocialLinks
+from libs.email import absolute_links
 from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
 from libs.stdimage.fields import StdImageField
-from . import utils
 from . import conf
 
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
@@ -211,7 +211,7 @@ class Campaign(models.Model):
             'campaign': self,
         }, request=request)
         content = content.replace('url(//', 'url(http://')
-        content = utils.format_html(content, scheme=scheme)
+        content = absolute_links(content, scheme=scheme, request=request)
 
         site = get_current_site(request)
         content = re_domain_urls.sub('\\1{}{}\\2'.format(scheme, site.domain), content)
