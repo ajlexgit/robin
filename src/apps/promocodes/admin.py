@@ -1,10 +1,62 @@
 from django import forms
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin.filters import SimpleListFilter
+from solo.admin import SingletonModelAdmin
 from project.admin.base import ModelAdminMixin
-from .models import PromoCode
+from .models import PromoSettings, PromoCode
 from .strategies import STRATEGIES
+
+
+@admin.register(PromoSettings)
+class PromoSettingsAdmin(ModelAdminMixin, SingletonModelAdmin):
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                
+            ),
+        }),
+    )
+    suit_form_tabs = (
+        ('general', _('General')),
+    )
+
+
+class PromoCodeTypeFilter(SimpleListFilter):
+    title = _('Type')
+    parameter_name = 'type'
+    template = 'admin/button_filter.html'
+
+    TYPES = (
+        ('self-created', _('Self-created')),
+        ('auto-generated', _('Auto-generated')),
+        ('all', _('All')),
+    )
+
+    def lookups(self, request, model_admin):
+        return self.TYPES
+
+    def value(self):
+        return super().value() or 'self-created'
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == str(lookup),
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'self-created':
+            queryset = queryset.filter(self_created=True)
+        elif value == 'auto-generated':
+            queryset = queryset.filter(self_created=False)
+        return queryset
 
 
 class PromoCodeForm(forms.ModelForm):
@@ -74,10 +126,19 @@ class PromoCodeAdmin(ModelAdminMixin, admin.ModelAdmin):
     list_display = (
         '__str__', 'code', 'strategy_format', 'times_used', 'redemption_limit_format', 'start_date', 'end_date'
     )
+    list_filter = (PromoCodeTypeFilter, )
     list_display_links = ('__str__', 'code')
     suit_form_tabs = (
         ('general', _('General')),
     )
+
+    @property
+    def media(self):
+        return super().media + forms.Media(
+            js=(
+                'admin/js/button_filter.js',
+            ),
+        )
 
     def strategy_format(self, obj):
         strategy = STRATEGIES.get(obj.strategy_name)
@@ -97,3 +158,6 @@ class PromoCodeAdmin(ModelAdminMixin, admin.ModelAdmin):
     redemption_limit_format.admin_order_field = 'redemption_limit'
     redemption_limit_format.short_description = _('Redemption limit')
 
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.self_created = True

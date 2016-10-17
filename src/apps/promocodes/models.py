@@ -9,6 +9,13 @@ from .strategies import BaseStrategy, STRATEGIES, STRATEGY_CHOICES
 from . import exceptions
 
 
+class PromoSettings(SingletonModel):
+
+    class Meta:
+        default_permissions = ('change',)
+        verbose_name = _('settings')
+
+
 class PromoCode(models.Model):
     title = models.CharField(_('title'), max_length=128)
     code = models.CharField(_('code'), max_length=24, validators=[MinLengthValidator(4)], unique=True)
@@ -21,6 +28,7 @@ class PromoCode(models.Model):
     start_date = models.DateTimeField(_('start time'), blank=True, null=True)
     end_date = models.DateTimeField(_('end time'), blank=True, null=True)
 
+    self_created = models.BooleanField(_('self-created'), default=False)
     created = models.DateTimeField(_('created on'), default=now, editable=False)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
