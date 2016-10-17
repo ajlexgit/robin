@@ -12,6 +12,8 @@ re_newlines = re.compile(r'\n{3,}')
 def send(request, receivers, subject, message, fail_silently=True):
     if not receivers:
         return True
+    if isinstance(receivers, str):
+        receivers = [receivers]
 
     # Вставка домена в subject
     site = get_current_site(request)
