@@ -1,6 +1,7 @@
+import os
 from django import forms
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.template.loader import render_to_string
 
 
 class FileWidget(forms.FileInput):
@@ -16,22 +17,11 @@ class FileWidget(forms.FileInput):
         )
 
     def render(self, name, value, attrs=None):
-        template = '''<div class="file-widget {classes}">
-            <label for="{for_label}" class="btn btn-small btn-success">
-                <i class="icon-folder-open icon-white"></i>
-                {btn_label}
-                {input}
-            </label>
-            <a href="{view_url}" target="_blank" class="view-link btn btn-small btn-info" title="{view_title}"></a>
-        </div>'''
-
-        data = dict(
-            classes='has-value' if value else '',
-            for_label=attrs.get('id', ''),
-            btn_label=_('Select file'),
+        context = dict(
+            value=value,
             input=super().render(name, value, attrs),
-            view_url=value.url if value and hasattr(value, 'url') else '#',
-            view_title=_('View file'),
+            for_label=attrs.get('id', ''),
+            filename=os.path.basename(value.name) if value else '',
         )
 
-        return mark_safe(template.format(**data))
+        return mark_safe(render_to_string('file_field/admin/widget.html', context))
