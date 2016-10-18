@@ -26,4 +26,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "requirements"
   end
 
+  config.vm.provision "shell", path: "VagrantScriptPost.shell"
 end
