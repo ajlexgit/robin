@@ -107,6 +107,7 @@
         cls.initSelect2 = function() {
             var that = this;
             this.$elem.select2({
+                allowClear: true,
                 multiple: this.opts.multiple,
                 minimumInputLength: this.opts.min_chars,
                 formatSelection: formatSelection,

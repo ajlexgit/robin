@@ -76,6 +76,7 @@
         cls.initSelect2 = function() {
             var that = this;
             this.$elem.select2({
+                allowClear: true,
                 multiple: this.opts.multiple,
                 minimumInputLength: this.opts.minimum_input_length,
                 getCacheName: function(query) {
