@@ -43,7 +43,7 @@ def autocomplete_widget(request, application, model_name, name):
     query = {}
     values = request.POST.get('values', '').split(';')
     filters = tuple(item[0] for item in redis_data['filters'])
-    is_multiple = tuple(item[2] for item in redis_data['filters'])
+    is_multiple = tuple(item[2] if len(item) > 2 else False for item in redis_data['filters'])
     for index, key in enumerate(filters):
         try:
             value = values[index]
@@ -118,11 +118,30 @@ def autocomplete_filter(request, application, model_name):
     if model is None:
         raise Http404
 
+    # Получаем данные из Redis
+    redis_data = pickle.loads(
+        cache.get('autocomplete_filter.%s' % '.'.join((application, model_name)))
+    )
+
     data = {
         'result': [],
     }
 
-    queryset = model.objects.all()
+    query = {}
+    values = request.POST.get('values', '').split(';')
+    filters = tuple(item[0] for item in redis_data['filters'])
+    for index, key in enumerate(filters):
+        try:
+            value = values[index]
+        except KeyError:
+            return JsonResponse(data)
+
+        if not value:
+            value = None
+
+        query[key] = value
+
+    queryset = model.objects.filter(**query)
 
     # Поиск по выражениям
     expression = request.POST.get('expression')

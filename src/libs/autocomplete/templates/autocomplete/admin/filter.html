@@ -1,6 +1,7 @@
 {% load admin_static %}
 
-<input type="hidden" placeholder="{{ title }}"
+<input type="hidden"
+       placeholder="{{ title }}"
        name="{{ field_name }}"
 
        {% if spec.multiple %}
@@ -14,4 +15,5 @@
        data-url="{{ spec.url }}"
        data-multiple="{{ spec.multiple|yesno:"1,0" }}"
        data-expression="{{ spec.expression }}"
-       data-minimum_input_length="{{ spec.minimum_input_length }}">
+       data-minimum_input_length="{{ spec.minimum_input_length }}"
+       data-filters="{{ spec.filters_fields }}">
