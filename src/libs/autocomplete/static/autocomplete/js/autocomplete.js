@@ -112,7 +112,7 @@
                 minimumInputLength: this.opts.min_chars,
                 formatSelection: formatSelection,
                 getCacheName: function(query) {
-                    return query.page + ':' + query.term + ':' + that._parentValues();
+                    return query.page + ':' + query.term + ':' + that.name + ':' + that._parentValues();
                 },
                 ajax: {
                     url: this.opts.url,
