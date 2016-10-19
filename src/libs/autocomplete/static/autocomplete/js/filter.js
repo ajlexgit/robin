@@ -31,6 +31,8 @@
                 old_instance.destroy();
             }
 
+            this.name = this.$elem.data('name');
+
             // Поля, от которых зависит текущее поле
             var $search_form = $('#changelist-search');
             var filters = this.$elem.data('filters').split(',');
@@ -80,7 +82,7 @@
                 multiple: this.opts.multiple,
                 minimumInputLength: this.opts.minimum_input_length,
                 getCacheName: function(query) {
-                    return query.page + ':' + query.term + ':' + that._parentValues();
+                    return query.page + ':' + query.term + ':' + that.name + ':' + that._parentValues();
                 },
                 ajax: {
                     url: this.opts.url,

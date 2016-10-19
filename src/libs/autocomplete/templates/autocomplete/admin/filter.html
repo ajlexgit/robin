@@ -3,6 +3,7 @@
 <input type="hidden"
        placeholder="{{ title }}"
        name="{{ field_name }}"
+       data-name="{{ field_name }}"
 
        {% if spec.multiple %}
          value="{{ spec.value|default_if_none:''|join:"," }}"
