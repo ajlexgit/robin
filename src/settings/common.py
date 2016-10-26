@@ -338,6 +338,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
                 'google_maps.context_processors.google_apikey',
+                'libs.context_processors.domain',
             ),
             'loaders': (
                 ('django.template.loaders.cached.Loader', (
