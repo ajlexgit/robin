@@ -32,12 +32,12 @@ def get_field_template(form, field):
 
 
 @register.simple_tag(takes_context=True)
-def render_field(context, form, fieldname, template=None):
+def render_field(context, form, fieldname, template=None, classes=None):
     """
         Рендеринг одного поля формы.
 
         Пример:
-            {% render_field form 'name' %}
+            {% render_field form 'name' classes='blue-field big-field' %}
     """
     request = context.get('request')
     if not request:
@@ -51,7 +51,11 @@ def render_field(context, form, fieldname, template=None):
         }, request)
 
     # классы поля
-    classes = set()
+    if classes is not None:
+        classes = {classname.strip() for classname in classes.split(' ')}
+    else:
+        classes = set()
+
     fieldclass_prefix = getattr(form, 'fieldclass_prefix', 'field')
     if fieldclass_prefix:
         classes.add('%s-%s' % (fieldclass_prefix, fieldname))
