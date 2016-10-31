@@ -21,9 +21,18 @@ ALLOWED_HOSTS = (
 DEV_PY="/vagrant/src/settings/dev.py"
 if [ ! -f "$DEV_PY" ]
 then
-    echo "Create dev.py file .."
+    echo "Create dev.py file..."
 	echo "$DEV_PY_CONTENT" > $DEV_PY
 fi
+
+### static dir
+STATIC_DIR="/vagrant/static"
+if [ ! -d "$STATIC_DIR" ]
+then
+    echo "Create static directory..."
+    mkdir $STATIC_DIR
+fi
+
 
 function get_db_name {
 python3 - <<END
@@ -64,7 +73,7 @@ DB_USER=$(get_db_user)
 echo "Create user '$DB_USER', database '$DB_NAME' with password '$DB_PASSWORD'..."
 su - postgres -c "/usr/bin/createuser -S -d -R $DB_USER"
 su - postgres -c "/usr/bin/createdb -O $DB_USER $DB_NAME"
-su - postgres -c "echo \"alter user $DB_NAME with password '$DB_PASSWORD';\" | psql $DB_NAME"
+su - postgres -c "echo \"alter user $DB_USER with password '$DB_PASSWORD';\" | psql $DB_NAME"
 
 
 echo "Edit /etc/postgresql/9.4/main/pg_hba.conf..."
@@ -74,5 +83,19 @@ sudo sed -i -E "s/local.*all.*all.*peer/local all all md5/" /etc/postgresql/9.4/
 
 echo "Restart postgres..."
 service postgresql restart
+
+echo "update pip..."
+cd /tmp
+wget https://bootstrap.pypa.io/get-pip.py
+python3 get-pip.py
+
+echo "pip install requirements/dev.txt..."
+pip install --upgrade -r /vagrant/requirements/dev.txt
+
+#echo "migrate db..."
+#python3 /vagrant/src/manage.py migrate
+
+#echo "collectstatic..."
+#python3 /vagrant/src/manage.py collectstatic --noinput --clear
 
 echo "Done!"
