@@ -9,10 +9,10 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorUploadField
 from social_networks.models import SocialLinks
+from libs.email import absolute_links
 from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
 from libs.stdimage.fields import StdImageField
-from . import utils
 from . import conf
 
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
@@ -61,6 +61,7 @@ class Group(models.Model):
     )
 
     name = models.CharField(_('name'), max_length=255)
+    subscribable = models.BooleanField(_('subscribable'), default=False)
     total = models.PositiveIntegerField(_('total subscribers'), default=0, editable=False)
     active = models.PositiveIntegerField(_('active subscribers'), default=0, editable=False)
     unsubscribed = models.PositiveIntegerField(_('unsubscribed'), default=0, editable=False)
@@ -210,7 +211,7 @@ class Campaign(models.Model):
             'campaign': self,
         }, request=request)
         content = content.replace('url(//', 'url(http://')
-        content = utils.format_html(content, scheme=scheme)
+        content = absolute_links(content, scheme=scheme, request=request)
 
         site = get_current_site(request)
         content = re_domain_urls.sub('\\1{}{}\\2'.format(scheme, site.domain), content)
@@ -280,6 +281,9 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.email
+
+    def clean(self):
+        self.email = self.email.lower()
 
     def update_from(self, json_data):
         subscriber_fields = {

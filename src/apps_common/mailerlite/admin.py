@@ -1,6 +1,5 @@
 import io
 import csv
-from copy import deepcopy
 from itertools import islice
 from django import forms
 from django.conf import settings
@@ -72,7 +71,7 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'name', 'status',
+                'name', 'status', 'subscribable',
             )
         }),
         (_('Subscribers'), {
@@ -89,7 +88,9 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
     readonly_fields = (
         'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated'
     )
-    list_display = ('name', 'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'status')
+    list_display = (
+        'name', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'subscribable', 'status'
+    )
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
@@ -127,9 +128,9 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
     change_form_template = 'mailerlite/admin/change_form.html'
 
     fieldsets = (
-        (_('Subject'), {
+        (None, {
             'fields': (
-                'subject',
+                'subject', 'groups',
             )
         }),
         (_('Content'), {
@@ -137,10 +138,22 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'header_image', 'text',
             )
         }),
+        (_('Statistics'), {
+            'classes': ('suit-tab', 'suit-tab-statistics'),
+            'fields': (
+                'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
+            )
+        }),
+        (_('Additional information'), {
+            'classes': ('suit-tab', 'suit-tab-debug'),
+            'fields': (
+                'status', 'published', 'remote_id',
+            )
+        }),
     )
     form = CampaignForm
     readonly_fields = (
-        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done', 'remote_id'
+        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done', 'remote_id',
     )
     list_filter = ('status', )
     list_display = ('view', 'short_subject', 'sent', 'opened', 'clicked', 'status_box', 'date_created')
@@ -156,48 +169,18 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             )
         }
 
-    def get_fieldsets(self, request, obj=None):
-        default = deepcopy(super().get_fieldsets(request, obj))
-        if not obj:
-            return default
-
-        # Показываем группы, если их больше одной
-        groups_count = Group.objects.count()
-        if groups_count > 1:
-            default = (
-                (None, {
-                    'fields': (
-                        'groups',
-                    )
-                }),
-            ) + default
-
-        # Показ статистики
-        if obj.published:
-            default += (
-                (_('Statistics'), {
-                    'fields': (
-                        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
-                    )
-                }),
-            )
-
-        # Доп инфа для суперадмина
+    def get_suit_form_tabs(self, request, add=False):
         if request.user.is_superuser:
-            default = (
-                (_('Additional information'), {
-                    'fields': (
-                        'status', 'published', 'remote_id'
-                    )
-                }),
-            ) + default
-        return default
-
-    def save_model(self, request, obj, form, change):
-        """ Автоматически добавляем все группы, если они не заданы """
-        super().save_model(request, obj, form, change)
-        if not obj.groups.count() and Group.objects.count() <= 1:
-            obj.groups.add(*Group.objects.all())
+            return (
+                ('general', _('General')),
+                ('statistics', _('Statistics')),
+                ('debug', _('Debugging')),
+            )
+        else:
+            return (
+                ('general', _('General')),
+                ('statistics', _('Statistics')),
+            )
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj=obj, **kwargs)
@@ -343,21 +326,41 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return response
 
 
+class SubscriberForm(forms.ModelForm):
+    class Meta:
+        model = Subscriber
+        fields = '__all__'
+        widgets = {
+            'groups': AutocompleteMultipleWidget(
+                expressions='name__icontains',
+            ),
+        }
+
+
 @admin.register(Subscriber)
 class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     change_list_template = 'mailerlite/admin/subscribers_change_list.html'
     fieldsets = (
         (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'email', 'status',
+                'email', 'groups', 'status',
             )
         }),
         (_('Additional information'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'name', 'last_name', 'company',
             )
         }),
+        (_('Statistics'), {
+            'classes': ('suit-tab', 'suit-tab-statistics'),
+            'fields': (
+                'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
+            )
+        }),
     )
+    form = SubscriberForm
     readonly_fields = (
         'email', 'groups', 'status',
         'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
@@ -366,6 +369,10 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     actions = ('action_mark_queued', 'action_mark_subscribed', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
+    suit_form_tabs = (
+        ('general', _('General')),
+        ('statistics', _('Statistics')),
+    )
 
     class Media:
         js = (
@@ -380,28 +387,10 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
             )
         }
 
-    def get_fieldsets(self, request, obj=None):
-        default = deepcopy(super().get_fieldsets(request, obj))
-        if obj is None:
-            return default
-
-        groups_count = Group.objects.count()
-        if groups_count > 1:
-            default[0][1]['fields'] += ('groups', )
-
-        default += (
-            (_('Statistics'), {
-                'fields': (
-                    'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe'
-                )
-            }),
-        )
-        return default
-
     def get_readonly_fields(self, request, obj=None):
         default = list(super().get_readonly_fields(request, obj))
         if obj is None or obj.status == self.model.STATUS_QUEUED:
-            for field in ('email', ):
+            for field in ('email', 'groups'):
                 if field in default:
                     default.remove(field)
         if request.user.is_superuser:
@@ -440,8 +429,13 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         except NotLastChunk:
             return JsonResponse({})
 
+        all_groups = tuple(Group.objects.filter(subscribable=True))
+        if not all_groups:
+            return JsonResponse({
+                'message': _('There are no subscribable lists'),
+            }, status=400)
+
         added_count = 0
-        all_groups = tuple(Group.objects.all())
         csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
         while True:
             group = tuple(
@@ -456,6 +450,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                     if not record.get('email'):
                         continue
 
+                    record['email'] = record['email'].lower()
                     subscriber, created = Subscriber.objects.get_or_create(**record)
                     if created:
                         subscriber.groups.add(*all_groups)

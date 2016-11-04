@@ -3,7 +3,7 @@ from django.db.models import signals
 from django.db.models.fields import files
 
 
-class FieldFile(files.FieldFile):
+class FieldFileMixin:
     def save(self, name, content, save=True):
         newfile_attrname = '_{}_new_file'.format(self.field.name)
         setattr(self.instance, newfile_attrname, True)
@@ -11,9 +11,7 @@ class FieldFile(files.FieldFile):
     save.alters_data = True
 
 
-class FileField(models.FileField):
-    attr_class = FieldFile
-
+class FileFieldMixin:
     def contribute_to_class(self, cls, name, **kwargs):
         super().contribute_to_class(cls, name, **kwargs)
         signals.post_save.connect(self._post_save, sender=cls)
@@ -45,3 +43,19 @@ class FileField(models.FileField):
     def _post_delete(self, instance=None, **kwargs):
         field_file = self.value_from_object(instance)
         field_file.delete(save=False)
+
+
+class FieldFile(FieldFileMixin, files.FieldFile):
+    pass
+
+
+class ImageFieldFile(FieldFileMixin, files.ImageFieldFile):
+    pass
+
+
+class FileField(FileFieldMixin, models.FileField):
+    attr_class = FieldFile
+
+
+class ImageField(FileFieldMixin, models.ImageField):
+    attr_class = ImageFieldFile

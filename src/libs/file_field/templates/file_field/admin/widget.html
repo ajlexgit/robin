@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<div class="file-widget {% if value %}has-value{% endif %}">
+  <label for="{{ for_label }}" class="btn btn-small btn-success">
+    <i class="icon-folder-open icon-white"></i>
+    {% trans 'Choose file' %}
+    {{ input }}
+  </label>
+  <a href="{{ value.url|default:"#" }}" target="_blank" class="preview btn btn-info" title="{% trans 'View file' %}"></a>
+</div>

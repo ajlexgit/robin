@@ -1,6 +1,7 @@
 (function($) {
     'use strict';
 
+    var event_ns = 1;
     window.AutocompleteFilter = Class(Object, function AutocompleteFilter(cls, superclass) {
         cls.defaults = {
             url: '',
@@ -30,6 +31,23 @@
                 old_instance.destroy();
             }
 
+            this.name = this.$elem.data('name');
+
+            // Поля, от которых зависит текущее поле
+            var $search_form = $('#changelist-search');
+            var filters = this.$elem.data('filters').split(',');
+            filters = filters.map(function(item) {
+                return $search_form.find('[data-name="' + item + '"]').get(0);
+            });
+            this.$filters = $(filters.filter(Boolean));
+
+            // при изменении зависимости вызываем событие изменения на текущем элементе
+            var that = this;
+            this.event_ns = event_ns++;
+            this.$filters.on('change.autocomplete_filter' + this.event_ns, function() {
+                that.$elem.select2('data', null);
+            });
+
             // инициализация select2
             this.initSelect2();
 
@@ -40,8 +58,18 @@
             Освобождение ресурсов
          */
         cls.destroy = function() {
+            this.$filters.off('.autocomplete_filter' + this.event_ns);
             this.$elem.removeData(this.DATA_KEY);
             this.$elem.select2('destroy');
+        };
+
+        /*
+            Возвращает значения, от которых зависит текущее поле
+         */
+        cls._parentValues = function() {
+            return Array.prototype.map.call(this.$filters, function(item) {
+                return $(item).val()
+            }).join(';');
         };
 
         /*
@@ -50,8 +78,12 @@
         cls.initSelect2 = function() {
             var that = this;
             this.$elem.select2({
+                allowClear: true,
                 multiple: this.opts.multiple,
                 minimumInputLength: this.opts.minimum_input_length,
+                getCacheName: function(query) {
+                    return query.page + ':' + query.term + ':' + that.name + ':' + that._parentValues();
+                },
                 ajax: {
                     url: this.opts.url,
                     type: 'POST',
@@ -62,6 +94,7 @@
                             q: term,
                             page_limit: page_limit || 30,
                             page: page,
+                            values: that._parentValues(),
                             expression: that.opts.expression
                         };
                     },
@@ -83,6 +116,7 @@
                         dataType: "json",
                         data: {
                             q: id,
+                            values: that._parentValues(),
                             expression: 'pk__in'
                         },
                         success: function(response) {

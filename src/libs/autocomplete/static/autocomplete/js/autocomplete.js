@@ -107,11 +107,12 @@
         cls.initSelect2 = function() {
             var that = this;
             this.$elem.select2({
+                allowClear: true,
                 multiple: this.opts.multiple,
                 minimumInputLength: this.opts.min_chars,
                 formatSelection: formatSelection,
                 getCacheName: function(query) {
-                    return query.page + ':' + query.term + ':' + that._parentValues();
+                    return query.page + ':' + query.term + ':' + that.name + ':' + that._parentValues();
                 },
                 ajax: {
                     url: this.opts.url,

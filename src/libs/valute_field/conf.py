@@ -70,7 +70,7 @@ for key, format_dict in getattr(settings, 'VALUTE_FORMATS', {}).items():
 VALUTE_FORMAT = getattr(settings, 'VALUTE_FORMAT', None)
 
 # Соответствия форматов валют языкам сайта (если VALUTE_FORMAT == None)
-VALUTE_FORMAT_BY_LANG = getattr(settings, 'VALUTE_FORMATS', {
+VALUTE_FORMAT_BY_LANG = getattr(settings, 'VALUTE_FORMAT_BY_LANG', {
     ('en',): 'USD',
     ('ru',): 'RUB',
 })

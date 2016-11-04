@@ -2,10 +2,10 @@ import os
 import sys
 
 # Gallery popup: JS templates
-# Mailerlite: lowercase, clear subscribers from remote + limit reached
-# Shop cart example + discounts
-# $.fn.scrolltextarea + autosize
 # CKEditor internal link
+# $.fn.scrolltextarea + autosize
+# Mailerlite: clear subscribers from remote + limit reached + select groups on import
+# Shop cart example + discounts
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Images: alt, title, file name
