@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Gallery popup: JS templates
 # Mailerlite: lowercase, clear subscribers from remote + limit reached
 # Shop cart example + discounts
 # $.fn.scrolltextarea + autosize
