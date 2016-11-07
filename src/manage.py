@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Блок в шаблоне, который может быть AJAX или нет - по флагу
 # CKEditor internal link
 # $.fn.scrolltextarea + autosize
 # Mailerlite: clear subscribers from remote + limit reached + select groups on import
