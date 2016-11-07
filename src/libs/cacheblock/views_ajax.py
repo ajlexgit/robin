@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponseForbidden, JsonResponse
 from . import conf
 
-cache = caches[conf.AJAXCACHE_BACKEND]
+cache = caches[conf.CACHEBLOCK_BACKEND]
 
 @csrf_exempt
 def get_cached(request):

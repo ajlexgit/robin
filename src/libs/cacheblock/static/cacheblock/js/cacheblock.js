@@ -8,19 +8,19 @@
             jquery.utils.js
 
         Для отлова события загрузки всех блоков можно
-        использовать событие "loaded.ajaxcache":
-            $(document).on('loaded.ajaxcache', function() {
+        использовать событие "loaded.cacheblock":
+            $(document).on('loaded.cacheblock', function() {
 
             })
      */
 
     $(document).ready(function() {
-        var ajaxcache_class = window.js_storage.ajaxcache_class;
-        if (!ajaxcache_class) return;
+        var cacheblock_class = window.js_storage.cacheblock_class;
+        if (!cacheblock_class) return;
 
         // собираем все ключи кэшированных блоков
         var keys = [];
-        var $blocks = $('.' + ajaxcache_class);
+        var $blocks = $('.' + cacheblock_class);
         $blocks.each(function() {
             var key = $(this).data('key');
             if (key) {
@@ -28,9 +28,14 @@
             }
         });
 
-        if (!keys.length) return;
+        if (!keys.length) {
+            // callback event
+            $(document).trigger('loaded.cacheblock');
+            return;
+        }
+
         $.ajax({
-            url: window.js_storage.ajaxcache_url,
+            url: window.js_storage.cacheblock_url,
             type: 'GET',
             data: {
                 keys: keys.join(',')
@@ -49,7 +54,7 @@
                 });
 
                 // callback event
-                $(document).trigger('loaded.ajaxcache');
+                $(document).trigger('loaded.cacheblock');
             }
         });
     });

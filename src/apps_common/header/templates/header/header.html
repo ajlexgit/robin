@@ -1,5 +1,5 @@
+{% load cacheblock %}
 {% load menu %}
-{% load ajaxcache %}
 
 <header>
   <div class="grid-block">
@@ -20,11 +20,11 @@
           {% menu 'main' %}
         </nav>
 
-        {% ajaxcache 1800 mobile-menu request.path_info %}
+        {% cacheblock 1800 mobile-menu request.path_info %}
           <div id="mobile-menu">
             {% menu 'main' %}
           </div>
-        {% endajaxcache %}
+        {% endcacheblock %}
       </div>
     </div>
 

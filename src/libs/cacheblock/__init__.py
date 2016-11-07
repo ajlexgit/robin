@@ -1,31 +1,31 @@
 """
-    Аналог стандартному тэгу {% cache %}, но подгружает данные из кэша через AJAX.
+    Аналог стандартному тэгу {% cache %}, но может подгружать данные из кэша через AJAX.
 
     Установка:
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'libs.ajaxcache',
+                'libs.cacheblock',
                 ...
             )
 
             PIPELINE = {
                 ...
-                'ajaxcache/js/ajaxcache.js',
+                'cacheblock/js/cacheblock.js',
                 ...
             }
 
         urls.py:
             ...
-            url(r'^ajaxcache/', include('libs.ajaxcache.urls', namespace='ajaxcache')),
+            url(r'^cacheblock/', include('libs.cacheblock.urls', namespace='cacheblock')),
             ...
 
     Необязательные настройки:
-        AJAXCACHE_BACKEND = 'default'
+        CACHEBLOCK_BACKEND = 'default'
 
     Для отлова события загрузки всех блоков можно
-    использовать событие "ready.ajaxcache":
-        $(document).on('ready.ajaxcache', function() {
+    использовать событие "loaded.cacheblock":
+        $(document).on('loaded.cacheblock', function() {
 
         })
 
@@ -36,11 +36,11 @@
         Остальные - дополнительные данные для составления ключа кэша
 
         # template.html:
-            {% load ajaxcache %}
+            {% load cacheblock %}
 
-            {% ajaxcache 3600 unique_name %}
+            {% cacheblock 3600 unique_name ajax=true %}
                 ...
-            {% endajaxcache %}
+            {% endcacheblock %}
 
 """
-default_app_config = 'libs.ajaxcache.apps.Config'
+default_app_config = 'libs.cacheblock.apps.Config'
