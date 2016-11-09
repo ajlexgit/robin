@@ -397,7 +397,7 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         '__str__', 'fmt_total_cost', 'is_cancelled', 'is_checked', 'is_paid', 'pay_date', 'created',
     )
     actions = ('action_set_checked', 'action_set_cancelled', 'action_set_paid', 'action_set_archived')
-    list_filter = (StatusShopOrderFilter, 'created')
+    list_filter = (StatusShopOrderFilter,)
     suit_form_tabs = (
         ('general', _('General')),
         ('products', _('Products')),
