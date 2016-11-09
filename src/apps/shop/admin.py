@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib import admin
 from django.utils.timezone import now
 from django.db.models import F, Func, Value
-from django.utils.encoding import force_text
 from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
@@ -33,7 +32,7 @@ class NotifyReceiverAdmin(ModelAdminInlineMixin, admin.TabularInline):
     """ Инлайн получателей уведомлений о новых заказах """
     model = NotifyReceiver
     extra = 0
-    suit_classes = 'suit-tab suit-tab-managers'
+    suit_classes = 'suit-tab suit-tab-notify'
 
 
 @admin.register(ShopConfig)
@@ -50,7 +49,7 @@ class ShopConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
     inlines = (ShopConfigBlocksInline, NotifyReceiverAdmin)
     suit_form_tabs = (
         ('general', _('General')),
-        ('managers', _('Managers')),
+        ('notify', _('Notifications')),
         ('blocks', _('Blocks')),
     )
 

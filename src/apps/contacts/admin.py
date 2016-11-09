@@ -9,7 +9,7 @@ from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.description import description
-from .models import ContactsConfig, Address, PhoneNumber, NotifyReceiver, ContactBlock, Message
+from .models import ContactsConfig, Address, PhoneNumber, NotificationReceiver, ContactBlock, Message
 
 
 class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
@@ -17,12 +17,12 @@ class ContactsConfigBlocksInline(AttachedBlocksStackedInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
-class NotifyReceiverAdmin(ModelAdminInlineMixin, admin.TabularInline):
+class NotificationReceiverAdmin(ModelAdminInlineMixin, admin.TabularInline):
     """ Получатели сообщений """
-    model = NotifyReceiver
+    model = NotificationReceiver
     extra = 0
     min_num = 1
-    suit_classes = 'suit-tab suit-tab-notifies'
+    suit_classes = 'suit-tab suit-tab-notify'
 
 
 @admin.register(ContactsConfig)
@@ -36,10 +36,10 @@ class ContactsConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
             ),
         }),
     )
-    inlines = (NotifyReceiverAdmin, ContactsConfigBlocksInline)
+    inlines = (NotificationReceiverAdmin, ContactsConfigBlocksInline)
     suit_form_tabs = (
         ('general', _('General')),
-        ('notifies', _('Notifies')),
+        ('notify', _('Notifications')),
         ('blocks', _('Blocks')),
     )
 

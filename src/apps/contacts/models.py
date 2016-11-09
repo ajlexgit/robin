@@ -62,14 +62,14 @@ class PhoneNumber(models.Model):
         return self.number
 
 
-class NotifyReceiver(models.Model):
+class NotificationReceiver(models.Model):
     """ Получатели писем с информацией о отправленных сообщениях """
     config = models.ForeignKey(ContactsConfig, related_name='receivers')
     email = models.EmailField(_('e-mail'))
 
     class Meta:
-        verbose_name = _('notify receiver')
-        verbose_name_plural = _('notify receivers')
+        verbose_name = _('notification receiver')
+        verbose_name_plural = _('notification receivers')
 
     def __str__(self):
         return self.email
