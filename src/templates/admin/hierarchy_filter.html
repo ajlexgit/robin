@@ -14,5 +14,5 @@
     {% endfor %}
   </ul>
 
-  <input type="hidden" name="{{ spec.parameter_name }}" value="{{ spec.value }}">
+  <input type="hidden" name="{{ spec.parameter_name }}" value="{{ spec.value|default_if_none:'' }}">
 </div>
