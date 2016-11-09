@@ -3,7 +3,7 @@
 
   <ul class="toplinks breadcrumb">
     {% with back=choices.0 %}
-      <li class="date-back">
+      <li class="{{ back.selected|yesno:"active," }}">
         <a href="{{ back.query_string }}">{{ back.display }}</a>
         <span class="divider">|</span>
       </li>
