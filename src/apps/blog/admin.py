@@ -72,6 +72,7 @@ class BlogPostAdmin(SeoModelAdminMixin, AutoPostMixin, admin.ModelAdmin):
     )
     form = BlogPostForm
     list_filter = ('status',)
+    date_hierarchy = 'date'
     search_fields = ('header',)
     list_display = ('view', '__str__', 'tags_list', 'date_fmt', 'status')
     list_display_links = ('__str__',)
