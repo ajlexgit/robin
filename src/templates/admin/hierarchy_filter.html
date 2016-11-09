@@ -1,13 +1,15 @@
 <div class="hierarchy-filter xfull">
+  <div class="title">{{ spec.title }}:</div>
+
   <ul class="toplinks breadcrumb">
-    {% if back %}
+    {% with back=choices.0 %}
       <li class="date-back">
-        <a href="{{ back.query_string }}">&laquo; {{ back.display }}</a>
+        <a href="{{ back.query_string }}">{{ back.display }}</a>
         <span class="divider">|</span>
       </li>
-    {% endif %}
+    {% endwith %}
 
-    {% for choice in choices %}
+    {% for choice in choices|slice:"1:" %}
       <li class="{{ choice.selected|yesno:"active," }}">
         <a href="{{ choice.query_string }}">{{ choice.display }}</a>
       </li>

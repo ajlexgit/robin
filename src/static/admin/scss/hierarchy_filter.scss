@@ -1,10 +1,28 @@
 @import "mixins";
 
 .hierarchy-filter {
+  padding: 12px 20px;
   margin-top: 10px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  @include border_radius(4px);
+
+  .title {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  ul {
+    padding: 0;
+    margin-bottom: 0 !important;
+  }
 
   li {
     margin: 2px 10px 2px 0;
+
+    .divider {
+      margin-left: 10px;
+    }
 
     &.active {
       border: none;
