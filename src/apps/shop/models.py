@@ -461,7 +461,7 @@ class OrderRecord(models.Model):
         return '%s (x%s)' % (product_name, self.count)
 
 
-class NotifyReceiver(models.Model):
+class NotificationReceiver(models.Model):
     """ Получаети писем о новом оплаченном заказе """
     config = models.ForeignKey(ShopConfig, related_name='receivers')
     email = models.EmailField(_('e-mail'))

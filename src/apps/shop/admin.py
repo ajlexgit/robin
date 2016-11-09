@@ -15,7 +15,7 @@ from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs import admin_utils
 from libs.autocomplete import AutocompleteWidget
-from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder, NotifyReceiver
+from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder, NotificationReceiver
 from .signals import products_changed, categories_changed
 
 
@@ -29,9 +29,9 @@ class ShopCategoryBlocksInline(AttachedBlocksStackedInline):
     suit_classes = 'suit-tab suit-tab-blocks'
 
 
-class NotifyReceiverAdmin(ModelAdminInlineMixin, admin.TabularInline):
+class NotificationReceiverAdmin(ModelAdminInlineMixin, admin.TabularInline):
     """ Инлайн получателей уведомлений о новых заказах """
-    model = NotifyReceiver
+    model = NotificationReceiver
     extra = 0
     suit_classes = 'suit-tab suit-tab-notify'
 
@@ -47,7 +47,7 @@ class ShopConfigAdmin(SeoModelAdminMixin, SingletonModelAdmin):
             ),
         }),
     )
-    inlines = (ShopConfigBlocksInline, NotifyReceiverAdmin)
+    inlines = (ShopConfigBlocksInline, NotificationReceiverAdmin)
     suit_form_tabs = (
         ('general', _('General')),
         ('notify', _('Notifications')),
