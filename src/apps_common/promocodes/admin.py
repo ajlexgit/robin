@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.filters import SimpleListFilter
 from solo.admin import SingletonModelAdmin
-from project.admin.base import ModelAdminMixin
+from project.admin import ModelAdminMixin
+from project.admin.filters import HierarchyFilter
 from .models import PromoSettings, PromoCode
 from .strategies import STRATEGIES
 
@@ -14,7 +14,7 @@ class PromoSettingsAdmin(ModelAdminMixin, SingletonModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                
+
             ),
         }),
     )
@@ -23,10 +23,9 @@ class PromoSettingsAdmin(ModelAdminMixin, SingletonModelAdmin):
     )
 
 
-class PromoCodeTypeFilter(SimpleListFilter):
+class PromoCodeTypeFilter(HierarchyFilter):
     title = _('Type')
     parameter_name = 'type'
-    template = 'admin/button_filter.html'
 
     TYPES = (
         ('self-created', _('Self-created')),
@@ -131,14 +130,6 @@ class PromoCodeAdmin(ModelAdminMixin, admin.ModelAdmin):
     suit_form_tabs = (
         ('general', _('General')),
     )
-
-    @property
-    def media(self):
-        return super().media + forms.Media(
-            js=(
-                'admin/js/button_filter.js',
-            ),
-        )
 
     def strategy_format(self, obj):
         strategy = STRATEGIES.get(obj.strategy_name)

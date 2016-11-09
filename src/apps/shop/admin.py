@@ -8,6 +8,7 @@ from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.filters import SimpleListFilter
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
+from project.admin.filters import HierarchyFilter
 from solo.admin import SingletonModelAdmin
 from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
@@ -128,7 +129,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, SortableMPTTModelAdmin):
     action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 
-class StatusShopProductCategoryFilter(SimpleListFilter):
+class ShopProductCategoryFilter(HierarchyFilter):
     """ Фильтр продуктов по категории """
     title = _('Category')
     parameter_name = 'category'
@@ -189,19 +190,27 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     )
     form = ShopProductForm
     actions = ('action_hide', 'action_show')
+    search_fields = ('title', 'category__title')
     list_display = (
         'view', 'micropreview', '__str__', 'category_link',
         'price_alternative', 'is_visible',
     )
-    search_fields = ('title', 'category__title')
     list_display_links = ('micropreview', '__str__', )
-    list_filter = (StatusShopProductCategoryFilter, )
+    list_filter = (ShopProductCategoryFilter, )
     prepopulated_fields = {
         'slug': ('title', ),
     }
     suit_form_tabs = (
         ('general', _('General')),
     )
+
+    def suit_cell_attributes(self, obj, column):
+        """ Классы для ячеек списка """
+        default = super().suit_cell_attributes(obj, column)
+        if column == 'micropreview':
+            default.setdefault('class', '')
+            default['class'] += ' mini-column'
+        return default
 
     def micropreview(self, obj):
         if not obj.photo:
@@ -220,12 +229,13 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
             admin_utils.get_change_url(meta.app_label, meta.model_name, obj.category.pk),
             obj.category
         )
-    category_link.short_description = _('Category')
+    category_link.short_description = _('Categories')
     category_link.allow_tags = True
 
     def price_alternative(self, obj):
         return '<nobr>%s</nobr>' % obj.price.alternative
     price_alternative.allow_tags = True
+    price_alternative.admin_order_field = 'price'
     price_alternative.short_description = _('Price')
 
     def action_hide(self, request, queryset):
@@ -397,14 +407,6 @@ class ShopOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     suit_form_includes = (
         ('shop/admin/products.html', 'top', 'products'),
     )
-
-    @property
-    def media(self):
-        return super().media + forms.Media(
-            js=(
-                'admin/js/button_filter.js',
-            ),
-        )
 
     def suit_row_attributes(self, obj, request):
         if obj.is_cancelled:

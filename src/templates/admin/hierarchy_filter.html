@@ -1,0 +1,18 @@
+<div class="hierarchy-filter xfull">
+  <ul class="toplinks breadcrumb">
+    {% if back %}
+      <li class="date-back">
+        <a href="{{ back.query_string }}">&laquo; {{ back.display }}</a>
+        <span class="divider">|</span>
+      </li>
+    {% endif %}
+
+    {% for choice in choices %}
+      <li class="{{ choice.selected|yesno:"active," }}">
+        <a href="{{ choice.query_string }}">{{ choice.display }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <input type="hidden" name="{{ spec.parameter_name }}" value="{{ spec.value }}">
+</div>

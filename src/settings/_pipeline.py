@@ -61,7 +61,7 @@ PIPELINE = {
                 'admin/css/jquery-ui/jquery-ui.min.css',
                 'admin/scss/admin_fixes.scss',
                 'admin/scss/admin_table.scss',
-                'admin/scss/button_filter.scss',
+                'admin/scss/hierarchy_filter.scss',
                 'admin/scss/dl_core.scss',
                 'admin/scss/dl_login.scss',
             ),

@@ -1,0 +1,21 @@
+@import "mixins";
+
+.hierarchy-filter {
+  margin-top: 10px;
+
+  li {
+    margin: 2px 10px 2px 0;
+
+    &.active {
+      border: none;
+      @include box-shadow(none);
+
+      a {
+        cursor: default;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
