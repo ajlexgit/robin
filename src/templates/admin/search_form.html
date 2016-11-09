@@ -17,6 +17,7 @@
                 {% for spec in cl.filter_specs %}
                   {% if not spec.hierarchy_filter %}
                     {% suit_list_filter_select cl spec %}
+                    &nbsp;
                   {% endif %}
                 {% endfor %}
                 </span>
