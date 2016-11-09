@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Блок в шаблоне, который может быть AJAX или нет - по флагу
 # Gallery popup: JS templates
 # CKEditor internal link
 # $.fn.scrolltextarea + autosize
