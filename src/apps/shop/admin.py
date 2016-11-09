@@ -255,19 +255,18 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     action_show.short_description = _('Show selected %(verbose_name_plural)s')
 
 
-class StatusShopOrderFilter(SimpleListFilter):
+class StatusShopOrderFilter(HierarchyFilter):
     """ Фильтр заказов по статусу """
     title = _('Status')
     parameter_name = 'status'
-    template = 'admin/button_filter.html'
 
     STATUSES = (
+        ('all', _('All')),
         ('non_checked', _('Not checked')),
         ('checked', _('Checked')),
         ('paid', _('Paid')),
         ('cancelled', _('Cancelled')),
         ('archived', _('Archived')),
-        ('all', _('All')),
     )
 
     def value(self):

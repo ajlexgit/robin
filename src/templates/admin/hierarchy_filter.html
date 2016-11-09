@@ -1,20 +1,22 @@
-<div class="hierarchy-filter xfull">
-  <div class="title">{{ title }}:</div>
+{% if choices %}
+  <div class="hierarchy-filter xfull">
+    <div class="title">{{ title }}:</div>
 
-  <ul class="toplinks breadcrumb">
-    {% with back=choices.0 %}
-      <li class="{{ back.selected|yesno:"active," }}">
-        <a href="{{ back.query_string }}">{{ back.display }}</a>
-        <span class="divider">|</span>
-      </li>
-    {% endwith %}
+    <ul class="toplinks breadcrumb">
+      {% with back=choices.0 %}
+        <li class="{{ back.selected|yesno:"active," }}">
+          <a href="{{ back.query_string }}">{{ back.display }}</a>
+          <span class="divider">|</span>
+        </li>
+      {% endwith %}
 
-    {% for choice in choices|slice:"1:" %}
-      <li class="{{ choice.selected|yesno:"active," }}">
-        <a href="{{ choice.query_string }}">{{ choice.display }}</a>
-      </li>
-    {% endfor %}
-  </ul>
+      {% for choice in choices|slice:"1:" %}
+        <li class="{{ choice.selected|yesno:"active," }}">
+          <a href="{{ choice.query_string }}">{{ choice.display }}</a>
+        </li>
+      {% endfor %}
+    </ul>
 
-  <input type="hidden" name="{{ spec.parameter_name }}" value="{{ spec.value|default_if_none:'' }}">
-</div>
+    <input type="hidden" name="{{ spec.parameter_name }}" value="{{ spec.value|default_if_none:'' }}">
+  </div>
+{% endif %}
