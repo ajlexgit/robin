@@ -6,7 +6,6 @@ from django.db.models import F, Func, Value
 from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.filters import SimpleListFilter
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from project.admin.filters import HierarchyFilter
 from solo.admin import SingletonModelAdmin

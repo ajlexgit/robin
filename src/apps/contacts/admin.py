@@ -57,7 +57,9 @@ class AddressAdmin(ModelAdminMixin, SortableModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('address', 'city', 'region', 'zip', 'coords'),
+            'fields': (
+                'address', 'city', 'region', 'zip', 'coords'
+            ),
         }),
     )
     list_display = ('city', 'address',)
@@ -80,15 +82,21 @@ class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('name', 'phone', 'email', ),
+            'fields': (
+                'name', 'phone', 'email',
+            ),
         }),
         (_('Text'), {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('message', ),
+            'fields': (
+                'message',
+            ),
         }),
         (_('Info'), {
             'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('date_fmt', 'referer'),
+            'fields': (
+                'date_fmt', 'referer',
+            ),
         }),
     )
     readonly_fields = ('name', 'phone', 'email', 'message', 'date_fmt', 'referer')

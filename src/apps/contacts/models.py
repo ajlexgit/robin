@@ -26,8 +26,8 @@ class ContactsConfig(SingletonModel):
 
 class Address(models.Model):
     """ Адрес """
-    city = models.CharField(_('city'), max_length=255)
     address = models.CharField(_('address'), max_length=255)
+    city = models.CharField(_('city'), max_length=255)
     region = models.CharField(_('region'), max_length=64, blank=True)
     zip = models.CharField(_('zip'), max_length=32, blank=True)
     coords = GoogleCoordsField(_('coords'), blank=True)
