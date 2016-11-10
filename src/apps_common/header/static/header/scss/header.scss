@@ -31,10 +31,10 @@ $logo_height: 54px;
         background: $sprite_url no-repeat 0 0;
         background-size: rel-background-size($logo_width, $logo_height);
       }
+    }
 
-      &:hover {
-        @include opacity(0.75);
-      }
+    a.logo:hover {
+      @include opacity(0.75);
     }
   }
 
