@@ -18,7 +18,7 @@ class AutocompleteListFilter(ListFilter):
     model = None                        # модель для выборки
     multiple = False                    # возможность выбора нескольких значений
     expression = 'title__icontains'     # ключ для фильтрации
-    minimum_input_length = 0            # минимальное кол-во введенных символов
+    min_chars = 0                       # минимальное кол-во введенных символов
     filters = ()
 
     def __init__(self, request, params, model, model_admin):
