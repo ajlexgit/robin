@@ -5,7 +5,6 @@ from django.utils.functional import cached_property
 
 class Paginator(paginator.Paginator):
     parameter_name = 'page'
-    template = 'paginator/paginator.html'
 
     def __init__(self, request, *args, **kwargs):
         # При сжатии страниц: кол-во страниц, соседних текущей с каждой стороны,

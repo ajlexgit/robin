@@ -4,13 +4,13 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def paginator(context, paginator):
+def paginator(context, paginator, template='paginator/paginator.html'):
     request = context.get('request')
 
     if not paginator.current_page.has_other_pages():
         return ''
 
-    return loader.render_to_string(paginator.template, {
+    return loader.render_to_string(template, {
         'paginator': paginator,
         'current_page_number': paginator.current_page_number,
     }, request=request)

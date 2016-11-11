@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Подумать над возможностью реализации Grid через Flexbox.
+
 # Gallery popup: JS templates
 # CKEditor internal link
 # $.fn.scrolltextarea + autosize
