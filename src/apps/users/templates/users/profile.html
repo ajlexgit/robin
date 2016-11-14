@@ -5,12 +5,12 @@
 
 {% block static_head %}
   {{ block.super }}
-  {% stylesheet 'users-profile' %}
+  {% stylesheet 'user_profile' %}
 {% endblock static_head %}
 
 {% block static_js %}
   {{ block.super }}
-  {% javascript 'users-profile' %}
+  {% javascript 'user_profile' %}
 {% endblock static_js %}
 
 
@@ -37,7 +37,7 @@
           {% endif %}
         {% endwith %}
         {% if profile_user == request.user %}
-          <a href="{% url 'users:reset_password' %}" class="btn">{% trans 'Change password' %}</a>
+          <a href="{% url 'users:reset' %}" class="btn">{% trans 'Change password' %}</a>
         {% endif %}
       </div>
     </div>
