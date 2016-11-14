@@ -141,7 +141,7 @@ class PasswordResetView(TemplateView):
             post_reset_redirect='users:reset_done',
             email_template_name='users/emails/reset_email.html',
             html_email_template_name='users/emails/reset_email.html',
-            subject_template_name='users/emails/reset_subject.txt',
+            subject_template_name='users/emails/reset_subject.html',
         )
 
 

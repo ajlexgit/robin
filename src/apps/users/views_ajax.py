@@ -108,7 +108,7 @@ class PasswordResetView(AjaxViewMixin, FormView):
             'use_https': self.request.is_secure(),
             'token_generator': default_token_generator,
             'email_template_name': 'users/emails/reset_email.html',
-            'subject_template_name': 'users/emails/reset_subject.txt',
+            'subject_template_name': 'users/emails/reset_subject.html',
             'request': self.request,
             'html_email_template_name': 'users/emails/reset_email.html',
         }
