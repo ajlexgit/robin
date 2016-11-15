@@ -114,6 +114,10 @@
       margin: 0;
     }
   }
+  button::-moz-focus-inner {
+    border: none;
+    padding: 0;
+  }
   textarea {
     resize: none;
     overflow: auto;
