@@ -212,7 +212,7 @@ class ResetConfirmView(TemplateView):
             form = SetPasswordForm(request.user, request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('users:reset_complete')
+                return redirect(get_redirect_url(request, 'users:reset_complete'))
             else:
                 return self.render_to_response({
                     'form': form,
