@@ -233,10 +233,7 @@
             data: $form.serialize(),
             dataType: 'json',
             success: function(response) {
-                $.popup({
-                    classes: 'users-popup',
-                    content: response.done
-                }).show();
+               $.popup().hide();
             },
             error: $.parseError(function(response) {
                 if (response && response.form) {
