@@ -1,16 +1,19 @@
 {% if choices %}
   <div class="hierarchy-filter xfull">
-    <div class="title">{{ title }}:</div>
+    <div class="title">
+      <b>{{ title }}: </b>
+      {% for node in spec.get_branch %}
+        {% if forloop.last %}
+          <b>{{ node.display }}</b>
+        {% else %}
+          <a href="{{ node.query_string }}">{{ node.display }}</a>
+          <span>&nbsp;->&nbsp;</span>
+        {% endif %}
+      {% endfor %}
+    </div>
 
     <ul class="toplinks breadcrumb">
-      {% with back=choices.0 %}
-        <li class="{{ back.selected|yesno:"active," }}">
-          <a href="{{ back.query_string }}">{{ back.display }}</a>
-          <span class="divider">|</span>
-        </li>
-      {% endwith %}
-
-      {% for choice in choices|slice:"1:" %}
+      {% for choice in choices %}
         <li class="{{ choice.selected|yesno:"active," }}">
           <a href="{{ choice.query_string }}">{{ choice.display }}</a>
         </li>
