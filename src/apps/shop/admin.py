@@ -134,17 +134,16 @@ class ShopProductCategoryFilter(HierarchyFilter):
     parameter_name = 'category'
 
     def lookups(self, request, model_admin):
-        return ShopCategory.objects.annotate(
-            text=Concat(
-                Func(
-                    Value('–'),
-                    F('level'),
-                    function='REPEAT',
-                    output_field=models.CharField()
-                ),
-                F('title'),
-            )
-        ).values_list('id', 'text')
+        value = self.value()
+        if value:
+            subcategs = ShopCategory.objects.filter(parent=value).values_list('id', 'title')
+            if subcategs:
+                return subcategs
+            else:
+                categ = ShopCategory.objects.get(pk=value)
+                return ShopCategory.objects.filter(parent=categ.parent).values_list('id', 'title')
+        else:
+            return ShopCategory.objects.root_categories().values_list('id', 'title')
 
     def queryset(self, request, queryset):
         value = self.value()
