@@ -133,6 +133,14 @@ class ShopProductCategoryFilter(HierarchyFilter):
     title = _('Category')
     parameter_name = 'category'
 
+    def get_branch_choices(self, value):
+        try:
+            category = ShopCategory.objects.get(pk=value)
+        except ShopCategory.DoesNotExist:
+            return ()
+        else:
+            return category.get_ancestors(include_self=True).values_list('id', 'title')
+
     def lookups(self, request, model_admin):
         value = self.value()
         if value:
