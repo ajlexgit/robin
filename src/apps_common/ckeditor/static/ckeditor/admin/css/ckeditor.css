@@ -67,6 +67,13 @@ ul li:before {
     font-size: 0.8em;
 }
 
+ol {
+    padding-left: 16px;
+}
+ol li {
+    padding-left: 0;
+}
+
 /* fix styles combo */
 .cke_panel_list li {
     padding: 0;

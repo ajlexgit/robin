@@ -1,10 +1,10 @@
 {% if choices %}
   <div class="hierarchy-filter xfull">
     <div class="title">
-      <b>{{ title }}: </b>
+      {{ title }}: 
       {% for node in spec.get_branch %}
         {% if forloop.last %}
-          <b>{{ node.display }}</b>
+          {{ node.display }}
         {% else %}
           <a href="{{ node.query_string }}">{{ node.display }}</a>
           <span>&nbsp;->&nbsp;</span>
@@ -16,6 +16,9 @@
       {% for choice in choices %}
         <li class="{{ choice.selected|yesno:"active," }}">
           <a href="{{ choice.query_string }}">{{ choice.display }}</a>
+          {% if not forloop.last %}
+            <span class="divider small">|</span>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
