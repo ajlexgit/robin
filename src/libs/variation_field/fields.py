@@ -312,6 +312,9 @@ class VariationImageFieldFile(ImageFieldFile):
 
 class VariationImageFileDescriptor(ImageFileDescriptor):
     def __get__(self, instance=None, owner=None):
+        if instance is None:
+            return owner._meta.get_field(self.field.name)
+
         value = super().__get__(instance, owner)
 
         # Добавляем значение области обрезки
@@ -724,3 +727,15 @@ class VariationImageField(models.ImageField):
         """ Обработчик сигнала удаления экземпляра модели """
         field_file = self.value_from_object(instance)
         field_file.delete(save=False)
+
+    def recut_all(self, *args):
+        """ Перенарезка всех картинок """
+        if self.crop_field:
+            get_crop = lambda i: getattr(i, self.crop_field)
+        else:
+            get_crop = lambda i: None
+
+        for instance in self.model.objects.all():
+            file_field = getattr(instance, self.name)
+            if file_field:
+                file_field.recut(*args, croparea=get_crop(instance))
