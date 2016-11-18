@@ -1,8 +1,8 @@
 (function($) {
 
     /*
-        Корзина продуктов, которая хранится в localStorage и
-        отправляющая запросы на сохранение заказа в сессии.
+        Корзина продуктов, которая хранится в localStorage (для фронтенда) и
+        отправляющая AJAX-запросы на сохранение заказа в сессии (для бэкенда).
 
         Требует:
             jquery.utils.js
@@ -14,18 +14,40 @@
             // после сохранения в сессии
             save(response)
 
-            // при изменении заказа в localStorage (из другой вкладки)
+            // при изменении заказа в localStorage из другой вкладки
             update()
 
             // при очистке корзины
-            clear()
+            clear(response)
 
         Пример:
-            // добавить два товара с ID 78
+            // добавить в корзину два товара с ID 78
             cart.addItem(78, 2).done(function() {
                 console.log('saved to session')
             })
+
+
+            // обновление блока корзины после сохранения в сессию
+            window.cart.on('save', function(response) {
+                if (response.cart_block) {
+                    $('.cart-block').replaceWith(response.cart_block);
+                }
+            }).on('clear', function(response) {
+                if (response.cart_block) {
+                    $('.cart-block').replaceWith(response.cart_block);
+                }
+            });
      */
+
+    /** @namespace window.js_storage */
+    /** @namespace window.js_storage.save_cart */
+    /** @namespace window.js_storage.load_cart */
+    /** @namespace window.js_storage.clear_cart */
+    /** @namespace window.js_storage.max_product_count */
+    /** @namespace window.js_storage.session_cart_empty */
+
+    var saving_query;
+    var loading_query;
 
     window.Cart = Class(EventedObject, function Cart(cls, superclass) {
         cls.defaults = {
@@ -36,18 +58,29 @@
             superclass.init.call(this);
             this.opts = $.extend({}, this.defaults, options);
 
-            // очистка корзины в localStorage, если стоит кука
+            // ключ параметра localStorage, инициирующего обновление корзины
+            // в текущей вкладе, при изменении в другой вкладке
+            this._update_trigger = this.opts.prefix + '_state';
+
+            // очистка, вызваннная бэкендом
+            var that = this;
+
             var force_clean = $.cookie('clear_cart');
             if (force_clean) {
                 this._clearLocal();
-                this.trigger('clear');
+                this._clearSession().done(function(response) {
+                    that._updateTabs();
+                    that.trigger('clear', response);
+                });
             }
 
-            var that = this;
-            $(window).off('.cart').on('storage.cart', function(event) {
-                var origEvent = event.originalEvent;
-                if (origEvent.key == that.opts.prefix) {
-                    that.trigger('update');
+            // событие обновления localStorage из другой вкладки
+            $(window).on('storage.cart', function(event) {
+                if (event.originalEvent.key == that._update_trigger) {
+                    var value = localStorage.getItem(that._update_trigger);
+                    if (value != null) {
+                        that.trigger('update');
+                    }
                 }
             });
         };
@@ -96,8 +129,75 @@
          */
         cls._clearLocal = function() {
             localStorage.removeItem(this.opts.prefix);
-            $.removeCookie('clear_cart', {path: '/'});
+            localStorage.removeItem(this._update_trigger);
+
+            var cookie_options = {path: '/'};
+            if (window.js_storage.cookie_domain) {
+                cookie_options['domain'] = window.js_storage.cookie_domain;
+            }
+            $.removeCookie('clear_cart', cookie_options);
         };
+
+        /*
+            Сохранение корзины в сессию
+         */
+        cls._saveToSession = function(formatted_storage) {
+            if (saving_query) {
+                saving_query.abort();
+            }
+
+            return saving_query = $.ajax({
+                url: window.js_storage.save_cart,
+                type: 'POST',
+                data: {
+                    cart: formatted_storage
+                },
+                dataType: 'json',
+                error: $.parseError()
+            });
+        };
+
+        /*
+            Загрузка корзины из сессии
+          */
+        cls._loadFromSession = function() {
+            if (loading_query) {
+                loading_query.abort();
+            }
+
+            return loading_query = $.ajax({
+                url: window.js_storage.load_cart,
+                type: 'GET',
+                dataType: 'json',
+                error: $.parseError()
+            });
+        };
+
+        /*
+            Очистка корзины в сесcии
+         */
+        cls._clearSession = function() {
+            if (saving_query) {
+                saving_query.abort();
+            }
+
+            return saving_query = $.ajax({
+                url: window.js_storage.clear_cart,
+                type: 'POST',
+                dataType: 'json',
+                error: $.parseError()
+            });
+        };
+
+        /*
+            Инициализация обновления корзины в других вкладках
+         */
+        cls._updateTabs = function() {
+            var current_state = localStorage.getItem(this._update_trigger);
+            current_state = parseInt(current_state) || 0;
+            localStorage.setItem(this._update_trigger, ++current_state);
+        };
+
 
 
         /*
@@ -112,74 +212,37 @@
             Проверка localStorage на пустоту
           */
         cls.isEmpty = function() {
-            var storage = this.getStorage();
-            return $.isEmptyObject(storage);
+            var formatted_storage = this.getStorage();
+            return $.isEmptyObject(formatted_storage);
         };
 
         /*
-            Сохранение заказа в localStorage и в сессию
+            Сохранение заказа в localStorage и в сессию.
+            Возвращает Deferred-объект, представляющий AJAX-запрос.
           */
         cls.saveStorage = function(storage) {
-            storage = this._formatStorage(storage);
-
-            if (this._query) {
-                this._query.abort();
-            }
-
             var that = this;
-            if ($.isEmptyObject(storage)) {
-                // корзина пуста
+            var formatted_storage = this._formatStorage(storage);
+            if ($.isEmptyObject(formatted_storage)) {
+                // очистка корзины
                 this._clearLocal();
-
-                return this._query = $.ajax({
-                    url: window.js_storage.clear_cart,
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function() {
-                        that.trigger('clear');
-                    },
-                    error: $.parseError()
+                return this._clearSession().done(function(response) {
+                    that._updateTabs();
+                    that.trigger('clear', response);
                 });
             } else {
-                // корзина не пуста
-                this._saveToLocal(storage);
-
-                return this._query = $.ajax({
-                    url: window.js_storage.save_cart,
-                    type: 'POST',
-                    data: {
-                        cart: storage
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        that.trigger('save', response);
-                    },
-                    error: $.parseError()
+                // сохранение корзины
+                this._saveToLocal(formatted_storage);
+                return this._saveToSession(formatted_storage).done(function(response) {
+                    that._updateTabs();
+                    that.trigger('save', response);
                 });
             }
-        };
-
-        /*
-            Обновление корзины в localStorage из сессии
-          */
-        cls.loadStorage = function() {
-            var that = this;
-            return $.ajax({
-                url: window.js_storage.load_cart,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    that.saveStorage(response.cart);
-                },
-                error: $.parseError()
-            });
         };
 
         /*
             Добавление товара в корзину.
-
-            Возвращает Deferred-объект, представляющий AJAX-запрос,
-            сохраняющий весь заказ в сессию.
+            Возвращает Deferred-объект, представляющий AJAX-запрос.
          */
         cls.addItem = function(product_id, count) {
             if (!product_id) {
@@ -189,7 +252,7 @@
 
             count = Math.max(0, parseInt(count) || 0);
             if (!count) {
-                this.error('zero count');
+                this.error('count required');
                 return $.Deferred().reject();
             }
 
@@ -205,9 +268,7 @@
 
         /*
             Удаление товара из корзины.
-
-            Возвращает Deferred-объект, представляющий AJAX-запрос,
-            сохраняющий весь заказ в сессию.
+            Возвращает Deferred-объект, представляющий AJAX-запрос.
          */
         cls.removeItem = function(product_id) {
             var storage = this.getStorage();
@@ -221,15 +282,22 @@
     });
 
 
-    window.cart = window.Cart();
+    window.cart = window.Cart({
 
-    /*
-        После авторизации заново записываем заказ в сессию,
-        т.к. ключ сессии изменится.
-      */
-    $(document).on('login.auth.users logout.auth.users', function() {
-        if (!window.cart.isEmpty()) {
-            var storage = window.cart.getStorage();
+    }).on('update', function() {
+        // при изменении корзины из другой вкладки - обновляем страницу
+        location.reload(true);
+    });
+
+
+    $(document).on('click', '.add-to-cart-btn', function() {
+        // кнопка добавления продукта в корзину
+        var product_id = $(this).data('product');
+        window.cart.addItem(product_id, 1);
+    }).ready(function() {
+        // запись корзины в сессию, если localStorage не пуст, а сессия пуста.
+        var storage = window.cart.getStorage();
+        if (!$.isEmptyObject(storage) && window.js_storage.session_cart_empty) {
             window.cart.saveStorage(storage);
         }
     });
