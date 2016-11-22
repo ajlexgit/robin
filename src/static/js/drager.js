@@ -412,6 +412,8 @@
             this._momentumPoints = [];
             this._addMomentumPoint(evt);
 
+            this.$start_target = $(event.target);
+
             this.setStartPoint(evt);
             return this.trigger('mousedown', evt);
         };
@@ -428,6 +430,12 @@
                         return
                     }
                     this.wasDragged = true;
+
+                    if (this.opts.preventClick) {
+                        this.$start_target.one('click.drager.prevent' + this.id, function() {
+                            return false
+                        });
+                    }
                 } else {
                     return;
                 }
@@ -442,14 +450,10 @@
             if (this.wasDragged) {
                 // предотвращаем событие click при перемещении.
                 if (this.opts.preventClick) {
-                    var that = this;
-                    this.$element.one('click.drager.prevent' + this.id, function() {
-                        return false
-                    });
-
                     // гарантия отключения перехватчика, если mouseup был вызван через trigger
+                    var that = this;
                     setTimeout(function() {
-                        that.$element.off('click.drager.prevent' + that.id);
+                        that.$start_target.off('click.drager.prevent' + that.id);
                     }, 0);
                 }
             } /*else if (isTouch && isAndroid) {
