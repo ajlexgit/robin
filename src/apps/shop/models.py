@@ -289,8 +289,7 @@ class ShopProduct(models.Model):
     @cached_property
     def photo(self):
         if self.gallery:
-            item = self.gallery.image_items.first()
-            return item.image if item else None
+            return self.gallery.image_items.first()
         return None
 
 

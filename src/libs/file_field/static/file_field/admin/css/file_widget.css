@@ -2,6 +2,7 @@
     white-space: nowrap;
 }
 
+/* прячем оригинальное поле */
 .file-widget input {
     position: absolute;
     left: -100%;
@@ -11,20 +12,31 @@
     visibility: hidden;
 }
 
-.file-widget .btn {
+/* зеленая кнопка */
+.file-widget label {
     display: inline-block;
     position: relative;
     overflow: hidden;
     z-index: 2;
     cursor: pointer;
+    text-align: left;
     vertical-align: middle;
 }
 
-.file-widget .btn i {
+.file-widget label i {
     margin-left: -4px;
-    margin-right: 2px;
+    margin-right: 6px;
 }
 
+.file-widget label span {
+    overflow: hidden;
+    width: 90px;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    vertical-align: top;
+}
+
+/* ссылка на файл */
 .file-widget .preview {
     display: inline-block;
     position: relative;
@@ -51,6 +63,6 @@
     background: url(../img/eye.svg) no-repeat center;
 }
 
-.file-widget.has-value .preview {
+.file-widget.has-link .preview {
     margin-left: -7px;
 }

@@ -663,14 +663,14 @@
             if (permanent) {
                 // постоянный обработчик
                 $image.on('load', callback);
-            }
-
-            if ($image.prop('complete') || ($image.prop('naturalWidth') > 0)) {
-                // уже загружена
-                callback.call(image);
-            } else if (!permanent) {
-                // загрузится позже
-                $image.one('load', callback);
+            } else {
+                if ($image.prop('complete') || ($image.prop('naturalWidth') > 0)) {
+                    // уже загружена
+                    callback.call(image);
+                } else if (!permanent) {
+                    // загрузится позже
+                    $image.one('load', callback);
+                }
             }
         });
     };
