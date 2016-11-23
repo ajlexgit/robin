@@ -76,7 +76,6 @@
     var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';
 
     var ua = navigator.userAgent.toLowerCase();
-    var isAndroid = ua.indexOf("android") > -1;
 
     var getDx = function(fromPoint, toPoint) {
         var clientDx = toPoint.clientX - fromPoint.clientX;
@@ -444,7 +443,7 @@
             return this.trigger('drag', evt);
         };
 
-        cls.mouseUpHandler = function(event, isTouch) {
+        cls.mouseUpHandler = function(event) {
             if (!this._dragging_allowed) return;
 
             if (this.wasDragged) {
@@ -456,11 +455,7 @@
                         that.$start_target.off('click.drager.prevent' + that.id);
                     }, 0);
                 }
-            } /*else if (isTouch && isAndroid) {
-                // Из-за бага на Android, предотвращение touchstart блокирует
-                // событие click. Вызываем его сами.
-                $(event.target).trigger('click');
-            }*/
+            }
 
             var evt = MouseUpDragerEvent(event, this);
             return this.stopCurrent(evt);
@@ -513,10 +508,6 @@
 
                 this.$element.on(touchstart + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
-
-                    // Баг двухсекундной задержки на Android
-                    // if (isAndroid) event.preventDefault();
-
                     return that.mouseDownHandler.call(that, event);
                 });
                 $(document).on(touchmove + '.' + ns, function(event) {
@@ -524,7 +515,7 @@
                     return that.dragHandler.call(that, event);
                 }).on(touchend + '.' + ns, function(event) {
                     if (isMultiTouch(event)) return;
-                    return that.mouseUpHandler.call(that, event, true);
+                    return that.mouseUpHandler.call(that, event);
                 });
             }
         };

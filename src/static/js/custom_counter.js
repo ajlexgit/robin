@@ -216,6 +216,7 @@
             }
 
             this.value(result);
+            this.$input.trigger('change');
             return this;
         };
 
@@ -232,6 +233,7 @@
             }
 
             this.value(result);
+            this.$input.trigger('change');
             return this;
         };
     });
