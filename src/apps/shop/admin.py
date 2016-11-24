@@ -276,7 +276,10 @@ class StatusShopOrderFilter(HierarchyFilter):
     )
 
     def value(self):
-        return super().value() or 'non_checked'
+        value = super().value()
+        if value is None:
+            value = 'non_checked'
+        return value
 
     def lookups(self, request, model_admin):
         result = []
@@ -286,15 +289,10 @@ class StatusShopOrderFilter(HierarchyFilter):
 
         return result
 
-    def choices(self, cl):
-        for lookup, title in self.lookup_choices:
-            yield {
-                'selected': self.value() == lookup,
-                'query_string': cl.get_query_string({
-                    self.parameter_name: lookup,
-                }, []),
-                'display': title,
-            }
+    def get_branch_choices(self, value):
+        return [
+            (value, dict(self.STATUSES).get(value))
+        ]
 
     def queryset(self, request, queryset, value=None):
         value = value or self.value()

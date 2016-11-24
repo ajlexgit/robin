@@ -28,29 +28,32 @@ class PromoCodeTypeFilter(HierarchyFilter):
     parameter_name = 'type'
 
     TYPES = (
+        ('all', _('All')),
         ('self-created', _('Self-created')),
         ('auto-generated', _('Auto-generated')),
-        ('all', _('All')),
     )
 
-    def lookups(self, request, model_admin):
-        return self.TYPES
-
     def value(self):
-        return super().value() or 'self-created'
+        value = super().value()
+        if value is None:
+            value = 'self-created'
+        return value
 
-    def choices(self, cl):
-        for lookup, title in self.lookup_choices:
-            yield {
-                'selected': self.value() == str(lookup),
-                'query_string': cl.get_query_string({
-                    self.parameter_name: lookup,
-                }, []),
-                'display': title,
-            }
+    def lookups(self, request, model_admin):
+        result = []
+        for key, name in self.TYPES:
+            qs = self.queryset(request, model_admin.model._default_manager, key)
+            result.append((key, '%s (%d)' % (name, qs.count())))
 
-    def queryset(self, request, queryset):
-        value = self.value()
+        return result
+
+    def get_branch_choices(self, value):
+        return [
+            (value, dict(self.TYPES).get(value))
+        ]
+
+    def queryset(self, request, queryset, value=None):
+        value = value or self.value()
         if value == 'self-created':
             queryset = queryset.filter(self_created=True)
         elif value == 'auto-generated':

@@ -1,7 +1,7 @@
 {% if choices %}
   <div class="hierarchy-filter xfull">
     <div class="title">
-      {{ title }}: 
+      <b>{{ title }}:</b>
       {% for node in spec.get_branch %}
         {% if forloop.last %}
           {{ node.display }}

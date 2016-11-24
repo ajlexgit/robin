@@ -12,13 +12,12 @@ class HierarchyFilter(SimpleListFilter):
 
     def get_branch(self):
         value = self.value()
-        yield {
-            'selected': value is None,
-            'query_string': '?{}='.format(self.parameter_name),
-            'display': _('All'),
-        }
-
-        if not value:
+        if value is None:
+            yield {
+                'selected': value is None,
+                'query_string': '?{}='.format(self.parameter_name),
+                'display': _('All'),
+            }
             return
 
         choices = self.get_branch_choices(value) or ()
