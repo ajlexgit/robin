@@ -20,7 +20,7 @@ requests==2.11.1
 
 # jinja2==2.8
 # django_jinja==2.2.1
-# jinja2-django-tags==0.4
+# jinja2-django-tags==0.5
 
 # PyLinkedinAPI==0.1.5
 # facebook-sdk==1.0.0
