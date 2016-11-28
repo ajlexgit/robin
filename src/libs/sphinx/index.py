@@ -105,6 +105,13 @@ class SphinxScheme:
                         raise ValidationError("index '%s', document %d: field '%s' should be an iterable" % (
                             self.index_name, doc_id, name
                         ))
+                if attr.type == ATTR_TYPE.BOOL:
+                    try:
+                        document[name] = int(bool(value))
+                    except (TypeError, ValueError):
+                        raise ValidationError("index '%s', document %d: field '%s' should be a bool" % (
+                            self.index_name, doc_id, name
+                        ))
             elif attr.default is None:
                 raise ValidationError("index '%s', document %d: field '%s' required" % (
                     self.index_name, doc_id, name
