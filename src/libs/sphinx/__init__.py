@@ -1,6 +1,9 @@
 """
     Модуль поиска через Sphinx.
 
+    Синтаксис запросов:
+        http://sphinxsearch.com/docs/current/extended-syntax.html
+
     Установка:
         settings.py:
             INSTALLED_APS = (

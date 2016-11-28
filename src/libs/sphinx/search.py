@@ -44,7 +44,7 @@ class SphinxSearch:
         self.client = SphinxClient()
         self.client.SetServer(conf.HOST, conf.PORT)
 
-    def fetch(self, query, filters=None, weights=None, order_by='', offset=0, limit=None):
+    def fetch(self, query, filters=None, weights=None, order_by='', offset=0, limit=None, index=None):
         """ Выборка страницы результатов """
         limit = limit or self.limit
         self.client.SetLimits(offset, limit)
@@ -59,7 +59,8 @@ class SphinxSearch:
         for fieldname, values in filters:
             self.client.SetFilter(fieldname, values)
 
-        result = self.client.Query(query, self.index)
+        index = index or self.index
+        result = self.client.Query(query, index)
         if result is None:
             raise SearchError
 
