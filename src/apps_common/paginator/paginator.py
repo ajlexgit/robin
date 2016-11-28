@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 from django.core import paginator
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.utils.functional import cached_property
@@ -60,8 +61,12 @@ class Paginator(paginator.Paginator):
         """ Ссылка на страницу """
         link = self.request.path_info
 
+        params = self.request.GET.dict()
         if number > 1:
-            link += '?%s=%s' % (self.parameter_name, number)
+            params[self.parameter_name] = number
+        elif self.parameter_name in params:
+            del params[self.parameter_name]
+        link += '?' + urlencode(params)
 
         if anchor and self.anchor:
             link += '#' + self.anchor
