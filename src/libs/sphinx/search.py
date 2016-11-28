@@ -3,6 +3,10 @@ from .index import ALL_INDEXES
 from . import conf
 
 
+class SearchError(Exception):
+    pass
+
+
 class SphinxSearchResult:
     __slots__ = ('_total', '_matches')
 
@@ -40,9 +44,10 @@ class SphinxSearch:
         self.client = SphinxClient()
         self.client.SetServer(conf.HOST, conf.PORT)
 
-    def fetch(self, query, filters=None, weights=None, order_by='', offset=0):
+    def fetch(self, query, filters=None, weights=None, order_by='', offset=0, limit=None):
         """ Выборка страницы результатов """
-        self.client.SetLimits(offset, self.limit)
+        limit = limit or self.limit
+        self.client.SetLimits(offset, limit)
         self.client.SetSortMode(SPH_SORT_EXTENDED, order_by or self.order_by)
 
         weights = weights or self.weights
@@ -55,23 +60,28 @@ class SphinxSearch:
             self.client.SetFilter(fieldname, values)
 
         result = self.client.Query(query, self.index)
+        if result is None:
+            raise SearchError
+
         return SphinxSearchResult(result['total_found'], result['matches'])
 
-    def fetch_dicts(self, query, **kwargs):
-        """ Обертка над fetch, возвращающая словари """
-        result = self.fetch(query, **kwargs)
+    def _to_dicts(self, result):
+        """ Конвертация результата работы метода fetch() в словари """
         return SphinxSearchResult(result.total, (
             {
                 key: value.decode() if isinstance(value, bytes) else value
                 for key, value in dict(record['attrs'], id=record['id']).items()
-            }
+                }
             for record in self.fetch(query, **kwargs)
         ))
 
-    def fetch_models(self, query, **kwargs):
-        """ Обертка над fetch, возвращающая экземпляры моделей """
+    def fetch_dicts(self, query, **kwargs):
+        """ Обертка над fetch, возвращающая словари """
         result = self.fetch(query, **kwargs)
+        return self._to_dicts(result)
 
+    def _to_models(self, result):
+        """ Конвертация результата работы метода fetch() в экземпляры моделей """
         order_list = tuple(
             (record['id'], record['attrs'][self.index_attr_name].decode())
             for record in result
@@ -100,3 +110,8 @@ class SphinxSearch:
             for key_tuple in order_list
             if key_tuple in index_instances
         ))
+
+    def fetch_models(self, query, **kwargs):
+        """ Обертка над fetch, возвращающая экземпляры моделей """
+        result = self.fetch(query, **kwargs)
+        return self._to_models(result)

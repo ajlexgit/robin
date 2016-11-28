@@ -91,7 +91,7 @@
         resutls = MySearchIndex().fetch_dicts('direct line')
 """
 
-from .search import SphinxSearch, SphinxSearchResult
+from .search import SphinxSearch, SphinxSearchResult, SearchError
 from .index import ATTR_TYPE, SphinxScheme, SphinxXMLIndex
 
 default_app_config = 'libs.sphinx.apps.Config'
