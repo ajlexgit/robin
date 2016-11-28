@@ -9,6 +9,10 @@
                 ...
             )
 
+            SPHINX_HOST = 'localhost'
+            SPHINX_PORT = '9312'
+            SPHINX_SECRET = 'skvx8wjq8p81d'
+
         urls.py:
             ...
             url(r'^sphinx/', include('libs.sphinx.urls', namespace='sphinx')),
@@ -65,6 +69,9 @@
                 expand_keywords     = 1
                 html_strip          = 1
             }
+
+        # crontab
+        0 * * * *  cd /cygdrive/c/sphinx/ && bin/indexer --rotate --all --quiet
 
 
     Пример поиска:

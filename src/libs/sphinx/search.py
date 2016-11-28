@@ -1,5 +1,6 @@
 from .api import SphinxClient, SPH_SORT_EXTENDED
 from .index import ALL_INDEXES
+from . import conf
 
 
 class SphinxSearchResult:
@@ -35,9 +36,9 @@ class SphinxSearch:
     weights = None
     order_by = '@relevance DESC, @id DESC'
 
-    def __init__(self, host='localhost', port=9312):
+    def __init__(self):
         self.client = SphinxClient()
-        self.client.SetServer(host, port)
+        self.client.SetServer(conf.HOST, conf.PORT)
 
     def fetch(self, query, filters=None, weights=None, order_by='', offset=0):
         """ Выборка страницы результатов """

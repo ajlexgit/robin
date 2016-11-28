@@ -1,9 +1,7 @@
-from django.conf import settings
 from django.views.generic import View
 from django.http.response import StreamingHttpResponse, Http404
 from .index import ALL_INDEXES, SphinxXMLIndex
-
-SPHINX_SECRET = getattr(settings, 'SPHINX_SECRET', 'skvx8wjq8p81d')
+from . import conf
 
 
 class IndexPipeView(View):
@@ -12,7 +10,7 @@ class IndexPipeView(View):
         if request.method.lower() == 'head':
             raise Http404
 
-        if secret != SPHINX_SECRET:
+        if secret != conf.SECRET:
             raise Http404
 
         if index_name not in ALL_INDEXES:
