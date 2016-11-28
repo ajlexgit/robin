@@ -1,10 +1,15 @@
+import logging
 from .api import SphinxClient, SPH_SORT_EXTENDED
 from .index import ALL_INDEXES
 from . import conf
 
+logger = logging.getLogger(__name__)
+
 
 class SearchError(Exception):
-    pass
+    @property
+    def message(self):
+        return self.args[0]
 
 
 class SphinxSearchResult:
@@ -46,6 +51,9 @@ class SphinxSearch:
 
     def fetch(self, query, filters=None, weights=None, order_by='', offset=0, limit=None, index=None):
         """ Выборка страницы результатов """
+        self.client._error = ''
+        self.client._warning = ''
+
         limit = limit or self.limit
         self.client.SetLimits(offset, limit)
         self.client.SetSortMode(SPH_SORT_EXTENDED, order_by or self.order_by)
@@ -62,7 +70,9 @@ class SphinxSearch:
         index = index or self.index
         result = self.client.Query(query, index)
         if result is None:
-            raise SearchError
+            message = self.client._error or self.client._warning
+            logger.error(message)
+            raise SearchError(message)
 
         return SphinxSearchResult(result['total_found'], result['matches'])
 
