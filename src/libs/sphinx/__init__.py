@@ -10,7 +10,7 @@
             )
 
             SPHINX_HOST = 'localhost'
-            SPHINX_PORT = '9312'
+            SPHINX_PORT = 9312
             SPHINX_SECRET = 'skvx8wjq8p81d'
 
         urls.py:
