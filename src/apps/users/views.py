@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.http.response import Http404
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
@@ -187,7 +188,7 @@ class ResetConfirmView(TemplateView):
         try:
             uid = urlsafe_base64_decode(uidb64)
             user = UserModel._default_manager.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+        except (TypeError, ValueError, OverflowError, ObjectDoesNotExist):
             user = None
 
         if user is None or not default_token_generator.check_token(user, token):

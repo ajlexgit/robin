@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_backends, get_user_model, login, logout
 
 LOGIN_AS_REDIRECT_URL = getattr(settings, 'LOGIN_AS_REDIRECT_URL', 'index')
@@ -16,7 +17,7 @@ def login_as(request, user_id):
     UserModel = get_user_model()
     try:
         user = UserModel.objects.get(pk=user_id)
-    except UserModel.DoesNotExist:
+    except ObjectDoesNotExist:
         logout(request)
         return redirect(settings.LOGIN_URL)
     else:

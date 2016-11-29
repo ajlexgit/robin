@@ -5,6 +5,7 @@ from django.contrib.auth.forms import (
     PasswordResetForm as DefaultPasswordResetForm,
     SetPasswordForm as DefaultSetPasswordForm
 )
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from libs.form_helper import FormHelperMixin
 
@@ -92,7 +93,7 @@ class RegisterForm(FormHelperMixin, UserCreationForm):
         username = self.cleaned_data["username"]
         try:
             UserModel._default_manager.get(username=username)
-        except UserModel.DoesNotExist:
+        except ObjectDoesNotExist:
             return username
         self.add_field_error('username', 'unique')
 
@@ -100,7 +101,7 @@ class RegisterForm(FormHelperMixin, UserCreationForm):
         email = self.cleaned_data["email"]
         try:
             UserModel._default_manager.get(email__iexact=email)
-        except UserModel.DoesNotExist:
+        except ObjectDoesNotExist:
             return email
         self.add_field_error('email', 'unique')
 
@@ -127,7 +128,7 @@ class PasswordResetForm(FormHelperMixin, DefaultPasswordResetForm):
         email = self.cleaned_data["email"]
         try:
             UserModel._default_manager.get(email__iexact=email)
-        except UserModel.DoesNotExist:
+        except ObjectDoesNotExist:
             self.add_field_error('email', 'unregistered_email')
         return email
 
