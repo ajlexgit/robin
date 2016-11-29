@@ -35,6 +35,12 @@ form {
       border: 1px solid #808080;
       @include border_radius(4px);
     }
+
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
   }
 
   // класс на поле с ошибкой
