@@ -6,7 +6,7 @@ from ..models import PageFile
 @receiver(post_delete)
 def delete_file(sender, **kwargs):
     """
-        Удаление фала при удалении сущности
+        Удаление файла при удалении сущности
     """
     instance = kwargs.get('instance')
     if isinstance(instance, PageFile):

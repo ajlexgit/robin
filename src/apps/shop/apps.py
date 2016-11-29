@@ -7,9 +7,9 @@ class Config(AppConfig):
     verbose_name = _('Shop')
 
     def ready(self):
-        import shop.signals.handlers
         from django.shortcuts import resolve_url
         from libs.js_storage import JS_STORAGE
+        from .signals import handlers
         from . import conf
 
         JS_STORAGE.update({

@@ -7,4 +7,4 @@ class Config(AppConfig):
     verbose_name = _('Files on Page')
 
     def ready(self):
-        import files.signals.handlers
+        from .signals import handlers
