@@ -1,9 +1,6 @@
 from django import forms
-from django.db import models
 from django.contrib import admin
 from django.utils.timezone import now
-from django.db.models import F, Func, Value
-from django.db.models.functions import Concat
 from django.contrib.admin.utils import unquote
 from django.utils.translation import ugettext_lazy as _
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin

@@ -13,7 +13,8 @@ from libs.stdimage.fields import StdImageField
 from libs.stdimage.widgets import StdImageAdminWidget
 from libs.valute_field.fields import ValuteField
 from libs.valute_field.forms import ValuteFormField
-from libs.widgets import SplitDateTimeWidget, URLWidget, AutosizedTextarea
+from libs.videolink_field.fields import VideoLinkField
+from .widgets import URLWidget, SplitDateTimeWidget, AutosizedTextarea
 
 
 class BaseModelAdminMixin:
@@ -71,6 +72,11 @@ class BaseModelAdminMixin:
         },
         ValuteField: {
             'form_class': ValuteFormField,
+        },
+        VideoLinkField: {
+            'widget': URLWidget(attrs={
+                'class': 'full-width',
+            }),
         },
         GoogleCoordsField: {
             'widget': GoogleCoordsAdminWidget,

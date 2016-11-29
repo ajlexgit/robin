@@ -5,23 +5,6 @@ form {
   @include border-box;
 }
 
-// стандартные стили текстовых полей
-input[type="text"], input[type="password"], input[type="email"],
-input[type="number"], input[type="tel"], input[type="url"], input[type="search"],
-textarea, select {
-  width: 280px;
-  max-width: 100%;
-  padding: 5px 6px;
-  border: 1px solid #808080;
-  @include border-box;
-  @include font_default;
-  @include fontsize_default;
-  @include border_radius(4px);
-  @include media_interval(0, $media480) {
-    width: 100%; // fix old safari
-  }
-}
-
 // стандартные стили полей в форме
 .field {
   margin-bottom: 10px;
@@ -34,6 +17,24 @@ textarea, select {
     margin-bottom: 4px;
     text-align: left;
     @include fontsize_default;
+  }
+
+  .control {
+    width: 280px;
+    max-width: 100%;
+    @include border-box;
+    @include font_default;
+    @include fontsize_default;
+    @include media_interval(0, $media480) {
+      width: 100%; // fix old safari
+    }
+
+    input, select, textarea {
+      padding: 5px 6px;
+      width: 100%;
+      border: 1px solid #808080;
+      @include border_radius(4px);
+    }
   }
 
   // класс на поле с ошибкой

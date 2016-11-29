@@ -16,10 +16,10 @@
                     'app': 'shop',
                     'icon': 'icon-shopping-cart',
                     'models': (
-                        'shoporder',
-                        'shopproduct',
-                        'shopcategory',
-                        'shopconfig',
+                        'ShopOrder',
+                        'ShopProduct',
+                        'ShopCategory',
+                        'ShopConfig',
                     )
                 },
                 ...

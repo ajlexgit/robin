@@ -2,7 +2,6 @@ import os
 import sys
 
 # Подумать над возможностью реализации Grid через Flexbox.
-# field control
 
 # Gallery popup: JS templates
 # CKEditor internal link
