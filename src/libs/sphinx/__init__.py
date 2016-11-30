@@ -57,13 +57,13 @@
             source news
             {
                 type                    = xmlpipe2
-                xmlpipe_command         = wget -O - -q -t 1 http://localhost/sphinx/index/news/skvx8wjq8p81d/
+                xmlpipe_command         = /usr/bin/wget -O - -q -t 1 http://localhost/sphinx/index/news/skvx8wjq8p81d/
             }
 
             index news
             {
                 source              = news
-                path                = C:/sphinx/data/index/news
+                path                = /var/lib/sphinxsearch/data/news
                 morphology          = stem_en
                 min_stemming_len    = 4
                 min_word_len        = 3
@@ -74,7 +74,7 @@
             }
 
         # crontab
-        0 * * * *  cd /cygdrive/c/sphinx/ && bin/indexer --rotate --all --quiet
+        0 * * * *  /usr/bin/indexer --rotate --all --quiet
 
 
     Пример поиска:

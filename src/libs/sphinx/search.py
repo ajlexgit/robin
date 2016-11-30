@@ -3,7 +3,7 @@ from .api import SphinxClient, SPH_SORT_EXTENDED
 from .index import ALL_INDEXES
 from . import conf
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('sphinx')
 
 
 class SearchError(Exception):
@@ -83,7 +83,7 @@ class SphinxSearch:
                 key: value.decode() if isinstance(value, bytes) else value
                 for key, value in dict(record['attrs'], id=record['id']).items()
                 }
-            for record in self.fetch(query, **kwargs)
+            for record in result
         ))
 
     def fetch_dicts(self, query, **kwargs):
