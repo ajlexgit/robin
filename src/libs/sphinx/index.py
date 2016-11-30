@@ -4,12 +4,14 @@ from datetime import datetime
 from collections import namedtuple, Iterable
 from django.db import models
 from django.utils.html import escape
+from django.core.cache import caches
 from django.core.exceptions import ValidationError
-
+from . import conf
 
 AttrType = namedtuple('AttrType', 'BOOL INT BIGINT FLOAT STRING TIMESTAMP MULTI JSON')
 Attr = namedtuple('Attr', 'type default')
 logger = logging.getLogger('sphinx')
+cache = caches[conf.CACHE_BACKEND]
 
 
 ATTR_TYPE = AttrType(
@@ -170,3 +172,16 @@ class SphinxXMLIndex:
     def build_document(self, instance):
         """ Должен вернуть словарь данных документа, в соответствии со схемой """
         raise NotImplementedError
+
+    def _build_breakpoint_name(self, name):
+        return 'sphinx_%s' % (name or self.name)
+
+    def set_breakpoint(self, value, name=None):
+        """ Для дельта-индексов: сохранение точки в кэш """
+        bp_name = self._build_breakpoint_name(name)
+        cache.set(bp_name, value, timeout=7*24*3600)
+
+    def get_breakpoint(self, name=None):
+        """ Для дельта-индексов: загрузка точки в кэш """
+        bp_name = self._build_breakpoint_name(name)
+        return cache.get(bp_name)
