@@ -590,19 +590,22 @@ class SphinxClient:
         req.append(pack('>L', len(self._sortby)))
         req.append(self._sortby)
 
-        if isinstance(query, bytes):
-            query = query.decode()
-        assert (isinstance(query, str))
-
+        if isinstance(query, str):
+            query = query.encode()
+        assert (isinstance(query, bytes))
         req.append(pack('>L', len(query)))
         req.append(query)
 
         req.append(pack('>L', len(self._weights)))
         for w in self._weights:
             req.append(pack('>L', w))
-        assert (isinstance(index, str))
+
+        if isinstance(index, str):
+            index = index.encode()
+        assert (isinstance(index, bytes))
         req.append(pack('>L', len(index)))
         req.append(index)
+
         req.append(pack('>L', 1))  # id64 range marker
         req.append(pack('>Q', self._min_id))
         req.append(pack('>Q', self._max_id))
