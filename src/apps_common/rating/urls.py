@@ -1,6 +1,6 @@
 from django.conf.urls import url
-from . import views
+from . import views_ajax
 
 urlpatterns = [
-    url(r'^vote/$', views.VoteView.as_view(), name='vote'),
+    url(r'^vote/$', views_ajax.VoteView.as_view(), name='vote'),
 ]
