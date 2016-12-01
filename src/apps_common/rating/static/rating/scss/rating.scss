@@ -1,0 +1,57 @@
+@import "mixins";
+
+.rating {
+  @include no_fontsize;
+
+  .stars {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+
+    &:hover {
+      li {
+        @include opacity(1);
+      }
+    }
+
+    li:hover ~ li {
+      @include opacity(0.2);
+    }
+
+    @for $index from 1 through 5 {
+      &.voted-#{$index} {
+        & > li {
+          @include opacity(0.2);
+        }
+
+        & > li:nth-last-child(n+#{5 - $index + 1}) {
+          @include opacity(1);
+        }
+      }
+    }
+  }
+
+  li {
+    display: inline-block;
+    padding: 0 1px;
+    width: 16px;
+    cursor: pointer;
+    vertical-align: middle;
+    @include opacity(0.2);
+
+    &:first-child {
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      padding-top: 100%;
+      background: $sprite_url no-repeat rel-background-position(20px, 20px, -556px, -250px);
+      background-size: rel-background-size(20px, 20px);
+    }
+  }
+}
