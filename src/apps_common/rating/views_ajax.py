@@ -11,27 +11,33 @@ from . import conf
 
 class VoteView(AjaxViewMixin, View):
     def post(self, request):
-        rating = request.POST.get('rating')
+        rating = request.POST.get('rating', 5)
         try:
             rating = int(rating)
         except (TypeError, ValueError):
-            # Если пытаешься хакнуть - голосуешь на 5 баллов :)
             rating = 5
 
         # проверка, что уже голосовал (по куке)
-        is_voted = request.COOKIES.get('voted') is not None
+        last_rating = request.COOKIES.get('voted')
+        is_voted = last_rating is not None
 
         # проверка, что уже голосовал (по IP)
         client_ip = get_client_ip(request)
-        is_voted = is_voted or RatingVote.objects.filter(
+        last_vote = RatingVote.objects.filter(
             ip=client_ip,
             date__gte=now() - timedelta(seconds=conf.REVOTE_PERIOD)
-        )
+        ).first()
+        if last_vote:
+            last_rating = last_vote.rating
+            is_voted = True
 
         if is_voted:
-            return self.json_response({
-                'error': _('Already voted!')
+            response = self.json_response({
+                'error': _('Already voted!'),
+                'rating': last_rating,
             })
+            set_cookie(response, 'voted', last_rating, expires=conf.COOKIE_DAYS_EXPIRES)
+            return response
 
 
         # голосование
@@ -45,6 +51,8 @@ class VoteView(AjaxViewMixin, View):
         except ValidationError:
             return self.json_error()
         else:
-            response = self.json_response()
+            response = self.json_response({
+                'rating': rating,
+            })
             set_cookie(response, 'voted', rating, expires=conf.COOKIE_DAYS_EXPIRES)
             return response

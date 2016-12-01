@@ -23,7 +23,7 @@
             },
             dataType: 'json',
             success: function(response) {
-                $list.attr('class', 'stars').addClass('voted-' + response.rating);
+                $list.attr('class', 'stars').addClass('voted voted-' + response.rating);
             }
         });
     });
