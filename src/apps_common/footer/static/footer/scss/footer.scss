@@ -8,7 +8,7 @@ $column_footer: $media480;
   background-color: #D0D0D0;
   @include vpad(40px);
 
-  .grid-block {
+  .flex {
     @include flexbox;
     @include align-items(center);
     @include justify-content(flex-start);
@@ -18,12 +18,15 @@ $column_footer: $media480;
     }
   }
 
-  .copyright {
+  .copyright-box {
     @include flex(1 1 auto);
-    @include fontsize_default;
+
+    .copyright {
+      @include fontsize_default;
+    }
   }
 
-  .dl-logo {
+  .dl-logo-box {
     @include media_interval(0, $column_footer) {
       margin-top: 16px;
     }
