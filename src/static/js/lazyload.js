@@ -16,8 +16,17 @@
         Пример:
             <img data-src="read-image.jpg" class="lazyload onview">
 
-        Пример с плейсхолдером:
+        Примеры с плейсхолдером:
+            // simple
             <div data-src="read-image.jpg" class="lazyload onview"></div>
+
+            // extended
+            <div class="lazyload" style="width: {{ image.width }}px" data-src="{{ image.url }}">
+              <div style="padding-bottom: {{ image.space }}"></div>
+            </div>
+            <noscript>
+              <img src="{{ image.url }}" alt="">
+            </noscript>
 
      */
 
@@ -51,6 +60,12 @@
                     $this.before($img).remove();
                     $img.addClass('loaded').removeClass('lazyload');
                 });
+
+                // alt required
+                if (attrs.alt == undefined) {
+                    attrs['alt'] = ''
+                }
+
                 $img.attr(attrs).addClass($this.attr('class'));
                 return $img;
             }
