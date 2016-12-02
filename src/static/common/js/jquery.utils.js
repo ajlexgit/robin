@@ -664,7 +664,7 @@
                 // постоянный обработчик
                 $image.on('load', callback);
             } else {
-                if ($image.prop('complete') || ($image.prop('naturalWidth') > 0)) {
+                if (($image.prop('src') && $image.prop('complete')) || ($image.prop('naturalWidth') > 0)) {
                     // уже загружена
                     callback.call(image);
                 } else if (!permanent) {

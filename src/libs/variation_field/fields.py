@@ -117,6 +117,14 @@ class VariationField(ImageFile):
         return '{url} {width}w'.format(url=self.url_nocache, width=width)
 
     @property
+    def space(self):
+        return '%0.2f%%' % (100 * self.height / self.width)
+
+    @property
+    def target_space(self):
+        return '%0.2f%%' % (100 * self.target_height / self.target_width)
+
+    @property
     def size(self):
         return self.storage.size(self.name)
 
@@ -172,6 +180,10 @@ class VariationImageFieldFile(ImageFieldFile):
     def srcset_nocache(self):
         width = self.dimensions[0]
         return '{url} {width}w'.format(url=self.url_nocache, width=width)
+
+    @property
+    def space(self):
+        return '%0.2f%%' % (100 * self.height / self.width)
 
     @property
     def croparea(self):
