@@ -32,7 +32,7 @@
 
     var DATA_TO_ATTRS = ['src', 'srcset', 'sizes', 'alt', 'width', 'height'];
 
-    $.fn.loadImage = function() {
+    $.fn.loadImage = function(callback) {
         return this.map(function() {
             var $this = $(this);
             var this_data = $this.data();
@@ -51,24 +51,19 @@
                 }
             }
 
-            if (this.tagName == 'IMG') {
-                $this.attr(attrs).addClass('loaded').removeClass('lazyload');
-                return this;
-            } else {
-                var $img = $('<img/>');
-                $img.onLoaded(function() {
-                    $this.before($img).remove();
-                    $img.addClass('loaded').removeClass('lazyload');
-                });
 
-                // alt required
-                if (attrs.alt == undefined) {
-                    attrs['alt'] = ''
+            var $img = $('<img/>', {alt: ''});
+            $img.onLoaded(function() {
+                $this.before($img).remove();
+                $img.addClass('loaded').removeClass('lazyload');
+
+                if ($.isFunction(callback)) {
+                    callback.call($img.get(0));
                 }
+            });
 
-                $img.attr(attrs).addClass($this.attr('class'));
-                return $img;
-            }
+            $img.attr(attrs).addClass($this.attr('class'));
+            return $img;
         });
     };
 
