@@ -8,12 +8,22 @@ from libs.stdimage.fields import StdImageField
 class Command(BaseCommand):
     help = 'Replace undescore in StdImage'
 
-    def rename_image(self, in_file):
+    def format_name(self, in_file):
         dirname, basename = os.path.split(in_file)
         filename, ext = os.path.splitext(basename)
-        filename = re.sub(r'_(\d+)', '-\\1', filename)
+        filename = re.sub(r'_(\d+)(_?)', '-\\1\\2', filename)
         basename = ''.join((filename, ext))
         return os.path.join(dirname, basename)
+
+    def rename_file(self, model, instance, in_file):
+        try:
+            os.rename(in_file, self.format_name(in_file))
+        except FileNotFoundError:
+            print('Not Found %s! Model %s, instance %s' % (
+                in_file,
+                model._meta.verbose_name,
+                instance.pk
+            ))
 
     def handle(self, *args, **options):
         for model in apps.get_models():
@@ -39,12 +49,12 @@ class Command(BaseCommand):
                     if not filefield.name or not filefield.storage.exists(filefield.name):
                         continue
 
-                    os.rename(filefield.path, self.rename_image(filefield.path))
+                    self.rename_file(model, instance, filefield.path)
                     for path in filefield.variation_files:
                         filepath = filefield.storage.path(path)
-                        os.rename(filepath, self.rename_image(filepath))
+                        self.rename_file(model, instance, filepath)
 
-                    updates[field] = self.rename_image(filefield.name)
+                    updates[field] = self.format_name(filefield.name)
 
                 if updates:
                     print(model._meta.verbose_name, updates)
