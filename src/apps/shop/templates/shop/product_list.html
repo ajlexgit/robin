@@ -1,0 +1,22 @@
+<ul class="products">
+  {% for product in products %}
+    <li class="product">
+      <div class="inner">
+        <div class="photo">
+          <a href="{{ product.get_absolute_url }}">
+            <img src="{{ product.photo.normal.url }}" alt="{{ product.title }}"
+                 width="{{ product.photo.normal.target_width }}"
+                 height="{{ product.photo.normal.target_height }}">
+          </a>
+        </div>
+        <div class="info">
+          <p class="title">
+            <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+          </p>
+          <div class="price">{{ product.price }}</div>
+          <button type="button" class="btn add-to-cart-btn" data-product="{{ product.pk }}">{% trans 'Add to cart' %}</button>
+        </div>
+      </div>
+    </li>
+  {% endfor %}
+</ul>

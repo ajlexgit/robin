@@ -23,8 +23,10 @@
 
     <div class="price">{% trans 'Price' %}: {{ product.price }}</div>
 
-    <div class="text-styles">
-      {{ product.description|clean }}
+    <button type="button" class="btn add-to-cart-btn" data-product="{{ product.pk }}">{% trans 'Add to cart' %}</button>
+
+    <div class="text text-styles">
+      {{ product.description|safe }}
     </div>
   </div>
 

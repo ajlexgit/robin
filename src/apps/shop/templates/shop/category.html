@@ -19,16 +19,9 @@
   <div class="block grid-block">
     <h1 class="title-h1">{{ category.title }}</h1>
 
-    <ul class="list">
-      {% for product in category.products %}
-        <li>
-          <a href="{{ product.get_absolute_url }}" class="product-link">
-            <img src="{{ product.photo.admin_micro.url }}"/>
-            {{ product.title }} ({{ product.price }})
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
+    {% include 'shop/category_list.html' with categories=root_categories, current_category=category %}
+
+    {% include 'shop/product_list.html' with products=category.products %}
   </div>
 
 {% endblock content %}

@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<ul id="categories">
+  <li class="category {% if not current_category %}active{% endif %}">
+    <a href="{% url 'shop:index' %}">{% trans 'All' %}</a>
+  </li>
+
+  {% for category in categories %}
+    <li class="category {% if current_category.pk == category.pk %}active{% endif %}">
+      <a href="{{ category.get_absolute_url }}">{{ category.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
