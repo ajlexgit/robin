@@ -12,9 +12,7 @@
         # Свои форматы валют (объединяется с настройками по умолчанию)
         VALUTE_FORMATS = {
             'USD': {
-                'decimal_places': 3,
-                'decimal_mark': ',',
-                'thousands': '.',
+                'trail': True,
             }
         }
 

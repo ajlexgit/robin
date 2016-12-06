@@ -39,10 +39,7 @@ INSTALLED_APPS = (
     'devserver',
 ) + INSTALLED_APPS
 
-
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
-    'devserver.middleware.DevServerMiddleware',
-)
+MIDDLEWARE_CLASSES += 'devserver.middleware.DevServerMiddleware',
 
 # Devserver
 DEVSERVER_SQL_MIN_DURATION = 100
