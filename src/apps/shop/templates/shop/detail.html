@@ -19,7 +19,9 @@
   <div class="block grid-block">
     <h1 class="title-h1">{{ product.title }}</h1>
 
-    <img src="{{ product.photo.normal.url }}" class="photo">
+    <img src="{{ product.photo.normal.url }}" alt="{{ product.title }}" class="photo"
+         width="{{ product.photo.normal.target_width }}"
+         height="{{ product.photo.normal.target_height }}">
 
     <div class="price">{% trans 'Price' %}: {{ product.price }}</div>
 
