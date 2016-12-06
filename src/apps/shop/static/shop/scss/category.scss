@@ -1,14 +1,2 @@
 @import "mixins";
 
-.product-link {
-  color: #4040DA;
-  @include fontsize_default;
-}
-
-.list {
-  margin: 20px 0;
-
-  li {
-    padding: 3px 0;
-  }
-}

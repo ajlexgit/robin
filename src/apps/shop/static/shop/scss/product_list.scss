@@ -1,0 +1,39 @@
+@import "mixins";
+
+.products {
+  @include flexbox;
+  @include flex-flow(row wrap);
+
+  .product {
+    border: 1px solid #CCCCCC;
+    @include flex-columns(4, 20px, 20px);
+
+    .inner {
+      padding: 10px;
+    }
+  }
+
+  .photo {
+    text-align: center;
+  }
+
+  .info {
+    margin-top: 20px;
+  }
+
+  .title {
+    font-weight: bold;
+    @include fontsize_default;
+  }
+
+  .price {
+    margin-top: 10px;
+    color: #3A66A5;
+    font-weight: bold;
+    @include font-size(20px, 20px);
+  }
+
+  .btn {
+    margin-top: 16px;
+  }
+}

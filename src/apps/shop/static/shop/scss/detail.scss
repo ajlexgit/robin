@@ -1,11 +1,19 @@
 @import "mixins";
 
 .photo {
-  margin: 20px 0;
+  margin-top: 20px;
 }
 
 .price {
-  margin: 20px 0;
+  margin-top: 20px;
   font-weight: bold;
   @include fontsize_default;
+}
+
+.btn {
+  margin-top: 20px;
+}
+
+.text {
+  margin-top: 20px;
 }

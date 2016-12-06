@@ -1,0 +1,20 @@
+@import "mixins";
+
+#categories {
+  margin: 20px 0;
+  border-top: 1px solid #D0D0D0;
+  border-bottom: 1px solid #D0D0D0;
+  @include flexbox;
+  @include align-items(flex-start);
+  @include justify-content(flex-start);
+
+  .category {
+    display: inline-block;
+    margin: 10px 20px 10px 0;
+    @include fontsize_default;
+
+    &.active {
+      font-weight: bold;
+    }
+  }
+}
