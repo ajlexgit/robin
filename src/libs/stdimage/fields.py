@@ -205,5 +205,4 @@ class StdImageField(VariationImageField):
 
     def build_source_name(self, instance, ext):
         """ Построение имени файла исходника """
-        filename = '%s-%s' % (self.name, instance.pk)
-        return '%s.%s' % (filename.replace('_', '-'), ext.lower())
+        return '%s_%s.%s' % (self.name, instance.pk, ext.lower())
