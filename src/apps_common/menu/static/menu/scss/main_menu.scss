@@ -154,7 +154,7 @@ $mobile_active_color: $menu_active_color;
     &:after {
       top: 50%;
       @include transform(translate3d(0, -50%, 0) rotate(315deg));
-      @include transition-delay(0.1s, 0.1s, 0s);
+      @include transition-delay(0.1s, 0s);
     }
   }
 }
