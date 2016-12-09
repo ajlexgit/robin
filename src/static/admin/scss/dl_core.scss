@@ -95,6 +95,7 @@ $footer_1col: $media480;
 
 #left-nav {
   margin-top: 0;
+  margin-bottom: 100px;
   @include font-size(13px);
 
   ul {
