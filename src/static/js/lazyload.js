@@ -51,6 +51,9 @@
                 }
             }
 
+            if (!attrs.alt) {
+                attrs.alt = $this.attr('alt') || '';
+            }
 
             var $img = $('<img/>', {alt: ''});
             $img.onLoaded(function() {
