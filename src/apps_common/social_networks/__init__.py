@@ -78,6 +78,9 @@
         Для остальных соцсетей нужно настроить cron на выполнение
             python3 manage.py autopost
 
+        # crontab
+            */15 * * * * . $HOME/.profile; ~/project.com/env/bin/python3 ~/project.com/src/manage.py autopost
+            
         admin.py:
             from social_networks.admin import AutoPostMixin
             ...
