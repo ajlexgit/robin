@@ -30,32 +30,37 @@
 
      */
 
-    var DATA_TO_ATTRS = ['src', 'srcset', 'sizes', 'alt', 'width', 'height'];
+    var MAIN_ATTRS = ['src', 'srcset'];        // свойства, начинающие загрузку файла
+    var SECONDARY_ATTRS = ['sizes', 'alt', 'width', 'height', 'class'];
+
+    // Выборка значений ключей names из data или атрибутов
+    var getAttrs = function($elem, names) {
+        var result = {};
+        var data = $elem.data();
+        for (var i = 0, l = names.length; i < l; i++) {
+            var name = names[i];
+
+            var value = data[name];
+            if (!value) {
+                value = $elem.attr(name);
+            }
+
+            if (value) {
+                result[name] = value;
+            }
+        }
+        return result;
+    };
 
     $.fn.loadImage = function(callback) {
         return this.map(function() {
             var $this = $(this);
-            var this_data = $this.data();
-
-            // защита от вызова для посторонних элементов
             if (!$this.hasClass('lazyload')) {
                 return this;
             }
 
-            // аттрибуты из data-параметров
-            var attrs = {};
-            for (var i=0, l=DATA_TO_ATTRS.length; i<l; i++) {
-                var property = DATA_TO_ATTRS[i];
-                if (this_data[property]) {
-                    attrs[property] = this_data[property];
-                }
-            }
+            var $img = $('<img/>', getAttrs($this, SECONDARY_ATTRS));
 
-            if (!attrs.alt) {
-                attrs.alt = $this.attr('alt') || '';
-            }
-
-            var $img = $('<img/>', {alt: ''});
             $img.onLoaded(function() {
                 $this.before($img).remove();
                 $img.addClass('loaded').removeClass('lazyload');
@@ -65,7 +70,7 @@
                 }
             });
 
-            $img.attr(attrs).addClass($this.attr('class'));
+            $img.attr(getAttrs($this, MAIN_ATTRS));
             return $img;
         });
     };
