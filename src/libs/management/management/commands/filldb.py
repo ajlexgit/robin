@@ -154,7 +154,6 @@ def set_url(instance, field):
             max_len = min(max_len, validator.limit_value)
 
     value = 'http://google.com/%s/' % generate_random_string(5, 10)
-    value = Truncator(value).chars(max_len, html=False)
     setattr(instance, field.name, value)
 
 
@@ -281,6 +280,8 @@ class Command(BaseCommand):
                     set_email(instance, field)
                 elif isinstance(field, fields.SlugField):
                     set_slug(instance, field)
+                elif isinstance(field, fields.URLField):
+                    set_url(instance, field)
                 elif isinstance(field, fields.PositiveSmallIntegerField):
                     set_integer(instance, field, min_value=0, max_value=32767)
                 elif isinstance(field, fields.PositiveIntegerField):
@@ -301,8 +302,6 @@ class Command(BaseCommand):
                     set_date(instance, field)
                 elif isinstance(field, fields.DecimalField):
                     set_decimal(instance, field, max_digits=6)
-                elif isinstance(field, fields.URLField):
-                    set_url(instance, field)
                 elif isinstance(field, StdImageField):
                     set_stdimage(instance, field)
                 elif isinstance(field, ImageField):
