@@ -9,9 +9,10 @@ from django.utils.text import Truncator, slugify
 from django.utils.timezone import now, timedelta
 from django.db.models.fields.files import FileField, ImageField
 from django.core.validators import MaxLengthValidator, MinValueValidator, MaxValueValidator
+from gallery.fields import GalleryField
 from ckeditor.fields import CKEditorField, CKEditorUploadField
 from libs.stdimage.fields import StdImageField
-from ._filldb_private import get_field_choices, generate_random_string, generate_lorem_ipsum
+from ._filldb_private import get_field_choices, generate_random_string, generate_lorem_ipsum, get_image_size
 
 
 def set_boolean(instance, field):
@@ -21,7 +22,7 @@ def set_boolean(instance, field):
     setattr(instance, field.name, random.choice(possibles))
 
 
-def set_chars(instance, field):
+def set_chars(instance, field, max_length=255):
     """ CharField """
     possibles = []
     possibles.extend(get_field_choices(field))
@@ -29,13 +30,13 @@ def set_chars(instance, field):
         setattr(instance, field.name, random.choice(possibles))
         return
 
-    max_len = field.max_length
+    max_length = min(max_length, field.max_length or 16 * 1024)
     for validator in field.validators:
         if isinstance(validator, MaxLengthValidator):
-            max_len = min(max_len, validator.limit_value)
+            max_length = min(max_length, validator.limit_value)
 
-    value = generate_lorem_ipsum(1, min=1, max=max(5, max_len // 8), html=False)
-    value = Truncator(value).chars(max_len, html=False)
+    value = generate_lorem_ipsum(1, min=1, max=max(5, max_length // 8), html=False)
+    value = Truncator(value).chars(max_length, html=False)
     setattr(instance, field.name, value)
 
 
@@ -202,17 +203,29 @@ def set_image(instance, field, width=1920, height=1440):
 
 def set_stdimage(instance, field):
     """ StdImageField """
-    min_width, min_height = field.min_dimensions
-    max_width, max_height = field.max_dimensions
-
-    width = min_width if min_width else 1920
-    height = min_height if min_height else 1440
-    if max_width:
-        width = min(width, max_width)
-    if max_height:
-        height = min(height, max_height)
-
+    width, height = get_image_size(field.min_dimensions, field.max_dimensions, field.variations)
     set_image(instance, field, width=width, height=height)
+
+
+def set_gallery(instance, field, photo_count=3):
+    """ GalleryField """
+    gallery = field.rel.to.objects.create()
+    setattr(instance, field.name, gallery)
+
+    ImageModel = gallery.IMAGE_MODEL
+    min_dimensions = getattr(ImageModel, 'MIN_DIMENSIONS', (0, 0))
+    max_dimensions = getattr(ImageModel, 'MAX_DIMENSIONS', (0, 0))
+    variations = getattr(ImageModel, 'VARIATIONS', {})
+    width, height = get_image_size(min_dimensions, max_dimensions, variations)
+
+    for _ in range(photo_count):
+        gallery_item = gallery.IMAGE_MODEL(
+            gallery=gallery,
+        )
+        set_chars(gallery_item, ImageModel._meta.get_field('description'))
+        set_image(gallery_item, ImageModel._meta.get_field('image'), width=width, height=height)
+        gallery_item.save()
+
 
 
 class Command(BaseCommand):
@@ -258,6 +271,8 @@ class Command(BaseCommand):
                 if field.is_relation:
                     if field.many_to_many:
                         continue
+                    elif isinstance(field, GalleryField):
+                        set_gallery(instance, field, photo_count=random.randint(2, 4))
                     else:
                         set_fk(instance, field)
                 elif isinstance(field, fields.BooleanField):

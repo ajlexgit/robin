@@ -92,3 +92,19 @@ def generate_lorem_ipsum(n=5, html=False, min=20, max=100):
 def generate_random_string(min=5, max=32):
     allowed_chars = string.ascii_letters + string.digits + '-'
     return ''.join(choice(allowed_chars) for _ in range(randrange(min, max)))
+
+
+def get_image_size(min_dimensions, max_dimensions, variations):
+    min_width, min_height = min_dimensions or (0, 0)
+    max_width, max_height = max_dimensions or (0, 0)
+
+    variation_width = max(variation['size'][0] for variation in variations.values())
+    variation_height = max(variation['size'][1] for variation in variations.values())
+    min_width = max(min_width, variation_width)
+    min_height = max(min_height, variation_height)
+
+    max_width = min(1920, max_width or 1920)
+    max_height = min(1440, max_height or 1440)
+
+    return min(min_width, max_width), min(min_height, max_height)
+
