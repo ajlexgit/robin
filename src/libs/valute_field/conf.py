@@ -26,7 +26,7 @@ VALUTE_FORMATS = {
         'decimal_places': 2,
         'decimal_mark': '.',
         'thousands': ',',
-        'trail': False,
+        'trail': True,
 
         'utf_format': '${}',
         'alternative_format': '${}',

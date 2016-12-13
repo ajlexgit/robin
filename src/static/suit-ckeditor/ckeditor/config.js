@@ -11,7 +11,7 @@ CKEDITOR.editorConfig = function(config) {
     config.tabSpaces = 2;
     config.extraAllowedContent = '*(*);img[*]';
 
-    config.format_tags = "p;h2;h3;h4";
+    config.format_tags = "p;h2;h3";
 
     config.plugins = "basicstyles,contextmenu,elementspath," +
         "enterkey,entities,format,htmlwriter,indent,justify,pastefromword,pastetext," +

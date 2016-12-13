@@ -4,7 +4,7 @@
 <p class="title title-h1">{% trans 'Contact Us' %}</p>
 
 {{ form.media }}
-<form method="post" action="{% url 'contacts:index' %}" id="ajax-contact-form" autocomplete="off">
+<form method="post" action="{% url 'contacts:ajax_contact' %}" id="ajax-contact-form" autocomplete="off">
   {% render_form form %}
 
   <div>
