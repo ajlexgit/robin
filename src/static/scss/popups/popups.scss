@@ -47,7 +47,7 @@ $close_btn_weight: 3px;
   background: rgba(0,0,0,0.4);
 }
 
-#popup-container {
+.popup {
   .popup-window {
     @include media_map(width, $window_width);
     @include media_map(max-width, $window_max_width);
