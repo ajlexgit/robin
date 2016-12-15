@@ -1,5 +1,6 @@
 import string
-from random import choice, randrange
+from operator import sub
+from random import choice, randrange, randint
 from django.utils.html import escape
 
 
@@ -94,17 +95,39 @@ def generate_random_string(min=5, max=32):
     return ''.join(choice(allowed_chars) for _ in range(randrange(min, max)))
 
 
-def get_image_size(min_dimensions, max_dimensions, variations):
+def get_spans(min_dimensions, max_dimensions, variations):
+    """ Возвращает допустимые диапазоны ширины и высоты для картинки """
     min_width, min_height = min_dimensions or (0, 0)
     max_width, max_height = max_dimensions or (0, 0)
 
     variation_width = max(variation['size'][0] for variation in variations.values())
     variation_height = max(variation['size'][1] for variation in variations.values())
+
+    # если не указан min_dimensions - берем самую большую вариацию
     min_width = max(min_width, variation_width)
     min_height = max(min_height, variation_height)
 
+    # если не указан max_dimensions - берем 1920х1440
     max_width = min(1920, max_width or 1920)
     max_height = min(1440, max_height or 1440)
 
-    return min(min_width, max_width), min(min_height, max_height)
+    return (min_width, max_width), (min_height, max_height)
+
+
+def fetch_span(width_span, height_span, step=100):
+    width_diff = sub(*reversed(width_span))
+    step_count = width_diff // step
+    if step_count <= 1:
+        width = min(*width_span)
+    else:
+        width = width_span[0] + randint(0, step_count) * step
+
+    height_diff = sub(*reversed(height_span))
+    step_count = height_diff // step
+    if step_count <= 1:
+        height = min(*height_span)
+    else:
+        height = height_span[0] + randint(0, step_count) * step
+
+    return width, height
 

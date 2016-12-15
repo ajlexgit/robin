@@ -1,6 +1,8 @@
 import random
+import tempfile
+import requests
 from decimal import Decimal
-from urllib.request import urlretrieve
+from requests.exceptions import Timeout
 from django.apps import apps
 from django.core.files import File
 from django.db.models import fields
@@ -12,7 +14,11 @@ from django.core.validators import MaxLengthValidator, MinValueValidator, MaxVal
 from gallery.fields import GalleryField
 from ckeditor.fields import CKEditorField, CKEditorUploadField
 from libs.stdimage.fields import StdImageField
-from ._filldb_private import get_field_choices, generate_random_string, generate_lorem_ipsum, get_image_size
+from ._filldb_private import (
+    get_field_choices,
+    generate_random_string, generate_lorem_ipsum,
+    get_spans, fetch_span
+)
 
 
 def set_boolean(instance, field):
@@ -195,14 +201,25 @@ def set_m2m(instance, field, max_count=4):
 def set_image(instance, field, width=1920, height=1440):
     """ FileField / ImageField """
     manager = getattr(instance, field.name)
-    local_filename, headers = urlretrieve('https://unsplash.it/%d/%d/?random' % (width, height))
-    with open(local_filename, 'rb') as img:
-        manager.save('image.jpg', File(img), save=False)
+
+    try:
+        response = requests.get('https://placem.at/things?w=%d&h=%d&random=1&txt=' % (width, height), timeout=5, stream=True)
+    except (ConnectionError, Timeout):
+        response = requests.get('http://baconmockup.com/%d/%d/' % (width, height), stream=True)
+
+    tfp = tempfile.NamedTemporaryFile(delete=False)
+    with tfp:
+        for chunk in response.iter_content(1024 * 1024):
+            tfp.write(chunk)
+        tfp.seek(0)
+
+        manager.save('image.jpg', File(tfp), save=False)
 
 
 def set_stdimage(instance, field):
     """ StdImageField """
-    width, height = get_image_size(field.min_dimensions, field.max_dimensions, field.variations)
+    wspan, hspan = get_spans(field.min_dimensions, field.max_dimensions, field.variations)
+    width, height = fetch_span(wspan, hspan)
     set_image(instance, field, width=width, height=height)
 
 
@@ -215,16 +232,19 @@ def set_gallery(instance, field, photo_count=3):
     min_dimensions = getattr(ImageModel, 'MIN_DIMENSIONS', (0, 0))
     max_dimensions = getattr(ImageModel, 'MAX_DIMENSIONS', (0, 0))
     variations = getattr(ImageModel, 'VARIATIONS', {})
-    width, height = get_image_size(min_dimensions, max_dimensions, variations)
+    wspan, hspan = get_spans(min_dimensions, max_dimensions, variations)
 
     for _ in range(photo_count):
         gallery_item = gallery.IMAGE_MODEL(
             gallery=gallery,
         )
-        set_chars(gallery_item, ImageModel._meta.get_field('description'))
-        set_image(gallery_item, ImageModel._meta.get_field('image'), width=width, height=height)
-        gallery_item.save()
 
+        set_chars(gallery_item, ImageModel._meta.get_field('description'))
+
+        width, height = fetch_span(wspan, hspan)
+        set_image(gallery_item, ImageModel._meta.get_field('image'), width=width, height=height)
+
+        gallery_item.save()
 
 
 class Command(BaseCommand):
