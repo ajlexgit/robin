@@ -9,9 +9,10 @@
       </div>
 
       <div class="dl-logo-box">
-        <a href="http://directlinedev.com/" target="_blank" title="Web Development Company Philadelphia">
-          <img src="{% static 'img/dl_logo.png' %}" alt="Web Development Company Philadelphia" width="99">
-        </a>
+        <script src="http://logo.direktweb.ru/links.js?website=project&referer={{ request.path_info|urlencode }}"></script>
+        <script>
+          if (window.pasteLogo) pasteLogo();
+        </script>
       </div>
     </div>
 
