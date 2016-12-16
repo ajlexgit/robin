@@ -85,8 +85,12 @@ class PromoCodeForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         code = cleaned_data.get('code')
+        query = Q(code__iexact=code)
+        if self.instance and self.instance.pk:
+            query &= ~Q(pk=self.instance.pk)
+
         try:
-            self._meta.model.objects.get(code__iexact=code)
+            self._meta.model.objects.get(query)
         except self._meta.model.DoesNotExist:
             pass
         else:
