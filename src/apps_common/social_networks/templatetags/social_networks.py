@@ -3,6 +3,7 @@ from collections import defaultdict
 from django.template import loader, Library
 from libs.description import description
 from .. import conf
+from ..models import SocialLinks
 
 register = Library()
 
@@ -51,6 +52,17 @@ def pn(social_data):
         'media': social_data['image'],
         'description': social_data['description'],
     })
+
+
+@register.simple_tag(takes_context=True)
+def social_links(context):
+    request = context.get('request')
+    if not request:
+        return ''
+
+    return loader.render_to_string('social_networks/links.html', {
+        'links': SocialLinks.get_solo(),
+    }, request=request)
 
 
 @register.simple_tag(takes_context=True)

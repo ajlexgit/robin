@@ -10,9 +10,10 @@ from . import conf
 
 
 class SocialLinks(SingletonModel):
-    social_facebook = models.URLField(_('facebook'), max_length=255, blank=True)
-    social_twitter = models.URLField(_('twitter'), max_length=255, blank=True)
     social_google = models.URLField(_('google plus'), max_length=255, blank=True)
+    social_twitter = models.URLField(_('twitter'), max_length=255, blank=True)
+    social_facebook = models.URLField(_('facebook'), max_length=255, blank=True)
+    social_instagram = models.URLField(_('instagram'), max_length=255, blank=True)
     updated = models.DateTimeField(_('change date'), auto_now=True)
 
     class Meta:

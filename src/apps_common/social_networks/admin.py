@@ -9,7 +9,6 @@ from django.http.response import Http404, JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles.storage import staticfiles_storage
 from solo.admin import SingletonModelAdmin
-
 from project.admin import ModelAdminMixin
 from .models import SocialLinks, FeedPost
 from .forms import FeedPostForm, AutpostForm
@@ -33,7 +32,7 @@ class SocialLinksAdmin(ModelAdminMixin, SingletonModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'social_facebook', 'social_twitter', 'social_google',
+                'social_google', 'social_twitter', 'social_facebook', 'social_instagram',
             ),
         }),
     )
