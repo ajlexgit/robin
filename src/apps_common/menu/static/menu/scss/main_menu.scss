@@ -107,54 +107,58 @@ $mobile_active_color: $menu_active_color;
 
 // Кнопка меню для мобильной версии
 #mobile-menu-button {
-  display: none;
   position: relative;
-  width: $menu_burger_width;
-  height: 3 * $menu_burger_line_height + 2 * $menu_burger_line_space;
+  display: none;
+  z-index: 60;
   cursor: pointer;
   text-align: left;
-  z-index: 60;
   vertical-align: middle;
   @include unselectable;
   @include media_interval($mobile_menu_interval) {
     display: inline-block;
   }
 
-  &:before, &:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: $menu_burger_line_height;
-    background: $menu_burger_color;
-    @include transition-timing-function(linear);
-  }
-  &:before {
-    top: 0;
-    @include box-shadow($menu_burger_color 0 ($menu_burger_line_height + $menu_burger_line_space) 0 0);
-    @include transform(translate3d(0, 0, 0) rotate(0deg));
-    @include transition-property(transform, box-shadow, top);
-    @include transition-duration(0.55s, 0.2s, 0.2s);
-    @include transition-delay(0s, 0.45s, 0.45s);
-  }
-  &:after {
-    top: 100%;
-    @include transform(translate3d(0, -100%, 0) rotate(0deg));
-    @include transition-property(transform, top);
-    @include transition-duration(0.55s, 0.2s);
-    @include transition-delay(0s, 0.45s);
-  }
+  .burger {
+    position: relative;
+    width: $menu_burger_width;
+    height: 3 * $menu_burger_line_height + 2 * $menu_burger_line_space;
 
-  @at-root .main-menu-opened & {
+    &:before, &:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: $menu_burger_line_height;
+      background: $menu_burger_color;
+      @include transition-timing-function(linear);
+    }
     &:before {
-      top: 50%;
-      @include box-shadow(transparent 0 0 0 0);
-      @include transform(translate3d(0, -50%, 0) rotate(225deg));
-      @include transition-delay(0.1s, 0.1s, 0s, 0s);
+      top: 0;
+      @include box-shadow($menu_burger_color 0 ($menu_burger_line_height + $menu_burger_line_space) 0 0);
+      @include transform(translate3d(0, 0, 0) rotate(0deg));
+      @include transition-property(transform, box-shadow, top);
+      @include transition-duration(0.55s, 0.2s, 0.2s);
+      @include transition-delay(0s, 0.45s, 0.45s);
     }
     &:after {
-      top: 50%;
-      @include transform(translate3d(0, -50%, 0) rotate(315deg));
-      @include transition-delay(0.1s, 0s);
+      top: 100%;
+      @include transform(translate3d(0, -100%, 0) rotate(0deg));
+      @include transition-property(transform, top);
+      @include transition-duration(0.55s, 0.2s);
+      @include transition-delay(0s, 0.45s);
+    }
+
+    @at-root .main-menu-opened & {
+      &:before {
+        top: 50%;
+        @include box-shadow(transparent 0 0 0 0);
+        @include transform(translate3d(0, -50%, 0) rotate(225deg));
+        @include transition-delay(0.1s, 0.1s, 0s, 0s);
+      }
+      &:after {
+        top: 50%;
+        @include transform(translate3d(0, -50%, 0) rotate(315deg));
+        @include transition-delay(0.1s, 0s);
+      }
     }
   }
 }

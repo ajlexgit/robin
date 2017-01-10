@@ -8,5 +8,5 @@
     {{ input }}
   </label>
 
-  <a href="{{ value.url|default:"#" }}" target="_blank" class="preview btn btn-info" title="{% trans 'View file' %}"></a>
+  <a href="{% if value %}{{ value.url }}{% else %}#{% endif %}" target="_blank" class="preview btn btn-info" title="{% trans 'View file' %}"></a>
 </div>
