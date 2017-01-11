@@ -8,7 +8,7 @@ class IndexView(CachedViewMixin, TemplateView):
     template_name = 'main/index.html'
     config = None
 
-    def last_modified(self, *args, tag_slug=None, **kwargs):
+    def last_modified(self, *args, **kwargs):
         self.config = MainPageConfig.get_solo()
         return self.config.updated
 
