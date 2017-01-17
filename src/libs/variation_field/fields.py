@@ -256,7 +256,7 @@ class VariationImageFieldFile(ImageFieldFile):
                 self.field.crop_field: self.croparea
             })
 
-    def rotate(self, angle=90, quality=None):
+    def rotate(self, angle=90):
         """
             Поворот вариаций и исходника.
 
@@ -268,16 +268,12 @@ class VariationImageFieldFile(ImageFieldFile):
             Пример:
                 company.logo.rotate(90)
         """
-        quality = quality or self.field.get_source_quality(self.instance)
-
         try:
             self.open()
             source_image = Image.open(self)
             source_format = source_image.format
 
-            info = dict(source_image.info,
-                quality=quality,
-            )
+            info = dict(source_image.info)
 
             source_image = source_image.rotate(-angle, expand=True)
             source_image.format = source_format
@@ -704,7 +700,7 @@ class VariationImageField(models.ImageField):
                     old_width = source_image.size[0]
                     draft = source_image.draft(None, draft_size)
                     if draft is None:
-                        source_image = source_image.resize(draft_size, Image.LINEAR)
+                        source_image = source_image.resize(draft_size, Image.HAMMING)
                         source_image.format = source_format
 
                     # Учитываем изменение размера исходника на области обрезки
