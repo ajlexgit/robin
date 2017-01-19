@@ -660,15 +660,15 @@
             }
 
             var $image = $(image);
-            if (permanent) {
-                // постоянный обработчик
-                $image.on('load', callback);
+            if (($image.prop('src') && $image.prop('complete')) || ($image.prop('naturalWidth') > 0)) {
+                // уже загружена
+                callback.call(image);
             } else {
-                if (($image.prop('src') && $image.prop('complete')) || ($image.prop('naturalWidth') > 0)) {
-                    // уже загружена
-                    callback.call(image);
-                } else if (!permanent) {
-                    // загрузится позже
+                if (permanent) {
+                    // постоянный обработчик
+                    $image.on('load', callback);
+                } else {
+                    // разовый обработчик
                     $image.one('load', callback);
                 }
             }

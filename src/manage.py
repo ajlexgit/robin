@@ -2,14 +2,14 @@ import os
 import sys
 
 # Подумать над возможностью реализации Grid через Flexbox.
+# Многопоточность в collectstatic
 # menu class + subclasses
-# data autofiller
 
+# Shop cart example + discounts
 # Gallery popup: JS templates
 # CKEditor internal link
 # $.fn.scrolltextarea + autosize
 # Mailerlite: clear subscribers from remote + limit reached + select groups on import
-# Shop cart example + discounts
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Images: alt, title, file name
