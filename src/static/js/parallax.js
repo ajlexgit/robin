@@ -157,8 +157,9 @@
 
             // Вызов инспектора после загрузки картинки
             this.$bg.onLoaded(true, function() {
-                $.bgInspector.check(that.$bg);
-                that.$bg.show();
+                var $image = $(this);
+                $image.css('display', 'inline-block');
+                $.bgInspector.check($image);
             });
         };
 

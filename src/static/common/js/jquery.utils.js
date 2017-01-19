@@ -665,10 +665,8 @@
                 callback.call(image);
             } else {
                 if (permanent) {
-                    // постоянный обработчик
                     $image.on('load', callback);
                 } else {
-                    // разовый обработчик
                     $image.one('load', callback);
                 }
             }
