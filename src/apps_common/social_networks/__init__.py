@@ -26,6 +26,7 @@
 
         urls.py:
             ...
+            url(r'^dladmin/social/', include('social_networks.admin_urls', namespace='admin_social_networks')),
             url(r'^social/', include('social_networks.urls', namespace='social_networks')),
             ...
 
@@ -64,7 +65,7 @@
 
         # crontab
             */15 * * * * . $HOME/.profile; ~/project.com/env/bin/python3 ~/project.com/src/manage.py autopost
-            
+
         admin.py:
             from social_networks.admin import AutoPostMixin
             ...

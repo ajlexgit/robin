@@ -1,8 +1,11 @@
 import re
+import uuid
 from html import unescape
+from django import forms
 from django.contrib import admin
 from django.conf.urls import url
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import resolve_url
 from django.utils.html import strip_tags
 from django.core.urlresolvers import reverse
 from django.http.response import Http404, JsonResponse
@@ -12,6 +15,7 @@ from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from .models import SocialConfig, SocialLinks, FeedPost
 from .forms import FeedPostForm, AutpostForm
+from .widgets import TokenButtonWidget
 from . import conf
 
 re_newlines = re.compile(r'\n[\s\n]+')
@@ -26,6 +30,80 @@ SPRITE_ICONS = (
 )
 
 
+class SocialConfigForm(forms.ModelForm):
+    twitter_token = forms.CharField(
+        label='',
+        required=False,
+        widget=TokenButtonWidget('Update access token'),
+    )
+
+    instagram_token = forms.CharField(
+        label='',
+        required=False,
+        widget=TokenButtonWidget('Update access token'),
+    )
+
+    linkedin_token = forms.CharField(
+        label='',
+        required=False,
+        widget=TokenButtonWidget('Update access token'),
+    )
+
+    class Meta:
+        model = SocialConfig
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        config = SocialConfig.get_solo()
+
+        # Twitter
+        if config.twitter_client_id and config.twitter_client_secret and config.twitter_access_token_secret:
+            from requests_oauthlib import OAuth1Session
+            redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:twitter_token'))
+
+            oauth_client = OAuth1Session(
+                client_key=config.twitter_client_id,
+                client_secret=config.twitter_client_secret,
+                callback_uri=redirect_uri,
+            )
+
+            try:
+                resp = oauth_client.fetch_request_token('https://api.twitter.com/oauth/request_token')
+            except ValueError:
+                raise Http404
+
+            token_url = oauth_client.authorization_url('https://api.twitter.com/oauth/authorize')
+
+            self.fields['twitter_token'].initial = token_url
+            self.fields['twitter_token'].help_text = _(
+                'Add redirect URI "%s" to your Twitter application') % redirect_uri
+
+        # Instagram
+        if config.instagram_client_id and config.instagram_client_secret:
+            redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:instagram_token'))
+            token_url = 'https://api.instagram.com/oauth/authorize/?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code'.format(
+                client_id=config.instagram_client_id,
+                redirect_uri=redirect_uri,
+            )
+            self.fields['instagram_token'].initial = token_url
+            self.fields['instagram_token'].help_text = _('Add redirect URI "%s" to your Instagram application') % redirect_uri
+
+        # LinkedIn
+        if config.linkedin_client_id and config.linkedin_client_secret:
+            redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:linkedin_token'))
+            token_url = 'https://www.linkedin.com/oauth/v2/authorization?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&state={state}&scope={scope}'.format(
+                client_id=config.linkedin_client_id,
+                redirect_uri=redirect_uri,
+                state=uuid.uuid1(),
+                scope='r_basicprofile%20w_share',
+            )
+            self.fields['linkedin_token'].initial = token_url
+            self.fields['linkedin_token'].help_text = _(
+                'Add redirect URI "%s" to your LinkedIn application') % redirect_uri
+
+
 @admin.register(SocialConfig)
 class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
     fieldsets = (
@@ -38,7 +116,8 @@ class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
         (_('Twitter'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'twitter_app_id', 'twitter_secret', 'twitter_access_token', 'twitter_access_token_secret',
+                'twitter_client_id', 'twitter_client_secret', 'twitter_access_token', 'twitter_access_token_secret',
+                'twitter_token',
             ),
         }),
         (_('Facebook'), {
@@ -50,19 +129,25 @@ class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
         (_('Instagram'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'instagram_client_id', 'instagram_client_secret', 'instagram_redirect_uri', 'instagram_access_token',
+                'instagram_client_id', 'instagram_client_secret', 'instagram_access_token', 'instagram_token',
             ),
         }),
         (_('LinkedIn'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'linkedin_access_token',
+                'linkedin_client_id', 'linkedin_client_secret', 'linkedin_access_token', 'linkedin_token',
             ),
         }),
     )
+    form = SocialConfigForm
     suit_form_tabs = (
         ('general', _('General')),
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj=obj, **kwargs)
+        form.request = request
+        return form
 
 
 @admin.register(SocialLinks)
@@ -71,7 +156,8 @@ class SocialLinksAdmin(ModelAdminMixin, SingletonModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'social_google', 'social_twitter', 'social_facebook', 'social_instagram',
+                'social_facebook', 'social_instagram', 'social_twitter', 'social_pinterest',
+                'social_google', 'social_vk',
             ),
         }),
     )
@@ -89,7 +175,7 @@ class FeedPostAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'network', 'url', 'text', 'scheduled',
             ),
         }),
-        (_('Dates'), {
+        (_('Information'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'created', 'posted'
@@ -131,15 +217,18 @@ class FeedPostAdmin(ModelAdminMixin, admin.ModelAdmin):
         background:url(%s) %0.4f%% 0; vertical-align:middle;" title="%s"/>""" % (
             icons_url, offset, icon_title
         )
+
     network_icon.short_description = _('#')
     network_icon.allow_tags = True
 
     def action_schedule_posts(self, request, queryset):
         queryset.update(scheduled=True)
+
     action_schedule_posts.short_description = _('Schedule %(verbose_name_plural)s to publish')
 
     def action_unschedule_posts(self, request, queryset):
         queryset.update(scheduled=False)
+
     action_unschedule_posts.short_description = _('Unschedule %(verbose_name_plural)s to publish')
 
 

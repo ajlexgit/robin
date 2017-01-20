@@ -8,6 +8,7 @@ from .sitemaps import site_sitemaps
 
 urlpatterns = [
     url(r'^admin/', include(honeypot_site.urls)),
+    url(r'^dladmin/social/', include('social_networks.admin_urls', namespace='admin_social_networks')),
     url(r'^dladmin/autocomplete/', include('libs.autocomplete.urls', namespace='autocomplete')),
     url(r'^dladmin/ckeditor/', include('ckeditor.admin_urls', namespace='admin_ckeditor')),
     url(r'^dladmin/gallery/', include('gallery.admin_urls', namespace='admin_gallery')),

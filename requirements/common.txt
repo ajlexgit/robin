@@ -24,7 +24,7 @@ requests==2.11.1
 
 # PyLinkedinAPI==0.1.5
 # facebook-sdk==1.0.0
-# python-twitter==3.1
+# python-twitter==3.2
 # pysyge==0.2.0
 # premailer==3.0.1
 # django-mptt==0.8.5

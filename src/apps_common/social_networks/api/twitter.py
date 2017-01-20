@@ -33,8 +33,8 @@ def post(message, url=None):
 
     import twitter
     twitter_api = twitter.Api(
-        config.twitter_app_id,
-        config.twitter_secret,
+        config.twitter_client_id,
+        config.twitter_client_secret,
         config.twitter_access_token,
         config.twitter_access_token_secret,
     )

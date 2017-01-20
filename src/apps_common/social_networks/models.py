@@ -12,18 +12,19 @@ from . import conf
 class SocialConfig(SingletonModel):
     google_apikey = models.CharField(_('API Key'), max_length=48, blank=True, default='AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
 
-    twitter_app_id = models.CharField(_('API Key'), max_length=48, blank=True)
-    twitter_secret = models.CharField(_('API Secret'), max_length=64, blank=True)
+    twitter_client_id = models.CharField(_('API Key'), max_length=48, blank=True)
+    twitter_client_secret = models.CharField(_('API Secret'), max_length=64, blank=True)
     twitter_access_token = models.CharField(_('Access Token'), max_length=64, blank=True)
     twitter_access_token_secret = models.CharField(_('Access Token Secret'), max_length=64, blank=True)
 
     facebook_access_token = models.TextField(_('Access Token'), blank=True)
 
+    linkedin_client_id = models.CharField(_('API Key'), max_length=48, blank=True)
+    linkedin_client_secret = models.CharField(_('API Secret'), max_length=48, blank=True)
     linkedin_access_token = models.TextField(_('Access Token'), blank=True)
 
     instagram_client_id = models.CharField(_('Client ID'), max_length=48, blank=True)
     instagram_client_secret = models.CharField(_('Client Secret'), max_length=48, blank=True)
-    instagram_redirect_uri = models.URLField(_('Redirect URI'), blank=True)
     instagram_access_token = models.CharField(_('Access Token'), max_length=64, blank=True)
 
     updated = models.DateTimeField(_('change date'), auto_now=True)
