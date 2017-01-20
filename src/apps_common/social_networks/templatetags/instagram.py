@@ -1,5 +1,5 @@
 from django.template import loader, Library
-from .. import conf
+from ..models import SocialConfig
 
 register = Library()
 
@@ -10,8 +10,9 @@ def instagram_widget(context, user_id=None, tag=None, limit=10):
     if not request:
         return ''
 
+    config = SocialConfig.get_solo()
     return loader.render_to_string('social_networks/instagram.html', {
-        'access_token': conf.INSTAGRAM_TOKEN,
+        'access_token': config.instagram_access_token,
         'user_id': user_id,
         'tag': tag,
         'limit': limit,

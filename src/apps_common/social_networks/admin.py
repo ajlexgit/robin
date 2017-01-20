@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles.storage import staticfiles_storage
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
-from .models import SocialLinks, FeedPost
+from .models import SocialConfig, SocialLinks, FeedPost
 from .forms import FeedPostForm, AutpostForm
 from . import conf
 
@@ -24,6 +24,45 @@ SPRITE_ICONS = (
     'pinterest',
     'instagram',
 )
+
+
+@admin.register(SocialConfig)
+class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
+    fieldsets = (
+        (_('Google'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'google_apikey',
+            ),
+        }),
+        (_('Twitter'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'twitter_app_id', 'twitter_secret', 'twitter_access_token', 'twitter_access_token_secret',
+            ),
+        }),
+        (_('Facebook'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'facebook_access_token',
+            ),
+        }),
+        (_('Instagram'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'instagram_client_id', 'instagram_client_secret', 'instagram_redirect_uri', 'instagram_access_token',
+            ),
+        }),
+        (_('LinkedIn'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'linkedin_access_token',
+            ),
+        }),
+    )
+    suit_form_tabs = (
+        ('general', _('General')),
+    )
 
 
 @admin.register(SocialLinks)

@@ -18,27 +18,11 @@
                     'models': (
                         'FeedPost',
                         'SocialLinks',
+                        'SocialConfig',
                     ),
                 },
                 ...
             }
-
-            # API для автопостинга
-            TWITTER_APP_ID = 'j3tkGKGYdUvJy5i97us36UEaF'
-            TWITTER_SECRET = '5xdxDZeQQi8mUjpQ86rtr2dMZqkSOn4wQFP4VPNlVDGGPhYV51'
-            TWITTER_TOKEN = '201200112-g53dkoQAgJCYxgpiMw4AMpeM8QOuyXrvm5VAh7Cu'
-            TWITTER_TOKEN_SECRET = '37Hc33tE6cBHIDEDEwQFaMFwPsCf3mXQABuXKuKsZiVI7'
-            FACEBOOK_TOKEN = 'EAADhZCRZAniwcBAONB6fBjEgG0vZAJCRir46Lpa02Yb0aOtoA8FI' \
-                             'DMXOL7sJxLxptZCi7pkkC1XUi1uVIkjqZArCARcgx8ZCtKA7qw8Vm' \
-                             '9C6IIKqOoOE8RTYnVigifVirZBwID4OUTZB6dyI1mVDwfimIJjZCy' \
-                             'juf2diToFYsVClwYQZDZD'
-            LINKEDIN_TOKEN = 'AQVDPMVg20HqmE0bJWq9pm27iFe116GKlrH9o7vHu_Xp1O89ySf0i' \
-                             'lw3GZc4W_u4zNI0EUD9EfnedLfAiEJxSmansU_P6eDPU5Pq8oJ-33' \
-                             'qDg_GxHw-Yi7C5DzunRuV_ab5fQxZRN8elsuukWx29kl_B-yamd4g' \
-                             'OH8nHA-Uv5FESS7Ul2MM'
-
-            # Виджет Instagram
-            INSTAGRAM_TOKEN = '481470271.0a39b8a.872bb1e18c044e6fbadf88b9a422970b'
 
         urls.py:
             ...

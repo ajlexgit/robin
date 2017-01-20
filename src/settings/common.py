@@ -102,8 +102,9 @@ SUIT_CONFIG = {
             'app': 'social_networks',
             'icon': 'icon-lock',
             'models': (
+                # 'FeedPost',
                 'SocialLinks',
-                'FeedPost',
+                'SocialConfig',
             )
         },
         '-',
@@ -209,30 +210,6 @@ BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
 # Директория для robots.txt и других открытых файлов
 PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
 
-# Google Map API
-GOOGLE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
-
-# Youtube Data API
-# для ckeditor, videolink_field, youtube
-YOUTUBE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
-
-# Social Networks API
-TWITTER_APP_ID = 'j3tkGKGYdUvJy5i97us36UEaF'
-TWITTER_SECRET = '5xdxDZeQQi8mUjpQ86rtr2dMZqkSOn4wQFP4VPNlVDGGPhYV51'
-TWITTER_TOKEN = '201200112-g53dkoQAgJCYxgpiMw4AMpeM8QOuyXrvm5VAh7Cu'
-TWITTER_TOKEN_SECRET = '37Hc33tE6cBHIDEDEwQFaMFwPsCf3mXQABuXKuKsZiVI7'
-FACEBOOK_TOKEN = 'EAADhZCRZAniwcBAONB6fBjEgG0vZAJCRir46Lpa02Yb0aOtoA' \
-                 '8FIDMXOL7sJxLxptZCi7pkkC1XUi1uVIkjqZArCARcgx8ZCtKA' \
-                 '7qw8Vm9C6IIKqOoOE8RTYnVigifVirZBwID4OUTZB6dyI1mVDw' \
-                 'fimIJjZCyjuf2diToFYsVClwYQZDZD'
-LINKEDIN_TOKEN = 'AQVDPMVg20HqmE0bJWq9pm27iFe116GKlrH9o7vHu_Xp1O89yS' \
-                 'f0ilw3GZc4W_u4zNI0EUD9EfnedLfAiEJxSmansU_P6eDPU5Pq' \
-                 '8oJ-33qDg_GxHw-Yi7C5DzunRuV_ab5fQxZRN8elsuukWx29kl' \
-                 '_B-yamd4gOH8nHA-Uv5FESS7Ul2MM'
-
-# Виджет Instagram
-INSTAGRAM_TOKEN = '481470271.0a39b8a.872bb1e18c044e6fbadf88b9a422970b'
-
 # Smart Cache-Control
 SCC_ENABLED = True
 SCC_MAX_AGE_PRIVATE = 0
@@ -337,7 +314,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
-                'google_maps.context_processors.google_apikey',
+                'social_networks.context_processors.google_apikey',
                 'libs.context_processors.domain',
             ),
             'loaders': (

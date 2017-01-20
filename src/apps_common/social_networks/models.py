@@ -9,6 +9,33 @@ from libs.description import description
 from . import conf
 
 
+class SocialConfig(SingletonModel):
+    google_apikey = models.CharField(_('API Key'), max_length=48, blank=True, default='AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
+
+    twitter_app_id = models.CharField(_('API Key'), max_length=48, blank=True)
+    twitter_secret = models.CharField(_('API Secret'), max_length=64, blank=True)
+    twitter_access_token = models.CharField(_('Access Token'), max_length=64, blank=True)
+    twitter_access_token_secret = models.CharField(_('Access Token Secret'), max_length=64, blank=True)
+
+    facebook_access_token = models.TextField(_('Access Token'), blank=True)
+
+    linkedin_access_token = models.TextField(_('Access Token'), blank=True)
+
+    instagram_client_id = models.CharField(_('Client Key'), max_length=48, blank=True)
+    instagram_client_secret = models.CharField(_('Client Secret'), max_length=48, blank=True)
+    instagram_redirect_uri = models.URLField(_('Redirect URI'), blank=True)
+    instagram_access_token = models.CharField(_('Access Token'), max_length=64, blank=True)
+
+    updated = models.DateTimeField(_('change date'), auto_now=True)
+
+    class Meta:
+        default_permissions = ('change',)
+        verbose_name = _('Settings')
+
+    def __str__(self):
+        return ugettext('Settings')
+
+
 class SocialLinks(SingletonModel):
     social_google = models.URLField(_('google plus'), max_length=255, blank=True)
     social_twitter = models.URLField(_('twitter'), max_length=255, blank=True)

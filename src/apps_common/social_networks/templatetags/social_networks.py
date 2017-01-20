@@ -1,8 +1,6 @@
 from urllib.parse import urlencode
 from collections import defaultdict
 from django.template import loader, Library
-from libs.description import description
-from .. import conf
 from ..models import SocialLinks
 
 register = Library()
@@ -24,9 +22,10 @@ def fb(social_data):
 
 
 def tw(social_data):
+    from ..api.twitter import format_message
     return 'http://twitter.com/share?%s' % urlencode({
         'url': social_data['url'],
-        'text': description(social_data['description'], conf.TWITTER_START_CUT, conf.TWITTER_MAX_LEN - conf.TWITTER_URL_LEN - 1),
+        'text': format_message(social_data['description']),
     })
 
 
@@ -37,12 +36,13 @@ def gp(social_data):
 
 
 def li(social_data):
+    from ..api.linkedin import format_message
     return 'http://www.linkedin.com/shareArticle?%s' % urlencode({
         'mini': 'true',
         'url': social_data['url'],
         'title': social_data['title'],
         'image': social_data['image'],
-        'summary': description(social_data['description'], conf.LINKEDIN_START_CUT, conf.LINKEDIN_MAX_LEN),
+        'summary': format_message(social_data['description']),
     })
 
 

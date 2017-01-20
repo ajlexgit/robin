@@ -1,6 +1,6 @@
 """
     Зависит от:
-        libs.coords
+        social_networks libs.coords
 
     Необходимо подключить:
         google_maps/js/core.js
@@ -19,15 +19,11 @@
                     'OPTIONS': {
                         'context_processors': (
                             ...
-                            'google_maps.context_processors.google_apikey',
+                            'social_networks.context_processors.google_apikey',
                         ),
                     }
                 },
             ]
-
-            GOOGLE_APIKEY = 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
-
-
 
     Настройки (settings.py):
         ADMIN_GOOGLE_MAP_WIDTH - ширина карты в админке (по умолчанию 100%)

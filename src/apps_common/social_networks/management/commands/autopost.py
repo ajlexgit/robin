@@ -1,11 +1,12 @@
 import twitter
 import logging
 import facebook
+from PyLinkedinAPI.PyLinkedinAPI import PyLinkedinAPIClientError
 from django.utils.timezone import now
 from django.core.management import BaseCommand
 from ...models import FeedPost
 from ... import conf
-from ... import utils
+from ... import api
 
 MAX_POSTS_PER_CALL = 3
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ class Command(BaseCommand):
         posts = FeedPost.objects.filter(for_network=conf.NETWORK_TWITTER)[:MAX_POSTS_PER_CALL]
         for post in posts:
             try:
-                utils.post_to_twitter(post.text, post.url)
+                api.twitter.post(post.text, url=post.url)
             except twitter.TwitterError as e:
                 logger.error("Twitter Autopost: error on #{0.pk}: {1.args}".format(post, e))
             else:
@@ -33,7 +34,7 @@ class Command(BaseCommand):
         posts = FeedPost.objects.filter(for_network=conf.NETWORK_FACEBOOK)[:MAX_POSTS_PER_CALL]
         for post in posts:
             try:
-                utils.post_to_facebook(post.text, post.url)
+                api.facebook.post(post.text, url=post.url)
             except facebook.GraphAPIError as e:
                 logger.error("Facebook Autopost: error on #{0.pk}: {1.args}".format(post, e))
             else:
@@ -46,8 +47,8 @@ class Command(BaseCommand):
         posts = FeedPost.objects.filter(for_network=conf.NETWORK_LINKEDIN)[:MAX_POSTS_PER_CALL]
         for post in posts:
             try:
-                utils.post_to_linkedin(post.text, post.url)
-            except Exception as e:
+                api.linkedin.post(post.text, url=post.url)
+            except PyLinkedinAPIClientError as e:
                 logger.error("Linkedin Autopost: error on #{0.pk}: {1.args}".format(post, e))
             else:
                 logger.info("Linkedin Autopost: posted #{0.pk} ('{0}')".format(post))

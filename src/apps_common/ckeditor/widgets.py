@@ -5,6 +5,7 @@ from django.shortcuts import resolve_url
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from django.utils.translation import get_language
+from social_networks.models import SocialConfig
 from suit_ckeditor.widgets import CKEditorWidget as DefaultWidget
 from .models import PagePhoto
 
@@ -130,8 +131,8 @@ class CKEditorUploadWidget(CKEditorWidget):
         )
 
         # Youtube APIKEY
-        youtube_key = getattr(settings, 'YOUTUBE_APIKEY', 'AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
-        self.editor_options['YOUTUBE_APIKEY'] = youtube_key
+        social = SocialConfig.get_solo()
+        self.editor_options['YOUTUBE_APIKEY'] = social.google_apikey
 
         page_photos = []
         page_files = []

@@ -7,8 +7,8 @@
         3) Rutube
 
     Зависит от:
+        social_networks
         libs.widgets
-        libs.youtube
 
     Пример:
         video = VideoLinkField(_('video'), providers=('youtube', ))

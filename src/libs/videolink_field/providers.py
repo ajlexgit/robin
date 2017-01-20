@@ -3,7 +3,7 @@ import logging
 from xml.dom import minidom
 from urllib import request, error
 from django.utils.html import strip_tags
-from libs.youtube import api as youtube_api
+from social_networks.api import youtube
 
 PROVIDERS = {}
 
@@ -57,7 +57,7 @@ class YoutubeProvider(BaseProvider):
 
     @classmethod
     def get_info(cls, video_key):
-        data = youtube_api.get_video_info(video_key)
+        data = youtube.get_video_info(video_key)
         if not data:
             return {}
 
