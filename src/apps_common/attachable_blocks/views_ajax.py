@@ -28,7 +28,9 @@ def get_blocks(request):
         if not block_view:
             continue
 
-        result[block_id] = block_view(RequestContext(request), real_block)
+        result[block_id] = block_view(RequestContext(request, {
+            'request': request,
+        }), real_block)
 
     return JsonResponse(result)
 

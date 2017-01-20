@@ -25,7 +25,12 @@
             }
         });
 
-        if (!keys.length) return;
+        if (!keys.length) {
+            // callback event
+            $(document).trigger('loaded.ajax_blocks');
+            return;
+        }
+
         $.ajax({
             url: window.js_storage.ajax_attached_block,
             type: 'GET',
