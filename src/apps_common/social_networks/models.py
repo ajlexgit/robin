@@ -21,7 +21,7 @@ class SocialConfig(SingletonModel):
 
     linkedin_access_token = models.TextField(_('Access Token'), blank=True)
 
-    instagram_client_id = models.CharField(_('Client Key'), max_length=48, blank=True)
+    instagram_client_id = models.CharField(_('Client ID'), max_length=48, blank=True)
     instagram_client_secret = models.CharField(_('Client Secret'), max_length=48, blank=True)
     instagram_redirect_uri = models.URLField(_('Redirect URI'), blank=True)
     instagram_access_token = models.CharField(_('Access Token'), max_length=64, blank=True)
