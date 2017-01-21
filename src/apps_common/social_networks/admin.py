@@ -37,6 +37,12 @@ class SocialConfigForm(forms.ModelForm):
         widget=TokenButtonWidget('Update access token'),
     )
 
+    facebook_token = forms.CharField(
+        label='',
+        required=False,
+        widget=TokenButtonWidget('Update access token'),
+    )
+
     instagram_token = forms.CharField(
         label='',
         required=False,
@@ -79,6 +85,17 @@ class SocialConfigForm(forms.ModelForm):
             self.fields['twitter_token'].initial = token_url
             self.fields['twitter_token'].help_text = _(
                 'Add redirect URI "%s" to your Twitter application') % redirect_uri
+
+        # Facebook
+        if config.facebook_client_id and config.facebook_client_secret:
+            redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:facebook_token'))
+            token_url = 'https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&state=&response_type=code'.format(
+                client_id=config.facebook_client_id,
+                redirect_uri=redirect_uri,
+                scope='manage_pages,publish_pages',
+            )
+            self.fields['facebook_token'].initial = token_url
+            self.fields['facebook_token'].help_text = _('Add redirect URI "%s" to your Facebook application') % redirect_uri
 
         # Instagram
         if config.instagram_client_id and config.instagram_client_secret:
@@ -123,7 +140,7 @@ class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
         (_('Facebook'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'facebook_client_id', 'facebook_client_secret', 'facebook_access_token',
+                'facebook_client_id', 'facebook_client_secret', 'facebook_access_token', 'facebook_token',
             ),
         }),
         (_('Instagram'), {

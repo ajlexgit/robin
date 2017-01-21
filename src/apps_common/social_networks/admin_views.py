@@ -37,6 +37,53 @@ class TwitterTokenView(AdminViewMixin, View):
             return HttpResponse(answer)
 
 
+class FacebookTokenView(AdminViewMixin, View):
+    def get(self, request, *args, **kwargs):
+        code = request.GET.get('code', '')
+        if not code:
+            raise Http404
+
+        config = SocialConfig.get_solo()
+        redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:facebook_token'))
+        response = requests.get(
+            'https://graph.facebook.com/oauth/access_token',
+            params={
+                'client_id': config.facebook_client_id,
+                'client_secret': config.facebook_client_secret,
+                'redirect_uri': redirect_uri,
+                'code': code,
+            }
+        )
+
+        short_token = response.text[13:]
+        response = requests.get(
+            'https://graph.facebook.com/oauth/access_token',
+            params={
+                'grant_type': 'fb_exchange_token',
+                'client_id': config.facebook_client_id,
+                'client_secret': config.facebook_client_secret,
+                'fb_exchange_token': short_token,
+            }
+        )
+        
+        long_token = response.text[13:]
+        response = requests.get(
+            'https://graph.facebook.com/me/accounts',
+            params={
+                'access_token': long_token,
+            }
+        )
+        
+        print(response.text)
+        answer = response.json()
+        if answer and ('data' in answer) and ('access_token' in answer['data'][0]):
+            SocialConfig.objects.update(facebook_access_token=answer['data'][0]['access_token'])
+            add_message(request, SUCCESS, _('Facebook access_token updated successfully!'))
+            return redirect('admin:social_networks_socialconfig_change')
+        else:
+            return HttpResponse(response.text)
+
+
 class InstagramTokenView(AdminViewMixin, View):
     def get(self, request, *args, **kwargs):
         code = request.GET.get('code', '')
@@ -62,7 +109,7 @@ class InstagramTokenView(AdminViewMixin, View):
             add_message(request, SUCCESS, _('Instagram access_token updated successfully!'))
             return redirect('admin:social_networks_socialconfig_change')
         else:
-            return HttpResponse(answer)
+            return HttpResponse(response.text)
 
 
 class LinkedinTokenView(AdminViewMixin, View):
@@ -90,4 +137,4 @@ class LinkedinTokenView(AdminViewMixin, View):
             add_message(request, SUCCESS, _('LinkedIn access_token updated successfully!'))
             return redirect('admin:social_networks_socialconfig_change')
         else:
-            return HttpResponse(answer)
+            return HttpResponse(response.text)
