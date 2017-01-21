@@ -86,7 +86,7 @@ class LinkedinTokenView(AdminViewMixin, View):
 
         answer = response.json()
         if answer and 'access_token' in answer:
-            SocialConfig.objects.update(instagram_access_token=answer['access_token'])
+            SocialConfig.objects.update(linkedin_access_token=answer['access_token'])
             add_message(request, SUCCESS, _('LinkedIn access_token updated successfully!'))
             return redirect('admin:social_networks_socialconfig_change')
         else:
