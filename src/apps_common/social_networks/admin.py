@@ -156,8 +156,7 @@ class SocialLinksAdmin(ModelAdminMixin, SingletonModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'social_facebook', 'social_instagram', 'social_twitter', 'social_pinterest',
-                'social_google', 'social_vk',
+                'social_google', 'social_twitter', 'social_facebook', 'social_instagram',
             ),
         }),
     )
