@@ -17,6 +17,8 @@ class SocialConfig(SingletonModel):
     twitter_access_token = models.CharField(_('Access Token'), max_length=64, blank=True)
     twitter_access_token_secret = models.CharField(_('Access Token Secret'), max_length=64, blank=True)
 
+    facebook_client_id = models.CharField(_('App ID'), max_length=48, blank=True)
+    facebook_client_secret = models.CharField(_('App Secret'), max_length=64, blank=True)
     facebook_access_token = models.TextField(_('Access Token'), blank=True)
 
     linkedin_client_id = models.CharField(_('API Key'), max_length=48, blank=True)

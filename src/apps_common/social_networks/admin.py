@@ -123,7 +123,7 @@ class SocialConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
         (_('Facebook'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'facebook_access_token',
+                'facebook_client_id', 'facebook_client_secret', 'facebook_access_token',
             ),
         }),
         (_('Instagram'), {
