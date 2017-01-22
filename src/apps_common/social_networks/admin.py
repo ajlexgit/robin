@@ -76,7 +76,7 @@ class SocialConfigForm(forms.ModelForm):
             )
 
             try:
-                resp = oauth_client.fetch_request_token('https://api.twitter.com/oauth/request_token')
+                oauth_client.fetch_request_token('https://api.twitter.com/oauth/request_token')
             except ValueError:
                 raise Http404
 

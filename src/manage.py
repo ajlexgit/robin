@@ -2,7 +2,6 @@ import os
 import sys
 
 # Подумать над возможностью реализации Grid через Flexbox.
-# Многопоточность в collectstatic
 # menu class + subclasses
 
 # Shop cart example + discounts

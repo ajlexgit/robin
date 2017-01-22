@@ -65,7 +65,7 @@ class FacebookTokenView(AdminViewMixin, View):
                 'fb_exchange_token': short_token,
             }
         )
-        
+
         long_token = response.text[13:]
         response = requests.get(
             'https://graph.facebook.com/me/accounts',
@@ -73,8 +73,7 @@ class FacebookTokenView(AdminViewMixin, View):
                 'access_token': long_token,
             }
         )
-        
-        print(response.text)
+
         answer = response.json()
         if answer and ('data' in answer) and ('access_token' in answer['data'][0]):
             SocialConfig.objects.update(facebook_access_token=answer['data'][0]['access_token'])
