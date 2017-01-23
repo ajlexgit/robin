@@ -9,6 +9,10 @@ MAX_AGE_PUBLIC = getattr(settings, 'SCC_MAX_AGE_PUBLIC', 24 * 3600)
 MAX_AGE_PRIVATE = getattr(settings, 'SCC_MAX_AGE_PRIVATE', 0)
 VARY_ON = getattr(settings, 'SCC_VARY_ON', ('Cookie', ))
 
+IGNORE_URLS = []
+for url_settings in getattr(settings, 'SCC_IGNORE_URLS', []):
+    IGNORE_URLS.append(re.compile(url_settings))
+
 CUSTOM_RULES = []
 for url_settings in getattr(settings, 'SCC_CUSTOM_RULES', []):
     CUSTOM_RULES.append((
@@ -16,10 +20,6 @@ for url_settings in getattr(settings, 'SCC_CUSTOM_RULES', []):
         url_settings[1],
         url_settings[2],
     ))
-
-IGNORE_URLS = []
-for url_settings in getattr(settings, 'SCC_IGNORE_URLS', []):
-    IGNORE_URLS.append(re.compile(url_settings))
 
 
 class SCCMiddleware:

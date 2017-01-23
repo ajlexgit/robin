@@ -1,7 +1,8 @@
 import re
 from django.views.generic import View
-from libs.views_ajax import AjaxViewMixin
 from libs.cookies import set_cookie
+from libs.valute_field import Valute
+from libs.views_ajax import AjaxViewMixin
 from .models import ShopProduct
 from . import conf
 
@@ -39,7 +40,7 @@ class Cart:
 
     @property
     def total_price(self):
-        return sum(prod.price * count for prod, count in self.products_counts)
+        return sum((prod.price * count for prod, count in self.products_counts), Valute(0))
 
     def _format(self):
         """

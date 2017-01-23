@@ -47,7 +47,6 @@
     /** @namespace window.js_storage.load_cart */
     /** @namespace window.js_storage.clear_cart */
     /** @namespace window.js_storage.max_product_count */
-    /** @namespace window.js_storage.session_cart_empty */
 
     var saving_query;
     var loading_query;
@@ -300,7 +299,8 @@
     }).ready(function() {
         // запись корзины в сессию, если localStorage не пуст, а сессия пуста.
         var storage = window.cart.getStorage();
-        if (!$.isEmptyObject(storage) && window.js_storage.session_cart_empty) {
+        var cart_cookie = $.cookie('cart-price');
+        if (!$.isEmptyObject(storage) && !cart_cookie) {
             window.cart.saveStorage(storage);
         }
     });
