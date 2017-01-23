@@ -19,7 +19,6 @@
             settings.MEDIA_URL,
             '/favicon',
         )
-        DEVSERVER_SQL_MIN_DURATION = None
 
 
     Профилирование функций:

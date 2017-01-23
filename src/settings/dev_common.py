@@ -41,9 +41,6 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES += 'devserver.middleware.DevServerMiddleware',
 
-# Devserver
-DEVSERVER_SQL_MIN_DURATION = 100
-
 # Вывод ошибок в консоль
 LOGGING = {
     'version': 1,

@@ -325,12 +325,12 @@ class ShopProduct(models.Model):
             return item.image if item else None
         return None
 
-    @property
+    @cached_property
     def photo_description(self):
-        if self._photo_description:
-            return self._photo_description
-
         default_description = self.title
+        if self._photo_description is not None:
+            return self._photo_description or default_description
+
         if self.gallery:
             item = self.gallery.image_items.first()
             return item.description if item else default_description

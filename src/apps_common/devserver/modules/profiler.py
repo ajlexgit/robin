@@ -17,11 +17,11 @@ class Profile:
         Пример:
             from devserver import Profile
 
-            with Profile('FetchEntity', show_sql=True):
+            with Profile('FetchEntity', sql=True):
                 enities = Entity.objects.get(pk=1)
                 ...
 
-            with Profile('LogToFile', stdout='/tmp/log.txt', show_sql=True):
+            with Profile('LogToFile', stdout='/tmp/log.txt', sql=True):
                 enities = Entity.objects.get(pk=1)
                 ...
 
