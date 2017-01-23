@@ -212,8 +212,6 @@ PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
 
 # Smart Cache-Control
 SCC_ENABLED = True
-SCC_MAX_AGE_PRIVATE = 0
-SCC_MAX_AGE_PUBLIC = 24*3600
 SCC_DISABLED_URLS = [
     r'/admin/',
     r'/dladmin/',
