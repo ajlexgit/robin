@@ -6,6 +6,7 @@ from django.db.models.functions import Coalesce
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 from gallery import *
 from solo.models import SingletonModel
 from ckeditor.fields import CKEditorField
@@ -183,6 +184,29 @@ class ShopProductQuerySet(AliasedQuerySetMixin, models.QuerySet):
 
         return qs
 
+    def with_photos(self):
+        """
+            !! Сразу выполняет запрос !!
+            Возвращает кортеж продуктов с картинками и описаниями к картинкам.
+            Применяется для оптимизации SQL-запроса большого количества продуктов.
+        """
+        products = tuple(self)
+        gallery_ct = ContentType.objects.get_for_model(ShopProductGallery)
+        photos_dict = {
+            photo.object_id: photo
+            for photo in ShopProductGalleryImageItem.objects.filter(
+                content_type=gallery_ct,
+                object_id__in=(prod.gallery_id for prod in products)
+            ).distinct('object_id')
+        }
+        for product in products:
+            product_photo = photos_dict.get(product.gallery_id)
+            if product_photo:
+                product._photo = product_photo.image
+                product._photo_description = product_photo.description
+
+        return products
+
 
 class ShopProductGalleryImageItem(GalleryImageItem):
     """ Элемент галереи продукта """
@@ -218,6 +242,11 @@ class ShopProductGallery(GalleryBase):
 
 class ShopProduct(models.Model):
     """ Продукт """
+
+    # поля для ускорения SQL-запроса
+    _photo = None
+    _photo_description = None
+
     category = models.ForeignKey(ShopCategory,
         verbose_name=_('category'),
         related_name='immediate_products'
@@ -288,10 +317,24 @@ class ShopProduct(models.Model):
 
     @cached_property
     def photo(self):
+        if self._photo:
+            return self._photo
+
         if self.gallery:
             item = self.gallery.image_items.first()
             return item.image if item else None
         return None
+
+    @property
+    def photo_description(self):
+        if self._photo_description:
+            return self._photo_description
+
+        default_description = self.title
+        if self.gallery:
+            item = self.gallery.image_items.first()
+            return item.description if item else default_description
+        return default_description
 
 
 class ShopOrderQuerySet(AliasedQuerySetMixin, models.QuerySet):
