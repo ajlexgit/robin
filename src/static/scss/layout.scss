@@ -121,3 +121,7 @@ body {
   @include fontsize_h1;
 }
 
+.title-h2 {
+  font-weight: bold;
+  @include fontsize_h2;
+}

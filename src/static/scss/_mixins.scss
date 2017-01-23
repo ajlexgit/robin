@@ -12,9 +12,16 @@
 }
 
 @mixin fontsize_h1() {
-  @include font-size(40px, 42px);
+  @include font-size(40px, 44px);
   @include media_interval(0, $media768) {
-    @include font-size(28px);
+    @include font-size(32px);
+  }
+}
+
+@mixin fontsize_h2() {
+  @include font-size(32px, 36px);
+  @include media_interval(0, $media768) {
+    @include font-size(24px);
   }
 }
 

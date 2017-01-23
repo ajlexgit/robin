@@ -1,2 +1,17 @@
 @import "mixins";
 
+.category-block {
+  margin-top: 40px;
+
+  .title {
+    margin-bottom: 10px;
+  }
+
+  .product {
+    @include media_interval($media768, $media1024) {
+      &:nth-of-type(4) {
+        display: none;
+      }
+    }
+  }
+}

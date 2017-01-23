@@ -20,6 +20,13 @@
     <h1 class="title-h1">{{ config.header }}</h1>
 
     {% include 'shop/category_list.html' with categories=root_categories %}
+
+    {% for category in root_categories %}
+      <div class="category-block">
+        <h2 class="title title-h2">{{ category.title }}</h2>
+        {% include 'shop/product_list.html' with products=category.products.with_photos|slice:"4" %}
+      </div>
+    {% endfor %}
   </div>
 
 {% endblock content %}

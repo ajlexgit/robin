@@ -6,7 +6,18 @@
 
   .product {
     border: 1px solid #CCCCCC;
-    @include flex-columns(4, 20px, 20px);
+    @include media_interval($media1024, 0) {
+      @include flex-columns(4, 20px, 20px);
+    }
+    @include media_interval($media768, $media1024) {
+      @include flex-columns(3, 20px, 20px);
+    }
+    @include media_interval($media480, $media768) {
+      @include flex-columns(2, 20px, 20px);
+    }
+    @include media_interval(0, $media480) {
+      @include flex-columns(1, 20px, 20px);
+    }
 
     .inner {
       padding: 10px;
