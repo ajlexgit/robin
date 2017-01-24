@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
-{% load social_networks %}
 {% load pipeline_plus %}
+{% load share_buttons %}
 {% load away %}
 {% load text %}
 
@@ -23,7 +23,7 @@
     <link itemprop="mainEntityOfPage" href="{{ post.get_absolute_url }}"/>
     <!-- <link itemprop="author" href="#MyOrg"/>
     <link itemprop="publisher" href="#MyOrg"/> -->
-    
+
     {% if post.preview %}
       <link itemprop="image" href="{{ post.preview.normal.url }}"/>
     {% endif %}
@@ -47,11 +47,11 @@
         </div>
 
         <div class="social-buttons no-counter">
-          {% social_button 'fb' %}
-          {% social_button 'tw' %}
-          {% social_button 'gp' %}
-          {% social_button 'li' %}
-          {% social_button 'pn' %}
+          {% share_button 'fb' %}
+          {% share_button 'tw' %}
+          {% share_button 'gp' %}
+          {% share_button 'li' %}
+          {% share_button 'pn' %}
         </div>
       </div>
     </div>

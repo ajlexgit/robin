@@ -9,7 +9,7 @@ class EmailModelBackend(ModelBackend):
     """
         Авторизация по паре email-пароль
     """
-    def authenticate(self, email=None, password=None):
+    def authenticate(self, email=None, password=None, **kwargs):
         if isinstance(email, str):
             email = email.lower()
 

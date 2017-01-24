@@ -1,6 +1,6 @@
 """
     Плагин соцкнопок.
-    Включает соцкнопки "Поделиться", автопостинг в соцсети, виджет Instagram.
+    Включает соцкнопки "Поделиться", автопостинг в соцсети, виджет Instagram и блок ссылок на соцсети.
 
     Установка:
         settings.py:
@@ -35,16 +35,28 @@
         # Нужно подключить JS и SCSS
 
         template.html:
-            {% load social_networks %}
+            {% load share_buttons %}
 
             <div class="social-buttons no-counter">
-              {% social_button 'vk' %}
-              {% social_button 'fb' %}
-              {% social_button 'tw' %}
-              {% social_button 'gp' %}
-              {% social_button 'li' %}
-              {% social_button 'pn' %}
+              {% share_button 'vk' %}
+              {% share_button 'fb' %}
+              {% share_button 'tw' %}
+              {% share_button 'gp' %}
+              {% share_button 'li' %}
+              {% share_button 'pn' %}
             </div>
+
+    Ссылки на соцсети:
+        # Нужно подключить SCSS
+
+        template.html:
+            {% load social_links %}
+
+            <!-- Вывод ссылок -->
+            {% social_links %}
+
+            <!-- Вывод ссылок с дополнительным классом -->
+            {% social_links classes='custom-css-classes' %}
 
     Виджет Instagram:
         # Нужно подключить JS и SCSS
