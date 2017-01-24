@@ -26,6 +26,11 @@ class SCCMiddleware:
     @staticmethod
     def process_response(request, response):
         if not ENABLED:
+            # Удаление кэширующих заголовков
+            if 'last-modified' in response:
+                del response['last-modified']
+            if 'etag' in response:
+                del response['etag']
             return response
 
         # Если не указан content-type - выходим
