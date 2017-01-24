@@ -13,7 +13,7 @@ class MySphinxSearch(SphinxSearch):
 class SearchView(TemplateView):
     template_name = 'search/search.html'
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         query = request.GET.get('q')
         if query:
             queryset = MySphinxSearch().fetch_dicts(query)
