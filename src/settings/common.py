@@ -211,7 +211,6 @@ BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
 PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
 
 # Smart Cache-Control
-SCC_ENABLED = True
 SCC_DISABLED_URLS = [
     r'/admin/',
     r'/dladmin/',
