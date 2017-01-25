@@ -2,6 +2,7 @@ import os
 import sys
 
 # Подумать над возможностью реализации Grid через Flexbox.
+# Попытаться избавиться от select_subclasses
 # menu class + subclasses
 
 # Shop cart example + discounts
