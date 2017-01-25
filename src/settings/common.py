@@ -210,6 +210,10 @@ BACKUP_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'backup'))
 # Директория для robots.txt и других открытых файлов
 PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
 
+# Django solo caching
+SOLO_CACHE = 'default'
+SOLO_CACHE_TIMEOUT = 5 * 60
+
 # Smart Cache-Control
 SCC_DISABLED_URLS = [
     r'/admin/',
