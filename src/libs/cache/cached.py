@@ -91,6 +91,9 @@ def cached(*key, time=5*60, backend='default'):
             # Получение значений параметров функции
             real_params = []
             for name in (key or bind_args):
+                if name == 'self':
+                    continue
+
                 properties = name.split('.')
                 value = bind_args.get(properties.pop(0), None)
                 for prop in properties:

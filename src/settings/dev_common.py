@@ -68,6 +68,11 @@ LOGGING = {
             'handlers': ['null'],
             'propagate': False,
         },
+        'sql': {
+            'handlers': ['null'],
+            'propagate': False,
+            'level': 'DEBUG',
+        },
         '': {
             'handlers': ['console'],
             'level': 'INFO',
