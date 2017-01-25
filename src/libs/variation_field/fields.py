@@ -143,10 +143,17 @@ class VariationField(ImageFile):
 
 class VariationImageFieldFile(ImageFieldFile):
     _croparea = ''
+    _variations = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.variations = {}
+    def __getattr__(self, item):
+        if item in self.variations:
+            self.create_variations()
+            if hasattr(self, item):
+                return getattr(self, item)
+
+        raise AttributeError(
+            "'%s' object has no attribute '%s'" % (self.__class__.__name__, item)
+        )
 
     @property
     def dimensions(self):
@@ -204,10 +211,11 @@ class VariationImageFieldFile(ImageFieldFile):
         else:
             self._croparea = CropArea(value)
 
-    def set_crop_field(self, instance, croparea=None):
-        self.croparea = croparea
-        if self.field.crop_field and hasattr(instance, self.field.crop_field):
-            setattr(instance, self.field.crop_field, self.croparea)
+    @property
+    def variations(self):
+        if self._variations is None:
+            self._variations = self.field.get_variations(self.instance)
+        return self._variations
 
     @property
     def variation_files(self):
@@ -217,14 +225,31 @@ class VariationImageFieldFile(ImageFieldFile):
             !!! Пути не учитывают storage !!!
         """
         files_list = []
-
-        if self.name:
-            variations = self.field.get_variations(self.instance)
-            for name, variation in variations.items():
-                path = self.field.build_variation_name(variation, self.name)
-                files_list.append(path)
-
+        for name, variation in self.variations.items():
+            path = self.field.build_variation_name(variation, self.name)
+            files_list.append(path)
         return tuple(files_list)
+
+    def set_crop_field(self, instance, croparea=None):
+        self.croparea = croparea
+        if self.field.crop_field and hasattr(instance, self.field.crop_field):
+            setattr(instance, self.field.crop_field, self.croparea)
+
+    def create_variations(self):
+        """
+            Создает атрибуты вариаций
+        """
+        if not self or not self.exists():
+            return
+
+        for name, variation in self.variations.items():
+            variation_filename = self.field.build_variation_name(variation, self.name)
+            variation_field = VariationField(
+                variation_filename,
+                storage=self.storage,
+                variation_size=variation['size']
+            )
+            setattr(self, name, variation_field)
 
     def recut(self, *args, croparea=''):
         """
@@ -238,7 +263,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.croparea = croparea
 
         # Обрабатываем вариации
-        self.field.add_field_variations(self.instance, self)
+        self.create_variations()
         for name, variation in self.variations.items():
             if args and name not in args:
                 continue
@@ -289,7 +314,7 @@ class VariationImageFieldFile(ImageFieldFile):
         self.clear_dimensions()
 
         # Обрабатываем вариации
-        self.field.add_field_variations(self.instance, self)
+        self.create_variations()
         for name, variation in self.variations.items():
             self.field.resize_image(
                 self.instance,
@@ -307,7 +332,7 @@ class VariationImageFieldFile(ImageFieldFile):
 
     def delete(self, save=True):
         """ Удаление картинки """
-        self.field.add_field_variations(self.instance, self)
+        self.create_variations()
         for name in self.variations:
             variation_field = getattr(self, name, None)
             if variation_field:
@@ -361,30 +386,6 @@ class VariationImageField(models.ImageField):
         self.crop_field = kwargs.pop('crop_field', None)
         super().__init__(*args, **kwargs)
 
-    def _post_init(self, instance, **kwargs):
-        self.add_field_variations(instance)
-
-    def add_field_variations(self, instance, field_file=None):
-        """
-            Создает в экземпляре класса VariationImageFieldFile поля вариаций
-        """
-        if field_file is None:
-            field_file = self.value_from_object(instance)
-            if not field_file or not field_file.exists():
-                return
-
-        if not field_file.variations:
-            field_file.variations = self.get_variations(instance)
-
-        for name, variation in field_file.variations.items():
-            variation_filename = self.build_variation_name(variation, field_file.name)
-            variation_field = VariationField(
-                variation_filename,
-                storage=self.storage,
-                variation_size=variation['size']
-            )
-            setattr(field_file, name, variation_field)
-
     def get_prep_value(self, value):
         if isinstance(value, FieldFile) and not value.exists():
             return ''
@@ -393,7 +394,6 @@ class VariationImageField(models.ImageField):
 
     def contribute_to_class(self, cls, name, **kwargs):
         super().contribute_to_class(cls, name, **kwargs)
-        signals.post_init.connect(self._post_init, sender=cls)
         signals.post_save.connect(self._post_save, sender=cls)
         signals.post_delete.connect(self._post_delete, sender=cls)
 
@@ -647,7 +647,7 @@ class VariationImageField(models.ImageField):
         if not field_file or not field_file.exists():
             return
 
-        self.add_field_variations(instance, field_file)
+        field_file.create_variations()
         for variation in field_file.variations.values():
             self.resize_image(
                 instance,
