@@ -217,9 +217,10 @@ class VariationImageFieldFile(ImageFieldFile):
 
     @property
     def variations(self):
-        if self._variations is None:
-            self._variations = self.field.get_variations(self.instance) or {}
-        return self._variations
+        if self.field and self._variations is None:
+            variations = self.field.get_variations(self.instance)
+            self._variations = variations
+        return self._variations or {}
 
     @property
     def variation_files(self):
