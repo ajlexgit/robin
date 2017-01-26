@@ -212,7 +212,7 @@ PUBLIC_DIR = os.path.abspath(os.path.join(BASE_DIR, '..', 'public'))
 
 # Django solo caching
 SOLO_CACHE = 'default'
-SOLO_CACHE_TIMEOUT = 5 * 60
+SOLO_CACHE_TIMEOUT = 10 * 60
 
 # Smart Cache-Control
 SCC_DISABLED_URLS = [

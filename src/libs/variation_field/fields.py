@@ -142,14 +142,15 @@ class VariationField(ImageFile):
 
 
 class VariationImageFieldFile(ImageFieldFile):
+    field = None
     _croparea = ''
     _variations = None
 
     def __getattr__(self, item):
         if item in self.variations:
             self.create_variations()
-            if hasattr(self, item):
-                return getattr(self, item)
+            if item in self.__dict__:
+                return self.__dict__[item]
 
         raise AttributeError(
             "'%s' object has no attribute '%s'" % (self.__class__.__name__, item)
