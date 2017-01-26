@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from .base import Menu, MenuItem
 
 
-def main():
+def main(request):
     menu = Menu()
     menu.append(
         MenuItem(
