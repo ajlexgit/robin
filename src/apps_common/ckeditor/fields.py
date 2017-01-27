@@ -102,17 +102,19 @@ class CKEditorUploadField(models.Field):
         else:
             return []
 
-    def to_python(self, value):
+    def save_form_data(self, instance, data):
         self._page_photos = ()
         self._page_files = ()
         self._simple_photos = ()
-        if isinstance(value, (list, tuple)):
-            if len(value) == 4:
-                self._page_photos = value[1].split(',') if value[1] else ()
-                self._page_files = value[2].split(',') if value[2] else ()
-                self._simple_photos = value[3].split(',') if value[3] else ()
-            return value[0]
-        return value
+        if isinstance(data, (list, tuple)):
+            if len(data) == 4:
+                self._page_photos = data[1].split(',') if data[1] else ()
+                self._page_files = data[2].split(',') if data[2] else ()
+                self._simple_photos = data[3].split(',') if data[3] else ()
+
+            super().save_form_data(instance, data[0])
+        else:
+            super().save_form_data(instance, data)
 
     def get_prep_value(self, value):
         value = super().get_prep_value(value)
