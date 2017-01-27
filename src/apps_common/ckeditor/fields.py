@@ -98,6 +98,11 @@ class CKEditorUploadField(models.Field):
         else:
             return []
 
+    def to_python(self, value):
+        if isinstance(value, tuple):
+            return value[0]
+        return value
+
     def get_prep_value(self, value):
         value = super().get_prep_value(value)
         if isinstance(value, str) or value is None:
