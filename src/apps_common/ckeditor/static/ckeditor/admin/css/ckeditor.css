@@ -117,3 +117,9 @@ blockquote > *:last-child {
 .two-columns > *:last-child {
     margin-bottom: 0;
 }
+
+.object-description {
+    margin-top: 5px;
+    font-size: 0.8em;
+    color: #808080;
+}

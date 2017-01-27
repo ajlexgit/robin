@@ -2,8 +2,8 @@ from django.db import models
 from django.core import checks
 from django.db.models import signals
 from django.utils.encoding import smart_text
-from .signals.handlers import delete_photos, save_photos
 from .forms import CKEditorFormField, CKEditorUploadFormField
+from .models import PagePhoto, PageFile, SimplePhoto
 from . import conf
 
 
@@ -60,6 +60,10 @@ class CKEditorField(models.Field):
 
 class CKEditorUploadField(models.Field):
     """ Текстовое поле с WISYWIG редактором и возможностью загрузки картинок """
+    _page_photos = ()
+    _page_files = ()
+    _simple_photos = ()
+
     def __init__(self, *args, editor_options=None, height=420, upload_pagephoto_url='',
             upload_pagefile_url='', upload_simplephoto_url='', **kwargs):
         editor_options = editor_options or conf.CKEDITOR_UPLOAD_CONFIG_DEFAULT
@@ -99,7 +103,14 @@ class CKEditorUploadField(models.Field):
             return []
 
     def to_python(self, value):
-        if isinstance(value, tuple):
+        self._page_photos = ()
+        self._page_files = ()
+        self._simple_photos = ()
+        if isinstance(value, (list, tuple)):
+            if len(value) == 4:
+                self._page_photos = value[1].split(',') if value[1] else ()
+                self._page_files = value[2].split(',') if value[2] else ()
+                self._simple_photos = value[3].split(',') if value[3] else ()
             return value[0]
         return value
 
@@ -121,22 +132,54 @@ class CKEditorUploadField(models.Field):
         defaults.update(kwargs)
         return super().formfield(**defaults)
 
-    def pre_save(self, model_instance, add):
-        """ Сохраняем текст в базу, а картинки - в экземпляр сущности """
-        model_instance._page_photos = ()
-        model_instance._page_files = ()
-        model_instance._simple_photos = ()
+    def _post_save(self, instance, **kwargs):
+        for photo_id in self._page_photos:
+            try:
+                photo = PagePhoto.objects.get(id=photo_id)
+            except (PagePhoto.DoesNotExist, PagePhoto.MultipleObjectsReturned):
+                continue
+            else:
+                photo.instance_id = instance.id
+                photo.save()
 
-        value = self.value_from_object(model_instance)
-        if isinstance(value, (list, tuple)):
-            if len(value) == 4:
-                model_instance._page_photos = value[1].split(',') if value[1] else ()
-                model_instance._page_files = value[2].split(',') if value[2] else ()
-                model_instance._simple_photos = value[3].split(',') if value[3] else ()
-            return value[0]
-        return value
+        for file_id in self._page_files:
+            try:
+                file = PageFile.objects.get(id=file_id)
+            except (PageFile.DoesNotExist, PageFile.MultipleObjectsReturned):
+                continue
+            else:
+                file.instance_id = instance.id
+                file.save()
+
+        for photo_id in self._simple_photos:
+            try:
+                photo = SimplePhoto.objects.get(id=photo_id)
+            except (SimplePhoto.DoesNotExist, SimplePhoto.MultipleObjectsReturned):
+                continue
+            else:
+                photo.instance_id = instance.id
+                photo.save()
+
+    def _post_delete(self, instance, **kwargs):
+        pagephotos = PagePhoto.objects.filter(
+            app_name=instance._meta.app_label,
+            model_name=instance._meta.model_name,
+            instance_id=instance.id)
+        pagephotos.delete()
+
+        pagefiles = PageFile.objects.filter(
+            app_name=instance._meta.app_label,
+            model_name=instance._meta.model_name,
+            instance_id=instance.id)
+        pagefiles.delete()
+
+        simplephotos = SimplePhoto.objects.filter(
+            app_name=instance._meta.app_label,
+            model_name=instance._meta.model_name,
+            instance_id=instance.id)
+        simplephotos.delete()
 
     def contribute_to_class(self, cls, name, virtual_only=False):
         super().contribute_to_class(cls, name, virtual_only)
-        signals.post_save.connect(save_photos, sender=cls)
-        signals.pre_delete.connect(delete_photos, sender=cls)
+        signals.post_save.connect(self._post_save, sender=cls)
+        signals.pre_delete.connect(self._post_delete, sender=cls)
