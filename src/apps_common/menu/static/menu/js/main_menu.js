@@ -29,7 +29,7 @@
             superclass.init.call(this);
 
             this.opts = $.extend({
-                menuSelector: '#mobile-menu',
+                menuSelector: '.mobile-menu',
                 buttonSelector: '#mobile-menu-button',
                 openedClass: 'main-menu-opened',
 

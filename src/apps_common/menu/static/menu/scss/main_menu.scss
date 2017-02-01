@@ -10,20 +10,12 @@ $mobile_hover_color: $menu_hover_color;
 $mobile_active_color: $menu_active_color;
 
 
-#main-menu {
-  display: inline-block;
+// базовый класс всех меню
+.menu {
   @include no_fontsize;
-  @include media_interval($mobile_menu_interval) {
-    display: none;
-  }
 
   li {
-    display: inline-block;
-    margin-right: 10px;
     color: $menu_text_color;
-    &:nth-last-of-type(1) {
-      margin-right: 0;
-    }
 
     a {
       display: inline-block;
@@ -42,7 +34,25 @@ $mobile_active_color: $menu_active_color;
 }
 
 
-#mobile-menu {
+// главное меню
+.main-menu {
+  display: inline-block;
+  @include media_interval($mobile_menu_interval) {
+    display: none;
+  }
+
+  li {
+    display: inline-block;
+    margin-right: 10px;
+    &:nth-last-of-type(1) {
+      margin-right: 0;
+    }
+  }
+}
+
+
+// мобильное меню
+.mobile-menu {
   display: none;
   position: absolute;
   padding: 0 70px 0 40px;

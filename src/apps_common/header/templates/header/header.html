@@ -18,12 +18,12 @@
           <div class="burger"></div>
         </div>
 
-        <nav id="main-menu">
+        <nav class="menu main-menu">
           {% menu 'main' %}
         </nav>
 
         {% cacheblock 1800 mobile-menu request.path_info %}
-          <div id="mobile-menu">
+          <div class="menu mobile-menu">
             {% menu 'main' %}
           </div>
         {% endcacheblock %}
