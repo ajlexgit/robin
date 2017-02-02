@@ -37,7 +37,7 @@ $mobile_active_color: $menu_active_color;
 // главное меню
 .main-menu {
   display: inline-block;
-  @include media_interval($mobile_menu_interval) {
+  @include media_interval(0, $media_mobile) {
     display: none;
   }
 
@@ -53,7 +53,6 @@ $mobile_active_color: $menu_active_color;
 
 // мобильное меню
 .mobile-menu {
-  display: none;
   position: absolute;
   padding: 0 70px 0 40px;
   right: -100%;
@@ -66,8 +65,8 @@ $mobile_active_color: $menu_active_color;
   background: $mobile_background;
   @include border-box;
   @include transition(right 0.4s);
-  @include media_interval($mobile_menu_interval) {
-    display: block;
+  @include media_interval($media_mobile, 0) {
+    display: none;
   }
   @include media_interval(0, $media480) {
     width: 80%;
@@ -117,15 +116,15 @@ $mobile_active_color: $menu_active_color;
 
 // Кнопка меню для мобильной версии
 #mobile-menu-button {
+  display: inline-block;
   position: relative;
-  display: none;
   z-index: 60;
   cursor: pointer;
   text-align: left;
   vertical-align: middle;
   @include unselectable;
-  @include media_interval($mobile_menu_interval) {
-    display: inline-block;
+  @include media_interval($media_mobile, 0) {
+    display: none;
   }
 
   .burger {

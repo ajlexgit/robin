@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin
 from suit.admin import SortableModelAdmin, SortableTabularInline
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
-from attachable_blocks import AttachedBlocksStackedInline
+from attachable_blocks.admin import AttachableBlockAdmin, AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.description import description
 from .models import ContactsConfig, Address, PhoneNumber, NotificationReceiver, ContactBlock, Message
@@ -123,28 +123,11 @@ class MessageAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(ContactBlock)
-class ContactBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
+class ContactBlockAdmin(AttachableBlockAdmin):
     """ Подключаемый блок с контактной формой """
-    fieldsets = (
-        (None, {
-            'classes': ('suit-tab', 'suit-tab-general'),
-            'fields': ('label', 'visible'),
-        }),
+    fieldsets = AttachableBlockAdmin.fieldsets + (
         (_('Customization'), {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': ('header',),
         }),
     )
-    list_display = ('label', 'visible')
-    suit_form_tabs = (
-        ('general', _('General')),
-    )
-
-    def has_add_permission(self, request):
-        return request.user.is_superuser
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser

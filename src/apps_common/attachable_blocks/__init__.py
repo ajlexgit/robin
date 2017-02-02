@@ -43,23 +43,16 @@
                     verbose_name_plural = _('My blocks')
 
         # blocks/admin.py
+            from attachable_blocks.admin import AttachableBlockAdmin
             from .models import MyBlock
 
             @admin.register(MyBlock)
-            class MyBlockAdmin(admin.ModelAdmin):
-                fieldsets = (
-                    (None, {
-                        'classes': ('suit-tab', 'suit-tab-general'),
-                        'fields': ('label', 'visible'),
-                    }),
+            class MyBlockAdmin(AttachableBlockAdmin):
+                fieldsets = AttachableBlockAdmin.fieldsets + (
                     (_('Private'), {
                         'classes': ('suit-tab', 'suit-tab-general'),
                         'fields': ('title', ),
                     }),
-                )
-                list_display = ('label', 'visible')
-                suit_form_tabs = (
-                    ('general', _('General')),
                 )
 
 

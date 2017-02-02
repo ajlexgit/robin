@@ -42,7 +42,7 @@ $logo_height: 54px;
     padding: 0 20px;
     text-align: center;
     @include flex(1 1 auto);
-    @include media_interval($mobile_menu_interval) {
+    @include media_interval(0, $media_mobile) {
       padding: 0;
       text-align: right;
     }

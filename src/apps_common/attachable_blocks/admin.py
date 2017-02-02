@@ -1,12 +1,37 @@
 from django import forms
 from django.core import checks
+from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.admin import BaseGenericInlineFormSet, GenericInlineModelAdminChecks
 from suit.admin import SortableGenericTabularInline, SortableGenericStackedInline
-from project.admin import ModelAdminInlineMixin
+from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
 from .models import AttachableReference
 from .utils import get_block_types
+
+
+class AttachableBlockAdmin(ModelAdminMixin, admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': (
+                'label', 'visible'
+            ),
+        }),
+    )
+    list_display = ('label', 'visible')
+    suit_form_tabs = (
+        ('general', _('General')),
+    )
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
 
 
 class AttachedBlocksForm(forms.ModelForm):

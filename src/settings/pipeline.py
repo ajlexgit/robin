@@ -22,6 +22,7 @@ PIPELINE['STYLESHEETS'].update({
             'scss/popups/popups.scss',
             'scss/popups/preloader.scss',
 
+            'cacheblock/scss/cacheblock.scss',
             'contacts/scss/block.scss',
             'footer/scss/footer.scss',
         ),
