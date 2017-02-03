@@ -77,7 +77,7 @@ class Counter(models.Model):
     )
 
     label = models.CharField(_('label'), max_length=128)
-    position = models.CharField(_('position'), max_length=12, choices=POSITION)
+    position = models.CharField(_('position'), max_length=12, choices=POSITION, db_index=True)
     content = models.TextField(_('content'))
 
     class Meta:
