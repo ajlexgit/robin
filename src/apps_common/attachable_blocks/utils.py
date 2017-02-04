@@ -1,65 +1,36 @@
 from importlib import import_module
 from django.db import models
-from django.apps import apps
-from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
 
+# ContentType ID -> Model class
+BLOCK_TYPES = {}
 
-def get_block_types():
+# Model class -> render function
+BLOCK_VIEWS = {}
+
+
+def get_model_by_ct(ct_id):
     """
-        Возвращает список content_type_id всех блоков из кэша
+        Возвращает модель блока по его ContentType ID
     """
-    from .models import AttachableBlock
-
-    if 'attachable_block_types' not in cache:
-        blocks = []
-        for model in apps.get_models():
-            if issubclass(model, AttachableBlock) and model != AttachableBlock:
-                ct = ContentType.objects.get_for_model(model)
-                blocks.append((ct.pk, str(model._meta.verbose_name)))
-
-        blocks = tuple(sorted(blocks, key=lambda x: x[1]))
-        cache.set('attachable_block_types', blocks, timeout=10 * 60)
-
-    return cache.get('attachable_block_types')
-
-
-def get_visible_references(instance, set_name=None):
-    """
-        Получение связей на видимые блоки для сущности
-    """
-    from .models import AttachableReference
-
-    ct = ContentType.objects.get_for_model(instance)
-    query = models.Q(
-        content_type=ct,
-        object_id=instance.pk,
-        block__visible=True,
-    )
-
-    if set_name is not None:
-        query &= models.Q(set_name=set_name)
-
-    return AttachableReference.objects.filter(query)
-
-
-def get_last_updated(instance):
-    """
-        Получение даты последнего изменения подключаемого блока,
-        привязанного к сущности
-    """
-    from .models import AttachableBlock
-    attached_blocks = get_visible_references(instance).values_list('block', flat=True)
-    result = AttachableBlock.objects.filter(pk__in=attached_blocks).aggregate(models.Max('updated'))
-    return result['updated__max']
+    if ct_id in BLOCK_TYPES:
+        return BLOCK_TYPES[ct_id]
+    else:
+        ct = ContentType.objects.get(pk=ct_id)
+        BLOCK_TYPES[ct_id] = ct.model_class()
+        return BLOCK_TYPES[ct_id]
 
 
 def get_block_view(block):
-    _cached = getattr(block, '_BLOCK_VIEW', '')
-    if _cached:
+    """
+        Получение функции рендеринга блока
+    """
+    block_model = block._meta.concrete_model
+    _cached = BLOCK_VIEWS.get(block_model, None)
+    if _cached is not None:
         return _cached
 
-    path = getattr(block, 'BLOCK_VIEW', '')
+    path = getattr(block_model, 'BLOCK_VIEW', '')
     if not path:
         return
 
@@ -73,20 +44,19 @@ def get_block_view(block):
         return
 
     view = getattr(module, view_name, None)
-    setattr(block, '_BLOCK_VIEW', staticmethod(view))
+    if view is None:
+        return
+
+    BLOCK_VIEWS[block_model] = view
     return view
 
 
-def get_block(block_id, ct=None):
+def get_last_updated(instance):
     """
-        Получение блока реального типа по его ID
+        Получение даты последнего изменения подключаемого блока,
+        привязанного к сущности
     """
-    from .models import AttachableBlock
-
-    if not ct:
-        block_ct = AttachableBlock.objects.filter(pk=block_id).only('block_content_type').values('block_content_type')
-        ct = ContentType.objects.filter(pk__in=block_ct).first()
-
-    block_model = ct.model_class()
-    if issubclass(block_model, AttachableBlock):
-        return block_model.objects.get(pk=block_id)
+    from .models import AttachableBlock, AttachableReference
+    attached_blocks = AttachableReference.get_for(instance).values_list('block', flat=True)
+    result = AttachableBlock.objects.filter(pk__in=attached_blocks).aggregate(models.Max('updated'))
+    return result['updated__max']

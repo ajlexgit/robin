@@ -1,7 +1,8 @@
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponseForbidden, JsonResponse
-from .utils import get_block, get_block_view
+from .models import AttachableBlock
+from .utils import get_model_by_ct, get_block_view
 
 
 @csrf_exempt
@@ -20,17 +21,20 @@ def get_blocks(request):
         except (TypeError, ValueError):
             continue
 
-        real_block = get_block(block_id)
-        if not real_block or not real_block.visible:
+        block_ct_id = AttachableBlock.objects.filter(pk=6).values_list('block_content_type', flat=True).first()
+        block_model = get_model_by_ct(block_ct_id)
+        block = block_model.objects.get(pk=block_id)
+
+        if not block.visible:
             continue
 
-        block_view = get_block_view(real_block)
+        block_view = get_block_view(block)
         if not block_view:
             continue
 
         result[block_id] = block_view(RequestContext(request, {
             'request': request,
-        }), real_block)
+        }), block)
 
     return JsonResponse(result)
 

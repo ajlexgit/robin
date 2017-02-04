@@ -1,13 +1,32 @@
 from django import forms
+from django.apps import apps
 from django.core import checks
 from django.contrib import admin
+from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.admin import BaseGenericInlineFormSet, GenericInlineModelAdminChecks
 from suit.admin import SortableGenericTabularInline, SortableGenericStackedInline
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from libs.autocomplete import AutocompleteWidget
-from .models import AttachableReference
-from .utils import get_block_types
+from .models import AttachableBlock, AttachableReference
+
+
+def get_block_types():
+    """
+        Возвращает список content_type_id всех блоков и их названий
+    """
+    if 'attachable_block_types' not in cache:
+        blocks = []
+        for model in apps.get_models():
+            if issubclass(model, AttachableBlock) and model != AttachableBlock:
+                ct = ContentType.objects.get_for_model(model)
+                blocks.append((ct.pk, str(model._meta.verbose_name)))
+
+        blocks = tuple(sorted(blocks, key=lambda x: x[1]))
+        cache.set('attachable_block_types', blocks, timeout=30 * 60)
+
+    return cache.get('attachable_block_types')
 
 
 class AttachableBlockAdmin(ModelAdminMixin, admin.ModelAdmin):

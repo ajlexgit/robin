@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from model_utils.managers import InheritanceQuerySetMixin
-from .utils import get_block_types, get_block, get_block_view
+from .utils import get_model_by_ct, get_block_view
 
 
 class AttachableBlockQuerySet(InheritanceQuerySetMixin, models.QuerySet):
@@ -38,22 +38,11 @@ class AttachableBlock(models.Model):
         if not self.created:
             self.created = now()
 
-        # content_type реальной модели блока
-        # при сохранении через реальную модель блока
         if not self.block_content_type:
             if self.__class__ != AttachableBlock:
                 self.block_content_type = ContentType.objects.get_for_model(self)
 
         super().save(*args, **kwargs)
-
-        # content_type реальной модели блока
-        # при сохранении через AttachableBlock
-        if not self.block_content_type:
-            block = get_block(self.pk)
-            if block:
-                AttachableBlock.objects.filter(pk=self.pk).update(
-                    block_content_type=ContentType.objects.get_for_model(block)
-                )
 
     def __str__(self):
         return self.label
@@ -66,7 +55,7 @@ class AttachableBlock(models.Model):
 
     @classmethod
     def _check_views(cls, **kwargs):
-        if cls == AttachableBlock:
+        if cls is AttachableBlock:
             return []
 
         if not cls.BLOCK_VIEW:
@@ -111,10 +100,29 @@ class AttachableReference(models.Model):
         index_together = (('content_type', 'object_id', 'set_name'), )
 
     def __str__(self):
-        block_type = dict(get_block_types()).get(self.block_ct_id) or 'Undefined'
+        block_model = get_model_by_ct(self.block_ct_id)
+        block_name = block_model._meta.verbose_name or 'Undefined'
+
         instance = '%s.%s (#%s)' % (
             self.content_type.app_label,
             self.content_type.model,
             self.object_id
         )
-        return '%s (%s) → %s' % (self.block, block_type, instance)
+        return '%s (%s) → %s' % (self.block, block_name, instance)
+
+    @classmethod
+    def get_for(cls, instance, set_name=None):
+        """
+            Получение объектов ссылок на видимые блоки для сущности
+        """
+        ct = ContentType.objects.get_for_model(instance)
+        query = models.Q(
+            content_type=ct,
+            object_id=instance.pk,
+            block__visible=True,
+        )
+
+        if set_name is not None:
+            query &= models.Q(set_name=set_name)
+
+        return cls.objects.filter(query)
