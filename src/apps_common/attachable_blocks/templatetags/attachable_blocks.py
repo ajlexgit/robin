@@ -42,6 +42,9 @@ def render_attached_blocks(context, entity, set_name='default', **kwargs):
 
 @register.simple_tag(takes_context=True)
 def render_attachable_block(context, block, ajax=False, **kwargs):
+    if block is None:
+        return ''
+
     if block._meta.concrete_model is AttachableBlock:
         block_model = get_model_by_ct(block.block_content_type_id)
         block = block_model.objects.get(pk=block.pk)
