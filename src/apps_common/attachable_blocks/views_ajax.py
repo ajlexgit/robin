@@ -21,7 +21,7 @@ def get_blocks(request):
         except (TypeError, ValueError):
             continue
 
-        block_ct_id = AttachableBlock.objects.filter(pk=6).values_list('block_content_type', flat=True).first()
+        block_ct_id = AttachableBlock.objects.filter(pk=block_id).values_list('block_content_type', flat=True).first()
         block_model = get_model_by_ct(block_ct_id)
         block = block_model.objects.get(pk=block_id)
 
