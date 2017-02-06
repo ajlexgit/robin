@@ -2,8 +2,8 @@ import os
 import sys
 
 # Подумать над возможностью реализации Grid через Flexbox.
+# Paginator: переделать номера страниц, чтобы их кол-во было более постоянно
 # Попытаться избавиться от select_subclasses
-# menu class + subclasses
 
 # Shop cart example + discounts
 # Gallery popup: JS templates

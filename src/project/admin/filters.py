@@ -7,6 +7,9 @@ class HierarchyFilter(SimpleListFilter):
     hierarchy_filter = True
     template = 'admin/hierarchy_filter.html'
 
+    def value(self):
+        return super().value() or None
+
     def get_branch_choices(self, value):
         return ()
 
