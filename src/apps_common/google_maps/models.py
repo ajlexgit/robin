@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from .api import geocode, DEFAULT
+from .api import geocode
 from .fields import Coords
+from . import conf
 
 
 class MapAndAddress(models.Model):
@@ -33,7 +34,7 @@ def geocode_cached(address):
     Если записи в БД нет - определит координаты и сохранит результат в БД.
     """
     if isinstance(address, Coords):
-        return address.lng, address.lat if address else DEFAULT
+        return address.lng, address.lat if address else conf.DEFAULT_MAP_CENTER
 
     # Определяем координаты по адресу
     instance, created = MapAndAddress.objects.get_or_create(address=address)
@@ -41,4 +42,4 @@ def geocode_cached(address):
     if instance.longitude is not None and instance.latitude is not None:
         return instance.longitude, instance.latitude
     else:
-        return DEFAULT
+        return conf.DEFAULT_MAP_CENTER

@@ -26,11 +26,13 @@
             ]
 
     Настройки (settings.py):
-        ADMIN_GOOGLE_MAP_WIDTH - ширина карты в админке (по умолчанию 100%)
-        ADMIN_GOOGLE_MAP_HEIGHT - высота карты в админке (по умолчанию 300px)
+        GOOGLE_MAP_ADMIN_WIDTH - ширина карты в админке (по умолчанию 100%)
+        GOOGLE_MAP_ADMIN_HEIGHT - высота карты в админке (по умолчанию 300px)
+        GOOGLE_MAP_ADMIN_ZOOM - зум карты в админке (по умолчанию 16)
 
-        GOOGLE_MAPS_STATIC_WIDTH - ширина статических карт по умолчанию
-        GOOGLE_MAPS_STATIC_HEIGHT - высота статических карт по умолчанию
+        GOOGLE_MAP_STATIC_WIDTH - ширина статических карт (по умолчанию 300px)
+        GOOGLE_MAP_STATIC_HEIGHT - высота статических карт (по умолчанию 200px)
+        GOOGLE_MAP_STATIC_ZOOM - зум статических карт (по умолчанию 14)
 
     Примеры:
         script.py:
