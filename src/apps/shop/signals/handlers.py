@@ -25,10 +25,10 @@ def products_changed_handler(sender, **kwargs):
     elif isinstance(categories, (int, str)):
         # строка или число, являющееся ID категории
         categories = ShopCategory.objects.filter(pk=categories)
-    elif isinstance(categories, (list, tuple, ValuesListQuerySet)):
+    elif isinstance(categories, (list, tuple, set, ValuesListQuerySet)):
         # список строк или чисел, являющихся ID категории
         categories = ShopCategory.objects.filter(pk__in=categories)
-    elif isinstance(categories, QuerySet) and categories.model == ShopCategory:
+    elif isinstance(categories, QuerySet) and categories.model is ShopCategory:
         # QuerySet категорий
         pass
     else:
@@ -67,10 +67,10 @@ def categories_changed_handler(sender, **kwargs):
     elif isinstance(categories, (int, str)):
         # строка или число, являющееся ID категории
         categories = ShopCategory.objects.filter(pk=categories)
-    elif isinstance(categories, (list, tuple, ValuesListQuerySet)):
+    elif isinstance(categories, (list, tuple, set, ValuesListQuerySet)):
         # список строк или чисел, являющихся ID категории
         categories = ShopCategory.objects.filter(pk__in=categories)
-    elif isinstance(categories, QuerySet) and categories.model == ShopCategory:
+    elif isinstance(categories, QuerySet) and categories.model is ShopCategory:
         # QuerySet категорий
         pass
     else:

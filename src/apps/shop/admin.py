@@ -227,11 +227,12 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
     micropreview.allow_tags = True
 
     def category_link(self, obj):
-        meta = getattr(obj.category, '_meta')
-        return '<a href="{0}">{1}</a>'.format(
-            admin_utils.get_change_url(meta.app_label, meta.model_name, obj.category.pk),
-            obj.category
-        )
+        if obj.category is not None:
+            meta = getattr(self.model.category.field.rel.to, '_meta')
+            return '<a href="{0}">{1}</a>'.format(
+                admin_utils.get_change_url(meta.app_label, meta.model_name, obj.category.pk),
+                obj.category
+            )
     category_link.short_description = _('Categories')
     category_link.allow_tags = True
 
