@@ -1051,7 +1051,7 @@
         cls.fitBounds = function() {
             var bounds = new google.maps.LatLngBounds();
 
-            var items = arguments.length ? arguments : this.markers;
+            var items = arguments.length ? arguments[0] : this.markers;
             $.each(items, function(i, item) {
                 if (item instanceof window.GMapPoint) {
                     bounds.extend(item.native);
