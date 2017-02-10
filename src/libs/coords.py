@@ -17,6 +17,9 @@ class Coords:
         self._lng = self._format_number(lng)
         return self
 
+    def __getnewargs__(self, *args):
+        return self._lat, self._lng
+
     @classmethod
     def _format_number(cls, number):
         if isinstance(number, (Number, str)):
