@@ -18,9 +18,7 @@ class GoogleCoordsFormsField(forms.CharField):
         return attrs
 
     def to_python(self, value):
-        value = super().to_python(value)
-
-        if not value:
+        if value in self.empty_values:
             return None
 
         try:

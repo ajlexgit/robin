@@ -1,5 +1,6 @@
 from numbers import Number
 from decimal import Decimal, localcontext, ROUND_HALF_UP, InvalidOperation
+from django.contrib.gis.geos import Point
 
 __all__ = ['Coords']
 
@@ -44,6 +45,9 @@ class Coords:
     @property
     def lng(self):
         return self._lng
+
+    def get_point(self, srid=4326):
+        return Point(float(self._lng), float(self._lat), srid=srid)
 
     def __iter__(self):
         return iter((self.lat, self.lng))

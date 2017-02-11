@@ -97,9 +97,9 @@
 
 from .api import geocode
 from .models import geocode_cached
-from .fields import GoogleCoordsField
+from .fields import GoogleCoordsField, GoogleGISCoordsField
 from .widgets import GoogleCoordsAdminWidget
 
-__all__ = ['geocode', 'geocode_cached', 'GoogleCoordsField']
+__all__ = ['geocode', 'geocode_cached', 'GoogleCoordsField', 'GoogleGISCoordsField']
 
 default_app_config = 'google_maps.apps.Config'
