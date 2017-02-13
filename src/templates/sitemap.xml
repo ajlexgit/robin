@@ -21,7 +21,7 @@
         {% endif %}
       </image:image>
     {% endif %}
-   </url>
+  </url>
 {% endfor %}
 {% endspaceless %}
 </urlset>
