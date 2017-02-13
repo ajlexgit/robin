@@ -303,7 +303,7 @@ class VariationImageFieldFile(ImageFieldFile):
             source_image = Image.open(self)
             source_format = source_image.format
 
-            info = dict(source_image.info)
+            info = source_image.info or {}
 
             source_image = source_image.rotate(-angle, expand=True)
             source_image.format = source_format
@@ -598,6 +598,11 @@ class VariationImageField(models.ImageField):
         with open(filepath, 'rb') as fp:
             variation_image = Image.open(fp)
 
+            # Параметры сохранения
+            save_params = {}
+            if variation['exif']:
+                save_params.update(variation_image.info or {})
+
             # Обрезаем по рамке
             if not variation['use_source'] and croparea is not None:
                 variation_image = variation_crop(variation_image, croparea)
@@ -607,7 +612,7 @@ class VariationImageField(models.ImageField):
             target_format = target_format.upper()
 
             # Параметры сохранения
-            save_params = dict(
+            save_params.update(
                 format=target_format,
                 quality=self.get_variation_quality(instance, variation),
             )

@@ -49,6 +49,9 @@ DEFAULT_VARIATION = dict(
     # Требуемый формат изображения (JPEG/PNG/GIF)
     format=None,
 
+    # Сохранить EXIF
+    exif=False,
+
     # Использовать для нарезки исходную картинку (игнорирование кропа админки)
     use_source=False,
 
