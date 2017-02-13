@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 {% spaceless %}
 {% for url in urlset %}
   <url>
@@ -7,6 +7,20 @@
     {% if url.lastmod %}<lastmod>{{ url.lastmod|date:"c" }}</lastmod>{% endif %}
     {% if url.changefreq %}<changefreq>{{ url.changefreq }}</changefreq>{% endif %}
     {% if url.priority %}<priority>{{ url.priority }}</priority>{% endif %}
+    {% if url.image_location %}
+      <image:image>
+        <image:loc>{{ url.image_location }}</image:loc>
+        {% if url.image_title %}
+          <image:title>{{ url.image_title }}</image:title>
+        {% endif %}
+        {% if url.image_caption %}
+          <image:caption>{{ url.image_caption }}</image:caption>
+        {% endif %}
+        {% if url.image_geo_location %}
+          <image:geo_location>{{ url.image_geo_location }}</image:geo_location>
+        {% endif %}
+      </image:image>
+    {% endif %}
    </url>
 {% endfor %}
 {% endspaceless %}
