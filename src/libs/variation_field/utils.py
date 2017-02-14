@@ -82,6 +82,46 @@ def is_size(value):
         return False
 
 
+def split_every(n, iterable):
+    i = iter(iterable)
+    piece = list(itertools.islice(i, n))
+    while piece:
+        yield piece
+        piece = list(itertools.islice(i, n))
+
+
+def calculateHash(image, hash_size=12):
+    """
+        Рассчет хэша картинки
+    """
+    if hash_size ** 2 % 8:
+        raise ValueError('"size**2" must be divisible by 8')
+
+    image.seek(0)
+
+    # Grayscale and shrink
+    image = image.convert('L').resize(
+        (hash_size + 1, hash_size),
+        Image.ANTIALIAS
+    )
+
+    # Compare adjacent pixels
+    difference = []
+    for row in range(hash_size):
+        for col in range(hash_size):
+            pixel_left = image.getpixel((col, row))
+            pixel_right = image.getpixel((col + 1, row))
+            difference.append(pixel_left > pixel_right)
+
+    hex_string = []
+    for bin_array in split_every(8, difference):
+        hex_string.append(
+            '{0:02x}'.format(int(''.join(str(int(_)) for _ in bin_array), 2))
+        )
+
+    return ''.join(hex_string)
+
+
 def check_variations(variations, obj):
     from django.core import checks
     errors = []

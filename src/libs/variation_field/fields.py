@@ -1,7 +1,6 @@
 import os
 import logging
 from PIL import Image
-from itertools import islice
 from django.db import models
 from django.db.models import signals
 from django.core.files.images import ImageFile
@@ -11,18 +10,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.db.models.fields.files import ImageFieldFile, FieldFile, ImageFileDescriptor
 from .croparea import CropArea
-from .utils import (put_on_bg, limited_size, variation_crop, variation_resize,
+from .utils import (calculateHash, put_on_bg, limited_size, variation_crop, variation_resize,
                     variation_watermark, variation_overlay, variation_mask)
 
 logger = logging.getLogger('variation_field')
-
-
-def split_every(n, iterable):
-    i = iter(iterable)
-    piece = list(islice(i, n))
-    while piece:
-        yield piece
-        piece = list(islice(i, n))
 
 
 class VariationField(ImageFile):
@@ -336,38 +327,14 @@ class VariationImageFieldFile(ImageFieldFile):
                 variation,
             )
 
-    def calculateDHash(self, size=12):
+    def calculateHash(self, hash_size=12):
         """
             Рассчет хэша исходника картинки
         """
-        if size**2 % 8:
-            raise ValueError('"size**2" must be divisible by 8')
-
         try:
             self.open()
             image = Image.open(self)
-
-            # Grayscale and shrink
-            image = image.convert('L').resize(
-                (size+1, size),
-                Image.ANTIALIAS
-            )
-
-            # Compare adjacent pixels
-            difference = []
-            for row in range(size):
-                for col in range(size):
-                    pixel_left = image.getpixel((col, row))
-                    pixel_right = image.getpixel((col + 1, row))
-                    difference.append(pixel_left > pixel_right)
-
-            hex_string = []
-            for bin_array in split_every(8, difference):
-                hex_string.append(
-                    '{0:02x}'.format(int(''.join(str(int(_)) for _ in bin_array), 2))
-                )
-
-            return ''.join(hex_string)
+            return calculateHash(image, hash_size)
         finally:
             self.close()
 
