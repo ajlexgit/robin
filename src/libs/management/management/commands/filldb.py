@@ -184,13 +184,13 @@ def set_fk(instance, field):
     setattr(instance, field.name, value)
 
 
-def set_m2m(instance, field, max_count=4):
+def set_m2m(instance, field, max_count=8):
     """ ManyToManyField """
     related = field.rel.to.objects.all()
     if not related:
         raise ValueError('no instances for field "%s"' % field.name)
 
-    min_count = 0 if field.blank else 1
+    min_count = 0 if field.blank else 2
     max_count = min(max_count, related.count())
 
     manager = getattr(instance, field.name)
@@ -203,7 +203,8 @@ def set_image(instance, field, width=1920, height=1440):
     manager = getattr(instance, field.name)
 
     try:
-        response = requests.get('https://placem.at/things?w=%d&h=%d&random=1&txt=' % (width, height), timeout=5, stream=True)
+        image_type = random.choice(['people', 'places', 'things'])
+        response = requests.get('https://placem.at/%s?w=%d&h=%d&random=1&txt=' % (image_type, width, height), timeout=5, stream=True)
     except (ConnectionError, Timeout):
         response = requests.get('http://baconmockup.com/%d/%d/' % (width, height), stream=True)
 
