@@ -159,14 +159,14 @@
         cls._mapAttach = function() {
             this.native.setMap(this._map.native);
             this.trigger('attached');
-            this._map.trigger('attach.overlay', this);
+            this._map.trigger('attach', this);
         };
 
         /*
             Отвязывание от карты
          */
         cls._mapDetach = function() {
-            this._map.trigger('detach.overlay', this);
+            this._map.trigger('detach', this);
             this.trigger('detached');
             this.native.setMap(null);
         };
@@ -260,24 +260,6 @@
         cls.onRemove = function() {
             this.$container.remove();
             this.$container = null;
-        };
-
-        /*
-            Привязка к карте
-         */
-        cls._mapAttach = function() {
-            this.native.setMap(this._map.native);
-            this.trigger('attached');
-            this._map.trigger('attach.overlay', this);
-        };
-
-        /*
-            Отвязывание от карты
-         */
-        cls._mapDetach = function() {
-            this._map.trigger('detach.overlay', this);
-            this.trigger('detached');
-            this.native.setMap(null);
         };
     });
 
@@ -620,29 +602,6 @@
             this.native.setDraggable(Boolean(value));
             return this;
         };
-
-        /*
-            Привязка к карте
-         */
-        cls._mapAttach = function() {
-            this.native.setMap(this._map.native);
-            this.trigger('attached');
-            this._map.trigger('attach.marker', this);
-        };
-
-        /*
-            Отвязывание от карты
-         */
-        cls._mapDetach = function() {
-            // закрытие балуна, если он привязан к этому маркеру
-            if (this._map.balloon && (this._map.balloon._anchor == this)) {
-                this._map.balloon.close();
-            }
-
-            this._map.trigger('detach.marker', this);
-            this.trigger('detached');
-            this.native.setMap(null);
-        };
     });
 
 
@@ -759,29 +718,27 @@
         cls.onInit = function() {
             superclass.onInit.call(this);
 
-            // маркеры на карте
+            // собираем ссылки на все маркеры и оверлеи
             this.markers = [];
-            this.on('attach.marker', function(marker) {
-                // добавление маркера в массив
-                this.markers.push(marker);
-            }).on('detach.marker', function(marker) {
-                // удаление маркера из массива
-                var index = this.markers.indexOf(marker);
-                if (index >= 0) {
-                    this.markers.splice(index, 1);
-                }
-            });
-
-            // оверлеи на карте
             this.overlays = [];
-            this.on('attach.overlay', function(overlay) {
-                // добавление оверлея в массив
-                this.overlays.push(overlay);
-            }).on('detach.overlay', function(overlay) {
-                // удаление оверлея из массива
-                var index = this.overlays.indexOf(overlay);
-                if (index >= 0) {
-                    this.overlays.splice(index, 1);
+            this.on('attach', function(obj) {
+                if (obj instanceof GMapMarker) {
+                    this.markers.push(obj);
+                } else if (obj instanceof GMapOverlayBase) {
+                    this.overlays.push(obj);
+                }
+            }).on('detach', function(obj) {
+                var index;
+                if (obj instanceof GMapMarker) {
+                    index = this.markers.indexOf(obj);
+                    if (index >= 0) {
+                        this.markers.splice(index, 1);
+                    }
+                } else if (obj instanceof GMapOverlayBase) {
+                    index = this.overlays.indexOf(obj);
+                    if (index >= 0) {
+                        this.overlays.splice(index, 1);
+                    }
                 }
             });
 
@@ -799,6 +756,20 @@
             });
 
             this.$root.data(this.DATA_KEY, this);
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.destroy = function() {
+            google.maps.event.clearListeners(this.native);
+            while (this.markers.length) {
+                this.markers[0].destroy();
+            }
+            while (this.overlays.length) {
+                this.overlays[0].destroy();
+            }
+            superclass.destroy.call(this);
         };
 
         /*
