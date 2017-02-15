@@ -736,13 +736,8 @@
                     // создание метки
                     this._label = window.GMapLabel({
                         map: this._map,
-                        text: value,
-                        position: this
-                    });
-
-                    var that = this;
-                    this.on('position_changed', function() {
-                        that._label.draw();
+                        marker: this,
+                        text: value
                     });
                 }
             } else {
