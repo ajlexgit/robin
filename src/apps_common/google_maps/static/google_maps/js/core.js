@@ -68,26 +68,33 @@
             // массив событий, которые повешены на нативный маркер
             this.native_events = [];
 
+            this.onInit();
+
             // создание реального объекта GoogleMap
             var that = this;
             window.GMap.ready(function() {
-                that.makeNative();
+                that.onMapReady();
             });
-
-            this.onInit();
-        };
-
-        /*
-            Создание нативного объекта
-         */
-        cls.makeNative = function() {
-            this.native = null;
         };
 
         /*
             Инициализация
          */
         cls.onInit = function() {
+            this.native = null;
+        };
+
+        /*
+            Событие готовности карты
+         */
+        cls.onMapReady = function() {
+            this.makeNative();
+        };
+
+        /*
+            Создание нативного объекта
+         */
+        cls.makeNative = function() {
 
         };
 
@@ -138,10 +145,10 @@
 
 
         /*
-            Инициализация
+            Событие готовности карты
          */
-        cls.onInit = function() {
-            superclass.onInit.call(this);
+        cls.onMapReady = function() {
+            superclass.onMapReady.call(this);
             this.map(this.opts.map);
         };
 
@@ -150,6 +157,7 @@
          */
         cls.destroy = function() {
             this.map(null);
+            this.trigger('destroy');
             superclass.destroy.call(this);
         };
 
@@ -158,7 +166,7 @@
          */
         cls._mapAttach = function() {
             this.native.setMap(this._map.native);
-            this.trigger('attached');
+            this.trigger('attached', this._map);
             this._map.trigger('attach', this);
         };
 
@@ -167,7 +175,7 @@
          */
         cls._mapDetach = function() {
             this._map.trigger('detach', this);
-            this.trigger('detached');
+            this.trigger('detached', this._map);
             this.native.setMap(null);
         };
 
@@ -213,6 +221,14 @@
     window.GMapOverlayBase = Class(window.GMapObject, function GMapOverlayBase(cls, superclass) {
         cls.layer = 'overlayLayer';
 
+        /*
+            Инициализация
+         */
+        cls.onInit = function() {
+            superclass.onInit.call(this);
+            this._buildDOM();
+        };
+
         cls._nativeClass = function() {
             var native_class = new Function();
             native_class.prototype = new google.maps.OverlayView();
@@ -240,6 +256,53 @@
         };
 
         /*
+            Построение DOM
+         */
+        cls._buildDOM = function() {
+            this.$container = $('</div>');
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.destroy = function() {
+            if (this.$container) {
+                this.$container.remove();
+                this.$container = null;
+            }
+            superclass.destroy.call(this);
+        };
+
+        /*
+            Расширение объекта области карты на указанный padding.
+            Параметр padding может быть числом или объектом с полями "h" и "v".
+         */
+        cls.extendBounds = function(bounds, padding) {
+            if (typeof padding == 'number') {
+                padding = {
+                    'h': padding,
+                    'v': padding
+                }
+            }
+
+            var projection = this.native.getProjection();
+
+            var top_right = bounds.getNorthEast();
+            var top_right_px = projection.fromLatLngToDivPixel(top_right);
+            top_right_px.x += padding.h;
+            top_right_px.y -= padding.v;
+
+            var bottom_left = bounds.getSouthWest();
+            var bottom_left_px = projection.fromLatLngToDivPixel(bottom_left);
+            bottom_left_px.x -= padding.h;
+            bottom_left_px.y += padding.v;
+
+            bounds.extend(projection.fromDivPixelToLatLng(top_right_px));
+            bounds.extend(projection.fromDivPixelToLatLng(bottom_left_px));
+            return bounds;
+        };
+
+        /*
             Вызывается при добавлении оверлея на карту
          */
         cls.onAdd = function() {
@@ -258,8 +321,92 @@
             Вызывается при откреплении оверлея от карты
          */
         cls.onRemove = function() {
-            this.$container.remove();
-            this.$container = null;
+            if (this.$container) {
+                this.$container.remove();
+            }
+        };
+    });
+
+
+    /*
+        Базовый класс для собственного маркера
+     */
+    window.GMapCustomMarker = Class(GMapOverlayBase, function GMapMarkerBase(cls, superclass) {
+        cls.layer = 'overlayMouseTarget';
+
+        cls.defaults = $.extend({}, superclass.defaults, {
+            position: null
+        });
+
+        /*
+            Событие готовности карты
+         */
+        cls.onMapReady = function() {
+            superclass.onMapReady.call(this);
+
+            var that = this;
+            google.maps.event.addDomListener(this.$container.get(0), 'click', function() {
+                that.trigger('click');
+            });
+
+            this.position(this.opts.position);
+        };
+
+        /*
+            Вызывается при добавлении оверлея на карту
+         */
+        cls.onAdd = function() {
+            superclass.onAdd.call(this);
+            this.__visible = true;
+        };
+
+        /*
+            Отрисовка оверлея
+         */
+        cls.draw = function() {
+            this.position(this._position);
+        };
+
+        /*
+            Вызывается при откреплении оверлея от карты
+         */
+        cls.onRemove = function() {
+            this.__visible = false;
+            superclass.onRemove.call(this);
+        };
+
+        /*
+            Получение / установка положения
+         */
+        cls.position = function(value) {
+            if (value === undefined) {
+                // получение положения
+                return this._position;
+            }
+
+            if (value) {
+                if (value instanceof window.GMapPoint == false) {
+                    this.error('value should be a GMapPoint instance');
+                    return this;
+                }
+
+                this._position = value;
+
+                if (this.__visible) {
+                    var overlayProjection = this.native.getProjection();
+                    if (!overlayProjection) {
+                        return this;
+                    }
+
+                    var coords = overlayProjection.fromLatLngToDivPixel(this._position.native);
+                    this.$container.css({
+                        left: coords.x,
+                        top: coords.y
+                    });
+                }
+            }
+
+            return this;
         };
     });
 
@@ -308,6 +455,7 @@
         };
     });
 
+
     // =========================================
     //   Дополнительные конструкторы GMapPoint
     // =========================================
@@ -335,35 +483,54 @@
         cls.layer = 'overlayShadow';
 
         cls.defaults = $.extend({}, superclass.defaults, {
-            text: '',
-            position: null
+            marker: null,
+            text: ''
         });
 
         /*
-            Вызывается при добавлении оверлея на карту
+            Инициализация
          */
         cls.onInit = function() {
-            if (!this.opts.position) {
-                return this.raise('position required');
+            superclass.onInit.call(this);
+            if (this.opts.marker instanceof GMapMarker == false) {
+                return this.raise('marker should be a GMapMarker instance');
             }
+        };
 
-            if (this.opts.position instanceof GMapPoint) {
-                this.marker = null;
-            } else if (this.opts.position instanceof GMapMarker) {
-                this.marker = this.opts.position;
-            } else {
-                return this.raise('position should be a GMapPoint or GMapMarker instance');
-            }
-
-            this.$container = $('<div>').addClass('gmap-label').css({
-                position: 'absolute',
-                minWidth: '1px'
-            }).append(
+        /*
+            Построение DOM
+         */
+        cls._buildDOM = function() {
+            this.$container = $('<div>').addClass('gmap-label').append(
                 $('<span/>').addClass('gmap-label-text')
             );
+        };
 
+        /*
+            Событие готовности карты
+         */
+        cls.onMapReady = function() {
+            superclass.onMapReady.call(this);
             this.text(this.opts.text);
-            superclass.onInit.call(this);
+
+            var that = this;
+            this.opts.marker.on('position_changed.label', function() {
+                that.draw();
+            }).on('detached.label', function() {
+                that.map(null);
+            }).on('attached.label', function(map) {
+                that.map(map);
+            }).on('destroy.label', function() {
+                that.destroy();
+            });
+        };
+
+        /*
+            Освобождение ресурсов
+         */
+        cls.destroy = function() {
+            this.opts.marker.off('.label');
+            superclass.destroy.call(this);
         };
 
         /*
@@ -373,12 +540,7 @@
             var overlayProjection = this.native.getProjection();
             if (!overlayProjection) return;
 
-            if (this.marker) {
-                var coords = overlayProjection.fromLatLngToDivPixel(this.marker.position().native);
-            } else {
-                coords = overlayProjection.fromLatLngToDivPixel(this.opts.position.native);
-            }
-
+            var coords = overlayProjection.fromLatLngToDivPixel(this.opts.marker.position().native);
             this.$container.css({
                 left: coords.x,
                 top: coords.y
@@ -445,8 +607,11 @@
             this.native = new google.maps.Marker();
         };
 
-        cls.onInit = function() {
-            superclass.onInit.call(this);
+        /*
+            Событие готовности карты
+         */
+        cls.onMapReady = function() {
+            superclass.onMapReady.call(this);
             this.position(this.opts.position);
             this.icon(this.opts.icon);
             this.hint(this.opts.hint);
@@ -678,6 +843,17 @@
             }
 
             superclass.init.call(this, options);
+
+            this.$root.data(this.DATA_KEY, this);
+        };
+
+        /*
+            Инициализация
+         */
+        cls.onInit = function() {
+            superclass.onInit.call(this);
+            this.markers = [];
+            this.overlays = [];
         };
 
         /*
@@ -713,14 +889,12 @@
         };
 
         /*
-            Инициализация
+            Событие готовности карты
          */
-        cls.onInit = function() {
-            superclass.onInit.call(this);
+        cls.onMapReady = function() {
+            superclass.onMapReady.call(this);
 
             // собираем ссылки на все маркеры и оверлеи
-            this.markers = [];
-            this.overlays = [];
             this.on('attach', function(obj) {
                 if (obj instanceof GMapMarker) {
                     this.markers.push(obj);
@@ -754,8 +928,6 @@
                     this.panTo(window.GMapPoint(MAX_LATITUDE, center.lng), 100);
                 }
             });
-
-            this.$root.data(this.DATA_KEY, this);
         };
 
         /*
@@ -1042,39 +1214,6 @@
                     bounds.extend(item.position().native);
                 }
             });
-            return bounds;
-        };
-
-        /*
-            Расширение объекта области карты на указанный padding.
-            Параметр padding может быть числом или объектом с полями "h" и "v".
-         */
-        cls.extendBounds = function(bounds, padding) {
-            if (typeof padding == 'number') {
-                padding = {
-                    'h': padding,
-                    'v': padding
-                }
-            }
-
-            // HACK (http://stackoverflow.com/questions/3536175/google-maps-v3-getbounds-is-extending-beyond-what-is-visible-on-the-map)
-            var overlay = new google.maps.OverlayView();
-            overlay.draw = function() {};
-            overlay.setMap(this.native);
-            var projection = overlay.getProjection();
-
-            var top_right = bounds.getNorthEast();
-            var top_right_px = projection.fromLatLngToDivPixel(top_right);
-            top_right_px.x += padding.h;
-            top_right_px.y -= padding.v;
-
-            var bottom_left = bounds.getSouthWest();
-            var bottom_left_px = projection.fromLatLngToDivPixel(bottom_left);
-            bottom_left_px.x -= padding.h;
-            bottom_left_px.y += padding.v;
-
-            bounds.extend(projection.fromDivPixelToLatLng(top_right_px));
-            bounds.extend(projection.fromDivPixelToLatLng(bottom_left_px));
             return bounds;
         };
 

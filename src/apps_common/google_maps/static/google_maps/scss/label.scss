@@ -1,6 +1,7 @@
 @import "mixins";
 
 .gmap-label {
+  position: absolute;
   @include no_fontsize;
 
   &:before {
@@ -8,6 +9,7 @@
     position: absolute;
     width: 5px;
     height: 5px;
+    z-index: 1;
     background: #F8554B;
     border: 1px solid #808080;
     @include border_radius(50%);

@@ -40,26 +40,22 @@
             Инициализация
          */
         cls.onInit = function() {
-            if (this.opts.position) {
-                if (this.opts.position instanceof GMapPoint == false) {
-                    return this.raise('position should be a GMapPoint instance');
-                }
-            }
-
             superclass.onInit.call(this);
 
             // точка
             this._position = this.opts.position;
+            if (this._position) {
+                if (this._position instanceof GMapPoint == false) {
+                    return this.raise('position should be a GMapPoint instance');
+                }
+            }
 
             // состояние
             this._opened = false;
 
-            this._buildDOM();
-
+            // контент
             this._content = null;
-            this.content(this.opts.content);
         };
-
 
         /*
             Построение DOM
@@ -70,6 +66,14 @@
             this.$closeBtn = $('<div>').addClass('gmap-balloon-close');
 
             this.$container.append(this.$closeBtn, this.$content);
+        };
+
+        /*
+            Событие готовности карты
+         */
+        cls.onMapReady = function() {
+            superclass.onMapReady.call(this);
+            this.content(this.opts.content);
         };
 
         /*

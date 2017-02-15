@@ -19,9 +19,10 @@
 
 
         /*
-            Вызывается при добавлении оверлея на карту
+            Инициализация
          */
         cls.onInit = function() {
+            superclass.onInit.call(this);
             if (!this.opts.src) {
                 return this.raise('src required');
             }
@@ -38,7 +39,12 @@
                     this.opts.coords.topright.native
                 )
             }
+        };
 
+        /*
+            Построение DOM
+         */
+        cls._buildDOM = function() {
             this.$container = $('<div>').css({
                 position: 'absolute',
                 minWidth: '1px'
@@ -57,8 +63,6 @@
             this.$right = this.$img.clone().addClass('right-copy');
 
             this.$container.append(this.$left, this.$img, this.$right);
-
-            superclass.onInit.call(this);
         };
 
         /*
