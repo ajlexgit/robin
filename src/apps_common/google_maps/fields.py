@@ -1,7 +1,7 @@
 from django.db import models
 from django.core import exceptions
+from django.contrib.gis.geos import HAS_GEOS
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.gis.db.models import GeometryField, PointField
 from libs.coords import Coords
 from .forms import GoogleCoordsFormsField
 
@@ -71,48 +71,51 @@ class GoogleCoordsField(models.Field):
         return super().formfield(**defaults)
 
 
-class GoogleGISCoordsField(PointField):
-    def __init__(self, *args, **kwargs):
-        self.zoom = kwargs.pop('zoom', None)
-        kwargs.setdefault('help_text', _('Double click on the map places marker'))
-        super().__init__(*args, **kwargs)
+if HAS_GEOS:
+    from django.contrib.gis.db.models import GeometryField, PointField
 
-    def from_db_value(self, value, *args, **kwargs):
-        value = super().from_db_value(value, *args, **kwargs)
-        if not value:
-            return None
+    class GoogleGISCoordsField(PointField):
+        def __init__(self, *args, **kwargs):
+            self.zoom = kwargs.pop('zoom', None)
+            kwargs.setdefault('help_text', _('Double click on the map places marker'))
+            super().__init__(*args, **kwargs)
 
-        try:
-            return Coords(str(value.y), str(value.x))
-        except (ValueError, TypeError):
-            return None
+        def from_db_value(self, value, *args, **kwargs):
+            value = super().from_db_value(value, *args, **kwargs)
+            if not value:
+                return None
 
-    def to_python(self, value):
-        if not value:
-            return None
+            try:
+                return Coords(str(value.y), str(value.x))
+            except (ValueError, TypeError):
+                return None
 
-        if isinstance(value, Coords):
+        def to_python(self, value):
+            if not value:
+                return None
+
+            if isinstance(value, Coords):
+                return value
+
+            try:
+                return Coords(*value.split(','))
+            except (TypeError, ValueError) as e:
+                raise exceptions.ValidationError(e)
+
+        def get_prep_value(self, value):
+            if isinstance(value, Coords):
+                value = value.get_point(srid=self.srid)
+
+            value = super().get_prep_value(value)
             return value
 
-        try:
-            return Coords(*value.split(','))
-        except (TypeError, ValueError) as e:
-            raise exceptions.ValidationError(e)
+        def contribute_to_class(self, cls, name, **kwargs):
+            super(GeometryField, self).contribute_to_class(cls, name, **kwargs)
 
-    def get_prep_value(self, value):
-        if isinstance(value, Coords):
-            value = value.get_point(srid=self.srid)
-
-        value = super().get_prep_value(value)
-        return value
-
-    def contribute_to_class(self, cls, name, **kwargs):
-        super(GeometryField, self).contribute_to_class(cls, name, **kwargs)
-
-    def formfield(self, **kwargs):
-        defaults = {
-            'form_class': GoogleCoordsFormsField,
-            'zoom': self.zoom,
-        }
-        defaults.update(kwargs)
-        return super(GeometryField, self).formfield(**defaults)
+        def formfield(self, **kwargs):
+            defaults = {
+                'form_class': GoogleCoordsFormsField,
+                'zoom': self.zoom,
+            }
+            defaults.update(kwargs)
+            return super(GeometryField, self).formfield(**defaults)
