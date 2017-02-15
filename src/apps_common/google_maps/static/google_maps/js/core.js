@@ -1046,21 +1046,73 @@
         };
 
         /*
-            Авторасчет зума и центра, чтобы были видны маркеры
+            Получение / установка видимой области карты
          */
-        cls.fitBounds = function() {
-            var bounds = new google.maps.LatLngBounds();
+        cls.bounds = function(value) {
+            if (value === undefined) {
+                // получение значения
+                return this.native.getBounds();
+            }
 
-            var items = arguments.length ? arguments[0] : this.markers;
-            $.each(items, function(i, item) {
+            this.native.fitBounds(value);
+
+            return this;
+        };
+
+        /*
+            Получение объекта области карты, которая охватывает указанные маркеры.
+         */
+        cls.calcBounds = function(markers) {
+            var bounds = new google.maps.LatLngBounds();
+            $.each(markers, function(i, item) {
                 if (item instanceof window.GMapPoint) {
                     bounds.extend(item.native);
                 } else if (item instanceof window.GMapMarker) {
                     bounds.extend(item.position().native);
                 }
             });
+            return bounds;
+        };
 
-            this.native.fitBounds(bounds);
+        /*
+            Расширение объекта области карты на указанный padding.
+            Параметр padding может быть числом или объектом с полями "h" и "v".
+         */
+        cls.extendBounds = function(bounds, padding) {
+            if (typeof padding == 'number') {
+                padding = {
+                    'h': padding,
+                    'v': padding
+                }
+            }
+
+            // HACK (http://stackoverflow.com/questions/3536175/google-maps-v3-getbounds-is-extending-beyond-what-is-visible-on-the-map)
+            var overlay = new google.maps.OverlayView();
+            overlay.draw = function() {};
+            overlay.setMap(this.native);
+            var projection = overlay.getProjection();
+
+            var top_right = bounds.getNorthEast();
+            var top_right_px = projection.fromLatLngToDivPixel(top_right);
+            top_right_px.x += padding.h;
+            top_right_px.y -= padding.v;
+
+            var bottom_left = bounds.getSouthWest();
+            var bottom_left_px = projection.fromLatLngToDivPixel(bottom_left);
+            bottom_left_px.x -= padding.h;
+            bottom_left_px.y += padding.v;
+
+            bounds.extend(projection.fromDivPixelToLatLng(top_right_px));
+            bounds.extend(projection.fromDivPixelToLatLng(bottom_left_px));
+            return bounds;
+        };
+
+        /*
+            Авторасчет зума и центра, чтобы были видны маркеры
+         */
+        cls.fitBounds = function() {
+            var bounds = this.calcBounds(this.markers);
+            this.bounds(bounds);
         };
 
         /*
