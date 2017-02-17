@@ -1,11 +1,20 @@
 (function($) {
 
     /*
-        Разбивка элементов по колонкам.
+        Разбивка элементов по колонкам, оборачивая элементы каждой колонки в <div>.
 
         Пример:
-            var columnizer = Columnizer('#block', '.item');
-            columnizer.setColumns(5);
+            HTML:
+                <div id="block">
+                    <div class="item">...</div>
+                    <div class="item">...</div>
+                    ...
+                    <div class="item">...</div>
+                </div>
+
+            JS:
+                var columnizer = Columnizer('#block', '.item');
+                columnizer.setColumns(5);
      */
     window.Columnizer = Class(Object, function Columnizer(cls, superclass) {
         cls.defaults = {
