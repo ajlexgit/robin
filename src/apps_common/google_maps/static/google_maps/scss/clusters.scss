@@ -1,0 +1,36 @@
+@import "mixins";
+
+.gmap-cluster {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  @include no_fontsize;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: #F8554B;
+    border: 1px solid #808080;
+    @include border_radius(50%);
+    @include transform(translate(-50%, -50%));
+  }
+
+  span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    color: #FFFFFF;
+    font-weight: bold;
+    text-align: center;
+    @include font-size(12px, 12px);
+    @include transform(translate(-50%, -50%));
+  }
+}
