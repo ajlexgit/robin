@@ -20,10 +20,10 @@ from .fields import GalleryImageField, GalleryVideoLinkPreviewField
 __all__ = ('GalleryBase', 'GalleryItemBase', 'GalleryImageItem', 'GalleryVideoLinkItem')
 
 
-MAX_SIZE_DEFAULT = getattr(settings,  'GALLERY_MAX_SIZE_DEFAULT', 12*1024*1024)
+MAX_SIZE_DEFAULT = getattr(settings,  'GALLERY_MAX_SIZE_DEFAULT', 15*1024*1024)
 MIN_DIMENSIONS_DEFAULT = getattr(settings,  'GALLERY_MIN_DIMENSIONS_DEFAULT', (0, 0))
 MAX_DIMENSIONS_DEFAULT = getattr(settings,  'GALLERY_MAX_DIMENSIONS_DEFAULT', (6000, 6000))
-MAX_SOURCE_DIMENSIONS_DEFAULT = getattr(settings,  'GALLERY_MAX_SOURCE_DIMENSIONS_DEFAULT', (2048, 2048))
+MAX_SOURCE_DIMENSIONS_DEFAULT = getattr(settings,  'GALLERY_MAX_SOURCE_DIMENSIONS_DEFAULT', (3072, 3072))
 ADMIN_CLIENT_RESIZE_DEFAULT = getattr(settings,  'GALLERY_ADMIN_CLIENT_RESIZE_DEFAULT', False)
 
 
@@ -156,7 +156,8 @@ class GalleryImageItem(GalleryItemBase):
     # Качество картинок вариаций по умолчанию
     DEFAULT_QUALITY = 85
 
-    # Имя вариации, которая используется для полноэкранного просмотра картинки в админке
+    # Имя вариации, которая используется для полноэкранного просмотра картинки в админке.
+    # Если указан None - будет ссылка на исходник
     SHOW_VARIATION = ''
 
     # Имя вариации, которая показывается в админке
@@ -407,7 +408,7 @@ class GalleryImageItem(GalleryItemBase):
             Ссылка на просмотр в админке
         """
         if self.SHOW_VARIATION is None:
-            return ''
+            return self.image.url
         else:
             show_variation = getattr(self.image, self.SHOW_VARIATION, None)
             if show_variation:
