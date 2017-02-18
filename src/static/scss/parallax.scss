@@ -1,6 +1,7 @@
 @import "mixins";
 
 .parallax-image {
+  max-width: none;
   @include centrizeImage;
 
   &.parallax-image-enabled {
@@ -17,6 +18,7 @@
 
     &.parallax-image-loaded {
       display: inline-block;
+      min-height: 150%;
     }
   }
 }

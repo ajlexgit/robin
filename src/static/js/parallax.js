@@ -15,7 +15,7 @@
 
         Пример:
             <div id="block">
-                <img class="parallax" src="/img/bg.jpg">
+                <img class="parallax-image" src="/img/bg.jpg">
                 ...
             </div>
 
@@ -34,10 +34,18 @@
 
             imageloaded: function(event, data) {
                 var that = data.widget;
-                that.image.css({
-                    minHeight: that.options.imageHeightPercents + '%'
-                });
                 that._addClass(that.image, 'parallax-image-loaded');
+            },
+            enable: function(event, data) {
+                var that = data.widget;
+                that._removeClass(that.image, 'parallax-image-disabled');
+                that._addClass(that.image, 'parallax-image-enabled');
+                that.update();
+            },
+            disable: function(event, data) {
+                var that = data.widget;
+                that._addClass(that.image, 'parallax-image-disabled');
+                that._removeClass(that.image, 'parallax-image-enabled');
             },
             update: function(event, data) {
                 var that = data.widget;
@@ -45,14 +53,19 @@
                 that.image.css({
                     top: -backgroundOffset + '%'
                 });
+            },
+            destroy: function(event, data) {
+                var that = data.widget;
+                that.image.css({
+                    width: '',
+                    height: '',
+                    top: ''
+                });
             }
         },
 
         _create: function() {
             this.image = this._getImage();
-            if (!this.image.length) {
-                console.error();
-            }
 
             this._setBlockStyles();
             this._setImageStyles();
@@ -83,20 +96,25 @@
                 afterCheck: function($element, opts, state) {
                     if (state) {
                         // картинка шире
-                        if (that._enabled) {
-                            $element.css({
-                                width: '',
-                                height: that.options.imageHeightPercents + '%'
-                            })
-                        } else {
+                        if (that.options.disabled) {
                             $element.css({
                                 width: '',
                                 height: '100.5%'
                             })
+                        } else {
+                            $element.css({
+                                width: '',
+                                height: that.options.imageHeightPercents + '%'
+                            })
                         }
                     } else {
                         // картинка выше
-                        if (that._enabled) {
+                        if (that.options.disabled) {
+                            $element.css({
+                                width: '100.5%',
+                                height: ''
+                            })
+                        } else {
                             var $parent = $element.parent();
                             var elem_asp = $element.data('bginspector_aspect');
                             var parent_asp = $parent.data('bginspector_aspect');
@@ -113,11 +131,6 @@
                                     height: ''
                                 })
                             }
-                        } else {
-                            $element.css({
-                                width: '100.5%',
-                                height: ''
-                            })
                         }
                     }
                 }
@@ -199,12 +212,13 @@
 
         _updateEnabled: function() {
             if (this.options.disabled) {
-                this._addClass(this.image, 'parallax-image-disabled');
-                this._removeClass(this.image, 'parallax-image-enabled');
+                this._trigger('disable', null, {
+                    widget: this
+                });
             } else {
-                this._removeClass(this.image, 'parallax-image-disabled');
-                this._addClass(this.image, 'parallax-image-enabled');
-                this.update();
+                this._trigger('enable', null, {
+                    widget: this
+                });
             }
         },
 
@@ -214,10 +228,11 @@
                 overflow: ''
             });
 
-            this.image.css({
-                minHeight: ''
+            this._trigger('destroy', null, {
+                widget: this
             });
 
+            $.mediaInspector.ignore(this.element);
             $.bgInspector.ignore(this.image);
         }
     });
