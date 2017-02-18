@@ -3,23 +3,15 @@
 
     /*
         Параллакс-эффект для блока.
-        Блок должен иметь position, отличный от static.
 
         Требует:
-            jquery.utils.js, bg_inspector.js, media_inspector.js
+            jquery-ui.js, jquery.utils.js, bg_inspector.js, media_inspector.js
 
         Параметры:
-            selector        - селектор выбора элемента, который будет перемещаться
-            easing          - функция сглаживания перемещения фона
-            bgHeight        - высота фоновой картинки в процентах относительно высоты блока (>= 100)
-            minEnabledWidth - минимальная ширина экрана, при которой элемент перемещается
-
-            onInit          - функция, выполняемая после инициализации объекта.
-            onDisable       - функция, выполняемая при отключении плагина
-
-        События:
-            // Инициализация объекта
-            init
+            imageSelector       - селектор выбора элемента, который будет перемещаться
+            imageHeightPercents - высота фоновой картинки в процентах относительно высоты блока
+            easing              - функция сглаживания перемещения фона
+            minEnabledWidth     - минимальная ширина экрана, при которой элемент перемещается
 
         Пример:
             <div id="block">
@@ -28,73 +20,49 @@
             </div>
 
             $(document).ready(function() {
-                Parallax('#block');
-
-                // или
-
                 $('#block').parallax();
             });
      */
 
     var $window = $(window);
-    var parallaxes = [];
-
-    window.Parallax = Class(EventedObject, function Parallax(cls, superclass) {
-        cls.defaults = {
-            selector: '.parallax',
+    $.widget("django.parallax", {
+        options: {
+            imageSelector: '> img',
+            imageHeightPercents: 150,
             easing: 'easeInOutQuad',
-            bgHeight: 150,
             minEnabledWidth: 768,
 
-            onInit: $.noop,
-            onDisable: $.noop
-        };
+            imageloaded: function(event, data) {
+                var that = data.widget;
+                that.image.css({
+                    minHeight: that.options.imageHeightPercents + '%'
+                });
+                that._addClass(that.image, 'parallax-image-loaded');
+            },
+            update: function(event, data) {
+                var that = data.widget;
+                var backgroundOffset = data.progress * (that.options.imageHeightPercents - 100);
+                that.image.css({
+                    top: -backgroundOffset + '%'
+                });
+            }
+        },
 
-        cls.DATA_KEY = 'parallax';
-
-
-        cls.init = function(block, options) {
-            superclass.init.call(this);
-
-            this.$block = $(block).first();
-            if (!this.$block.length) {
-                return this.raise('block not found');
+        _create: function() {
+            this.image = this._getImage();
+            if (!this.image.length) {
+                console.error();
             }
 
-            // настройки
-            this.opts = $.extend({}, this.defaults, options);
-            if (this.opts.bgHeight < 100) {
-                return this.raise('bgHeight should not be less than 100');
-            }
-
-            // передвигающийся элемент
-            this.$bg = this.$block.find(this.opts.selector);
-            if (!this.$bg.length) {
-                return this.raise('background not found');
-            }
-
-            // отвязывание старого экземпляра
-            var old_instance = this.$block.data(this.DATA_KEY);
-            if (old_instance) {
-                old_instance.destroy();
-            }
-
-            this.$block.css({
-                overflow: 'hidden'
-            });
-
-            // Сохраняем объект в массив для использования в событиях
-            parallaxes.push(this);
-
-            this.$block.data(this.DATA_KEY, this);
-            this.opts.onInit.call(this);
-            this.trigger('init');
+            this._setBlockStyles();
+            this._setImageStyles();
+            this._updateEnabled();
 
             // Включение и выключение параллакса в зависимости
             // от ширины окна браузера
             var that = this;
-            $.mediaInspector.inspect(this.$block, {
-                point: that.opts.minEnabledWidth,
+            $.mediaInspector.inspect(this.element, {
+                point: this.options.minEnabledWidth,
                 afterCheck: function($block, opts, state) {
                     var old_state = this.getState($block);
                     if (state === old_state) {
@@ -110,7 +78,7 @@
             });
 
             // инспектирование пропорций
-            $.bgInspector.inspect(this.$bg, {
+            $.bgInspector.inspect(this.image, {
                 checkOnInit: false,
                 afterCheck: function($element, opts, state) {
                     if (state) {
@@ -118,7 +86,7 @@
                         if (that._enabled) {
                             $element.css({
                                 width: '',
-                                height: that.opts.bgHeight + '%'
+                                height: that.options.imageHeightPercents + '%'
                             })
                         } else {
                             $element.css({
@@ -134,14 +102,14 @@
                             var parent_asp = $parent.data('bginspector_aspect');
 
                             var relation = 100 * (parent_asp / elem_asp);
-                            if (relation > that.opts.bgHeight) {
+                            if (relation > that.options.imageHeightPercents) {
                                 $element.css({
                                     width: '100.5%',
                                     height: ''
                                 })
                             } else {
                                 $element.css({
-                                    width: 100 * that.opts.bgHeight / relation + '%',
+                                    width: 100 * that.options.imageHeightPercents / relation + '%',
                                     height: ''
                                 })
                             }
@@ -156,118 +124,118 @@
             });
 
             // Вызов инспектора после загрузки картинки
-            this.$bg.onLoaded(true, function() {
-                var $image = $(this);
-                $image.css('display', 'inline-block');
-                $.bgInspector.check($image);
+            this.image.onLoaded(true, function() {
+                that._trigger('imageloaded', null, {
+                    widget: that
+                });
+                $.bgInspector.check(that.image);
             });
-        };
+        },
 
         /*
-            Освобождение ресурсов
+            Добавление стилей блоку
          */
-        cls.destroy = function() {
-            this.disable();
-            $.bgInspector.ignore(this.$bg);
-            $.mediaInspector.ignore(this.$block);
-            this.$block.removeData(this.DATA_KEY);
-
-            var index = parallaxes.indexOf(this);
-            if (index >= 0) {
-                parallaxes.splice(index, 1);
+        _setBlockStyles: function() {
+            if (this.element.css('position') == 'static') {
+                this.element.css({
+                    'position': 'relative'
+                })
             }
-
-            superclass.destroy.call(this);
-        };
+            this.element.css('overflow', 'hidden');
+        },
 
         /*
-            Включение параллакса
+            Поиск элемента фонового изображения
          */
-        cls.enable = function() {
-            if (this._enabled) {
-                return
-            } else{
-                this._enabled = true;
+        _getImage: function() {
+            return this.element.find(this.options.imageSelector);
+        },
+
+        /*
+            Добавление стилей фоновому изображению
+         */
+        _setImageStyles: function() {
+            if (!this.image.hasClass('parallax-image')) {
+                this._addClass(this.image, 'parallax-image');
             }
-
-            this.$bg.css({
-                transform: 'translate(-50%, 0)',
-                minHeight: this.opts.bgHeight + '%'
-            });
-
-            this.process();
-        };
+        },
 
         /*
-            Отключение параллакса
+            Обновление положения изображения
          */
-        cls.disable = function() {
-            if (!this._enabled) {
-                return
-            } else {
-                this._enabled = false;
-            }
+        update: function() {
+            var winScroll = $window.scrollTop();
+            var winHeight = $window.height();
+            this._update(winScroll, winHeight);
+        },
 
-            this.$bg.css({
-                transform: '',
-                minHeight: '',
-                top: ''
-            });
-
-            this.opts.onDisable.call(this);
-        };
-
-        /*
-            Расчет смещения картинки по текущему положению окна
-         */
-        cls.process = function(win_scroll, win_height) {
-            if (!this._enabled) {
+        _update: function(winScroll, winHeight) {
+            if (this.options.disabled) {
                 return
             }
 
-            win_scroll = win_scroll || $window.scrollTop();
-            win_height = win_height || $window.height();
-
-            var block_top = this.$block.offset().top;
-            var block_height = this.$block.outerHeight();
-            var scrollFrom = block_top - win_height;
-            var scrollTo = block_top + block_height;
-            if ((win_scroll < scrollFrom) || (win_scroll > scrollTo)) {
+            var blockTop = this.element.offset().top;
+            var blockHeight = this.element.outerHeight();
+            var scrollFrom = blockTop - winHeight;
+            var scrollTo = blockTop + blockHeight;
+            if ((winScroll < scrollFrom) || (winScroll > scrollTo)) {
                 return
             }
 
             var scrollLength = scrollTo - scrollFrom;
-            var scrollPosition = (win_scroll - scrollFrom) / scrollLength;
+            var scrollPosition = (winScroll - scrollFrom) / scrollLength;
+            var eProgress = $.easing[this.options.easing](scrollPosition);
 
-            var eProgress = $.easing[this.opts.easing](scrollPosition);
-            var backgroundOffset = eProgress * (this.opts.bgHeight - 100);
-
-            this.$bg.css({
-                top: -backgroundOffset + '%'
+            this._trigger('update', null, {
+                widget: this,
+                progress: eProgress
             });
-        };
+        },
+
+        _setOptionDisabled: function(value) {
+            this._super(value);
+            this._updateEnabled();
+        },
+
+        _updateEnabled: function() {
+            if (this.options.disabled) {
+                this._addClass(this.image, 'parallax-image-disabled');
+                this._removeClass(this.image, 'parallax-image-enabled');
+            } else {
+                this._removeClass(this.image, 'parallax-image-disabled');
+                this._addClass(this.image, 'parallax-image-enabled');
+                this.update();
+            }
+        },
+
+        _destroy: function() {
+            this.element.css({
+                position: '',
+                overflow: ''
+            });
+
+            this.image.css({
+                minHeight: ''
+            });
+
+            $.bgInspector.ignore(this.image);
+        }
     });
 
 
-    var applyParallaxes = function() {
-        var win_scroll = $window.scrollTop();
-        var win_height = $window.height();
-
-        $.each(parallaxes, function(i, item) {
+    var updateParallaxes = function() {
+        var winScroll = $window.scrollTop();
+        var winHeight = $window.height();
+        $(':django-parallax').each(function() {
+            var widget = $(this).parallax('instance');
             $.animation_frame(function() {
-                item.process(win_scroll, win_height);
-            })(item.$bg.get(0));
+                widget._update(winScroll, winHeight);
+            })(widget.image.get(0));
         });
     };
 
-    $window.on('scroll.parallax', applyParallaxes);
-    $window.on('load.parallax', applyParallaxes);
-    $window.on('resize.parallax', $.rared(applyParallaxes, 100));
-
-    $.fn.parallax = function(options) {
-        return this.each(function() {
-            window.Parallax(this, options);
-        })
-    }
+    $window.on('scroll.parallax', updateParallaxes);
+    $window.on('load.parallax', updateParallaxes);
+    $window.on('resize.parallax', $.rared(updateParallaxes, 100));
 
 })(jQuery);
