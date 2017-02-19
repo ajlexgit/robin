@@ -8,44 +8,42 @@
             jquery-ui.js, jquery.utils.js, bg_inspector.js, media_inspector.js
 
         Параметры:
-            imageSelector       - селектор выбора элемента, который будет перемещаться
             imageHeightPercents - высота фоновой картинки в процентах относительно высоты блока
             easing              - функция сглаживания перемещения фона
             minEnabledWidth     - минимальная ширина экрана, при которой элемент перемещается
 
         Пример:
             <div id="block">
-                <img class="parallax-image" src="/img/bg.jpg">
+                <img class="parallax" src="/img/bg.jpg">
                 ...
             </div>
 
             $(document).ready(function() {
-                $('#block').parallax();
+                $('.parallax').parallax();
             });
      */
 
     var $window = $(window);
     $.widget("django.parallax", {
         options: {
-            imageSelector: '> img',
             imageHeightPercents: 150,
-            easing: 'easeInOutQuad',
             minEnabledWidth: 768,
+            easing: 'easeInOutQuad',
 
             imageloaded: function(event, data) {
                 var that = data.widget;
-                that._addClass(that.image, 'parallax-image-loaded');
+                that._addClass('parallax-loaded');
             },
             enable: function(event, data) {
                 var that = data.widget;
-                that._removeClass(that.image, 'parallax-image-disabled');
-                that._addClass(that.image, 'parallax-image-enabled');
+                that._removeClass(that.image, 'parallax-disabled');
+                that._addClass(that.image, 'parallax-enabled');
                 that.update();
             },
             disable: function(event, data) {
                 var that = data.widget;
-                that._addClass(that.image, 'parallax-image-disabled');
-                that._removeClass(that.image, 'parallax-image-enabled');
+                that._addClass(that.image, 'parallax-disabled');
+                that._removeClass(that.image, 'parallax-enabled');
             },
             update: function(event, data) {
                 var that = data.widget;
@@ -65,19 +63,29 @@
         },
 
         _create: function() {
-            this.image = this._getImage();
+            // проверка тэга
+            this.is_picture = this.element.prop('tagName') == 'PICTURE';
+            if (this.is_picture) {
+                this.image = this.element.find('img');
+            } else {
+                this.image = this.element;
+            }
 
-            this._setBlockStyles();
-            this._setImageStyles();
-            this._updateEnabled();
+            // нахождение контейнера
+            this.block = this._getBlock();
 
-            // Включение и выключение параллакса в зависимости
-            // от ширины окна браузера
+            // стилизация
+            this._setStyles();
+
+            // запуск
+            this._checkEnabled();
+
+            // Включение и выключение параллакса в зависимости от ширины окна браузера
             var that = this;
             $.mediaInspector.inspect(this.element, {
                 point: this.options.minEnabledWidth,
-                afterCheck: function($block, opts, state) {
-                    var old_state = this.getState($block);
+                afterCheck: function($element, opts, state) {
+                    var old_state = this.getState($element);
                     if (state === old_state) {
                         return
                     }
@@ -100,7 +108,7 @@
                             $element.css({
                                 width: '',
                                 height: '100.5%'
-                            })
+                            });
                         } else {
                             $element.css({
                                 width: '',
@@ -115,11 +123,10 @@
                                 height: ''
                             })
                         } else {
-                            var $parent = $element.parent();
                             var elem_asp = $element.data('bginspector_aspect');
-                            var parent_asp = $parent.data('bginspector_aspect');
+                            var block_asp = that.block.data('bginspector_aspect');
 
-                            var relation = 100 * (parent_asp / elem_asp);
+                            var relation = 100 * (block_asp / elem_asp);
                             if (relation > that.options.imageHeightPercents) {
                                 $element.css({
                                     width: '100.5%',
@@ -136,38 +143,39 @@
                 }
             });
 
-            // Вызов инспектора после загрузки картинки
+            // Событие загрузки картинки
             this.image.onLoaded(true, function() {
                 that._trigger('imageloaded', null, {
                     widget: that
                 });
+
                 $.bgInspector.check(that.image);
+                that.update();
             });
         },
 
         /*
-            Добавление стилей блоку
+            Получение элемента контейнера
          */
-        _setBlockStyles: function() {
-            if (this.element.css('position') == 'static') {
-                this.element.css({
+        _getBlock: function() {
+            return this.element.parent();
+        },
+
+        /*
+            Стилизация
+         */
+        _setStyles: function() {
+            if (this.block.css('position') == 'static') {
+                this.block.css({
                     'position': 'relative'
                 })
             }
-            this.element.css('overflow', 'hidden');
-        },
+            this.block.css('overflow', 'hidden');
 
-        /*
-            Поиск элемента фонового изображения
-         */
-        _getImage: function() {
-            return this.element.find(this.options.imageSelector);
-        },
+            if (!this.element.hasClass('parallax')) {
+                this._addClass('parallax');
+            }
 
-        /*
-            Добавление стилей фоновому изображению
-         */
-        _setImageStyles: function() {
             if (!this.image.hasClass('parallax-image')) {
                 this._addClass(this.image, 'parallax-image');
             }
@@ -187,8 +195,8 @@
                 return
             }
 
-            var blockTop = this.element.offset().top;
-            var blockHeight = this.element.outerHeight();
+            var blockTop = this.block.offset().top;
+            var blockHeight = this.block.outerHeight();
             var scrollFrom = blockTop - winHeight;
             var scrollTo = blockTop + blockHeight;
             if ((winScroll < scrollFrom) || (winScroll > scrollTo)) {
@@ -207,10 +215,10 @@
 
         _setOptionDisabled: function(value) {
             this._super(value);
-            this._updateEnabled();
+            this._checkEnabled();
         },
 
-        _updateEnabled: function() {
+        _checkEnabled: function() {
             if (this.options.disabled) {
                 this._trigger('disable', null, {
                     widget: this
@@ -223,7 +231,7 @@
         },
 
         _destroy: function() {
-            this.element.css({
+            this.block.css({
                 position: '',
                 overflow: ''
             });
@@ -245,7 +253,7 @@
             var widget = $(this).parallax('instance');
             $.animation_frame(function() {
                 widget._update(winScroll, winHeight);
-            })(widget.image.get(0));
+            })(widget.element.get(0));
         });
     };
 

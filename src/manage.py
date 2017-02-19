@@ -1,6 +1,8 @@
 import os
 import sys
 
+# mediaInspector before bgInspectr
+# $.widget
 # Импорты для Django 1.9
 # Слайдер в тексте - описания к каждой картинке
 # Подумать над возможностью реализации Grid через Flexbox.
