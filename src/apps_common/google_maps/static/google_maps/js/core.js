@@ -1205,7 +1205,7 @@
             $.each(markers, function(i, item) {
                 if (item instanceof window.GMapPoint) {
                     bounds.extend(item.native);
-                } else if (item instanceof window.GMapMarker) {
+                } else if ((item instanceof window.GMapMarker) || (item instanceof window.GMapCustomMarker)) {
                     bounds.extend(item.position().native);
                 }
             });

@@ -2,35 +2,42 @@
 
 .gmap-cluster {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  padding-bottom: 8px;
+  overflow: hidden;
   cursor: pointer;
+  z-index: 1;
   @include no_fontsize;
+  @include transform-origin(0 0);
+  @include transform(translate(-50%, -100%));
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: #F8554B;
-    border: 1px solid #808080;
-    @include border_radius(50%);
-    @include transform(translate(-50%, -50%));
-  }
-
-  span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 2;
-    color: #FFFFFF;
-    font-weight: bold;
+  .gmap-cluster-marker {
+    position: relative;
+    padding: 6px 10px;
+    color: $white;
+    background: $blue;
     text-align: center;
-    @include font-size(12px, 12px);
-    @include transform(translate(-50%, -50%));
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    @include border_radius(18px);
+    @include transition(background 0.3s);
+
+    .gmap-cluster-text {
+      @include font_default;
+      @include font-size(16px, 16px);
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -23px;
+      z-index: -1;
+      border-top: 15px solid $blue;
+      border-bottom: 15px solid transparent;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      @include transform(translateX(-50%));
+      @include transition(border-top 0.3s);
+    }
   }
 }

@@ -23,8 +23,11 @@
             Построение DOM
          */
         cls._buildDOM = function() {
+            this.$inner = $('<div/>').addClass('gmap-cluster-marker');
             this.$counter = $('<span/>').addClass('gmap-cluster-text');
-            this.$container = $('<div>').addClass('gmap-cluster').append(this.$counter).hide();
+            this.$container = $('<div>').addClass('gmap-cluster').append(
+                this.$inner.append(this.$counter)
+            ).hide();
         };
 
         /*
@@ -52,7 +55,9 @@
             Добавление маркера в кластер
          */
         cls.addMarker = function(marker) {
-            if (marker instanceof GMapMarker == false) {
+            if ((marker instanceof window.GMapMarker) || (marker instanceof window.GMapCustomMarker)) {
+
+            } else {
                 this.error('marker should be a GMapMarker instance');
                 return this;
             }
@@ -101,7 +106,9 @@
             Удаление маркера из кластера
          */
         cls.removeMarker = function(marker) {
-            if (marker instanceof GMapMarker == false) {
+            if ((marker instanceof window.GMapMarker) || (marker instanceof window.GMapCustomMarker)) {
+
+            } else {
                 this.error('marker should be a GMapMarker instance');
                 return this;
             }
