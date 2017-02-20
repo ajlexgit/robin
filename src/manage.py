@@ -1,6 +1,7 @@
 import os
 import sys
 
+# проверить SOLO_CACHE с картинками
 # mediaInspector before bgInspectr
 # $.widget
 # Импорты для Django 1.9
