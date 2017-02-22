@@ -56,12 +56,17 @@
         };
 
         return this.each(function() {
+            var $block = $(this);
+            $block.on('click', 'a', function(event) {
+                event.stopPropagation();
+            });
+
             if (settings.itemSelector) {
-                $(this).on('click', settings.itemSelector, clickHandle)
+                $block.on('click', settings.itemSelector, clickHandle)
                     .on('mousedown', settings.itemSelector, middleDownHandle)
                     .on('mouseup', settings.itemSelector, middleUpHandle);
             } else {
-                $(this).on('click', clickHandle)
+                $block.on('click', clickHandle)
                     .on('mousedown', middleDownHandle)
                     .on('mouseup', middleUpHandle);
             }
