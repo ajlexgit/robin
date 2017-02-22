@@ -231,7 +231,7 @@ class VariationImageFieldFile(ImageFieldFile):
         """
         files_list = []
         for name, variation in self.variations.items():
-            path = self.field.build_variation_name(variation, self.name)
+            path = self.field.build_variation_name(variation, self.instance, self.name)
             files_list.append(path)
         return tuple(files_list)
 
@@ -248,7 +248,7 @@ class VariationImageFieldFile(ImageFieldFile):
             return
 
         for name, variation in self.variations.items():
-            variation_filename = self.field.build_variation_name(variation, self.name)
+            variation_filename = self.field.build_variation_name(variation, self.instance, self.name)
             variation_field = VariationField(
                 variation_filename,
                 storage=self.storage,
@@ -582,7 +582,7 @@ class VariationImageField(models.ImageField):
         queryset.update(**kwargs)
 
     @staticmethod
-    def build_variation_name(variation, source_filename):
+    def build_variation_name(variation, instance, source_filename):
         """ Возвращает имя файла вариации """
         basename, ext = os.path.splitext(source_filename)
         image_format = variation['format']
@@ -646,7 +646,7 @@ class VariationImageField(models.ImageField):
             variation_image = self._process_variation(variation_image, variation, target_format)
 
             # Сохранение
-            variation_filename = self.build_variation_name(variation, field_file.name)
+            variation_filename = self.build_variation_name(variation, instance, field_file.name)
             with self.storage.open(variation_filename, 'wb') as destination:
                 try:
                     variation_image.save(destination, optimize=1, **save_params)
