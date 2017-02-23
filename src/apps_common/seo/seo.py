@@ -195,9 +195,9 @@ class Seo(metaclass=SeoMetaClass):
         # Share-данные
         share_data = {
             'url': request.build_absolute_uri(self.canonical or request.path_info),
-            'title': self.og_title,
             'image': self.og_image,
-            'description': self.og_description,
+            'title': self.og_title or title_parts[0] if title_parts else '',
+            'description': self.og_description or self.description,
         }
 
         opengraph = Opengraph(request)
