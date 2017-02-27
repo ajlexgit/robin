@@ -1,6 +1,8 @@
 import os
 import sys
 
+# Gallery admin: custom form
+# параллельная нарезка картинок
 # проверить SOLO_CACHE с картинками
 # mediaInspector before bgInspectr
 # $.widget

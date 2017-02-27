@@ -591,7 +591,7 @@ class VariationImageField(models.ImageField):
         return ''.join((basename, '.%s' % variation['name'], ext))
 
     @staticmethod
-    def _process_variation(image, variation, target_format):
+    def _process_variation(image, variation, instance, target_format):
         """ Обработка картинки для сохранения в качестве вариации """
         image = variation_resize(image, variation, target_format)
         image = variation_watermark(image, variation)
@@ -643,7 +643,7 @@ class VariationImageField(models.ImageField):
                     masked=masked)
 
             # Основная обработка картинок
-            variation_image = self._process_variation(variation_image, variation, target_format)
+            variation_image = self._process_variation(variation_image, variation, instance, target_format)
 
             # Сохранение
             variation_filename = self.build_variation_name(variation, instance, field_file.name)
