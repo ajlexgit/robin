@@ -24,14 +24,14 @@ def result(request):
 
     # log data
     Log.objects.create(
-        inv_id=data.get('x_invoice_num'),
+        inv_id=data.get('x_invoice_num', '-1') or '-1',
         status=Log.STATUS_MESSAGE,
         request=urlencoded,
     )
 
     form = PayeezyResultForm(data)
     if form.is_valid():
-        invoice = form.cleaned_data['x_invoice_num']
+        invoice = form.cleaned_data.get('x_invoice_num', '-1') or '-1'
         try:
             invoice = int(invoice)
         except (TypeError, ValueError):
@@ -104,7 +104,7 @@ def result(request):
     else:
         # log form error
         Log.objects.create(
-            inv_id=data.get('x_invoice_num'),
+            inv_id=data.get('x_invoice_num', '-1') or '-1',
             status=Log.STATUS_ERROR,
             request=urlencoded,
             message='Invalid form:\n{}'.format(

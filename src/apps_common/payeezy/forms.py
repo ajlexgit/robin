@@ -153,7 +153,7 @@ class PayeezyResultForm(BasePayeezyForm):
     x_response_code = forms.ChoiceField(choices=RESPONSE_CODES)
     x_response_reason_text = forms.CharField(max_length=255)
     x_trans_id = forms.CharField(max_length=10, required=False)
-    x_invoice_num = forms.CharField(max_length=20)
+    x_invoice_num = forms.CharField(max_length=20, required=False)
     x_amount = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2)
     x_MD5_Hash = forms.CharField(max_length=64, required=False)
     x_SHA1_Hash = forms.CharField(max_length=64, required=False)

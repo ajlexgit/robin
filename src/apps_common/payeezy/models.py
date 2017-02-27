@@ -15,7 +15,7 @@ class Log(models.Model):
         (STATUS_EXCEPTION, _('Exception')),
     )
 
-    inv_id = models.PositiveIntegerField(_('InvId'), blank=True, null=True)
+    inv_id = models.IntegerField(_('InvId'), blank=True, null=True)
     status = models.PositiveSmallIntegerField(_('status'), choices=STATUSES)
     message = models.CharField(_('message'), max_length=255)
     request = models.TextField(_('request'))
