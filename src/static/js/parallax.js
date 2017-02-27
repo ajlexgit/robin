@@ -52,6 +52,12 @@
                     top: -backgroundOffset + '%'
                 });
             },
+            resize: function(event, data) {
+                var that = data.widget;
+                $.animation_frame(function() {
+                    that._update(data.winScroll, data.winHeight);
+                })(that.element.get(0));
+            },
             destroy: function(event, data) {
                 var that = data.widget;
                 that.image.css({
@@ -259,6 +265,17 @@
 
     $window.on('scroll.parallax', updateParallaxes);
     $window.on('load.parallax', updateParallaxes);
-    $window.on('resize.parallax', $.rared(updateParallaxes, 100));
+    $window.on('resize.parallax', $.rared(function() {
+        var winScroll = $window.scrollTop();
+        var winHeight = $window.height();
+        $(':django-parallax').each(function() {
+            var widget = $(this).parallax('instance');
+            widget._trigger('resize', null, {
+                widget: widget,
+                winScroll: winScroll,
+                winHeight: winHeight
+            });
+        });
+    }, 100));
 
 })(jQuery);
