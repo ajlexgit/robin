@@ -16,4 +16,4 @@ class MainPageConfig(SingletonModel):
         return resolve_url('index')
 
     def __str__(self):
-        return ugettext('Main page')
+        return ugettext('Home page')
