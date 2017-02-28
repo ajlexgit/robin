@@ -338,6 +338,7 @@
 	left: -1px;
 	height: 100%;
 	width: 100%;
+  background: #f06060 !important;
 }
 
 .plupload_message p {

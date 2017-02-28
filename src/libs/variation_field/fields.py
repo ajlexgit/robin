@@ -2,6 +2,7 @@ import os
 import logging
 from PIL import Image
 from django.db import models
+from django.conf import settings
 from django.db.models import signals
 from django.core.files.images import ImageFile
 from django.core.exceptions import ValidationError
@@ -14,6 +15,13 @@ from .utils import (calculateHash, put_on_bg, limited_size, variation_crop, vari
                     variation_watermark, variation_overlay, variation_mask)
 
 logger = logging.getLogger('variation_field')
+
+# Фикс обновления кэша в django-solo
+try:
+    from solo.models import SingletonModel
+    HAS_SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None) is not None
+except ImportError:
+    HAS_SOLO_CACHE = False
 
 
 class VariationField(ImageFile):
@@ -577,6 +585,10 @@ class VariationImageField(models.ImageField):
             raise ValueError('saving image to not saved instance')
         queryset = instance._meta.model.objects.filter(pk=instance.pk)
         queryset.update(**kwargs)
+
+        # Fix for django-solo cache
+        if HAS_SOLO_CACHE and isinstance(instance, SingletonModel):
+            instance.set_to_cache()
 
     @staticmethod
     def build_variation_name(variation, instance, source_filename):
