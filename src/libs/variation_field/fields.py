@@ -142,10 +142,6 @@ class VariationField(ImageFile):
 
 
 class VariationImageFieldFile(ImageFieldFile):
-    name = ''
-    field = None
-    storage = None
-    instance = None
     _croparea = ''
     _variations = None
 
@@ -217,8 +213,9 @@ class VariationImageFieldFile(ImageFieldFile):
 
     @property
     def variations(self):
-        if self.field and self._variations is None:
-            variations = self.field.get_variations(self.instance)
+        field = self.__dict__.get('field')
+        if field and self._variations is None:
+            variations = field.get_variations(self.instance)
             self._variations = variations
         return self._variations or {}
 

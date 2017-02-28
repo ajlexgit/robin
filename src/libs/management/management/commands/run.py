@@ -1,9 +1,9 @@
 import inspect
 import importlib
-from django.core.management.commands.dumpdata import Command as DumpDataCommand
+from django.core.management import BaseCommand
 
 
-class Command(DumpDataCommand):
+class Command(BaseCommand):
     """
         Команда, запускающая скрипты на Python в окружении Django.
 
@@ -37,7 +37,7 @@ class Command(DumpDataCommand):
         for script in scripts:
             try:
                 module = importlib.import_module(script)
-            except ImportError:
+            except ImportError as e:
                 print("No (valid) module for script '%s' found" % script)
             else:
                 run_func = getattr(module, entry, None)
