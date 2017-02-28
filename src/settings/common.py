@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'suit_ckeditor',
 
     # Apps
+    'config',
     'contacts',
     'main',
     'users',
@@ -98,6 +99,13 @@ SUIT_CONFIG = {
             )
         },
         '-',
+        {
+            'app': 'config',
+            'icon': 'icon-lock',
+            'models': (
+                'Config',
+            )
+        },
         {
             'app': 'social_networks',
             'icon': 'icon-lock',
