@@ -12,13 +12,17 @@ class SitemapImages(GenericSitemap):
         self.image_title_field = info_dict.get('image_title_field', None)
         self.image_caption_field = info_dict.get('image_caption_field', None)
         self.image_geo_location_field = info_dict.get('image_geo_location_field', None)
+        self.image_license_field = info_dict.get('image_license_field', None)
+
+    def _absolute_url(self, protocol, domain, url):
+        return "%s://%s%s" % (protocol, domain, url)
 
     def _urls(self, page, protocol, domain):
         urls = []
         latest_lastmod = None
         all_items_lastmod = True  # track if all items have a lastmod
         for item in self.paginator.page(page).object_list:
-            loc = "%s://%s%s" % (protocol, domain, self._Sitemap__get('location', item))
+            loc = self._absolute_url(protocol, domain, self._Sitemap__get('location', item))
             priority = self._Sitemap__get('priority', item, None)
             lastmod = self._Sitemap__get('lastmod', item, None)
             if all_items_lastmod:
@@ -33,10 +37,11 @@ class SitemapImages(GenericSitemap):
                 'changefreq': self._Sitemap__get('changefreq', item, None),
                 'priority': str(priority if priority is not None else ''),
 
-                'image_location': self._Sitemap__get('image_location', item, None),
+                'image_location': self._absolute_url(protocol, domain, self._Sitemap__get('image_location', item, None)),
                 'image_title': self._Sitemap__get('image_title', item, None),
                 'image_caption': self._Sitemap__get('image_caption', item, None),
                 'image_geo_location': self._Sitemap__get('image_geo_location', item, None),
+                'image_license': self._absolute_url(protocol, domain, self._Sitemap__get('image_license', item, None)),
             }
             urls.append(url_info)
         if all_items_lastmod and latest_lastmod:
@@ -61,4 +66,9 @@ class SitemapImages(GenericSitemap):
     def image_geo_location(self, item):
         if self.image_geo_location_field is not None:
             return getattr(item, self.image_geo_location_field)
+        return None
+
+    def image_license(self, item):
+        if self.image_license_field is not None:
+            return getattr(item, self.image_license_field)
         return None

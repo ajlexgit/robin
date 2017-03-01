@@ -19,6 +19,9 @@
         {% if url.image_geo_location %}
           <image:geo_location>{{ url.image_geo_location }}</image:geo_location>
         {% endif %}
+        {% if url.image_license %}
+          <image:license>{{ url.image_license }}</image:license>
+        {% endif %}
       </image:image>
     {% endif %}
   </url>
