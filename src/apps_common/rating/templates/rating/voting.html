@@ -2,7 +2,6 @@
   <meta itemprop="ratingValue" content="{{ rating.avg|floatformat:"2" }}">
   <meta itemprop="reviewCount" content="{{ rating.count }}">
 
-  {% csrf_token %}
   <ul class="stars {% if voted %}voted voted-{{ voted }}{% endif %}">
     <li data-vote="1"></li>
     <li data-vote="2"></li>
