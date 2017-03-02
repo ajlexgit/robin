@@ -1,5 +1,14 @@
 @import "mixins";
 
+@mixin voted_style() {
+  @include opacity(1);
+}
+
+@mixin unvoted_style() {
+  @include opacity(0.2);
+}
+
+
 .rating {
   @include no_fontsize;
 
@@ -10,22 +19,22 @@
 
     &:hover {
       li {
-        @include opacity(1);
+        @include voted_style;
       }
     }
 
     li:hover ~ li {
-      @include opacity(0.2);
+      @include unvoted_style;
     }
 
     @for $index from 1 through 5 {
       &.voted-#{$index} {
         & > li {
-          @include opacity(0.2);
+          @include unvoted_style;
         }
 
         & > li:nth-last-child(n+#{5 - $index + 1}) {
-          @include opacity(1);
+          @include voted_style;
         }
       }
     }
@@ -37,7 +46,7 @@
     width: 16px;
     cursor: pointer;
     vertical-align: middle;
-    @include opacity(0.2);
+    @include unvoted_style;
 
     &:first-child {
       padding-left: 0;
