@@ -2,6 +2,7 @@ from django.views.generic.base import View
 from django.utils.timezone import now, timedelta
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from libs.cookies import set_cookie
 from libs.views_ajax import AjaxViewMixin
@@ -11,11 +12,9 @@ from . import conf
 
 
 class VoteView(AjaxViewMixin, View):
-    def get_handler(self, request):
-        handler = super().get_handler(request)
-        if handler:
-            handler = csrf_exempt(handler)
-        return handler
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, request):
         rating = request.POST.get('rating', 5)
