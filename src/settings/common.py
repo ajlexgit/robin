@@ -223,7 +223,7 @@ SOLO_CACHE = 'default'
 SOLO_CACHE_TIMEOUT = 10 * 60
 
 # Smart Cache-Control
-SCC_DISABLED_URLS = [
+SCC_IGNORE_URLS = [
     r'/admin/',
     r'/dladmin/',
 ]
