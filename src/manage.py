@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Last-modified прицепить к sitemap
 # Gallery admin: custom form
 # параллельная нарезка картинок
 # mediaInspector before bgInspectr

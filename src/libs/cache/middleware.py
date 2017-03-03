@@ -53,10 +53,28 @@ class SCCMiddleware:
         # Если заголовок уже установлен - не меняем его
         if 'cache-control' not in response:
             # пользовательские правила
-            for url in CUSTOM_RULES:
-                if url[0].match(request.path_info):
-                    response['Cache-Control'] = '{}, must-revalidate, max-age={}'.format(*url[1:])
-                    break
+            exact_rules = []
+            regex_rules = []
+            for rule in CUSTOM_RULES:
+                if rule[0].match(request.path_info):
+                    pattern = rule[0].pattern.lstrip('^')
+                    if pattern.endswith('$'):
+                        exact_rules.append({
+                            'rule': rule,
+                            'length': len(pattern) - 1,
+                        })
+                    else:
+                        regex_rules.append({
+                            'rule': rule,
+                            'length': len(pattern),
+                        })
+
+            if exact_rules:
+                rule = sorted(exact_rules, key=lambda x: x['length'], reverse=True)[0]['rule']
+                response['Cache-Control'] = '{}, must-revalidate, max-age={}'.format(*rule[1:])
+            elif regex_rules:
+                rule = sorted(regex_rules, key=lambda x: x['length'], reverse=True)[0]['rule']
+                response['Cache-Control'] = '{}, must-revalidate, max-age={}'.format(*rule[1:])
             else:
                 if request.user.is_authenticated():
                     response['Cache-Control'] = 'private, must-revalidate, max-age={}'.format(
