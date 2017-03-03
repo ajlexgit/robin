@@ -29,7 +29,7 @@
     }).ready(function() {
         var rating = $.cookie('voted');
         if (rating) {
-            $('.rating').addClass('voted voted-' + rating);
+            $('.rating').find('.stars').addClass('voted voted-' + rating);
         }
     });
 
