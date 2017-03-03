@@ -1,6 +1,15 @@
 from django.db import models
+from django.conf import settings
 from django.db.models import signals
 from django.db.models.fields import files
+
+# Фикс обновления кэша в django-solo
+try:
+    from solo.models import SingletonModel
+
+    HAS_SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None) is not None
+except ImportError:
+    HAS_SOLO_CACHE = False
 
 
 class FieldFileMixin:
@@ -39,6 +48,10 @@ class FileFieldMixin:
 
             queryset = instance._meta.model.objects.filter(pk=instance.pk)
             queryset.update(**update_fields)
+
+            # Fix for django-solo cache
+            if HAS_SOLO_CACHE and isinstance(instance, SingletonModel):
+                instance.set_to_cache()
 
     def _post_delete(self, instance=None, **kwargs):
         field_file = self.value_from_object(instance)
