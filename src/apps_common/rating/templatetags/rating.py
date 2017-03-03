@@ -17,17 +17,6 @@ def get_rating():
 
 @register.simple_tag(takes_context=True)
 def rating(context):
-    request = context.get('request')
-    if not request:
-        return ''
-
-    voted = request.COOKIES.get('voted')
-    try:
-        voted = min(max(int(voted), 1), 5)
-    except (TypeError, ValueError):
-        voted = 0
-
     return loader.render_to_string('rating/voting.html', {
-        'voted': voted,
         'rating': get_rating(),
-    }, request=request)
+    }, request=context.get('request'))

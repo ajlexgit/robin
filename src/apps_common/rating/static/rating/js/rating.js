@@ -26,6 +26,11 @@
                 $list.attr('class', 'stars').addClass('voted voted-' + response.rating);
             }
         });
+    }).ready(function() {
+        var rating = $.cookie('voted');
+        if (rating) {
+            $('.rating').addClass('voted voted-' + rating);
+        }
     });
 
 })(jQuery);
