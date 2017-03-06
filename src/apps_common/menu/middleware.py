@@ -5,7 +5,7 @@ class MenuMiddleware:
     @staticmethod
     def process_request(request):
         """ Создание экземпляров меню """
-        request._menus = get_menus()
+        request._menus = get_menus(request)
         return
 
     @staticmethod
