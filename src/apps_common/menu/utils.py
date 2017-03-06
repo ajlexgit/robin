@@ -1,15 +1,13 @@
 import inspect
-from libs.cache import cached
 from . import menus
 
 
-@cached(time=10 * 60)
-def get_menus():
+def get_menus(request):
     """ Получение всех меню, объявленных в файле menus.py """
     result = {}
     for name, func in inspect.getmembers(menus, inspect.isfunction):
         if func.__module__ == 'menu.menus':
-            result[name] = func()
+            result[name] = func(request)
 
     return result
 
