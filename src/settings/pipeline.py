@@ -70,6 +70,7 @@ PIPELINE['JAVASCRIPT'].update({
             'js/text_styles.js',
 
             'attachable_blocks/js/async_blocks.js',
+            'placeholder/js/placeholder.js',
             'cacheblock/js/cacheblock.js',
             'contacts/js/popup.js',
             'menu/js/main_menu.js',

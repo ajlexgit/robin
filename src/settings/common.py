@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'header',
     'menu',
     'paginator',
+    'placeholder',
     'seo',
     'social_networks',
 
