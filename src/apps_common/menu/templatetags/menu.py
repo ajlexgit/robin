@@ -2,6 +2,7 @@ from django.template import Library, loader
 
 register = Library()
 
+
 @register.simple_tag(takes_context=True)
 def menu(context, name, template='menu/menu.html'):
     request = context.get('request')

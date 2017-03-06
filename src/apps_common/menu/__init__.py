@@ -55,3 +55,6 @@ def activate_menu(request, item_id):
             if item.item_id == item_id:
                 item.activate()
                 break
+
+
+default_app_config = 'menu.apps.Config'

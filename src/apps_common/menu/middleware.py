@@ -1,22 +1,11 @@
-import inspect
-from . import menus
-
-
-def get_menus(request):
-    """ Получение всех меню, объявленных в файле menus.py """
-    result = {}
-    for name, func in inspect.getmembers(menus, inspect.isfunction):
-        if func.__module__ == 'menu.menus':
-            result[name] = func(request)
-
-    return result
+from .utils import get_menus, activate_by_url
 
 
 class MenuMiddleware:
     @staticmethod
     def process_request(request):
         """ Создание экземпляров меню """
-        request._menus = get_menus(request)
+        request._menus = get_menus()
         return
 
     @staticmethod
@@ -31,14 +20,7 @@ class MenuMiddleware:
         if request.path_info == '/':
             return response
 
-        current_url = request.path_info
         for menu in menus.values():
-            if menu.is_active:
-                continue
-
-            for item in menu.items:
-                if current_url.startswith(item.url):
-                    item.activate()
-                    break
+            activate_by_url(menu, request.path_info)
 
         return response
