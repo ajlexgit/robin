@@ -3,7 +3,7 @@ from .utils import get_menus, activate_by_url
 
 
 def build_menu_part(request, name, **params):
-    menus = get_menus()
+    menus = get_menus(request)
 
     menu_name = params.get('menu_name')
     if not menu_name:
