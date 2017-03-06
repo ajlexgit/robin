@@ -26,7 +26,6 @@ urlpatterns = [
     url(r'^ckeditor/', include('ckeditor.urls', namespace='ckeditor')),
     url(r'^blocks/', include('attachable_blocks.urls', namespace='blocks')),
     url(r'^placeholder/', include('placeholder.urls', namespace='placeholder')),
-    url(r'^cacheblock/', include('libs.cacheblock.urls', namespace='cacheblock')),
     url(r'^social/', include('social_networks.urls', namespace='social_networks')),
 
     url(r'^contact/', include('contacts.urls', namespace='contacts')),

@@ -22,7 +22,6 @@ PIPELINE['STYLESHEETS'].update({
             'scss/popups/popups.scss',
             'scss/popups/preloader.scss',
 
-            'cacheblock/scss/cacheblock.scss',
             'contacts/scss/block.scss',
             'footer/scss/footer.scss',
         ),
@@ -71,7 +70,6 @@ PIPELINE['JAVASCRIPT'].update({
 
             'attachable_blocks/js/async_blocks.js',
             'placeholder/js/placeholder.js',
-            'cacheblock/js/cacheblock.js',
             'contacts/js/popup.js',
             'menu/js/main_menu.js',
         ),

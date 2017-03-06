@@ -2,8 +2,6 @@ import os
 import sys
 
 # оптимальное сжатие картинок
-# cacheblock ajax + cache
-# Menu: longest match
 # Last-modified прицепить к sitemap
 # Gallery admin: custom form
 # параллельная нарезка картинок
