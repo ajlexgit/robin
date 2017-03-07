@@ -280,7 +280,6 @@ class VariationImageFieldFile(ImageFieldFile):
 
             self.field.resize_image(
                 self.instance,
-                self.path,
                 variation,
                 croparea=self.croparea
             )
@@ -328,7 +327,6 @@ class VariationImageFieldFile(ImageFieldFile):
         for name, variation in self.variations.items():
             self.field.resize_image(
                 self.instance,
-                self.path,
                 variation,
             )
 
@@ -600,7 +598,7 @@ class VariationImageField(models.ImageField):
         return ''.join((basename, '.%s' % variation['name'], ext))
 
     @staticmethod
-    def _process_variation(image, variation, instance, target_format):
+    def _process_variation(image, variation, target_format):
         """ Обработка картинки для сохранения в качестве вариации """
         image = variation_resize(image, variation, target_format)
         image = variation_watermark(image, variation)
@@ -608,14 +606,13 @@ class VariationImageField(models.ImageField):
         image = variation_mask(image, variation)
         return image
 
-    def resize_image(self, instance, filepath, variation, croparea=None):
+    def resize_image(self, instance, variation, croparea=None):
         """ Обработка и сохранение одной вариации """
-        if not filepath or not os.path.exists(filepath):
+        field_file = self.value_from_object(instance)
+        if not field_file or not field_file.exists():
             return
 
-        field_file = self.value_from_object(instance)
-
-        with open(filepath, 'rb') as fp:
+        with open(field_file.path, 'rb') as fp:
             variation_image = Image.open(fp)
 
             # Параметры сохранения
@@ -652,7 +649,7 @@ class VariationImageField(models.ImageField):
                     masked=masked)
 
             # Основная обработка картинок
-            variation_image = self._process_variation(variation_image, variation, instance, target_format)
+            variation_image = self._process_variation(variation_image, variation, target_format)
 
             # Сохранение
             variation_filename = self.build_variation_name(variation, instance, field_file.name)
@@ -681,7 +678,6 @@ class VariationImageField(models.ImageField):
         for variation in field_file.variations.values():
             self.resize_image(
                 instance,
-                field_file.path,
                 variation,
                 croparea=croparea
             )

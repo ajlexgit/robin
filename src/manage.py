@@ -1,10 +1,9 @@
 import os
 import sys
 
-# оптимальное сжатие картинок
+# параллельная нарезка картинок
 # Last-modified прицепить к sitemap
 # Gallery admin: custom form
-# параллельная нарезка картинок
 # mediaInspector before bgInspectr
 # $.widget
 # Импорты для Django 1.9

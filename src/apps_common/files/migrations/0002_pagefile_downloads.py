@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pagefile',
             name='downloads',
-            field=models.PositiveIntegerField(verbose_name='download count', default=0),
+            field=models.PositiveIntegerField(verbose_name='downloads count', default=0),
         ),
     ]

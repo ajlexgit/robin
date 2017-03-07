@@ -28,7 +28,7 @@ class PageFile(models.Model):
         blank=True,
         help_text=_('If you leave it empty the file name will be used')
     )
-    downloads = models.PositiveIntegerField(_('download count'), default=0)
+    downloads = models.PositiveIntegerField(_('downloads count'), default=0)
     set_name = models.CharField(_('set name'), max_length=32, default='default')
     sort_order = models.PositiveIntegerField(_('sort order'))
 
