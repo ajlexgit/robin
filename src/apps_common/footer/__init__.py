@@ -8,3 +8,5 @@
         ...
         {% footer template='footer/footer.html' %}
 """
+
+default_app_config = 'footer.apps.Config'

@@ -9,5 +9,4 @@ class Config(AppConfig):
     def ready(self):
         from placeholder import register_placeholder
         from .views_ajax import menu_placeholder
-
         register_placeholder('menu', menu_placeholder)

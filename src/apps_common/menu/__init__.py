@@ -39,22 +39,6 @@
             activate_menu(request, 'articles')
 """
 
-def activate_menu(request, item_id):
-    """
-        Активация пункта во всех меню по его item_id.
-    """
-    menus = getattr(request, '_menus', None)
-    if not menus:
-        return
-
-    for menu in menus.values():
-        if menu.is_active:
-            continue
-
-        for item in menu.items:
-            if item.item_id == item_id:
-                item.activate()
-                break
-
+from .utils import activate_menu
 
 default_app_config = 'menu.apps.Config'
