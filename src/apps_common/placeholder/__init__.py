@@ -33,18 +33,12 @@
         # apps.py:
             def ready(self):
                 from placeholder import register_placeholder
-                from .views_ajax import contact_block_placeholder
-                register_placeholder('contact_block', contact_block_placeholder)
+                from .views_ajax import contact_placeholder
+                register_placeholder('contact_block', contact_placeholder)
 
         # views.py:
-            def contact_block_placeholder(request, name, parts):
-                return [
-                    build_block_part(request, name, **part_params)
-                    for part_params in parts
-                ]
-
-            def build_block_part(request, name, **params):
-                bg = params.get('bg', 'yellow)
+            def contact_part(request, **params):
+                bg = params.get('bg', 'yellow')
                 if not bg:
                     return ''
 
@@ -53,6 +47,9 @@
                     'bg': bg,
                     'title': title,
                 }, request=request)
+
+            def contact_placeholder(request, name, parts):
+                return [contact_part(request, **part_params) for part_params in parts]
 
 
         # template.html:
