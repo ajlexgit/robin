@@ -5,7 +5,7 @@
         Необходимо добавить тэгу img класс "lazyload" и перенести атрибуты src/srcset/sizes в data.
 
         Требует:
-            visibility_inspector.js
+            inspectors.js
 
         Дополнительные классы:
             onview      - загрузка, когда элемент станет видимым

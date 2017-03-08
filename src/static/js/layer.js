@@ -5,7 +5,7 @@
         Эффект параллакса, зависящий от величины прокрутки страницы.
 
         Требует:
-            jquery.utils.js, media_inspector.js
+            jquery.utils.js, inspectors.js
 
         Параметры:
             selector        - селектор элементов, которые будут перемещаться
