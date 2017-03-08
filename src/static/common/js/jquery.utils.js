@@ -5,7 +5,7 @@
         Для MediaQueries.
      */
     $.winWidth = function() {
-        return Math.max(window.innerWidth || 0,  document.documentElement.clientWidth);
+        return Math.max(window.innerWidth || 0, document.documentElement.clientWidth);
     };
 
     $.winHeight = function() {

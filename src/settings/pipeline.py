@@ -59,10 +59,7 @@ PIPELINE['JAVASCRIPT'].update({
             'common/js/jquery.utils.js',
             'common/js/jquery.ajax_csrf.js',
 
-            'js/inspectors/inspector.js',
-            'js/inspectors/media_inspector.js',
-            'js/inspectors/bg_inspector.js',
-
+            'js/inspectors.js',
             'js/popups/jquery.popups.js',
             'js/popups/preloader.js',
             'js/jquery.fitvids.js',

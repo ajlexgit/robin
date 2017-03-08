@@ -4,7 +4,6 @@ import sys
 # попробовать другой storage
 # Last-modified прицепить к sitemap
 # Gallery admin: custom form
-# mediaInspector before bgInspectr
 # $.widget
 # Импорты для Django 1.9
 # Слайдер в тексте - описания к каждой картинке
