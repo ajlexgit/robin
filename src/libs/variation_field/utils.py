@@ -52,9 +52,6 @@ DEFAULT_VARIATION = dict(
     # Сохранить EXIF
     exif=False,
 
-    # Использовать для нарезки исходную картинку (игнорирование кропа админки)
-    use_source=False,
-
     # Качество результата картинки (0-100)
     quality=None,
 )
@@ -568,3 +565,49 @@ def variation_mask(image, variation):
     image = Image.composite(image, background, mask_img)
 
     return image
+
+
+def process_variation(source, variation, quality, croparea=None):
+    with open(source, 'rb') as fp:
+        image = Image.open(fp)
+        image.load()
+
+    # Параметры сохранения
+    image_info = {}
+    if variation['exif']:
+        image_info.update(image.info or {})
+
+    # Обрезаем по рамке
+    if croparea is not None:
+        image = variation_crop(image, croparea)
+
+    # Целевой формат
+    target_format = variation['format'] or image.format
+    target_format = target_format.upper()
+
+    # Параметры сохранения
+    image_info.update(
+        format=target_format,
+        quality=quality,
+    )
+
+    # Изображение с режимом "P" нельзя сохранять в JPEG,
+    # а в GIF - фон становится черным
+    if image.mode == 'P' and target_format in ('JPEG', 'GIF'):
+        image = image.convert('RGBA')
+
+    # При сохранении в GIF проблематично указать прозрачность. Кроме того,
+    # Уменьшенный в размере прозрачный GIF ужасен по качеству. Пока накладываем на фон
+    if target_format == 'GIF':
+        masked = image.mode == 'RGBA'
+        image = put_on_bg(image, image.size,
+            color=variation['background'][:3],
+            offset=variation['offset'],
+            masked=masked)
+
+    # Основная обработка картинок
+    image = variation_resize(image, variation, target_format)
+    image = variation_watermark(image, variation)
+    image = variation_overlay(image, variation)
+    image = variation_mask(image, variation)
+    return image, image_info
