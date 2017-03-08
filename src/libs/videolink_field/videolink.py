@@ -33,7 +33,7 @@ class VideoLink:
         return self
 
     def __getnewargs__(self, *args):
-        return self._provider, self._key, self._info, self._url
+        return self.url,
 
     @property
     def provider(self):

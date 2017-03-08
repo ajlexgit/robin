@@ -5,7 +5,7 @@
         Необходимо добавить тэгу img класс "lazyload" и перенести атрибуты src/srcset/sizes в data.
 
         Требует:
-            inspectors.js
+            jquery.inspectors.js
 
         Дополнительные классы:
             onview      - загрузка, когда элемент станет видимым
@@ -76,18 +76,14 @@
     };
 
     $(document).ready(function() {
-        var $images = $('.lazyload');
-
-        if ($.visibilityInspector) {
-            $.visibilityInspector.inspect($images.filter('.onview'), {
-                afterCheck: function($elem, opts, state) {
-                    if (state) {
-                        $elem.loadImage();
-                        this.ignore($elem);
-                    }
+        $.visibilityInspector.inspect('.lazyload.onview', {
+            afterCheck: function($elem, opts, state) {
+                if (state) {
+                    $elem.loadImage();
+                    this.ignore($elem);
                 }
-            });
-        }
+            }
+        });
     });
 
 })(jQuery);

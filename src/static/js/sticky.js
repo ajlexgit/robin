@@ -5,7 +5,7 @@
         Плагин, перемещающий блок в пределах его родителя во время скролла страницы.
 
         Требует:
-            jquery.utils.js, inspectors.js
+            jquery.utils.js, jquery.inspectors.js
 
         Параметры:
             topOffset       - расстояние от верха окна до ползающего блока

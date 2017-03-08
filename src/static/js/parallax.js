@@ -5,7 +5,7 @@
         Параллакс-эффект для блока.
 
         Требует:
-            jquery-ui.js, jquery.utils.js, inspectors.js
+            jquery-ui.js, jquery.utils.js, jquery.inspectors.js
 
         Параметры:
             imageHeightPercents - высота фоновой картинки в процентах относительно высоты блока
