@@ -1,6 +1,6 @@
 import os
 from PIL import Image
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent import futures
 from django.db import models
 from django.conf import settings
 from django.db.models import signals
@@ -19,6 +19,8 @@ try:
     HAS_SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None) is not None
 except ImportError:
     HAS_SOLO_CACHE = False
+
+THREAD_COUNT = 2
 
 
 class VariationField(ImageFile):
@@ -552,20 +554,6 @@ class VariationImageField(models.ImageField):
         return source_path
 
     @staticmethod
-    def update_instance(instance, **kwargs):
-        if not kwargs:
-            return
-        if not instance.pk:
-            raise ValueError('saving image to not saved instance')
-
-        queryset = instance._meta.model.objects.filter(pk=instance.pk)
-        queryset.update(**kwargs)
-
-        # Fix for django-solo cache
-        if HAS_SOLO_CACHE and isinstance(instance, SingletonModel):
-            instance.set_to_cache()
-
-    @staticmethod
     def build_variation_name(variation, instance, source_filename):
         """ Возвращает имя файла вариации """
         basename, ext = os.path.splitext(source_filename)
@@ -573,6 +561,22 @@ class VariationImageField(models.ImageField):
         if image_format:
             ext = '.%s' % image_format.lower()
         return ''.join((basename, '.%s' % variation['name'], ext))
+
+    def save_variation_file(self, instance, image, variation, **kwargs):
+        """
+            Сохранение картинки вариации в файл
+        """
+        field_file = self.value_from_object(instance)
+        output = self.build_variation_name(variation, instance, field_file.name)
+        with self.storage.open(output, 'wb') as dest:
+            try:
+                image.save(dest, optimize=1, **kwargs)
+            except IOError:
+                image.save(dest, **kwargs)
+
+        # Очищаем закэшированные размеры картинки, т.к. они могли измениться
+        variation_field = getattr(field_file, variation['name'])
+        variation_field.clear_dimensions()
 
     def build_variation_images(self, instance, *variations, croparea=None):
         """
@@ -585,32 +589,48 @@ class VariationImageField(models.ImageField):
 
         field_file.create_variations()
 
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            futures = {
-                executor.submit(
-                    process_variation,
-                    source=field_file.path,
-                    variation=variation,
-                    quality=self.get_variation_quality(instance, variation),
-                    croparea=croparea
-                ) : variation
-                for name, variation in self.get_variations(instance).items()
-                if not variations or name in variations
-            }
+        if THREAD_COUNT <= 1:
+            for name, variation in self.get_variations(instance).items():
+                if not variations or name in variations:
+                    image, save_params = process_variation(
+                        field_file.path,
+                        variation,
+                        self.get_variation_quality(instance, variation),
+                        croparea=croparea
+                    )
+                    self.save_variation_file(instance, image, variation, **save_params)
+        else:
+            with futures.ThreadPoolExecutor(max_workers=THREAD_COUNT) as executor:
+                futures_dict = {
+                    executor.submit(
+                        process_variation,
+                        source=field_file.path,
+                        variation=variation,
+                        quality=self.get_variation_quality(instance, variation),
+                        croparea=croparea
+                    ) : variation
+                    for name, variation in self.get_variations(instance).items()
+                    if not variations or name in variations
+                }
 
-            for future in as_completed(futures):
-                variation = futures[future]
-                image, save_params = future.result()
-                output = self.build_variation_name(variation, instance, field_file.name)
-                with self.storage.open(output, 'wb') as dest:
-                    try:
-                        image.save(dest, optimize=1, **save_params)
-                    except IOError:
-                        image.save(dest, **save_params)
+                for future in futures.as_completed(futures_dict):
+                    variation = futures_dict[future]
+                    image, save_params = future.result()
+                    self.save_variation_file(instance, image, variation, **save_params)
 
-                # Очищаем закэшированные размеры картинки, т.к. они могли измениться
-                variation_field = getattr(field_file, variation['name'])
-                variation_field.clear_dimensions()
+    @staticmethod
+    def update_instance(instance, **kwargs):
+        if not kwargs:
+            return
+        if not instance.pk:
+            raise ValueError('saving image to not saved instance')
+
+        queryset = instance._meta.model.objects.filter(pk=instance.pk)
+        queryset.update(**kwargs)
+
+        # Fix for django-solo cache
+        if HAS_SOLO_CACHE and isinstance(instance, SingletonModel):
+            instance.set_to_cache()
 
     def _post_save(self, instance, **kwargs):
         """ Обертка над реальным обработчиком """
