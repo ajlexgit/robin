@@ -7,7 +7,7 @@ from django.views.decorators.cache import cache_control
 
 last_modified_date = timezone.now()
 
-@cache_control(public=True, max_age=3600)
+@cache_control(public=True, max_age=7*24*3600)
 @last_modified(lambda req, **kw: last_modified_date)
 def cached_javascript_catalog(request, domain='djangojs', packages=None):
     """ Закэшированный каталог JS-перевода """

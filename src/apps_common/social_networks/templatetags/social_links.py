@@ -5,7 +5,7 @@ register = Library()
 
 
 @register.simple_tag(takes_context=True)
-def social_links(context, classes='', template='social_networks/scoial_links.html'):
+def social_links(context, classes='', template='social_networks/social_links.html'):
     request = context.get('request')
     if not request:
         return ''

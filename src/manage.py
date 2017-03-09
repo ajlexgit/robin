@@ -1,6 +1,7 @@
 import os
 import sys
 
+# DC meta
 # попробовать другой storage
 # Last-modified прицепить к sitemap
 # Gallery admin: custom form
