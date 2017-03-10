@@ -31,8 +31,8 @@ class StylesheetNode(pipeline.StylesheetNode):
 
 
 class InlineStylesheetNode(pipeline.StylesheetNode):
-    def expand_urls(self, package, content):
-        path_prefix = os.path.dirname(package.output_filename)
+    def expand_urls(self, path, content):
+        path_prefix = os.path.dirname(path)
 
         def reconstruct(match):
             asset_url = match.group(2)
@@ -58,7 +58,7 @@ class InlineStylesheetNode(pipeline.StylesheetNode):
 
     def render_individual_css(self, package, paths, **kwargs):
         html = ''.join(
-            self.expand_urls(package, open(staticfiles_storage.path(path), 'r').read())
+            self.expand_urls(path, open(staticfiles_storage.path(path), 'r').read())
             for path in paths
         )
         return mark_safe('<style type="text/css">' + html + '</style>')
