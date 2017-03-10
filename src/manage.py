@@ -21,7 +21,6 @@ import sys
 # Images: alt, title, file name
 # Schema.org: per page + get data from models
 # Admin: функция "скопировать из"
-# crop each variation
 # Кнопка подтверждения заказа в админке
 # Редактирование продуктов магазина в админке
 # Logging, checks, tests

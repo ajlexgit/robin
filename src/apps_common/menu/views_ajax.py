@@ -1,7 +1,9 @@
 from django.template import loader
+from libs.cache import cached
 from .utils import get_menus, activate_by_url
 
 
+@cached('params.menu_name', 'params.referer', 'params.template', time=10*60)
 def build_menu_part(request, name, **params):
     menus = get_menus(request)
 
