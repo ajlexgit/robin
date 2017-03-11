@@ -628,10 +628,12 @@ def process_variation(source, variation, quality=None, croparea=None):
             dest_mode = 'RGBA'
         output = background
 
+    # watermark
     watermark_options = variation['watermark']
     if watermark_options:
         output = variation_watermark(output, **watermark_options)
 
+    # overlay
     overlay = variation['overlay']
     if overlay:
         # FIX: Дикие баги при добавлении оверлея к палитре
@@ -640,6 +642,7 @@ def process_variation(source, variation, quality=None, croparea=None):
             dest_mode = 'RGBA'
         output = variation_overlay(output, overlay)
 
+    # mask
     mask = variation['mask']
     if mask:
         output = variation_mask(output, mask)
