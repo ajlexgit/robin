@@ -2,24 +2,28 @@ class CropArea:
     """
         Объект, представляющий область обрезки.
         Принимает координаты в форматах:
-         1) один аргумент - строка "X:Y:W:H"
-         2) четыре аргумнта: X, Y, W, H
+         1) один аргумент - строка "X:Y:W:H" или итератор (X, Y, W, H)
+         2) четыре аргумента: X, Y, W, H
     """
     errors = {
         'bad_coord': 'Bad CropArea coord: %s'
     }
 
     def __init__(self, *args):
-        if len(args) == 1 and isinstance(args[0], str):
-            self._crop_coords = args[0].split(':')
-            if len(self._crop_coords) != 4:
-                raise ValueError('Invalid crop area: %r' % args[0])
+        if len(args) == 1:
+            if isinstance(args[0], str):
+                coords = args[0].split(':')
+            else:
+                coords = tuple(args[0])
         elif len(args) == 4:
-            self._crop_coords = args
+            coords = args
         else:
-            raise ValueError('Invalid crop area attributes: %r' % (args,))
+            raise ValueError('Invalid attribute count: %r' % (args,))
 
-        self._crop_coords = list(map(self._format_coord, self._crop_coords))
+        if len(coords) != 4:
+            raise ValueError('Invalid crop area: %r' % args[0])
+
+        self._crop_coords = list(map(self._format_coord, coords))
 
     def __iter__(self):
         return iter(self._crop_coords)

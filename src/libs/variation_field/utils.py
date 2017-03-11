@@ -1,3 +1,4 @@
+import os
 import operator
 import itertools
 from PIL import Image, ImageOps, ImageEnhance
@@ -5,7 +6,6 @@ from django.contrib.staticfiles.finders import find
 from django.contrib.staticfiles.storage import staticfiles_storage
 from .croparea import CropArea
 from .size import Size
-
 
 DEFAULT_VARIATION = dict(
     # Размер
@@ -19,11 +19,8 @@ DEFAULT_VARIATION = dict(
     max_width = 0,
     max_height = 0,
 
-    # Положение картинки относительно фона, если производится наложение.
-    # offset - отношение разницы размеров по горизонтали и вертикали.
-    # center - относительное положение центра накладываемой картинки.
-    # Можно указать только один из параметров offset/center.
-    offset=(0.5, 0.5),
+    # Влияет на то, какие части картинки обрезаются при crop=True.
+    # Также определяет положение картинки по отношению к холсту.
     center=(0.5, 0.5),
 
     # Цвет фона, на который накладывается изображение, когда оно не может сохранить прозрачность
@@ -39,7 +36,7 @@ DEFAULT_VARIATION = dict(
     # Например:
     #   watermark = {
     #       file: 'img/watermark.png',
-    #       position: 'BR',
+    #       position: 'C',
     #       padding: (20, 30),
     #       opacity: 1,
     #       scale: 1,
@@ -56,10 +53,9 @@ DEFAULT_VARIATION = dict(
     quality=None,
 )
 
-
 DEFAULT_WATERMARK = {
     'file': '',
-    'position': 'BR',
+    'position': 'C',
     'padding': (0, 0),
     'opacity': 1,
     'scale': 1,
@@ -79,6 +75,30 @@ def is_size(value):
         return False
 
 
+def limited_size(size, limit_size):
+    """
+        Пропорциональное уменьшение размера size, чтобы он не превосходил limit_size.
+        Допустимо частичное указание limit_size, например, (1024, 0).
+        Если size умещается в limit_size, возвращает None
+    """
+    max_width, max_height = limit_size
+    if not max_width and not max_height:
+        return None
+
+    width, height = size
+    if max_width and width > max_width:
+        height = height * (max_width / width)
+        width = max_width
+    if max_height and height > max_height:
+        width = width * (max_height / height)
+        height = max_height
+    width, height = round(width), round(height)
+    if size == (width, height):
+        return None
+
+    return width, height
+
+
 def split_every(n, iterable):
     i = iter(iterable)
     piece = list(itertools.islice(i, n))
@@ -87,7 +107,7 @@ def split_every(n, iterable):
         piece = list(itertools.islice(i, n))
 
 
-def calculateHash(image, hash_size=12):
+def image_hash(image, hash_size=12):
     """
         Рассчет хэша картинки
     """
@@ -161,11 +181,6 @@ def check_variations(variations, obj):
 
         if not any(d for d in params['size']) and not params['max_width'] and not params['max_height']:
             errors.append(checks.Error('"size" in variation %r is empty and non-calulatable' % name, obj=obj))
-
-        # offset
-        if 'offset' in params:
-            if params['offset'] and not isinstance(params['offset'], (list, tuple)):
-                errors.append(checks.Error('"offset" in variation %r should be a tuple or list' % name, obj=obj))
 
         # center
         if 'center' in params:
@@ -252,12 +267,14 @@ def format_variation(**params):
     # Overlay
     overlay = variation.get('overlay')
     if overlay:
-        variation['overlay'] = staticfiles_storage.path(overlay)
+        if not os.path.exists(overlay):
+            variation['overlay'] = staticfiles_storage.path(overlay)
 
     # Mask
     mask = variation.get('mask')
     if mask:
-        variation['mask'] = staticfiles_storage.path(mask)
+        if not os.path.exists(mask):
+            variation['mask'] = staticfiles_storage.path(mask)
 
     # Водяной знак
     watermark = variation.get('watermark')
@@ -284,7 +301,7 @@ def format_variations(variations):
 def format_aspects(value, variations):
     """ Форматирование аспектов """
     result = []
-    aspects = value if isinstance(value, tuple) else (value, )
+    aspects = value if isinstance(value, tuple) else (value,)
     for aspect in aspects:
         try:
             aspect = float(aspect)
@@ -302,51 +319,103 @@ def format_aspects(value, variations):
     return tuple(result)
 
 
-def put_on_bg(image, bg_size, color=(255,255,255,0), offset=(0.5, 0.5), center=(0.5, 0.5), masked=False):
-    """ Создание фона цветом bg_color и размера bg_size, на который будет наложена картинка image """
-    background = Image.new('RGBA', bg_size, color)
-
-    if center:
-        final_offset = (
-            max(0, int(background.size[0] * center[0] - image.size[0] / 2)),
-            max(0, int(background.size[1] * center[1] - image.size[1] / 2))
-        )
-    else:
-        size_diff = list(itertools.starmap(operator.sub, zip(background.size, image.size)))
-        final_offset = (int(size_diff[0] * offset[0]), int(size_diff[1] * offset[1]))
-
-    if masked:
-        try:
-            background.paste(image, final_offset, image)
-        except ValueError:
-            background.paste(image, final_offset)
-    else:
-        background.paste(image, final_offset)
-    return background
-
-
-def limited_size(size, limit_size):
+def calculate_sizes(image, variation):
     """
-        Пропорциональное уменьшение размера size, чтобы он не превосходил limit_size.
-        Допустимо частичное указание limit_size, например, (1024, 0).
-        Если size умещается в limit_size, возвращает None
+        Рассчитывает финальные размеры изображения и холста.
     """
-    max_width, max_height = limit_size
-    if not max_width and not max_height:
-        return None
+    crop = bool(variation['crop'])
+    stretch = bool(variation['stretch'])
 
-    width, height = size
-    if max_width and width > max_width:
-        height = height * (max_width / width)
-        width = max_width
-    if max_height and height > max_height:
-        width = width * (max_height / height)
-        height = max_height
-    width, height = round(width), round(height)
-    if size == (width, height):
-        return None
+    source_size = image.size
+    target_size = list(variation['size'])
 
-    return width, height
+    if crop:
+        # Если указан только одна сторона - вторую берем из исходника
+        if not target_size[0]:
+            target_size[0] = source_size[0]
+        elif not target_size[1]:
+            target_size[1] = source_size[1]
+
+        if not stretch:
+            # если в вариации указана большая длина, чем у исходника - оставляем длину исходника
+            target_size = (
+                min(source_size[0], target_size[0]),
+                min(source_size[1], target_size[1])
+            )
+        return target_size, target_size
+    else:
+        # Размеры картинки, вписываемой в холст
+        image_size = Size(*source_size)
+
+        max_width = variation['max_width']
+        max_height = variation['max_height']
+
+        # корректируем ограничения
+        max_width = min(max_width or target_size[0], target_size[0] or max_width)       # type: int
+        max_height = min(max_height or target_size[1], target_size[1] or max_height)    # type: int
+
+        # Определяем размеры картинки
+        if stretch:
+            if max_width:
+                if max_height:
+                    max_aspect = max_width / max_height
+                    if image_size.aspect > max_aspect:
+                        # картинка шире холста
+                        image_size.width = max_width
+                    else:
+                        # картинка выше холста
+                        image_size.height = max_height
+                else:
+                    # плавающая выcота
+                    image_size.width = max_width
+            else:
+                if max_height:
+                    # плавающая ширина
+                    image_size.height = max_height
+        else:
+            # растягивать запрещено
+            if max_width:
+                image_size.max_width(max_width)
+            if max_height:
+                image_size.max_height(max_height)
+
+        # Определение размера холста
+        if target_size[0] == 0:
+            target_size[0] = image_size.width
+        if target_size[1] == 0:
+            target_size[1] = image_size.height
+
+        return (image_size.width, image_size.height), tuple(target_size)
+
+
+def get_transparency_mask(image, info=None):
+    """
+        Возвращает маску прозрачности изображения или None
+    """
+    if image.mode in ('RGBA', 'LA'):
+        return image.split()[-1]
+    elif image.mode == 'L':
+        return image
+    else:
+        # GIF, PNG8, PNG24
+        info = info or image.info or {}
+        transparency = info.get('transparency')
+        if transparency is None:
+            return
+
+        mask = Image.new('L', image.size)
+        if isinstance(transparency, bytes):
+            trans_len = len(transparency)
+            mask.putdata([
+                transparency[index] if index < trans_len else 255
+                for index in image.getdata()
+                ])
+        else:
+            mask.putdata([
+                0 if index == transparency else 255
+                for index in image.getdata()
+            ])
+        return mask
 
 
 def variation_crop(image, croparea=None):
@@ -373,120 +442,39 @@ def variation_crop(image, croparea=None):
     return cropped
 
 
-def variation_resize(image, variation, target_format):
+def variation_resize(image, image_size, variation):
     """
-        Изменение размера
+        Изменение размера картинки в соответствии с вариацией
     """
-    bg_options = {
-        'color': variation['background'],
-        'offset': variation['offset'],
-        'center': variation['center'],
-    }
+    source_format = image.format
+    source_size = image.size
 
-    # Целевой размер
-    target_size = variation['size']
-    if not isinstance(target_size, (list, tuple)) or len(target_size) != 2:
-        raise ValueError('Invalid image size: %r' % target_size)
-
-    # Режим изображения
-    mode = image.mode
-    image_format = image.format
+    # Режим обработки
     crop = bool(variation['crop'])
     stretch = bool(variation['stretch'])
-
-    source_size = image.size
-    need_bg = bg_options['color'][3] != 0 or mode == 'RGBA' or target_format == 'JPEG'
-
     if crop:
-        # Быстрое уменьшение картинки, если целевой размер намного меньше
-        if not target_size[0]:
-            target_size = (source_size[0], target_size[1])
-        elif not target_size[1]:
-            target_size = (target_size[0], source_size[1])
+        # размер не меняется - оставляем как есть
+        if image_size == source_size:
+            return image
 
-        if stretch:
-            # OLD: CROP_ANYWAY
-            image = ImageOps.fit(image, target_size, method=Image.ANTIALIAS, centering=bg_options['center'])
-        else:
-            # OLD: CROP
-            new_width = min(source_size[0], target_size[0])
-            new_height = min(source_size[1], target_size[1])
-            if new_width == source_size[0] and new_height == source_size[1]:
-                # Если целевой размер больше - оставляем картинку без изменений
-                pass
-            else:
-                image = ImageOps.fit(image, (new_width, new_height), method=Image.ANTIALIAS, centering=bg_options['center'])
+        image = ImageOps.fit(
+            image,
+            image_size,
+            method=Image.ANTIALIAS,
+            centering=variation['center']
+        )
     else:
-        # Размеры картинки, вписываемой в холст
-        image_size = Size(*source_size)
-
-        max_width = variation['max_width']
-        max_height = variation['max_height']
-
-        # корректируем ограничения
-        max_width = min(max_width or target_size[0], target_size[0] or max_width)
-        max_height = min(max_height or target_size[1], target_size[1] or max_height)
-
-        # Определяем размеры картинки
         if stretch:
-            # растягивать разрешено
-            if max_width:
-                if max_height:
-                    max_aspect = max_width / max_height
-                    if image_size.aspect > max_aspect:
-                        # картинка шире холста
-                        image_size.width = max_width
-                    else:
-                        # картинка выше холста
-                        image_size.height = max_height
-                else:
-                    # плавающая выcота
-                    image_size.width = max_width
-            else:
-                if max_height:
-                    # плавающая ширина
-                    image_size.height = max_height
+            image = image.resize(image_size, resample=Image.ANTIALIAS)
         else:
-            # растягивать запрещено
-            if max_width:
-                image_size.max_width(max_width)
-            if max_height:
-                image_size.max_height(max_height)
+            image.thumbnail(image_size, resample=Image.ANTIALIAS)
 
-        # если размер вычисляется автоматически и нет прозрачности - накладывать на фон не нужно
-        need_bg = need_bg or target_size != (0, 0)
-
-        # Определение размера холста
-        target_size = list(target_size)
-        if target_size[0] == 0:
-            target_size[0] = image_size.width
-        if target_size[1] == 0:
-            target_size[1] = image_size.height
-
-        # Ресайз
-        img_size = (image_size.width, image_size.height)
-        if stretch:
-            image = image.resize(img_size, resample=Image.ANTIALIAS)
-        else:
-            # OLD: INSRIBE
-            image.thumbnail(img_size, resample=Image.ANTIALIAS)
-
-
-    # Накладываем на фон
-    if need_bg:
-        masked = bg_options['color'][3] != 0  # баг потери качества PNG при наложении
-        image = put_on_bg(image, target_size, masked=masked, **bg_options)
-
-    image.format = image_format
+    image.format = source_format
     return image
 
 
-def variation_watermark(image, variation):
+def variation_watermark(image, **wm_settings):
     """ Наложение водяного знака на картинку """
-    wm_settings = variation['watermark']
-    if not wm_settings:
-        return image
-
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
 
@@ -501,7 +489,7 @@ def variation_watermark(image, variation):
 
         scale = wm_settings['scale']
         if scale != 1:
-            watermark = watermark.resize((int(wm_width*scale), int(wm_height*scale)), Image.ANTIALIAS)
+            watermark = watermark.resize((int(wm_width * scale), int(wm_height * scale)), Image.ANTIALIAS)
             wm_width, wm_height = watermark.size
 
         position = wm_settings['position']
@@ -534,41 +522,31 @@ def variation_watermark(image, variation):
     return image
 
 
-def variation_overlay(image, variation):
+def variation_overlay(image, overlay):
     """ Наложение оверлея на картинку """
-    overlay = variation['overlay']
-    if not overlay:
-        return image
-
     overlay_img = Image.open(overlay)
+
     if overlay_img.size != image.size:
         overlay_img = ImageOps.fit(overlay_img, image.size, method=Image.ANTIALIAS)
 
-    # Дикие баги картинки, когда GIF => PNG + overlay
-    if image.mode == 'P':
-        image = image.convert('RGBA')
-
-    image.paste(overlay_img, overlay_img)
+    transparency_mask = get_transparency_mask(overlay_img, overlay_img.info)
+    image.paste(overlay_img, mask=transparency_mask)
 
     return image
 
 
-def variation_mask(image, variation):
+def variation_mask(image, mask):
     """ Обрезка картинки по маске """
-    target_bgcolor = variation['background']
-
-    mask = variation['mask']
-    if not mask:
-        return image
-
     mask_img = Image.open(mask).convert('L')
+
     if mask_img.size != image.size:
         mask_img = ImageOps.fit(mask_img, image.size, method=Image.ANTIALIAS)
 
-    background = Image.new("RGBA", image.size, target_bgcolor)
-    image = Image.composite(image, background, mask_img)
+    transparency_mask = get_transparency_mask(mask_img, mask_img.info)
+    background = Image.new('RGBA', image.size)
+    background.paste(image, mask=transparency_mask)
 
-    return image
+    return background
 
 
 def process_variation(source, variation, quality=None, croparea=None):
@@ -577,45 +555,116 @@ def process_variation(source, variation, quality=None, croparea=None):
         image = Image.open(fp)
         image.load()
 
-    # Параметры сохранения
-    image_info = {}
-    if variation['exif']:
-        image_info.update(image.info or {})
+    source_format = image.format
+    source_info = image.info
+    source_mode = image.mode
 
-    # Целевой формат
-    target_format = variation['format'] or image.format
-    target_format = target_format.upper()
-    image_info['format'] = target_format
+    dest_format = variation['format'] or source_format
+    dest_info = dict(format=dest_format)
+    dest_mode = source_mode
 
-    # Качество
-    quality = quality or variation.get('quality')
-    if quality:
-      image_info['quality'] = target_format
+    background = variation['background']
+
+    # Для JPEG и PNG
+    if dest_format in ('JPEG', 'PNG'):
+        # Включаем оптимизацию
+        dest_info['optimize'] = True
+
+        # Копируем EXIF
+        if variation['exif']:
+            for key in ('exif', 'icc_profile'):
+                data = source_info.get(key)
+                if not data:
+                    continue
+                dest_info[key] = data
+
+    # Для JPEG
+    if dest_format == 'JPEG':
+        # Включаем progressive
+        dest_info['progressive'] = True
+
+        # Качество
+        quality = quality or variation.get('quality')
+        if quality:
+            dest_info['quality'] = int(quality)
+
+    # ===================================
 
     # Обрезаем по рамке
     if croparea is not None:
-        image = variation_crop(image, croparea)
+        output = variation_crop(image, croparea)
+    else:
+        output = image
 
-    # Изображение с режимом "P" нельзя сохранять в JPEG,
-    # а в GIF - фон становится черным
-    if image.mode == 'P' and target_format in ('JPEG', 'GIF'):
-        image = image.convert('RGBA')
+    # финальные размеры изображения и холста
+    image_size, canvas_size = calculate_sizes(output, variation)
 
-    # При сохранении в GIF проблематично указать прозрачность. Кроме того,
-    # Уменьшенный в размере прозрачный GIF ужасен по качеству. Пока накладываем на фон
-    if target_format == 'GIF':
-        masked = image.mode == 'RGBA'
-        image = put_on_bg(image, image.size,
-            color=variation['background'][:3],
-            offset=variation['offset'],
-            masked=masked)
+    # ресайз
+    output = variation_resize(output, image_size, variation)
+    transparency_mask = get_transparency_mask(output, source_info)
 
-    # Основная обработка картинок
-    image = variation_resize(image, variation, target_format)
-    image = variation_watermark(image, variation)
-    image = variation_overlay(image, variation)
-    image = variation_mask(image, variation)
-    return image, image_info
+    # наложение на фон
+    if image_size != canvas_size:
+        center = variation['center']
+        size_diff = list(itertools.starmap(operator.sub, zip(canvas_size, image_size)))
+        image_offset = (int(size_diff[0] * center[0]), int(size_diff[1] * center[1]))
+        if background[3] == 255:
+            background = Image.new('RGB', canvas_size, background)
+            background.paste(output, image_offset, mask=transparency_mask)
+            dest_mode = 'RGB'
+        else:
+            background = Image.new('RGBA', canvas_size, background)
+            background.paste(output, image_offset, mask=transparency_mask)
+            dest_mode = 'RGBA'
+        output = background
+    elif transparency_mask is not None:
+        if background[3] == 255:
+            background = Image.new('RGB', canvas_size, background)
+            background.paste(output, mask=transparency_mask)
+            dest_mode = 'RGB'
+        else:
+            background = Image.new('RGBA', canvas_size, background)
+            background.paste(output, mask=transparency_mask)
+            dest_mode = 'RGBA'
+        output = background
+
+    watermark_options = variation['watermark']
+    if watermark_options:
+        output = variation_watermark(output, **watermark_options)
+
+    overlay = variation['overlay']
+    if overlay:
+        # FIX: Дикие баги при добавлении оверлея к палитре
+        if dest_mode == 'P':
+            output = output.convert('RGBA')
+            dest_mode = 'RGBA'
+        output = variation_overlay(output, overlay)
+
+    mask = variation['mask']
+    if mask:
+        output = variation_mask(output, mask)
+        dest_mode = 'RGBA'
+
+    # ===================================
+
+    if dest_format == 'JPEG':
+        if dest_mode == 'P':
+            # FIX: нельзя сохранять mode P в JPEG
+            output = output.convert('RGB')
+
+    # Перенос прозрачного цвета
+    if 'transparency' in source_info:
+        transparency = source_info['transparency']
+        if dest_format == 'GIF':
+            if isinstance(transparency, int):
+                dest_info['transparency'] = transparency
+        elif dest_format == 'PNG':
+            if dest_mode == 'RGB' and isinstance(transparency, (tuple, list)):
+                dest_info['transparency'] = transparency
+            elif dest_mode == 'P' and isinstance(transparency, (int, bytes)):
+                dest_info['transparency'] = transparency
+
+    return output, dest_info
 
 
 def process_image(source, croparea=None, **params):

@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.db.models.fields.files import ImageFieldFile, FieldFile, ImageFileDescriptor
 from .croparea import CropArea
-from .utils import calculateHash, limited_size, process_variation
+from .utils import image_hash, limited_size, process_variation
 
 # Фикс обновления кэша в django-solo
 try:
@@ -293,15 +293,14 @@ class VariationImageFieldFile(ImageFieldFile):
             source_image = Image.open(self)
             source_format = source_image.format
 
-            info = source_image.info or {}
+            source_info = source_image.info
+            dest_info = source_info.copy()
+            if source_format in ('JPEG', 'PNG'):
+                dest_info['optimize'] = True
 
             source_image = source_image.rotate(-angle, expand=True)
-            source_image.format = source_format
             with self.storage.open(self.name, 'wb') as destination:
-                try:
-                    source_image.save(destination, source_format, optimize=1, **info)
-                except IOError:
-                    source_image.save(destination, source_format, **info)
+                source_image.save(destination, source_format, **dest_info)
         finally:
             self.close()
 
@@ -318,7 +317,7 @@ class VariationImageFieldFile(ImageFieldFile):
         try:
             self.open()
             image = Image.open(self)
-            return calculateHash(image, hash_size)
+            return image_hash(image, hash_size)
         finally:
             self.close()
 
@@ -523,11 +522,12 @@ class VariationImageField(models.ImageField):
     def build_source_name(self, instance, ext):
         raise NotImplementedError()
 
-    def save_source_file(self, instance, source_image, draft_size=None, **kwargs):
+    def save_source_file(self, instance, source_image, draft_size=None):
         """ Сохранение исходника """
         field_file = self.value_from_object(instance)
+        source_format = source_image.format
 
-        out_name = self.build_source_name(instance, source_image.format)
+        out_name = self.build_source_name(instance, source_format)
         source_path = self.generate_filename(instance, out_name)
         source_path = self.storage.get_available_name(source_path)
 
@@ -536,17 +536,19 @@ class VariationImageField(models.ImageField):
             with self.storage.open(field_file.name) as source:
                 self.storage.save(source_path, source)
         else:
-            params = source_image.info or {}
-            params['quality'] = self.get_source_quality(instance)
-            params.update(**kwargs)
+            source_info = source_image.info
+            dest_info = source_info.copy()
+
+            if source_format in ('JPEG', 'PNG'):
+                dest_info['optimize'] = True
+
+            quality = self.get_source_quality(instance)
+            if quality and source_format == 'JPEG':
+                dest_info['quality'] = quality
 
             with self.storage.open(source_path, 'wb') as destination:
-                try:
-                    source_image.save(destination, source_image.format, optimize=1, **params)
-                except IOError:
-                    source_image.save(destination, source_image.format, **params)
-                finally:
-                    source_image.close()
+                source_image.save(destination, source_format, **dest_info)
+                source_image.close()
 
         # Записываем путь к исходнику
         setattr(instance, self.attname, source_path)
@@ -562,17 +564,14 @@ class VariationImageField(models.ImageField):
             ext = '.%s' % image_format.lower()
         return ''.join((basename, '.%s' % variation['name'], ext))
 
-    def save_variation_file(self, instance, image, variation, **kwargs):
+    def save_variation_file(self, instance, image, variation, **image_options):
         """
             Сохранение картинки вариации в файл
         """
         field_file = self.value_from_object(instance)
         output = self.build_variation_name(variation, instance, field_file.name)
         with self.storage.open(output, 'wb') as dest:
-            try:
-                image.save(dest, optimize=1, **kwargs)
-            except IOError:
-                image.save(dest, **kwargs)
+            image.save(dest, **image_options)
 
         # Очищаем закэшированные размеры картинки, т.к. они могли измениться
         variation_field = getattr(field_file, variation['name'])
@@ -592,13 +591,13 @@ class VariationImageField(models.ImageField):
         if THREAD_COUNT <= 1:
             for name, variation in self.get_variations(instance).items():
                 if not variations or name in variations:
-                    image, save_params = process_variation(
+                    image, image_options = process_variation(
                         field_file.path,
                         variation,
                         self.get_variation_quality(instance, variation),
                         croparea=croparea
                     )
-                    self.save_variation_file(instance, image, variation, **save_params)
+                    self.save_variation_file(instance, image, variation, **image_options)
         else:
             with futures.ThreadPoolExecutor(max_workers=THREAD_COUNT) as executor:
                 futures_dict = {
@@ -615,8 +614,8 @@ class VariationImageField(models.ImageField):
 
                 for future in futures.as_completed(futures_dict):
                     variation = futures_dict[future]
-                    image, save_params = future.result()
-                    self.save_variation_file(instance, image, variation, **save_params)
+                    image, image_options = future.result()
+                    self.save_variation_file(instance, image, variation, **image_options)
 
     @staticmethod
     def update_instance(instance, **kwargs):
