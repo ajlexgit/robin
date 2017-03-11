@@ -232,49 +232,53 @@ def check_variations(variations, obj):
     return errors
 
 
+def format_variation(**params):
+    """
+        Приведение настроек вариации к каноническому виду
+    """
+    variation = dict(DEFAULT_VARIATION, **params)
+
+    # Проверка формата
+    image_format = variation.get('format')
+    if image_format:
+        image_format = str(image_format).upper()
+        if image_format in ('JPG', 'JPEG'):
+            image_format = 'JPEG'
+    elif variation.get('mask'):
+        # Не указан формат, но указана маска - переводим в PNG
+        image_format = 'PNG'
+    variation['format'] = image_format
+
+    # Overlay
+    overlay = variation.get('overlay')
+    if overlay:
+        variation['overlay'] = staticfiles_storage.path(overlay)
+
+    # Mask
+    mask = variation.get('mask')
+    if mask:
+        variation['mask'] = staticfiles_storage.path(mask)
+
+    # Водяной знак
+    watermark = variation.get('watermark')
+    if watermark and isinstance(watermark, dict):
+        watermark = dict(DEFAULT_WATERMARK, **watermark)
+        watermark['file'] = staticfiles_storage.path(watermark['file'])
+        watermark['padding'] = tuple(map(int, watermark['padding']))
+        watermark['opacity'] = float(watermark['opacity'])
+        watermark['scale'] = float(watermark['scale'])
+        watermark['position'] = str(watermark['position']).upper()
+        variation['watermark'] = watermark
+
+    return variation
+
+
 def format_variations(variations):
-    """ Проверка и форматирование вариаций """
-    result = {}
-    for name, params in variations.items():
-        if isinstance(params, tuple):
-            params = {
-                'size': params,
-            }
-
-        final_params = dict(DEFAULT_VARIATION, name=name, **params)
-
-        # Проверка формата
-        image_format = final_params.get('format')
-        if image_format:
-            image_format = str(image_format).upper()
-            if image_format in ('JPG', 'JPEG'):
-                image_format = 'JPEG'
-        elif final_params.get('mask'):
-            # Не указан формат, но указана маска - переводим в PNG
-            image_format = 'PNG'
-        final_params['format'] = image_format
-
-        # Overlay
-        if final_params['overlay']:
-            final_params['overlay'] = staticfiles_storage.path(final_params['overlay'])
-
-        # Mask
-        if final_params['mask']:
-            final_params['mask'] = staticfiles_storage.path(final_params['mask'])
-
-        # Водяной знак
-        if final_params['watermark']:
-            watermark = dict(DEFAULT_WATERMARK, **final_params['watermark'])
-            watermark['file'] = staticfiles_storage.path(watermark['file'])
-            watermark['padding'] = tuple(map(int, watermark['padding']))
-            watermark['opacity'] = float(watermark['opacity'])
-            watermark['scale'] = float(watermark['scale'])
-            watermark['position'] = str(watermark['position']).upper()
-            final_params['watermark'] = watermark
-
-        result[name] = final_params
-
-    return result
+    """ Форматирование вариаций """
+    return {
+        name: dict(format_variation(**params), name=name)
+        for name, params in variations.items()
+    }
 
 
 def format_aspects(value, variations):
@@ -567,7 +571,8 @@ def variation_mask(image, variation):
     return image
 
 
-def process_variation(source, variation, quality, croparea=None):
+def process_variation(source, variation, quality=None, croparea=None):
+    """ Обработка картинки в соответствии с вариацией """
     with open(source, 'rb') as fp:
         image = Image.open(fp)
         image.load()
@@ -588,7 +593,7 @@ def process_variation(source, variation, quality, croparea=None):
     # Параметры сохранения
     image_info.update(
         format=target_format,
-        quality=quality,
+        quality=quality or variation.get('quality'),
     )
 
     # Изображение с режимом "P" нельзя сохранять в JPEG,
@@ -611,3 +616,9 @@ def process_variation(source, variation, quality, croparea=None):
     image = variation_overlay(image, variation)
     image = variation_mask(image, variation)
     return image, image_info
+
+
+def process_image(source, croparea=None, **params):
+    """ Алиас для тестов. Обработка картинки в соответствии с вариацией """
+    variation = format_variation(**params)
+    return process_variation(source, variation, croparea=croparea)
