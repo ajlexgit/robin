@@ -582,19 +582,19 @@ def process_variation(source, variation, quality=None, croparea=None):
     if variation['exif']:
         image_info.update(image.info or {})
 
-    # Обрезаем по рамке
-    if croparea is not None:
-        image = variation_crop(image, croparea)
-
     # Целевой формат
     target_format = variation['format'] or image.format
     target_format = target_format.upper()
+    image_info['format'] = target_format
 
-    # Параметры сохранения
-    image_info.update(
-        format=target_format,
-        quality=quality or variation.get('quality'),
-    )
+    # Качество
+    quality = quality or variation.get('quality')
+    if quality:
+      image_info['quality'] = target_format
+
+    # Обрезаем по рамке
+    if croparea is not None:
+        image = variation_crop(image, croparea)
 
     # Изображение с режимом "P" нельзя сохранять в JPEG,
     # а в GIF - фон становится черным
