@@ -1,7 +1,7 @@
 import os
 import sys
 
-# TextField max_length error
+
 # DC meta
 # попробовать другой storage
 # Last-modified прицепить к sitemap

@@ -83,3 +83,8 @@ class AutosizedTextarea(DefaultAutosizedTextarea):
             % name)
         return output
 
+    def value_from_datadict(self, data, files, name):
+        # FIX: некорректный подсчет длины при валидации
+        default = super().value_from_datadict(data, files, name)
+        return default.replace('\r\n', '\n')
+
