@@ -1,4 +1,3 @@
-import os
 import operator
 import itertools
 from PIL import Image, ImageOps, ImageEnhance
@@ -267,14 +266,12 @@ def format_variation(**params):
     # Overlay
     overlay = variation.get('overlay')
     if overlay:
-        if not os.path.exists(overlay):
-            variation['overlay'] = staticfiles_storage.path(overlay)
+        variation['overlay'] = staticfiles_storage.path(overlay)
 
     # Mask
     mask = variation.get('mask')
     if mask:
-        if not os.path.exists(mask):
-            variation['mask'] = staticfiles_storage.path(mask)
+        variation['mask'] = staticfiles_storage.path(mask)
 
     # Водяной знак
     watermark = variation.get('watermark')

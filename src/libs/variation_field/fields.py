@@ -20,7 +20,8 @@ try:
 except ImportError:
     HAS_SOLO_CACHE = False
 
-THREAD_COUNT = 2
+# Кол-во потоков для нарезки файлов
+THREAD_COUNT = getattr(settings, 'VARIATIONS_THREAD_COUNT', 1)
 
 
 class VariationField(ImageFile):

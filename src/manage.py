@@ -1,12 +1,7 @@
 import os
 import sys
 
-# CHECK: os.path.exists(overlay/mask) in variations
-# CHECK: all image type
-# CHECK: image hash
-
 # TextField max_length error
-# GIF palette, optimize photo size
 # DC meta
 # попробовать другой storage
 # Last-modified прицепить к sitemap
