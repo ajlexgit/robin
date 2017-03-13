@@ -1,3 +1,4 @@
+import json
 from django.template import Library
 
 register = Library()
@@ -9,6 +10,7 @@ def js_storage_out(context):
     if not request:
         return ''
 
-    return '<script type="text/javascript">{0}</script>'.format(
-        request.js_storage.out()
+    output = ','.join(
+        '"{0}": {1}'.format(key, json.dumps(val)) for key, val in request.js_storage.items()
     )
+    return '<script type="text/javascript">var js_storage={{{0}}}</script>'.format(output)
