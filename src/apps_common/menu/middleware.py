@@ -5,14 +5,17 @@ class MenuMiddleware:
     @staticmethod
     def process_request(request):
         """ Создание экземпляров меню """
-        request._menus = get_menus(request)
-        return
+        if not request.is_ajax():
+            request._menus = get_menus(request)
 
     @staticmethod
     def process_template_response(request, response):
         """
             Если в меню нет активного пункта, пытаемся его определить по URL.
         """
+        if request.is_ajax():
+           return response
+
         menus = getattr(request, '_menus', None)
         if not menus:
             return response
