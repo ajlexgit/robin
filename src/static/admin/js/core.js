@@ -210,6 +210,7 @@ String.prototype.strptime = function(format) {
     var split_format = format.split(/[.\-/]/);
     var date = this.split(/[.\-/]/);
     var i = 0;
+    var year;
     while (i < split_format.length) {
         switch (split_format[i]) {
             case "%d":
@@ -219,14 +220,14 @@ String.prototype.strptime = function(format) {
                 var month = date[i] - 1;
                 break;
             case "%Y":
-                var year = date[i];
+                year = date[i];
                 break;
             case "%y":
-                var year = date[i];
+                year = date[i];
                 break;
         }
         ++i;
-    };
+    }
     return new Date(Date.UTC(year, month, day));
 };
 
