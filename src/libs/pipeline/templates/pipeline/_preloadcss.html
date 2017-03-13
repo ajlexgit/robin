@@ -1,18 +1,30 @@
 <script>
-  !function(e) {
-    "use strict";
-    var l = e.document, s = {};
-    s.support = function() {
+  !function() {
+    if (!window.loadCSS) {
+      return;
+    }
+
+    var support = function() {
       try {
-        return l.createElement("link").relList.supports("preload")
-      } catch (f) {
-        return !1
+        return document.createElement("link").relList.supports("preload");
+      } catch (e) {
+        return false;
       }
-    }, s.poly = function() {
-      for (var f = l.getElementsByTagName("link"), t = 0; t < f.length; t++) {
-        var n = f[t];
-        "preload" === n.rel && "style" === n.getAttribute("as") && (e.loadCSS(n.href, n), n.rel = null)
+    };
+
+    var poly = function() {
+      var links = document.getElementsByTagName("link");
+      for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        if (link.rel === "preload" && link.getAttribute("as") === "style") {
+          loadCSS(link.href, link, link.getAttribute("media"));
+          link.rel = null;
+        }
       }
-    }, s.support() || s.poly()
-  }(this);
+    };
+
+    if (!support()) {
+      poly();
+    }
+  }();
 </script>
