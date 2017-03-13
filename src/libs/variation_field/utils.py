@@ -5,60 +5,7 @@ from django.contrib.staticfiles.finders import find
 from django.contrib.staticfiles.storage import staticfiles_storage
 from .croparea import CropArea
 from .size import Size
-
-DEFAULT_VARIATION = dict(
-    # Размер
-    size=(),
-
-    stretch=False,
-    crop=True,
-
-    # Максимальные размеры результата.
-    # Используется только при crop=False
-    max_width = 0,
-    max_height = 0,
-
-    # Влияет на то, какие части картинки обрезаются при crop=True.
-    # Также определяет положение картинки по отношению к холсту.
-    center=(0.5, 0.5),
-
-    # Цвет фона, на который накладывается изображение, когда оно не может сохранить прозрачность
-    background=(255, 255, 255, 0),
-
-    # Файл-маска для обрезания картинки
-    mask=None,
-
-    # Файл, накладываемый на картинку
-    overlay=None,
-
-    # Настройки наложения водяного знака.
-    # Например:
-    #   watermark = {
-    #       file: 'img/watermark.png',
-    #       position: 'C',
-    #       padding: (20, 30),
-    #       opacity: 1,
-    #       scale: 1,
-    #   }
-    watermark=None,
-
-    # Требуемый формат изображения (JPEG/PNG/GIF)
-    format=None,
-
-    # Сохранить EXIF
-    exif=False,
-
-    # Качество результата картинки (0-100)
-    quality=None,
-)
-
-DEFAULT_WATERMARK = {
-    'file': '',
-    'position': 'C',
-    'padding': (0, 0),
-    'opacity': 1,
-    'scale': 1,
-}
+from . import conf
 
 
 def is_size(value):
@@ -148,7 +95,7 @@ def check_variations(variations, obj):
                 'size': params,
             }
 
-        params = dict(DEFAULT_VARIATION, **params)
+        params = dict(conf.DEFAULT_VARIATION, **params)
 
         if not isinstance(params, dict):
             errors.append(checks.Error('variation %r should be a dict or tuple' % name, obj=obj))
@@ -201,7 +148,7 @@ def check_variations(variations, obj):
             errors.append(checks.Error('mask file not found: %r' % params['mask'], obj=obj))
 
         if params['watermark']:
-            watermark = dict(DEFAULT_WATERMARK, **params['watermark'])
+            watermark = dict(conf.DEFAULT_WATERMARK, **params['watermark'])
 
             if not isinstance(watermark, dict):
                 errors.append(checks.Error('watermark settings should be a dict', obj=obj))
@@ -250,7 +197,7 @@ def format_variation(**params):
     """
         Приведение настроек вариации к каноническому виду
     """
-    variation = dict(DEFAULT_VARIATION, **params)
+    variation = dict(conf.DEFAULT_VARIATION, **params)
 
     # Проверка формата
     image_format = variation.get('format')
@@ -276,7 +223,7 @@ def format_variation(**params):
     # Водяной знак
     watermark = variation.get('watermark')
     if watermark and isinstance(watermark, dict):
-        watermark = dict(DEFAULT_WATERMARK, **watermark)
+        watermark = dict(conf.DEFAULT_WATERMARK, **watermark)
         watermark['file'] = staticfiles_storage.path(watermark['file'])
         watermark['padding'] = tuple(map(int, watermark['padding']))
         watermark['opacity'] = float(watermark['opacity'])

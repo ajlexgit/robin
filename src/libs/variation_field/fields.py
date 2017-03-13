@@ -12,6 +12,7 @@ from django.template.defaultfilters import filesizeformat
 from django.db.models.fields.files import ImageFieldFile, FieldFile, ImageFileDescriptor
 from .croparea import CropArea
 from .utils import image_hash, limited_size, process_variation
+from . import conf
 
 # Фикс обновления кэша в django-solo
 try:
@@ -19,9 +20,6 @@ try:
     HAS_SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None) is not None
 except ImportError:
     HAS_SOLO_CACHE = False
-
-# Кол-во потоков для нарезки файлов
-THREAD_COUNT = getattr(settings, 'VARIATIONS_THREAD_COUNT', 1)
 
 
 class VariationField(ImageFile):
@@ -589,7 +587,7 @@ class VariationImageField(models.ImageField):
 
         field_file.create_variations()
 
-        if THREAD_COUNT <= 1:
+        if conf.VARIATION_THREADS <= 1:
             for name, variation in self.get_variations(instance).items():
                 if not variations or name in variations:
                     image, image_options = process_variation(
@@ -600,7 +598,7 @@ class VariationImageField(models.ImageField):
                     )
                     self.save_variation_file(instance, image, variation, **image_options)
         else:
-            with futures.ThreadPoolExecutor(max_workers=THREAD_COUNT) as executor:
+            with futures.ThreadPoolExecutor(max_workers=conf.VARIATION_THREADS) as executor:
                 futures_dict = {
                     executor.submit(
                         process_variation,

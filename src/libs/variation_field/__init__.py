@@ -9,10 +9,8 @@
         img.save('dest.jpg', optimize=1, **params)
 
 """
-from .croparea import CropArea
 from .fields import VariationImageFieldFile, VariationImageField
 from .utils import (is_size, check_variations, format_variations, format_aspects)
 
-__all__ = ['CropArea',
-           'VariationImageFieldFile', 'VariationImageField',
+__all__ = ['VariationImageFieldFile', 'VariationImageField',
            'is_size', 'check_variations', 'format_variations', 'format_aspects']

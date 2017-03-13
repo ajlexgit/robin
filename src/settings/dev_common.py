@@ -21,6 +21,9 @@ DATABASES.update({
     }
 })
 
+# Нарезка в два потока (на продакшене для этого памяти не хватит)
+VARIATION_THREADS = 2
+
 # Отключение компрессии SASS (иначе теряется наглядность кода)
 PIPELINE['SASS_ARGUMENTS'] = '-t nested'
 
