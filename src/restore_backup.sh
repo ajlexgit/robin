@@ -4,8 +4,8 @@
 archive=$1
 directory=${2:-$(dirname ~+)}
 
-unzip -o $archive media/* -d $directory/
-unzip -o $archive dump.json
+unzip -o ${archive} media/* -d ${directory}/
+unzip -o ${archive} dump.json
 python3 manage.py loaddata --ignorenonexistent dump.json
 
 if [[ -f dump.json ]];
