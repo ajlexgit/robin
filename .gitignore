@@ -19,6 +19,9 @@ dev.py
 __pycache__
 *.pyc
 
+# NodeJS
+node_modules
+
 #Data
 celerybeat*
 SxGeoCity.dat
