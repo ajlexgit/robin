@@ -275,7 +275,7 @@ class StatusShopOrderFilter(HierarchyFilter):
 
     def value(self):
         value = super().value()
-        if value is None:
+        if not value:
             value = 'non_checked'
         return value
 

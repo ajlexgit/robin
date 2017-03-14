@@ -4,22 +4,27 @@ from django.contrib.admin.filters import SimpleListFilter
 
 
 class HierarchyFilter(SimpleListFilter):
+    """
+        Фильтр с иерархией (как стандартный фильтр по датам).
+    """
+
+    # способ отделения фильтров иерархий от остальных
     hierarchy_filter = True
+
+    # отображаемое имя в текущем пути при пустом параметре
+    empty_name = _('All')
+
+    # шаблон фильтра
     template = 'admin/hierarchy_filter.html'
 
-    def value(self):
-        return super().value() or None
-
-    def get_branch_choices(self, value):
-        return ()
 
     def get_branch(self):
+        """ Формирование текущего пути в иерархии """
         value = self.value()
-        if value is None:
+        if not value:
             yield {
-                'selected': value is None,
-                'query_string': '?{}='.format(self.parameter_name),
-                'display': _('All'),
+                'selected': True,
+                'display': self.empty_name,
             }
             return
 
@@ -31,6 +36,20 @@ class HierarchyFilter(SimpleListFilter):
                 'display': title,
             }
 
+    def get_branch_choices(self, value):
+        """
+            Должен вернуть итератор пар (ключ, имя)
+            для формирования пути ссылок к текущему уровню.
+        """
+        return ()
+
+    def lookups(self, request, model_admin):
+        """
+            Должен вернуть итератор пар (ключ, имя)
+            для формирования ссылок, доступных на текущем уровне.
+        """
+        return ()
+
     def choices(self, cl):
         value = self.value()
         for lookup, title in self.lookup_choices:
@@ -41,3 +60,9 @@ class HierarchyFilter(SimpleListFilter):
                 }, []),
                 'display': title,
             }
+
+    def queryset(self, request, queryset):
+        """
+            Фильтрация queryset
+        """
+        return queryset
