@@ -23,7 +23,6 @@ class ServicesConfig(SingletonModel):
 class Service(models.Model):
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(_('slug'), populate_from='title', unique=True)
-
     description = models.TextField(_('short description'), max_length=1024)
     text = CKEditorUploadField(_('text'))
     sort_order = models.PositiveIntegerField(_('order'), default=0)

@@ -95,6 +95,7 @@ class ShopCategoryAdmin(SeoModelAdminMixin, SortableMPTTModelAdmin):
     actions = ('action_hide', 'action_show')
     list_display = ('view', 'title', 'is_visible', 'product_count', 'total_product_count')
     list_display_links = ('title',)
+    list_select_related = ('parent', )
     prepopulated_fields = {
         'slug': ('title',)
     }
@@ -198,6 +199,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         'view', 'micropreview', '__str__', 'category_link',
         'price_alternative', 'is_visible',
     )
+    list_select_related = ('category', )
     list_display_links = ('micropreview', '__str__', )
     list_filter = (ShopProductCategoryFilter, )
     prepopulated_fields = {
