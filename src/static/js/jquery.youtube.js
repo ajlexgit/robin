@@ -9,12 +9,9 @@
 
         Параметры:
             video       - строка с ключем видео
-            lang        - язык плеера. По умолчанию - аттрибут lang <html>
-            start       - позиция начала воспроизведения. В секундах от начала.
-            end         - позиция конца воспроизведения. В секундах от начала.
-            loop        - зациклить видео
-            relative    - показать похожие видео после окончания
-            autoplay    - автоматически начать показ
+
+            + любые из документации:
+                https://developers.google.com/youtube/player_parameters?playerVersion=HTML5&hl=ru
 
         События:
             // Видео готово к воспроизведению
@@ -67,13 +64,7 @@
 
     window.YouTube = Class(EventedObject, function YouTube(cls, superclass) {
         cls.defaults = {
-            video: '',
-            lang: '',
-            start: null,
-            end: null,
-            loop: false,
-            relative: false,
-            autoplay: false
+            video: ''
         };
 
         // интервал проверки времени воспроизведения
@@ -116,30 +107,38 @@
             Создание нативного объекта
          */
         cls.makeNative = function() {
-            var playerVars = {
-                autoplay: this.opts.autoplay,
-                hl: this.opts.lang,
-                loop: this.opts.loop,
-                rel: this.opts.relative
-            };
-            if (this.opts.start && (typeof this.opts.start == 'number')) {
-                playerVars.start = this.opts.start;
-            }
-            if (this.opts.end && (typeof this.opts.end == 'number')) {
-                playerVars.end = this.opts.end;
-            }
-            if (this.opts.loop) {
-                playerVars.playlist = this.opts.video;
-            }
-            if (!this.opts.lang) {
-                var default_lang = document.documentElement.getAttribute('lang');
-                if (default_lang) {
-                    playerVars.hl = default_lang;
-                }
-            }
-
             if (!window.YT) {
                 return this.raise('YT is undefined');
+            }
+
+            // копирование в playerVars всех свойств, кроме тех,
+            // что указаны в defaults.
+            var playerVars = {};
+            for (var key in this.opts) {
+                if (!this.opts.hasOwnProperty(key)) continue;
+                if (key in this.defaults) continue;
+                playerVars[key] = this.opts[key]
+            }
+
+            // форматирование
+            if ('autoplay' in playerVars) {
+                playerVars.autoplay = Number(Boolean(playerVars.autoplay));
+            }
+
+            if ('controls' in playerVars) {
+                playerVars.controls = Number(playerVars.controls);
+            }
+
+            if ('disablekb' in playerVars) {
+                playerVars.disablekb = Number(Boolean(playerVars.disablekb));
+            }
+
+            if ('showinfo' in playerVars) {
+                playerVars.showinfo = Number(Boolean(playerVars.showinfo));
+            }
+
+            if (!('hl' in playerVars)) {
+                playerVars.hl = document.documentElement.getAttribute('lang') || 'en';
             }
 
             var that = this;
