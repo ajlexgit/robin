@@ -2,7 +2,6 @@ import os
 import sys
 
 
-# Новый Youtube, Vimeo
 # DC meta
 # попробовать другой storage
 # Last-modified прицепить к sitemap

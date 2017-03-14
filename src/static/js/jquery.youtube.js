@@ -27,7 +27,7 @@
             pause
 
             // Видео закончилось
-            ended
+            end
 
         Пример:
             <div id="player"></div>
@@ -196,7 +196,7 @@
                 return;
             }
 
-            var time = parseInt(this.native.getCurrentTime()) || 0;
+            var time = parseInt(this.position()) || 0;
             if (time != this._currentTime) {
                 this._currentTime = time;
                 this.trigger('timeupdate', time);
