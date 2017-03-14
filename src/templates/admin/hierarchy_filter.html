@@ -15,7 +15,12 @@
     <ul class="toplinks breadcrumb">
       {% for choice in choices %}
         <li class="{{ choice.selected|yesno:"active," }}">
-          <a href="{{ choice.query_string }}">{{ choice.display }}</a>
+          {% if choice.selected %}
+            <span>{{ choice.display }}</span>
+          {% else %}
+            <a href="{{ choice.query_string }}">{{ choice.display }}</a>
+          {% endif %}
+
           {% if not forloop.last %}
             <span class="divider small">|</span>
           {% endif %}
