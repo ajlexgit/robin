@@ -4,7 +4,7 @@
       <b>{{ title }}:</b>
       {% for node in spec.get_branch %}
         {% if forloop.last %}
-          {{ node.display }}
+          <span>{{ node.display }}</span>
         {% else %}
           <a href="{{ node.query_string }}">{{ node.display }}</a>
           <span>&nbsp;->&nbsp;</span>
