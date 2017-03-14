@@ -23,6 +23,9 @@
             // Видео начало воспроизводиться
             play
 
+            // Изменилась позиция видео
+            timeupdate
+
             // Видео перестало воспроизводиться
             pause
 
@@ -72,6 +75,9 @@
             relative: false,
             autoplay: false
         };
+
+        // интервал проверки времени воспроизведения
+        cls.CHECK_POSITION_TIMEOUT = 100;
 
         cls.init = function(container, options) {
             superclass.init.call(this);
@@ -146,17 +152,56 @@
                         that.trigger('ready');
                     },
                     onStateChange: function(event) {
-                        if (event.data == YT.PlayerState.PLAYING) {
+                        var code = event.data;
+                        if (code == YT.PlayerState.UNSTARTED) {
+                            that.stopInteraval();
+                        } else if (code == YT.PlayerState.BUFFERING) {
+
+                        } else if (code == YT.PlayerState.PLAYING) {
+                            that.startInteraval();
                             that.trigger('play');
-                        } else if (event.data == YT.PlayerState.PAUSED) {
+                        } else if (code == YT.PlayerState.PAUSED) {
+                            that.stopInteraval();
                             that.trigger('pause');
-                        } else if (event.data == YT.PlayerState.ENDED) {
+                        } else if (code == YT.PlayerState.ENDED) {
+                            that.stopInteraval();
                             that.trigger('pause');
                             that.trigger('end');
                         }
                     }
                 }
             });
+        };
+
+        /*
+            Создание таймера, проверяющего позицию видео
+         */
+        cls.startInteraval = function() {
+            this.stopInteraval();
+            this._currentTime = -1;
+            this._timer = setInterval($.proxy(this.updateTime, this), this.CHECK_POSITION_TIMEOUT);
+        };
+
+        /*
+            Остановка таймера, проверяющего позицию видео
+         */
+        cls.stopInteraval = function() {
+            if (this._timer) {
+                clearInterval(this._timer);
+                this._timer = null;
+            }
+        };
+
+        cls.updateTime = function() {
+            if (!this.native) {
+                return;
+            }
+
+            var time = parseInt(this.native.getCurrentTime()) || 0;
+            if (time != this._currentTime) {
+                this._currentTime = time;
+                this.trigger('timeupdate', time);
+            }
         };
 
         /*
@@ -296,6 +341,9 @@
                 this.warn('not ready yet');
                 return this;
             }
+
+            this.stopInteraval();
+            this.trigger('pause');
 
             this.native.loadVideoById(videoId);
             return this;
