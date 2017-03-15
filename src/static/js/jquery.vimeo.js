@@ -27,7 +27,7 @@
             pause
 
             // Видео закончилось
-            end
+            ended
 
         Пример:
             <div id="player"></div>
@@ -136,7 +136,7 @@
                     that.trigger('pause');
                 });
                 that.native.addEvent('finish', function() {
-                    that.trigger('end');
+                    that.trigger('ended');
                 });
                 that.native.addEvent('playProgress', function(e) {
                     var time = parseInt(e.seconds) || 0;

@@ -27,7 +27,7 @@
             pause
 
             // Видео закончилось
-            end
+            ended
 
         Пример:
             <div id="player"></div>
@@ -165,7 +165,7 @@
                         } else if (code == YT.PlayerState.ENDED) {
                             that.stopInteraval();
                             that.trigger('pause');
-                            that.trigger('end');
+                            that.trigger('ended');
                         }
                     }
                 }
