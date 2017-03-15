@@ -9,7 +9,9 @@
 
         Параметры:
             video       - строка с ключем видео
-            autoplay    - автоматически начать показ
+
+            + любые из документации:
+                https://developer.vimeo.com/apis/oembed
 
         События:
             // Видео готово к воспроизведению
@@ -18,11 +20,14 @@
             // Видео начало воспроизводиться
             play
 
+            // Изменилась позиция видео
+            timeupdate
+
             // Видео перестало воспроизводиться
             pause
 
             // Видео закончилось
-            ended
+            end
 
         Пример:
             <div id="player"></div>
@@ -53,9 +58,11 @@
 
     window.Vimeo = Class(EventedObject, function Vimeo(cls, superclass) {
         cls.defaults = {
-            video: '',
-            autoplay: false
+            video: ''
         };
+
+        // интервал проверки времени воспроизведения
+        cls.CHECK_POSITION_TIMEOUT = 100;
 
         cls.init = function(container, options) {
             superclass.init.call(this);
@@ -94,13 +101,17 @@
             Создание нативного объекта
          */
         cls.makeNative = function() {
-            var params = '';
-            if (this.opts.autoplay) {
-                params += '&autoplay=1';
+            // копирование в playerVars всех свойств, кроме тех,
+            // что указаны в defaults.
+            var playerVars = {};
+            for (var key in this.opts) {
+                if (!this.opts.hasOwnProperty(key)) continue;
+                if (key in this.defaults) continue;
+                playerVars[key] = this.opts[key]
             }
 
             this.$iframe = $('<iframe>').attr({
-                src: ('//player.vimeo.com/video/' + this.opts.video + '?api=1' + params),
+                src: ('//player.vimeo.com/video/' + this.opts.video + '?api=1' + $.param(playerVars)),
                 frameborder: '0',
                 webkitallowfullscreen: '',
                 mozallowfullscreen: '',
@@ -116,6 +127,8 @@
             var that = this;
             this.native = $f(this.$iframe.get(0));
             this.native.addEvent('ready', function() {
+                that._currentTime = -1;
+
                 that.native.addEvent('play', function() {
                     that.trigger('play');
                 });
@@ -123,11 +136,18 @@
                     that.trigger('pause');
                 });
                 that.native.addEvent('finish', function() {
-                    that.trigger('ended');
+                    that.trigger('end');
+                });
+                that.native.addEvent('playProgress', function(e) {
+                    var time = parseInt(e.seconds) || 0;
+                    if (time != that._currentTime) {
+                        that._currentTime = time;
+                        that.trigger('timeupdate', time);
+                    }
                 });
 
                 if (that.opts.autoplay) {
-                    that.trigger('play');
+                    that.play();
                 }
                 that.trigger('ready');
             });

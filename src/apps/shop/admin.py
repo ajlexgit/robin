@@ -132,24 +132,34 @@ class ShopProductCategoryFilter(HierarchyFilter):
     parameter_name = 'category'
 
     def get_branch_choices(self, value):
+        choices = [('', self.empty_name)]
         try:
             category = ShopCategory.objects.get(pk=value)
         except ShopCategory.DoesNotExist:
-            return ()
-        else:
-            return category.get_ancestors(include_self=True).values_list('id', 'title')
+            return choices
+
+        choices.extend(category.get_ancestors(include_self=True).values_list('id', 'title'))
+        return choices
 
     def lookups(self, request, model_admin):
+        choices = []
         value = self.value()
-        if value:
-            subcategs = ShopCategory.objects.filter(parent=value).values_list('id', 'title')
-            if subcategs:
-                return subcategs
-            else:
-                categ = ShopCategory.objects.get(pk=value)
-                return ShopCategory.objects.filter(parent=categ.parent).values_list('id', 'title')
-        else:
-            return ShopCategory.objects.root_categories().values_list('id', 'title')
+        if not value:
+            # первый уровень
+            choices.append(('', self.empty_name))
+            choices.extend(ShopCategory.objects.root_categories().values_list('id', 'title'))
+            return choices
+
+        subcategs = ShopCategory.objects.filter(parent=value).values_list('id', 'title')
+        if subcategs:
+            # следующий уровень
+            choices.extend(subcategs)
+            return choices
+
+        # текущий уровень
+        categ = ShopCategory.objects.get(pk=value)
+        choices.extend(ShopCategory.objects.filter(parent=categ.parent).values_list('id', 'title'))
+        return choices
 
     def queryset(self, request, queryset):
         value = self.value()
