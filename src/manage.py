@@ -2,6 +2,7 @@ import os
 import sys
 
 
+# Перетаскивание файла на FileField
 # Новый Youtube, Vimeo
 # DC meta
 # попробовать другой storage
