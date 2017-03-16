@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
                 ('inv_id', models.PositiveIntegerField(verbose_name='InvId', blank=True, null=True)),
                 ('status', models.PositiveSmallIntegerField(choices=[(1, 'Message'), (2, 'Success'), (3, 'Error'), (4, 'Exception')], verbose_name='status')),
-                ('message', models.CharField(verbose_name='message', max_length=255)),
+                ('message', models.TextField(verbose_name='message')),
                 ('request', models.TextField(verbose_name='request')),
                 ('created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='create date', editable=False)),
             ],

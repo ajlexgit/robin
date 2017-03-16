@@ -15,9 +15,9 @@ class Migration(migrations.Migration):
             name='Log',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('inv_id', models.PositiveIntegerField(null=True, verbose_name='InvId', blank=True)),
+                ('inv_id', models.BigIntegerField(null=True, verbose_name='InvId', blank=True)),
                 ('status', models.PositiveSmallIntegerField(verbose_name='status', choices=[(1, 'Message'), (2, 'Success'), (3, 'Error'), (4, 'Exception')])),
-                ('message', models.CharField(verbose_name='message', max_length=255)),
+                ('message', models.TextField(verbose_name='message')),
                 ('request', models.TextField(verbose_name='request')),
                 ('created', models.DateTimeField(editable=False, verbose_name='create date', default=django.utils.timezone.now)),
             ],
