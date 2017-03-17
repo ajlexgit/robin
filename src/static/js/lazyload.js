@@ -59,7 +59,7 @@
                 return this;
             }
 
-            var $img = $('<img/>', getAttrs($this, SECONDARY_ATTRS));
+            var $img = $('<img/>').attr(getAttrs($this, SECONDARY_ATTRS));
 
             $img.onLoaded(function() {
                 $this.before($img).remove();
