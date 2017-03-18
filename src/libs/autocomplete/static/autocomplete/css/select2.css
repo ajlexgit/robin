@@ -476,6 +476,11 @@ disabled look for disabled choices in the results dropdown
 .select2-container-multi ~ .change-related {
     display: none;
 }
+
+.select2-container-multi ~ .change-related + .related-widget-wrapper-link {
+    margin-left: 10px;
+}
+
 .select2-container-multi .select2-choices {
     height: auto !important;
     height: 1%;

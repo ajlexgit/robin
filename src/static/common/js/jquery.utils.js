@@ -172,7 +172,7 @@
         // получение имени функции
         var name = class_constructor.name;
         if (name === undefined) {
-            var match = /function ([^\(]+)\(/ig.exec(class_constructor.toString());
+            var match = /function ([^(]+)\(/ig.exec(class_constructor.toString());
             if (match) {
                 name = match[1];
             }

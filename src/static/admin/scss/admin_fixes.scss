@@ -80,20 +80,37 @@ input[type=number] {
 }
 
 // правка иконок related
-.control-group .add-related,
-.inline-group .add-related,
-.control-group .related-lookup,
-.inline-group .related-lookup,
-.control-group .change-related,
-.inline-group .change-related,
-.control-group .delete-related,
-.inline-group .delete-related {
-  margin: 4px 2px;
+.control-group .related-widget-wrapper-link {
+  margin: 4px 2px 4px 10px;
   padding: 0;
   @include opacity(0.2);
 
-  &:first-of-type {
-    margin-left: 10px;
+  &.add-related {
+    background-position: 0px -96px;
+  }
+
+  &.change-related {
+    background-position: 0px -72px;
+  }
+
+  &.related-lookup {
+    background-position: -48px 0px;
+  }
+
+  &.delete-related {
+    display: inline-block;
+    overflow: hidden;
+    width: 14px;
+    height: 14px;
+    text-indent: 200%;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -312px 0;
+  }
+
+  & + .related-widget-wrapper-link {
+    margin-left: 2px;
   }
 
   &:link {
@@ -103,34 +120,6 @@ input[type=number] {
       @include opacity(1);
     }
   }
-}
-
-.control-group .add-related,
-.inline-group .add-related {
-  background-position: 0px -96px;
-}
-
-.control-group .change-related,
-.inline-group .change-related {
-  background-position: 0px -72px;
-}
-
-.control-group .related-lookup,
-.inline-group .related-lookup {
-  background-position: -48px 0px;
-}
-
-.control-group .delete-related,
-.inline-group .delete-related {
-  display: inline-block;
-  overflow: hidden;
-  width: 14px;
-  height: 14px;
-  text-indent: 200%;
-  white-space: nowrap;
-  vertical-align: middle;
-  border: 1px solid transparent;
-  background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -312px 0;
 }
 
 // не ограниченная высота textarea
