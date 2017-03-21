@@ -2,7 +2,6 @@ import os
 import sys
 
 
-# Перетаскивание файла на FileField
 # DC meta
 # попробовать другой storage
 # Last-modified прицепить к sitemap

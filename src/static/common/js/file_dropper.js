@@ -71,7 +71,9 @@
                     that.trigger('drop', files);
                 }
 
-                $(this).removeClass(that.opts.dragOverClass);
+                setTimeout(function() {
+                    that.$root.removeClass(that.opts.dragOverClass);
+                }, 0);
 
                 if (that.opts.preventDrop) {
                     return false;

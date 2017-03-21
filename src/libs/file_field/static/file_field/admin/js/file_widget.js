@@ -22,4 +22,20 @@
         }
     });
 
+    $(document).ready(function() {
+        $('.file-widget').each(function() {
+            if (!$(this).closest('.empty-form').length) {
+                FileDropper(this);
+            }
+        });
+
+        if (window.Suit) {
+            Suit.after_inline.register('file-widget', function(inline_prefix, row) {
+                row.find('.file-widget').each(function() {
+                    FileDropper(this);
+                });
+            });
+        }
+    });
+
 })(jQuery);
