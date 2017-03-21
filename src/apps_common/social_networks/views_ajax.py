@@ -10,7 +10,7 @@ def social_links_part(request, **params):
         template = 'social_networks/social_links.html'
 
     return loader.render_to_string(template, {
-        'config': SocialLinks.get_solo(),
+        'links': SocialLinks.get_solo(),
         'classes': params.get('classes', ''),
     }, request=request)
 
