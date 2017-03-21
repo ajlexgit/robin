@@ -40,6 +40,25 @@
                                 element.removeAttribute('title');
                             }
                         }
+                    },
+                    {
+                        id: 'description',
+                        type: 'textarea',
+                        label: 'Description',
+                        setup: function(element) {
+                            var description = element.getAttribute("data-description");
+                            if (description) {
+                                this.setValue(atob(description));
+                            }
+                        },
+                        commit: function(element) {
+                            var description = this.getValue();
+                            if (description) {
+                                element.setAttribute('data-description', btoa(description));
+                            } else {
+                                element.removeAttribute('data-description');
+                            }
+                        }
                     }
                 ]
             }],

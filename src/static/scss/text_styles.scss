@@ -143,10 +143,10 @@
     }
   }
 
-  .object-description {
-    margin-top: 5px;
-    font-size: 0.8em;
+  .object-description, .item-description {
+    margin-top: 7px;
     color: #808080;
+    @include font-size(12px, 18px);
   }
 
   // JS-слайдер с описанием
@@ -163,6 +163,10 @@
 
     .page-images {
       margin: 0;
+    }
+
+    .slider-item {
+      cursor: pointer;
     }
   }
 

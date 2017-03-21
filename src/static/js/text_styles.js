@@ -45,10 +45,12 @@
 
         // замена описаний на тег span
         $('.page-video, .single-image').each(function() {
-            var description = cut_description(this);
+            var $block = $(this);
+            var $image = $block.find('img').first();
+            var description = cut_description(this) || $.trim(atob($image.data('description') || ''));
             if (description) {
-                $(this).append(
-                    $('<div>').addClass('object-description').html(description)
+                $block.append(
+                    $('<div>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
                 )
             }
         });
@@ -56,9 +58,18 @@
         // Слайдеры с описанием
         $('.page-images.multi-image').each(function() {
             var description = cut_description(this);
+            $(this).find('img').wrap('<div class="slider-item"/>').each(function() {
+                var $image = $(this);
+                var description = $.trim(atob($image.data('description') || ''));
+                if (description) {
+                    $image.after(
+                        $('<div>').addClass('item-description').html(description.replace(/[\n\r]+/g, '<br>'))
+                    );
+                }
+            });
 
             var slider = Slider(this, {
-                itemSelector: 'img'
+
             }).attachPlugins([
                 SliderSideAnimation({}),
                 SliderSideShortestAnimation({}),
@@ -67,6 +78,10 @@
                 }),
                 SliderDragPlugin({})
             ]);
+
+            slider.$root.on('click', '.slider-item', function() {
+                slider.slideNext('side-shortest', true);
+            });
 
             // вставляем описание в слайдер
             if (description) {
