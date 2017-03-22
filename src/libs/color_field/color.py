@@ -17,6 +17,9 @@ class Color:
         self.opacity = opacity
         return self
 
+    def __getnewargs__(self, *args):
+        return self._color, self._opacity
+
     def __str__(self):
         if self._opacity == 1:
             return self.color
