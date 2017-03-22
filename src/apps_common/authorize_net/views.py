@@ -1,10 +1,8 @@
 from django.http.response import HttpResponse
-from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from .models import Log
 from .forms import AuthorizeNetResultForm
 from .signals import authorizenet_success, authorizenet_error
-from . import conf
 
 
 def _log_errors(errors):
