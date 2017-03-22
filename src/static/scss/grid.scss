@@ -25,22 +25,18 @@
   }
 }
 
-@mixin _grid_column() {
+.gc {
   min-height: 1px;
   padding: 0 $grid_column_gap;
   @include border-box;
   @include background-clip(content-box);
 }
 
-.gc {
-  @include _grid_column;
-}
-
 // Wide-desktop (1200+)
 @include media_interval($media1200, 0) {
   @for $index from 1 through $cols_wide - 1 {
     .gc-wide-#{$index} {
-      @include _grid_column;
+      @extend .gc;
       float: left;
       width: (100% / $cols_wide) * $index;
     }
@@ -54,7 +50,7 @@
   }
 
   .gc-wide-full {
-    @include _grid_column;
+    @extend .gc;
     width: 100%;
   }
 }
@@ -63,7 +59,7 @@
 @include media_interval($media1024, $media1200) {
   @for $index from 1 through $cols_desktop - 1 {
     .gc-#{$index} {
-      @include _grid_column;
+      @extend .gc;
       float: left;
       width: (100% / $cols_desktop) * $index;
     }
@@ -77,7 +73,7 @@
   }
 
   .gc-full {
-    @include _grid_column;
+    @extend .gc;
     width: 100%;
   }
 }
@@ -86,7 +82,7 @@
 @include media_interval($media768, $media1024) {
   @for $index from 1 through $cols_tablet - 1 {
     .gc-tablet-#{$index} {
-      @include _grid_column;
+      @extend .gc;
       float: left;
       width: (100% / $cols_tablet) * $index;
     }
@@ -100,7 +96,7 @@
   }
 
   .gc-tablet-full {
-    @include _grid_column;
+    @extend .gc;
     width: 100%;
   }
 }
@@ -109,7 +105,7 @@
 @include media_interval(0, $media768) {
   @for $index from 1 through $cols_mobile - 1 {
     .gc-mobile-#{$index} {
-      @include _grid_column;
+      @extend .gc;
       float: left;
       width: (100% / $cols_mobile) * $index;
     }
@@ -123,7 +119,7 @@
   }
 
   .gc-mobile-full {
-    @include _grid_column;
+    @extend .gc;
     width: 100%;
   }
 }
