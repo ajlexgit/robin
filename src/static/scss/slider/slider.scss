@@ -37,6 +37,7 @@
   z-index: 5;
   text-align: center;
   @include border-box;
+  @include backface-visibility(hidden);
 }
 
 .slider-item {

@@ -47,9 +47,9 @@
             },
             update: function(event, data) {
                 var that = data.widget;
-                var backgroundOffset = data.progress * (that.options.imageHeightPercents - 100);
+                var backgroundOffset = data.progress * (1 - that.options.imageHeightPercents/100);
                 that.image.css({
-                    top: -backgroundOffset + '%'
+                    transform: 'translate(-50%, ' + (data.blockHeight * backgroundOffset) + 'px)'
                 });
             },
             resize: function(event, data) {
@@ -63,7 +63,7 @@
                 that.image.css({
                     width: '',
                     height: '',
-                    top: ''
+                    transform: ''
                 });
             }
         },
@@ -215,6 +215,7 @@
 
             this._trigger('update', null, {
                 widget: this,
+                blockHeight: blockHeight,
                 progress: eProgress
             });
         },

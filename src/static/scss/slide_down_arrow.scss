@@ -12,25 +12,26 @@
 
 @include keyframes(jump-down-arrow) {
   0% {
-    bottom: 50px;
+    @include transform(translateY(-50px));
   }
   100% {
-    bottom: 30px;
+    @include transform(translateY(-30px));
   }
 }
 
 @include keyframes(jump-down-arrow-mobile) {
   0% {
-    bottom: 30px;
+    @include transform(translateY(-30px));
   }
   100% {
-    bottom: 10px;
+    @include transform(translateY(-10px));
   }
 }
 
 .slide-down-arrow {
   position: absolute;
   left: 50%;
+  bottom: 0;
   margin-left: -20px;
   width: 34px;
   height: 52px;

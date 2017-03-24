@@ -1,17 +1,18 @@
 @import "mixins";
 
 .parallax-image {
-  max-width: none;
+  position: absolute;
+  left: 50%;
+  top: 0;
   min-height: 150%;
-  @include centrizeImage;
-
-  &.parallax-enabled {
-    @include transform(translate(-50%, 0));
-  }
+  max-width: none;
+  z-index: 1;
+  @include backface-visibility(hidden);
+  @include transform(translate(-50%, 0));
 
   &.parallax-disabled {
-    top: 50% !important;
     min-height: 100% !important;
+    @include transform(translate(-50%, 0) !important);
   }
 }
 
