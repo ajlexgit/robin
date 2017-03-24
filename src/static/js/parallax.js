@@ -256,8 +256,9 @@
     var updateParallaxes = function() {
         var winScroll = $window.scrollTop();
         var winHeight = $window.height();
-        $(':django-parallax').each(function() {
+        $('.parallax').each(function() {
             var widget = $(this).parallax('instance');
+            if (!widget) return;
             $.animation_frame(function() {
                 widget._update(winScroll, winHeight);
             })(widget.element.get(0));
@@ -269,8 +270,9 @@
     $window.on('resize.parallax', $.rared(function() {
         var winScroll = $window.scrollTop();
         var winHeight = $window.height();
-        $(':django-parallax').each(function() {
+        $('.parallax').each(function() {
             var widget = $(this).parallax('instance');
+            if (!widget) return;
             widget._trigger('resize', null, {
                 widget: widget,
                 winScroll: winScroll,

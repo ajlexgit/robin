@@ -240,8 +240,9 @@
 
     var updateStickies = function() {
         var winScroll = $window.scrollTop();
-        $(':django-sticky').each(function() {
+        $('.sticky').each(function() {
             var widget = $(this).sticky('instance');
+            if (!widget) return;
             $.animation_frame(function() {
                 widget._update(winScroll);
             })(widget.element.get(0));
@@ -252,8 +253,9 @@
     $window.on('load.sticky', updateStickies);
     $window.on('resize.sticky', $.rared(function() {
         var winScroll = $window.scrollTop();
-        $(':django-sticky').each(function() {
+        $('.sticky').each(function() {
             var widget = $(this).sticky('instance');
+            if (!widget) return;
             widget._trigger('resize', null, {
                 widget: widget,
                 winScroll: winScroll
