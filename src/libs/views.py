@@ -91,10 +91,3 @@ class StringRenderMixin:
     def render_to_string(self, template, context=None, using=None):
         request = getattr(self, 'request', None)
         return loader.get_template(template, using=using).render(context, request)
-
-
-class TemplateExView(StringRenderMixin, TemplateView):
-    """
-        Расширенная версия TemplateView, которая позволяет рендерить шаблон в строку.
-    """
-    pass

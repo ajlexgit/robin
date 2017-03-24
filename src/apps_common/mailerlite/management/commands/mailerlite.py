@@ -107,7 +107,7 @@ class Command(BaseCommand):
                         name=group.name,
                     )
             except api.SubscribeAPIError as e:
-                logging.error(e.message)
+                logger.error(e.message)
             else:
                 group.remote_id = response['id']
                 group.save()
@@ -146,7 +146,7 @@ class Command(BaseCommand):
                             from_name=self.config.from_name,
                         )
                     except api.SubscribeAPIError as e:
-                        logging.error(e.message)
+                        logger.error(e.message)
                         continue
                     else:
                         campaign.remote_id = response['id']
@@ -162,7 +162,7 @@ class Command(BaseCommand):
                         plain=campaign.render_plain(),
                     )
                 except api.SubscribeAPIError as e:
-                    logging.error(e.message)
+                    logger.error(e.message)
                     continue
                 else:
                     campaign.published = True
@@ -174,7 +174,7 @@ class Command(BaseCommand):
                 try:
                     api.campaings.run(campaign.remote_id)
                 except api.SubscribeAPIError as e:
-                    logging.error(e.message)
+                    logger.error(e.message)
                 else:
                     campaign.status = Campaign.STATUS_RUNNING
                     campaign.save()
@@ -253,7 +253,7 @@ class Command(BaseCommand):
             try:
                 response = api.subscribers.bulk_create(group.remote_id, data, resubscribe=True)
             except api.SubscribeAPIError as e:
-                logging.error(e.message)
+                logger.error(e.message)
             else:
                 for row in chain(response['imported'], response['updated'], response['unchanged']):
                     subscribers.filter(email=row['email']).update(
@@ -287,7 +287,7 @@ class Command(BaseCommand):
             try:
                 self.import_subscribers()
             except api.SubscribeAPIError as e:
-                logging.error(e.message)
+                logger.error(e.message)
             else:
                 self.config.import_subscribers_date = now()
 

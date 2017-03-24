@@ -51,9 +51,6 @@
               </script>
             </div>
 
-                ...
-            </div>
-
 
             $('#gallery').find('.item').on('click', function() {
                 $.gallery({

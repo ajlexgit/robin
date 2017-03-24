@@ -17,12 +17,6 @@
     {% include 'seo/metatags.html' %}
   {% endblock metatags %}
 
-  {# === PREFETCH === #}
-  {% for domain in MEDIA_URLS %}
-    <link rel="dns-prefetch" href="{{ domain }}">
-    <link rel="preconnect" href="{{ domain }}">
-  {% endfor %}
-
   <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
   <link rel="apple-touch-icon-precomposed" sizes="32x32" href="{% static 'img/favicon.png' %}">
 
