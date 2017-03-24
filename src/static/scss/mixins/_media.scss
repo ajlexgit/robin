@@ -60,15 +60,23 @@
 //    ...
 //    @include media_map(width, $width);
 //===================================================
-@mixin media_map($property, $values) {
-  $type: type_of($values);
-  @if ($type == map) {
+@mixin media_map($properties, $values) {
+  @if (type_of($properties) != list) {
+    $property:($properties);
+  }
+
+  $values_type: type_of($values);
+  @if ($values_type == map) {
     @each $media, $value in $values {
       @include media_interval($media...) {
-        #{$property}: #{$value};
+        @each $property in $properties {
+          #{$property}: #{$value};
+        }
       }
     }
   } @else {
-    #{$property}: #{$values};
+    @each $property in $properties {
+      #{$property}: #{$values};
+    }
   }
 }

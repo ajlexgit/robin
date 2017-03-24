@@ -55,10 +55,9 @@ $dot_active_color: rgba($white, 1);
       background-color: $dot_color;
       @include border-box;
       @include border_radius(50%);
-      @include media_map(width, $dot_size);
-      @include media_map(height, $dot_size);
       @include transition-property(background);
       @include transition-duration(0.3s);
+      @include media_map((width, height), $dot_size);
     }
 
     &:hover {

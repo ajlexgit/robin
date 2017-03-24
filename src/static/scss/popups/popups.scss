@@ -51,8 +51,7 @@ $close_btn_weight: 3px;
   .popup-window {
     @include media_map(width, $window_width);
     @include media_map(max-width, $window_max_width);
-    @include media_map(margin-top, $window_margin);
-    @include media_map(margin-bottom, $window_margin);
+    @include media_map((margin-top, margin-bottom), $window_margin);
   }
 
   .popup-close-button {

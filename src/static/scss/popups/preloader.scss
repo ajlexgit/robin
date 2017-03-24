@@ -24,7 +24,6 @@ $content_height: (
     min-height: 0;
     text-align: center;
     @include valign_after;
-    @include media_map(width, $content_width);
-    @include media_map(height, $content_height);
+    @include media_map((width, height), $content_width);
   }
 }

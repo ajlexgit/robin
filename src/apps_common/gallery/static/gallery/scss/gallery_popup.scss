@@ -43,8 +43,7 @@ $close_btn_weight: 2px;
     cursor: pointer;
     @include opacity(0.5);
     @include transition(opacity 0.2s);
-    @include media_map(width, $close_btn_size);
-    @include media_map(height, $close_btn_size);
+    @include media_map((width, height), $close_btn_size);
     @include media_interval(0, $media480) {
       top: 5px;
       right: 3px;
@@ -60,10 +59,10 @@ $close_btn_weight: 2px;
       @include media_map(width, $close_btn_cross_size);
     }
     &:before {
-      @include transform(translate3d(-50%, -50%, 0) rotate(45deg));
+      @include transform(translate(-50%, -50%) rotate(45deg));
     }
     &:after {
-      @include transform(translate3d(-50%, -50%, 0) rotate(-45deg));
+      @include transform(translate(-50%, -50%) rotate(-45deg));
     }
 
     &:hover {

@@ -16,15 +16,18 @@
   max-width: $grid_max_width;
   @include border-box;
   @include background-clip(content-box);
-  @include media_map(padding-left, $grid_full_paddings);
-  @include media_map(padding-right, $grid_full_paddings);
+  @include media_map((padding-left, padding-right), $grid_full_paddings);
 }
 
 .grid {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: $grid_max_width;
   @include clearfix;
-  @extend .grid-block;
-  @include media_map(padding-left, $grid_paddings);
-  @include media_map(padding-right, $grid_paddings);
+  @include border-box;
+  @include background-clip(content-box);
+  @include media_map((padding-left, padding-right), $grid_paddings);
 
   .gc-center {
     float: none;
