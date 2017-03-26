@@ -167,10 +167,14 @@
                 loading_query.abort();
             }
 
+            var that = this;
             return loading_query = $.ajax({
                 url: window.js_storage.load_cart,
                 type: 'GET',
                 dataType: 'json',
+                success: function(response) {
+                    that._saveToLocal(response);
+                },
                 error: $.parseError()
             });
         };

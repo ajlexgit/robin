@@ -169,7 +169,7 @@ class LoadCart(AjaxViewMixin, View):
         """ Получение всех товаров из сессии """
         cart = Cart.from_session(request)
         return self.json_response({
-            'cart': cart._unformatted,
+            'cart': {p.id: c for p, c in cart.products_counts},
         })
 
 
