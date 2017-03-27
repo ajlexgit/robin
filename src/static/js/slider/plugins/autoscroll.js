@@ -76,6 +76,7 @@
          */
         cls.afterSetItemsPerSlide = function(slider) {
             this.disable();
+            this._steps_done = 0;
             this.checkEnabled(slider);
         };
 
@@ -84,6 +85,7 @@
          */
         cls.beforeSlide = function(slider) {
             this.disable();
+            this._steps_done = 0;
             this.checkEnabled(slider);
         };
 
