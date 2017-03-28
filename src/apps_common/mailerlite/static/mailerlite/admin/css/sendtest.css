@@ -7,7 +7,7 @@
     }
 }
 
-.ui-dialog.sendtest-preload:before {
+.send-email-dialog.preloader:before {
     content: '';
     position: absolute;
     left: 0;
@@ -21,7 +21,7 @@
     animation: social-opacity 0.1s forwards linear;
 }
 
-.ui-dialog.sendtest-preload:after {
+.send-email-dialog.preloader:after {
     content: '';
     position: absolute;
     left: 50%;
@@ -40,10 +40,7 @@
     animation: social-opacity 0.1s forwards linear;
 }
 
-.sendtest-form .field {
+.send-email-dialog .field {
     margin-top: 12px;
 }
 
-.sendtest-form label {
-    font-weight: bold;
-}

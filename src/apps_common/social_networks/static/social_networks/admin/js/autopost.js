@@ -36,7 +36,7 @@
             },
             buttons: [
                 {
-                    text: "Cancel",
+                    text: gettext("Cancel"),
                     "class": 'btn',
                     icons: {
                         primary: "ui-icon-cancel"
@@ -46,7 +46,7 @@
                     }
                 },
                 {
-                    text: "Ok",
+                    text: gettext("Ok"),
                     "class": 'btn btn-info',
                     icons: {
                         primary: "ui-icon-check"
@@ -54,8 +54,7 @@
                     click: function() {
                         var $this = $(this);
                         var dialog = $this.dialog('instance');
-
-                        if (dialog.uiDialog.hasClass('autopost-preload')) {
+                        if (dialog.uiDialog.hasClass('preloader')) {
                             return
                         }
 
@@ -64,7 +63,7 @@
                             type: $this.attr('method'),
                             data: $this.serialize(),
                             beforeSend: function() {
-                                dialog.uiDialog.addClass('autopost-preload');
+                                dialog.uiDialog.addClass('preloader');
                             },
                             success: function() {
                                 dialog.close();
@@ -94,7 +93,7 @@
                                 }
                             },
                             complete: function() {
-                                dialog.uiDialog.removeClass('autopost-preload');
+                                dialog.uiDialog.removeClass('preloader');
                             }
                         });
                     }

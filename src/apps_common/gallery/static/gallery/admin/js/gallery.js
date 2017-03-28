@@ -140,47 +140,58 @@
                 buttons: [
                     {
                         text: gettext('Cancel'),
+                        "class": 'btn',
+                        icons: {
+                            primary: "ui-icon-cancel"
+                        },
                         click: function() {
                             $(this).dialog('close');
                         }
                     },
                     {
-                        "class": 'ok-btn',
                         text: gettext('Ok'),
+                        "class": 'ok-btn btn btn-info',
+                        icons: {
+                            primary: "ui-icon-check"
+                        },
                         click: function() {
-                            var $this = $(this);
+                            var $form = $(this);
+                            var dialog = $form.dialog('instance');
 
                             var item, i=0;
                             var data = {};
-                            var form_data = $this.find('form').serializeArray();
+                            var form_data = $form.serializeArray();
                             while (item = form_data[i++]) {
                                 data[item.name] = item.value;
                             }
 
+                            dialog.uiDialog.addClass('preloader');
                             gallery.saveItemForm($item, data, function(response) {
                                 if (response.errors) {
                                     var record = response.errors[0];
-                                    $this.find('.' + record.fullname).addClass(record.class);
+                                    $form.find('.' + record.fullname).addClass(record.class);
                                     alert(record.errors[0]);
                                 }
                             }).done(function() {
-                                $this.dialog('close');
+                                $form.dialog('close');
+                            }).always(function() {
+                                dialog.uiDialog.removeClass('preloader');
                             });
                         }
                     }
                 ],
                 open: function() {
-                    var $this = $(this);
-                    var dialog = $this.dialog('instance');
+                    var $form = $(this);
+                    var dialog = $form.dialog('instance');
 
                     // отправка формы
-                    $this.find('form').on('submit', function() {
+                    $form.on('submit', function() {
                         dialog.uiDialog.find('.ok-btn').click();
                         return false;
                     });
 
                     if ($.fn.autosize) {
-                        $this.find('textarea').autosize({
+                        $form.find('textarea').autosize({
                             callback: function() {
                                 if (dialog.widget().outerHeight() < $.winHeight()) {
                                     dialog._position();
@@ -191,7 +202,6 @@
                 },
                 close: function() {
                     $(this).dialog('destroy');
-                    $template.remove();
                 }
             });
         });

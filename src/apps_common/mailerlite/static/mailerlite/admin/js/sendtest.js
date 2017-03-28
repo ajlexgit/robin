@@ -18,7 +18,7 @@
         $dialog_form.on('submit', function() {
             var $form = $(this);
             var dialog = $form.dialog('instance');
-            if (dialog.uiDialog.hasClass('sendtest-preload')) {
+            if (dialog.uiDialog.hasClass('preloader')) {
                 return false
             }
 
@@ -27,7 +27,7 @@
                 type: $form.attr('method'),
                 data: $form.serialize(),
                 beforeSend: function() {
-                    dialog.uiDialog.addClass('sendtest-preload');
+                    dialog.uiDialog.addClass('preloader');
                 },
                 success: function() {
                     dialog.close();
@@ -57,7 +57,7 @@
                     }
                 },
                 complete: function() {
-                    dialog.uiDialog.removeClass('sendtest-preload');
+                    dialog.uiDialog.removeClass('preloader');
                 }
             });
 
@@ -65,6 +65,7 @@
         });
 
         $dialog_form.dialog({
+            dialogClass: "send-email-dialog",
             title: gettext('Send test e-mail'),
             minWidth: 200,
             closeText: '',
@@ -83,7 +84,7 @@
             },
             buttons: [
                 {
-                    text: "Cancel",
+                    text: gettext("Cancel"),
                     "class": 'btn',
                     icons: {
                         primary: "ui-icon-cancel"
@@ -93,7 +94,7 @@
                     }
                 },
                 {
-                    text: "Ok",
+                    text: gettext("Ok"),
                     "class": 'btn btn-info',
                     icons: {
                         primary: "ui-icon-check"
