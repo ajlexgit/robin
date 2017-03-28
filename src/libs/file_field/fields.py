@@ -17,8 +17,7 @@ class FieldFileMixin:
     def save(self, name, content, save=True):
         old_name = self.name
         super().save(name, content, save=save)
-        new_name = os.path.normpath(self.name)
-        if old_name and old_name != new_name:
+        if old_name and old_name != self.name:
             self.storage.delete(old_name)
     save.alters_data = True
 
