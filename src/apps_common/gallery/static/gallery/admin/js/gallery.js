@@ -100,7 +100,12 @@
         });
 
         return false;
-    }).on('click.gallery', '.item-description', function() {
+    });
+
+    /*
+        Дополнительная форма к элементу галереи
+     */
+    $(document).on('click.gallery', '.item-form', function() {
         var $button = $(this);
         var gallery = $button.closest('.gallery').data(Gallery.prototype.DATA_KEY);
         if (!gallery) {
@@ -108,16 +113,12 @@
             return false;
         }
 
-        var $template = $('<div>')
-            .append('<textarea>')
-            .appendTo('body');
-
         var $item = $button.closest('.gallery-item');
-        gallery.getItemDescription($item).done(function(response) {
-            $template.find('textarea').val(response.description);
-
+        gallery.getItemForm($item).done(function(response) {
+            var $template = $(response.html);
             $template.dialog({
-                title: gettext('Set description'),
+                dialogClass: "edit-item-dialog",
+                title: gettext('Edit item'),
                 width: 460,
                 closeText: '',
                 show: {
@@ -144,20 +145,42 @@
                         }
                     },
                     {
+                        "class": 'ok-btn',
                         text: gettext('Ok'),
                         click: function() {
                             var $this = $(this);
-                            $this.dialog('close');
-                            gallery.setItemDescription($item, $this.find('textarea').val());
+
+                            var item, i=0;
+                            var data = {};
+                            var form_data = $this.find('form').serializeArray();
+                            while (item = form_data[i++]) {
+                                data[item.name] = item.value;
+                            }
+
+                            gallery.saveItemForm($item, data, function(response) {
+                                if (response.errors) {
+                                    var record = response.errors[0];
+                                    $this.find('.' + record.fullname).addClass(record.class);
+                                    alert(record.errors[0]);
+                                }
+                            }).done(function() {
+                                $this.dialog('close');
+                            });
                         }
                     }
                 ],
                 open: function() {
                     var $this = $(this);
                     var dialog = $this.dialog('instance');
-                    var $textarea = $this.find('textarea');
+
+                    // отправка формы
+                    $this.find('form').on('submit', function() {
+                        dialog.uiDialog.find('.ok-btn').click();
+                        return false;
+                    });
+
                     if ($.fn.autosize) {
-                        $textarea.autosize({
+                        $this.find('textarea').autosize({
                             callback: function() {
                                 if (dialog.widget().outerHeight() < $.winHeight()) {
                                     dialog._position();

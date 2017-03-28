@@ -46,6 +46,9 @@ class GalleryItemBase(models.Model):
     """ Базовый класс элемента галереи """
     _cache = {}
 
+    # Форма, использующаяся для задания описания и т.п.
+    EDIT_FORM = 'gallery.forms.GalleryItemBaseForm'
+
     # Имена полей, чьи значения копируются при клонировании элемента
     COPY_FIELDS = set()
 
@@ -132,6 +135,8 @@ class GalleryImageItem(GalleryItemBase):
     """ Элемент-картинка галереи """
     _cache = {}
 
+    EDIT_FORM = 'gallery.forms.GalleryImageItemForm'
+
     COPY_FIELDS = GalleryItemBase.COPY_FIELDS | {'image_crop', }
 
     # Корневая папка (storage)
@@ -182,6 +187,7 @@ class GalleryImageItem(GalleryItemBase):
         blank=True,
         editable=False,
     )
+    image_alt = models.CharField(_('alt'), blank=True, max_length=255)
 
     class Meta:
         verbose_name = _('image item')

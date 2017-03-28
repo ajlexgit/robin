@@ -51,7 +51,6 @@
               </script>
             </div>
 
-
             $('#gallery').find('.item').on('click', function() {
                 $.gallery({
                     previews: '#gallery .item',

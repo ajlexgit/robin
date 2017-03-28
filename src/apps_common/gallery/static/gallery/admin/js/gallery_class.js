@@ -681,9 +681,9 @@
         };
 
         /*
-            Получение подписи к картинке
+            Получение формы к элементу галереи
          */
-        cls.getItemDescription = function($item, extra) {
+        cls.getItemForm = function($item, extra) {
             if (this.locked()) {
                 return
             }
@@ -701,7 +701,8 @@
             var data = $.extend({}, extra);
 
             return this.ajaxItem($item, {
-                url: window.admin_gallery_get_description,
+                url: window.admin_gallery_edit_item,
+                type: 'get',
                 async: false,
                 data: data
             });
@@ -710,7 +711,7 @@
         /*
             Установка подписи к картинке
          */
-        cls.setItemDescription = function($item, description, extra) {
+        cls.saveItemForm = function($item, data, error_callback) {
             if (this.locked()) {
                 return
             }
@@ -725,14 +726,11 @@
                 return;
             }
 
-            var data = $.extend({}, extra, {
-                description: description
-            });
-
             return this.ajaxItem($item, {
-                url: window.admin_gallery_set_description,
+                url: window.admin_gallery_edit_item,
                 async: false,
-                data: data
+                data: data,
+                error: $.parseError(error_callback)
             });
         };
     });

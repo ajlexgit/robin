@@ -59,10 +59,10 @@ $close_btn_weight: 2px;
       @include media_map(width, $close_btn_cross_size);
     }
     &:before {
-      @include transform(translate(-50%, -50%) rotate(45deg));
+      @include transform(translate3d(-50%, -50%, 0) rotate(45deg));
     }
     &:after {
-      @include transform(translate(-50%, -50%) rotate(-45deg));
+      @include transform(translate3d(-50%, -50%, 0) rotate(-45deg));
     }
 
     &:hover {

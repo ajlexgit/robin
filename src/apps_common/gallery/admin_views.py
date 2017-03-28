@@ -1,3 +1,4 @@
+import importlib
 from django.apps import apps
 from django.views.generic import View
 from django.core.exceptions import ValidationError
@@ -17,10 +18,10 @@ class GalleryView(AjaxAdminViewMixin, View):
     item = None
     require_item = False
 
-    def post(self, request):
+    def _detect_objects(self, data):
         # Определение модели галереи
-        app_label = request.POST.get('app_label')
-        model_name = request.POST.get('model_name')
+        app_label = data.get('app_label')
+        model_name = data.get('model_name')
         try:
             self.gallery_model = apps.get_model(app_label, model_name)
         except LookupError:
@@ -31,7 +32,7 @@ class GalleryView(AjaxAdminViewMixin, View):
 
         # Галерея
         try:
-            gallery_id = int(request.POST.get('gallery_id'))
+            gallery_id = int(data.get('gallery_id'))
         except (TypeError, ValueError):
             gallery_id = 0
             if self.require_gallery:
@@ -50,7 +51,7 @@ class GalleryView(AjaxAdminViewMixin, View):
         # Элемент
         if self.gallery:
             try:
-                item_id = int(request.POST.get('item_id'))
+                item_id = int(data.get('item_id'))
             except (TypeError, ValueError):
                 item_id = 0
                 if self.require_item:
@@ -65,6 +66,12 @@ class GalleryView(AjaxAdminViewMixin, View):
                     return self.json_error({
                         'message': _('Item not found')
                     })
+
+    def get(self, request):
+        self._detect_objects(request.GET)
+
+    def post(self, request):
+        self._detect_objects(request.POST)
 
 
 class GalleryCreate(GalleryView):
@@ -268,51 +275,61 @@ class CropItem(GalleryView):
         })
 
 
-class GetItemDescr(GalleryView):
+class EditItem(GalleryView):
     """ Получение описания """
     require_gallery_model = True
     require_gallery = True
     require_item = True
 
-    def post(self, request):
-        super().post(request)
+    def get(self, request):
+        super().get(request)
 
-        if self.item.is_image and not self.item.image.exists():
+        module_name, form_name = self.item.EDIT_FORM.rsplit('.', 1)
+        try:
+            forms_module = importlib.import_module(module_name)
+        except ImportError:
             return self.json_error({
-                'message': _('Image is not exists')
+                'message': _('Not found form class')
+            })
+
+        FormClass = getattr(forms_module, form_name, None)
+        if FormClass is None:
+            return self.json_error({
+                'message': _('Not found form class')
             })
 
         return self.json_response({
-            'description': self.item.description
+            'html': self.render_to_string('gallery/admin/form.html', {
+                'form': FormClass(instance=self.item)
+            })
         })
-
-
-class SetItemDescr(GalleryView):
-    """ Установка описания """
-    require_gallery_model = True
-    require_gallery = True
-    require_item = True
 
     def post(self, request):
         super().post(request)
 
-        if self.item.is_image and not self.item.image.exists():
+        module_name, form_name = self.item.EDIT_FORM.rsplit('.', 1)
+        try:
+            forms_module = importlib.import_module(module_name)
+        except ImportError:
             return self.json_error({
-                'message': _('Image is not exists')
+                'message': _('Not found form class')
             })
 
-        description = request.POST.get('description', None)
-        if description is None:
+        FormClass = getattr(forms_module, form_name, None)
+        if FormClass is None:
             return self.json_error({
-                'message': _('Invalid description')
+                'message': _('Not found form class')
             })
 
-        self.item.description = description
-        self.item.save()
+        form = FormClass(request.POST, request.FILES, instance=self.item)
+        if form.is_valid():
+            form.save()
+        else:
+            return self.json_error({
+                'errors': form.error_dict,
+            })
 
-        return self.json_response({
-            'description': self.item.description
-        })
+        return self.json_response()
 
 
 class SortItems(GalleryView):
