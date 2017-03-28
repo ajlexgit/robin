@@ -1,4 +1,3 @@
-import os
 from django.db import models
 from django.conf import settings
 from django.db.models import signals
@@ -14,11 +13,10 @@ except ImportError:
 
 
 class FieldFileMixin:
-    def save(self, name, content, save=True):
-        old_name = self.name
+    def save(self, name, content, save=True, old_value=None):
         super().save(name, content, save=save)
-        if old_name and old_name != self.name:
-            self.storage.delete(old_name)
+        if old_value and old_value != self.name:
+            self.storage.delete(old_value)
     save.alters_data = True
 
 
@@ -48,6 +46,18 @@ class FileFieldMixin:
 
 class FileField(FileFieldMixin, models.FileField):
     attr_class = FieldFile
+
+    def save_form_data(self, instance, data):
+        old_value = self.value_from_object(instance)
+        setattr(instance, '_%s' % self.attname, old_value)
+        super().save_form_data(instance, data)
+
+    def pre_save(self, model_instance, add):
+        file = super(models.FileField, self).pre_save(model_instance, add)
+        if file and not file._committed:
+            old_value = getattr(model_instance, '_%s' % self.attname, None)
+            file.save(file.name, file, save=False, old_value=old_value)
+        return file
 
 
 class ImageField(FileFieldMixin, models.ImageField):
