@@ -198,7 +198,7 @@
             // перемещаем ближний слайд
             var nearSlidePosition = evt.dx > 0 ? absDxPercents : -absDxPercents;
             $nearSlide.css({
-                transform: 'translateX(' + nearSlidePosition + '%)'
+                transform: 'translate(' + nearSlidePosition + '%, 0%)'
             });
 
             // Находим второй видимый слайд
@@ -216,7 +216,7 @@
                 // перемещаем дальний слайд
                 var farSlidePosition = evt.dx > 0 ? absDxPercents - slide_left : -absDxPercents + slide_left;
                 $farSlide.css({
-                    transform: 'translateX(' + farSlidePosition + '%)'
+                    transform: 'translate(' + farSlidePosition + '%, 0%)'
                 });
             }
 
@@ -251,7 +251,7 @@
             var slide_left = 100 + this._getPercentGap(slider);
 
             // определение анимации
-            var transformRegex = /translateX\(([-\d.]+)%\)/i;
+            var transformRegex = /translate\(([-\d.]+)%,/i;
             var left_match = leftSlide && transformRegex.exec(leftSlide.style.transform);
             left_match = (left_match && parseFloat(left_match[1])) || 0;
             var right_match = rightSlide && transformRegex.exec(rightSlide.style.transform);
@@ -284,10 +284,10 @@
                 easing: this.opts.easing,
                 progress: function() {
                     $leftSlide.css({
-                        transform: 'translateX(' + this.left_slide + '%)'
+                        transform: 'translate(' + this.left_slide + '%, 0%)'
                     });
                     $rightSlide.css({
-                        transform: 'translateX(' + this.right_slide + '%)'
+                        transform: 'translate(' + this.right_slide + '%, 0%)'
                     });
                 },
                 complete: function() {
