@@ -52,9 +52,7 @@ class GalleryItemBase(models.Model):
     # Имена полей, чьи значения копируются при клонировании элемента
     COPY_FIELDS = set()
 
-    self_type = models.ForeignKey(ContentType,
-        editable=False, related_name='+',
-        help_text="Для выборки элементов определенного типа")
+    self_type = models.ForeignKey(ContentType, editable=False, related_name='+')
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     gallery = generic.GenericForeignKey(for_concrete_model=False)
