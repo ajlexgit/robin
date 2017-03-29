@@ -36,12 +36,10 @@ $dot_active_color: rgba($white, 1);
 
   .slider-navigation-item {
     display: inline-block;
-    position: relative;
     width: $area_size;
     height: $area_size;
     text-align: center;
     cursor: pointer;
-    z-index: 1;
     @include valign_after;
     @include media_map(margin-right, $area_gap);
     &:nth-last-of-type(1) {

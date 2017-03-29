@@ -539,40 +539,42 @@
                 this._adaptive_animation = null;
             }
 
-            var final_height = parseInt(this.calcListHeight());
-            if (isNaN(final_height)) {
-                return;
-            }
+            var that = this;
+            $.animation_frame(function() {
+                var final_height = parseInt(that.calcListHeight());
+                if (isNaN(final_height)) {
+                    return;
+                }
 
-            // высота не меняется - выходим
-            var current_height = this.$list.height();
-            if (current_height == final_height) {
-                return
-            }
+                // высота не меняется - выходим
+                var current_height = that.$list.height();
+                if (current_height == final_height) {
+                    return
+                }
 
-            this.beforeUpdateListHeight(current_height, final_height);
-            if (animated && this.opts.sliderHeightTransition) {
-                // с анимацией
-                var that = this;
-                this._adaptive_animation = $({
-                    height: current_height
-                }).animate({
-                    height: final_height
-                }, {
-                    duration: this.opts.sliderHeightTransition,
-                    easing: 'easeOutCubic',
-                    progress: function() {
-                        var height = this.height;
-                        $.animation_frame(function() {
-                            that.$list.height(height);
-                        }, that.$list.get(0))();
-                    }
-                });
-            } else {
-                // мгновенно
-                this.$list.height(final_height);
-            }
-            this.afterUpdateListHeight(current_height, final_height);
+                that.beforeUpdateListHeight(current_height, final_height);
+                if (animated && that.opts.sliderHeightTransition) {
+                    // с анимацией
+                    that._adaptive_animation = $({
+                        height: current_height
+                    }).animate({
+                        height: final_height
+                    }, {
+                        duration: that.opts.sliderHeightTransition,
+                        easing: 'easeOutCubic',
+                        progress: function() {
+                            var height = this.height;
+                            $.animation_frame(function() {
+                                that.$list.height(height);
+                            }, that.$list.get(0))();
+                        }
+                    });
+                } else {
+                    // мгновенно
+                    that.$list.height(final_height);
+                }
+                that.afterUpdateListHeight(current_height, final_height);
+            })();
         };
 
         /*
