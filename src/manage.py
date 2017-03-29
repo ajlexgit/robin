@@ -2,13 +2,11 @@ import os
 import sys
 
 
-# DC meta
+# admin bootstrap
 # попробовать другой storage
 # Last-modified прицепить к sitemap
-# Gallery admin: custom form
 # $.widget
 # Импорты для Django 1.9
-# Слайдер в тексте - описания к каждой картинке
 # Подумать над возможностью реализации Grid через Flexbox.
 # Paginator: переделать номера страниц, чтобы их кол-во было более постоянно
 # Попытаться избавиться от select_subclasses
@@ -19,7 +17,6 @@ import sys
 # Mailerlite: clear subscribers from remote + limit reached + select groups on import
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
-# Images: alt, title, file name
 # Schema.org: per page + get data from models
 # Admin: функция "скопировать из"
 # Кнопка подтверждения заказа в админке
