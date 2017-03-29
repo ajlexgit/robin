@@ -33,11 +33,13 @@
   overflow: hidden;
   min-height: inherit;
   width: 100%;
-  left: -500%;
+  left: 0;
+  top: 0;
   z-index: 5;
   text-align: center;
   @include border-box;
   @include backface-visibility(hidden);
+  @include transform(translateX(-5000px));
 }
 
 .slider-item {
@@ -51,8 +53,6 @@
   // Скрытие всех слайдов, кроме первого
   .slider-slide:first-child {
     position: relative;
-    left: 0;
-    top: 0;
   }
 
   .slider-slide ~ .slider-slide {

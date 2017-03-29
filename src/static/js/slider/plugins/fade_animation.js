@@ -27,13 +27,13 @@
             slider.beforeSlide($toSlide);
 
             var $fromSlide = slider.$currentSlide.css({
-                left: '0',
-                zIndex: 7
+                zIndex: 7,
+                transform: 'none'
             });
             $toSlide.css({
-                left: '0',
                 opacity: 0,
-                zIndex: 6
+                zIndex: 6,
+                transform: 'none'
             });
 
             slider._setCurrentSlide($toSlide);
@@ -58,8 +58,8 @@
                 complete: function() {
                     $fromSlide.css({
                         zIndex: '',
-                        left: '',
-                        opacity: ''
+                        opacity: '',
+                        transform: ''
                     });
                     $toSlide.css({
                         zIndex: '',

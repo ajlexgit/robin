@@ -25,9 +25,8 @@
                 STORAGE_LOCATION = 'module/gallery'
                 MIN_DIMENSIONS = (400, 300)
                 ADMIN_CLIENT_RESIZE = True
-
+                ADMIN_VARIATION = 'admin'
                 SHOW_VARIATION = 'normal'
-                ADMIN_VARIATION = 'normal'
                 ASPECTS = 'normal'
                 VARIATIONS = dict(
                     normal=dict(
@@ -35,6 +34,9 @@
                     ),
                     micro=dict(
                         size=(120, 100),
+                    ),
+                    admin=dict(
+                        size=(160, 120),
                     ),
                 )
 

@@ -726,10 +726,10 @@
 
             slider.beforeSlide($toSlide);
             slider.$slides.css({
-                left: ''
+                transform: ''
             });
             $toSlide.css({
-                left: '0'
+                transform: 'none'
             });
             slider._setCurrentSlide($toSlide);
             slider.afterSlide($toSlide);

@@ -165,7 +165,7 @@
 
             // очищаем позицию слайдов, которые перемещались ранее
             $(this._movedSlides.filter(Boolean)).css({
-                left: ''
+                transform: ''
             });
 
             // находим видимый слайд, ближайший к точке начала движения
@@ -198,7 +198,7 @@
             // перемещаем ближний слайд
             var nearSlidePosition = evt.dx > 0 ? absDxPercents : -absDxPercents;
             $nearSlide.css({
-                left: nearSlidePosition + '%'
+                transform: 'translateX(' + nearSlidePosition + '%)'
             });
 
             // Находим второй видимый слайд
@@ -216,7 +216,7 @@
                 // перемещаем дальний слайд
                 var farSlidePosition = evt.dx > 0 ? absDxPercents - slide_left : -absDxPercents + slide_left;
                 $farSlide.css({
-                    left: farSlidePosition + '%'
+                    transform: 'translateX(' + farSlidePosition + '%)'
                 });
             }
 
@@ -278,19 +278,19 @@
                 easing: this.opts.easing,
                 progress: function() {
                     $leftSlide.css({
-                        left: this.left_slide + '%'
+                        transform: 'translateX(' + this.left_slide + '%)'
                     });
                     $rightSlide.css({
-                        left: this.right_slide + '%'
+                        transform: 'translateX(' + this.right_slide + '%)'
                     });
                 },
                 complete: function() {
                     slider.$slides.css({
-                        left: ''
+                        transform: ''
                     });
 
                     $currSlide.css({
-                        left: '0'
+                        transform: 'none'
                     });
 
                     slider.afterSlide($currSlide);

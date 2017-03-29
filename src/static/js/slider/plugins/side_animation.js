@@ -110,7 +110,7 @@
             animatedSlides.forEach(function($animatedSlide, index) {
                 var left = index * slide_left * direction_multiplier;
                 $animatedSlide.css({
-                    left: left + '%'
+                    transform: 'translateX(' + left +'%)'
                 });
                 animations.push({
                     $animatedSlide: $animatedSlide,
@@ -141,7 +141,7 @@
                     var conf = this;
                     animations.forEach(function(animation_data, index) {
                         animation_data.$animatedSlide.css({
-                            left: conf['slide_' + index] + '%'
+                            transform: 'translateX(' + conf['slide_' + index] + '%)'
                         })
                     });
                 },
@@ -149,7 +149,7 @@
                     for (var i = 0; i < (animations.length - 1); i++) {
                         var animation_data = animations[i];
                         animation_data.$animatedSlide.css({
-                            left: ''
+                            transform: ''
                         })
                     }
                     slider.afterSlide($toSlide);
