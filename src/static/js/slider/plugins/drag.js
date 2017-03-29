@@ -251,9 +251,15 @@
             var slide_left = 100 + this._getPercentGap(slider);
 
             // определение анимации
+            var transformRegex = /translateX\(([-\d.]+)%\)/i;
+            var left_match = leftSlide && transformRegex.exec(leftSlide.style.transform);
+            left_match = (left_match && parseFloat(left_match[1])) || 0;
+            var right_match = rightSlide && transformRegex.exec(rightSlide.style.transform);
+            right_match = (right_match && parseFloat(right_match[1])) || 0;
+
             var animation_from = {
-                left_slide: leftSlide ? parseFloat(leftSlide.style.left) : 0,
-                right_slide: rightSlide ? parseFloat(rightSlide.style.left) : 0
+                left_slide: left_match,
+                right_slide: right_match
             };
             if ($currSlide.get(0) == leftSlide) {
                 var animation_to = {
