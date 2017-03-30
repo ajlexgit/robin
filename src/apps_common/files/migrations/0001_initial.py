@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('file', libs.file_field.FileField(storage=libs.storages.media_storage.MediaStorage('files'), max_length=150, upload_to=files.models.generate_filepath, verbose_name='file')),
+                ('file', libs.file_field.FileField(storage=libs.storages.media_storage.MediaStorage('files'), max_length=150, verbose_name='file')),
                 ('name', models.CharField(help_text='If you leave it empty the file name will be used', max_length=150, verbose_name='name', blank=True)),
                 ('set_name', models.CharField(max_length=32, default='default', verbose_name='set name')),
                 ('sort_order', models.PositiveIntegerField(verbose_name='sort order')),

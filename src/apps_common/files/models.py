@@ -8,11 +8,6 @@ from libs.file_field import FileField
 from libs.storages import MediaStorage
 
 
-def generate_filepath(instance, filename):
-    """ Генерация пути сохранения файла """
-    return instance.generate_filename(os.path.basename(filename))
-
-
 class PageFile(models.Model):
     """ Модель файла на страницу """
     content_type = models.ForeignKey(ContentType, related_name='+')
@@ -20,7 +15,6 @@ class PageFile(models.Model):
     entity = GenericForeignKey('content_type', 'object_id')
     file = FileField(_('file'),
         storage=MediaStorage('files'),
-        upload_to=generate_filepath,
         max_length=150,
     )
     name = models.CharField(_('name'),
@@ -48,9 +42,3 @@ class PageFile(models.Model):
 
     def get_absolute_url(self):
         return resolve_url('files:download', file_id=self.pk)
-
-    def generate_filename(self, filename):
-        if self.pk:
-            return '%03d/%s' % ((self.pk // 100), filename)
-        else:
-            return filename
