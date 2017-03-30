@@ -23,16 +23,16 @@ $icon_size: 32px;
     }
 
     &.fb:before {
-      background-position: rel-background-position($icon_size, $icon_size, -30px, -56px);
+      background-position: rel-background-position($icon_size, $icon_size, -30px, -54px);
     }
     &.tw:before {
-      background-position: rel-background-position($icon_size, $icon_size, -64px, -56px);
+      background-position: rel-background-position($icon_size, $icon_size, -64px, -54px);
     }
     &.go:before {
-      background-position: rel-background-position($icon_size, $icon_size, -98px, -56px);
+      background-position: rel-background-position($icon_size, $icon_size, -98px, -54px);
     }
     &.in:before {
-      background-position: rel-background-position($icon_size, $icon_size, -200px, -56px);
+      background-position: rel-background-position($icon_size, $icon_size, -200px, -54px);
     }
 
     &:hover {

@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.admin.utils import quote
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableModelAdmin
+from suit.widgets import SuitDateWidget
 from google_maps.fields import GoogleCoordsField
 from google_maps.widgets import GoogleCoordsAdminWidget
 from libs.file_field import FileField, ImageField, FileWidget
@@ -44,6 +45,9 @@ class BaseModelAdminMixin:
                 'class': 'full-width',
                 'rows': 2,
             })
+        },
+        models.DateField: {
+            'widget': SuitDateWidget,
         },
         models.DateTimeField: {
             'widget': SplitDateTimeWidget,

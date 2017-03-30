@@ -53,10 +53,21 @@ class SpriteImageField(models.CharField):
 
     def check(self, **kwargs):
         errors = super().check(**kwargs)
+        errors.extend(self._check_blank(**kwargs))
         errors.extend(self._check_sprite_attribute(**kwargs))
         errors.extend(self._check_size_attribute(**kwargs))
         errors.extend(self._check_background_attribute(**kwargs))
         return errors
+
+    def _check_blank(self, **kwargs):
+        if getattr(self, 'blank', False):
+            return [
+                checks.Error(
+                    'SpriteImageField cannot have blank=True',
+                    obj=self,
+                )
+            ]
+        return []
 
     def _check_sprite_attribute(self, **kwargs):
         if not self.sprite:
