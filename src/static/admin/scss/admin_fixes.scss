@@ -80,37 +80,34 @@ input[type=number] {
 }
 
 // правка иконок related
-.control-group .related-widget-wrapper-link {
-  margin: 4px 2px 4px 10px;
-  padding: 0;
+.inline-group .related-widget-wrapper-link {
+  margin: 0 0 0 10px;
+  padding: 4px;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
   @include opacity(0.2);
 
   &.add-related {
-    background-position: 0px -96px;
+    background-position: 4px -92px;
   }
 
   &.change-related {
-    background-position: 0px -72px;
+    background-position: 4px -68px;
   }
 
   &.related-lookup {
-    background-position: -48px 0px;
+    background-position: -44px 4px;
   }
 
   &.delete-related {
     display: inline-block;
-    overflow: hidden;
-    width: 14px;
-    height: 14px;
-    text-indent: 200%;
-    white-space: nowrap;
-    vertical-align: middle;
     border: 1px solid transparent;
-    background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -312px 0;
+    background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -308px 4px;
   }
 
   & + .related-widget-wrapper-link {
-    margin-left: 2px;
+    margin-left: 0;
   }
 
   &:link {
