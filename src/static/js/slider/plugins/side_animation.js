@@ -59,7 +59,7 @@
 
             slider._setCurrentSlide($toSlide);
             this._animate(slider, $toSlide, animations);
-            slider.updateListHeight(animatedHeight);
+            slider.softUpdateListHeight(animatedHeight);
         };
 
         /*

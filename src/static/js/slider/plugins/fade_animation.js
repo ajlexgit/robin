@@ -70,7 +70,7 @@
                 }
             });
 
-            slider.updateListHeight(animatedHeight);
+            slider.softUpdateListHeight(animatedHeight);
         };
     });
 

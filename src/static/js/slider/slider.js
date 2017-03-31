@@ -578,6 +578,15 @@
         };
 
         /*
+            Обновление высоты слайдера по условию
+         */
+        cls.softUpdateListHeight = function(animated) {
+            if (this.opts.sliderHeight == cls.HEIGHT_CURRENT) {
+                this.updateListHeight(animated);
+            }
+        };
+
+        /*
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед обновлением высоты списка.
          */
@@ -736,7 +745,7 @@
             slider._setCurrentSlide($toSlide);
             slider.afterSlide($toSlide);
 
-            slider.updateListHeight(animatedHeight);
+            slider.softUpdateListHeight(animatedHeight);
         };
     });
 

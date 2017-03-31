@@ -224,7 +224,7 @@
             // выделяем активный слайд
             if (slider.$currentSlide.get(0) != $newCurrentSlide.get(0)) {
                 slider._setCurrentSlide($newCurrentSlide);
-                slider.updateListHeight(this.opts.animatedHeight);
+                slider.softUpdateListHeight(this.opts.animatedHeight);
             }
 
 
