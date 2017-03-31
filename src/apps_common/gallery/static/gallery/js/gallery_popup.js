@@ -171,8 +171,7 @@
          */
         cls.makeSlider = function() {
             return Slider(this.$content.find('.slider'), {
-                sliderHeight: Slider.prototype.HEIGHT_NONE,
-                itemSelector: '.slider-item'
+                sliderHeight: Slider.prototype.HEIGHT_NONE
             }).attachPlugins([
                 SliderSideAnimation({}),
                 SliderSideShortestAnimation({}),

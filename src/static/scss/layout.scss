@@ -81,12 +81,12 @@ body {
   }
 
   .section-image {
-    @include centrizeImage($zIndex: 5);
+    @include centrizeImage($zIndex: 10);
   }
 
   .section-video {
     visibility: hidden;
-    @include centrizeImage($zIndex: 10);
+    @include centrizeImage($zIndex: 20);
 
     &.loaded {
       visibility: visible;
@@ -101,7 +101,7 @@ body {
     position: relative;
     display: inline-block;
     width: 100%;
-    z-index: 20;
+    z-index: 50;
     vertical-align: middle;
     @include border-box;
   }

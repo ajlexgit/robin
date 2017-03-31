@@ -168,7 +168,7 @@
             itemSelector: '.slider-item',
             itemsPerSlide: 1,
             loop: true,
-            sliderHeight: cls.HEIGHT_CURRENT,
+            sliderHeight: cls.HEIGHT_MAX,
             sliderHeightTransition: 800
         };
 

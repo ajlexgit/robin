@@ -69,7 +69,7 @@
             });
 
             var slider = Slider(this, {
-
+                sliderHeight: Slider.prototype.HEIGHT_CURRENT
             }).attachPlugins([
                 SliderSideAnimation({}),
                 SliderSideShortestAnimation({}),
