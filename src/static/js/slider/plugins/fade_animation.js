@@ -6,7 +6,6 @@
             name: 'fade',
 
             speed: 800,
-            stoppable: false,
             easing: 'linear'
         });
 
@@ -15,19 +14,10 @@
             посредством исчезания
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animation) {
-                if (this.opts.stoppable) {
-                    slider._animation.stop(true, true);
-                    slider._animation = null;
-                } else {
-                    return
-                }
-            }
-
             slider.beforeSlide($toSlide);
 
             var $fromSlide = slider.$currentSlide.css({
-                zIndex: 7,
+                zIndex: 5,
                 transform: 'none'
             });
             $toSlide.css({
@@ -38,37 +28,27 @@
 
             slider._setCurrentSlide($toSlide);
 
-            slider._animation = $({
-                from_slide: 1,
-                to_slide: 0
-            }).animate({
-                from_slide: 0,
-                to_slide: 1
-            }, {
-                duration: this.opts.speed,
-                easing: this.opts.easing,
-                progress: function() {
-                    $fromSlide.css({
-                        opacity: this.from_slide
-                    });
-                    $toSlide.css({
-                        opacity: this.to_slide
-                    });
-                },
-                complete: function() {
+
+            var that = this;
+            $.animation_frame(function() {
+                $toSlide.css({
+                    opacity: 1,
+                    transition: 'opacity ' + (that.opts.speed / 1000) + 's ' + that.opts.easing
+                }).one('transitionend.slider', function() {
                     $fromSlide.css({
                         zIndex: '',
-                        opacity: '',
                         transform: ''
                     });
+
                     $toSlide.css({
+                        opacity: '',
                         zIndex: '',
-                        opacity: ''
+                        transition: ''
                     });
 
                     slider.afterSlide($toSlide);
-                }
-            });
+                })
+            })();
 
             slider.softUpdateListHeight(animatedHeight);
         };

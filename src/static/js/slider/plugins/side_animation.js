@@ -10,7 +10,6 @@
 
             margin: 0,          // в пикселях или процентах
             speed: 600,
-            stoppable: true,
             easing: 'easeOutCubic',
             showIntermediate: true
         });
@@ -33,12 +32,8 @@
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
             if (slider._animation) {
-                if (this.opts.stoppable) {
-                    slider._animation.stop(true, true);
-                    slider._animation = null;
-                } else {
-                    return
-                }
+                slider._animation.stop(true, true);
+                slider._animation = null;
             }
 
             var slide_info = {

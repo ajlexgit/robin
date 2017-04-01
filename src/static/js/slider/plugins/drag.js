@@ -291,13 +291,21 @@
                     });
                 },
                 complete: function() {
-                    slider.$slides.css({
-                        transform: ''
-                    });
-
-                    $currSlide.css({
-                        transform: 'none'
-                    });
+                    if ($currSlide.get(0) == leftSlide) {
+                        $leftSlide.css({
+                            transform: 'none'
+                        });
+                        $rightSlide.css({
+                            transform: ''
+                        });
+                    } else {
+                        $leftSlide.css({
+                            transform: ''
+                        });
+                        $rightSlide.css({
+                            transform: 'none'
+                        });
+                    }
 
                     slider.afterSlide($currSlide);
                 }

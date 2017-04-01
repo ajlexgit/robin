@@ -22,7 +22,6 @@ Slider = namedtuple('Slider', ['css', 'js'])(
     js=(
         'js/drager.js',
         'js/slider/slider.js',
-        'js/slider/win_height_slider.js',
         'js/slider/plugins/side_animation.js',
         'js/slider/plugins/fade_animation.js',
         'js/slider/plugins/autoscroll.js',
