@@ -15,6 +15,7 @@
 
             margin: 0,                  // в пикселях или процентах
             speed: 800,
+            container: null,
             easing: 'easeOutCubic'
         });
 
@@ -33,11 +34,12 @@
             superclass.onAttach.call(this, slider);
 
             var that = this;
-            this.drager = Drager(slider.$listWrapper, {
-                mouse: that.opts.mouse,
-                touch: that.opts.touch,
-                ignoreDistanceX: that.opts.ignoreDistanceX,
-                ignoreDistanceY: that.opts.ignoreDistanceY,
+            this.getContainer(slider);
+            this.drager = Drager(this.$container, {
+                mouse: this.opts.mouse,
+                touch: this.opts.touch,
+                ignoreDistanceX: this.opts.ignoreDistanceX,
+                ignoreDistanceY: this.opts.ignoreDistanceY,
                 momentum: false
             }).on('dragstart', function(evt) {
                 // если один слайд - выходим
@@ -131,6 +133,25 @@
             } else {
                 var slider_width = slider.$list.outerWidth();
                 return 100 * parseFloat(this.opts.margin) / slider_width;
+            }
+        };
+
+        /*
+            Получение контейнера для элементов
+         */
+        cls.getContainer = function(slider) {
+            if (typeof this.opts.container === 'string') {
+                this.$container = slider.$root.find(this.opts.container);
+            } else if ($.isFunction(this.opts.container)) {
+                this.$container = this.opts.container.call(this, slider);
+            } else if (this.opts.container && this.opts.container.jquery) {
+                this.$container = this.opts.container;
+            }
+
+            if (!this.$container || !this.$container.length) {
+                this.$container = slider.$listWrapper;
+            } else if (this.$container.length) {
+                this.$container = this.$container.first();
             }
         };
 

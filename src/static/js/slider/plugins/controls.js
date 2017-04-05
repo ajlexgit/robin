@@ -41,6 +41,7 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
+            this.getContainer(slider);
             this.createControls(slider);
             this.checkBounds(slider);
         };
@@ -77,17 +78,28 @@
         };
 
         /*
-            Создание стрелок
+            Получение контейнера для элементов
          */
-        cls.createControls = function(slider) {
-            if (this.opts.container) {
-                this.$container = slider.$root.find(this.opts.container).first();
+        cls.getContainer = function(slider) {
+            if (typeof this.opts.container === 'string') {
+                this.$container = slider.$root.find(this.opts.container);
+            } else if ($.isFunction(this.opts.container)) {
+                this.$container = this.opts.container.call(this, slider);
+            } else if (this.opts.container && this.opts.container.jquery) {
+                this.$container = this.opts.container;
             }
 
             if (!this.$container || !this.$container.length) {
                 this.$container = slider.$listWrapper;
+            } else if (this.$container.length) {
+                this.$container = this.$container.first();
             }
+        };
 
+        /*
+            Создание стрелок
+         */
+        cls.createControls = function(slider) {
             var that = this;
             this.$left = $('<div>')
                 .addClass(this.opts.arrowClass)

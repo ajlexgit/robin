@@ -27,19 +27,21 @@ $arrow_size: 20px;
     position: absolute;
     left: 50%;
     top: 50%;
-    width: $arrow_size;
-    height: $arrow_size;
+    width: 100%;
+    padding-top: 100%;
     @include transform(translate(-50%, -50%));
 
     &:before {
       content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: $arrow_size;
+      height: $arrow_size;
       border-top: $arrow_width solid $arrow_color;
       border-right: $arrow_width solid $arrow_color;
       @include border-box;
-      @include transform(translate(-25%, 0) rotate(45deg));
+      @include transform(translate(-75%, -50%) rotate(45deg));
     }
   }
 

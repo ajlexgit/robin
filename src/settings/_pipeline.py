@@ -16,6 +16,7 @@ from collections import namedtuple
 Slider = namedtuple('Slider', ['css', 'js'])(
     css=(
         'scss/slider/slider.scss',
+        'scss/slider/section_slider.scss',
         'scss/slider/plugins/controls.scss',
         'scss/slider/plugins/navigation.scss',
     ),

@@ -26,6 +26,7 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
+            this.getContainer(slider);
             this.createNavigation(slider);
             this.checkEnabled(slider);
         };
@@ -63,17 +64,28 @@
         };
 
         /*
-            Создание кнопок
+            Получение контейнера для элементов
          */
-        cls.createNavigation = function(slider) {
-            if (this.opts.container) {
-                this.$container = slider.$root.find(this.opts.container).first();
+        cls.getContainer = function(slider) {
+            if (typeof this.opts.container === 'string') {
+                this.$container = slider.$root.find(this.opts.container);
+            } else if ($.isFunction(this.opts.container)) {
+                this.$container = this.opts.container.call(this, slider);
+            } else if (this.opts.container && this.opts.container.jquery) {
+                this.$container = this.opts.container;
             }
 
             if (!this.$container || !this.$container.length) {
                 this.$container = slider.$root;
+            } else if (this.$container.length) {
+                this.$container = this.$container.first();
             }
+        };
 
+        /*
+            Создание кнопок
+         */
+        cls.createNavigation = function(slider) {
             this.$container.find('.' + this.opts.wrapperClass).remove();
             this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 

@@ -17,6 +17,7 @@
             slider.beforeSlide($toSlide);
 
             var $fromSlide = slider.$currentSlide.css({
+                opacity: 1,
                 zIndex: 5,
                 transform: 'none'
             });
@@ -31,13 +32,20 @@
 
             var that = this;
             $.animation_frame(function() {
+                $fromSlide.css({
+                    opacity: 0,
+                    transition: 'opacity ' + (that.opts.speed / 2) + 'ms ' + that.opts.easing + ' ' + (that.opts.speed / 2) + 'ms'
+                });
+
                 $toSlide.css({
                     opacity: 1,
-                    transition: 'opacity ' + (that.opts.speed / 1000) + 's ' + that.opts.easing
+                    transition: 'opacity ' + that.opts.speed + 'ms ' + that.opts.easing
                 }).one('transitionend.slider', function() {
                     $fromSlide.css({
+                        opacity: '',
                         zIndex: '',
-                        transform: ''
+                        transform: '',
+                        transition: ''
                     });
 
                     $toSlide.css({
