@@ -5,6 +5,7 @@
             title: 'Alter image attributes',
             minWidth: 400,
             minHeight: 150,
+            resizable: false,
             contents: [{
                 id: 'tab-basic',
                 label: 'Basic Settings',

@@ -6,6 +6,7 @@
             title: lang.dialogTitle,
             minWidth: 320,
             minHeight: 100,
+            resizable: false,
             contents: [{
                 id: 'tab-basic',
                 label: 'Basic Settings',

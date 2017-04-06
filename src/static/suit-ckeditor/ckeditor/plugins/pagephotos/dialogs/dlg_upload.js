@@ -89,6 +89,7 @@
             title: lang.dialogTitle,
             minWidth: 700,
             minHeight: 400,
+            resizable: false,
             contents: [{
                 id: 'tab-basic-photos',
                 label: 'Basic Settings',

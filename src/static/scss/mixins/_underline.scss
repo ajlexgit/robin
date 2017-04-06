@@ -1,0 +1,9 @@
+// гибкое подчеркивание для текста с возможностью анимации
+@mixin underline($color, $width: 1px, $offset: 1.18em, $padding: 0.18em) {
+  @if ($padding) {
+    padding-bottom: 0.2em;
+  }
+  background: no-repeat center #{$offset};
+  background-size: 100% #{$width};
+  @include linear-gradient(to bottom, $color, $color);
+}

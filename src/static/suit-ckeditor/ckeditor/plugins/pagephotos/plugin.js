@@ -215,10 +215,9 @@
                 toolbar: 'insert'
             });
 
-
-            editor.on('contentDom', function () {
+            editor.on('contentDom', function() {
                 // Обновление класса галереи при удалении картинок через Backspace и Delete
-                editor.on('key', function (evt) {
+                editor.on('key', function(evt) {
                     if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
                         if (editor.mode != "wysiwyg") {
                             return
@@ -238,7 +237,14 @@
                             }
                         }, 10)
                     }
-                })
+                });
+
+                editor.on('doubleclick', function(evt) {
+                    var element = editor.getSelection().getStartElement() || evt.data.element;
+                    if (element && element.is('img') && !element.isReadOnly()) {
+                        editor.execCommand('imageAttrs');
+                    }
+                });
             });
         }
     })

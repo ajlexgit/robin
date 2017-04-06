@@ -82,6 +82,7 @@
             title: lang.dialogTitle,
             minWidth: 600,
             minHeight: 400,
+            resizable: false,
             contents: [{
                 id: 'tab-basic-files',
                 label: 'Basic Settings',
