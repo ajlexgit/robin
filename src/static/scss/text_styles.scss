@@ -75,8 +75,8 @@
       position: absolute;
       left: 0.6em;
       top: -0.1em;
-      @include transform(scale(0.6));
       @include transform-origin(50% 55%);
+      @include transform(scale(0.6) translateZ(0));
     }
   }
 
@@ -167,6 +167,11 @@
 
     .slider-item {
       cursor: pointer;
+    }
+
+    .slider-arrow {
+      height: 0;
+      padding-top: 56.25%;
     }
   }
 

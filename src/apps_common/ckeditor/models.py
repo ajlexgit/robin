@@ -32,20 +32,14 @@ class PagePhoto(models.Model):
         aspects='normal',
         variations=dict(
             wide=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=1440,
+                size=(1440, 810),
                 quality=95,
             ),
             normal=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=800,
+                size=(800, 450),
             ),
             mobile=dict(
-                size=(0, 0),
-                crop=False,
-                max_width=480,
+                size=(480, 270),
             ),
         ))
     photo_crop = models.CharField(_('crop'),
