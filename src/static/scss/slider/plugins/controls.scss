@@ -36,11 +36,11 @@ $arrow_size: 20px;
       position: absolute;
       top: 50%;
       left: 50%;
-      width: $arrow_size;
-      height: $arrow_size;
       border-top: $arrow_width solid $arrow_color;
       border-right: $arrow_width solid $arrow_color;
       @include border-box;
+      @include media_map(width, $arrow_size);
+      @include media_map(height, $arrow_size);
       @include transform(translate(-75%, -50%) rotate(45deg));
     }
   }
