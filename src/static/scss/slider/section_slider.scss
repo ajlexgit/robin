@@ -70,7 +70,7 @@
     min-height: inherit;
   }
 
-  img.slider-item, .slider-item > img {
+  .slider-item > img {
     @include centrizeImage($zIndex: auto);
   }
 }
