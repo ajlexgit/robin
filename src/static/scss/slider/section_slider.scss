@@ -6,9 +6,12 @@
     <div class="section section-full-height">
       <div class="section-slider">
         <div class="slider no-slider">
-          <img class="slider-item" src="{% static 'pic1.jpg' %}">
-          <img class="slider-item" src="{% static 'pic2.jpg' %}">
+
+          <div class="slider-item">
+            <img src="{% static 'pic1.jpg' %}">
+          </div>
           ...
+
         </div>
       </div>
 
@@ -21,7 +24,7 @@
 
     JS:
       Slider('.section-slider .slider', {
-
+          sliderHeight: Slider.prototype.HEIGHT_NONE
       }).attachPlugins([
           SliderSideAnimation({}),
           SliderSideShortestAnimation({}),
@@ -63,11 +66,11 @@
   }
 
   .slider-item {
+    height: inherit;
     min-height: inherit;
   }
 
   img.slider-item, .slider-item > img {
-    min-height: inherit;
-    max-width: none;
+    @include centrizeImage($zIndex: auto);
   }
 }
