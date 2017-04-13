@@ -79,8 +79,10 @@ class Counter(models.Model):
     label = models.CharField(_('label'), max_length=128)
     position = models.CharField(_('position'), max_length=12, choices=POSITION, db_index=True)
     content = models.TextField(_('content'))
+    sort_order = models.IntegerField(_('order'), default=0)
 
     class Meta:
+        ordering = ('sort_order', )
         verbose_name = _('counter')
         verbose_name_plural = _('counters')
 

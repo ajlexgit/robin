@@ -6,6 +6,10 @@
             jquery.fitvids.js, slider.js
     */
 
+
+    /*
+        Вырезает дочерние текстовые DOM-узлы из элемента.
+     */
     var cut_description = function(element) {
         var i = 0;
         var child;
@@ -43,17 +47,43 @@
             )
         });
 
-        // замена описаний на тег span
-        $('.page-video, .single-image').each(function() {
+        // описание к одиночной картинке, добавленной через перетаскивание
+        $('.simple-photo').each(function() {
+            var $image = $(this);
+            var $block = $image.parent();
+            var description = cut_description($block.get(0)) || $.trim(atob($image.data('description') || ''));
+            if (!description) return;
+
+            $block.append(
+                $('<span>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
+            );
+        });
+
+        // описание к одиночной картинке, добавленной через загрузчик
+        $('.single-image').each(function() {
             var $block = $(this);
             var $image = $block.find('img').first();
-            var description = cut_description(this) || $.trim(atob($image.data('description') || ''));
-            if (description) {
-                $block.append(
-                    $('<div>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
+            var description = cut_description($block.get(0)) || $.trim(atob($image.data('description') || ''));
+            if (!description) return;
+
+            $block.replaceWith(
+                $('<figure>').addClass($block.attr('class')).append(
+                    $image,
+                    $('<figcaption>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
                 )
-            }
+            );
         });
+
+        // описание к видео
+        $('.page-video').each(function() {
+            var description = cut_description(this);
+            if (!description) return;
+
+            $(this).append(
+                $('<span>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
+            )
+        }).fitVids();
+
 
         // Слайдеры с описанием
         $('.page-images.multi-image').each(function() {
@@ -90,9 +120,6 @@
                 )
             }
         });
-
-        // Видео на всю ширину с сохранением пропорций
-        $('.page-video').fitVids();
     });
 
 })(jQuery);

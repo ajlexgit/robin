@@ -144,6 +144,7 @@
   }
 
   .object-description, .item-description {
+    display: block;
     margin-top: 7px;
     color: #808080;
     @include font-size(12px, 18px);

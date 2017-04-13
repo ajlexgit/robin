@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
+from suit.admin import SortableModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from libs.description import description
 from .models import SeoConfig, SeoData, Redirect, Counter, Robots
@@ -34,8 +35,9 @@ class CounterForm(forms.ModelForm):
 
 
 @admin.register(Counter)
-class CounterAdmin(ModelAdminMixin, admin.ModelAdmin):
+class CounterAdmin(ModelAdminMixin, SortableModelAdmin):
     form = CounterForm
+    sortable = 'sort_order'
     list_display = ('__str__', 'position')
 
 
