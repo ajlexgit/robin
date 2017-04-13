@@ -151,10 +151,7 @@
 
             // Событие загрузки картинки
             this.image.onLoaded(true, function() {
-                that._trigger('imageloaded', null, {
-                    widget: that
-                });
-
+                that.trigger('imageloaded');
                 $.bgInspector.check(that.image);
                 that.update();
             });
@@ -187,6 +184,40 @@
             }
         },
 
+        _setOptionDisabled: function(value) {
+            this._super(value);
+            this._checkEnabled();
+        },
+
+        _checkEnabled: function() {
+            if (this.options.disabled) {
+                this.trigger('disable');
+            } else {
+                this.trigger('enable');
+            }
+        },
+
+        _destroy: function() {
+            this.block.css({
+                position: '',
+                overflow: ''
+            });
+
+            this.trigger('destroy');
+            $.mediaInspector.ignore(this.element);
+            $.bgInspector.ignore(this.image);
+        },
+
+
+        /*
+            Вызов событий
+         */
+        trigger: function(event, data) {
+            this._trigger(event, null, $.extend({
+                widget: this
+            }, data));
+        },
+
         /*
             Обновление положения изображения
          */
@@ -213,42 +244,10 @@
             var scrollPosition = (winScroll - scrollFrom) / scrollLength;
             var eProgress = $.easing[this.options.easing](scrollPosition);
 
-            this._trigger('update', null, {
-                widget: this,
+            this.trigger('update', {
                 blockHeight: blockHeight,
                 progress: eProgress
             });
-        },
-
-        _setOptionDisabled: function(value) {
-            this._super(value);
-            this._checkEnabled();
-        },
-
-        _checkEnabled: function() {
-            if (this.options.disabled) {
-                this._trigger('disable', null, {
-                    widget: this
-                });
-            } else {
-                this._trigger('enable', null, {
-                    widget: this
-                });
-            }
-        },
-
-        _destroy: function() {
-            this.block.css({
-                position: '',
-                overflow: ''
-            });
-
-            this._trigger('destroy', null, {
-                widget: this
-            });
-
-            $.mediaInspector.ignore(this.element);
-            $.bgInspector.ignore(this.image);
         }
     });
 
@@ -273,8 +272,7 @@
         $('.parallax').each(function() {
             var widget = $(this).parallax('instance');
             if (!widget) return;
-            widget._trigger('resize', null, {
-                widget: widget,
+            widget.trigger('resize', {
                 winScroll: winScroll,
                 winHeight: winHeight
             });

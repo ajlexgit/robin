@@ -39,9 +39,7 @@
                 var that = data.widget;
                 that._addClass(that.element, 'sticky-disabled');
                 that._removeClass(that.element, 'sticky-enabled');
-
-                that._trigger('state', null, {
-                    widget: that,
+                that.trigger('state', {
                     state: 'top'
                 });
             },
@@ -51,9 +49,7 @@
 
                 if (that._state != state) {
                     that._state = state;
-
-                    that._trigger('update', null, {
-                        widget: that,
+                    that.trigger('update', {
                         state: state,
                         offset: data.offset
                     });
@@ -149,6 +145,39 @@
             }
         },
 
+        _setOptionDisabled: function(value) {
+            this._super(value);
+            this._checkEnabled();
+        },
+
+        _checkEnabled: function() {
+            if (this.options.disabled) {
+                this.trigger('disable');
+            } else {
+                this.trigger('enable');
+            }
+        },
+
+        _destroy: function() {
+            this.block.css({
+                position: '',
+                overflow: ''
+            });
+
+            this.trigger('destroy');
+            $.mediaInspector.ignore(this.element);
+        },
+
+
+        /*
+            Вызов событий
+         */
+        trigger: function(event, data) {
+            this._trigger(event, null, $.extend({
+                widget: this
+            }, data));
+        },
+
         /*
             Фиксируем ширину ползающего блока
          */
@@ -185,56 +214,23 @@
             var scrollTo = scrollFrom + this.block.height() - element_height;
 
             if (winScroll < scrollFrom) {
-                this._trigger('state', null, {
-                    widget: this,
+                this.trigger('state', {
                     state: 'top',
                     offset: 0
                 });
             } else if (this.block.height() > this.element.outerHeight(true)) {
                 if (winScroll > scrollTo) {
-                    this._trigger('state', null, {
-                        widget: this,
+                    this.trigger('state', {
                         state: 'bottom',
                         offset: areaHeight - element_height - paddingBottom
                     });
                 } else if ((winScroll >= scrollFrom) && (winScroll <= scrollTo)) {
-                    this._trigger('state', null, {
-                        widget: this,
+                    this.trigger('state', {
                         state: 'middle',
                         offset: paddingTop + winScroll - scrollFrom
                     });
                 }
             }
-        },
-
-        _setOptionDisabled: function(value) {
-            this._super(value);
-            this._checkEnabled();
-        },
-
-        _checkEnabled: function() {
-            if (this.options.disabled) {
-                this._trigger('disable', null, {
-                    widget: this
-                });
-            } else {
-                this._trigger('enable', null, {
-                    widget: this
-                });
-            }
-        },
-
-        _destroy: function() {
-            this.block.css({
-                position: '',
-                overflow: ''
-            });
-
-            this._trigger('destroy', null, {
-                widget: this
-            });
-
-            $.mediaInspector.ignore(this.element);
         }
     });
 
@@ -256,8 +252,7 @@
         $('.sticky').each(function() {
             var widget = $(this).sticky('instance');
             if (!widget) return;
-            widget._trigger('resize', null, {
-                widget: widget,
+            widget.trigger('resize', {
                 winScroll: winScroll
             });
         });
