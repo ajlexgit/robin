@@ -591,7 +591,9 @@ class SphinxClient:
         req.append(self._sortby)
 
         if isinstance(query, str):
+            query = self.EscapeString(query)
             query = query.encode()
+
         assert (isinstance(query, bytes))
         req.append(pack('>L', len(query)))
         req.append(query)
