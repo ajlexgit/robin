@@ -21,7 +21,7 @@
 
             slider.beforeSlide($toSlide);
 
-            slider.$slides.attr('style', '');
+            slider.$slides.attr('style', '').off('transitionend.fade');
             var $fromSlide = slider.$currentSlide.css({
                 opacity: 1,
                 zIndex: 5,
@@ -46,7 +46,7 @@
                 $toSlide.css({
                     opacity: 1,
                     transition: 'opacity ' + that.opts.speed + 'ms ' + that.opts.easing
-                }).one('transitionend.slider', function() {
+                }).one('transitionend.fade', function() {
                     $fromSlide.css({
                         opacity: '',
                         zIndex: '',
@@ -57,6 +57,7 @@
                     $toSlide.css({
                         opacity: '',
                         zIndex: '',
+                        transform: 'none',
                         transition: ''
                     });
 
