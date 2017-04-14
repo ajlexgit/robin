@@ -14,8 +14,14 @@
             посредством исчезания
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
+            if (slider._animation) {
+                slider._animation.stop(true, true);
+                slider._animation = null;
+            }
+
             slider.beforeSlide($toSlide);
 
+            slider.$slides.attr('style', '');
             var $fromSlide = slider.$currentSlide.css({
                 opacity: 1,
                 zIndex: 5,
