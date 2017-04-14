@@ -4,7 +4,7 @@ from libs.variation_field import *
 from .formfields import StdImageFormField
 
 DEFAULT_SOURCE_QUALITY = getattr(settings, 'STDIMAGE_SOURCE_QUALITY', 95)
-DEFAULT_VARIATION_QUALITY = getattr(settings, 'STDIMAGE_VARIATION_QUALITY', 90)
+DEFAULT_VARIATION_QUALITY = getattr(settings, 'STDIMAGE_VARIATION_QUALITY', 86)
 MAX_SIZE_DEFAULT = getattr(settings,  'STDIMAGE_MAX_SIZE', 12*1024*1024)
 MIN_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MIN_DIMENSIONS', (0, 0))
 MAX_DIMENSIONS_DEFAULT = getattr(settings,  'STDIMAGE_MAX_DIMENSIONS', (6000, 6000))
