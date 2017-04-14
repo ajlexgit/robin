@@ -22,6 +22,7 @@
             });
      */
 
+    var instances = [];
     var $window = $(window);
     $.widget("django.sticky", {
         options: {
@@ -120,6 +121,8 @@
                     }
                 }
             });
+
+            instances.push(this);
         },
 
         /*
@@ -163,9 +166,14 @@
                 position: '',
                 overflow: ''
             });
+            $.mediaInspector.ignore(this.element);
+
+            var index = instances.indexOf(this);
+            if (index >= 0) {
+                instances.splice(index, 1);
+            }
 
             this.trigger('destroy');
-            $.mediaInspector.ignore(this.element);
         },
 
 
@@ -236,9 +244,7 @@
 
     var updateStickies = function() {
         var winScroll = $window.scrollTop();
-        $('.sticky').each(function() {
-            var widget = $(this).sticky('instance');
-            if (!widget) return;
+        $.each(instances, function(i, widget) {
             $.animation_frame(function() {
                 widget._update(winScroll);
             })(widget.element.get(0));
@@ -249,9 +255,7 @@
     $window.on('load.sticky', updateStickies);
     $window.on('resize.sticky', $.rared(function() {
         var winScroll = $window.scrollTop();
-        $('.sticky').each(function() {
-            var widget = $(this).sticky('instance');
-            if (!widget) return;
+        $.each(instances, function(i, widget) {
             widget.trigger('resize', {
                 winScroll: winScroll
             });

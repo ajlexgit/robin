@@ -23,6 +23,7 @@
             });
      */
 
+    var instances = [];
     var $window = $(window);
     $.widget("django.parallax", {
         options: {
@@ -155,6 +156,8 @@
                 $.bgInspector.check(that.image);
                 that.update();
             });
+
+            instances.push(this);
         },
 
         /*
@@ -202,10 +205,15 @@
                 position: '',
                 overflow: ''
             });
-
-            this.trigger('destroy');
             $.mediaInspector.ignore(this.element);
             $.bgInspector.ignore(this.image);
+
+            var index = instances.indexOf(this);
+            if (index>=0) {
+                instances.splice(index, 1);
+            }
+
+            this.trigger('destroy');
         },
 
 
@@ -255,9 +263,7 @@
     var updateParallaxes = function() {
         var winScroll = $window.scrollTop();
         var winHeight = $window.height();
-        $('.parallax').each(function() {
-            var widget = $(this).parallax('instance');
-            if (!widget) return;
+        $.each(instances, function(i, widget) {
             $.animation_frame(function() {
                 widget._update(winScroll, winHeight);
             })(widget.element.get(0));
@@ -269,9 +275,7 @@
     $window.on('resize.parallax', $.rared(function() {
         var winScroll = $window.scrollTop();
         var winHeight = $window.height();
-        $('.parallax').each(function() {
-            var widget = $(this).parallax('instance');
-            if (!widget) return;
+        $.each(instances, function(i, widget) {
             widget.trigger('resize', {
                 winScroll: winScroll,
                 winHeight: winHeight
