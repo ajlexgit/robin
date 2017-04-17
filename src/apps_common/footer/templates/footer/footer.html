@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load footer %}
 
 <footer itemscope itemtype="https://schema.org/WPFooter">
   <div class="grid-block">
@@ -9,10 +10,7 @@
       </div>
 
       <div class="dl-logo-box">
-        <script src="http://logo.direktweb.ru/links.js?website=project&referer={{ request.path_info|urlencode }}"></script>
-        <script>
-          if (window.pasteLogo) pasteLogo();
-        </script>
+        {% dl_link %}
       </div>
     </div>
 
