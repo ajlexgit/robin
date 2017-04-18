@@ -12,7 +12,6 @@ from social_networks.models import SocialLinks
 from libs.email import absolute_links
 from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
-from libs.stdimage.fields import StdImageField
 from . import conf
 
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
@@ -34,7 +33,7 @@ class MailerConfig(SingletonModel):
     )
 
     footer_text = models.TextField(_('text'), blank=True)
-    website = models.CharField(_('website address'), max_length=255, default='example.com')
+    website = models.URLField(_('website address'), max_length=255)
     contact_email = models.EmailField(_('contact email'), default='admin@example.com')
 
     import_groups_date = models.DateTimeField(default=now, editable=False)
@@ -125,23 +124,6 @@ class Campaign(models.Model):
 
     groups = models.ManyToManyField(Group, verbose_name=_('lists'))
     subject = models.CharField(_('subject'), max_length=255)
-    header_image = StdImageField(_('preview'),
-        blank=True,
-        storage=MediaStorage('mailerlite/campaigns'),
-        min_dimensions=(640, 320),
-        admin_variation='admin',
-        crop_area=True,
-        aspects='normal',
-        variations=dict(
-            normal=dict(
-                size=(640, 320),
-                quality=95,
-            ),
-            admin=dict(
-                size=(320, 160),
-            ),
-        ),
-    )
     text = CKEditorUploadField(_('text'), height=350, editor_options=conf.CKEDITOR_CONFIG)
 
     sent = models.PositiveIntegerField(_('sent emails'), default=0, editable=False)

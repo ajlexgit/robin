@@ -19,7 +19,7 @@
         <table align="center" class="header-table full-width">
           <tr>
             <td class="logo-cell" align="left">
-              <a href="http://{{ config.website }}/" target="_blank" class="logo">
+              <a href="{{ config.website }}" target="_blank" class="logo">
                 <img src="{% static 'mailerlite/img/logo.png' %}" alt="" border="0" width="170" height="52">
               </a>
             </td>
@@ -33,19 +33,6 @@
       </td>
     </tr>
   </table>
-
-  <!-- Картинка в заголовке -->
-  {% if campaign.header_image %}
-    <table class="full-width">
-      <tr>
-        <td align="center" class="header-img full-width">
-          <img border="0" width="{{ campaign.header_image.normal.target_width }}"
-               height="{{ campaign.header_image.normal.target_height }}" alt=""
-               src="{{ campaign.header_image.normal.url }}">
-        </td>
-      </tr>
-    </table>
-  {% endif %}
 
   <!-- Контент -->
   <table class="full-width">
@@ -75,7 +62,7 @@
         <table class="bottom-table full-width">
           <tr>
             <td class="left-cell" align="left">
-              <a href="http://{{ config.website }}/" target="_blank">{{ config.website }}</a>
+              <a href="{{ config.website }}" target="_blank">{{ domain }}</a>
               <span style="display: inline-block; height: 1em; width: 1.2em;"></span>
               <a href="mailto:{{ config.contact_email }}">{{ config.contact_email }}</a>
             </td>

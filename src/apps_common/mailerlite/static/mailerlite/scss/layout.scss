@@ -1,4 +1,3 @@
-@import "mixins";
 @import "conf";
 
 body {
@@ -71,6 +70,10 @@ a {
   color: $link_color;
   word-break: break-word;
   text-decoration: underline;
+
+  &[href="#"] {
+    cursor: default;
+  }
 }
 
 img {

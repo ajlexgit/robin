@@ -1,13 +1,12 @@
-@import "mixins";
 @import "conf";
 
 
 body[yahoo] {
   /* Шапка */
   .header {
-    padding: 25px 0 18px;
+    padding: 25px 0 25px;
     @include media_interval(0, $media_mobile) {
-      padding: 20px 7.2% 18px !important;
+      padding: 20px 7.2% 20px !important;
     }
 
     .logo {

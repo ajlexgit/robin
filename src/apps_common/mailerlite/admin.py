@@ -36,11 +36,6 @@ class MailerConfigForm(forms.ModelForm):
                     'class': 'input-xlarge',
                 }
             ),
-            'website': forms.TextInput(
-                attrs={
-                    'class': 'input-xlarge',
-                }
-            ),
         }
 
 
@@ -135,7 +130,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
         (_('Content'), {
             'fields': (
-                'header_image', 'text',
+                'text',
             )
         }),
         (_('Statistics'), {
