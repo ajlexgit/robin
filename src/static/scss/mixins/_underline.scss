@@ -4,13 +4,13 @@
 //    @include underline(red, 2px);
 //
 // Пример (пунктирная линия):
-//    @include underline(red, 8px 2px, repeat-x 0 1.18em);
-@mixin underline($color, $size: 1px, $background: no-repeat center 1.18em, $padding: 0.18em) {
+//    @include underline(red 66%, 8px 1px, 0 1.18em);
+@mixin underline($color, $size: 1px, $position: center 1.18em, $padding: 0.18em) {
   @if ($padding) {
     padding-bottom: 0.2em;
   }
 
-  background: #{$background};
+  background: repeat-x #{$position};
 
   @if (str-index(#{$size}, ' ')) {
     background-size: #{$size};
