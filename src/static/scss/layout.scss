@@ -80,8 +80,21 @@ body {
     min-height: 100vh;
   }
 
-  .section-image {
-    @include centrizeImage($zIndex: 10);
+  img.section-image {
+    @include centrizeImage($zIndex: 2, $minSize:100.5%);
+  }
+
+  picture.section-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+
+    img {
+      @include centrizeImage($zIndex: 2, $minSize: 100.5%);
+    }
   }
 
   .section-video {
