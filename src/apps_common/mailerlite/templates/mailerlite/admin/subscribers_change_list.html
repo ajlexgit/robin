@@ -9,11 +9,6 @@
       <i class="icon-download icon-white"></i>
       {% trans 'Download CSV' %}
     </a>
-
-    <button data-url="{% url cl.opts|admin_urlname:'upload_csv' %}" class="upload-csv btn btn-info">
-      <i class="icon-upload icon-white"></i>
-      {% trans 'Upload CSV' %}
-    </button>
   {% endif %}
 
   {{ block.super }}

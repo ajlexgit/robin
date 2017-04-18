@@ -10,12 +10,13 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.http.response import JsonResponse, Http404
 from django.contrib.messages import add_message, SUCCESS
-from django.utils.translation import ugettext_lazy as _, get_language
+from django.utils.translation import ugettext_lazy as _, ungettext_lazy, get_language
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
 from libs.cookies import set_cookie
 from libs.description import description
 from libs.download import AttachmentResponse
+from libs.autocomplete.filters import AutocompleteListFilter
 from libs.autocomplete.widgets import AutocompleteMultipleWidget
 from libs.upload import upload_chunked_file, TemporaryFileNotFoundError, NotLastChunk
 from .models import MailerConfig, Group, Campaign, Subscriber
@@ -63,18 +64,23 @@ class MailerConfigAdmin(ModelAdminMixin, SingletonModelAdmin):
 
 @admin.register(Group)
 class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
+    change_form_template = 'mailerlite/admin/change_form_group.html'
+
     fieldsets = (
         (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'name', 'status', 'subscribable',
             )
         }),
         (_('Subscribers'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'total', 'active', 'unsubscribed',
             )
         }),
         (_('Statistics'), {
+            'classes': ('suit-tab', 'suit-tab-statistics'),
             'fields': (
                 'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated',
             )
@@ -84,8 +90,27 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated'
     )
     list_display = (
+        'view', 'upload',
         'name', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'subscribable', 'status'
     )
+    list_display_links = ('name', )
+    suit_form_tabs = (
+        ('general', _('General')),
+        ('statistics', _('Statistics')),
+    )
+
+    class Media:
+        js = (
+            'common/js/plupload/plupload.full.min.js',
+            'common/js/plupload/i18n/%s.js' % (get_language(),),
+            'common/js/uploader.js',
+            'mailerlite/admin/js/upload_csv.js',
+        )
+        css = {
+            'all': (
+                'mailerlite/admin/css/upload_csv.css',
+            )
+        }
 
     def get_readonly_fields(self, request, obj=None):
         default = super().get_readonly_fields(request, obj)
@@ -106,6 +131,95 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         else:
             return default and is_draft
 
+    def suit_cell_attributes(self, obj, column):
+        default = super().suit_cell_attributes(obj, column)
+        if column == 'upload':
+            default.update({
+                'class': 'mini-column'
+            })
+        return default
+
+    def view(self, obj):
+        return ('<a href="{href}" title="{title}">'
+                '   <span class="icon-list icon-alpha75"></span>'
+                '</a>').format(
+            href=reverse('admin:%s_subscriber_changelist' % self.model._meta.app_label) + '?group=%d' % obj.pk,
+            title=_('Show subscribers')
+        )
+    view.short_description = '#'
+    view.allow_tags = True
+
+    def upload(self, obj):
+        return ('<a href="#" title="{title}" class="upload-csv" data-url="{url}" data-reload="1">'
+                '   <span class="icon-upload icon-alpha75"></span>'
+                '</a>').format(
+            title=_('Import subscribers from CSV file'),
+            url=reverse('admin:%s_group_upload_csv' % self.model._meta.app_label, kwargs={
+                'group_id': obj.pk
+            }),
+        )
+    upload.short_description = '#'
+    upload.allow_tags = True
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        csv_urls = [
+            url(r'^upload_csv/(?P<group_id>\d+)/$', self.admin_site.admin_view(self.upload_csv), name='%s_%s_upload_csv' % info),
+        ]
+        return csv_urls + urls
+
+    def upload_csv(self, request, group_id):
+        try:
+            csvfile = upload_chunked_file(request, 'csv')
+        except TemporaryFileNotFoundError as e:
+            return JsonResponse({
+                'message': str(e),
+            }, status=400)
+        except NotLastChunk:
+            return JsonResponse({})
+
+        # Поиск списка подписчиков
+        try:
+            group = Group.objects.get(pk=group_id)
+        except Group.DoesNotExist:
+            return JsonResponse({
+                'message': _('There are no such list'),
+            }, status=400)
+
+        added_count = 0
+        csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
+        while True:
+            data = tuple(
+                dict(zip(('email', 'name', 'last_name', 'company', 'status'), row))
+                for row in islice(csv_reader, 100)
+            )
+            if not data:
+                break
+
+            with transaction.atomic():
+                for record in data:
+                    if not record.get('email'):
+                        continue
+
+                    record['email'] = record['email'].lower()
+                    subscriber, created = Subscriber.objects.get_or_create(**record)
+                    if not subscriber.groups.filter(pk=group.pk).exists():
+                        subscriber.groups.add(group)
+                        added_count += 1
+
+        csvfile.close()
+        add_message(request, SUCCESS,
+            ungettext_lazy(
+                'Successfully added %d subscriber.',
+                'Successfully added %d subscribers.',
+                number=added_count
+            ) % added_count
+        )
+        return JsonResponse({
+            'redirect': reverse('admin:%s_subscriber_changelist' % Group._meta.app_label) + '?group=%d' % group.pk,
+        })
+
 
 class CampaignForm(forms.ModelForm):
     class Meta:
@@ -120,15 +234,17 @@ class CampaignForm(forms.ModelForm):
 
 @admin.register(Campaign)
 class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
-    change_form_template = 'mailerlite/admin/change_form.html'
+    change_form_template = 'mailerlite/admin/change_form_campaign.html'
 
     fieldsets = (
         (None, {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'subject', 'groups',
             )
         }),
         (_('Content'), {
+            'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
                 'text',
             )
@@ -321,6 +437,15 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         return response
 
 
+class SubscriberGroupFilter(AutocompleteListFilter):
+    model = Group
+    multiple = False
+    expression = 'name__icontains'
+
+    def filter(self, queryset, value):
+        return queryset.filter(groups=value).distinct()
+
+
 class SubscriberForm(forms.ModelForm):
     class Meta:
         model = Subscriber
@@ -360,7 +485,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         'email', 'groups', 'status',
         'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
     )
-    list_filter = ('status', )
+    list_filter = (SubscriberGroupFilter, 'status', )
     actions = ('action_mark_queued', 'action_mark_subscribed', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
@@ -371,14 +496,14 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     class Media:
         js = (
-            'common/js/plupload/plupload.full.min.js',
-            'common/js/plupload/i18n/%s.js' % (get_language(),),
-            'common/js/uploader.js',
-            'mailerlite/admin/js/upload_csv.js',
+            'autocomplete/js/select2.min.js',
+            'autocomplete/js/select2_cached.js',
+            'autocomplete/js/select2_locale_%s.js' % get_language(),
+            'autocomplete/js/filter.js',
         )
         css = {
             'all': (
-                'mailerlite/admin/css/upload_csv.css',
+                'autocomplete/css/select2.css',
             )
         }
 
@@ -396,7 +521,6 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         urls = super().get_urls()
         info = self.model._meta.app_label, self.model._meta.model_name
         csv_urls = [
-            url(r'^upload_csv/$', self.admin_site.admin_view(self.upload_csv), name='%s_%s_upload_csv' % info),
             url(r'^download_csv/$', self.admin_site.admin_view(self.download_csv), name='%s_%s_download_csv' % info),
         ]
         return csv_urls + urls
@@ -413,47 +537,6 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
             for subscriber in Subscriber.objects.all().values_list('email', 'name', 'last_name', 'company', 'status')
         )
         return AttachmentResponse(request, stream, filename='subscribers.csv')
-
-    def upload_csv(self, request):
-        try:
-            csvfile = upload_chunked_file(request, 'csv')
-        except TemporaryFileNotFoundError as e:
-            return JsonResponse({
-                'message': str(e),
-            }, status=400)
-        except NotLastChunk:
-            return JsonResponse({})
-
-        all_groups = tuple(Group.objects.filter(subscribable=True))
-        if not all_groups:
-            return JsonResponse({
-                'message': _('There are no subscribable lists'),
-            }, status=400)
-
-        added_count = 0
-        csv_reader = csv.reader(io.TextIOWrapper(csvfile.file))
-        while True:
-            group = tuple(
-                dict(zip(('email', 'name', 'last_name', 'company', 'status'), row))
-                for row in islice(csv_reader, 100)
-            )
-            if not group:
-                break
-
-            with transaction.atomic():
-                for record in group:
-                    if not record.get('email'):
-                        continue
-
-                    record['email'] = record['email'].lower()
-                    subscriber, created = Subscriber.objects.get_or_create(**record)
-                    if created:
-                        subscriber.groups.add(*all_groups)
-                        added_count += 1
-
-        csvfile.close()
-        add_message(request, SUCCESS, '%d subscribers were added successfully!' % added_count)
-        return JsonResponse({})
 
     def save_model(self, request, obj, form, change):
         """ Автоматически добавляем все группы, если они не заданы """

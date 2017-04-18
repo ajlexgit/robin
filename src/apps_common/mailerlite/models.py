@@ -7,11 +7,11 @@ from django.core.urlresolvers import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
-from ckeditor.fields import CKEditorUploadField
-from social_networks.models import SocialLinks
 from libs.email import absolute_links
 from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
+from ckeditor.fields import CKEditorUploadField
+from social_networks.models import SocialLinks
 from . import conf
 
 re_newline_spaces = re.compile(r'[\r \t]*\n[\r \t]*')
@@ -70,7 +70,7 @@ class Group(models.Model):
     opened = models.PositiveIntegerField(_('opened emails'), default=0, editable=False)
     clicked = models.PositiveIntegerField(_('clicks from emails'), default=0, editable=False)
 
-    remote_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
+    remote_id = models.BigIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
     date_created = models.DateTimeField(_('date created'), default=now, editable=False)
     date_updated = models.DateTimeField(_('date updated'), auto_now=True)
 
@@ -132,8 +132,8 @@ class Campaign(models.Model):
 
     status = models.SmallIntegerField(_('status'), choices=STATUSES, default=STATUS_DRAFT)
     published = models.BooleanField(_('published'), default=False)
-    remote_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
-    remote_mail_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
+    remote_id = models.BigIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
+    remote_mail_id = models.BigIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
     date_created = models.DateTimeField(_('date created'), default=now, editable=False)
     date_started = models.DateTimeField(_('date started'), null=True, editable=False)
     date_done = models.DateTimeField(_('date done'), null=True, editable=False)
@@ -251,7 +251,7 @@ class Subscriber(models.Model):
     opened = models.PositiveIntegerField(_('opened emails'), default=0, editable=False)
     clicked = models.PositiveIntegerField(_('clicks from emails'), default=0, editable=False)
 
-    remote_id = models.PositiveIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
+    remote_id = models.BigIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
     date_created = models.DateField(_('date subscribed'), default=now, editable=False)
     date_unsubscribe = models.DateTimeField(_('date unsubscribed'), null=True, editable=False)
 

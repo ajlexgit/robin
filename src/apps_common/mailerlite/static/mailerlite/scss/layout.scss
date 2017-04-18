@@ -1,4 +1,4 @@
-@import "conf";
+@import "core";
 
 body {
   margin: 0;
@@ -71,7 +71,7 @@ a {
   word-break: break-word;
   text-decoration: underline;
 
-  &[href="#"] {
+  &[href^="#"] {
     cursor: default;
   }
 }

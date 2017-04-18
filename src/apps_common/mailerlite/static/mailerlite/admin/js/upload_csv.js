@@ -1,8 +1,7 @@
 (function($) {
 
-    $(document).ready(function() {
-
-        var $button = $('.upload-csv');
+    var initButton = function($button) {
+        var $dialog;
         Uploader($button, {
             url: $button.data('url'),
             fileName: 'csv',
@@ -13,7 +12,7 @@
             ],
             prevent_duplicates: false,
             onFileAdded: function() {
-                $('<h3>').text(
+                $dialog = $('<h3>').text(
                     gettext('Please, wait...')
                 ).dialog({
                     dialogClass: 'upload-csv-dialog',
@@ -26,11 +25,21 @@
                     }
                 });
             },
-            onUploadComplete: function() {
-                location.reload();
+            onFileUploaded: function(file, response) {
+                var is_reload = $button.data('reload') || !response.redirect;
+                if (is_reload) {
+                    location.reload(true);
+                } else {
+                    location.href = response.redirect;
+                }
             }
         });
+    };
 
+    $(document).ready(function() {
+        $('.upload-csv').each(function() {
+            initButton($(this));
+        });
     });
 
 })(jQuery);
