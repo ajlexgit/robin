@@ -197,10 +197,10 @@ LOGOUT_URL = 'index'
 
 # Email
 EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 25
+EMAIL_PORT = 465
 EMAIL_HOST_USER = 'noreply@automessenger.ru'
 EMAIL_HOST_PASSWORD = 'woodstock1999'
-EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@automessenger.ru'
 EMAIL_SUBJECT_PREFIX = '[%s] ' % (SUIT_CONFIG['ADMIN_NAME'], )
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
