@@ -106,6 +106,10 @@ input[type=number] {
     background: url(/static/suit/bootstrap/img/glyphicons-halflings.png) no-repeat -308px 4px;
   }
 
+  & > img {
+    display: none;
+  }
+
   & + .related-widget-wrapper-link {
     margin-left: 0;
   }
