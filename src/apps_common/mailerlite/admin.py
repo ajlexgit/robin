@@ -13,6 +13,7 @@ from django.contrib.messages import add_message, SUCCESS
 from django.utils.translation import ugettext_lazy as _, ungettext_lazy, get_language
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
+from libs import admin_utils
 from libs.cookies import set_cookie
 from libs.description import description
 from libs.download import AttachmentResponse
@@ -267,7 +268,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done', 'remote_id',
     )
     list_filter = ('status', )
-    list_display = ('view', 'short_subject', 'sent', 'opened', 'clicked', 'status_box', 'date_created')
+    list_display = ('view', 'short_subject', 'groups_list', 'sent', 'opened', 'clicked', 'status_box', 'date_created')
     list_display_links = ('short_subject', )
 
     class Media:
@@ -333,6 +334,19 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             url(r'^(\d+)/sendtest/$', self.admin_site.admin_view(self.sendtest), name='%s_%s_sendtest' % info),
         ]
         return submit_urls + urls
+
+    def groups_list(self, obj):
+        if obj.groups.exists():
+            meta = getattr(self.model.groups.field.rel.to, '_meta')
+            return ' / '.join(
+                '<a href="{0}">{1}</a>'.format(
+                    admin_utils.get_change_url(meta.app_label, meta.model_name, group.pk),
+                    group
+                )
+                for group in obj.groups.all()
+            )
+    groups_list.short_description = _('Lists')
+    groups_list.allow_tags = True
 
     def short_subject(self, obj):
         return description(obj.subject, 30, 60)
@@ -556,6 +570,3 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     def action_mark_subscribed(self, request, queryset):
         queryset.update(status=Subscriber.STATUS_SUBSCRIBED)
     action_mark_subscribed.short_description = _('Change the status of the selected %(verbose_name_plural)s to "Subscribed"')
-
-    def groups_list(self, obj):
-        return ', '.join(group.name for group in obj.groups.all())
