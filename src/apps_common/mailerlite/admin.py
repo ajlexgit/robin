@@ -91,7 +91,7 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         'total', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated'
     )
     list_display = (
-        'view', 'upload',
+        'view', 'download', 'upload',
         'name', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'subscribable', 'status'
     )
     list_display_links = ('name', )
@@ -134,7 +134,7 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def suit_cell_attributes(self, obj, column):
         default = super().suit_cell_attributes(obj, column)
-        if column == 'upload':
+        if column in ('download', 'upload'):
             default.update({
                 'class': 'mini-column'
             })
@@ -162,11 +162,24 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
     upload.short_description = '#'
     upload.allow_tags = True
 
+    def download(self, obj):
+        return ('<a href="{href}" title="{title}">'
+                '   <span class="icon-download icon-alpha75"></span>'
+                '</a>').format(
+            href=reverse('admin:%s_group_download_csv' % self.model._meta.app_label, kwargs={
+                'group_id': obj.pk
+            }),
+            title=_('Export subscribers as a CSV file'),
+        )
+    download.short_description = '#'
+    download.allow_tags = True
+
     def get_urls(self):
         urls = super().get_urls()
         info = self.model._meta.app_label, self.model._meta.model_name
         csv_urls = [
             url(r'^upload_csv/(?P<group_id>\d+)/$', self.admin_site.admin_view(self.upload_csv), name='%s_%s_upload_csv' % info),
+            url(r'^download_csv/(?P<group_id>\d+)/$', self.admin_site.admin_view(self.download_csv), name='%s_%s_download_csv' % info),
         ]
         return csv_urls + urls
 
@@ -220,6 +233,29 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         return JsonResponse({
             'redirect': reverse('admin:%s_subscriber_changelist' % Group._meta.app_label) + '?group=%d' % group.pk,
         })
+
+    def download_csv(self, request, group_id):
+        # Поиск списка подписчиков
+        try:
+            group = Group.objects.get(pk=group_id)
+        except Group.DoesNotExist:
+            raise Http404
+
+        class Echo(object):
+            def write(self, value):
+                return value
+
+        pseudo_buffer = Echo()
+        csv_writer = csv.writer(pseudo_buffer)
+        stream = (
+            csv_writer.writerow(subscriber)
+            for subscriber in Subscriber.objects.filter(
+                groups=group,
+            ).order_by('email').distinct('email').values_list(
+                'email', 'name', 'last_name', 'company', 'status'
+            )
+        )
+        return AttachmentResponse(request, stream, filename='%s.csv' % group.name)
 
 
 class CampaignForm(forms.ModelForm):
@@ -473,7 +509,6 @@ class SubscriberForm(forms.ModelForm):
 
 @admin.register(Subscriber)
 class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
-    change_list_template = 'mailerlite/admin/subscribers_change_list.html'
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -530,27 +565,6 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         if request.user.is_superuser:
             default.remove('status')
         return tuple(default)
-
-    def get_urls(self):
-        urls = super().get_urls()
-        info = self.model._meta.app_label, self.model._meta.model_name
-        csv_urls = [
-            url(r'^download_csv/$', self.admin_site.admin_view(self.download_csv), name='%s_%s_download_csv' % info),
-        ]
-        return csv_urls + urls
-
-    def download_csv(self, request):
-        class Echo(object):
-            def write(self, value):
-                return value
-
-        pseudo_buffer = Echo()
-        csv_writer = csv.writer(pseudo_buffer)
-        stream = (
-            csv_writer.writerow(subscriber)
-            for subscriber in Subscriber.objects.all().values_list('email', 'name', 'last_name', 'company', 'status')
-        )
-        return AttachmentResponse(request, stream, filename='subscribers.csv')
 
     def save_model(self, request, obj, form, change):
         """ Автоматически добавляем все группы, если они не заданы """

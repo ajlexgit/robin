@@ -12,6 +12,12 @@
         </a>
       </li>
       <li>
+        <a href="{% url 'admin:mailerlite_group_download_csv' group_id=original.pk %}">
+          <i class="icon-download icon-alpha75"></i>
+          {% trans 'Export subscribers as a CSV file' %}
+        </a>
+      </li>
+      <li>
         <a href="#" data-url="{% url 'admin:mailerlite_group_upload_csv' group_id=original.pk %}" class="upload-csv">
           <i class="icon-upload icon-alpha75"></i>
           {% trans 'Import subscribers from CSV file' %}
