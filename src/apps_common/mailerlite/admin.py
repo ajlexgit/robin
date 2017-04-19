@@ -71,19 +71,31 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'name', 'status', 'subscribable',
+                'name', 'subscribable',
             )
         }),
         (_('Subscribers'), {
-            'classes': ('suit-tab', 'suit-tab-general'),
+            'classes': ('suit-tab', 'suit-tab-statistics'),
             'fields': (
                 'total', 'active', 'unsubscribed',
             )
         }),
-        (_('Statistics'), {
+        (_('Emails'), {
             'classes': ('suit-tab', 'suit-tab-statistics'),
             'fields': (
-                'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_updated',
+                'sent', 'opened', 'clicked',
+            )
+        }),
+        (_('Dates'), {
+            'classes': ('suit-tab', 'suit-tab-statistics'),
+            'fields': (
+                'date_created', 'date_updated',
+            )
+        }),
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-debug'),
+            'fields': (
+                'status', 'remote_id',
             )
         }),
     )
@@ -95,10 +107,6 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         'name', 'active', 'unsubscribed', 'sent', 'opened', 'clicked', 'subscribable', 'status'
     )
     list_display_links = ('name', )
-    suit_form_tabs = (
-        ('general', _('General')),
-        ('statistics', _('Statistics')),
-    )
 
     class Media:
         js = (
@@ -118,6 +126,19 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         if not request.user.is_superuser:
             default += ('status', )
         return default
+
+    def get_suit_form_tabs(self, request, add=False):
+        if request.user.is_superuser:
+            return (
+                ('general', _('General')),
+                ('statistics', _('Statistics')),
+                ('debug', _('Debugging')),
+            )
+        else:
+            return (
+                ('general', _('General')),
+                ('statistics', _('Statistics')),
+            )
 
     def has_add_permission(self, request):
         """ Право на добавление суперюзеру """
@@ -286,13 +307,19 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'text',
             )
         }),
-        (_('Statistics'), {
+        (_('Emails'), {
             'classes': ('suit-tab', 'suit-tab-statistics'),
             'fields': (
-                'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done',
+                'sent', 'opened', 'clicked',
             )
         }),
-        (_('Additional information'), {
+        (_('Dates'), {
+            'classes': ('suit-tab', 'suit-tab-statistics'),
+            'fields': (
+                'date_created', 'date_started', 'date_done',
+            )
+        }),
+        (None, {
             'classes': ('suit-tab', 'suit-tab-debug'),
             'fields': (
                 'status', 'published', 'remote_id',
@@ -513,7 +540,7 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
             'fields': (
-                'email', 'groups', 'status',
+                'email', 'groups',
             )
         }),
         (_('Additional information'), {
@@ -522,10 +549,22 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'name', 'last_name', 'company',
             )
         }),
-        (_('Statistics'), {
+        (_('Emails'), {
             'classes': ('suit-tab', 'suit-tab-statistics'),
             'fields': (
-                'sent', 'opened', 'clicked', 'remote_id', 'date_created', 'date_unsubscribe',
+                'sent', 'opened', 'clicked',
+            )
+        }),
+        (_('Dates'), {
+            'classes': ('suit-tab', 'suit-tab-statistics'),
+            'fields': (
+                'date_created', 'date_unsubscribe',
+            )
+        }),
+        (None, {
+            'classes': ('suit-tab', 'suit-tab-debug'),
+            'fields': (
+                'status', 'remote_id',
             )
         }),
     )
@@ -538,10 +577,6 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
     actions = ('action_mark_queued', 'action_mark_subscribed', )
     search_fields = ('email', 'name', 'last_name', 'company')
     list_display = ('email', 'sent', 'opened', 'clicked', 'status', 'date_created')
-    suit_form_tabs = (
-        ('general', _('General')),
-        ('statistics', _('Statistics')),
-    )
 
     class Media:
         js = (
@@ -555,6 +590,19 @@ class SubscriberAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'autocomplete/css/select2.css',
             )
         }
+
+    def get_suit_form_tabs(self, request, add=False):
+        if request.user.is_superuser:
+            return (
+                ('general', _('General')),
+                ('statistics', _('Statistics')),
+                ('debug', _('Debugging')),
+            )
+        else:
+            return (
+                ('general', _('General')),
+                ('statistics', _('Statistics')),
+            )
 
     def get_readonly_fields(self, request, obj=None):
         default = list(super().get_readonly_fields(request, obj))
