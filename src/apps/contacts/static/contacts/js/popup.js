@@ -57,6 +57,8 @@
             data: data,
             dataType: 'json',
             beforeSend: function() {
+                $.popup.showPreloader();
+
                 $form.addClass('sending');
                 $form.find('.invalid').removeClass('invalid');
             },
@@ -74,6 +76,8 @@
             error: $.parseError(function(response) {
                 if (response && response.errors) {
                     // ошибки формы
+                    $.popup.hidePreloader();
+
                     response.errors.forEach(function(record) {
                         var $field = $form.find('.' + record.fullname);
                         if ($field.length) {

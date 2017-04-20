@@ -506,7 +506,7 @@
             if (this.opts.closeButton || this.opts.hideOnClick) {
                 var that = this;
                 $(document).on('keyup.popup', function(event) {
-                    if (event.which == 27) {
+                    if (event.which == 27 && that.opts.hideOnClick) {
                         that.hide();
                     }
                 });
@@ -544,7 +544,7 @@
             var that = this;
             if (this.opts.hideOnClick) {
                 $(document).on('click.popup', function(evt) {
-                    if (that.isOutClick($(evt.target))) {
+                    if (that.isOutClick($(evt.target)) && that.opts.hideOnClick) {
                         that.hide();
                     }
                 });
