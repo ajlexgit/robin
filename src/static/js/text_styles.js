@@ -36,8 +36,22 @@
             }
         }
 
-        return $.trim(description);
+        return $.trim(description).replace(/[\n\r]+/g, '<br>');
     };
+
+    /*
+        Получение текста из base64 в data-аттрибуте
+     */
+    var decode_description = function($element) {
+        var description = $element.data('description') || '';
+        if (!description) {
+            return '';
+        }
+
+        description = decodeURIComponent(atob(description));
+        return $.trim(description).replace(/[\n\r]+/g, '<br>');
+    };
+
 
     $(document).ready(function() {
         // оборачивание таблиц
@@ -51,11 +65,11 @@
         $('.simple-photo').each(function() {
             var $image = $(this);
             var $block = $image.parent();
-            var description = cut_description($block.get(0)) || $.trim(atob($image.data('description') || ''));
+            var description = cut_description($block.get(0)) || decode_description($image);
             if (!description) return;
 
             $block.append(
-                $('<span>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
+                $('<span>').addClass('object-description').html(description)
             );
         });
 
@@ -63,13 +77,13 @@
         $('.single-image').each(function() {
             var $block = $(this);
             var $image = $block.find('img').first();
-            var description = cut_description($block.get(0)) || $.trim(atob($image.data('description') || ''));
+            var description = cut_description($block.get(0)) || decode_description($image);
             if (!description) return;
 
             $block.replaceWith(
                 $('<figure>').addClass($block.attr('class')).append(
                     $image,
-                    $('<figcaption>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
+                    $('<figcaption>').addClass('object-description').html(description)
                 )
             );
         });
@@ -80,7 +94,7 @@
             if (!description) return;
 
             $(this).append(
-                $('<span>').addClass('object-description').html(description.replace(/[\n\r]+/g, '<br>'))
+                $('<span>').addClass('object-description').html(description)
             )
         }).fitVids();
 
@@ -90,10 +104,10 @@
             var description = cut_description(this);
             $(this).find('img').wrap('<div class="slider-item"/>').each(function() {
                 var $image = $(this);
-                var description = $.trim(atob($image.data('description') || ''));
+                var description = decode_description($image);
                 if (description) {
                     $image.after(
-                        $('<div>').addClass('item-description').html(description.replace(/[\n\r]+/g, '<br>'))
+                        $('<div>').addClass('item-description').html(description)
                     );
                 }
             });

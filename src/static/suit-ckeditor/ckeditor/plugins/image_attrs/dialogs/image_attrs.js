@@ -49,13 +49,14 @@
                         setup: function(element) {
                             var description = element.getAttribute("data-description");
                             if (description) {
-                                this.setValue(atob(description));
+                                this.setValue(decodeURIComponent(atob(description)));
                             }
                         },
                         commit: function(element) {
                             var description = this.getValue();
                             if (description) {
-                                element.setAttribute('data-description', btoa(description));
+                                description = btoa(encodeURIComponent(description));
+                                element.setAttribute('data-description', description);
                             } else {
                                 element.removeAttribute('data-description');
                             }
