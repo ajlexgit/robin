@@ -16,7 +16,7 @@ class IndexView(CachedViewMixin, TemplateView):
     config = None
     addresses = None
 
-    def last_modified(self, *args, tag_slug=None, **kwargs):
+    def last_modified(self, *args, **kwargs):
         self.config = ContactsConfig.get_solo()
         self.addresses = Address.objects.all()
         return self.config.updated, self.addresses.aggregate(models.Max('updated'))['updated__max']
