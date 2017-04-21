@@ -34,6 +34,18 @@ class FileFieldMixin:
         signals.post_save.connect(self._post_save, sender=cls)
         signals.post_delete.connect(self._post_delete, sender=cls)
 
+    def save_form_data(self, instance, data):
+        old_value = self.value_from_object(instance)
+        setattr(instance, '_%s' % self.attname, old_value)
+        super().save_form_data(instance, data)
+
+    def pre_save(self, model_instance, add):
+        file = getattr(model_instance, self.attname)
+        if file and not file._committed:
+            old_value = getattr(model_instance, '_%s' % self.attname, None)
+            file.save(file.name, file, save=False, old_value=old_value)
+        return file
+
     def _post_save(self, instance, **kwargs):
         # Fix for django-solo cache
         if HAS_SOLO_CACHE and isinstance(instance, SingletonModel):
@@ -46,18 +58,6 @@ class FileFieldMixin:
 
 class FileField(FileFieldMixin, models.FileField):
     attr_class = FieldFile
-
-    def save_form_data(self, instance, data):
-        old_value = self.value_from_object(instance)
-        setattr(instance, '_%s' % self.attname, old_value)
-        super().save_form_data(instance, data)
-
-    def pre_save(self, model_instance, add):
-        file = super(models.FileField, self).pre_save(model_instance, add)
-        if file and not file._committed:
-            old_value = getattr(model_instance, '_%s' % self.attname, None)
-            file.save(file.name, file, save=False, old_value=old_value)
-        return file
 
 
 class ImageField(FileFieldMixin, models.ImageField):
