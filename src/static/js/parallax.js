@@ -242,7 +242,8 @@
 
             var blockTop = this.block.offset().top;
             var blockHeight = this.block.outerHeight();
-            var scrollFrom = blockTop - winHeight;
+
+            var scrollFrom = Math.max(0, blockTop - winHeight);
             var scrollTo = blockTop + blockHeight;
             if ((winScroll < scrollFrom) || (winScroll > scrollTo)) {
                 return
@@ -253,7 +254,14 @@
             var eProgress = $.easing[this.options.easing](scrollPosition);
 
             this.trigger('update', {
+                blockTop: blockTop,
                 blockHeight: blockHeight,
+                winScroll: winScroll,
+                winHeight: winHeight,
+                scrollFrom: scrollFrom,
+                scrollTo: scrollTo,
+                scrollLength: scrollLength,
+                scrollPosition: scrollPosition,
                 progress: eProgress
             });
         }

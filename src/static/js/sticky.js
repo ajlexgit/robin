@@ -5,7 +5,7 @@
         Плагин, перемещающий блок в пределах его родителя во время скролла страницы.
 
         Требует:
-            jquery.utils.js, jquery.inspectors.js
+            jquery-ui.js, jquery.utils.js, jquery.inspectors.js
 
         Параметры:
             topOffset       - расстояние от верха окна до ползающего блока
@@ -214,11 +214,13 @@
 
             var paddingTop = (parseInt(this.block.css('padding-top')) || 0);
             var paddingBottom = (parseInt(this.block.css('padding-bottom')) || 0);
+
+            var areaTop = this.block.offset().top;
             var areaHeight = this.block.outerHeight();
 
             var element_height = this.element.outerHeight(true);
 
-            var scrollFrom = this.block.offset().top + paddingTop - this.options.topOffset;
+            var scrollFrom = areaTop + paddingTop - this.options.topOffset;
             var scrollTo = scrollFrom + this.block.height() - element_height;
 
             if (winScroll < scrollFrom) {
