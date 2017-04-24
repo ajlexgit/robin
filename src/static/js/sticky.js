@@ -8,6 +8,7 @@
             jquery-ui.js, jquery.utils.js, jquery.inspectors.js
 
         Параметры:
+            blockSelector   - селектор родительского блока
             topOffset       - расстояние от верха окна до ползающего блока
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
@@ -26,6 +27,7 @@
     var $window = $(window);
     $.widget("django.sticky", {
         options: {
+            blockSelector: '',
             topOffset: 0,
             minEnabledWidth: 768,
 
@@ -129,7 +131,11 @@
             Получение элемента контейнера
          */
         _getBlock: function() {
-            return this.element.parent();
+            if (this.options.blockSelector) {
+                return this.element.closest(this.options.blockSelector);
+            } else {
+                return this.element.parent();
+            }
         },
 
         /*

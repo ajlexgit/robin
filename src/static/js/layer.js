@@ -8,6 +8,7 @@
             jquery-ui.js, jquery.utils.js, jquery.inspectors.js
 
         Параметры:
+            blockSelector   - селектор родительского блока
             easing          - функция сглаживания перемещения фона
             minEnabledWidth - минимальная ширина экрана, при которой блок перемещается
 
@@ -22,6 +23,7 @@
     var $window = $(window);
     $.widget("django.layer", {
         options: {
+            blockSelector: '',
             easing: 'easeInOutQuad',
             minEnabledWidth: 768,
 
@@ -90,7 +92,11 @@
             Получение элемента контейнера
          */
         _getBlock: function() {
-            return this.element.parent();
+            if (this.options.blockSelector) {
+                return this.element.closest(this.options.blockSelector);
+            } else {
+                return this.element.parent();
+            }
         },
 
         /*

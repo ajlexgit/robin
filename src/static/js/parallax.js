@@ -8,6 +8,7 @@
             jquery-ui.js, jquery.utils.js, jquery.inspectors.js
 
         Параметры:
+            blockSelector       - селектор родительского блока
             imageHeightPercents - высота фоновой картинки в процентах относительно высоты блока
             easing              - функция сглаживания перемещения фона
             minEnabledWidth     - минимальная ширина экрана, при которой элемент перемещается
@@ -27,6 +28,7 @@
     var $window = $(window);
     $.widget("django.parallax", {
         options: {
+            blockSelector: '',
             imageHeightPercents: 150,
             minEnabledWidth: 768,
             easing: 'easeInOutQuad',
@@ -164,7 +166,11 @@
             Получение элемента контейнера
          */
         _getBlock: function() {
-            return this.element.parent();
+            if (this.options.blockSelector) {
+                return this.element.closest(this.options.blockSelector);
+            } else {
+                return this.element.parent();
+            }
         },
 
         /*
