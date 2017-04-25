@@ -27,6 +27,7 @@ def away_links(request, html):
             if '' not in (parsed.scheme, parsed.netloc) and not parsed.query and not is_same_domain(parsed.netloc, site.domain):
                 tag['target'] = '_blank'
                 tag['href'] = resolve_url('away') + '?url=' + parsed.geturl()
-                tag.string = parse.unquote(tag.string)
+                if tag.string:
+                    tag.string = parse.unquote(tag.string)
 
     return soup.body.decode_contents()
