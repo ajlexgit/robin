@@ -82,7 +82,7 @@ class Message(models.Model):
     email = models.EmailField(_('e-mail'), blank=True)
     message = models.TextField(_('message'), max_length=2048)
     date = models.DateTimeField(_('date sent'), default=now, editable=False)
-    referer = models.CharField(_('from page'), max_length=255, blank=True, editable=False)
+    referer = models.CharField(_('from page'), max_length=512, blank=True, editable=False)
 
     class Meta:
         default_permissions = ('delete', )
