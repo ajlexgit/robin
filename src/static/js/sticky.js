@@ -52,11 +52,12 @@
 
                 if (that._state != state) {
                     that._state = state;
-                    that.trigger('update', {
-                        state: state,
-                        offset: data.offset
-                    });
                 }
+
+                that.trigger('update', {
+                    state: state,
+                    offset: data.offset
+                });
             },
             update: function(event, data) {
                 var that = data.widget;
@@ -147,7 +148,7 @@
                     'position': 'relative'
                 });
             }
-            this.block.css('overflow', 'auto');
+            this.block.css('overflow', 'hidden');
 
             if (!this.element.hasClass('sticky')) {
                 this._addClass('sticky');
