@@ -57,7 +57,7 @@
         // оборачивание таблиц
         $('.text-styles table').each(function() {
             $(this).wrap(
-                $('<div/>').addClass('page-table')
+                $('<div>').addClass('page-table')
             )
         });
 
@@ -102,7 +102,7 @@
         // Слайдеры с описанием
         $('.page-images.multi-image').each(function() {
             var description = cut_description(this);
-            $(this).find('img').wrap('<div class="slider-item"/>').each(function() {
+            $(this).find('img').wrap('<div class="slider-item">').each(function() {
                 var $image = $(this);
                 var description = decode_description($image);
                 if (description) {

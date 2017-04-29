@@ -502,7 +502,7 @@
          */
         cls._buildDOM = function() {
             this.$container = $('<div>').addClass('gmap-label').append(
-                $('<span/>').addClass('gmap-label-text')
+                $('<span>').addClass('gmap-label-text')
             );
         };
 

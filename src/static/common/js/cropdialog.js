@@ -299,7 +299,7 @@
             Создание и открытие модального окна
          */
         cls.openDialog = function(dialog_opts, crop_opts) {
-            var $template = $('<div/>').addClass('preload').appendTo('body');
+            var $template = $('<div>').addClass('preload').appendTo('body');
             this.$dialog = $template.dialog(dialog_opts);
         };
 

@@ -41,7 +41,7 @@ def set_chars(instance, field, max_length=255):
         if isinstance(validator, MaxLengthValidator):
             max_length = min(max_length, validator.limit_value)
 
-    value = generate_lorem_ipsum(1, min=1, max=max(5, max_length // 8), html=False)
+    value = generate_lorem_ipsum(1, min_len=1, max_len=max(5, max_length // 8), html=False)
     value = Truncator(value).chars(max_length, html=False)
     setattr(instance, field.name, value)
 
@@ -66,7 +66,7 @@ def set_slug(instance, field):
         setattr(instance, field.name, random.choice(possibles))
         return
 
-    value = slugify(generate_lorem_ipsum(1, min=1, max=6))
+    value = slugify(generate_lorem_ipsum(1, min_len=1, max_len=6))
     value = Truncator(value).chars(field.max_length, html=False)
     setattr(instance, field.name, value)
 
@@ -122,7 +122,7 @@ def set_email(instance, field):
         setattr(instance, field.name, random.choice(possibles))
         return
 
-    value = generate_random_string(min=2, max=20)
+    value = generate_random_string(min_len=2, max_len=20)
     setattr(instance, field.name, '%s@gmail.com' % value)
 
 

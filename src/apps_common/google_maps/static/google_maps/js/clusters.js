@@ -23,8 +23,8 @@
             Построение DOM
          */
         cls._buildDOM = function() {
-            this.$inner = $('<div/>').addClass('gmap-cluster-marker');
-            this.$counter = $('<span/>').addClass('gmap-cluster-text');
+            this.$inner = $('<div>').addClass('gmap-cluster-marker');
+            this.$counter = $('<span>').addClass('gmap-cluster-text');
             this.$container = $('<div>').addClass('gmap-cluster').append(
                 this.$inner.append(this.$counter)
             ).hide();

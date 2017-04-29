@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from solo.admin import SingletonModelAdmin

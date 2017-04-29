@@ -186,7 +186,7 @@ def upload_pagefile(request):
     try:
         pagefile.full_clean()
     except ValidationError as e:
-        pagefile.photo.delete(save=False)
+        pagefile.file.delete(save=False)
         return JsonResponse({
             'message': ', '.join(e.messages),
         }, status=400)

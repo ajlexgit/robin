@@ -40,7 +40,7 @@
 
         var $preloaderHolder = popup.$window.find('.preloader-overlay');
         if (!$preloaderHolder.length) {
-            $preloaderHolder = $('<div/>').addClass('preloader-overlay').appendTo(popup.$window);
+            $preloaderHolder = $('<div>').addClass('preloader-overlay').appendTo(popup.$window);
             addPreloader($preloaderHolder);
         }
 

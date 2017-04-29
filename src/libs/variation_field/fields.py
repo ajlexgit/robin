@@ -17,8 +17,12 @@ from . import conf
 # Фикс обновления кэша в django-solo
 try:
     from solo.models import SingletonModel
+
     HAS_SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None) is not None
 except ImportError:
+    class SingletonModel:
+        pass
+
     HAS_SOLO_CACHE = False
 
 
@@ -331,7 +335,7 @@ class VariationImageFieldFile(ImageFieldFile):
     def delete(self, save=True):
         """ Удаление картинки """
         self.create_variations()
-        for name in self.variations:
+        for name in self.variations.keys():
             variation_field = getattr(self, name, None)
             if variation_field:
                 variation_field.delete()
@@ -713,9 +717,11 @@ class VariationImageField(models.ImageField):
     def recut_all(self, *args):
         """ Перенарезка всех картинок """
         if self.crop_field:
-            get_crop = lambda i: getattr(i, self.crop_field)
+            def get_crop(arg):
+                return getattr(arg, self.crop_field)
         else:
-            get_crop = lambda i: None
+            def get_crop(arg):
+                return None
 
         for instance in self.model.objects.all():
             file_field = getattr(instance, self.name)

@@ -353,7 +353,7 @@
                             $.imageToCanvasDeferred(img, 600, 600).done(function(canvas) {
                                 img = null;
 
-                                var $image = $('<img/>');
+                                var $image = $('<img>');
                                 $preview.find('img').remove();
                                 $preview.prepend($image).css({
                                     background: 'none'

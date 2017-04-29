@@ -106,10 +106,10 @@ class AttachedBlocksFormset(BaseGenericInlineFormSet):
 class BaseAttachedBlocksMixinChecks(GenericInlineModelAdminChecks):
     def check(self, cls, parent_model, **kwargs):
         errors = super().check(cls, parent_model, **kwargs)
-        errors.extend(self._check_set_name(cls, parent_model))
+        errors.extend(self._check_set_name(cls))
         return errors
 
-    def _check_set_name(self, cls, parent_model):
+    def _check_set_name(self, cls):
         if not cls.set_name:
             return [
                 checks.Error(

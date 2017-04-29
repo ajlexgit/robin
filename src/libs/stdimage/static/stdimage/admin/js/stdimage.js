@@ -253,7 +253,7 @@
                 background: this.opts.background
             });
             this.$previews.empty();
-            var $image = $('<img/>').attr('src', canvas.toDataURL());
+            var $image = $('<img>').attr('src', canvas.toDataURL());
             this.$previews.prepend($image);
         };
 

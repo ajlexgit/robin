@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 
 
 class GalleryWidget(forms.Widget):
+    context = None
 
     class Media:
         js = (

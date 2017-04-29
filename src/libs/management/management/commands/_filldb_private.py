@@ -44,7 +44,7 @@ def get_field_choices(field):
     return possibles
 
 
-def generate_lorem_ipsum(n=5, html=False, min=20, max=100):
+def generate_lorem_ipsum(n=5, html=False, min_len=20, max_len=100):
     """Generate some lorem ipsum for the template."""
     words = LOREM_IPSUM_WORDS.split()
     result = []
@@ -56,7 +56,7 @@ def generate_lorem_ipsum(n=5, html=False, min=20, max=100):
         p = []
 
         # each paragraph contains out of 20 to 100 words.
-        for idx in range(randrange(min, max)):
+        for idx in range(randrange(min_len, max_len)):
             while True:
                 word = choice(words)
                 if word != last:
@@ -90,9 +90,9 @@ def generate_lorem_ipsum(n=5, html=False, min=20, max=100):
     return '\n\n'.join('<p>%s</p>' % escape(x) for x in result)
 
 
-def generate_random_string(min=5, max=32):
+def generate_random_string(min_len=5, max_len=32):
     allowed_chars = string.ascii_letters + string.digits + '-'
-    return ''.join(choice(allowed_chars) for _ in range(randrange(min, max)))
+    return ''.join(choice(allowed_chars) for _ in range(randrange(min_len, max_len)))
 
 
 def get_spans(min_dimensions, max_dimensions, variations):
@@ -130,4 +130,3 @@ def fetch_span(width_span, height_span, step=100):
         height = height_span[0] + randint(0, step_count) * step
 
     return width, height
-

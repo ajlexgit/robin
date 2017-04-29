@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.template import Library
 from django.utils.formats import date_format
 from django.utils.translation import ugettext as _, ungettext_lazy
 

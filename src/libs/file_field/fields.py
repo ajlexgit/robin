@@ -9,6 +9,9 @@ try:
 
     HAS_SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None) is not None
 except ImportError:
+    class SingletonModel:
+        pass
+
     HAS_SOLO_CACHE = False
 
 

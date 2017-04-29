@@ -168,10 +168,10 @@
          */
         cls._createDOM = function() {
             // Создание DOM (изначально скрытого)
-            this.$container = $('<div/>').attr('id', this.CONTAINER_ID).hide();
-            this.$windowWrapper = $('<div/>').addClass(this.WRAPPER_CLASS);
-            this.$window = $('<div/>').addClass(this.WINDOW_CLASS);
-            this.$content = $('<div/>').addClass(this.CONTENT_CLASS);
+            this.$container = $('<div>').attr('id', this.CONTAINER_ID).hide();
+            this.$windowWrapper = $('<div>').addClass(this.WRAPPER_CLASS);
+            this.$window = $('<div>').addClass(this.WINDOW_CLASS);
+            this.$content = $('<div>').addClass(this.CONTENT_CLASS);
 
             this.$window.append(this.$content);
             this.$windowWrapper.append(this.$window);

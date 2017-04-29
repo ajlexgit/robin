@@ -87,7 +87,7 @@
          */
         cls.createNavigation = function(slider) {
             this.$container.find('.' + this.opts.wrapperClass).remove();
-            this.$wrapper = $('<div/>').addClass(this.opts.wrapperClass).appendTo(this.$container);
+            this.$wrapper = $('<div>').addClass(this.opts.wrapperClass).appendTo(this.$container);
 
             // событие клика на кнопку
             if (this.opts.animationName) {

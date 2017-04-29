@@ -1,17 +1,11 @@
+import re
+import warnings
 from django import template
 from django.contrib import admin
+from django.utils.six import string_types
 from django.contrib.admin import AdminSite
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.urlresolvers import reverse, resolve
-
-try:
-    from django.utils.six import string_types
-except ImportError:
-    # For Django < 1.4.2
-    string_types = basestring,
-
-import re
-import warnings
 from suit.config import get_config
 
 register = template.Library()
@@ -93,7 +87,6 @@ class Menu(object):
         self.conf_menu = get_config('MENU')
 
     def get_app_list(self):
-        menu = None
         if self.conf_menu:
             menu = self.make_menu(self.conf_menu)
         elif self.conf_menu_order:

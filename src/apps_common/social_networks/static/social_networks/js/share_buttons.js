@@ -104,7 +104,7 @@
                     $counter.text(count)
                 } else {
                     this.$button.append(
-                        $('<span/>').addClass('counter').text(count)
+                        $('<span>').addClass('counter').text(count)
                     );
                 }
             }

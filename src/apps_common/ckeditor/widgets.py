@@ -1,6 +1,5 @@
 import json
 from urllib import parse
-from django.conf import settings
 from django.shortcuts import resolve_url
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
