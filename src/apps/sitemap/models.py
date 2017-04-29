@@ -15,4 +15,3 @@ class SitemapConfig(SingletonModel):
 
     def get_absolute_url(self):
         return resolve_url('sitemap:index')
-

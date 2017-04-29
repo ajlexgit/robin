@@ -116,4 +116,3 @@ class BlogPost(models.Model):
 
     def get_absolute_url(self):
         return resolve_url('blog:detail', slug=self.slug)
-
