@@ -52,7 +52,7 @@
 
             // Поля, от которых зависит текущее поле
             var filters = this.opts.filters;
-            if (typeof filters == 'string') {
+            if (typeof filters === 'string') {
                 filters = filters.split(',');
             } else {
                 filters = filters.concat();

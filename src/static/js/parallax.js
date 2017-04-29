@@ -73,7 +73,7 @@
 
         _create: function() {
             // проверка тэга
-            this.is_picture = this.element.prop('tagName') == 'PICTURE';
+            this.is_picture = this.element.prop('tagName') === 'PICTURE';
             if (this.is_picture) {
                 this.image = this.element.find('img');
             } else {
@@ -177,7 +177,7 @@
             Стилизация
          */
         _setStyles: function() {
-            if (this.block.css('position') == 'static') {
+            if (this.block.css('position') === 'static') {
                 this.block.css({
                     'position': 'relative'
                 })

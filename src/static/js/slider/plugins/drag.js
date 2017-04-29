@@ -56,7 +56,7 @@
 
                 that.onStartDrag(slider, evt);
             }).on('drag', function(evt) {
-                if (evt.dx == that._dx) {
+                if (evt.dx === that._dx) {
                     return false;
                 }
 
@@ -207,7 +207,7 @@
             var slider_width = slider.$list.outerWidth();
             var slide_width = slider_width * slide_left / 100;
             var absPixels = evt.abs_dx % slide_width;
-            var farDirection = (evt.dx > 0) == (evt.dx >= this._dx);
+            var farDirection = (evt.dx > 0) === (evt.dx >= this._dx);
             var threshold = Math.min(this.opts.maxSlideThreshold, slider_width * this.opts.slideThreshold / 100);
             if (farDirection) {
                 var chooseFar = (absPixels > threshold);
@@ -224,7 +224,7 @@
 
             // Находим второй видимый слайд
             var $farSlide = this._getSideSlide($nearSlide);
-            if ($farSlide.get(0) == $nearSlide.get(0)) {
+            if ($farSlide.get(0) === $nearSlide.get(0)) {
                 $farSlide = $();
             }
 
@@ -243,7 +243,7 @@
 
 
             // выделяем активный слайд
-            if (slider.$currentSlide.get(0) != $newCurrentSlide.get(0)) {
+            if (slider.$currentSlide.get(0) !== $newCurrentSlide.get(0)) {
                 slider._setCurrentSlide($newCurrentSlide);
                 slider.softUpdateListHeight(this.opts.animatedHeight);
             }
@@ -261,7 +261,7 @@
             Завершение перетаскивания слайдов мышью или тачпадом
          */
         cls.onStopDrag = function(slider, evt) {
-            if (!this._movedSlides || (this._movedSlides.length != 2)) {
+            if (!this._movedSlides || (this._movedSlides.length !== 2)) {
                 return
             }
 
@@ -282,7 +282,7 @@
                 left_slide: left_match,
                 right_slide: right_match
             };
-            if ($currSlide.get(0) == leftSlide) {
+            if ($currSlide.get(0) === leftSlide) {
                 var animation_to = {
                     left_slide: 0,
                     right_slide: slide_left
@@ -312,7 +312,7 @@
                     });
                 },
                 complete: function() {
-                    if ($currSlide.get(0) == leftSlide) {
+                    if ($currSlide.get(0) === leftSlide) {
                         $leftSlide.css({
                             transform: 'none'
                         });

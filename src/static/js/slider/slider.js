@@ -230,11 +230,11 @@
 
             // обновление высоты по мере загрузки картинок
             var $images;
-            if (this.opts.sliderHeight == this.HEIGHT_CURRENT) {
+            if (this.opts.sliderHeight === this.HEIGHT_CURRENT) {
                 $images = this.$currentSlide.find('img');
-            } else if (this.opts.sliderHeight == this.HEIGHT_MAX) {
+            } else if (this.opts.sliderHeight === this.HEIGHT_MAX) {
                 $images = this.$list.find('img');
-            } else if (this.opts.sliderHeight == this.HEIGHT_NONE) {
+            } else if (this.opts.sliderHeight === this.HEIGHT_NONE) {
                 $images = $();
             } else {
                 return this.raise('unknown sliderHeight');
@@ -290,7 +290,7 @@
                 return false
             }
 
-            if (this.$currentSlide && (this.$currentSlide.get(0) == $slide.get(0))) {
+            if (this.$currentSlide && (this.$currentSlide.get(0) === $slide.get(0))) {
                 return false
             }
 
@@ -471,7 +471,7 @@
             var index = this._plugins.length;
             while (index--) {
                 var plugin = this._plugins[index];
-                if ((methodName in plugin) && (plugin.opts.name == animationName)) {
+                if ((methodName in plugin) && (plugin.opts.name === animationName)) {
                     return $.proxy(plugin[methodName], plugin);
                 }
             }
@@ -512,9 +512,9 @@
             Рассчет высоты слайдера
          */
         cls.calcListHeight = function() {
-            if (this.opts.sliderHeight == cls.HEIGHT_CURRENT) {
+            if (this.opts.sliderHeight === cls.HEIGHT_CURRENT) {
                 return this.$currentSlide.outerHeight();
-            } else if (this.opts.sliderHeight == cls.HEIGHT_MAX) {
+            } else if (this.opts.sliderHeight === cls.HEIGHT_MAX) {
                 var final_height = 0;
                 this.$slides.height('auto');
                 $.each(this.$slides, function(i, slide) {
@@ -548,7 +548,7 @@
 
                 // высота не меняется - выходим
                 var current_height = that.$list.height();
-                if (current_height == final_height) {
+                if (current_height === final_height) {
                     return
                 }
 
@@ -581,7 +581,7 @@
             Обновление высоты слайдера по условию
          */
         cls.softUpdateListHeight = function(animated) {
-            if (this.opts.sliderHeight == cls.HEIGHT_CURRENT) {
+            if (this.opts.sliderHeight === cls.HEIGHT_CURRENT) {
                 this.updateListHeight(animated);
             }
         };

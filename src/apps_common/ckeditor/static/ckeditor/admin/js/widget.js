@@ -9,7 +9,7 @@
 
             // ищем поле
             var $field = $('.ckeditor-field[name="' + name + '"]');
-            if ($field.length != 1) continue;
+            if ($field.length !== 1) continue;
 
             // шаблонная inline-форма
             if ($field.closest('.empty-form').length) continue;

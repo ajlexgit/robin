@@ -38,7 +38,7 @@
          */
         cls.checkChecked = function() {
             var $checked = this.$list.find('.gallery-item-checked');
-            this.$root.find('.delete-checked-items').prop('disabled', $checked.length == 0);
+            this.$root.find('.delete-checked-items').prop('disabled', $checked.length === 0);
         };
 
         /*

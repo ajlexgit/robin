@@ -38,14 +38,14 @@
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
 
-            if (this.opts.direction == 'prev') {
+            if (this.opts.direction === 'prev') {
                 this._timerHandler = $.proxy(
                     slider.slidePrevious,
                     slider,
                     this.opts.animationName,
                     this.opts.animatedHeight
                 );
-            } else if (this.opts.direction == 'random') {
+            } else if (this.opts.direction === 'random') {
                 this._timerHandler = $.proxy(this.slideToRandom, this, slider);
             } else {
                 this._timerHandler = $.proxy(

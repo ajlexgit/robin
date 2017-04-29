@@ -67,6 +67,7 @@
             });
 
             // Изменение файла
+            var that = this;
             this.$input.on('change.stdimage', function() {
                 that.changeHandler($(this));
             });
@@ -105,7 +106,7 @@
                 .split('x').map(function(item) {
                     return parseInt(item)
                 }).filter(Boolean);
-            if (size.length != 2) {
+            if (size.length !== 2) {
                 size = [this.$previews.width(), this.$previews.height()];
             }
 

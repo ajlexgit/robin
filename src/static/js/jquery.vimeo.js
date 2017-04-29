@@ -140,7 +140,7 @@
                 });
                 that.native.addEvent('playProgress', function(e) {
                     var time = parseInt(e.seconds) || 0;
-                    if (time != that._currentTime) {
+                    if (time !== that._currentTime) {
                         that._currentTime = time;
                         that.trigger('timeupdate', time);
                     }
@@ -175,7 +175,7 @@
                 return this;
             }
 
-            if (typeof value != 'number') {
+            if (typeof value !== 'number') {
                 this.error('value should be a number');
                 return this;
             }
@@ -219,7 +219,7 @@
                 return this;
             }
 
-            if (typeof value != 'number') {
+            if (typeof value !== 'number') {
                 this.error('value should be a number');
                 return this;
             }

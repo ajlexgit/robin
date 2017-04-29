@@ -67,12 +67,13 @@
             this._checkEnabled();
 
             // клик на кнопку
+            var that = this;
             var events = {};
             events['click ' + this.options.buttonSelector] = function(event) {
-                if (this._expanded) {
-                    this.reduce($(event.currentTarget));
+                if (that._expanded) {
+                    that.reduce($(event.currentTarget));
                 } else {
-                    this.expand($(event.currentTarget));
+                    that.expand($(event.currentTarget));
                 }
                 return false
             };

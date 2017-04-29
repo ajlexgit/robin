@@ -86,7 +86,7 @@
             if (!this.$previews) {
                 return this.raise('previews required');
             }
-            if (typeof this.$previews == 'string') {
+            if (typeof this.$previews === 'string') {
                 // получаем jquery, в случае селектора
                 this.$previews = $(this.$previews);
             }
@@ -206,7 +206,7 @@
                 // jQuery-селектор с превью-элементом
                 preview = this.opts.activePreview.get(0);
                 active_index = this.$previews.toArray().indexOf(preview);
-            } else if (this.opts.activePreview.nodeType == 1) {
+            } else if (this.opts.activePreview.nodeType === 1) {
                 // DOM-элемент превью-элемента
                 preview = this.opts.activePreview;
                 active_index = this.$previews.toArray().indexOf(preview);
@@ -228,9 +228,9 @@
             if (this.opts.keyboard) {
                 var that = this;
                 $(document).on('keydown.popup', function(event) {
-                    if (event.which == 39) {
+                    if (event.which === 39) {
                         that.slider.slideNext(that.opts.keyboardAnimation);
-                    } else if (event.which == 37) {
+                    } else if (event.which === 37) {
                         that.slider.slidePrevious(that.opts.keyboardAnimation);
                     }
                 });
@@ -253,9 +253,9 @@
          */
         cls.playVideo = function($item) {
             var item_data = $item.data();
-            if (item_data.provider == this.YOUTUBE_VIDEO) {
+            if (item_data.provider === this.YOUTUBE_VIDEO) {
                 this._playYoutube($item, item_data);
-            } else if (item_data.provider == this.VIMEO_VIDEO) {
+            } else if (item_data.provider === this.VIMEO_VIDEO) {
                 this._playVimeo($item, item_data);
             } else {
                 this.warn('undefined video provider:', item_data.provider);

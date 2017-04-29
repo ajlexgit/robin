@@ -191,13 +191,13 @@
 
             // все формы
             var $forms = this.getForms();
-            if ($forms.length != this.management.getTotalFormCount()) {
+            if ($forms.length !== this.management.getTotalFormCount()) {
                 return this.raise('management TOTAL_FORMS is less than real form count');
             }
 
             // начальные формы
             this.$initial_forms = $forms.slice(0, this.management.getInitialFormCount());
-            if (this.$initial_forms.length != this.management.getInitialFormCount()) {
+            if (this.$initial_forms.length !== this.management.getInitialFormCount()) {
                 return this.raise('management INITIAL_FORMS is less than real form count');
             }
 

@@ -50,7 +50,7 @@
                 var that = data.widget;
                 var state = data.state;
 
-                if (that._state != state) {
+                if (that._state !== state) {
                     that._state = state;
                 }
 
@@ -63,17 +63,17 @@
                 var that = data.widget;
                 var state = data.state;
 
-                if (state == 'top') {
+                if (state === 'top') {
                     that.element.css({
                         position: '',
                         top: ''
                     });
-                } else if (state == 'middle') {
+                } else if (state === 'middle') {
                     that.element.css({
                         position: 'fixed',
                         top: that.options.topOffset
                     });
-                } else if (state == 'bottom') {
+                } else if (state === 'bottom') {
                     that.element.css({
                         position: 'absolute',
                         top: data.offset
@@ -143,7 +143,7 @@
             Стилизация
          */
         _setStyles: function() {
-            if (this.block.css('position') == 'static') {
+            if (this.block.css('position') === 'static') {
                 this.block.css({
                     'position': 'relative'
                 });

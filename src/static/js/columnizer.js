@@ -31,7 +31,7 @@
             }
 
             // настройки
-            if (typeof options == 'string') {
+            if (typeof options === 'string') {
                 options = {
                     selector: options
                 }
@@ -88,7 +88,7 @@
             var columns = [];
             var column_index = 0;
             while (column_index < column_count) {
-                if (column_index == column_count - 1) {
+                if (column_index === column_count - 1) {
                     // последняя колонка
                     columns.push(heights);
                     break;
@@ -130,6 +130,7 @@
             $items.detach();
             this.$root.empty();
 
+            column_count = parseInt(column_count);
             if (column_count <= 0) {
                 // удаление колонок
                 this.$root.append($items);

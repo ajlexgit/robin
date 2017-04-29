@@ -86,7 +86,7 @@
             if (total_markers < this.opts.minCount) {
                 // минимум не достигнут - показываем маркер
                 marker.native.setMap(this.opts.map.native);
-            } else if (total_markers == this.opts.minCount) {
+            } else if (total_markers === this.opts.minCount) {
                 // минимум достигнут - скрываем все маркеры
                 for (var i=0, l=this.markers.length; i<l; i++) {
                     this.markers[i].native.setMap(null);
@@ -134,7 +134,7 @@
 
             marker.__cluster = null;
 
-            if (total_markers == this.opts.minCount) {
+            if (total_markers === this.opts.minCount) {
                 // оказались ниже минимума - показываем все маркеры
                 for (var i = 0, l = this.markers.length; i < l; i++) {
                     this.markers[i].native.setMap(this.opts.map.native);
@@ -233,7 +233,7 @@
                 );
                 zoom = Math.min(Math.max(zoom, minZoom), maxZoom);
 
-                if (that._prevZoom != zoom) {
+                if (that._prevZoom !== zoom) {
                     that._prevZoom = zoom;
                     that.removeClusters();
                 }

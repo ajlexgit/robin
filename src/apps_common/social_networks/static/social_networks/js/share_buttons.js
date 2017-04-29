@@ -98,7 +98,7 @@
         };
 
         cls.shareCountFetched = function(count) {
-            if (typeof count != 'undefined') {
+            if (typeof count !== 'undefined') {
                 var $counter = this.$button.find('.counter');
                 if ($counter.length) {
                     $counter.text(count)
@@ -111,10 +111,10 @@
         };
 
         cls.popup = function(url, winId, width, height) {
-            var browser_left = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft,
-                browser_top = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
-                browser_width = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth,
-                browser_height = typeof window.outerHeight != 'undefined' ? window.outerHeight : document.body.clientHeight,
+            var browser_left = typeof window.screenX !== 'undefined' ? window.screenX : window.screenLeft,
+                browser_top = typeof window.screenY !== 'undefined' ? window.screenY : window.screenTop,
+                browser_width = typeof window.outerWidth !== 'undefined' ? window.outerWidth : document.body.clientWidth,
+                browser_height = typeof window.outerHeight !== 'undefined' ? window.outerHeight : document.body.clientHeight,
                 popup_width = width || this.WINDOW_WIDTH,
                 popup_height = height || this.WINDOW_HEIGHT,
                 top_position = browser_top + Math.round((browser_height - popup_height) / 2),

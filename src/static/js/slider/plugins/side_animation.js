@@ -42,7 +42,7 @@
             };
 
             // тот же слайд?
-            if (slide_info.fromIndex == slide_info.toIndex) {
+            if (slide_info.fromIndex === slide_info.toIndex) {
                 return
             }
 
@@ -80,7 +80,7 @@
             var animatedSlides = [];
             var slide_left = 100 + this._getPercentGap(slider);
 
-            if (slide_info.direction == DIRECTION_RIGHT) {
+            if (slide_info.direction === DIRECTION_RIGHT) {
                 var doStepSlide = slider.getNextSlide.bind(slider);
             } else {
                 doStepSlide = slider.getPreviousSlide.bind(slider);
@@ -101,7 +101,7 @@
 
             // заполнение данных о анимации каждого слайда
             var animatedSlidesCount = animatedSlides.length;
-            var direction_multiplier = slide_info.direction == DIRECTION_RIGHT ? 1 : -1;
+            var direction_multiplier = slide_info.direction === DIRECTION_RIGHT ? 1 : -1;
             animatedSlides.forEach(function($animatedSlide, index) {
                 var left = index * slide_left * direction_multiplier;
                 $animatedSlide.css({

@@ -29,9 +29,9 @@
 
             if (!this.opts.coords) {
                 return this.raise('coords required');
-            } else if (this.opts.coords.bottomleft instanceof GMapPoint == false) {
+            } else if (this.opts.coords.bottomleft instanceof GMapPoint === false) {
                 return this.raise('coords.bottomleft should be a GMapPoint instance');
-            } else if (this.opts.coords.topright instanceof GMapPoint == false) {
+            } else if (this.opts.coords.topright instanceof GMapPoint === false) {
                 return this.raise('coords.topright should be a GMapPoint instance');
             } else {
                 this.bounds = new google.maps.LatLngBounds(

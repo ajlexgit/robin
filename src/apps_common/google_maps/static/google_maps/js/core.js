@@ -201,7 +201,7 @@
 
             if (value !== null) {
                 // подключение к новой карте
-                if (value instanceof window.GMap == false) {
+                if (value instanceof window.GMap === false) {
                     this.error('value should be a GMap instance');
                     return this;
                 }
@@ -278,7 +278,7 @@
             Параметр padding может быть числом или объектом с полями "h" и "v".
          */
         cls.extendBounds = function(bounds, padding) {
-            if (typeof padding == 'number') {
+            if (typeof padding === 'number') {
                 padding = {
                     'h': padding,
                     'v': padding
@@ -385,7 +385,7 @@
             }
 
             if (value) {
-                if (value instanceof window.GMapPoint == false) {
+                if (value instanceof window.GMapPoint === false) {
                     this.error('value should be a GMapPoint instance');
                     return this;
                 }
@@ -436,11 +436,11 @@
         };
 
         cls._formatCoord = function(value) {
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 value = parseFloat(value.replace(',', '.'));
             }
 
-            if ((typeof value == 'number') && !isNaN(value)) {
+            if ((typeof value === 'number') && !isNaN(value)) {
                 return value;
             } else {
                 return false;
@@ -463,7 +463,7 @@
     // Создание объекта из строки "lat, lng"
     window.GMapPoint.fromString = function(str) {
         var coords = str.split(',');
-        if (coords.length != 2) {
+        if (coords.length !== 2) {
             console.error('invalid coords string: ' + str);
             return;
         }
@@ -492,7 +492,7 @@
          */
         cls.onInit = function() {
             superclass.onInit.call(this);
-            if (this.opts.marker instanceof GMapMarker == false) {
+            if (this.opts.marker instanceof GMapMarker === false) {
                 return this.raise('marker should be a GMapMarker instance');
             }
         };
@@ -557,7 +557,7 @@
             }
 
             if (value) {
-                if (typeof value != 'string') {
+                if (typeof value !== 'string') {
                     this.error('value should be a string');
                     return this;
                 }
@@ -662,7 +662,7 @@
             }
 
             if (value) {
-                if (value instanceof window.GMapPoint == false) {
+                if (value instanceof window.GMapPoint === false) {
                     this.error('value should be a GMapPoint instance');
                     return this;
                 }
@@ -683,7 +683,7 @@
             }
 
             if (value) {
-                if ((typeof value != 'string') && (typeof value != 'object')) {
+                if ((typeof value !== 'string') && (typeof value !== 'object')) {
                     this.error('value should be a string or object');
                     return this;
                 }
@@ -704,7 +704,7 @@
             }
 
             if (value) {
-                if (typeof value != 'string') {
+                if (typeof value !== 'string') {
                     this.error('value should be a string');
                     return this;
                 }
@@ -725,7 +725,7 @@
             }
 
             if (value) {
-                if (typeof value != 'string') {
+                if (typeof value !== 'string') {
                     this.error('value should be a string');
                     return this;
                 }
@@ -1088,7 +1088,7 @@
                 return this.native.getZoom();
             }
 
-            if (value && (typeof value != 'number')) {
+            if (value && (typeof value !== 'number')) {
                 this.error('value should be a number');
                 return this;
             }
@@ -1106,7 +1106,7 @@
                 return this._maxZoom;
             }
 
-            if (value && (typeof value != 'number') && (value !== null)) {
+            if (value && (typeof value !== 'number') && (value !== null)) {
                 this.error('value should be a number or null');
                 return this;
             }
@@ -1141,7 +1141,7 @@
                 return this._minZoom;
             }
 
-            if (value && (typeof value != 'number') && (value !== null)) {
+            if (value && (typeof value !== 'number') && (value !== null)) {
                 this.error('value should be a number or null');
                 return this;
             }

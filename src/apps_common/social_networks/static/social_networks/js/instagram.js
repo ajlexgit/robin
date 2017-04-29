@@ -68,7 +68,7 @@
                     count: this.opts.limit
                 },
                 success: function(data) {
-                    if (parseInt(data.meta.code) != 200) {
+                    if (parseInt(data.meta.code) !== 200) {
                         that.error(data.meta.error_message + ' (code ' + data.meta.code + ')');
                         that.trigger('error', data);
                     } else {

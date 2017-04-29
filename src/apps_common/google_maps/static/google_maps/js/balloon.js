@@ -45,7 +45,7 @@
             // точка
             this._position = this.opts.position;
             if (this._position) {
-                if (this._position instanceof GMapPoint == false) {
+                if (this._position instanceof GMapPoint === false) {
                     return this.raise('position should be a GMapPoint instance');
                 }
             }
@@ -249,7 +249,7 @@
             }
 
             if (value) {
-                if (value instanceof GMapPoint == false) {
+                if (value instanceof GMapPoint === false) {
                     this.error('value should be a GMapPoint instance');
                     return this;
                 }
@@ -271,7 +271,7 @@
                 return this._content;
             }
 
-            if (value && (typeof value != 'string')) {
+            if (value && (typeof value !== 'string')) {
                 this.error('value should be a string');
                 return this;
             }
@@ -348,7 +348,7 @@
             if (!marker) {
                 this.error('marker required');
                 return
-            } else if (marker instanceof GMapMarker == false) {
+            } else if (marker instanceof GMapMarker === false) {
                 this.error('marker should be a GMapMarker instance');
                 return
             }

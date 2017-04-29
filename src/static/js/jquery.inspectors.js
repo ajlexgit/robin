@@ -241,7 +241,7 @@
     BackgroundInspector.prototype._check = function($element, opts) {
         // если проверяется картинка и она еще не загружена,
         // повторяем проверку после загрузки.
-        if (($element.prop('tagName') == 'IMG') && !$element.prop('naturalWidth')) {
+        if (($element.prop('tagName') === 'IMG') && !$element.prop('naturalWidth')) {
             var that = this;
             $element.onLoaded(function() {
                 if ($element.prop('naturalWidth')) {

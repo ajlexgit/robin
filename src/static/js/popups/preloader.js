@@ -44,7 +44,7 @@
             addPreloader($preloaderHolder);
         }
 
-        if (typeof popup._origHideOnClick == "undefined") {
+        if (typeof popup._origHideOnClick === "undefined") {
             popup._origHideOnClick = popup.opts.hideOnClick;
             popup.opts.hideOnClick = false;
         }
@@ -59,7 +59,7 @@
             return
         }
 
-        if (typeof popup._origHideOnClick != "undefined") {
+        if (typeof popup._origHideOnClick !== "undefined") {
             popup.opts.hideOnClick = popup._origHideOnClick;
             delete popup._origHideOnClick;
         }

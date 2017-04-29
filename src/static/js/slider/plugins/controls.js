@@ -63,14 +63,14 @@
 
             var $curr = slider.$currentSlide;
             var $prev = slider.getPreviousSlide($curr);
-            if (!$prev || !$prev.length || ($curr.get(0) == $prev.get(0))) {
+            if (!$prev || !$prev.length || ($curr.get(0) === $prev.get(0))) {
                 this.$left.addClass(this.opts.arrowDisabledClass)
             } else {
                 this.$left.removeClass(this.opts.arrowDisabledClass)
             }
 
             var $next = slider.getNextSlide($curr);
-            if (!$next || !$next.length || ($curr.get(0) == $next.get(0))) {
+            if (!$next || !$next.length || ($curr.get(0) === $next.get(0))) {
                 this.$right.addClass(this.opts.arrowDisabledClass)
             } else {
                 this.$right.removeClass(this.opts.arrowDisabledClass)

@@ -12,7 +12,7 @@
             hex = hex[1]
         }
 
-        if (hex.length == 3) {
+        if (hex.length === 3) {
             var result = '';
             for (var i=0; i<3; i++) {
                 var symbol = hex[i];

@@ -44,7 +44,7 @@
         Обновление ссылки на кнопке добавления
      */
     var update_add_button = function($button, content_type) {
-        if ($button.length != 1) {
+        if ($button.length !== 1) {
             console.warn('more than one related button');
             return
         }
@@ -63,7 +63,7 @@
         Обновление ссылки на кнопке редактирования и удаления
      */
     var update_change_button = function($button, content_type, pk) {
-        if ($button.length != 1) {
+        if ($button.length !== 1) {
             console.warn('more than one related button');
             return
         }
@@ -105,7 +105,7 @@
         }
 
         var obj = $field.data(Autocomplete.prototype.DATA_KEY);
-        if (!obj || (obj.$filters.length != 1)) {
+        if (!obj || (obj.$filters.length !== 1)) {
             return
         }
 

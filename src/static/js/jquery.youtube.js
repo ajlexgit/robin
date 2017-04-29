@@ -152,17 +152,17 @@
                     },
                     onStateChange: function(event) {
                         var code = event.data;
-                        if (code == YT.PlayerState.UNSTARTED) {
+                        if (code === YT.PlayerState.UNSTARTED) {
                             that.stopInteraval();
-                        } else if (code == YT.PlayerState.BUFFERING) {
+                        } else if (code === YT.PlayerState.BUFFERING) {
 
-                        } else if (code == YT.PlayerState.PLAYING) {
+                        } else if (code === YT.PlayerState.PLAYING) {
                             that.startInteraval();
                             that.trigger('play');
-                        } else if (code == YT.PlayerState.PAUSED) {
+                        } else if (code === YT.PlayerState.PAUSED) {
                             that.stopInteraval();
                             that.trigger('pause');
-                        } else if (code == YT.PlayerState.ENDED) {
+                        } else if (code === YT.PlayerState.ENDED) {
                             that.stopInteraval();
                             that.trigger('pause');
                             that.trigger('ended');
@@ -197,7 +197,7 @@
             }
 
             var time = parseInt(this.position()) || 0;
-            if (time != this._currentTime) {
+            if (time !== this._currentTime) {
                 this._currentTime = time;
                 this.trigger('timeupdate', time);
             }
@@ -229,7 +229,7 @@
                 return this.native.getCurrentTime();
             }
 
-            if (typeof value != 'number') {
+            if (typeof value !== 'number') {
                 this.error('value should be a number');
                 return this;
             }
@@ -299,7 +299,7 @@
                 return this.native.getVolume();
             }
 
-            if (typeof value != 'number') {
+            if (typeof value !== 'number') {
                 this.error('value should be a number');
                 return this;
             }

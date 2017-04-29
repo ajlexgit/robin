@@ -30,7 +30,7 @@
             dataType: 'json',
             success: function(response) {
                 if (response.parts) {
-                    if (parts.length != response.parts.length) {
+                    if (parts.length !== response.parts.length) {
                         console.warn('Length error! Queried: ' + parts.length + '; rendered ' + response.parts.length);
                     }
 
@@ -65,7 +65,7 @@
                 _: 1    // чтобы не терялся индекс в AJAX из-за пустого объекта
             };
             for (var key in data) {
-                if (data.hasOwnProperty(key) && (key != 'name')) {
+                if (data.hasOwnProperty(key) && (key !== 'name')) {
                     params[key] = data[key];
                 }
             }

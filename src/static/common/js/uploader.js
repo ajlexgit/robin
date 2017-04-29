@@ -174,7 +174,7 @@
 
             // кнопка загрузки
             if (this.opts.buttonSelector) {
-                if (typeof this.opts.buttonSelector == 'string') {
+                if (typeof this.opts.buttonSelector === 'string') {
                     config['browse_button'] = this.$root.find(this.opts.buttonSelector).get(0);
                 } else if (this.opts.buttonSelector.jquery) {
                     config['browse_button'] = this.opts.buttonSelector.get(0);
@@ -187,7 +187,7 @@
 
             // область перетаскивания файлов
             if (this.opts.dropSelector) {
-                if (this.opts.dropSelector == 'self') {
+                if (this.opts.dropSelector === 'self') {
                     config['drop_element'] = this.$root.get(0);
                 } else {
                     config['drop_element'] = this.$root.find(this.opts.dropSelector).get(0);

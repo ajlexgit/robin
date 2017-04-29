@@ -40,12 +40,12 @@
         };
 
         var middleDownHandle = function(event) {
-            var targetItem = (event.which == 2) && (!settings.itemSelector || $(this).is(settings.itemSelector));
+            var targetItem = (event.which === 2) && (!settings.itemSelector || $(this).is(settings.itemSelector));
             return !targetItem;
         };
 
         var middleUpHandle = function(event) {
-            var targetItem = (event.which == 2) && (!settings.itemSelector || $(this).is(settings.itemSelector));
+            var targetItem = (event.which === 2) && (!settings.itemSelector || $(this).is(settings.itemSelector));
             if (targetItem && !$(event.target).is(settings.linkSelector)) {
                 var new_event = new MouseEvent('click', {
                     button: 1

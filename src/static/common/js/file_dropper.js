@@ -42,7 +42,7 @@
             var drag_counter = 0;
             this.$root.on('dragenter.file_dropper', function() {
                 drag_counter++;
-                if (drag_counter == 1) {
+                if (drag_counter === 1) {
                     $(this).addClass(that.opts.dragOverClass);
 
                     // callback

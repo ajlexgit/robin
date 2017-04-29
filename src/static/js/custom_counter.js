@@ -83,7 +83,7 @@
             this.min = $.isNumeric(this.opts.min) ? this.opts.min : this.$input.prop('min');
             this.max = $.isNumeric(this.opts.max) ? this.opts.max : this.$input.prop('max');
             this.step = $.isNumeric(this.opts.step) ? this.opts.step : this.$input.prop('step');
-            if (this.$input.prop('type') == 'number') {
+            if (this.$input.prop('type') === 'number') {
                 if (this.min) {
                     this.$input.prop('min', this.min);
                 }
@@ -117,7 +117,7 @@
                 that._format();
             }).on('keypress.counter', function(e) {
                 // форматирование значения при нажатии Enter
-                if (e.which == 13) {
+                if (e.which === 13) {
                     that._format();
                 }
             }).on('mousewheel.counter', function(e) {
@@ -191,7 +191,7 @@
             }
 
             value = this._formatted(value);
-            if ((value == current) || (isNaN(value) && isNaN(current))) {
+            if ((value === current) || (isNaN(value) && isNaN(current))) {
                 return this;
             }
 

@@ -75,8 +75,6 @@
     var touchmove = window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove';
     var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';
 
-    var ua = navigator.userAgent.toLowerCase();
-
     var getDx = function(fromPoint, toPoint) {
         var clientDx = toPoint.clientX - fromPoint.clientX;
         var pageDx = toPoint.pageX - fromPoint.pageX;
@@ -91,13 +89,13 @@
 
     var isMultiTouch = function(event) {
         var orig = event.originalEvent;
-        var touchPoints = (typeof orig.changedTouches != 'undefined') ? orig.changedTouches : [orig];
+        var touchPoints = (typeof orig.changedTouches !== 'undefined') ? orig.changedTouches : [orig];
         return touchPoints.length > 1;
     };
 
     var getTouchPoint = function(event) {
         var orig = event.originalEvent;
-        if (typeof orig.changedTouches != 'undefined') {
+        if (typeof orig.changedTouches !== 'undefined') {
             return orig.changedTouches[0]
         } else {
             return orig
@@ -126,10 +124,10 @@
         };
 
         cls.setSpeed = function(speedX, speedY) {
-            if (typeof speedX != 'undefined') {
+            if (typeof speedX !== 'undefined') {
                 this.speedX = speedX;
             }
-            if (typeof speedY != 'undefined') {
+            if (typeof speedY !== 'undefined') {
                 this.speedY = speedY;
             }
 
@@ -171,7 +169,7 @@
     var DragerEvent = Class(Object, function DragerEvent(cls, superclass) {
         cls.init = function(event, drager) {
             var mouseEvent = event;
-            if (event.type.substr(0, 5) == 'touch') {
+            if (event.type.substr(0, 5) === 'touch') {
                 mouseEvent = getTouchPoint(event);
             }
 
@@ -292,7 +290,7 @@
                 timeStamp: evt.timeStamp
             };
 
-            if (this._momentumPoints.length == 2) {
+            if (this._momentumPoints.length === 2) {
                 this._momentumPoints.shift();
             }
             this._momentumPoints.push(record);
@@ -308,7 +306,7 @@
 
             var lastPoint = this._momentumPoints[this._momentumPoints.length - 1];
             if (evt.timeStamp - lastPoint.timeStamp < 100) {
-                if (this._momentumPoints.length == 2) {
+                if (this._momentumPoints.length === 2) {
                     lastPoint = this._momentumPoints[0];
                 }
             }

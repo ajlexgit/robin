@@ -41,7 +41,7 @@
 
         return function(xhr, status) {
             // AJAX прерван - ничего не делать
-            if (xhr.statusText == 'abort') {
+            if (xhr.statusText === 'abort') {
                 return
             }
 
@@ -165,7 +165,7 @@
 
      */
     window.Class = function(parent, class_constructor) {
-        if (typeof class_constructor != 'function') {
+        if (typeof class_constructor !== 'function') {
             throw Error('class-constructor function required');
         }
 
@@ -401,7 +401,7 @@
         cls.off = function(name) {
             // удаление всех обработчиков
             name = $.trim(name);
-            if (!name || (name == '*')) {
+            if (!name || (name === '*')) {
                 this._events = {};
                 return this;
             }
@@ -488,7 +488,7 @@
      */
     $.fn.onLoaded = function() {
         var permanent, callback;
-        if (typeof arguments[0] == 'boolean') {
+        if (typeof arguments[0] === 'boolean') {
             permanent = arguments[0];
             callback = arguments[1];
         } else {
@@ -502,7 +502,7 @@
         }
 
         return this.each(function(i, image) {
-            if (image.tagName != 'IMG') {
+            if (image.tagName !== 'IMG') {
                 console.warn('$.onLoaded: not an image');
                 return
             }
@@ -702,12 +702,12 @@
         }
 
         // Deal with the remaining bytes and padding
-        if (byteRemainder == 1) {
+        if (byteRemainder === 1) {
             chunk = bytes[mainLength];
             a = (chunk & 252) >> 2;
             b = (chunk & 3) << 4;
             base64 += encodings[a] + encodings[b] + '=='
-        } else if (byteRemainder == 2) {
+        } else if (byteRemainder === 2) {
             chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
             a = (chunk & 64512) >> 10;
             b = (chunk & 1008) >> 4;
@@ -723,7 +723,7 @@
         if (!window.FileReader) {
             return df.reject('FileReader not supported');
         }
-        if (file instanceof Blob == false) {
+        if (file instanceof Blob === false) {
             return df.reject('Not a file');
         }
 
@@ -778,7 +778,7 @@
         }
 
         xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState === 4 && this.status === 200) {
                 df.resolve(this.responseText);
             }
         };
@@ -975,10 +975,10 @@
         if (settings.crop) {
             // --- можно обрезать ---
 
-            if (target_size[0] == 0) {
+            if (target_size[0] === 0) {
                 target_size[0] = settings.coords[2];
             }
-            if (target_size[1] == 0) {
+            if (target_size[1] === 0) {
                 target_size[1] = settings.coords[3];
             }
 
@@ -993,7 +993,7 @@
             // Задаем размер канвы
             $.extend(canvas, canvasSize(target_size[0], target_size[1]));
 
-            if ((target_size[0] == settings.coords[2]) && (target_size[1] == settings.coords[3])) {
+            if ((target_size[0] === settings.coords[2]) && (target_size[1] === settings.coords[3])) {
                 // Если целевой размер больше - оставляем картинку без изменений
                 final_w = target_size[0];
                 final_h = target_size[1];
@@ -1060,10 +1060,10 @@
             }
 
             // Определение размера холста
-            if (target_size[0] == 0) {
+            if (target_size[0] === 0) {
                 target_size[0] = image_size.width;
             }
-            if (target_size[1] == 0) {
+            if (target_size[1] === 0) {
                 target_size[1] = image_size.height;
             }
 
@@ -1077,7 +1077,7 @@
             final_w = image_size.width;
             final_h = image_size.height;
 
-            if (settings.center && (settings.center.length == 2)) {
+            if (settings.center && (settings.center.length === 2)) {
                 final_l = Math.max(0, target_size[0] * settings.center[0] - final_w / 2);
                 final_t = Math.max(0, target_size[1] * settings.center[1] - final_h / 2);
             } else {

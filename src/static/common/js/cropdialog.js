@@ -121,7 +121,7 @@
 
             if ($.isArray(value)) {
                 arr = value
-            } else if (typeof value == 'string') {
+            } else if (typeof value === 'string') {
                 arr = value.split('x');
             } else if (!value) {
                 return
@@ -134,7 +134,7 @@
                 return num && num.toFixed(0);
             }).filter($.isNumeric).slice(0, 2);
 
-            if (arr.length == 2) {
+            if (arr.length === 2) {
                 return arr
             }
         };
@@ -148,7 +148,7 @@
 
             if ($.isArray(value)) {
                 arr = value
-            } else if (typeof value == 'string') {
+            } else if (typeof value === 'string') {
                 arr = value.split('|');
             } else if (!value) {
                 return
@@ -174,7 +174,7 @@
 
             if ($.isArray(value)) {
                 arr = value
-            } else if (typeof value == 'string') {
+            } else if (typeof value === 'string') {
                 arr = value.split(':');
             } else if (!value) {
                 return
@@ -187,7 +187,7 @@
                 return num && num.toFixed(0);
             }).filter($.isNumeric).slice(0, 4);
 
-            if (arr.length == 4) {
+            if (arr.length === 4) {
                 return arr
             }
         };

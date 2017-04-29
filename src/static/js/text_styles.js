@@ -16,16 +16,16 @@
         var description = '';
         var childs = element.childNodes;
         while (child = childs[i]) {
-            if (child.nodeType == 3) {
+            if (child.nodeType === 3) {
                 description += child.data;
                 element.removeChild(child);
-            } else if (child.tagName == 'BR') {
+            } else if (child.tagName === 'BR') {
                 if (description) {
                     // пропускаем первые BR
                     description += child.outerHTML;
                 }
                 element.removeChild(child);
-            } else if (child.tagName == 'SPAN') {
+            } else if (child.tagName === 'SPAN') {
                 var text = cut_description(child);
                 if (text) {
                     description += text;
