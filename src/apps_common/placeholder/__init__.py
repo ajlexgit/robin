@@ -32,7 +32,7 @@
     Пример:
         # apps.py:
             def ready(self):
-                from placeholder import register_placeholder
+                from placeholder.utils import register_placeholder
                 from .views_ajax import contact_placeholder
                 register_placeholder('contact_block', contact_placeholder)
 
@@ -59,6 +59,5 @@
             {% placeholder "contact_block" bg="blue" title="Hello" %}
 
 """
-from .utils import register_placeholder
 
 default_app_config = 'placeholder.apps.Config'

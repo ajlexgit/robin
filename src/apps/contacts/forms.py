@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from libs.form_helper import FormHelperMixin
+from libs.form_helper.forms import FormHelperMixin
 from libs.widgets import PhoneWidget
 from .models import Message
 

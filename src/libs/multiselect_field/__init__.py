@@ -21,5 +21,3 @@
         ()
 
 """
-from .fields import MultiSelectField
-from .forms import MultiSelectFormField

@@ -1,6 +1,7 @@
 """
     Зависит от:
-        social_networks libs.coords
+        social_networks
+        libs.coords
 
     Необходимо подключить:
         google_maps/js/core.js
@@ -36,7 +37,8 @@
 
     Примеры:
         script.py:
-            from google_maps import *
+            from google_maps.api import geocode
+            from google_maps.models import geocode_cached
 
             # Получить координаты по адресу.
             lng, lat = geocode('Тольятти, Мира 35', timeout=0.5)
@@ -45,7 +47,7 @@
             lng, lat = geocode_cached('Тольятти, Мира 35', timeout=0.5)
 
         models.py:
-            from google_maps import GoogleCoordsField
+            from google_maps.fields import GoogleCoordsField
             ...
 
             address = models.CharField(_('address'), max_length=255, blank=True)
@@ -94,12 +96,5 @@
             <!-- Ссылка на карту в сервисе Google -->
             <a href='{{ address|google_map_external:15 }}' target='_blank'>посмотреть карту</a>
 """
-
-from .api import geocode
-from .models import geocode_cached
-from .fields import GoogleCoordsField
-from .widgets import GoogleCoordsAdminWidget
-
-__all__ = ['geocode', 'geocode_cached', 'GoogleCoordsField']
 
 default_app_config = 'google_maps.apps.Config'

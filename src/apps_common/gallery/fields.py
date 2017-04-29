@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import signals
-from libs.variation_field import *
+from libs.variation_field.fields import VariationImageField
 from .formfields import GalleryFormField
 
 

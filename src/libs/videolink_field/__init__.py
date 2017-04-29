@@ -8,7 +8,6 @@
 
     Зависит от:
         social_networks
-        libs.widgets
 
     Пример:
         video = VideoLinkField(_('video'), providers=('youtube', ))
@@ -22,8 +21,3 @@
         > video._provider
         'youtube'
 """
-
-from .videolink import VideoLink
-from .fields import VideoLinkField
-
-__all__ = ['VideoLink', 'VideoLinkField']

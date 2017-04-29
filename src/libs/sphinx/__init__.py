@@ -26,7 +26,7 @@
 
     Пример:
         # indexes.py:
-            from libs.sphinx import SphinxScheme, SphinxXMLIndex, ATTR_TYPE
+            from libs.sphinx.index import SphinxScheme, SphinxXMLIndex, ATTR_TYPE
             from .models import Post
 
             class SearchScheme(SphinxScheme):
@@ -79,7 +79,7 @@
 
     Пример поиска:
         # views.py:
-            from libs.sphinx import SphinxSearch
+            from libs.sphinx.search import SphinxSearch
 
             class MySphinxSearch(SphinxSearch):
                 limit = 20
@@ -98,8 +98,5 @@
                 resutls = MySearchIndex().fetch_models('some article')
 
 """
-
-from .search import SphinxSearch, SphinxSearchResult, SearchError
-from .index import ATTR_TYPE, SphinxScheme, SphinxXMLIndex
 
 default_app_config = 'libs.sphinx.apps.Config'

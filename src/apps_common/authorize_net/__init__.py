@@ -57,7 +57,8 @@
 
     Пример:
         views.py:
-            from authorize_net import *
+            from authorize_net.forms import PaymentForm
+            from authorize_net.signals import authorizenet_success, authorizenet_error
 
             ...
             form = PaymentForm(request, initial={
@@ -91,9 +92,4 @@
 
 """
 
-from .forms import PaymentForm
-from .signals import authorizenet_success, authorizenet_error
-
 default_app_config = 'authorize_net.apps.Config'
-
-__all__ = ('PaymentForm', 'authorizenet_success', 'authorizenet_error')

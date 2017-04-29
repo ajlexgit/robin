@@ -8,8 +8,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from libs.email import absolute_links
-from libs.storages import MediaStorage
 from libs.color_field.fields import ColorField
+from libs.storages.media_storage import MediaStorage
 from ckeditor.fields import CKEditorUploadField
 from social_networks.models import SocialLinks
 from . import conf

@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
-from seo import Seo
-from main.models import MainPageConfig
 from libs.cache.cached import cached
+from seo.seo import Seo
+from main.models import MainPageConfig
 from .models import SitemapConfig
 from .map import Map
 

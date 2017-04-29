@@ -1,5 +1,5 @@
 from django import forms
-from libs.form_helper import FormHelperMixin
+from libs.form_helper.forms import FormHelperMixin
 from .models import GalleryItemBase, GalleryImageItem
 
 

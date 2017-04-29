@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from libs.views import CachedViewMixin
-from seo import Seo
+from seo.seo import Seo
 from .models import MainPageConfig
 
 

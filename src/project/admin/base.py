@@ -7,7 +7,8 @@ from suit.admin import SortableModelAdmin
 from suit.widgets import SuitDateWidget
 from google_maps.fields import GoogleCoordsField
 from google_maps.widgets import GoogleCoordsAdminWidget
-from libs.file_field import FileField, ImageField, FileWidget
+from libs.file_field.fields import FileField, ImageField
+from libs.file_field.widgets import FileWidget
 from libs.color_field.fields import ColorField, ColorOpacityField
 from libs.color_field.forms import ColorFormField, ColorOpacityFormField
 from libs.stdimage.fields import StdImageField

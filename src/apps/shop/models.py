@@ -7,13 +7,14 @@ from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from gallery import *
 from solo.models import SingletonModel
-from ckeditor.fields import CKEditorField
 from libs.mptt import *
 from libs.autoslug import AutoSlugField
-from libs.valute_field import ValuteField
+from libs.valute_field.fields import ValuteField
 from libs.aliased_queryset import AliasedQuerySetMixin
+from gallery.fields import GalleryField
+from gallery.models import GalleryBase, GalleryImageItem
+from ckeditor.fields import CKEditorField
 from .signals import products_changed, categories_changed
 
 

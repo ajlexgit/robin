@@ -4,7 +4,7 @@ from django.utils.html import escape
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext_lazy as _
-from seo import Seo
+from seo.seo import Seo
 from libs.email import send_template
 from libs.views import CachedViewMixin
 from .models import ContactsConfig, Address, NotificationReceiver

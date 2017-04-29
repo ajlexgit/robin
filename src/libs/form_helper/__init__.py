@@ -5,13 +5,13 @@
         settings.py:
             INSTALLED_APPS = (
                 ...
-                'form_helper',
+                'libs.form_helper',
                 ...
             )
 
 
     Желательно (но не обязательно), чтобы форма имела миксину FormHelperMixin:
-        from form_helper import FormHelperMixin
+        from libs.form_helper.forms import FormHelperMixin
 
         class MyForm(FormHelperMixin, forms.ModelForm):
             ...
@@ -33,7 +33,7 @@
 
     Для полей типа radio и checkbox можно использовать встроенный шаблон
     form_helper/boolean_field.html, чтобы работала CSS-стилизация:
-        from form_helper import FormHelperMixin
+        from libs.form_helper.forms import FormHelperMixin
 
         class MyForm(FormHelperMixin, forms.ModelForm):
             field_templates = {
@@ -92,5 +92,3 @@
             })
 
 """
-
-from .helper import FormHelperMixin

@@ -3,13 +3,13 @@ from django.http.response import Http404
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import View, FormView, TemplateView
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import is_safe_url, urlsafe_base64_decode
 from django.shortcuts import redirect, resolve_url, get_object_or_404
-from django.views.generic import View, FormView, TemplateView
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout
 from django.contrib.auth.views import password_reset, password_reset_confirm
-from seo import Seo
+from seo.seo import Seo
 from .forms import LoginForm, RegisterForm, PasswordResetForm, SetPasswordForm
 
 UserModel = get_user_model()

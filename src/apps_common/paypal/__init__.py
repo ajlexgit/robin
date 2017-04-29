@@ -43,7 +43,8 @@
 
     Пример:
         views.py:
-            from paypal import *
+            from paypal.forms import PaymentForm, AddToCartForm, DisplayCartForm, DonationForm
+            from paypal.signals import paypal_success, paypal_error
 
             ...
             # форма мгновенной оплаты
@@ -99,10 +100,5 @@
             </form>
 
 """
-from .forms import PaymentForm, AddToCartForm, DisplayCartForm, DonationForm
-from .signals import paypal_success, paypal_error
 
 default_app_config = 'paypal.apps.Config'
-
-__all__ = ('PaymentForm', 'AddToCartForm', 'DisplayCartForm', 'DonationForm',
-           'paypal_success', 'paypal_error')

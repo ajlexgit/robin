@@ -2,8 +2,9 @@ from django.db import models
 from django.http.response import Http404
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
-from seo import Seo
-from paginator import Paginator, EmptyPage, get_paginator_meta
+from seo.seo import Seo
+from paginator.utils import get_paginator_meta
+from paginator.paginator import Paginator, EmptyPage
 from libs.views import CachedViewMixin
 from libs.description import description
 from .models import BlogConfig, BlogPost, Tag

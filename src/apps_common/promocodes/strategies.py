@@ -1,6 +1,6 @@
 from decimal import Decimal, InvalidOperation
 from django.utils.translation import ugettext_lazy as _
-from libs.valute_field import Valute
+from libs.valute_field.valute import Valute
 
 
 class BaseStrategy:

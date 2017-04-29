@@ -7,7 +7,7 @@ from django.contrib.auth.forms import (
 )
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
-from libs.form_helper import FormHelperMixin
+from libs.form_helper.forms import FormHelperMixin
 
 UserModel = get_user_model()
 

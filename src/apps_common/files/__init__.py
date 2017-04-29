@@ -34,8 +34,4 @@
                 suit_classes = 'suit-tab suit-tab-general'
 """
 
-from .admin import PageFileInline
-
-__all__ = ['PageFileInline']
-
 default_app_config = 'files.apps.Config'

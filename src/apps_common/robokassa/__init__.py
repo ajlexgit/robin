@@ -54,7 +54,8 @@
 
     Пример:
         views.py:
-            from robokassa import *
+            from robokassa.forms import PaymentForm
+            from robokassa.signals import robokassa_success
 
             ...
             form = PaymentForm(initial={
@@ -77,12 +78,6 @@
               {{ form.as_p }}
               <button type="submit">Pay</button>
             </form>
-
 """
 
-from .forms import PaymentForm
-from .signals import robokassa_success
-
 default_app_config = 'robokassa.apps.Config'
-
-__all__ = ('PaymentForm', 'robokassa_success')

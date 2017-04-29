@@ -1,4 +1,4 @@
-from libs.sphinx import SphinxScheme, SphinxXMLIndex, ATTR_TYPE
+from libs.sphinx.index import SphinxScheme, SphinxXMLIndex, ATTR_TYPE
 from blog.models import BlogPost
 
 

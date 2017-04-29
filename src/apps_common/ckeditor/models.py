@@ -3,9 +3,9 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
-from libs.stdimage import StdImageField
-from libs.storages import MediaStorage
-from libs.file_field import FileField
+from libs.stdimage.fields import StdImageField
+from libs.storages.media_storage import MediaStorage
+from libs.file_field.fields import FileField
 
 
 def split_by_dirs(instance, filename):

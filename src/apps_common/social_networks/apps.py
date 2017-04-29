@@ -7,6 +7,6 @@ class Config(AppConfig):
     verbose_name = _('Social Media')
 
     def ready(self):
-        from placeholder import register_placeholder
+        from placeholder.utils import register_placeholder
         from .views_ajax import social_links_placeholder
         register_placeholder('social_links', social_links_placeholder)

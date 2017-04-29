@@ -3,6 +3,7 @@
 
     Зависит от:
         libs.geocity
+        libs.cookies
 
     Установка:
         settings.py:

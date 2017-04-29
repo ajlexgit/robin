@@ -1,6 +1,7 @@
 """
     Зависит от:
         libs.aliased_queryset
+        libs.form_helper
         libs.storages
         libs.upload
         libs.variation_field
@@ -19,7 +20,8 @@
 
     Пример:
         models.py:
-            from gallery import *
+            from gallery.fields import GalleryField
+            from gallery.models import GalleryImageItem, GalleryVideoLinkItem, GalleryBase
 
             class PostGalleryImageItem(GalleryImageItem):
                 STORAGE_LOCATION = 'module/gallery'
@@ -99,8 +101,3 @@
         source_gallery.copy_items_to(dest_gallery, items=(23, 45, 34))
         source_gallery.copy_items_to(dest_gallery, items=source_gallery.image_items)
 """
-
-from .models import GalleryBase, GalleryImageItem, GalleryVideoLinkItem
-from .fields import GalleryField
-
-__all__ = ['GalleryField', 'GalleryBase', 'GalleryImageItem', 'GalleryVideoLinkItem']

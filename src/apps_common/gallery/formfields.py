@@ -1,5 +1,5 @@
 from django import forms
-from libs.variation_field import *
+from libs.variation_field.utils import format_aspects
 from .widgets import GalleryWidget
 
 

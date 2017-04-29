@@ -10,11 +10,11 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _, ungettext
 from django.contrib.contenttypes.models import ContentType
 from model_utils.managers import InheritanceQuerySetMixin
-from libs.variation_field import *
-from libs.videolink_field import VideoLinkField
-from libs.storages import MediaStorage
-from libs.aliased_queryset import AliasedQuerySetMixin
 from libs.upload import upload_file, URLError
+from libs.storages.media_storage import MediaStorage
+from libs.aliased_queryset import AliasedQuerySetMixin
+from libs.videolink_field.fields import VideoLinkField
+from libs.variation_field.utils import is_size, check_variations, format_variations
 from .fields import GalleryImageField, GalleryVideoLinkPreviewField
 
 __all__ = ('GalleryBase', 'GalleryItemBase', 'GalleryImageItem', 'GalleryVideoLinkItem')

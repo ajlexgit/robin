@@ -22,7 +22,3 @@
                 <link rel="preconnect" href="{{ domain }}">
             {% endfor %}
 """
-
-from .media_storage import MediaStorage
-
-__all__ = ['MediaStorage']

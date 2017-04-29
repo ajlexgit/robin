@@ -1,6 +1,6 @@
 from django.utils.html import strip_tags
+from django.template.defaultfilters import truncatechars
 from django.db.models.fields.files import ImageFieldFile
-from libs.description import description
 
 
 class MetaTags:
@@ -102,10 +102,10 @@ class TwitterCard(MetaTags):
         # title
         title = self._dict.get('title')
         if title:
-            self._dict['title'] = description(title, 20, 70)
+            self._dict['title'] = truncatechars(title, 70)
 
         # description
         descr = self._dict.get('description')
         if descr:
-            self._dict['description'] = description(descr, 30, 120)
+            self._dict['description'] = truncatechars(descr, 200)
 

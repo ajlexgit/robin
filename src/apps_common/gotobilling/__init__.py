@@ -51,7 +51,8 @@
 
     Пример:
         views.py:
-            from gotobilling import *
+            from gotobilling.forms import PaymentForm
+            from gotobilling.signals import gotobilling_success, gotobilling_error
 
             ...
             form = PaymentForm(request, initial={
@@ -85,9 +86,4 @@
 
 """
 
-from .forms import PaymentForm
-from .signals import gotobilling_success, gotobilling_error
-
 default_app_config = 'gotobilling.apps.Config'
-
-__all__ = ('PaymentForm', 'gotobilling_success', 'gotobilling_error')

@@ -1,8 +1,8 @@
 import re
 from django.views.generic import View
 from libs.cookies import set_cookie
-from libs.valute_field import Valute
 from libs.views_ajax import AjaxViewMixin
+from libs.valute_field.valute import Valute
 from .models import ShopProduct
 from . import conf
 

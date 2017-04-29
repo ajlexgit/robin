@@ -62,9 +62,4 @@
 
 """
 
-from . import api
-from .forms import SubscribeForm
-
-__all__ = ['api', 'SubscribeForm']
-
 default_app_config = 'mailerlite.apps.Config'

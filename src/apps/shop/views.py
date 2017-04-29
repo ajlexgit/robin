@@ -1,7 +1,7 @@
 from django.shortcuts import resolve_url
 from django.http.response import Http404
 from django.views.generic import TemplateView
-from seo import Seo
+from seo.seo import Seo
 from .models import ShopConfig, ShopCategory, ShopProduct
 
 

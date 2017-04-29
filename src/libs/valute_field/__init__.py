@@ -41,11 +41,4 @@
 
             $ print(v.trailed)
             1 234
-
 """
-
-from .valute import Valute
-from .fields import ValuteField
-from .forms import ValuteFormField
-
-__all__ = ['Valute', 'ValuteField']

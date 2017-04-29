@@ -3,7 +3,7 @@ from django.db import models
 from django.apps import apps
 from django.conf import settings
 from django.core.management import BaseCommand
-from libs.variation_field import VariationImageFieldFile
+from libs.variation_field.fields import VariationImageFieldFile
 
 IGNORED_DIRS = ('simple_photos', 'page_photos')
 

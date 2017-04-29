@@ -43,7 +43,3 @@
             <div style="background-image: {{ object.icon.url }}">
 
 """
-
-from .fields import SpriteImageField
-
-__all__ = ['SpriteImageField']

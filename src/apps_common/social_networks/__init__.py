@@ -88,4 +88,5 @@
                     return obj.note
 
 """
+
 default_app_config = 'social_networks.apps.Config'

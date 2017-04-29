@@ -2,7 +2,6 @@
     СЕО-модуль.
 
     Зависит от:
-        libs.description
         libs.storages
 
     1) Позволяет указывать значения title, keywords, desription
@@ -24,7 +23,7 @@
 
     Установка параметров по умолчанию:
         views.py:
-            from seo import Seo
+            from seo.seo import Seo
 
             # Простейшая установка SEO-данных из объекта SeoData, привязанного к entity:
                 seo = Seo()
@@ -57,9 +56,5 @@
             {% seo_counters 'body_bottom' %}
         </body>
 """
-
-from .seo import Seo
-
-__all__ = ['Seo']
 
 default_app_config = 'seo.apps.Config'

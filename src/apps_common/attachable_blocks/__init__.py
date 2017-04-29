@@ -31,7 +31,7 @@
 
     Пример создания блока:
         # blocks/models.py:
-            from attachable_blocks import AttachableBlock
+            from attachable_blocks.models import AttachableBlock
 
             class MyBlock(AttachableBlock):
                 BLOCK_VIEW = 'blocks.views.my_block_render'
@@ -87,7 +87,7 @@
 
     Пример связи блоков с конкретной страницей через модель:
         # page/models.py:
-            from attachable_blocks import AttachableBlockField
+            from attachable_blocks.fields import AttachableBlockField
             from blocks.models import MyBlock
 
             class MyPage(models.Model):
@@ -103,7 +103,7 @@
 
     Пример массового подключения блоков к странице:
         # page/admin.py:
-            from attachable_blocks import AttachedBlocksTabularInline
+            from attachable_blocks.admin import AttachedBlocksTabularInline
 
             class FirstBlocksInline(AttachedBlocksTabularInline):
                 # Первый набор блоков (set_name = 'default')
@@ -138,12 +138,5 @@
             {% render_attached_blocks page_object set_name='second' %}
 
 """
-
-from .models import AttachableBlock, AttachableReference
-from .fields import AttachableBlockField
-from .admin import AttachedBlocksTabularInline, AttachedBlocksStackedInline
-
-__all__ = ['AttachableBlock', 'AttachableReference', 'AttachableBlockField',
-           'AttachedBlocksTabularInline', 'AttachedBlocksStackedInline']
 
 default_app_config = 'attachable_blocks.apps.Config'

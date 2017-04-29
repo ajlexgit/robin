@@ -2,8 +2,8 @@ from django.db import models
 from django.templatetags.static import static
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-from libs.stdimage import StdImageField
-from libs.storages import MediaStorage
+from libs.stdimage.fields import StdImageField
+from libs.storages.media_storage import MediaStorage
 from . import options
 
 

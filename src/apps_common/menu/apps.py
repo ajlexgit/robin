@@ -7,6 +7,6 @@ class Config(AppConfig):
     verbose_name = _('Menu')
 
     def ready(self):
-        from placeholder import register_placeholder
+        from placeholder.utils import register_placeholder
         from .views_ajax import menu_placeholder
         register_placeholder('menu', menu_placeholder)

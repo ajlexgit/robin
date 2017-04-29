@@ -28,7 +28,7 @@
 
         Пример использования:
             models.py:
-                from ckeditor import CKEditorUploadField
+                from ckeditor.fields import CKEditorUploadField
 
                 class MyModel(models.Model):
                     ...
@@ -36,8 +36,5 @@
                     ...
 
 """
-from .fields import CKEditorField, CKEditorUploadField
-
-__all__ = ['CKEditorField', 'CKEditorUploadField']
 
 default_app_config = 'ckeditor.apps.Config'

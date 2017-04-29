@@ -6,11 +6,11 @@ from django.utils.translation import ugettext_lazy as _
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
 from project.admin.filters import HierarchyFilter
 from solo.admin import SingletonModelAdmin
-from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
-from libs import admin_utils
+from libs.admin_utils import get_change_url
 from libs.autocomplete.widgets import AutocompleteWidget
+from attachable_blocks.admin import AttachedBlocksStackedInline
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder, NotificationReceiver
 from .signals import products_changed, categories_changed
 
@@ -242,7 +242,7 @@ class ShopProductAdmin(SeoModelAdminMixin, admin.ModelAdmin):
         if obj.category is not None:
             meta = getattr(self.model.category.field.rel.to, '_meta')
             return '<a href="{0}">{1}</a>'.format(
-                admin_utils.get_change_url(meta.app_label, meta.model_name, obj.category.pk),
+                get_change_url(meta.app_label, meta.model_name, obj.category.pk),
                 obj.category
             )
     category_link.short_description = _('Categories')

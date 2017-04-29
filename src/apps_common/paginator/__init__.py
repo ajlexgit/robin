@@ -3,7 +3,7 @@
 
     Пример использования:
         # views.py
-            from paginator import Paginator, EmptyPage
+            from paginator.paginator import Paginator, EmptyPage
 
             ...
             try:
@@ -83,8 +83,3 @@
           </div>
         {% endfor %}
 """
-
-from .paginator import Paginator, EmptyPage
-from .utils import get_paginator_meta
-
-__all__ = ['Paginator', 'EmptyPage', 'get_paginator_meta']

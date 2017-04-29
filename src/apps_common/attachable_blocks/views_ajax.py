@@ -37,4 +37,3 @@ def get_blocks(request):
         }), block)
 
     return JsonResponse(result)
-

@@ -1,5 +1,5 @@
 from django.views.generic.base import TemplateView
-from libs.sphinx import SphinxSearch
+from libs.sphinx.search import SphinxSearch
 
 
 class MySphinxSearch(SphinxSearch):

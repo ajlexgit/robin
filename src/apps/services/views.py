@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from libs.views import CachedViewMixin
-from seo import Seo
+from seo.seo import Seo
 from .models import ServicesConfig, Service
 
 

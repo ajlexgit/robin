@@ -39,6 +39,4 @@
             activate_menu(request, 'articles')
 """
 
-from .utils import activate_menu
-
 default_app_config = 'menu.apps.Config'

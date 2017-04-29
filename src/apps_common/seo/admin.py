@@ -8,11 +8,11 @@ from django.shortcuts import redirect
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import truncatechars
 from django.contrib.contenttypes.models import ContentType
 from solo.admin import SingletonModelAdmin
 from suit.admin import SortableModelAdmin
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
-from libs.description import description
 from .models import SeoConfig, SeoData, Redirect, Counter, Robots
 
 SEO_TAB_NAME = 'seo'
@@ -246,5 +246,5 @@ class RedirectAdmin(ModelAdminMixin, admin.ModelAdmin):
     search_fields = ('old_path', 'new_path')
 
     def short_note(self, obj):
-        return description(obj.note, 20, 40)
+        return truncatechars(obj.note, 36)
     short_note.short_description = _('Note')

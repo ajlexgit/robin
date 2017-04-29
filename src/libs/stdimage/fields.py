@@ -1,6 +1,7 @@
 from django.core import checks
 from django.conf import settings
-from libs.variation_field import *
+from libs.variation_field.fields import VariationImageField
+from libs.variation_field.utils import is_size, format_aspects, check_variations, format_variations
 from .formfields import StdImageFormField
 
 DEFAULT_SOURCE_QUALITY = getattr(settings, 'STDIMAGE_SOURCE_QUALITY', 95)

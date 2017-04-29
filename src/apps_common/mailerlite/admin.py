@@ -13,7 +13,7 @@ from django.contrib.messages import add_message, SUCCESS
 from django.utils.translation import ugettext_lazy as _, ungettext_lazy, get_language
 from solo.admin import SingletonModelAdmin
 from project.admin import ModelAdminMixin
-from libs import admin_utils
+from libs.admin_utils import get_change_url
 from libs.cookies import set_cookie
 from libs.description import description
 from libs.download import AttachmentResponse
@@ -411,7 +411,7 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
             meta = getattr(self.model.groups.field.rel.to, '_meta')
             return ' / '.join(
                 '<a href="{0}">{1}</a>'.format(
-                    admin_utils.get_change_url(meta.app_label, meta.model_name, group.pk),
+                    get_change_url(meta.app_label, meta.model_name, group.pk),
                     group
                 )
                 for group in obj.groups.all()
