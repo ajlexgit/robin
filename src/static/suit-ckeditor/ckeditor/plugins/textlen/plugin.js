@@ -5,7 +5,7 @@
     CKEDITOR.plugins.add( 'textlen', {
         init: function( editor ) {
             // This feature is available only for themed ui instance.
-            if ( editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE )
+            if ( editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE )
                 return;
 
             var get_clear_textlen = function(text) {

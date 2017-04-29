@@ -10,7 +10,9 @@ from . import conf
 
 
 class SocialConfig(SingletonModel):
-    google_apikey = models.CharField(_('API Key'), max_length=48, blank=True, default='AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg')
+    google_apikey = models.CharField(_('API Key'),
+        max_length=48, blank=True, default='AIzaSyB4CphiSoXhku-rP9m5-QkXE9U11OJkOzg'
+    )
 
     twitter_client_id = models.CharField(_('API Key'), max_length=48, blank=True)
     twitter_client_secret = models.CharField(_('API Secret'), max_length=64, blank=True)

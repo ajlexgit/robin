@@ -113,7 +113,7 @@ def cached(*key, time=5*60, backend='default'):
                 return cache.get(cache_key)
             else:
                 result = func(*args, **kwargs)
-                if not result is None:
+                if result is not None:
                     # Размазываем по времени (±10%), чтобы избежать
                     # обновления множества кэшированных данных одновременно.
                     amplitude = round(time * 0.1)

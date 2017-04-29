@@ -26,17 +26,17 @@ class Command(BaseCommand):
         script_args = []
         script_kwargs = {}
         for param in options.get('script_params', ()):
-          if '=' in param:
-            name, value = param.split('=', 1)
-            script_kwargs[name] = value
-          else:
-            script_args.append(param)
+            if '=' in param:
+                name, value = param.split('=', 1)
+                script_kwargs[name] = value
+            else:
+                script_args.append(param)
         
         try:
-            module = importlib.import_module(options['script'])
-        except ImportError as e:
+            script = importlib.import_module(options['script'])
+        except ImportError:
             print("No (valid) module for script '%s' found" % options['script'])
         else:
-            run_func = getattr(module, options['entry'], None)
+            run_func = getattr(script, options['entry'], None)
             if run_func and inspect.isfunction(run_func):
                 run_func(*script_args, **script_kwargs)

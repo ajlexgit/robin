@@ -40,7 +40,7 @@
                             if (!styleSet) return;
                             for (var i=0; i<styleSet.length; i++) {
                                 var style = styleSet[i];
-                                if (style.name == widget.data.styleName) {
+                                if (style.name === widget.data.styleName) {
                                     var styleObj = new CKEDITOR.style(style);
                                     styleObj.applyToObject(widget.element);
                                     return false;
@@ -52,12 +52,12 @@
                         widget.element.$.className = Array.prototype.slice.apply(
                             widget.element.$.classList
                         ).filter(function(name) {
-                            return name.substr(0, 4) == 'cke_';
+                            return name.substr(0, 4) === 'cke_';
                         }).join(' ');
                     }
                 },
                 upcast: function(element) {
-                    return element.name == 'div' && (element.attributes['data-widget-name'] == WIDGET_NAME);
+                    return element.name === 'div' && (element.attributes['data-widget-name'] === WIDGET_NAME);
                 }
             });
 
@@ -80,7 +80,7 @@
 
                 editor.contextMenu.addListener(function(element) {
                     var widget = editor.widgets.getByElement(element);
-                    if (widget && widget.name == WIDGET_NAME) {
+                    if (widget && widget.name === WIDGET_NAME) {
                         return {
                             divItem: CKEDITOR.TRISTATE_OFF
                         };
@@ -91,7 +91,7 @@
             editor.widgets.on('instanceCreated', function(evt) {
                 var widget = evt.data;
                 widget.on('key', function(event) {
-                    if ((event.data.keyCode == 13) && (event.sender.name == WIDGET_NAME)) {
+                    if ((event.data.keyCode === 13) && (event.sender.name === WIDGET_NAME)) {
                         var p = editor.document.createElement('p');
                         p.setHtml('&nbsp;');
                         p.insertAfter(this.wrapper);

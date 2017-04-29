@@ -33,7 +33,7 @@
                     dialog.close();
                 },
                 error: function(xhr) {
-                    if (xhr.statusText == 'abort') {
+                    if (xhr.statusText === 'abort') {
                         return
                     }
 

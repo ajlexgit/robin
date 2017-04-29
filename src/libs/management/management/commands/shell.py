@@ -5,7 +5,6 @@
 from django.conf import settings
 from django.core.management import BaseCommand
 
-
 SHELL_IMPORTS = [
     ('django.db', ('models', )),
     ('django.apps', ('apps', )),
@@ -52,8 +51,8 @@ class Command(BaseCommand):
                 data = modules.setdefault(model.__module__, [])
                 data.append(model.__name__)
 
-            for module, models in modules.items():
-                imports.append((module, models))
+            for module_name, models in modules.items():
+                imports.append((module_name, models))
 
         if verbose:
             self.stdout.write('Autoload modules:\n')

@@ -82,7 +82,7 @@
                                     element.remove();
 
                                     var selection = editor.getSelection();
-                                    if (selection.getSelectedElement().$ == new_tag.$) {
+                                    if (selection.getSelectedElement().$ === new_tag.$) {
                                         var range = selection.getRanges()[0];
                                         var newRange = new CKEDITOR.dom.range(range.document);
                                         newRange.moveToPosition(new_tag, CKEDITOR.POSITION_AFTER_END);
@@ -122,7 +122,7 @@
                             element.remove();
 
                             var selection = editor.getSelection();
-                            if (selection.getSelectedElement().$ == new_tag.$) {
+                            if (selection.getSelectedElement().$ === new_tag.$) {
                                 var range = selection.getRanges()[0];
                                 var newRange = new CKEDITOR.dom.range(range.document);
                                 newRange.moveToPosition(new_tag, CKEDITOR.POSITION_AFTER_END);
@@ -219,7 +219,7 @@
                 // Обновление класса галереи при удалении картинок через Backspace и Delete
                 editor.on('key', function(evt) {
                     if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
-                        if (editor.mode != "wysiwyg") {
+                        if (editor.mode !== "wysiwyg") {
                             return
                         }
 
@@ -229,7 +229,7 @@
                             if (container.hasClass('page-images')) {
                                 if (container.getElementsByTag('img').count() > 1) {
                                     container.removeClass('single-image').addClass('multi-image');
-                                } else if (container.getElementsByTag('img').count() == 1) {
+                                } else if (container.getElementsByTag('img').count() === 1) {
                                     container.removeClass('multi-image').addClass('single-image');
                                 } else {
                                     container.remove()

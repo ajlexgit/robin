@@ -1,2 +1,3 @@
-from .base import (ModelAdminMixin, ModelAdminInlineMixin, ReversedSortableModelAdmin,
-                   RealLinksModelAdminMixin)
+from .base import (
+    ModelAdminMixin, ModelAdminInlineMixin, ReversedSortableModelAdmin, RealLinksModelAdminMixin
+)

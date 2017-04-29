@@ -142,7 +142,7 @@ def softhyphen(value):
     """
     cache = caches['default']
     key = ':'.join(map(str, (value, get_language())))
-    if cache.has_key(key):
+    if key in cache:
         return cache.get(key)
     else:
         result = hybernate_string(value)
@@ -161,4 +161,3 @@ def phone(value):
 @register.filter(is_safe=True)
 def unescape_html(html):
     return unescape(html)
-

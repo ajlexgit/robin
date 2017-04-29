@@ -219,7 +219,7 @@
                     // ошибка разбора изображения
                     that._invalid();
                     that.$previews.hide();
-                    if (reason == 'Not image') {
+                    if (reason === 'Not image') {
                         alert(gettext('File is not an image'));
                     } else {
                         that.error(reason);
@@ -229,7 +229,7 @@
                 // ошибка загрузки файла
                 that._invalid();
                 that.$previews.hide();
-                if (reason != 'Not a file') {
+                if (reason !== 'Not a file') {
                     alert(reason);
                 }
             });
@@ -356,7 +356,7 @@
 
             onCrop: function($button, coords) {
                 var source_url = this.opts.getImage.call(this, $button);
-                if (source_url.substr(0, 4) != 'data') {
+                if (source_url.substr(0, 4) !== 'data') {
                     source_url += '?_=' + Math.random().toString().substr(2);
                 }
 

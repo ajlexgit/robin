@@ -204,7 +204,11 @@ def set_image(instance, field, width=1920, height=1440):
 
     try:
         image_type = random.choice(['people', 'places', 'things'])
-        response = requests.get('https://placem.at/%s?w=%d&h=%d&random=1&txt=' % (image_type, width, height), timeout=5, stream=True)
+        response = requests.get(
+            'https://placem.at/%s?w=%d&h=%d&random=1&txt=' % (image_type, width, height),
+            timeout=5,
+            stream=True
+        )
     except (ConnectionError, Timeout):
         response = requests.get('http://baconmockup.com/%d/%d/' % (width, height), stream=True)
 

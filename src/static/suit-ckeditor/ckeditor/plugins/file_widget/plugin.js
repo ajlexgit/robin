@@ -53,7 +53,7 @@
             editor.on('dragend', function(evt) {
                 setTimeout(function() {
                     var widget = evt.editor.widgets.selected[0];
-                    if (!widget || (widget.wrapper.type != CKEDITOR.NODE_ELEMENT)) {
+                    if (!widget || (widget.wrapper.type !== CKEDITOR.NODE_ELEMENT)) {
                         return
                     }
 

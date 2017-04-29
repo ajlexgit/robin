@@ -5,9 +5,9 @@
         var child;
         var childs = element.childNodes;
         while (child = childs[i]) {
-            if (child.nodeType != 1) {
+            if (child.nodeType !== 1) {
                 element.removeChild(child);
-            } else if (child.tagName != 'IMG') {
+            } else if (child.tagName !== 'IMG') {
                 element.removeChild(child);
             } else {
                 i++

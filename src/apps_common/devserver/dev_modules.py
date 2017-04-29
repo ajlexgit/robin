@@ -18,12 +18,16 @@ def load_modules():
         try:
             module = __import__(name, {}, {}, [''])
         except ImportError as e:
-            raise exceptions.ImproperlyConfigured('Error importing devserver module %s: "%s"' % (name, e))
+            raise exceptions.ImproperlyConfigured(
+                'Error importing devserver module %s: "%s"' % (name, e)
+            )
 
         try:
             cls = getattr(module, class_name)
         except AttributeError:
-            raise exceptions.ImproperlyConfigured('Error importing devserver module "%s" does not define a "%s" class' % (name, class_name))
+            raise exceptions.ImproperlyConfigured(
+                'Error importing devserver module "%s" does not define a "%s" class' % (name, class_name)
+            )
 
         try:
             instance = cls()

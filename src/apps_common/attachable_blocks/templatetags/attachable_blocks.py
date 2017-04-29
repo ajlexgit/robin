@@ -57,7 +57,7 @@ def render_attachable_block(context, block, ajax=False, **kwargs):
 
 @register.simple_tag(takes_context=True)
 def render_first_attachable_block(context, model_path, ajax=False, **kwargs):
-    if not '.' in model_path:
+    if '.' not in model_path:
         return ''
 
     app, modelname = model_path.rsplit('.', 1)

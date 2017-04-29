@@ -84,7 +84,7 @@
                 // Удаление контейнера при удалении видео через Backspace и Delete
                 editor.on('key', function (evt) {
                     if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
-                        if (editor.mode != "wysiwyg") {
+                        if (editor.mode !== "wysiwyg") {
                             return
                         }
 
@@ -92,7 +92,7 @@
                         setTimeout(function () {
                             var container = editor.getSelection().getStartElement();
                             if (container.hasClass('page-video')) {
-                                if (container.getElementsByTag('iframe').count() == 0) {
+                                if (container.getElementsByTag('iframe').count() === 0) {
                                     container.remove()
                                 }
                             }

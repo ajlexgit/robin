@@ -199,8 +199,16 @@ class GroupAdmin(ModelAdminMixin, admin.ModelAdmin):
         urls = super().get_urls()
         info = self.model._meta.app_label, self.model._meta.model_name
         csv_urls = [
-            url(r'^upload_csv/(?P<group_id>\d+)/$', self.admin_site.admin_view(self.upload_csv), name='%s_%s_upload_csv' % info),
-            url(r'^download_csv/(?P<group_id>\d+)/$', self.admin_site.admin_view(self.download_csv), name='%s_%s_download_csv' % info),
+            url(
+                r'^upload_csv/(?P<group_id>\d+)/$',
+                self.admin_site.admin_view(self.upload_csv),
+                name='%s_%s_upload_csv' % info
+            ),
+            url(
+                r'^download_csv/(?P<group_id>\d+)/$',
+                self.admin_site.admin_view(self.download_csv),
+                name='%s_%s_download_csv' % info
+            ),
         ]
         return csv_urls + urls
 

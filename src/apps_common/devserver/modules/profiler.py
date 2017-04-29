@@ -97,7 +97,7 @@ class Profile:
         # вывод имени профилировщика
         self.stdout.write(
             '{profiler}\n'.format(
-                profiler = self.colorize(
+                profiler=self.colorize(
                     'Profile "{}":'.format(self.name),
                     fg='white',
                     opts=('bold',)

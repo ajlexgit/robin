@@ -11,7 +11,7 @@ def redirect_to_language(request, code):
     referer_url = get_referer_url(request)
 
     # язык некорректен или отсутствует
-    if not code or not code in options.MULTILANGUAGE_SITES:
+    if not code or code not in options.MULTILANGUAGE_SITES:
         return redirect(referer_url)
 
     # запрещаем авторедирект на удаленном домене

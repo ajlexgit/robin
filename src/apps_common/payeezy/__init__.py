@@ -83,6 +83,7 @@
             </form>
 
 """
+
 from .forms import PaymentForm
 from .signals import payeezy_success, payeezy_error
 

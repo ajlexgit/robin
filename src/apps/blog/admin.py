@@ -43,7 +43,7 @@ class TagAdmin(ModelAdminMixin, SortableModelAdmin):
             'fields': ('title', 'slug'),
         }),
     )
-    sortable= 'sort_order'
+    sortable = 'sort_order'
     list_display = ('title',)
     prepopulated_fields = {'slug': ('title',)}
 

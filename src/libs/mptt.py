@@ -9,7 +9,8 @@ from mptt.querysets import TreeQuerySet
 from mptt.exceptions import InvalidMove
 from suit.admin import SortableModelAdmin
 
-__all__ = ['MPTTModel', 'TreeForeignKey', 'MPTTQuerySet', 'InvalidMove', 'MPTTQuerySetManager', 'SortableMPTTModelAdmin']
+__all__ = ['MPTTModel', 'TreeForeignKey', 'MPTTQuerySet', 'InvalidMove',
+           'MPTTQuerySetManager', 'SortableMPTTModelAdmin']
 
 
 # ========================

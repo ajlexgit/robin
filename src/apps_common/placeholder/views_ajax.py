@@ -29,7 +29,7 @@ class MiddlewareView(AjaxViewMixin, View):
                 'error': _('empty placeholder name')
             })
 
-        if not name in PLACEHOLDERS:
+        if name not in PLACEHOLDERS:
             return self.json_error({
                 'error': _('unknown placeholder name')
             })

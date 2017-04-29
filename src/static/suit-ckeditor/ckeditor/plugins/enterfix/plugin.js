@@ -6,7 +6,7 @@
     CKEDITOR.plugins.add( 'enterfix', {
         init: function(editor) {
             editor.on('key', function(evt) {
-                if (editor.mode != "wysiwyg") {
+                if (editor.mode !== "wysiwyg") {
                     return
                 }
 

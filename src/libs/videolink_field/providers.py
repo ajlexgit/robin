@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 class ProviderMetaclass(type):
     """ Автоматическая регистрация класса провайдера """
-    def __init__(cls, name, bases, nmspc):
-        super().__init__(name, bases, nmspc)
+    def __init__(cls, what, bases=None, attrs=None):
+        super().__init__(what, bases, attrs)
         if cls.name:
             PROVIDERS[cls.name] = cls
 
@@ -107,7 +107,9 @@ class VimeoProvider(BaseProvider):
         height = int(height.firstChild.data)
         embed_width = min(640, width)
         embed_height = int(embed_width * height / width)
-        code = '<iframe src="//player.vimeo.com/video/{}" width="{}" height="{}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
+        code = '<iframe src="//player.vimeo.com/video/{}" ' \
+               'width="{}" height="{}" frameborder="0" ' \
+               'webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
         return {
             'title': title.firstChild.data,
             'description': strip_tags(description),

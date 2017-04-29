@@ -31,7 +31,7 @@ def get_stack_calls():
         stackframes = traceback.extract_stack()
         for record in stackframes[2:]:
             filename, lineno, funcname, line = record
-            if filename.startswith(BASE_PATTERN) and not 'devserver' in filename:
+            if filename.startswith(BASE_PATTERN) and 'devserver' not in filename:
                 filename = filename[len(BASE_PATTERN):]
                 caller = '%s (func %r, line %s)' % (filename, funcname, lineno)
                 stack.append(caller)
@@ -52,7 +52,7 @@ def get_stack_calls():
                     caller = '%s (node %r, line %s)' % (loader.loadname, token, line_num)
                     stack.append(caller)
                     break
-            elif filename.startswith(BASE_PATTERN) and not 'devserver' in filename:
+            elif filename.startswith(BASE_PATTERN) and 'devserver' not in filename:
                 # Вызов из кода
                 filename = filename[len(BASE_PATTERN):]
                 caller = '%s (func %r, line %s)' % (filename, funcname, lineno)
@@ -137,7 +137,6 @@ class SQLSummaryModule(DevServerModule):
                     }
             else:
                 unique_queries.add(sql)
-
 
         sql_logger.debug('-' * 40 + '\n')
         for index, record in enumerate(queries, start=1):

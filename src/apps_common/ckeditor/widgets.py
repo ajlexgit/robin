@@ -143,8 +143,14 @@ class CKEditorUploadWidget(CKEditorWidget):
             simple_photos = value[2].split(',')
             value = value[0]
 
-        output = mark_safe('<input type="hidden" name="{0}-page-photos" value="{1}">'.format(name, ','.join(page_photos)))
-        output += mark_safe('<input type="hidden" name="{0}-page-files" value="{1}">'.format(name, ','.join(page_files)))
-        output += mark_safe('<input type="hidden" name="{0}-simple-photos" value="{1}">'.format(name, ','.join(simple_photos)))
+        output = mark_safe(
+            '<input type="hidden" name="{0}-page-photos" value="{1}">'.format(name, ','.join(page_photos))
+        )
+        output += mark_safe(
+            '<input type="hidden" name="{0}-page-files" value="{1}">'.format(name, ','.join(page_files))
+        )
+        output += mark_safe(
+            '<input type="hidden" name="{0}-simple-photos" value="{1}">'.format(name, ','.join(simple_photos))
+        )
         output += super().render(name, value, attrs)
         return output

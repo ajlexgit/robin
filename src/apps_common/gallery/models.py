@@ -423,7 +423,7 @@ class GalleryImageItem(GalleryItemBase):
         copy_fields = self.COPY_FIELDS
 
         new_item = dest_gallery.IMAGE_MODEL(
-            gallery = dest_gallery
+            gallery=dest_gallery
         )
 
         # image
@@ -512,7 +512,6 @@ class GalleryVideoLinkItem(GalleryItemBase):
                 self.video_preview.save(uploaded_file.name, uploaded_file, save=False)
                 uploaded_file.close()
         super().save(*args, **kwargs)
-
 
     @classmethod
     def check(cls, **kwargs):
@@ -644,7 +643,7 @@ class GalleryVideoLinkItem(GalleryItemBase):
         copy_fields = self.COPY_FIELDS
 
         new_item = dest_gallery.VIDEO_LINK_MODEL(
-            gallery = dest_gallery
+            gallery=dest_gallery
         )
         for field in self._meta.concrete_fields:
             if field.name in copy_fields:
@@ -759,7 +758,8 @@ class GalleryBase(models.Model):
 
     def clean(self):
         """ Ограничение на максимальное кол-во элементов """
-        if isinstance(self.MAX_ITEM_COUNT, int) and (self.MAX_ITEM_COUNT > 0) and self.items.count() > self.MAX_ITEM_COUNT:
+        if isinstance(self.MAX_ITEM_COUNT, int) and (self.MAX_ITEM_COUNT > 0) \
+                and self.items.count() > self.MAX_ITEM_COUNT:
             error_message = ungettext(
                 'this gallery can\'t contain more than %s item',
                 'this gallery can\'t contain more than %s items',

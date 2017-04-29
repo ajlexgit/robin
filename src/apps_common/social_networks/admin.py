@@ -89,7 +89,9 @@ class SocialConfigForm(forms.ModelForm):
         # Facebook
         if config.facebook_client_id and config.facebook_client_secret:
             redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:facebook_token'))
-            token_url = 'https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&state=&response_type=code'.format(
+            token_url = ('https://www.facebook.com/dialog/oauth'
+                         '?client_id={client_id}&redirect_uri={redirect_uri}'
+                         '&scope={scope}&state=&response_type=code').format(
                 client_id=config.facebook_client_id,
                 redirect_uri=redirect_uri,
                 scope='manage_pages,publish_pages',
@@ -100,7 +102,9 @@ class SocialConfigForm(forms.ModelForm):
         # Instagram
         if config.instagram_client_id and config.instagram_client_secret:
             redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:instagram_token'))
-            token_url = 'https://api.instagram.com/oauth/authorize/?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code'.format(
+            token_url = ('https://api.instagram.com/oauth/authorize/'
+                         '?client_id={client_id}&redirect_uri={redirect_uri}'
+                         '&response_type=code').format(
                 client_id=config.instagram_client_id,
                 redirect_uri=redirect_uri,
             )
@@ -110,7 +114,9 @@ class SocialConfigForm(forms.ModelForm):
         # LinkedIn
         if config.linkedin_client_id and config.linkedin_client_secret:
             redirect_uri = self.request.build_absolute_uri(resolve_url('admin_social_networks:linkedin_token'))
-            token_url = 'https://www.linkedin.com/oauth/v2/authorization?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&state={state}&scope={scope}'.format(
+            token_url = ('https://www.linkedin.com/oauth/v2/authorization'
+                         '?client_id={client_id}&redirect_uri={redirect_uri}'
+                         '&response_type=code&state={state}&scope={scope}').format(
                 client_id=config.linkedin_client_id,
                 redirect_uri=redirect_uri,
                 state=uuid.uuid1(),
@@ -311,7 +317,11 @@ class AutoPostMixin(ModelAdminMixin):
 
         info = self.model._meta.app_label, self.model._meta.model_name
         submit_urls = [
-            url(r'^(\d+)/share/$', self.admin_site.admin_view(self.submit_view), name='%s_%s_share' % info),
+            url(
+                r'^(\d+)/share/$',
+                self.admin_site.admin_view(self.submit_view),
+                name='%s_%s_share' % info
+            ),
         ]
         return submit_urls + urls
 

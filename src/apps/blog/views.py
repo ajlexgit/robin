@@ -50,7 +50,8 @@ class IndexView(CachedViewMixin, TemplateView):
         # Unique title
         title_appends = ' | '.join(filter(bool, [
             self.tag.title if self.tag else '',
-            'Page %d/%d' % (paginator.current_page_number, paginator.num_pages) if paginator.current_page_number >= 2 else '',
+            'Page %d/%d' % (paginator.current_page_number, paginator.num_pages)
+            if paginator.current_page_number >= 2 else '',
         ]))
         if title_appends:
             default_title = seo.title.popleft()

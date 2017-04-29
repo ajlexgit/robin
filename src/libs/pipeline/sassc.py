@@ -13,8 +13,8 @@ re_import = re.compile('@import\s+[\'"]([^\'"]+)')
 
 
 class SASSCMetaclass(type):
-    def __init__(cls, name, bases, nmspc):
-        super().__init__(name, bases, nmspc)
+    def __init__(cls, what, bases=None, attrs=None):
+        super().__init__(what, bases, attrs)
         cls.start = time.time()
 
 

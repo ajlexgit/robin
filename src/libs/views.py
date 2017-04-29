@@ -19,7 +19,7 @@ class DecoratableViewMixin:
 
     def dispatch(self, request, *args, **kwargs):
         self.method = request.method.lower()
-        if not self.method in self.http_method_names:
+        if self.method not in self.http_method_names:
             return self.http_method_not_allowed(request, *args, **kwargs)
 
         handler = self.get_handler(request)

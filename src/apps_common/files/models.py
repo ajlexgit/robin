@@ -4,7 +4,7 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from libs.file_field import FileField
+from libs.file_field.fields import FileField
 from libs.storages import MediaStorage
 
 

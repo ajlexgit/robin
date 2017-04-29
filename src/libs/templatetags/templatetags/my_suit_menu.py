@@ -11,7 +11,6 @@ except ImportError:
     string_types = basestring,
 
 import re
-
 import warnings
 from suit.config import get_config
 
@@ -20,9 +19,6 @@ register = template.Library()
 
 @register.assignment_tag(takes_context=True)
 def get_menu(context, request):
-    """
-    :type request: WSGIRequest
-    """
     if not isinstance(request, WSGIRequest):
         return None
 
@@ -173,7 +169,6 @@ class Menu(object):
 
         return app
 
-
     def app_is_forbidden(self, app):
         return app['permissions'] and \
                not self.user_has_permission(app['permissions'])
@@ -188,8 +183,7 @@ class Menu(object):
         """
         if 'icon' in app:
             app['icon'] = app['icon'] or 'icon-'
-        elif self.conf_icons and 'name' in app and \
-                        app['name'] in self.conf_icons:
+        elif self.conf_icons and 'name' in app and app['name'] in self.conf_icons:
             app['icon'] = self.conf_icons[app['name']]
 
     def process_semi_native_app(self, app):
@@ -274,11 +268,11 @@ class Menu(object):
             model = self.make_model(model_def, app_name)
             return [model] if model else []
         prefix = match.group(1)
-        prefix = self.get_model_name(app_name,prefix)
+        prefix = self.get_model_name(app_name, prefix)
         return [
             m
             for m in [
-                self.convert_native_model(native_model,app_name)
+                self.convert_native_model(native_model, app_name)
                 for native_model in self.all_models
                 if self.get_native_model_name(native_model).startswith(prefix)
             ]
@@ -333,8 +327,8 @@ class Menu(object):
             'url': self.get_native_model_url(model),
             'name': self.get_native_model_name(model),
             'app': app_name,
-            'perms': model.get('perms',None),
-            'add_url': model.get('add_url',None),
+            'perms': model.get('perms', None),
+            'add_url': model.get('add_url', None),
         }
 
     def get_native_model_url(self, model):
@@ -464,7 +458,6 @@ class Menu(object):
                 orig_url = app.get('orig_url')
                 if orig_url and self.request.path.startswith(orig_url):
                     app['is_active'] = self.app_activated = True
-
 
     def activate_model_by_url(self, app, models):
         for model in models:

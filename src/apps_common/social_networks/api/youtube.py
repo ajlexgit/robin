@@ -75,7 +75,9 @@ def get_playlist_videos(playlist_id, per_page=50, next_page_token=''):
     result = youtube.request('playlistItems', {
         'part': 'snippet',
         'playlistId': playlist_id,
-        'fields': 'items(id,snippet/title,snippet/description,snippet/thumbnails,snippet/position,snippet/resourceId),pageInfo/*,nextPageToken',
+        'fields': 'items('
+                  'id,snippet/title,snippet/description,snippet/thumbnails,'
+                  'snippet/position,snippet/resourceId),pageInfo/*,nextPageToken',
         'pageToken': next_page_token,
         'maxResults': per_page,
     })

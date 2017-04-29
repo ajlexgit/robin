@@ -180,7 +180,7 @@ class Command(BaseCommand):
                     campaign.save()
                     logger.info("Started campaign '%s'" % campaign.subject)
             else:
-                logger.warn("Campaign #%s doesn\'t have remote ID" % campaign.pk)
+                logger.warning("Campaign #%s doesn\'t have remote ID" % campaign.pk)
 
     def import_campaigns(self):
         """ Загрузка рассылок """
@@ -222,7 +222,7 @@ class Command(BaseCommand):
                 try:
                     local_subscriber.save()
                 except IntegrityError:
-                    logger.warn("IntegrityError for ({0[id]}, {0[email]})".format(remote_subscriber))
+                    logger.warning("IntegrityError for ({0[id]}, {0[email]})".format(remote_subscriber))
                     continue
 
                 if not local_subscriber.groups.filter(pk=group.pk).exists():

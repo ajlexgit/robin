@@ -114,7 +114,7 @@ class Seo(metaclass=SeoMetaClass):
         defaults = defaults or {}
 
         # если у объекта объявлен get_absolute_url - ставим его как canonical по умолчанию
-        if hasattr(instance, 'get_absolute_url') and not self.canonical and not 'canonical' in defaults:
+        if hasattr(instance, 'get_absolute_url') and not self.canonical and 'canonical' not in defaults:
             defaults['canonical'] = getattr(instance, 'get_absolute_url')()
 
         seodata = self.get_for(instance)

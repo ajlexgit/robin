@@ -45,7 +45,6 @@ class VoteView(AjaxViewMixin, View):
             set_cookie(response, 'voted', last_rating, expires=conf.COOKIE_DAYS_EXPIRES)
             return response
 
-
         # голосование
         vote = RatingVote(
             ip=client_ip,

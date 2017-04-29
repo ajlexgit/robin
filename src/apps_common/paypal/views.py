@@ -57,10 +57,7 @@ def result(request):
             invoice = None
 
         resp = http_post(conf.FORM_TARGET, 'cmd=_notify-validate&' + request.body.decode())
-        if (resp.text == 'VERIFIED'
-            and payment_status.lower() == 'completed'
-            and receiver_email.lower() == conf.EMAIL.lower()):
-
+        if (resp.text == 'VERIFIED' and payment_status.lower() == 'completed' and receiver_email.lower() == conf.EMAIL.lower()):
             try:
                 paypal_success.send(
                     sender=Log,

@@ -107,7 +107,9 @@ def check_variations(variations, obj):
         if 'size' not in params:
             errors.append(checks.Error('variation %r requires \'size\' value' % name, obj=obj))
         if not is_size(params['size']):
-            errors.append(checks.Error('"size" in variation %r should be a tuple of 2 non-negative numbers' % name, obj=obj))
+            errors.append(checks.Error(
+                '"size" in variation %r should be a tuple of 2 non-negative numbers' % name, obj=obj
+            ))
 
         # crop
         if not isinstance(params['crop'], bool):
@@ -123,7 +125,9 @@ def check_variations(variations, obj):
         if not isinstance(params['max_height'], int) or params['max_height'] < 0:
             errors.append(checks.Error('"max_height" in variation %r must be a non-negative integer' % name, obj=obj))
         if params['crop'] and (params['max_width'] or params['max_height']):
-            errors.append(checks.Error('"max_width" and "max_height" allowed only when crop=False in variation %r' % name, obj=obj))
+            errors.append(checks.Error(
+                '"max_width" and "max_height" allowed only when crop=False in variation %r' % name, obj=obj
+            ))
 
         if not any(d for d in params['size']) and not params['max_width'] and not params['max_height']:
             errors.append(checks.Error('"size" in variation %r is empty and non-calulatable' % name, obj=obj))
@@ -137,7 +141,9 @@ def check_variations(variations, obj):
         if params['format']:
             fmt = str(params['format']).upper()
             if fmt not in ('JPG', 'JPEG', 'PNG'):
-                errors.append(checks.Error('unacceptable format of variation %r: %r. Allowed types: jpg, jpeg, png' % (name, fmt), obj=obj))
+                errors.append(checks.Error(
+                    'unacceptable format of variation %r: %r. Allowed types: jpg, jpeg, png' % (name, fmt), obj=obj
+                ))
 
         # overlay
         if params['overlay'] and not find(params['overlay']):

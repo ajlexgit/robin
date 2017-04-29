@@ -31,7 +31,7 @@
 
             editor.on('key', function(evt) {
                 if ((evt.data.keyCode === 8) || (evt.data.keyCode === 46)) {
-                    if (editor.mode != "wysiwyg") {
+                    if (editor.mode !== "wysiwyg") {
                         return
                     }
 

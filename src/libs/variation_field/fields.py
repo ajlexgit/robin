@@ -606,7 +606,7 @@ class VariationImageField(models.ImageField):
                         variation=variation,
                         quality=self.get_variation_quality(instance, variation),
                         croparea=croparea
-                    ) : variation
+                    ): variation
                     for name, variation in self.get_variations(instance).items()
                     if not variations or name in variations
                 }

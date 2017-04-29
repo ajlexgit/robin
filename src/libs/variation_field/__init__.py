@@ -9,6 +9,7 @@
         img.save('dest.jpg', optimize=1, **params)
 
 """
+
 from .fields import VariationImageFieldFile, VariationImageField
 from .utils import (is_size, check_variations, format_variations, format_aspects)
 

@@ -162,7 +162,7 @@
 
         for (i in provider.params) {
             // We don't want them to jack everything up by changing the callback parameter
-            if (i == provider.callbackparameter)
+            if (i === provider.callbackparameter)
                 continue;
 
             // allows the options to be set to null, don't send null values to the server as parameters
@@ -171,7 +171,7 @@
         }
 
         url += "format=" + provider.format + "&url=" + escape(externalUrl) + qs;
-        if (provider.dataType != 'json')
+        if (provider.dataType !== 'json')
             url += "&" + provider.callbackparameter + "=?";
 
         return url;
@@ -185,7 +185,7 @@
     }
 
     function embedCode(container, externalUrl, embedProvider) {
-        if ($('#jqoembeddata').data(externalUrl) != undefined && embedProvider.embedtag.tag != 'iframe') {
+        if ($('#jqoembeddata').data(externalUrl) !== undefined && embedProvider.embedtag.tag !== 'iframe') {
             var oembedData = {code: $('#jqoembeddata').data(externalUrl)};
             success(oembedData, externalUrl, container);
         } else if (embedProvider.yql) {
@@ -194,7 +194,7 @@
             var query = 'SELECT * FROM ' + from
                 + ' WHERE url="' + (url) + '"'
                 + " and " + (/html/.test(from) ? 'xpath' : 'itemPath') + "='" + (embedProvider.yql.xpath || '/') + "'";
-            if (from == 'html')
+            if (from === 'html')
                 query += " and compat='html5'";
             var ajaxopts = $.extend({
                 url: "//query.yahooapis.com/v1/public/yql",
@@ -208,30 +208,30 @@
                 success: function (data) {
                     var result;
 
-                    if (embedProvider.yql.xpath && embedProvider.yql.xpath == '//meta|//title|//link') {
+                    if (embedProvider.yql.xpath && embedProvider.yql.xpath === '//meta|//title|//link') {
                         var meta = {};
 
-                        if (data.query == null) {
+                        if (data.query === null) {
                             data.query = {};
                         }
-                        if (data.query.results == null) {
+                        if (data.query.results === null) {
                             data.query.results = {"meta": []};
                         }
                         for (var i = 0, l = data.query.results.meta.length; i < l; i++) {
                             var name = data.query.results.meta[i].name || data.query.results.meta[i].property || null;
-                            if (name == null)continue;
+                            if (name === null)continue;
                             meta[name.toLowerCase()] = data.query.results.meta[i].content;
                         }
                         if (!meta.hasOwnProperty("title") || !meta.hasOwnProperty("og:title")) {
-                            if (data.query.results.title != null) {
+                            if (data.query.results.title !== null) {
                                 meta.title = data.query.results.title;
                             }
                         }
                         if (!meta.hasOwnProperty("og:image") && data.query.results.hasOwnProperty("link")) {
                             for (var i = 0, l = data.query.results.link.length; i < l; i++) {
                                 if (data.query.results.link[i].hasOwnProperty("rel")) {
-                                    if (data.query.results.link[i].rel == "apple-touch-icon") {
-                                        if (data.query.results.link[i].href.charAt(0) == "/") {
+                                    if (data.query.results.link[i].rel === "apple-touch-icon") {
+                                        if (data.query.results.link[i].href.charAt(0) === "/") {
                                             meta["og:image"] = url.match(/^(([a-z]+:)?(\/\/)?[^\/]+\/).*$/)[1] + data.query.results.link[i].href;
                                         } else {
                                             meta["og:image"] = data.query.results.link[i].href;
@@ -275,12 +275,12 @@
                     .css('max-height', settings.maxHeight || 'auto')
                     .css('max-width', settings.maxWidth || 'auto');
 
-                if (tag == 'embed') {
+                if (tag === 'embed') {
                     code.attr('type', embedProvider.embedtag.type || "application/x-shockwave-flash")
                         .attr('flashvars', externalUrl.replace(embedProvider.templateRegex, flashvars));
                 }
 
-                if (tag == 'iframe') {
+                if (tag === 'iframe') {
                     code.attr('scrolling', embedProvider.embedtag.scrolling || "no")
                         .attr('frameborder', embedProvider.embedtag.frameborder || "0");
 
@@ -351,7 +351,7 @@
 
         if (embedMethod === 'auto' && container.attr('href') !== null) {
             embedMethod = 'append';
-        } else if (embedMethod == 'auto') {
+        } else if (embedMethod === 'auto') {
             embedMethod = 'replace';
         }
 
@@ -368,7 +368,7 @@
                 if (settings.includeHandle) {
                     $('<span class="oembedall-closehide">&darr;</span>').insertBefore(container).click(function () {
                         var encodedString = encodeURIComponent($(this).text());
-                        $(this).html((encodedString == '%E2%86%91') ? '&darr;' : '&uarr;');
+                        $(this).html((encodedString === '%E2%86%91') ? '&darr;' : '&uarr;');
                         $(this).parent().children().last().toggle();
                     });
                 }
@@ -465,7 +465,7 @@
 
         if (extraSettings.useYQL) {
 
-            if (extraSettings.useYQL == 'xml') {
+            if (extraSettings.useYQL === 'xml') {
                 extraSettings.yql = {
                     xpath: "//oembed/html",
                     from: 'xml',
@@ -485,7 +485,7 @@
                         return this.apiendpoint + '?format=json&url=' + externalurl
                     },
                     datareturn: function (results) {
-                        if (results.json.type != 'video' && (results.json.url || results.json.thumbnail_url)) {
+                        if (results.json.type !== 'video' && (results.json.url || results.json.thumbnail_url)) {
                             return '<img src="' + (results.json.url || results.json.thumbnail_url) + '" />';
                         }
                         return results.json.html || ''

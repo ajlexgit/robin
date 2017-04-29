@@ -107,7 +107,6 @@ class Valute:
 
         return self._formatter['alternative_format'].format(value)
 
-
     # ===========
     # Операторы
     # ===========

@@ -35,9 +35,7 @@ class Command(BaseCommand):
         return [
             item.name
             for item in model._meta.get_fields()
-            if not item.auto_created and
-               hasattr(item, 'get_internal_type') and
-               item.get_internal_type() == 'TextField'
+            if not item.auto_created and hasattr(item, 'get_internal_type') and item.get_internal_type() == 'TextField'
         ]
 
     def process_model(self, app, model):
@@ -107,7 +105,6 @@ class Command(BaseCommand):
                     instance.pk,
                 ))
                 attached_unused_simplephotos.delete()
-
 
     def handle(self, *args, **options):
         page_photos = PagePhoto.objects.filter(instance_id=0)

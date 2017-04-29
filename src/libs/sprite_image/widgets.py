@@ -41,5 +41,5 @@ class SpriteImageWidget(forms.Widget):
             'attrs': flatatt(final_attrs),
             'value': text_value,
             'choices': choices,
-            'initial_position': choices_dict.get(text_value, (0,0)),
+            'initial_position': choices_dict.get(text_value, (0, 0)),
         })

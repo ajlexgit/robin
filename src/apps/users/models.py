@@ -10,14 +10,14 @@ from . import options
 class CustomUser(AbstractUser):
     """ Пользователь """
     avatar = StdImageField(_('avatar'),
-        storage = MediaStorage(options.AVATAR_PATH),
-        blank = True,
-        admin_variation = 'normal',
-        min_dimensions = options.AVATAR_NORMAL,
-        crop_area = True,
-        crop_field = 'avatar_crop',
-        aspects = 'normal',
-        variations = dict(
+        storage=MediaStorage(options.AVATAR_PATH),
+        blank=True,
+        admin_variation='normal',
+        min_dimensions=options.AVATAR_NORMAL,
+        crop_area=True,
+        crop_field='avatar_crop',
+        aspects='normal',
+        variations=dict(
             normal=dict(
                 size=options.AVATAR_NORMAL,
             ),

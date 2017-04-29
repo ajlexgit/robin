@@ -27,14 +27,14 @@
                     }
                 },
                 upcast: function(element) {
-                    return element.name == 'div' && element.hasClass('columns');
+                    return element.name === 'div' && element.hasClass('columns');
                 }
             });
 
             editor.widgets.on('instanceCreated', function(evt) {
                 var widget = evt.data;
                 widget.on('key', function(event) {
-                    if ((event.data.keyCode == 13) && (event.sender.name == WIDGET_NAME)) {
+                    if ((event.data.keyCode === 13) && (event.sender.name === WIDGET_NAME)) {
                         var p = editor.document.createElement('p');
                         p.setHtml('&nbsp;');
                         p.insertAfter(this.wrapper);

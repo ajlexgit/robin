@@ -49,7 +49,10 @@ class CustomUserAdmin(ModelAdminMixin, UserAdmin):
     list_display = ('avatar_username', 'email', 'first_name', 'last_name', 'is_staff', 'login_as')
 
     def avatar_username(self, obj):
-        return '<img src="{0}" width="20" height="20" style="margin-right: 10px;">{1}'.format(obj.micro_avatar, obj.username)
+        return '<img src="{0}" width="20" height="20" style="margin-right: 10px;">{1}'.format(
+            obj.micro_avatar,
+            obj.username
+        )
     avatar_username.short_description = _('username')
     avatar_username.admin_order_field = 'username'
     avatar_username.allow_tags = True

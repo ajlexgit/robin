@@ -31,7 +31,8 @@ CKEDITOR_CONFIG_DEFAULT = {
 }
 
 CKEDITOR_UPLOAD_CONFIG_DEFAULT = {
-    'extraPlugins': 'textlen,enterfix,image_attrs,table,tabletools,columns,div,pagephotos,pagevideos,pagefiles,simplephotos',
+    'extraPlugins': 'textlen,enterfix,image_attrs,table,tabletools,columns,div,pagephotos,'
+                    'pagevideos,pagefiles,simplephotos',
     'toolbar': [
         {
             'name': 'basicstyles',

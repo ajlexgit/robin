@@ -51,7 +51,7 @@
                 var $element = $(element.$);
 
                 // Fix for instagram
-                if (provider.name == 'instagram') {
+                if (provider.name === 'instagram') {
                     var code = /\/p\/([^\/]+)/g.exec(url);
                     if (!code || (code.length < 2)) {
                         alert('Wrong instagram url');
@@ -114,7 +114,7 @@
                             }
 
                             // Youtube size
-                            if (provider.name == 'youtube') {
+                            if (provider.name === 'youtube') {
                                 var key = provider.templateRegex.exec(url)[1];
                                 var apikey = editor.config.YOUTUBE_APIKEY;
                                 $.ajax({

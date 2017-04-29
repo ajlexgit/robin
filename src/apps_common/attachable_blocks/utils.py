@@ -34,7 +34,7 @@ def get_block_view(block):
     if not path:
         return
 
-    if not '.' in path:
+    if '.' not in path:
         return
 
     module_path, view_name = path.rsplit('.', 1)

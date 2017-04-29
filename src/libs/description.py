@@ -39,7 +39,7 @@ def description(text, minlen, maxlen):
     text = re_clean_newlines.sub('\n', text)
     paragraphs, other_paragraphs, paragraphs_len = _collect_lines(text.split('\n'), maxlen)
     if other_paragraphs and paragraphs_len < minlen:
-        lines, other_lines, lines_len =  _collect_lines(
+        lines, other_lines, lines_len = _collect_lines(
             other_paragraphs[0].split('. '),
             maxlen - paragraphs_len - 1,
             join_len=2

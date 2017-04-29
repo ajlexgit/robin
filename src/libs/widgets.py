@@ -23,7 +23,7 @@ class RadioChoiceInput(ChoiceInputRenderMixin, widgets.RadioChoiceInput):
     pass
 
 
-class CheckboxChoiceInput(ChoiceInputRenderMixin , widgets.CheckboxChoiceInput):
+class CheckboxChoiceInput(ChoiceInputRenderMixin, widgets.CheckboxChoiceInput):
     pass
 
 

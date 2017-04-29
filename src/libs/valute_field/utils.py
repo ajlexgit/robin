@@ -16,7 +16,7 @@ def get_formatter(language=None):
             if language in langs:
                 break
         else:
-             raise ImproperlyConfigured("Valute format not found for language '%s'" % language)
+            raise ImproperlyConfigured("Valute format not found for language '%s'" % language)
 
     return conf.VALUTE_FORMATS[valute_format.upper()]
 

@@ -58,7 +58,6 @@ class PaymentForm(BaseAuthorizeNetForm):
     x_fp_timestamp = forms.IntegerField()
     x_fp_hash = forms.CharField(max_length=64)
 
-
     # имя плательщика
     first_name = forms.CharField(max_length=50, required=False)
     last_name = forms.CharField(max_length=50, required=False)

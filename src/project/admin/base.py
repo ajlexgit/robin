@@ -208,6 +208,7 @@ class RealLinksChangeListMixin:
             current_app=self.model_admin.admin_site.name
         )
 
+
 class RealLinksModelAdminMixin:
     """
         Миксина для модели админки,

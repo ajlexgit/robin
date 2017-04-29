@@ -44,7 +44,6 @@
         ...
         order_confirmed.send(sender=ShopOrder, order=order, request=request)
 
-
 """
 
 default_app_config = 'shop.apps.Config'

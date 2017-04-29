@@ -17,7 +17,6 @@ class HierarchyFilter(SimpleListFilter):
     # шаблон фильтра
     template = 'admin/hierarchy_filter.html'
 
-
     def get_branch(self):
         """ Формирование текущего пути в иерархии """
         value = self.value()

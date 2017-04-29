@@ -124,10 +124,10 @@
                 var files = uploader.plupload('getFiles');
                 for (file_index=files.length-1; file_index>=0; file_index--) {
                     file = files[file_index];
-                    if (file.status == 1) {
+                    if (file.status === 1) {
                         not_loaded.push(file);
                     } else {
-                        if (file.status == 5) {
+                        if (file.status === 5) {
                             uploaded.push(file.result_tag.trim());
                         }
 

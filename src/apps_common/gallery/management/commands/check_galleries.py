@@ -14,7 +14,7 @@ class Command(BaseCommand):
         gallery_models = (
             model
             for model in apps.get_models()
-                if issubclass(model, GalleryBase)
+            if issubclass(model, GalleryBase)
         )
 
         for gallery_model in gallery_models:

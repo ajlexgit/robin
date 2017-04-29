@@ -60,7 +60,6 @@ class Command(BaseCommand):
                         if path in files_list:
                             files_list.remove(path)
 
-
     @staticmethod
     def _get_filefield_files(filefield):
         """ Путь к файлам FileField / ImageField """

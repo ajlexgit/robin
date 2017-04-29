@@ -63,7 +63,7 @@ class RegisterForm(FormHelperMixin, UserCreationForm):
     email = forms.EmailField(
         label='E-mail',
         required=True,
-        error_messages = {
+        error_messages={
             'required': _('Please enter your e-mail'),
             'unique': _('This e-mail address is already taken'),
             'invalid': _('E-mail incorrect'),

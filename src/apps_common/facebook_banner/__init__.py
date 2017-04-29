@@ -15,4 +15,5 @@
             ...
 
 """
+
 default_app_config = 'facebook_banner.apps.Config'

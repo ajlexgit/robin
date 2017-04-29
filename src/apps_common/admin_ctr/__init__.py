@@ -20,4 +20,5 @@
             ...
 
 """
+
 default_app_config = 'admin_ctr.apps.Config'

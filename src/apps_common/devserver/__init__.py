@@ -37,6 +37,7 @@
         with Profile('LogToFile', stdout='/tmp/log.txt', show_sql=True):
             e = Entity.objects.get(pk=1)
 """
+
 from .modules.profiler import Profile, profile
 
 __all__ = ('Profile', 'profile')

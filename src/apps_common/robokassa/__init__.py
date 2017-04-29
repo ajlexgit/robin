@@ -79,6 +79,7 @@
             </form>
 
 """
+
 from .forms import PaymentForm
 from .signals import robokassa_success
 
