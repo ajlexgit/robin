@@ -1,6 +1,6 @@
 from django.db import models
 from django.core import checks
-from libs.autocomplete import AutocompleteWidget
+from libs.autocomplete.widgets import AutocompleteWidget
 from .models import AttachableBlock
 
 

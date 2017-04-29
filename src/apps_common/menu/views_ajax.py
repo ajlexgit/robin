@@ -1,5 +1,5 @@
 from django.template import loader
-from libs.cache import cached
+from libs.cache.cached import cached
 from .utils import get_menus, activate_by_url
 
 

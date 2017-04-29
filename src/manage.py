@@ -1,7 +1,6 @@
 import os
 import sys
 
-# subdomains
 # admin bootstrap
 # попробовать другой storage
 # Last-modified прицепить к sitemap

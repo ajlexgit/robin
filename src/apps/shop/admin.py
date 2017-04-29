@@ -10,7 +10,7 @@ from attachable_blocks import AttachedBlocksStackedInline
 from seo.admin import SeoModelAdminMixin
 from libs.mptt import *
 from libs import admin_utils
-from libs.autocomplete import AutocompleteWidget
+from libs.autocomplete.widgets import AutocompleteWidget
 from .models import ShopConfig, ShopCategory, ShopProduct, ShopOrder, NotificationReceiver
 from .signals import products_changed, categories_changed
 

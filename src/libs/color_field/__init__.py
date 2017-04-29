@@ -15,9 +15,3 @@
         > instance.color.rgba
         'rgba(255, 255, 0, 1)'
 """
-
-from .color import Color
-from .fields import ColorField, ColorOpacityField
-from .forms import ColorFormField, ColorOpacityFormField
-
-__all__ = ['Color', 'ColorField', 'ColorOpacityField']

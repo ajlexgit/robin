@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.admin import BaseGenericInlineFormSet, GenericInlineModelAdminChecks
 from suit.admin import SortableGenericTabularInline, SortableGenericStackedInline
 from project.admin import ModelAdminMixin, ModelAdminInlineMixin
-from libs.autocomplete import AutocompleteWidget
+from libs.autocomplete.widgets import AutocompleteWidget
 from .models import AttachableBlock, AttachableReference
 
 

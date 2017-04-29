@@ -1,5 +1,5 @@
 from django.template import Library
-from libs.cache import cached
+from libs.cache.cached import cached
 from ..models import Counter
 
 register = Library()

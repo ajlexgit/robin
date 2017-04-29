@@ -1,7 +1,7 @@
 from django.db import models
 from django.template import Library, loader
 from django.db.models.functions import Coalesce
-from libs.cache import cached
+from libs.cache.cached import cached
 from ..models import RatingVote
 
 register = Library()

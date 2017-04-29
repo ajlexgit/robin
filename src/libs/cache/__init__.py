@@ -62,6 +62,3 @@
                    (r'^/shop/$', 'public', 600),
                ]
 """
-from .cached import cached
-
-__all__ = ['cached']

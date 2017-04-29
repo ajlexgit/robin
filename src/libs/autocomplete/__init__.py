@@ -81,7 +81,3 @@
                     }
                 )
 """
-from .widgets import AutocompleteWidget, AutocompleteMultipleWidget
-from .filters import AutocompleteListFilter
-
-__all__ = ['AutocompleteWidget', 'AutocompleteMultipleWidget', 'AutocompleteListFilter']
