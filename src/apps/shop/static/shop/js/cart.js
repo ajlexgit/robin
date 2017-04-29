@@ -46,7 +46,9 @@
     /** @namespace window.js_storage.save_cart */
     /** @namespace window.js_storage.load_cart */
     /** @namespace window.js_storage.clear_cart */
+    /** @namespace window.js_storage.cookie_domain */
     /** @namespace window.js_storage.max_product_count */
+    /** @namespace window.js_storage.shop_cart_cookie */
 
     var saving_query;
     var loading_query;
@@ -78,9 +80,9 @@
 
             // событие обновления localStorage из другой вкладки
             $(window).on('storage.cart', function(event) {
-                if (event.originalEvent.key == that._update_trigger) {
+                if (event.originalEvent.key === that._update_trigger) {
                     var value = localStorage.getItem(that._update_trigger);
-                    if (value != null) {
+                    if (value !== null) {
                         that.trigger('update');
                     }
                 }
@@ -303,7 +305,7 @@
     }).ready(function() {
         // запись корзины в сессию, если localStorage не пуст, а сессия пуста.
         var storage = window.cart.getStorage();
-        var cart_cookie = $.cookie('cart-price');
+        var cart_cookie = $.cookie(window.js_storage.shop_cart_cookie);
         if (!$.isEmptyObject(storage) && !cart_cookie) {
             window.cart.saveStorage(storage);
         }

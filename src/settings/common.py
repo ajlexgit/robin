@@ -167,8 +167,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 
-    'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.cache.middleware.SCCMiddleware',
+    'libs.js_storage.middleware.JSStorageMiddleware',
     'libs.middleware.xss.XSSProtectionMiddleware',
     'libs.middleware.utm.UTMMiddleware',
     'menu.middleware.MenuMiddleware',

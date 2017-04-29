@@ -14,7 +14,7 @@ class MenuMiddleware:
             Если в меню нет активного пункта, пытаемся его определить по URL.
         """
         if request.is_ajax():
-           return response
+            return response
 
         menus = getattr(request, '_menus', None)
         if not menus:
