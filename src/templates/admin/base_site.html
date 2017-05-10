@@ -10,8 +10,7 @@
     docElement.setAttribute('data-google-apikey', '{{ GOOGLE_APIKEY }}');
   </script>
   <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}"/>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic" rel="stylesheet"
-        type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic" rel="stylesheet" type="text/css">
   <link href="{% static 'admin/css/customize.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
@@ -20,7 +19,6 @@
   {% url 'jsi18n' as jsi18nurl %}
   <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
   <script type="text/javascript">
-    window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";
     window.is_superuser = {{ user.is_superuser|yesno:"true, false" }};
   </script>
 {% endblock %}
