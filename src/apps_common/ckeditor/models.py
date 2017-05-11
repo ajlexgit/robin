@@ -25,15 +25,15 @@ class PagePhoto(models.Model):
         blank=True,
         storage=MediaStorage('page_photos'),
         upload_to=split_by_dirs,
-        min_dimensions=(1024, 768),
+        min_dimensions=(800, 450),
         admin_variation='mobile',
         crop_area=True,
         crop_field='photo_crop',
         aspects='normal',
         variations=dict(
             wide=dict(
-                size=(1440, 810),
-                quality=95,
+                size=(1024, 576),
+                quality=88,
             ),
             normal=dict(
                 size=(800, 450),
