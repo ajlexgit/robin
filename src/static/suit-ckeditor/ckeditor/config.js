@@ -37,8 +37,8 @@ CKEDITOR.editorConfig = function(config) {
 
         ev.editor.dataProcessor.writer.setRules('img', {
             indent: true,
-            breakBeforeOpen: false,
-            breakAfterOpen: false,
+            breakBeforeOpen: true,
+            breakAfterOpen: true,
             breakBeforeClose: true,
             breakAfterClose: true
         });
