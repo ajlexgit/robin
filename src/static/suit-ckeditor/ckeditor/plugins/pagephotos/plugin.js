@@ -1,10 +1,16 @@
 (function() {
 
+    /** @namespace editor.config.PAGEPHOTOS_ASPECTS */
+    /** @namespace editor.config.PAGEPHOTOS_CROP_URL */
+    /** @namespace editor.config.PAGEPHOTOS_ROTATE_URL */
+    /** @namespace editor.config.PAGEPHOTOS_MIN_DIMENSIONS */
+    /** @namespace editor.config.PAGEPHOTOS_MAX_DIMENSIONS */
+
     CKEDITOR.plugins.add("pagephotos", {
         requires: 'dialog',
         icons: 'pagephotos',
         lang: 'en,ru',
-        init: function (editor) {
+        init: function(editor) {
             var lang = editor.lang.pagephotos;
             editor.addContentsCss(this.path + 'styles/editor.css');
 
@@ -51,7 +57,7 @@
                             if (!source) {
                                 // fallback
                                 source = $(element.$).attr('src');
-                                source = source.replace(/([^\.]+)\.[^\.]+(\.\w+)$/, '$1$2');
+                                source = source.replace(/([^.]+)\.[^.]+(\.\w+)$/, '$1$2');
                             }
                             return source;
                         },

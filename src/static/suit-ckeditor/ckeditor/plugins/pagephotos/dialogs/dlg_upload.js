@@ -1,5 +1,9 @@
 (function($) {
 
+    /** @namespace editor.config.PAGEPHOTOS_THUMB_SIZE */
+    /** @namespace editor.config.PAGEPHOTOS_UPLOAD_URL */
+    /** @namespace editor.config.PAGEPHOTOS_MAX_FILE_SIZE */
+    
     var InitPluploader = function(editor) {
         $(".ckupload-page-photos").plupload({
             runtimes : 'html5,flash,silverlight,html4',

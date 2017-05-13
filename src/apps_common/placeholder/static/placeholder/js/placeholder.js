@@ -14,6 +14,8 @@
             })
      */
 
+    /** @namespace window.js_storage.placeholder_url */
+
     var fetchPlaceholderParts = function(name, parts) {
         var query_data = [];
         for (var i = 0, l = parts.length; i < l; i++) {

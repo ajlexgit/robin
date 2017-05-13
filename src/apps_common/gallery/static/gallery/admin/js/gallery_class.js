@@ -1,11 +1,6 @@
 (function($) {
     'use strict';
 
-    var formatError = function(message) {
-        return gettext('Error') + ':<br>' + message;
-    };
-
-
     /*
         Класс галереи, предоставляющий базовые методы работы над картинками.
 
@@ -19,6 +14,15 @@
             item-delete.gallery - элемент удален из галереи
 
     */
+
+    /** @namespace gettext */
+    /** @namespace ngettext */
+    /** @namespace interpolate */
+
+    var formatError = function(message) {
+        return gettext('Error') + ':<br>' + message;
+    };
+
     window.Gallery = Class(EventedObject, function Gallery(cls, superclass) {
         cls.defaults = {
             galleryInputSelector: '.gallery_id',
@@ -312,6 +316,9 @@
                     });
                 },
                 onFileUploaded: function(file, json_response) {
+                    /** @namespace json_response.show_url */
+                    /** @namespace json_response.preview_url */
+
                     var $item = that.$list.find('#' + file.id);
                     var $preview = $item.find(that.opts.previewSelector);
 

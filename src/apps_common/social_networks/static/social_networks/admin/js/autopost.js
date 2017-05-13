@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace gettext */
+    
     var $form;
 
     $(document).ready(function() {

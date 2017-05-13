@@ -8,6 +8,8 @@
 *
 */
 
+/** @namespace window.Zepto */
+
 ;(function( $ ){
 
   'use strict';

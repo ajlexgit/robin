@@ -5,6 +5,12 @@
  * Copyright 2006, 2014 Klaus Hartl
  * Released under the MIT license
  */
+
+/** @namespace exports */
+/** @namespace require */
+/** @namespace config.raw */
+/** @namespace define.amd */
+
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD

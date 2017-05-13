@@ -1,5 +1,9 @@
 (function($) {
 
+    /** @namespace window.js_storage.fb_banner_url */
+    /** @namespace window.js_storage.fb_banner_appid */
+    /** @namespace window.js_storage.fb_banner_timeout */
+
     var APP_ID = window.js_storage.fb_banner_appid;
     var TIMEOUT = window.js_storage.fb_banner_timeout;
 

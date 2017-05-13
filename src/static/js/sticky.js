@@ -23,6 +23,8 @@
             });
      */
 
+    /** @namespace $window.scrollTop */
+
     var instances = [];
     var $window = $(window);
     $.widget("django.sticky", {

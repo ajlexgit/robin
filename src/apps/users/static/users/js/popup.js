@@ -1,5 +1,11 @@
 (function($) {
 
+    /** @namespace window.js_storage.ajax_login */
+    /** @namespace window.js_storage.ajax_register */
+    /** @namespace window.js_storage.ajax_reset */
+    /** @namespace window.js_storage.ajax_reset_confirm */
+    /** @namespace window.js_storage.ajax_logout */
+
     var onLoginHandler = function(response) {
         //$(document).trigger('login.auth.users', response);
         //$('input[name="csrfmiddlewaretoken"]').val($.cookie('csrftoken'));
@@ -232,7 +238,7 @@
             type: 'POST',
             data: $form.serialize(),
             dataType: 'json',
-            success: function(response) {
+            success: function() {
                $.popup().hide();
             },
             error: $.parseError(function(response) {

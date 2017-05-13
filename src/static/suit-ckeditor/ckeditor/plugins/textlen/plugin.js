@@ -9,8 +9,8 @@
                 return;
 
             var get_clear_textlen = function(text) {
-                var text = $.trim(text.replace(/<\/?[^>]+>/gi, '').replace(/(&nbsp;|&laquo;|&raquo)/g, " ").replace(/ +/g, " "));
-                return text.length;
+                var trimmed = $.trim(text.replace(/<\/?[^>]+>/gi, '').replace(/(&nbsp;|&laquo;|&raquo)/g, " ").replace(/ +/g, " "));
+                return trimmed.length;
             };
 
             editor.on('instanceReady', function(){

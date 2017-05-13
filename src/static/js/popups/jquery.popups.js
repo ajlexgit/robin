@@ -93,6 +93,8 @@
             Блок $content введен в $window из-за необходимости разных значений overflow.
     */
 
+    /** @namespace $body.scrollTop */
+
     // определение ширины скроллбара
     var scrollWidth = (function() {
         var div = document.createElement('div');

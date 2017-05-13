@@ -369,7 +369,8 @@
             });
             this._anchor.on('dragend.balloon', function() {
                 // меняем положение окна при перемещении маркера
-                that.position(this.position());
+                var anchor = this;
+                that.position(anchor.position());
             });
 
             superclass.open.call(this);

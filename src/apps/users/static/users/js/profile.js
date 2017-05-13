@@ -1,5 +1,9 @@
 (function($) {
 
+    /** @namespace window.js_storage.avatar_upload */
+    /** @namespace window.js_storage.avatar_crop */
+    /** @namespace window.js_storage.avatar_delete */
+
     // Обновление аватарок на странице
     var change_avatar = function(response) {
         // Обновление кнопок

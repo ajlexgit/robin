@@ -68,6 +68,8 @@
                     count: this.opts.limit
                 },
                 success: function(data) {
+                    /** @namespace data.meta.error_message */
+
                     if (parseInt(data.meta.code) !== 200) {
                         that.error(data.meta.error_message + ' (code ' + data.meta.code + ')');
                         that.trigger('error', data);
@@ -76,6 +78,8 @@
                     }
                 },
                 error: function(xhr, status) {
+                    /** @namespace xhr.status_text */
+
                     that.error(xhr.status_text + ' (code ' + status + ')');
                     that.trigger('error', data);
                 }
@@ -96,6 +100,8 @@
                 limit: elem_data.limit
             }).on('success', function(response) {
                 response.data.forEach(function(obj) {
+                    /** @namespace obj.images.low_resolution.url */
+
                     $elem.append(
                         $('<img>').attr({
                             src: obj.images.low_resolution.url,

@@ -8,6 +8,11 @@
             jquery.utils.js
      */
 
+    /** @namespace window.screenX */
+    /** @namespace window.screenY */
+    /** @namespace window.VK.Share.count */
+    /** @namespace window.services.gplus.cb */
+
     var SocialProvider = Class(Object, function SocialProvider(cls, superclass) {
         cls.DATA_KEY = 'social';
         cls.WINDOW_WIDTH = 600;

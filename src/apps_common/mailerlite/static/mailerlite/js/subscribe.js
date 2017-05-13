@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace window.js_storage.ajax_subscribe */
+
     /*
         Показ окна подписки
      */

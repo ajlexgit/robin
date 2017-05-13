@@ -50,6 +50,9 @@
                 buttonSelector: 'button.crop'
             })
      */
+
+    /** @namespace gettext */
+
     window.CropDialog = Class(Object, function CropDialog(cls, superclass) {
         cls.defaults = {
             eventTypes: 'click',
