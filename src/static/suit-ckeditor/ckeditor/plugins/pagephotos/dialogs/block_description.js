@@ -1,5 +1,8 @@
 (function() {
 
+    /** @namespace CKEDITOR.dialog */
+    /** @namespace editor.lang.pagephotos */
+
     var clean_element = function(element) {
         var i = 0;
         var child;

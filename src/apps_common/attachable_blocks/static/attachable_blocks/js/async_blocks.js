@@ -14,6 +14,8 @@
             })
      */
 
+    /** @namespace window.js_storage.ajax_attached_block */
+
     $(document).ready(function() {
         // собираем все ключи кэшированных блоков
         var keys = [];

@@ -1,5 +1,7 @@
 (function() {
 
+    /** @namespace editor.lang.file_widget */
+
     CKEDITOR.dialog.add('fileDialog', function(editor) {
         var lang = editor.lang.file_widget;
         return {

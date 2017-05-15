@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace window.js_storage.ajax_contact */
+
     /*
         Показ окна контактов
      */

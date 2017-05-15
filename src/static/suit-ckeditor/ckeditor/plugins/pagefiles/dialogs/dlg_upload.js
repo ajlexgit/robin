@@ -1,5 +1,11 @@
 (function($) {
 
+    /** @namespace editor.config.MOXIE_SWF */
+    /** @namespace editor.config.MOXIE_XAP */
+    /** @namespace editor.config.PLUPLOADER_CSS */
+    /** @namespace editor.config.PAGEFILES_UPLOAD_URL */
+    /** @namespace editor.config.PAGEFILES_MAX_FILE_SIZE */
+
     var InitPluploader = function(editor) {
         $(".ckupload-page-files").plupload({
             runtimes : 'html5,flash,silverlight,html4',
@@ -31,6 +37,8 @@
                     ckDialog._.buttons['cancel'].disable();
                 },
                 FileUploaded: function(up, file, data) {
+                    /** @namespace response.field */
+
                     var response = $.parseJSON(data.response);
                     file.result_tag = response.tag;
 
@@ -77,6 +85,8 @@
     };
 
     CKEDITOR.dialog.add("pagefilesDialog", function (editor) {
+        /** @namespace editor.lang.pagefiles */
+
         var lang = editor.lang.pagefiles;
         return {
             title: lang.dialogTitle,

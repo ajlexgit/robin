@@ -50,6 +50,35 @@
             });
      */
 
+    /** @namespace google.maps.LatLng */
+    /** @namespace google.maps.LatLngBounds */
+    /** @namespace google.maps.Marker.getIcon */
+    /** @namespace google.maps.Marker.setIcon */
+    /** @namespace google.maps.Marker.setTitle */
+    /** @namespace google.maps.Marker.setPosition */
+    /** @namespace google.maps.Marker.getDraggable */
+    /** @namespace google.maps.Marker.setDraggable */
+    /** @namespace google.maps.Marker.icon.scaledSize */
+    /** @namespace google.maps.OverlayView.mapTypes */
+    /** @namespace google.maps.OverlayView.getMapTypeId */
+    /** @namespace google.maps.OverlayView.setMap */
+    /** @namespace google.maps.OverlayView.getPanes */
+    /** @namespace google.maps.OverlayView.getProjection.getWorldWidth */
+    /** @namespace google.maps.OverlayView.getProjection.fromLatLngToDivPixel */
+    /** @namespace google.maps.OverlayView.getProjection.fromDivPixelToLatLng */
+    /** @namespace google.maps.OverlayView.getProjection.fromLatLngToContainerPixel */
+    /** @namespace google.maps.OverlayView.getProjection.fromContainerPixelToLatLng */
+    /** @namespace google.maps.event.clearInstanceListeners */
+    /** @namespace google.maps.Map.balloon */
+    /** @namespace google.maps.Map.setCenter */
+    /** @namespace google.maps.Map.getCenter */
+    /** @namespace google.maps.Map.setMapTypeId */
+    /** @namespace google.maps.Map.getZoom */
+    /** @namespace google.maps.Map.setZoom */
+    /** @namespace google.maps.Map.getDiv */
+    /** @namespace google.maps.Geocoder */
+    /** @namespace google.maps.GeocoderStatus.OK */
+    /** @namespace google.maps.event.addDomListener */
 
     /*
         Базовый класс объекта на карте
@@ -278,6 +307,9 @@
             Параметр padding может быть числом или объектом с полями "h" и "v".
          */
         cls.extendBounds = function(bounds, padding) {
+            /** @namespace bounds.getNorthEast */
+            /** @namespace bounds.getSouthWest */
+
             if (typeof padding === 'number') {
                 padding = {
                     'h': padding,
@@ -1261,6 +1293,8 @@
             this._geocoder.geocode({
                 address: address
             }, function(results, status) {
+                /** @namespace results.geometry */
+
                 if (status === google.maps.GeocoderStatus.OK) {
                     var native_point = results[0].geometry.location;
                     success.call(that, window.GMapPoint.fromNative(native_point));

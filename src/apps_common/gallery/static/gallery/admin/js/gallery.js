@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace gettext */
+
     $(document).ready(function() {
         $('.gallery-standart').each(function() {
             if (!$(this).closest('.empty-form').length) {
@@ -167,6 +169,8 @@
 
                             dialog.uiDialog.addClass('preloader');
                             gallery.saveItemForm($item, data, function(response) {
+                                /** @namespace response.errors.fullname */
+
                                 if (response.errors) {
                                     var record = response.errors[0];
                                     $form.find('.' + record.fullname).addClass(record.class);

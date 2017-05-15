@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace window._ckeditor_confs */
+
     $(document).ready(function() {
         var configs = window._ckeditor_confs;
         if (!configs) return;

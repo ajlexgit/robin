@@ -25,6 +25,7 @@
                             }
                         },
                         setup: function(widget) {
+                            /** @namespace widget.data.styleName */
                             var style = widget.data.styleName;
                             if (style) {
                                 this.setValue(style);

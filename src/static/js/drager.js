@@ -71,6 +71,9 @@
             })
     */
 
+    /** @namespace event.originalEvent.changedTouches */
+    /** @namespace window.navigator.msPointerEnabled */
+
     var touchstart = window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart';
     var touchmove = window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove';
     var touchend = window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend';

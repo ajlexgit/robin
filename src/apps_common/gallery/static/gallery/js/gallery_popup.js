@@ -60,6 +60,8 @@
 
      */
 
+
+
     window.GalleryPopup = Class(OverlayedPopup, function GalleryPopup(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             classes: 'gallery-popup',
@@ -252,6 +254,8 @@
             Инициализация видеоплеера
          */
         cls.playVideo = function($item) {
+            /** @namespace item_data.provider */
+
             var item_data = $item.data();
             if (item_data.provider === this.YOUTUBE_VIDEO) {
                 this._playYoutube($item, item_data);
@@ -337,9 +341,8 @@
         };
     });
 
-
     $.gallery = function(options) {
-        var popup = GalleryPopup(options);
+        var popup = window.GalleryPopup(options);
         return popup && popup.show();
     };
 

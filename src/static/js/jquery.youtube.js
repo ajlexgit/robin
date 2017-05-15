@@ -62,6 +62,20 @@
             </script>
     */
 
+    /** @namespace window.YT.Player.seekTo */
+    /** @namespace window.YT.Player.unMute */
+    /** @namespace window.YT.Player.isMuted */
+    /** @namespace window.YT.Player.getVolume */
+    /** @namespace window.YT.Player.setVolume */
+    /** @namespace window.YT.Player.pauseVideo */
+    /** @namespace window.YT.Player.loadVideoById */
+    /** @namespace window.YT.Player.getCurrentTime */
+    /** @namespace window.YT.PlayerState.UNSTARTED */
+    /** @namespace window.YT.PlayerState.BUFFERING */
+    /** @namespace window.YT.PlayerState.PLAYING */
+    /** @namespace window.YT.PlayerState.PAUSED */
+    /** @namespace window.YT.PlayerState.ENDED */
+
     window.YouTube = Class(EventedObject, function YouTube(cls, superclass) {
         cls.defaults = {
             video: ''
@@ -147,6 +161,8 @@
                 playerVars: playerVars,
                 events: {
                     onReady: function(event) {
+                        /** @namespace event.target.getIframe */
+
                         that.$iframe = $(event.target.getIframe());
                         that.trigger('ready');
                     },

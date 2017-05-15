@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace gettext */
+
     $(document).on('change', '.file-widget input', function() {
         var $input = $(this);
         var $widget = $input.closest('.file-widget');

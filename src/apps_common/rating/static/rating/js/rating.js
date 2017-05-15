@@ -1,5 +1,7 @@
 (function($) {
 
+    /** @namespace window.js_storage.ajax_vote */
+
     var query;
     $(document).on('click', '.rating li', function() {
         var $star = $(this);

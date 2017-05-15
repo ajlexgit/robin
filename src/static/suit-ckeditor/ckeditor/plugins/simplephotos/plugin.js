@@ -1,5 +1,8 @@
 (function() {
 
+    /** @namespace editor.config.SIMPLEPHOTOS_UPLOAD_URL */
+    /** @namespace editor.config.SIMPLEPHOTOS_MAX_FILE_SIZE */
+
     var InitUploader = function(editor, path) {
         var fake = editor.document.createElement('button');
 
