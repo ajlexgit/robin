@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block metatags %}
-  {{ block.super() }}
+  {{ block.super }}
   <meta http-equiv="refresh" content="5; url={{ redirect|default:"/" }}"/>
 {% endblock metatags %}
 
