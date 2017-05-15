@@ -2,7 +2,8 @@
 
     /** @namespace editor.config.YOUTUBE_APIKEY */
 
-    var oembedElement = function($element, provider, dialog, lang) {
+    var oembedElement = function(element, editor, provider, url, dialog, lang) {
+        var $element = $(element.$);
         $element.oembed(url, {
             embedMethod: 'editor',
             onEmbed: function(e) {
@@ -178,7 +179,7 @@
                     return
                 }
 
-                oembedElement($element, provider, dialog, lang);
+                oembedElement(element, editor, provider, url, dialog, lang);
             }
         }
     })
