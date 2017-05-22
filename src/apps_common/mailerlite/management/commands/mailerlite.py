@@ -170,7 +170,7 @@ class Command(BaseCommand):
                     logger.info("Setted content for campaign '%s'" % campaign.subject)
 
             # Start
-            if campaign.remote_id:
+            elif campaign.remote_id:
                 try:
                     api.campaings.run(campaign.remote_id)
                 except api.SubscribeAPIError as e:
