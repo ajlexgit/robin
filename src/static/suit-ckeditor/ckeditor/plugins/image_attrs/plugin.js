@@ -1,7 +1,10 @@
 (function() {
     CKEDITOR.plugins.add("image_attrs", {
         requires: 'dialog',
+        lang: 'en,ru',
         init: function (editor) {
+            var lang = editor.lang.image_attrs;
+
             // ======================================
             //      Dialog
             // ======================================
@@ -19,7 +22,7 @@
             if (editor.contextMenu) {
                 editor.addMenuGroup('imageGroup', 110);
                 editor.addMenuItem('imageAttrsItem', {
-                    label: 'Edit image attributes',
+                    label: lang.menuTitle,
                     icon: this.path + 'icons/image_attrs.png',
                     command: 'imageAttrs',
                     group: 'imageGroup',
