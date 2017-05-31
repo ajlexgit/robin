@@ -132,13 +132,10 @@
                         return 3
                     }
                 }
-            }).on('after_set_ips', function(new_ips) {
-                // сохранение текущего значения
-                this._ips = new_ips;
             }).on('resize', function() {
                 // обновление, если значение изменилось
                 var itemsPerSlide = this.opts.itemsPerSlide.call(this);
-                if (this._ips != itemsPerSlide) {
+                if (this._itemsPerSlide != itemsPerSlide) {
                     this.setItemsPerSlide(itemsPerSlide);
                 }
             });
@@ -331,26 +328,27 @@
 
             // если функция
             if ($.isFunction(itemsPerSlide)) {
-                itemsPerSlide = parseInt(itemsPerSlide.call(this));
+                this._itemsPerSlide = parseInt(itemsPerSlide.call(this));
+            } else {
+                this._itemsPerSlide = parseInt(itemsPerSlide);
             }
-            itemsPerSlide = parseInt(itemsPerSlide);
-            if (!itemsPerSlide) {
+            if (!this._itemsPerSlide) {
                 return
             }
 
-            this.beforeSetItemsPerSlide(itemsPerSlide);
+            this.beforeSetItemsPerSlide(this._itemsPerSlide);
 
             // удаляем ранее созданные слайды
             this.$slides = $();
             this.$list.find('.' + this.opts.slideClass).remove();
 
             // создаем слайды
-            var slide_count = Math.ceil(this.$items.length / itemsPerSlide);
+            var slide_count = Math.ceil(this.$items.length / this._itemsPerSlide);
             for (var i = 0; i < slide_count; i++) {
                 var $slide = $('<div>');
                 this.$list.append(
                     $slide.append(
-                        this.$items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide)
+                        this.$items.slice(i * this._itemsPerSlide, (i + 1) * this._itemsPerSlide)
                     )
                 );
                 this.$slides.push($slide.get(0));
@@ -362,7 +360,7 @@
             // переход к активному слайду
             this.slideTo(this.getCurrentSlide(), 'instant', false);
 
-            this.afterSetItemsPerSlide(itemsPerSlide);
+            this.afterSetItemsPerSlide(this._itemsPerSlide);
         };
 
         /*
