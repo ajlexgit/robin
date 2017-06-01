@@ -1,5 +1,7 @@
 import re
 from django.views.generic import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from libs.cookies import set_cookie
 from libs.views_ajax import AjaxViewMixin
 from libs.valute_field.valute import Valute
@@ -157,6 +159,10 @@ class Cart:
 
 
 class SaveCart(AjaxViewMixin, View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request):
         """ Установка всех товаров в корзине """
         cart = Cart.from_data(request.POST)
@@ -174,6 +180,10 @@ class LoadCart(AjaxViewMixin, View):
 
 
 class ClearCart(AjaxViewMixin, View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request):
         """ Очистка корзины """
         cart = Cart.from_session(request)

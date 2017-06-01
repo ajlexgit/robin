@@ -1,6 +1,7 @@
 import os
 import sys
 
+# FileField удаление из админки
 # admin bootstrap
 # попробовать другой storage
 # Last-modified прицепить к sitemap

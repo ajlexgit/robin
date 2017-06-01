@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-03 09:01+0400\n"
+"POT-Creation-Date: 2017-06-01 11:40+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,23 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: admin.py:45
+#: admin.py:47
 msgid "Meta tags"
 msgstr "Мета-тэги"
 
-#: admin.py:50
+#: admin.py:52
 msgid "Opengraph"
 msgstr ""
 
-#: admin.py:77 apps.py:7
+#: admin.py:79 apps.py:7
 msgid "SEO"
 msgstr ""
 
-#: admin.py:173
+#: admin.py:175
 msgid "Content"
 msgstr "Содержимое файла"
 
-#: admin.py:248
+#: admin.py:250
 msgid "Note"
 msgstr "Заметка"
 
@@ -81,7 +81,7 @@ msgstr "описание"
 
 #: models.py:41 models.py:42
 msgid "SEO data"
-msgstr ""
+msgstr "SEO-данные"
 
 #: models.py:50
 msgid "redirect from"
@@ -152,23 +152,27 @@ msgstr "расположение"
 msgid "content"
 msgstr "содержимое"
 
-#: models.py:84
+#: models.py:82
+msgid "order"
+msgstr "порядок"
+
+#: models.py:86
 msgid "counter"
 msgstr "счётчик"
 
-#: models.py:85
+#: models.py:87
 msgid "counters"
 msgstr "счётчики"
 
-#: models.py:92
+#: models.py:94
 msgid "text"
 msgstr "текст"
 
-#: models.py:96
+#: models.py:98
 msgid "file"
 msgstr "файл"
 
-#: models.py:97
+#: models.py:99
 msgid "robots.txt"
 msgstr ""
 
