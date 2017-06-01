@@ -340,15 +340,19 @@
 
             // удаляем ранее созданные слайды
             this.$slides = $();
+
+            // сохраняем элементы с их data-значениями
+            var $items = this.$items.detach();
+
             this.$list.find('.' + this.opts.slideClass).remove();
 
             // создаем слайды
-            var slide_count = Math.ceil(this.$items.length / this._itemsPerSlide);
+            var slide_count = Math.ceil($items.length / this._itemsPerSlide);
             for (var i = 0; i < slide_count; i++) {
                 var $slide = $('<div>');
                 this.$list.append(
                     $slide.append(
-                        this.$items.slice(i * this._itemsPerSlide, (i + 1) * this._itemsPerSlide)
+                        $items.slice(i * this._itemsPerSlide, (i + 1) * this._itemsPerSlide)
                     )
                 );
                 this.$slides.push($slide.get(0));
