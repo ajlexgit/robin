@@ -42,7 +42,7 @@
                 var that = data.widget;
                 var offset = data.progress * (data.blockHeight - that.element.outerHeight());
                 that.element.css({
-                    transform: 'translate(0%, ' + offset + 'px)'
+                    transform: 'translate3d(0%, ' + offset + 'px, 0)'
                 });
             },
             resize: function(event, data) {

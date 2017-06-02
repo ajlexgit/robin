@@ -52,10 +52,11 @@ class FacebookTokenView(AdminViewMixin, View):
                 'client_secret': config.facebook_client_secret,
                 'redirect_uri': redirect_uri,
                 'code': code,
+                'type': 'web_server',
             }
         )
 
-        short_token = response.text[13:]
+        short_token = response.json()['access_token']
         response = requests.get(
             'https://graph.facebook.com/oauth/access_token',
             params={
@@ -66,7 +67,7 @@ class FacebookTokenView(AdminViewMixin, View):
             }
         )
 
-        long_token = response.text[13:]
+        long_token = response.json()['access_token']
         response = requests.get(
             'https://graph.facebook.com/me/accounts',
             params={
