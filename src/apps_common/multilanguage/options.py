@@ -16,6 +16,7 @@ MULTILANGUAGE_GET_PARAM = 'no_redirect'
 # Строки в User-Agent, для которых запещён редирект
 ROBOTS_UA = tuple(map(str.lower, (
     'Googlebot',
+    'Google Page Speed',
     'Mail.RU_Bot',
     'YandexBot',
     'YandexImage',
