@@ -16,11 +16,7 @@ class AttachableBlock(models.Model):
     """ Базовый класс блоков """
     BLOCK_VIEW = ''
 
-    block_content_type = models.ForeignKey(ContentType,
-        null=True,
-        editable=False,
-        related_name='+',
-    )
+    content_type = models.ForeignKey(ContentType, null=True, related_name='+', editable=False)
     label = models.CharField(_('label'), max_length=128, help_text=_('For inner use'))
     visible = models.BooleanField(_('visible'), default=True)
     created = models.DateTimeField(_('create date'), editable=False)
@@ -38,9 +34,9 @@ class AttachableBlock(models.Model):
         if not self.created:
             self.created = now()
 
-        if not self.block_content_type:
+        if not self.content_type:
             if self.__class__ != AttachableBlock:
-                self.block_content_type = ContentType.objects.get_for_model(self)
+                self.content_type = ContentType.objects.get_for_model(self)
 
         super().save(*args, **kwargs)
 
@@ -80,7 +76,7 @@ class AttachableReference(models.Model):
     """
         Связь экземпляра блока с экземпляром страницы
     """
-    content_type = models.ForeignKey(ContentType, related_name='+')
+    content_type = models.ForeignKey(ContentType, related_name='+', help_text=_('content type of entity, attached to'))
     object_id = models.PositiveIntegerField()
     entity = GenericForeignKey('content_type', 'object_id')
 

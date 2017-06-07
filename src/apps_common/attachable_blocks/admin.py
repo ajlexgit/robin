@@ -64,7 +64,7 @@ class AttachedBlocksForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'block': AutocompleteWidget(
-                filters=(('block_content_type', '__prefix__-block_type', False),),
+                filters=(('content_type', '__prefix__-block_type', False),),
                 expressions="label__icontains",
             ),
         }
@@ -77,7 +77,7 @@ class AttachedBlocksForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
-            self.initial['block_type'] = self.instance.block.block_content_type.pk
+            self.initial['block_type'] = self.instance.block.content_type_id
         else:
             blocks = list(self.fields['block_type'].choices)
             if blocks:
