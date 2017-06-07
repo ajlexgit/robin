@@ -45,9 +45,9 @@ def render_attachable_block(context, block, ajax=False, **kwargs):
     if block is None:
         return ''
 
-        if block._meta.concrete_model is AttachableBlock:
-            block_model = get_model_by_ct(block.content_type_id)
-            block = block_model.objects.get(pk=block.pk)
+    if block._meta.concrete_model is AttachableBlock:
+        block_model = get_model_by_ct(block.content_type_id)
+        block = block_model.objects.get(pk=block.pk)
 
     if block.visible:
         return block_output(context, block, ajax=ajax, **kwargs)
