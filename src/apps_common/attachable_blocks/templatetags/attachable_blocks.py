@@ -1,5 +1,7 @@
 from django.apps import apps
 from django.template import Library
+from django.forms.utils import flatatt
+from django.contrib.contenttypes.models import ContentType
 from ..models import AttachableBlock, AttachableReference
 from ..utils import get_model_by_ct, get_block_view
 
@@ -16,7 +18,20 @@ def block_output(context, block, ajax=False, **kwargs):
 
     if ajax:
         # Блок, загружаемый через AJAX
-        block_html = '<div class="async-block" data-id="%s"></div>' % block.id
+        attrs = {
+            'data-id': block.id,
+        }
+        instance = kwargs.get('instance')
+        if instance is None:
+            attrs['data-cid'] = ''
+            attrs['data-oid'] = ''
+        else:
+            attrs['data-cid'] = ContentType.objects.get_for_model(instance).pk
+            attrs['data-oid'] = instance.pk
+
+        block_html = '<div class="async-block" {attrs}></div>'.format(
+            attrs=flatatt(attrs)
+        )
     else:
         block_html = block_view(context, block, **kwargs)
 
@@ -24,11 +39,11 @@ def block_output(context, block, ajax=False, **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def render_attached_blocks(context, entity, set_name='default', **kwargs):
+def render_attached_blocks(context, instance, set_name='default', **kwargs):
     output = []
-    kwargs.setdefault('instance', entity)
+    kwargs.setdefault('instance', instance)
 
-    references = AttachableReference.get_for(entity, set_name=set_name)
+    references = AttachableReference.get_for(instance, set_name=set_name)
     for reference in references.only('block_ct', 'block_id', 'ajax'):
         block_model = get_model_by_ct(reference.block_ct_id)
         block = block_model.objects.get(pk=reference.block_id)

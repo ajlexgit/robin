@@ -1,5 +1,6 @@
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.contenttypes.models import ContentType
 from django.http.response import HttpResponseForbidden, JsonResponse
 from .models import AttachableBlock
 from .utils import get_model_by_ct, get_block_view
@@ -10,12 +11,21 @@ def get_blocks(request):
     if not request.is_ajax():
         return HttpResponseForbidden()
 
-    keys = request.GET.get('keys')
-    if not keys:
+    block_ids = request.GET.get('block_ids')
+    if not block_ids:
         return JsonResponse({})
 
+    try:
+        cid = int(request.GET.get('cid'))
+        oid = int(request.GET.get('oid'))
+    except (TypeError, ValueError):
+        instance = None
+    else:
+        ct = ContentType.objects.get(pk=cid)
+        instance = ct.model_class().objects.get(pk=oid)
+
     result = {}
-    for block_id in keys.split(','):
+    for block_id in block_ids.split(','):
         try:
             block_id = int(block_id)
         except (TypeError, ValueError):
@@ -34,6 +44,6 @@ def get_blocks(request):
 
         result[block_id] = block_view(RequestContext(request, {
             'request': request,
-        }), block)
+        }), block, instance=instance)
 
     return JsonResponse(result)
