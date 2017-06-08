@@ -21,8 +21,16 @@ def get_blocks(request):
     except (TypeError, ValueError):
         instance = None
     else:
-        ct = ContentType.objects.get(pk=cid)
-        instance = ct.model_class().objects.get(pk=oid)
+        try:
+            ct = ContentType.objects.get(pk=cid)
+        except ContentType.DoesNotExist:
+            return JsonResponse({})
+
+        ct_model = ct.model_class()
+        try:
+            instance = ct_model.objects.get(pk=oid)
+        except ct_model.DoesNotExists:
+            return JsonResponse({})
 
     result = {}
     for block_id in block_ids.split(','):

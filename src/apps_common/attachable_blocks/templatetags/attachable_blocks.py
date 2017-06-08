@@ -56,7 +56,7 @@ def render_attached_blocks(context, instance, set_name='default', **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def render_attachable_block(context, block, ajax=False, **kwargs):
+def render_attachable_block(context, block, ajax=False, instance=None, **kwargs):
     if block is None:
         return ''
 
@@ -65,13 +65,13 @@ def render_attachable_block(context, block, ajax=False, **kwargs):
         block = block_model.objects.get(pk=block.pk)
 
     if block.visible:
-        return block_output(context, block, ajax=ajax, **kwargs)
+        return block_output(context, block, ajax=ajax, instance=instance, **kwargs)
     else:
         return ''
 
 
 @register.simple_tag(takes_context=True)
-def render_first_attachable_block(context, model_path, ajax=False, **kwargs):
+def render_first_attachable_block(context, model_path, ajax=False, instance=None, **kwargs):
     if '.' not in model_path:
         return ''
 
@@ -85,4 +85,4 @@ def render_first_attachable_block(context, model_path, ajax=False, **kwargs):
     if not block:
         return ''
 
-    return render_attachable_block(context, block, ajax=ajax, **kwargs)
+    return render_attachable_block(context, block, ajax=ajax, instance=instance, **kwargs)
