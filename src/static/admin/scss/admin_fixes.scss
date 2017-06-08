@@ -318,20 +318,21 @@ label {
   min-width: 130px;
 }
 
-// увеличиваем отступ между инлайнами
+// отступ между stacked-инлайнами
 .form-horizontal .inline-related:not(:first-of-type) h3 {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
-// отступ между инлайнами
-.form-horizontal .inline-group:not(:first-of-type) > h2 {
-  margin-top: 20px;
+.form-horizontal .inline-group > h2 {
+  margin: 24px 0 3px 10px;
+  line-height: 24px;
 }
 
-// увеличение нижнего отступа от заголовков
-.suit-tab > h2, .form-horizontal .suit-include > h2 {
-  margin-bottom: -3px;
+.form-horizontal .inline-group .tabular {
+  margin-top: 24px;
 }
+
+// увеличение отступа от заголовков
 .form-horizontal fieldset {
   margin-top: 38px;
 

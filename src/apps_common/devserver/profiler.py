@@ -225,7 +225,7 @@ def profile(simple=None, **params):
         Декоратор для профилирования функций.
 
         Пример:
-            @profile(show_sql=True)
+            @profile(sql=True)
             def test(*args, **kwargs):
                 ...
     """
