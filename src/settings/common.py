@@ -33,7 +33,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # 'djcelery_email',
     'pipeline',
     'solo',
     'suit_ckeditor',
@@ -203,10 +202,6 @@ EMAIL_HOST_PASSWORD = 'woodstock1999'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@mail.directlinedev.com'
 EMAIL_SUBJECT_PREFIX = '[%s] ' % (SUIT_CONFIG['ADMIN_NAME'], )
-# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-# CELERY_EMAIL_TASK_CONFIG = {
-#     'rate_limit': '10/m',
-# }
 
 # ==================================================================
 # ==================== APPS SETTINGS ===============================
@@ -283,32 +278,6 @@ CACHES = {
         }
     }
 }
-
-# Celery
-# from celery.schedules import crontab
-# BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_ACCEPT_CONTENT = ('pickle', 'json')
-# CELERY_TIMEZONE = 'Europe/Moscow'
-# CELERY_SEND_TASK_ERROR_EMAILS = True
-# CELERYBEAT_SCHEDULE = {
-#     # создание бэкапа дважды в месяц
-#     'make_backup': {
-#         'task': 'project.tasks.make_backup',
-#         'schedule': crontab(day_of_month='1,15', hour='9', minute='0'),
-#         'kwargs': {
-#             'max_count': 10,
-#         }
-#     },
-#
-#     # очистка старых логов
-#     'clean_admin_log': {
-#         'task': 'project.tasks.clean_admin_log',
-#         'schedule': crontab(day_of_month='1', hour='9', minute='0'),
-#         'kwargs': {
-#             'days': 90,
-#         }
-#     },
-# }
 
 # Templates
 TEMPLATES = [
