@@ -73,24 +73,6 @@ class Command(BaseCommand):
                 page += 1
                 sleep(0.1)
 
-    def all_pages_v1(self, import_func, *args, limit=1000, **kwargs):
-        page = 0
-        while True:
-            try:
-                items = import_func(*args, limit=limit, page=page, **kwargs)
-            except api.SubscribeAPIError as e:
-                logger.error(e.message)
-                return
-
-            for item in items:
-                yield item
-
-            if len(items) < limit:
-                break
-            else:
-                page += 1
-                sleep(0.1)
-
     def export_groups(self):
         """ Отправка групп в MailerLite """
         logger.info("Export groups...")
@@ -182,25 +164,20 @@ class Command(BaseCommand):
             else:
                 logger.warning("Campaign #%s doesn\'t have remote ID" % campaign.pk)
 
-    def import_campaigns(self):
+    def import_campaigns(self, status='sent'):
         """ Загрузка рассылок """
-        logger.info('Import campaigns...')
-        for remote_campaign in self.all_pages_v1(api.campaings.get_all):
-            try:
-                local_campaign = Campaign.objects.get(
-                    remote_mail_id=remote_campaign['id']
-                )
-            except Campaign.DoesNotExist:
-                # создание локальной рассылки если её нет
-                local_campaign = Campaign(
-                    remote_mail_id=remote_campaign['id']
-                )
-                logger.info("Campaign '%s' created." % remote_campaign['subject'])
+        logger.info("Import campaigns with status '%s'..." % status)
+        for remote_campaign in self.all_pages(api.campaings.get_all, status):
+            local_campaign, created = Campaign.objects.get_or_create(
+                remote_id=remote_campaign['id']
+            )
+            if created:
+                logger.info("Campaign '%s' created." % remote_campaign['name'])
 
-            # обновляем поля локальной группы
-            del remote_campaign['id']
-            local_campaign.update_from(remote_campaign, version=1)
-            local_campaign.save()
+            # Если рассылка запланирована, но ещё не начата, то импорт сбросит статус
+            if local_campaign.status != Campaign.STATUS_QUEUED:
+                local_campaign.update_from(remote_campaign)
+                local_campaign.save()
 
     def import_subscribers(self):
         """ Загрузка подписчиков """
@@ -298,7 +275,8 @@ class Command(BaseCommand):
             self.config.export_campaigns_date = now()
 
         if options['import_campaigns']:
-            self.import_campaigns()
+            for status in ['draft', 'outbox', 'sent']:
+                self.import_campaigns(status)
             self.config.import_campaigns_date = now()
 
         self.config.save()

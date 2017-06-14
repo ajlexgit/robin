@@ -1,12 +1,12 @@
 from .base import request
 
 
-def get_all(page=0, limit=100):
-    """ Получение всех рассылок """
-    return request('campaigns', params={
-        'page': page + 1,
+def get_all(status='sent', limit=100, offset=0):
+    """ Получение всех рассылок со статусом status """
+    return request('campaigns/%s' % status, params={
         'limit': limit,
-    }, version=1)['Results']
+        'offset': offset,
+    })
 
 
 def get(campaign_id):

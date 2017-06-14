@@ -324,19 +324,20 @@ class CampaignAdmin(ModelAdminMixin, admin.ModelAdmin):
         (_('Dates'), {
             'classes': ('suit-tab', 'suit-tab-statistics'),
             'fields': (
-                'date_created', 'date_started', 'date_done',
+                'date_created', 'date_send',
             )
         }),
         (None, {
             'classes': ('suit-tab', 'suit-tab-debug'),
             'fields': (
-                'status', 'published', 'remote_id',
+                'status', 'published', 'remote_id', 'remote_mail_id',
             )
         }),
     )
     form = CampaignForm
     readonly_fields = (
-        'sent', 'opened', 'clicked', 'date_created', 'date_started', 'date_done', 'remote_id',
+        'sent', 'opened', 'clicked', 'date_created', 'date_send',
+        'remote_id', 'remote_mail_id',
     )
     list_filter = ('status', )
     list_display = ('view', 'short_subject', 'groups_list', 'sent', 'opened', 'clicked', 'status_box', 'date_created')

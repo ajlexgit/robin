@@ -133,10 +133,9 @@ class Campaign(models.Model):
     status = models.SmallIntegerField(_('status'), choices=STATUSES, default=STATUS_DRAFT)
     published = models.BooleanField(_('published'), default=False)
     remote_id = models.BigIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
-    remote_mail_id = models.BigIntegerField(_('ID in Mailerlite'), default=0, db_index=True, editable=False)
+    remote_mail_id = models.BigIntegerField(_('Mail ID in Mailerlite'), default=0, db_index=True, editable=False)
     date_created = models.DateTimeField(_('date created'), default=now, editable=False)
-    date_started = models.DateTimeField(_('date started'), null=True, editable=False)
-    date_done = models.DateTimeField(_('date done'), null=True, editable=False)
+    date_send = models.DateTimeField(_('date send'), null=True, editable=False)
 
     class Meta:
         default_permissions = ('add', 'change')
@@ -156,35 +155,52 @@ class Campaign(models.Model):
         subject = subject.replace('{$last_name}', 'Smith')
         return subject
 
-    def update_from(self, json_data, version=2):
+    def update_from(self, json_data):
+        self.published = True
+
         if 'id' in json_data:
             self.remote_id = json_data['id']
 
-        if version == 1:
-            self.subject = json_data['subject']
-            self.sent = json_data['total'] or 0
-            self.opened = json_data['uniqueOpens'] or 0
-            self.clicked = json_data['clicks'] or 0
+        if 'name' in json_data:
+            self.subject = json_data['name']
+
+        if 'total_recipients' in json_data:
+            self.sent = json_data['total_recipients']
+
+        if 'opened' in json_data:
+            self.opened = json_data['opened'].get('count', 0) or 0
+
+        if 'clicked' in json_data:
+            self.clicked = json_data['clicked'].get('count', 0) or 0
+
+        try:
+            date_created = datetime.strptime(json_data['date_created'], '%Y-%m-%d %H:%M:%S')
+        except (ValueError, TypeError):
+            pass
+        else:
+            self.date_created = date_created
+
+        status = json_data.get('status')
+        if status == 'draft':
+            self.status = Campaign.STATUS_DRAFT
+        elif status == 'outbox':
+            self.status = Campaign.STATUS_RUNNING
 
             try:
-                date_started = datetime.strptime(json_data['started'], '%Y-%m-%d %H:%M:%S')
+                date_send = datetime.strptime(json_data['date_send'], '%Y-%m-%d %H:%M:%S')
             except (ValueError, TypeError):
                 pass
             else:
-                if date_started:
-                    self.published = True
-                    self.date_started = date_started
-                    self.status = Campaign.STATUS_RUNNING
+                self.date_send = date_send
+        elif status == 'sent':
+            self.status = Campaign.STATUS_DONE
 
             try:
-                date_done = datetime.strptime(json_data['started'], '%Y-%m-%d %H:%M:%S')
+                date_send = datetime.strptime(json_data['date_send'], '%Y-%m-%d %H:%M:%S')
             except (ValueError, TypeError):
                 pass
             else:
-                if date_done:
-                    self.published = True
-                    self.date_done = date_done
-                    self.status = Campaign.STATUS_DONE
+                self.date_send = date_send
 
     def render_html(self, request=None, scheme='//', test=False):
         content = loader.render_to_string('mailerlite/standart/html_version.html', {
