@@ -157,12 +157,10 @@ class Campaign(models.Model):
         return subject
 
     def update_from(self, json_data, version=2):
-        if version == 2:
+        if 'id' in json_data:
             self.remote_id = json_data['id']
-        else:
-            if 'id' in json_data:
-                self.remote_id = json_data['id']
 
+        if version == 1:
             self.subject = json_data['subject']
             self.sent = json_data['total'] or 0
             self.opened = json_data['uniqueOpens'] or 0
