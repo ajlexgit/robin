@@ -198,6 +198,7 @@ class Command(BaseCommand):
                 logger.info("Campaign '%s' created." % remote_campaign['subject'])
 
             # обновляем поля локальной группы
+            del remote_campaign['id']
             local_campaign.update_from(remote_campaign, version=1)
             local_campaign.save()
 

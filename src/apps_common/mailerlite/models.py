@@ -160,7 +160,9 @@ class Campaign(models.Model):
         if version == 2:
             self.remote_id = json_data['id']
         else:
-            self.remote_id = json_data['id']
+            if 'id' in json_data:
+                self.remote_id = json_data['id']
+
             self.subject = json_data['subject']
             self.sent = json_data['total'] or 0
             self.opened = json_data['uniqueOpens'] or 0
