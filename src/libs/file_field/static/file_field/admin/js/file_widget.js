@@ -22,6 +22,13 @@
                 $widget.find('label').find('span').text(gettext('Choose a file'));
             }
         }
+    }).on('click', '.file-widget .clear', function(event) {
+        if (event.target.tagName === 'INPUT') {
+            return;
+        }
+
+        var $input = $(this).find('input');
+        $input.prop('checked', !$input.prop('checked'));
     });
 
     $(document).ready(function() {

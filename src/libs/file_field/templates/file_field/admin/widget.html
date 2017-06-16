@@ -7,7 +7,11 @@
     <span>{% if value %}{{ value.name|basename }}{% else %}{% trans 'Choose a file' %}{% endif %}</span>
   </label>
 
-  <a href="{% if value %}{{ value.url }}{% else %}#{% endif %}" target="_blank" class="preview btn btn-info" title="{% trans 'View file' %}"></a>
+  <a href="{% if value %}{{ value.url }}{% else %}#{% endif %}" target="_blank" class="preview action-btn btn btn-info" title="{% trans 'View file' %}"></a>
+
+  {% if clear %}
+    <span class="clear action-btn btn btn-danger" title="{% trans 'Delete file' %}">{{ clear }}</span>
+  {% endif %}
 
   {{ input }}
 </div>

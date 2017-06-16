@@ -359,6 +359,8 @@ tr.selected .select2-chosen {
 // правка из-за шрифта
 input[type="radio"], input[type="checkbox"] {
   margin: 0;
+  width: 14px;
+  height: 14px;
 }
 
 select, input[type="file"] {
