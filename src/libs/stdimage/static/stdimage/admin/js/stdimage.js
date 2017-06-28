@@ -277,7 +277,7 @@
 
             if (this.opts.max_dimensions[0] && (source.width > this.opts.max_dimensions[0])) {
                 this._invalid(MAX_WIDTH_ERROR, {
-                    limit: this.opts.min_dimensions[0]
+                    limit: this.opts.max_dimensions[0]
                 });
                 return
             }

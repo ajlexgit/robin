@@ -1,10 +1,28 @@
 from django.db import models
 from django.db.models import signals
+from libs.variation_field import validation
 from libs.variation_field.fields import VariationImageField
 from .formfields import GalleryFormField
 
 
 class GalleryImageField(VariationImageField):
+    def validate(self, value, model_instance):
+        if value:
+            validation.validate_type(value,
+                error_messages=self.error_messages
+            )
+            validation.validate_dimensions(value,
+                min_dimensions=self.get_min_dimensions(model_instance),
+                max_dimensions=self.get_max_dimensions(model_instance),
+                croparea=value.croparea,
+                error_messages=self.error_messages,
+            )
+            validation.validate_size(value,
+                max_size=self.get_max_size(model_instance),
+                error_messages=self.error_messages,
+            )
+
+        super().validate(value, model_instance)
 
     def get_variations(self, instance):
         """ Возвращает настройки вариаций для их передачи в FieldFile """

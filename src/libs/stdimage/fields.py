@@ -171,6 +171,7 @@ class StdImageField(VariationImageField):
             'crop_area': self.crop_area,
             'min_dimensions': self.min_dimensions,
             'max_dimensions': self.max_dimensions,
+            'max_size': self.max_size,
             'aspects': self.aspects,
         }
         defaults.update(kwargs)
