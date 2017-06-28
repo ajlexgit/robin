@@ -14,17 +14,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ("username",)
 
-    def clean_username(self):
-        # Since User.username is unique, this check is redundant,
-        # but it sets a nicer error message than the ORM. See #13147.
-        username = self.cleaned_data["username"]
-        try:
-            CustomUser._default_manager.get(username=username)
-        except CustomUser.DoesNotExist:
-            return username
-        else:
-            self.add_field_error('username', 'unique')
-
 
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdminMixin, UserAdmin):
