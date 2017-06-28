@@ -36,8 +36,8 @@ class StdImageFormField(ImageField):
             data, croparea = data
 
         result = super().clean(data, initial)
-
-        if result:
+        if result and (data or croparea):
+            # валидировать, если изменился файл или область обрезки
             validation.validate_type(result,
                 error_messages=self.error_messages
             )
