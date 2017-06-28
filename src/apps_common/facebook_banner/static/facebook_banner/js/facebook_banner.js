@@ -1,42 +1,10 @@
 (function($) {
 
     /** @namespace window.js_storage.fb_banner_url */
-    /** @namespace window.js_storage.fb_banner_appid */
     /** @namespace window.js_storage.fb_banner_timeout */
 
-    var APP_ID = window.js_storage.fb_banner_appid;
-    var TIMEOUT = window.js_storage.fb_banner_timeout;
-
-    /*
-        Показ окна баннера
-     */
-    window.showFacebookBanner = function() {
-        return $.ajax({
-            url: window.js_storage.fb_banner_url,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                if (response.html) {
-                    $('#facebook-banner').remove();
-                    $(document.body).append(response.html);
-
-                    // Добавление Facebook SDK
-                    (function(d, s, id) {
-                        var js, fjs = d.getElementsByTagName(s)[0];
-                        if (d.getElementById(id)) return;
-                        js = d.createElement(s);
-                        js.id = id;
-                        js.onload = function() {
-                            setTimeout(function() {
-                                $('#facebook-banner').fadeIn(300);
-                            }, 1000);
-                        };
-                        js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=" + APP_ID;
-                        fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));
-                }
-            }
-        });
+    window.fbAsyncInit = function() {
+        $(document).trigger('init.fb')
     };
 
     $(document).on('click', '#facebook-banner .close-button', function() {
@@ -47,9 +15,7 @@
             expires: 30,
             path: '/'
         });
-    });
-
-    $(document).ready(function() {
+    }).on('init.fb', function() {
         if ($.cookie('fb-banner-shown')) {
             return
         }
@@ -58,7 +24,21 @@
             return
         }
 
-        setTimeout(showFacebookBanner, TIMEOUT - 1000);
-    })
+        $.ajax({
+            url: window.js_storage.fb_banner_url,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    $('#facebook-banner').remove();
+                    $(document.body).append(response.html);
+                }
+
+                setTimeout(function() {
+                    $('#facebook-banner').fadeIn(300);
+                }, window.js_storage.fb_banner_timeout);
+            }
+        });
+    });
 
 })(jQuery);
