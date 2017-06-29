@@ -4,7 +4,7 @@
     /*
         Параллакс-эффект для блока.
 
-        Требует:
+        Зависит от:
             jquery-ui.js, jquery.utils.js, jquery.inspectors.js
 
         Параметры:

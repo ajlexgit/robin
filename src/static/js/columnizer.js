@@ -1,7 +1,10 @@
 (function($) {
 
     /*
-        Разбивка элементов по колонкам, оборачивая элементы каждой колонки в <div>.
+        Оптимальная разбивка элементов по колонкам.
+
+        Зависит от:
+            jquery-ui.js
 
         Пример:
             HTML:
@@ -13,137 +16,169 @@
                 </div>
 
             JS:
-                var columnizer = Columnizer('#block', '.item');
-                columnizer.setColumns(5);
+                $('#block').columnizer({
+                    columns: 2,
+                    selector: '.item'
+                });
+
+                // изменение кол-ва колонок
+                $('#block').columnizer('option', 'columns', 3);
      */
-    window.Columnizer = Class(Object, function Columnizer(cls, superclass) {
-        cls.defaults = {
-            selector: '.item'
-        };
 
-        cls.COLUMN_CLASS = 'column';
-        cls.DATA_KEY = 'columns';
+    $.widget("django.columnizer", {
+        options: {
+            columns: 2,
+            selector: '',
 
-        cls.init = function(root, options) {
-            this.$root = $(root).first();
-            if (!this.$root.length) {
-                return this.raise('root element not found');
+            enable: function(event, data) {
+                var that = data.widget;
+                that.setColumns(that.options.columns);
+                that._addClass(that.element, 'columnizer');
+            },
+            disable: function(event, data) {
+                var that = data.widget;
+                that.setColumns(0);
+                that._removeClass(that.element, 'columnizer');
+            },
+            destroy: function(event, data) {
+                var that = data.widget;
+                that.setColumns(0);
+                that._removeClass(that.element, 'columnizer');
             }
+        },
 
-            // настройки
-            if (typeof options === 'string') {
-                options = {
-                    selector: options
-                }
+        _create: function() {
+            // запуск
+            this._checkEnabled();
+        },
+
+        _setOption: function(key, value) {
+            if (key === "columns" ) {
+                this.setColumns(value);
             }
+            this._super(key, value);
+        },
 
-            this.opts = $.extend({}, this.defaults, options);
-            if (!this.opts.selector) {
-                return this.raise('selector required');
+        _setOptionDisabled: function(value) {
+            this._super(value);
+            this._checkEnabled();
+        },
+
+        _checkEnabled: function() {
+            if (this.options.disabled) {
+                this.trigger('disable');
+            } else {
+                this.trigger('enable');
             }
+        },
 
-            // отвязывание старого экземпляра
-            var old_instance = this.$root.data(this.DATA_KEY);
-            if (old_instance) {
-                old_instance.destroy();
-            }
+        _destroy: function() {
+            this.trigger('destroy');
+        },
 
-            this.$root.data(this.DATA_KEY, this);
-        };
 
         /*
-            Освобождение ресурсов
+            Вызов событий
          */
-        cls.destroy = function() {
-            this.setColumns(0);
-            this.$root.removeData(this.DATA_KEY);
-        };
+        trigger: function(event, data) {
+            this._trigger(event, null, $.extend({
+                widget: this
+            }, data));
+        },
+
 
         /*
-            Получение элементов
+            Возвращает элементы для их разбивки
          */
-        cls.getItems = function() {
-            return this.$root.find(this.opts.selector);
-        };
+        getItems: function() {
+            return this.element.find(this.options.selector);
+        },
 
         /*
-            Получение высот элементов
+            Возвращает массив высот элементов
          */
-        cls.getItemHeights = function($items) {
+        getItemHeights: function($items) {
             return $items.toArray().map(function(elem) {
                 return $(elem).outerHeight();
             });
-        };
+        },
 
         /*
-            Получение карты разбиения
+            Построение карты разделения элементов.
+            Возвращает массив массивов, содержащих высоты элементов
          */
-        cls.getMap = function(heights, column_count) {
+        getMap: function(heights, column_count) {
             // средняя высота колонки
-            var mediana = heights.reduce(function(a, b) {
+            var average = heights.reduce(function(a, b) {
                     return a + b;
                 }, 0) / column_count;
 
-            // первоначальное разбиение
-            var columns = [];
-            var column_index = 0;
-            while (column_index < column_count) {
+            var map = [];
+            var column_index = -1;
+            while (++column_index < column_count) {
                 if (column_index === column_count - 1) {
-                    // последняя колонка
-                    columns.push(heights);
+                    // последняя колонка - добавляем все оставшиеся элементы
+                    map.push(heights.length);
                     break;
                 }
 
-                // колонка с минимальным отклонением от медианы
+                // формируем колонку с минимальным отклонением от среднего
+                var height = 0;
+                var deviation = average;
                 var item_index = 0;
-                var column_sum = 0;
-                var column_diff = mediana;
-                var item_count = heights.length;
-                while (item_index < item_count) {
+                var total_count = heights.length;
+                while (item_index < total_count) {
                     var item_height = heights[item_index];
-                    var next_diff = Math.abs(mediana - column_sum - item_height);
+                    var next_deviation = Math.abs(average - height - item_height);
 
-                    // не менее одного элемента в колонке
-                    if (!column_sum || (next_diff <= column_diff)) {
-                        column_diff = next_diff;
-                        column_sum += item_height;
+                    // отклонение уменьшилось или это первый элемент
+                    if ((next_deviation <= deviation) || !height) {
+                        deviation = next_deviation;
+                        height += item_height;
                         item_index++;
                     } else {
                         break
                     }
                 }
-                columns.push(heights.splice(0, item_index));
 
-                column_index++;
+                heights.splice(0, item_index);
+                map.push(item_index);
             }
 
-            return columns;
-        };
+            return map;
+        },
 
         /*
-            Разбивка на колонки
+            Создание контейнера колонки элементов
          */
-        cls.setColumns = function(column_count) {
+        cleateItemsColumn: function($column_items) {
+            return $('<div/>').addClass('column').append($column_items);
+        },
+
+        /*
+            Формирование колонок
+         */
+        setColumns: function(column_count) {
+            // очистка контейнера
             var $items = this.getItems();
             var heights = this.getItemHeights($items);
-
             $items.detach();
-            this.$root.empty();
+            this.element.empty();
 
             column_count = parseInt(column_count);
             if (column_count <= 0) {
                 // удаление колонок
-                this.$root.append($items);
+                this.element.append($items);
                 return [];
-            } else {
-                var map = this.getMap(heights, column_count);
-                for (var i = 0, l = map.length; i < l; i++) {
-                    var $column = $('<div>').addClass(this.COLUMN_CLASS);
-                    $column.append($items.splice(0, map[i].length));
-                    this.$root.append($column);
-                }
-                return map;
             }
+
+            var map = this.getMap(heights, column_count);
+            for (var i=0, l=map.length; i<l; i++) {
+                this.element.append(
+                    this.cleateItemsColumn($items.splice(0, map[i]))
+                );
+            }
+            return map;
         }
     });
 
