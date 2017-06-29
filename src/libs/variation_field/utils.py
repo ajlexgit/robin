@@ -345,7 +345,7 @@ def get_transparency_mask(image, info=None):
     if image.mode in ('RGBA', 'LA'):
         return image.split()[-1]
     elif image.mode == 'L':
-        return image
+        return None
     else:
         # GIF, PNG8, PNG24
         info = info or image.info or {}
