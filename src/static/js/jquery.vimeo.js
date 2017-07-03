@@ -2,26 +2,17 @@
     'use strict';
 
     /*
-        https://developer.vimeo.com/player/js-api
-
-        Требует:
-            jquery.utils.js
+        https://github.com/vimeo/player.js#create-a-player
 
         Параметры:
-            video       - строка с ключем видео
-
-            + любые из документации:
-                https://developer.vimeo.com/apis/oembed
+            video       - ключ видео
 
         События:
             // Видео готово к воспроизведению
-            ready
+            loaded
 
             // Видео начало воспроизводиться
             play
-
-            // Изменилась позиция видео
-            timeupdate
 
             // Видео перестало воспроизводиться
             pause
@@ -29,229 +20,263 @@
             // Видео закончилось
             ended
 
+            // Изменилась позиция видео
+            timeupdate
+
+            // Перемотка
+            seeked
+
         Пример:
             <div id="player"></div>
 
             <script>
-                var player = Vimeo('#player', {
-                    video: '116908919'
-                }).on('ready', function() {
-                    this.position(60);
+                $('#player').vimeo({
+                    video: 116908919,
+                    ended: function(event, data) {
+                        console.log('ended:', data)
+                    },
+                })
+
+                // запуск в режиме паузы на 10-й секунде.
+                // TODO: выглядит как гавно, т.к. библиотека Vimeo основана на JS Promise.
+                $('.player').vimeo('setPosition', 10).then(function() {
+                    $('.player').vimeo('pause');
                 });
 
                 // запуск видео
-                player.play();
+                $('#player').vimeo('play');
 
                 // пауза
-                player.pause();
+                $('#player').vimeo('pause');
 
                 // остановка видео
-                player.stop();
+                $('#player').vimeo('stop');
 
                 // перемотка на позицию в секундах от начала
-                player.position(60);
+                $('#player').vimeo('setPosition', 60);
 
                 // громкость на 50%
-                player.position(50);
+                $('#player').vimeo('setVolume', 0.5);
             </script>
     */
 
-    window.Vimeo = Class(EventedObject, function Vimeo(cls, superclass) {
-        cls.defaults = {
-            video: ''
+    var STATE_NONE = 0;
+    var STATE_LOADING = 10;
+    var STATE_LOADED = 20;
+    var state = STATE_NONE;
+    var onReady = function(callback, context) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var handler = function() {
+            return callback.apply(context, args);
         };
 
-        // интервал проверки времени воспроизведения
-        cls.CHECK_POSITION_TIMEOUT = 100;
+        if (state === STATE_LOADED) {
+            handler();
+        } else {
+            $(document).on('vimeo-ready', handler);
 
-        cls.init = function(container, options) {
-            superclass.init.call(this);
-
-            this.$container = $(container).first();
-            if (!this.$container.length) {
-                return this.raise('container element not found');
+            if (state === STATE_NONE) {
+                state = STATE_LOADING;
+                var script = document.createElement('script');
+                script.onload = function() {
+                    state = STATE_LOADED;
+                    $(document).trigger('vimeo-ready');
+                };
+                script.src = 'https://player.vimeo.com/api/player.js';
+                document.body.appendChild(script);
             }
+        }
+    };
 
-            this.opts = $.extend({}, this.defaults, options);
 
-            if (!this.opts.video) {
-                return this.raise('video ID required');
-            }
+    var PLACEHOLDER_CLASS = 'vimeo-placeholder';
+    $.widget("django.vimeo", {
+        options: {
+            video: '',
 
+            // опции
+            autoplay: false,
+            byline: true,
+            portrait: true,
+            title: true,
+            loop: false,
+            width: null,
+            height: null,
+
+            // события
+            loaded: $.noop,
+            play: $.noop,
+            pause: $.noop,
+            ended: $.noop,
+            timeupdate: $.noop,
+            seeked: $.noop
+        },
+
+        _create: function() {
             var that = this;
-            window.Vimeo.ready(function() {
-                that.makeNative();
+            this._promise = new Promise(function(resolve, reject) {
+                onReady(function() {
+                    that.makeNative();
+                    resolve();
+                }, this);
+            }).catch(function(error) {
+                console.error(error);
             });
-        };
+        },
+
+        _setOptions: function(options) {
+            this._super(options);
+            if ("video" in options) {
+                this.makeNative();
+            }
+            return this;
+        },
+
+        _destroy: function() {
+            if (this.player) {
+                this.player.unload();
+                this.player = null;
+
+                if (!this.is_iframe) {
+                    this.element.find('.' + PLACEHOLDER_CLASS).remove();
+                }
+            }
+            this.trigger('destroy');
+        },
+
 
         /*
-            Освобождение ресурсов
+            Вызов событий
          */
-        cls.destroy = function() {
-            this.stop();
-            if (this.native) {
-                this.$iframe.replaceWith(this._containerHTML);
-                this.$iframe = null;
-                this.native = null;
-            }
-            superclass.destroy.call(this);
-        };
+        trigger: function(type, data) {
+            this._trigger(type, null, $.extend({
+                widget: this
+            }, data));
+        },
 
         /*
             Создание нативного объекта
          */
-        cls.makeNative = function() {
-            // копирование в playerVars всех свойств, кроме тех,
-            // что указаны в defaults.
-            var playerVars = {};
-            for (var key in this.opts) {
-                if (!this.opts.hasOwnProperty(key)) continue;
-                if (key in this.defaults) continue;
-                playerVars[key] = this.opts[key]
+        makeNative: function() {
+            this.is_iframe = this.element.prop('tagName') === 'IFRAME';
+            if (this.is_iframe) {
+                // TODO: не проверен как работает
+                this.player = new Vimeo.Player(this.element);
+            } else {
+                // хак, т.к. в API нет метода destroy()
+                // https://github.com/vimeo/player.js/issues/126
+                var $div = $('<div/>').addClass(PLACEHOLDER_CLASS);
+                this.element.find('.' + PLACEHOLDER_CLASS).remove();
+                this.element.append($div);
+                this.player = new Vimeo.Player($div, {
+                    id: this.options.video,
+                    autoplay: this.options.autoplay,
+                    loop: this.options.loop,
+                    title: this.options.title,
+                    width: this.options.width,
+                    height: this.options.height
+                });
             }
 
-            this.$iframe = $('<iframe>').attr({
-                src: ('//player.vimeo.com/video/' + this.opts.video + '?api=1' + $.param(playerVars)),
-                frameborder: '0',
-                webkitallowfullscreen: '',
-                mozallowfullscreen: '',
-                allowfullscreen: ''
-            });
-            this._containerHTML = this.$container.prop('outerHTML');
-            this.$container.replaceWith(this.$iframe);
-
-            if (!window.$f) {
-                return this.raise('$f is undefined');
-            }
-
+            // events
             var that = this;
-            this.native = $f(this.$iframe.get(0));
-            this.native.addEvent('ready', function() {
-                that._currentTime = -1;
-
-                that.native.addEvent('play', function() {
-                    that.trigger('play');
-                });
-                that.native.addEvent('pause', function() {
-                    that.trigger('pause');
-                });
-                that.native.addEvent('finish', function() {
-                    that.trigger('ended');
-                });
-                that.native.addEvent('playProgress', function(e) {
-                    var time = parseInt(e.seconds) || 0;
-                    if (time !== that._currentTime) {
-                        that._currentTime = time;
-                        that.trigger('timeupdate', time);
-                    }
-                });
-
-                if (that.opts.autoplay) {
-                    that.play();
-                }
-                that.trigger('ready');
+            this.player.on('loaded', function(data) {
+                that.trigger('loaded', data);
             });
-        };
 
-        /*
-            Начало воспроизведения
-         */
-        cls.play = function() {
-            if (!this.native) {
-                this.warn('not ready yet');
-                return this;
-            }
+            this.player.on('play', function(data) {
+                that.trigger('play', data);
+            });
+            this.player.on('pause', function(data) {
+                that.trigger('pause', data);
+            });
+            this.player.on('ended', function(data) {
+                that.trigger('ended', data);
+            });
+            this.player.on('timeupdate', function(data) {
+                that.trigger('timeupdate', data);
+            });
+            this.player.on('seeked', function(data) {
+                that.trigger('seeked', data);
+            });
+        },
 
-            this.native.api('play');
-            return this;
-        };
+        play: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.play();
+            });
+        },
 
-        /*
-            Переход к точке воспроизведения
-         */
-        cls.position = function(value) {
-            if (!this.native) {
-                this.warn('not ready yet');
-                return this;
-            }
+        pause: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.pause();
+            });
+        },
 
-            if (typeof value !== 'number') {
-                this.error('value should be a number');
-                return this;
-            }
+        stop: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.unload();
+            });
+        },
 
-            this.native.api('seekTo', value);
-            return this;
-        };
+        getVolume: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.getVolume();
+            });
+        },
 
-        /*
-            Пауза
-         */
-        cls.pause = function() {
-            if (!this.native) {
-                this.warn('not ready yet');
-                return this;
-            }
+        setVolume: function(value) {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.setVolume(value);
+            });
+        },
 
-            this.native.api('pause');
-            return this;
-        };
+        getPosition: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.getCurrentTime();
+            });
+        },
 
-        /*
-            Остановка воспроизведения
-         */
-        cls.stop = function() {
-            if (!this.native) {
-                this.warn('not ready yet');
-                return this;
-            }
+        setPosition: function(value) {
+            var that = this;
+            return this._promise.then($.proxy(function() {
+                return that.player.setCurrentTime(value);
+            }, that));
+        },
 
-            this.native.api('unload');
-            return this;
-        };
+        getDuration: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.getDuration();
+            });
+        },
 
-        /*
-            Установка уровня громкости
-         */
-        cls.volume = function(value) {
-            if (!this.native) {
-                this.warn('not ready yet');
-                return this;
-            }
+        getPaused: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.getPaused();
+            });
+        },
 
-            if (typeof value !== 'number') {
-                this.error('value should be a number');
-                return this;
-            }
+        getEnded: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.getEnded();
+            });
+        },
 
-            this.native.api('setVolume', value / 100);
-            return this;
-        };
-    });
-
-
-    var vimeo_ready = false;
-    window.onVimeoAPIReady = function() {
-        vimeo_ready = true;
-        $(document).trigger('vimeo-ready');
-    };
-
-    $(document).ready(function() {
-        var script = document.createElement('script');
-        script.onload = onVimeoAPIReady;
-        script.src = 'https://f.vimeocdn.com/js/froogaloop2.min.js';
-        document.body.appendChild(script);
-    });
-
-    /*
-        Выполнение callback, когда JS Vimeo загружен и готов
-     */
-    window.Vimeo.ready = function(callback) {
-        if (vimeo_ready) {
-            callback()
-        } else {
-            $(document).one('vimeo-ready', callback);
+        getVideoTitle: function() {
+            var that = this;
+            return this._promise.then(function() {
+                return that.player.getVideoTitle();
+            });
         }
-    };
+    });
 
 })(jQuery);

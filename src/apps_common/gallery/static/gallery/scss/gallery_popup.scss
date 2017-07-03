@@ -136,6 +136,15 @@ $close_btn_weight: 2px;
       }
     }
 
+    .vimeo-placeholder {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+    }
+
     iframe {
       display: none;
       width: 100%;
