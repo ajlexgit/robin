@@ -37,7 +37,7 @@
                 var that = data.widget;
                 that._removeClass(that.element, 'sticky-disabled');
                 that._addClass(that.element, 'sticky-enabled');
-                that.setElementWidth();
+                that._setElementWidth();
                 that.update();
             },
             disable: function(event, data) {
@@ -84,7 +84,7 @@
             },
             resize: function(event, data) {
                 var that = data.widget;
-                that.setElementWidth();
+                that._setElementWidth();
                 $.animation_frame(function() {
                     that._update(data.winScroll);
                 })(that.element.get(0));
@@ -189,8 +189,8 @@
         /*
             Вызов событий
          */
-        trigger: function(event, data) {
-            this._trigger(event, null, $.extend({
+        trigger: function(type, data) {
+            this._trigger(type, null, $.extend({
                 widget: this
             }, data));
         },
@@ -198,7 +198,7 @@
         /*
             Фиксируем ширину ползающего блока
          */
-        setElementWidth: function() {
+        _setElementWidth: function() {
             var initial_css = this.element.get(0).style.cssText;
 
             this.element.get(0).style.cssText = '';

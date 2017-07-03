@@ -53,7 +53,7 @@ PIPELINE['JAVASCRIPT'].update({
         'source_filenames': (
             'polyfills/modernizr.js',
             'js/jquery-2.2.4.js',
-            'js/jquery-ui.min.js',
+            'js/jquery-ui.js',
             'js/jquery.requestanimationframe.js',
 
             'common/js/jquery.cookie.js',

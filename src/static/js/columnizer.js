@@ -22,7 +22,7 @@
                 });
 
                 // изменение кол-ва колонок
-                $('#block').columnizer('option', 'columns', 3);
+                $('#block').columnizer('setColumns', 3);
      */
 
     $.widget("django.columnizer", {
@@ -80,8 +80,8 @@
         /*
             Вызов событий
          */
-        trigger: function(event, data) {
-            this._trigger(event, null, $.extend({
+        trigger: function(type, data) {
+            this._trigger(type, null, $.extend({
                 widget: this
             }, data));
         },
@@ -90,14 +90,14 @@
         /*
             Возвращает элементы для их разбивки
          */
-        getItems: function() {
+        _getItems: function() {
             return this.element.find(this.options.selector);
         },
 
         /*
             Возвращает массив высот элементов
          */
-        getItemHeights: function($items) {
+        _getItemHeights: function($items) {
             return $items.toArray().map(function(elem) {
                 return $(elem).outerHeight();
             });
@@ -107,7 +107,7 @@
             Построение карты разделения элементов.
             Возвращает массив массивов, содержащих высоты элементов
          */
-        getMap: function(heights, column_count) {
+        _getMap: function(heights, column_count) {
             // средняя высота колонки
             var average = heights.reduce(function(a, b) {
                     return a + b;
@@ -151,7 +151,7 @@
         /*
             Создание контейнера колонки элементов
          */
-        cleateItemsColumn: function($column_items) {
+        _cleateItemsColumn: function($column_items) {
             return $('<div/>').addClass('column').append($column_items);
         },
 
@@ -160,8 +160,8 @@
          */
         setColumns: function(column_count) {
             // очистка контейнера
-            var $items = this.getItems();
-            var heights = this.getItemHeights($items);
+            var $items = this._getItems();
+            var heights = this._getItemHeights($items);
             $items.detach();
             this.element.empty();
 
@@ -172,10 +172,10 @@
                 return [];
             }
 
-            var map = this.getMap(heights, column_count);
+            var map = this._getMap(heights, column_count);
             for (var i=0, l=map.length; i<l; i++) {
                 this.element.append(
-                    this.cleateItemsColumn($items.splice(0, map[i]))
+                    this._cleateItemsColumn($items.splice(0, map[i]))
                 );
             }
             return map;

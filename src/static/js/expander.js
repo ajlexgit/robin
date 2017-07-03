@@ -130,8 +130,8 @@
         /*
             Вызов событий
          */
-        trigger: function(event, data) {
-            this._trigger(event, null, $.extend({
+        trigger: function(type, data) {
+            this._trigger(type, null, $.extend({
                 widget: this
             }, data));
         },
