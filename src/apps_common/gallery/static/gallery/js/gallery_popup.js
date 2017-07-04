@@ -280,24 +280,15 @@
         };
 
         cls._playYoutube = function($item, item_data) {
-            if (item_data.player) {
-                // плеер уже есть
-                $item.addClass(this.opts.videoPlayingClass);
-                item_data.player.play();
-                return
-            } else {
-                var $player = $('<div>');
-                $item.append($player).addClass(this.opts.videoLoadingClass);
-            }
-
             var that = this;
-            item_data.player = YouTube($player, {
+            $item.addClass(this.opts.videoLoadingClass).youtube({
                 video: item_data.key,
-                autoplay: true
-            }).on('ready', function() {
-                $item.removeClass(that.opts.videoLoadingClass);
-                $item.addClass(that.opts.videoPlayingClass);
-            });
+                autoplay: true,
+                loaded: function() {
+                    $item.removeClass(that.opts.videoLoadingClass);
+                    $item.addClass(that.opts.videoPlayingClass);
+                }
+            })
         };
 
         cls._playVimeo = function($item, item_data) {
@@ -318,10 +309,7 @@
         cls.stopVideo = function($item) {
             var item_data = $item.data();
             if (item_data.provider === this.YOUTUBE_VIDEO) {
-                if (item_data.player) {
-                    item_data.player.pause();
-                    item_data.player.position(0);
-                }
+                $item.youtube('destroy');
             } else if (item_data.provider === this.VIMEO_VIDEO) {
                 $item.vimeo('destroy');
             } else {

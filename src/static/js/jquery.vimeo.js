@@ -4,27 +4,18 @@
     /*
         https://github.com/vimeo/player.js#create-a-player
 
+        Зависит от:
+            jquery-ui.js
+
         Параметры:
             video       - ключ видео
-
-        События:
-            // Видео готово к воспроизведению
-            loaded
-
-            // Видео начало воспроизводиться
-            play
-
-            // Видео перестало воспроизводиться
-            pause
-
-            // Видео закончилось
-            ended
-
-            // Изменилась позиция видео
-            timeupdate
-
-            // Перемотка
-            seeked
+            autoplay    - автовоспроизведение
+            byline      - показывать автора видео
+            portrait    - показывать аватар автора
+            title       - показывать название видео
+            loop        - зациклить видео
+            width       - ширина видео
+            height      - высота видео
 
         Пример:
             <div id="player"></div>
@@ -108,8 +99,7 @@
             play: $.noop,
             pause: $.noop,
             ended: $.noop,
-            timeupdate: $.noop,
-            seeked: $.noop
+            timeupdate: $.noop
         },
 
         _create: function() {
@@ -136,10 +126,7 @@
             if (this.player) {
                 this.player.unload();
                 this.player = null;
-
-                if (!this.is_iframe) {
-                    this.element.find('.' + PLACEHOLDER_CLASS).remove();
-                }
+                this.element.find('.' + PLACEHOLDER_CLASS).remove();
             }
             this.trigger('destroy');
         },
@@ -158,25 +145,19 @@
             Создание нативного объекта
          */
         makeNative: function() {
-            this.is_iframe = this.element.prop('tagName') === 'IFRAME';
-            if (this.is_iframe) {
-                // TODO: не проверен как работает
-                this.player = new Vimeo.Player(this.element);
-            } else {
-                // хак, т.к. в API нет метода destroy()
-                // https://github.com/vimeo/player.js/issues/126
-                var $div = $('<div/>').addClass(PLACEHOLDER_CLASS);
-                this.element.find('.' + PLACEHOLDER_CLASS).remove();
-                this.element.append($div);
-                this.player = new Vimeo.Player($div, {
-                    id: this.options.video,
-                    autoplay: this.options.autoplay,
-                    loop: this.options.loop,
-                    title: this.options.title,
-                    width: this.options.width,
-                    height: this.options.height
-                });
-            }
+            // хак, т.к. в API нет метода destroy()
+            // https://github.com/vimeo/player.js/issues/126
+            var $div = $('<div/>').addClass(PLACEHOLDER_CLASS);
+            this.element.find('.' + PLACEHOLDER_CLASS).remove();
+            this.element.append($div);
+            this.player = new Vimeo.Player($div, {
+                id: this.options.video,
+                autoplay: this.options.autoplay,
+                loop: this.options.loop,
+                title: this.options.title,
+                width: this.options.width,
+                height: this.options.height
+            });
 
             // events
             var that = this;
@@ -195,9 +176,6 @@
             });
             this.player.on('timeupdate', function(data) {
                 that.trigger('timeupdate', data);
-            });
-            this.player.on('seeked', function(data) {
-                that.trigger('seeked', data);
             });
         },
 
@@ -271,10 +249,10 @@
             });
         },
 
-        getVideoTitle: function() {
+        getVideoUrl: function() {
             var that = this;
             return this._promise.then(function() {
-                return that.player.getVideoTitle();
+                return that.player.getVideoUrl();
             });
         }
     });
