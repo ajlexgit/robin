@@ -13,10 +13,11 @@ class SearchError(Exception):
 
 
 class SphinxSearchResult:
-    __slots__ = ('_total', '_matches')
+    __slots__ = ('_total', '_offset', '_matches')
 
-    def __init__(self, total_found=0, matches=()):
-        self._total = total_found
+    def __init__(self, total=0, offset=0, matches=()):
+        self._total = total
+        self._offset = offset
         self._matches = tuple(matches)
 
     def __iter__(self):
@@ -30,8 +31,13 @@ class SphinxSearchResult:
         return '%s(%s)' % (str(type(self).__name__), self._matches)
 
     @property
+    def offset(self):
+        """ Смещение найденных записей """
+        return self._offset
+
+    @property
     def total(self):
-        """ Общее кол-во подходящих аргументов """
+        """ Общее кол-во найденных записей """
         return self._total
 
 
@@ -74,11 +80,11 @@ class SphinxSearch:
             logger.error(message)
             raise SearchError(message)
 
-        return SphinxSearchResult(result['total_found'], result['matches'])
+        return SphinxSearchResult(result['total_found'], offset, result['matches'])
 
     def _to_dicts(self, result):
         """ Конвертация результата работы метода fetch() в словари """
-        return SphinxSearchResult(result.total, (
+        return SphinxSearchResult(result.total, result.offset, (
             {
                 key: value.decode() if isinstance(value, bytes) else value
                 for key, value in dict(record['attrs'], id=record['id']).items()
@@ -116,7 +122,7 @@ class SphinxSearch:
             for instance in qs:
                 index_instances[(instance.id, index_name)] = instance
 
-        return SphinxSearchResult(result.total, (
+        return SphinxSearchResult(result.total, result.offset, (
             index_instances[key_tuple]
             for key_tuple in order_list
             if key_tuple in index_instances

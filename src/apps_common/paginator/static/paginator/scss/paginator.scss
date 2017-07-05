@@ -8,8 +8,11 @@ $disabled_color: rgba(#00A000, 0.4);
 $hide_nav: $media600;
 
 .navigation {
+  padding: 10px 0;
   font-weight: bold;
   text-align: center;
+  border-top: 1px solid #D0D0D0;
+  border-bottom: 1px solid #D0D0D0;
   @include fontsize_default;
   @include flexbox;
   @include flex-flow(row wrap);
@@ -25,7 +28,7 @@ $hide_nav: $media600;
       &:before {
         content: '←';
         margin-right: 5px;
-        vertical-align: text-bottom;
+        vertical-align: 0.1em;
       }
     }
 
@@ -35,7 +38,7 @@ $hide_nav: $media600;
       &:after {
         content: '→';
         margin-left: 5px;
-        vertical-align: text-bottom;
+        vertical-align: 0.1em;
       }
     }
 

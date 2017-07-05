@@ -1,0 +1,28 @@
+@import "mixins";
+
+#records {
+  margin-top: 50px;
+
+  ol {
+    list-style: decimal inside;
+    @include fontsize_default;
+  }
+
+  li {
+    margin: 5px 0;
+  }
+
+  a {
+    color: #551A8B;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+      @include opacity(0.75);
+    }
+  }
+}
+
+#paginator {
+  margin-top: 60px;
+}

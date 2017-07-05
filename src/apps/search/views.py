@@ -1,5 +1,5 @@
 from django.views.generic.base import TemplateView
-from django.http.response import HttpResponseBadRequest
+from django.http.response import HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from seo.seo import Seo
 from paginator.paginator import Paginator
@@ -18,6 +18,7 @@ class ShopProductsSearch(SphinxSearch):
 
 class SearchPaginator(Paginator):
     search_class = ShopProductsSearch
+    _fictive = None
 
     @cached('self.query', 'self.search_class.index', time=10*60)
     def item_count(self):
@@ -55,13 +56,13 @@ class SearchView(TemplateView):
     def get(self, request, **kwargs):
         form = SearchForm(request.GET)
         if not form.is_valid():
-            raise HttpResponseBadRequest
+            return HttpResponseForbidden()
 
         query = form.cleaned_data.get('q')
         paginator = SearchPaginator(
             request,
             query=query,
-            per_page=60,
+            per_page=20,
             page_neighbors=1,
             side_neighbors=1,
         )

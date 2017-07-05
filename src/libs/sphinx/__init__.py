@@ -54,16 +54,16 @@
                     }
 
         # sphinx.conf:
-            source news
+            source shop_products
             {
                 type            = xmlpipe2
-                xmlpipe_command = /usr/bin/wget -O - -q -t 1 http://localhost/sphinx/index/news/skvx8wjq8p81d/
+                xmlpipe_command = /usr/bin/wget -O - -q -t 1 http://localhost/sphinx/index/shop_products/skvx8wjq8p81d/
             }
 
-            index news
+            index shop_products
             {
-                source              = news
-                path                = /var/lib/sphinxsearch/data/news
+                source              = shop_products
+                path                = /var/lib/sphinxsearch/data/shop_products
                 morphology          = stem_en
                 min_stemming_len    = 4
                 min_word_len        = 3
