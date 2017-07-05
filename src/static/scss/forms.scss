@@ -8,6 +8,7 @@ form {
 // стандартные стили полей в форме
 .field {
   margin-bottom: 10px;
+  max-width: 100%;
   @include border-box;
   &:nth-last-of-type(1) {
     margin-bottom: 0;
@@ -20,7 +21,6 @@ form {
   }
 
   .control {
-    width: 280px;
     max-width: 100%;
     @include border-box;
     @include font_default;

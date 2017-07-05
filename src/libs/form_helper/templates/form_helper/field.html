@@ -11,7 +11,9 @@
 
   {% block errors %}
     {% if field_errors %}
-      <span class="error">{{ field_errors|first }}</span>
+      <div class="error">
+        <span>{{ field_errors|first }}</span>
+      </div>
     {% endif %}
   {% endblock %}
 </div>

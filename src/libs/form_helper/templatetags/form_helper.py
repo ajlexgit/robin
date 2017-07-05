@@ -32,7 +32,7 @@ def get_field_template(form, field):
 
 
 @register.simple_tag(takes_context=True)
-def render_field(context, form, fieldname, template=None, classes=None):
+def render_field(context, form, fieldname, template=None, classes=None, **kwargs):
     """
         Рендеринг одного поля формы.
 
@@ -81,9 +81,10 @@ def render_field(context, form, fieldname, template=None, classes=None):
             field_errors = field.errors
 
     template = template or get_field_template(form, field)
-    return loader.get_template(template).render({
+    context = dict({
         'form': form,
         'field': field,
         'field_classes': ' '.join(classes),
         'field_errors': field_errors,
-    }, request)
+    }, **kwargs)
+    return loader.get_template(template).render(context, request)
