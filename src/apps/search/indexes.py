@@ -8,10 +8,9 @@ class SearchScheme(SphinxScheme):
         self.add_fields('title', is_attribute=True)
         self.add_fields('text')
         self.add_attr('url')
-        self.add_attr('date', ATTR_TYPE.TIMESTAMP)
 
 
-class BlogPostIndex(SphinxXMLIndex):
+class BlogIndex(SphinxXMLIndex):
     name = 'blog'
     model = BlogPost
     scheme_class = SearchScheme
@@ -22,7 +21,6 @@ class BlogPostIndex(SphinxXMLIndex):
     def build_document(self, instance):
         return {
             'url': instance.get_absolute_url(),
-            'title': instance.header,
+            'title': instance.title,
             'text': instance.text,
-            'date': instance.date,
         }
