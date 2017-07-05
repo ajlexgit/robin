@@ -13,7 +13,7 @@
 
 {% block content %}
   <div class="grid-block block">
-    <h2>{% trans 'Search' %}</h2>
+    <h2>{{ title }}</h2>
 
     <form method="get" action=".">
       {% render_form form %}
@@ -21,23 +21,21 @@
     </form>
   </div>
 
-  {% if paginator %}
-    <div id="results">
-      <div class="grid-block">
-        <div class="text-styles">
-          <h3>{% trans 'Results:' %}</h3>
+  <div id="results">
+    <div class="grid-block">
+      <div class="text-styles">
+        <h3>{% trans 'Results:' %}</h3>
 
-          <ol>
-            {% for item in paginator.current_page %}
-              <li>
-                <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
-              </li>
-            {% endfor %}
-          </ol>
-        </div>
+        <ol>
+          {% for item in paginator.current_page %}
+            <li>
+              <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+            </li>
+          {% endfor %}
+        </ol>
       </div>
     </div>
-  {% endif %}
+  </div>
 
   {% if paginator.num_pages > 1 %}
     <div id="paginator">

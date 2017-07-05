@@ -1,4 +1,5 @@
 from django.views.generic.base import TemplateView
+from django.http.response import HttpResponseBadRequest
 from django.utils.translation import ugettext_lazy as _
 from paginator import Paginator
 from seo.seo import Seo
@@ -49,36 +50,29 @@ class SearchPaginator(Paginator):
 
 
 class SearchView(TemplateView):
-    template_name = 'search/search.html'
+    template_name = 'search/result.html'
 
     def get(self, request, **kwargs):
         form = SearchForm(request.GET)
-        is_searching = 'q' in request.GET
+        if not form.is_valid():
+            raise HttpResponseBadRequest
+
+        query = form.cleaned_data.get('q')
+        paginator = SearchPaginator(
+            request,
+            query=query,
+            per_page=60,
+            page_neighbors=1,
+            side_neighbors=1,
+        )
 
         # SEO
         seo = Seo()
         seo.title = _('Search results')
         seo.save(request)
 
-        context = {
+        return self.render_to_response({
             'form': form,
-            'is_searching': is_searching,
-        }
-
-        if is_searching:
-            # поиск
-            if form.is_valid():
-                paginator = SearchPaginator(
-                    request,
-                    query=form.cleaned_data.get('q'),
-                    per_page=20,
-                    page_neighbors=1,
-                    side_neighbors=1,
-                )
-
-                context.update(**{
-                    'paginator': paginator,
-                })
-
-        # страница поиска
-        return self.render_to_response(context)
+            'title': _('Search by «%s»') % query,
+            'paginator': paginator,
+        })
