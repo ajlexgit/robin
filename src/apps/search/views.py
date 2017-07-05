@@ -1,15 +1,15 @@
 from django.views.generic.base import TemplateView
 from django.http.response import HttpResponseBadRequest
 from django.utils.translation import ugettext_lazy as _
-from paginator import Paginator
 from seo.seo import Seo
-from libs.cache import cached
+from paginator.paginator import Paginator
+from libs.cache.cached import cached
 from libs.sphinx.search import SphinxSearch, SearchError
 from .forms import SearchForm
 
 
-class BlogSearch(SphinxSearch):
-    index = 'blog'
+class ShopProductsSearch(SphinxSearch):
+    index = 'shop_products'
     weights = {
         'title': 2,
         'text': 1,
@@ -17,7 +17,7 @@ class BlogSearch(SphinxSearch):
 
 
 class SearchPaginator(Paginator):
-    search_class = BlogSearch
+    search_class = ShopProductsSearch
 
     @cached('self.query', 'self.search_class.index', time=10*60)
     def item_count(self):

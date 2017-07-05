@@ -1,18 +1,18 @@
-from libs.sphinx.index import SphinxScheme, SphinxXMLIndex, ATTR_TYPE
-from blog.models import BlogPost
+from libs.sphinx.index import SphinxScheme, SphinxXMLIndex
+from shop.models import ShopProduct
 
 
 class SearchScheme(SphinxScheme):
     def __init__(self, index_name):
         super().__init__(index_name)
         self.add_fields('title', is_attribute=True)
-        self.add_fields('text')
+        self.add_fields('description')
         self.add_attr('url')
 
 
-class BlogIndex(SphinxXMLIndex):
-    name = 'blog'
-    model = BlogPost
+class ShopProductsIndex(SphinxXMLIndex):
+    name = 'shop_products'
+    model = ShopProduct
     scheme_class = SearchScheme
 
     def get_queryset(self):
@@ -22,5 +22,5 @@ class BlogIndex(SphinxXMLIndex):
         return {
             'url': instance.get_absolute_url(),
             'title': instance.title,
-            'text': instance.text,
+            'description': instance.description,
         }
