@@ -25,6 +25,16 @@
                 $('#block').columnizer('setColumns', 3);
      */
 
+    var arraySum = function (array) {
+        return array.reduce(function(a, b) { return a+b });
+    };
+
+    var reduceColumn = function(columns, index) {
+        if (index <= 1) return false;
+        columns[index-1] = columns[index-1].concat(columns[index].splice(0, 1));
+        return true;
+    };
+
     $.widget("django.columnizer", {
         options: {
             columns: 2,
@@ -99,7 +109,7 @@
          */
         _getItemHeights: function($items) {
             return $items.toArray().map(function(elem) {
-                return $(elem).outerHeight();
+                return $(elem).outerHeight(true);
             });
         },
 
@@ -109,16 +119,14 @@
          */
         _getMap: function(heights, column_count) {
             // средняя высота колонки
-            var average = heights.reduce(function(a, b) {
-                    return a + b;
-                }, 0) / column_count;
+            var average = arraySum(heights) / column_count;
 
             var map = [];
             var column_index = -1;
             while (++column_index < column_count) {
                 if (column_index === column_count - 1) {
                     // последняя колонка - добавляем все оставшиеся элементы
-                    map.push(heights.length);
+                    map.push(heights);
                     break;
                 }
 
@@ -141,8 +149,32 @@
                     }
                 }
 
-                heights.splice(0, item_index);
-                map.push(item_index);
+                map.push(heights.splice(0, item_index));
+            }
+
+            // вторая итерация
+            var maxSum = 0;
+            var maxIndex = -1;
+            $.each(map, function(index, column) {
+                var sum = arraySum(column);
+                if (sum >= maxSum) {
+                    maxSum = sum;
+                    maxIndex = index;
+                }
+            });
+
+            var currentIndex = maxIndex;
+            var clone_map = [].concat(map);
+            while (true) {
+                if (currentIndex <= 1) break;
+                reduceColumn(clone_map, currentIndex);
+                var currentSum = arraySum(clone_map[currentIndex]);
+                var previousSum = arraySum(clone_map[currentIndex-1]);
+                if ((currentSum <= maxSum) && (previousSum <= maxSum)) {
+                    map = clone_map;
+                    break;
+                }
+                currentIndex--;
             }
 
             return map;
@@ -159,7 +191,6 @@
             Формирование колонок
          */
         setColumns: function(column_count) {
-            // очистка контейнера
             var $items = this._getItems();
             var heights = this._getItemHeights($items);
             $items.detach();
@@ -167,7 +198,6 @@
 
             column_count = parseInt(column_count);
             if (column_count <= 0) {
-                // удаление колонок
                 this.element.append($items);
                 return [];
             }
@@ -175,7 +205,7 @@
             var map = this._getMap(heights, column_count);
             for (var i=0, l=map.length; i<l; i++) {
                 this.element.append(
-                    this._cleateItemsColumn($items.splice(0, map[i]))
+                    this._cleateItemsColumn($items.splice(0, map[i].length))
                 );
             }
             return map;
