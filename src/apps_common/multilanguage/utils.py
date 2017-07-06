@@ -1,18 +1,7 @@
-import ipaddress
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import resolve_url
 from . import options
-
-
-def get_client_ip(request):
-    try:
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR', '').split(',')[0]
-        ip = ipaddress.IPv4Address(x_forwarded_for)
-    except ValueError:
-        return request.META.get('REMOTE_ADDR')
-    else:
-        return ip.exploded
 
 
 def get_referer_url(request):

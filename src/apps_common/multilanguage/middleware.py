@@ -2,8 +2,9 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.core.urlresolvers import is_valid_path
 from libs.geocity.api import info
+from libs.geocity.utils import get_client_ip
 from libs.cookies import set_cookie
-from .utils import get_client_ip, noredirect_url
+from .utils import noredirect_url
 from . import options
 
 
