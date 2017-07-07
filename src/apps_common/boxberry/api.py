@@ -1,5 +1,6 @@
 import requests
 from libs.associative_request import associative
+from .exceptions import BoxberryAPIError
 from . import conf
 
 
@@ -23,8 +24,8 @@ def request(api_method, method=None, params=None, data=None):
     except ValueError:
         return None
 
-    # if 'error' in data:
-    #     raise SubscribeAPIError(data['error']['code'], data['error']['message'])
+    if not data or (isinstance(data, (list, tuple)) and 'err' in data[0]):
+        raise BoxberryAPIError(data[0]['err'])
 
     return data
 
@@ -86,12 +87,12 @@ def getCitiesFull():
     return request('ListCitiesFull')
 
 
-def getPoints(city=None, prepaid=0):
+def getPoints(city_id=None, prepaid=0):
     """
-        Позволяет получить информацию о всех точках выдачи заказов.
+        Позволяет получить информацию о всех ПВЗ.
 
         Параметры:
-            city    - код города (в системе Boxberry, а не российский)
+            city_id - код города (в системе Boxberry, а не российский)
             prepaid - показать ПВЗ, работающие по предоплате
 
         По умолчанию возвращается список точек с возможностью оплаты при получении заказа.
@@ -117,45 +118,38 @@ def getPoints(city=None, prepaid=0):
             'DigitalSignature'  => 'Подпись получателя будет хранится в системе boxberry в электронном виде'
     """
     return request('ListPoints', params={
-        'CityCode': city,
+        'CityCode': city_id,
         'prepaid': prepaid,
     })
 
 
-def getDeliveryCosts(target, weight=500, orderprice=0, height=0, width=0, depth=0):
+def getPointsShort(city_id=None, prepaid=0):
     """
-        Позволяет узнать стоимость доставки посылки до ПВЗ.
+        Позволяет получить коды всех ПВЗ.
 
         Параметры:
-            target      - код ПВЗ
-            weight      - вес посылки в граммах
-            orderprice  - cтоимость товаров без учета стоимости доставки
-            height      - высота коробки (см)
-            width       - ширина коробки (см)
-            depth       - глубина коробки (см)
+            city_id - код города (в системе Boxberry, а не российский)
+            prepaid - показать ПВЗ, работающие по предоплате
+
+        По умолчанию возвращается список точек с возможностью оплаты при получении заказа.
+        Если вам необходимо увидеть точки, работающие с предоплатой, передайте параметр "prepaid" равный 1.
 
         Поля ответа:
-            'price'             => 'Итоговая цена в рублях',
-            'price_base'        => 'Базовая стоимость',
-            'price_service'     => 'Стоимость услуг',
-            'delivery_period'   => 'Cрок доставки',
+            'CityCode'          => 'Код города в boxberry',
+            'Code'              => 'Код в базе boxberry',
     """
-    return request('DeliveryCosts', params={
-        'target': target,
-        'weight': weight,
-        'ordersum': orderprice,
-        'height': height,
-        'width': width,
-        'depth': depth,
+    return request('ListPointsShort', params={
+        'CityCode': city_id,
+        'prepaid': prepaid,
     })
 
 
-def getPoint(target, photos=False):
+def getPoint(point_id, photos=False):
     """
         Позволяет получить всю информацию по ПВЗ, включая фотографии.
 
         Параметры:
-            target      - код ПВЗ
+            point_id    - код ПВЗ
             photos      - включить картинки в ответ
 
         Поля ответа (часть из них):
@@ -173,6 +167,36 @@ def getPoint(target, photos=False):
             'Photos'            => 'Массив с фотографиями в base64',
     """
     return request('PointsDescription', params={
-        'code': target,
+        'code': point_id,
         'photo': int(photos),
+    })
+
+
+def getDeliveryCosts(point_id, ordersum=0, weight=500, height=0, width=0, depth=0, zip=0):
+    """
+        Позволяет узнать стоимость доставки посылки до ПВЗ.
+
+        Параметры:
+            point_id    - код ПВЗ
+            weight      - вес посылки в граммах
+            ordersum    - стоимость товаров без учета стоимости доставки
+            height      - высота коробки (см)
+            width       - ширина коробки (см)
+            depth       - глубина коробки (см)
+            zip         - индекс получателя (для курьерской доставки)
+
+        Поля ответа:
+            'price'             => 'Итоговая цена в рублях',
+            'price_base'        => 'Базовая стоимость',
+            'price_service'     => 'Стоимость услуг',
+            'delivery_period'   => 'Cрок доставки',
+    """
+    return request('DeliveryCosts', params={
+        'target': point_id,
+        'weight': weight,
+        'ordersum': ordersum,
+        'height': height,
+        'width': width,
+        'depth': depth,
+        'zip': zip,
     })
