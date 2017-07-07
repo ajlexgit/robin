@@ -1,6 +1,7 @@
 import os
 import sys
 
+# boxberry: JS API
 # admin bootstrap
 # попробовать другой storage
 # Last-modified прицепить к sitemap
