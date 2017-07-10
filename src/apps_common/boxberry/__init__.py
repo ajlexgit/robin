@@ -24,11 +24,6 @@
             # токен реального режима
             BOXBERRY_API_TOKEN = '12345.abcdefgh'
 
-        urls.py:
-            ...
-            url(r'^boxberry/', include('boxberry.urls', namespace='boxberry')),
-            ...
-
     Пример:
         ...
 """
