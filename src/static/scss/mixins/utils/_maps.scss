@@ -105,8 +105,6 @@
           $map_from: $to;
         }
 
-        //
-        @debug "#{$key}";
         $result: map-merge($result, ($key: $value));
       }
     }
