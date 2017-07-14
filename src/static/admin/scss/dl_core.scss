@@ -79,7 +79,11 @@ $footer_1col: $media480;
   padding-left: 0;
   padding-right: 0;
   @include flexbox;
-  @include flex-grow(1);
+}
+
+#suit-center {
+  width: auto;
+  @include flex(1 0 0);
 }
 
 #suit-left {
@@ -89,8 +93,7 @@ $footer_1col: $media480;
   margin-left: 0;
   background: #F5F9FC;
   border-right: 1px solid #DADADA;
-  @include flex-basis(220px);
-  @include order(-1);
+  @include flex(0 0 220px);
 }
 
 #left-nav {
