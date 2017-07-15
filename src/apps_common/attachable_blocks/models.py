@@ -83,7 +83,7 @@ class AttachableReference(models.Model):
     block_ct = models.ForeignKey(ContentType, null=True, related_name='+')
     block = models.ForeignKey(AttachableBlock, verbose_name=_('block'), related_name='references')
     ajax = models.BooleanField(_('AJAX'), default=False,
-        help_text=_('load block through AJAX')
+        help_text=_('load block via AJAX')
     )
 
     set_name = models.CharField(_('set name'), max_length=32, default='default')
