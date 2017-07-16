@@ -129,6 +129,9 @@
                 animation_to[name] = animation_data.to_left;
             });
 
+            slider.$list.css({
+                overflow: 'hidden'
+            });
             slider._animation = $(animation_from).animate(animation_to, {
                 duration: this.opts.speed,
                 easing: this.opts.easing,
@@ -147,6 +150,9 @@
                             transform: ''
                         })
                     }
+                    slider.$list.css({
+                        overflow: ''
+                    });
                     slider.afterSlide($toSlide);
                 }
             });

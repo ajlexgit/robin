@@ -54,6 +54,9 @@
                     slider._animation = null;
                 }
 
+                slider.$list.css({
+                    overflow: 'hidden'
+                });
                 slider.$slides.stop(true, true);
                 that.onStartDrag(slider, evt);
             }).on('drag', function(evt) {
@@ -329,6 +332,9 @@
                         });
                     }
 
+                    slider.$list.css({
+                        overflow: ''
+                    });
                     slider.afterSlide($currSlide);
                 }
             });

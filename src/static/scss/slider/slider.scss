@@ -19,7 +19,6 @@
 
 .slider-list {
   position: relative;
-  overflow: hidden;
   height: inherit;
   min-height: inherit;
   z-index: 1;
@@ -30,7 +29,6 @@
 
 .slider-slide {
   position: absolute;
-  overflow: hidden;
   min-height: inherit;
   width: 100%;
   left: 0;
