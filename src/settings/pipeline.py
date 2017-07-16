@@ -68,7 +68,7 @@ PIPELINE['JAVASCRIPT'].update({
 
             'attachable_blocks/js/async_blocks.js',
             'placeholder/js/placeholder.js',
-            'contacts/js/popup.js',
+            'contacts/js/popups.js',
             'menu/js/main_menu.js',
         ),
         'output_filename': 'js_build/core.js',

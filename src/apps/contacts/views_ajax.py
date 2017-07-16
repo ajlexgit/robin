@@ -12,7 +12,7 @@ class ContactView(AjaxViewMixin, View):
         config = ContactsConfig.get_solo()
         form = ContactForm()
         return self.json_response({
-            'form': self.render_to_string('contacts/ajax_contact.html', {
+            'form': self.render_to_string('contacts/popups/contact_form.html', {
                 'config': config,
                 'form': form,
             }),
@@ -37,14 +37,14 @@ class ContactView(AjaxViewMixin, View):
             )
 
             return self.json_response({
-                'success_message': self.render_to_string('contacts/ajax_contact_success.html', {
+                'success_message': self.render_to_string('contacts/popups/contact_success.html', {
                     'config': config,
                 })
             })
         else:
             return self.json_error({
                 'errors': form.error_dict_full,
-                'form': self.render_to_string('contacts/ajax_contact.html', {
+                'form': self.render_to_string('contacts/popups/contact_form.html', {
                     'config': config,
                     'form': form,
                 }),
