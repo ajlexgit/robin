@@ -54,6 +54,7 @@
                     slider._animation = null;
                 }
 
+                slider.$slides.stop(true, true);
                 that.onStartDrag(slider, evt);
             }).on('drag', function(evt) {
                 if (evt.dx === that._dx) {

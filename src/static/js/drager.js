@@ -406,6 +406,8 @@
         // ================
 
         cls.mouseDownHandler = function(event) {
+            if (event.button !== 0) return;
+
             var evt = MouseDownDragerEvent(event, this);
             this.wasDragged = false;
             this._dragging_allowed = true;

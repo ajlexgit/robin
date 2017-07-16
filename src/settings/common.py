@@ -87,6 +87,9 @@ SUIT_CONFIG = {
         {
             'app': 'main',
             'icon': 'icon-file',
+            'models': (
+                'MainPageConfig',
+            )
         },
         {
             'app': 'contacts',

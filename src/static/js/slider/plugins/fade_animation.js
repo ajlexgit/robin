@@ -21,49 +21,46 @@
 
             slider.beforeSlide($toSlide);
 
-            slider.$slides.attr('style', '').off('transitionend.fade');
-            var $fromSlide = slider.$currentSlide.css({
-                opacity: 1,
-                zIndex: 5,
-                transform: 'none'
+            var $fromSlide = slider.$currentSlide.stop(true, false).css({
+                zIndex: 6
             });
-            $toSlide.css({
+            $toSlide.stop(true, true).css({
+                transform: 'none',
                 opacity: 0,
-                zIndex: 6,
-                transform: 'none'
+                zIndex: 7
             });
 
             slider._setCurrentSlide($toSlide);
 
-
-            var that = this;
-            $.animation_frame(function() {
-                $fromSlide.css({
-                    opacity: 0,
-                    transition: 'opacity ' + (that.opts.speed / 2) + 'ms ' + that.opts.easing + ' ' + (that.opts.speed / 2) + 'ms'
-                });
-
-                $toSlide.css({
-                    opacity: 1,
-                    transition: 'opacity ' + that.opts.speed + 'ms ' + that.opts.easing
-                }).one('transitionend.fade', function() {
-                    $fromSlide.css({
-                        opacity: '',
-                        zIndex: '',
+            // анимация
+            $fromSlide.animate({
+                opacity: 0
+            }, {
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    $(this).css({
                         transform: '',
-                        transition: ''
-                    });
-
-                    $toSlide.css({
-                        opacity: '',
                         zIndex: '',
-                        transform: 'none',
-                        transition: ''
+                        opacity: ''
+                    });
+                }
+            });
+
+            $toSlide.animate({
+                opacity: 1
+            }, {
+                duration: this.opts.speed,
+                easing: this.opts.easing,
+                complete: function() {
+                    $(this).css({
+                        zIndex: '',
+                        opacity: ''
                     });
 
                     slider.afterSlide($toSlide);
-                })
-            })();
+                }
+            });
 
             slider.softUpdateListHeight(animatedHeight);
         };
