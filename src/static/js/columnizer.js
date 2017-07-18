@@ -59,7 +59,7 @@
 
         _create: function() {
             // запуск
-            this._checkEnabled();
+            this._updateEnabledState();
         },
 
         _setOption: function(key, value) {
@@ -71,10 +71,10 @@
 
         _setOptionDisabled: function(value) {
             this._super(value);
-            this._checkEnabled();
+            this._updateEnabledState();
         },
 
-        _checkEnabled: function() {
+        _updateEnabledState: function() {
             if (this.options.disabled) {
                 this.trigger('disable');
             } else {

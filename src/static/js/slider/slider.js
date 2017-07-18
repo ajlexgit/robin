@@ -29,7 +29,7 @@
                 'max'      - по высоте максимального слайда
                 'none'     - не задавать высоту
 
-            sliderHeightTransition: number  - длительность анимации высоты слайдера
+            sliderHeightTransition          - длительность анимации высоты слайдера
 
         Методы:
             // получение текущего слайда
@@ -51,13 +51,13 @@
             updateListHeight(animated)
 
             // переход к слайду $toSlide с анимацией animationName
-            slideTo($toSlide, animationName, animatedHeight)
+            slideTo($toSlide, animationName, animateListHeight)
 
             // переход к следующему слайду
-            slideNext(animationName, animatedHeight)
+            slideNext(animationName, animateListHeight)
 
             // переход к предыдущему слайду
-            slidePrevious(animationName, animatedHeight)
+            slidePrevious(animationName, animateListHeight)
 
         События:
             beforeChange                    - перед изменением текущего слайда
@@ -137,6 +137,8 @@
             });
     */
 
+    /** @namespace window.TweenLite */
+    /** @namespace window.TimelineLite */
     var sliders = [];
 
     window.Slider = Class(EventedObject, function Slider(cls, superclass) {
@@ -180,9 +182,8 @@
             this.opts = $.extend({}, this.defaults, options);
 
             // плагины
-            this._plugins = [
-                SliderInstantAnimation()
-            ];
+            this._plugins = [];
+            this.attachPlugins(SliderInstantAnimation());
 
             // добавляем класс на список
             this.$list.addClass(this.opts.listClass);
@@ -443,16 +444,6 @@
         // ===============================================
 
         /*
-            Добавление текущего объекта к массиву аргументов.
-         */
-        cls._argsWithThis = function(args) {
-            var final_args = args || [];
-            final_args = Array.prototype.slice.call(final_args);
-            final_args.unshift(this);
-            return final_args;
-        };
-
-        /*
             Подключение плагинов
          */
         cls.attachPlugins = function(plugins) {
@@ -472,42 +463,38 @@
         };
 
         /*
-            Поиск реализации метода анимации среди плагинов
+            Поиск реализации метода среди плагинов
          */
-        cls.getAnimationMethod = function(animationName, methodName) {
+        cls.getPluginMethod = function(pluginName, methodName) {
             methodName = methodName || 'slideTo';
             var index = this._plugins.length;
             while (index--) {
                 var plugin = this._plugins[index];
-                if ((methodName in plugin) && (plugin.opts.name === animationName)) {
+                if ((methodName in plugin) && (plugin.opts.name === pluginName)) {
                     return $.proxy(plugin[methodName], plugin);
                 }
             }
 
-            this.warn('Not found method "' + methodName + '" with name "' + animationName + '"');
+            this.warn('Not found method "' + methodName + '" in plugin "' + pluginName + '"');
         };
 
         /*
-            Вызом метода methodName с агрументами [slider, *additionArgs] во всех плагинах,
+            Вызов метода methodName с агрументами args во всех плагинах,
             в которых этот метод реализован.
 
-            Первым аргументом ВСЕГДА стоит slider, независимо от значения additionArgs.
-
             Если reversed=true, обход плагинов будет в обратном порядке
-            (от поключенных первыми)
          */
-        cls.callPluginsMethod = function(methodName, additionArgs, reversed) {
+        cls.callPluginsMethod = function(methodName, args, reversed) {
             var plugins = this._plugins.concat();
             if (reversed) {
                 plugins.reverse();
             }
 
-            var final_args = this._argsWithThis(additionArgs);
             var index = plugins.length;
             while (index--) {
                 var plugin = plugins[index];
                 if (methodName in plugin) {
-                    plugin[methodName].apply(plugin, final_args);
+                    plugin[methodName].apply(plugin, args);
                 }
             }
         };
@@ -540,11 +527,11 @@
         /*
             Обновление высоты slider.$list в зависимости от высоты слайдов
          */
-        cls.updateListHeight = function(animated) {
+        cls.updateListHeight = function(doAnimation) {
             // прерываем анимацию высоты, если она идёт
-            if (this._adaptive_animation) {
-                this._adaptive_animation.stop(true);
-                this._adaptive_animation = null;
+            if (this._list_height_animation) {
+                this._list_height_animation.stop(true);
+                this._list_height_animation = null;
             }
 
             var that = this;
@@ -561,36 +548,31 @@
                 }
 
                 that.beforeUpdateListHeight(current_height, final_height);
-                if (animated && that.opts.sliderHeightTransition) {
+                if (doAnimation && that.opts.sliderHeightTransition) {
                     // с анимацией
-                    that._adaptive_animation = $({
-                        height: current_height
-                    }).animate({
+                    that._list_height_animation = that.$list.animate({
                         height: final_height
                     }, {
                         duration: that.opts.sliderHeightTransition,
                         easing: 'easeOutCubic',
-                        progress: function() {
-                            var height = this.height;
-                            $.animation_frame(function() {
-                                that.$list.height(height);
-                            }, that.$list.get(0))();
+                        complete: function() {
+                            that.afterUpdateListHeight(current_height, final_height);
                         }
                     });
                 } else {
                     // мгновенно
                     that.$list.height(final_height);
+                    that.afterUpdateListHeight(current_height, final_height);
                 }
-                that.afterUpdateListHeight(current_height, final_height);
             })();
         };
 
         /*
             Обновление высоты слайдера по условию
          */
-        cls.softUpdateListHeight = function(animated) {
+        cls.softUpdateListHeight = function(doAnimation) {
             if (this.opts.sliderHeight === cls.HEIGHT_CURRENT) {
-                this.updateListHeight(animated);
+                this.updateListHeight(doAnimation);
             }
         };
 
@@ -619,14 +601,15 @@
             Метод смены текущего слайда на $toSlide.
 
             При реализации этого метода в плагинах, НЕОБХОДИМО вызывать
-            методы слайдера beforeSlide и afterSlide:
-                slider.beforeSlide($toSlide);
+            методы слайдера _beforeSlide и _afterSlide:
+                this.slider._beforeSlide($toSlide);
                 ....
-                slider.afterSlide($toSlide);
+                this.slider._afterSlide($toSlide);
 
-            Объект анимации (если он есть) НЕОБХОДИМО сохранить в переменной slider._animation
+            Объект анимации (если он есть) НЕОБХОДИМО сохранить в переменной
+            this.slider._animation
          */
-        cls.slideTo = function($toSlide, animationName, animatedHeight) {
+        cls.slideTo = function($toSlide, animationName, animateListHeight) {
             if (!$toSlide || !$toSlide.length || (this.$slides.index($toSlide) < 0)) {
                 return
             }
@@ -637,9 +620,9 @@
             }
 
             animationName = animationName || 'instant';
-            var method = this.getAnimationMethod(animationName);
+            var method = this.getPluginMethod(animationName);
             if (method) {
-                method.call(null, this, $toSlide, animatedHeight);
+                method($toSlide, animateListHeight);
             }
         };
 
@@ -647,7 +630,7 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед анимацией изменения текущего слайда (любым из плагинов).
          */
-        cls.beforeSlide = function($toSlide) {
+        cls._beforeSlide = function($toSlide) {
             this.trigger('beforeSlide', $toSlide);
             this.callPluginsMethod('beforeSlide', arguments);
         };
@@ -656,19 +639,29 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             после завершения анимации изменения текущего слайда (любым из плагинов).
          */
-        cls.afterSlide = function($toSlide) {
+        cls._afterSlide = function($toSlide) {
             this.callPluginsMethod('afterSlide', arguments, true);
             this.trigger('afterSlide', $toSlide);
         };
 
-        cls.slideNext = function(animationName, animatedHeight) {
-            var $next = this.getNextSlide();
-            this.slideTo($next, animationName, animatedHeight);
+        cls.slideNext = function(animationName, animateListHeight) {
+            var $slide = this.getNextSlide();
+            this.slideTo($slide, animationName, animateListHeight);
         };
 
-        cls.slidePrevious = function(animationName, animatedHeight) {
-            var $prev = this.getPreviousSlide();
-            this.slideTo($prev, animationName, animatedHeight);
+        cls.slidePrevious = function(animationName, animateListHeight) {
+            var $slide = this.getPreviousSlide();
+            this.slideTo($slide, animationName, animateListHeight);
+        };
+
+        cls.slideRandom = function(animationName, animateListHeight) {
+            var slides_count = this.$slides.length;
+            var random_index = Math.floor(Math.random() * (slides_count - 1));
+            var current_index = this.$slides.index(this.$currentSlide);
+            var final_index = (random_index < current_index) ? random_index : random_index + 1;
+
+            var $slide = this.$slides.eq(final_index);
+            this.slideTo($slide, animationName, animateListHeight);
         };
     });
 
@@ -685,42 +678,45 @@
             this.opts = $.extend(true, {}, this.defaults, settings);
         };
 
-        cls.destroy = function(slider) {
-
+        cls.destroy = function() {
+            var plugin_index = this.slider._plugins.indexOf(this);
+            if (plugin_index >= 0) {
+                this.slider._plugins.splice(plugin_index, 1);
+            }
         };
 
         // Инициализация
         cls.onAttach = function(slider) {
-
+            this.slider = slider;
         };
 
         // Событие изменения размера окна
-        cls.onResize = function(slider) {
+        cls.onResize = function() {
 
         };
 
         /*
             Проверка включенности и включение / выключение
          */
-        cls.checkEnabled = function(slider) {
-            var status = this.opts.checkEnabled.call(this, slider) !== false;
+        cls._updateEnabledState = function() {
+            var status = this.opts.checkEnabled.call(this) !== false;
             if (this.enabled === status) return;
 
             this.enabled = status;
             if (this.enabled) {
-                this.enable(slider);
+                this.enable();
             } else {
-                this.disable(slider);
+                this.disable();
             }
         };
 
         // Включение
-        cls.enable = function(slider) {
+        cls.enable = function() {
             this.enabled = true;
         };
 
         // Выключение
-        cls.disable = function(slider) {
+        cls.disable = function() {
             this.enabled = false;
         };
     });
@@ -737,22 +733,21 @@
         /*
             Реализация метода перехода от одного слайда к другому
          */
-        cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animation) {
+        cls.slideTo = function($toSlide, animateListHeight) {
+            if (this.slider._animation) {
                 return
             }
 
-            slider.beforeSlide($toSlide);
-            slider.$slides.css({
+            this.slider._beforeSlide($toSlide);
+            this.slider.$slides.css({
                 transform: ''
             });
             $toSlide.css({
                 transform: 'none'
             });
-            slider._setCurrentSlide($toSlide);
-            slider.afterSlide($toSlide);
-
-            slider.softUpdateListHeight(animatedHeight);
+            this.slider._setCurrentSlide($toSlide);
+            this.slider._afterSlide($toSlide);
+            this.slider.softUpdateListHeight(animateListHeight);
         };
     });
 

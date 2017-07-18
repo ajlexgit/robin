@@ -4,7 +4,7 @@
     window.SliderControlsPlugin = Class(SliderPlugin, function SliderControlsPlugin(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             animationName: '',
-            animatedHeight: true,
+            animateListHeight: true,
 
             arrowClass: 'slider-arrow',
             arrowLeftClass: 'slider-arrow-left',
@@ -27,12 +27,10 @@
                 this.$left.remove();
                 this.$left = null;
             }
-
             if (this.$right) {
                 this.$right.remove();
                 this.$right = null;
             }
-
             superclass.destroy.call(this);
         };
 
@@ -41,35 +39,35 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-            this.getContainer(slider);
-            this.createControls(slider);
-            this.checkBounds(slider);
+            this.getContainer();
+            this.createControls();
+            this.checkBounds();
         };
 
         /*
             Деактивируем стрелки на границах сладера
          */
-        cls.afterSetCurrentSlide = function(slider) {
-            this.checkBounds(slider);
+        cls.afterSetCurrentSlide = function() {
+            this.checkBounds();
         };
 
         /*
             Проверка и деактивация кнопок на границах
          */
-        cls.checkBounds = function(slider) {
+        cls.checkBounds = function() {
             if (!this.opts.disableOnBounds) {
                 return
             }
 
-            var $curr = slider.$currentSlide;
-            var $prev = slider.getPreviousSlide($curr);
+            var $curr = this.slider.$currentSlide;
+            var $prev = this.slider.getPreviousSlide($curr);
             if (!$prev || !$prev.length || ($curr.get(0) === $prev.get(0))) {
                 this.$left.addClass(this.opts.arrowDisabledClass)
             } else {
                 this.$left.removeClass(this.opts.arrowDisabledClass)
             }
 
-            var $next = slider.getNextSlide($curr);
+            var $next = this.slider.getNextSlide($curr);
             if (!$next || !$next.length || ($curr.get(0) === $next.get(0))) {
                 this.$right.addClass(this.opts.arrowDisabledClass)
             } else {
@@ -80,17 +78,17 @@
         /*
             Получение контейнера для элементов
          */
-        cls.getContainer = function(slider) {
+        cls.getContainer = function() {
             if (typeof this.opts.container === 'string') {
-                this.$container = slider.$root.find(this.opts.container);
+                this.$container = this.slider.$root.find(this.opts.container);
             } else if ($.isFunction(this.opts.container)) {
-                this.$container = this.opts.container.call(this, slider);
+                this.$container = this.opts.container.call(this);
             } else if (this.opts.container && this.opts.container.jquery) {
                 this.$container = this.opts.container;
             }
 
             if (!this.$container || !this.$container.length) {
-                this.$container = slider.$listWrapper;
+                this.$container = this.slider.$listWrapper;
             } else if (this.$container.length) {
                 this.$container = this.$container.first();
             }
@@ -99,7 +97,7 @@
         /*
             Создание стрелок
          */
-        cls.createControls = function(slider) {
+        cls.createControls = function() {
             var that = this;
             this.$left = $('<div>')
                 .addClass(this.opts.arrowClass)
@@ -111,7 +109,10 @@
                         return false
                     }
 
-                    slider.slidePrevious(that.opts.animationName, that.opts.animatedHeight);
+                    that.slider.slidePrevious(
+                        that.opts.animationName,
+                        that.opts.animateListHeight
+                    );
                 });
 
             this.$right = $('<div>')
@@ -124,7 +125,10 @@
                         return false
                     }
 
-                    slider.slideNext(that.opts.animationName, that.opts.animatedHeight);
+                    that.slider.slideNext(
+                        that.opts.animationName,
+                        that.opts.animateListHeight
+                    );
                 });
 
             this.$container.append(this.$left, this.$right);

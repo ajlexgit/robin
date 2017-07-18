@@ -107,7 +107,7 @@
             this._setStyles();
 
             // запуск
-            this._checkEnabled();
+            this._updateEnabledState();
 
             // Включение и выключение параллакса в зависимости от ширины окна браузера
             var that = this;
@@ -159,10 +159,10 @@
 
         _setOptionDisabled: function(value) {
             this._super(value);
-            this._checkEnabled();
+            this._updateEnabledState();
         },
 
-        _checkEnabled: function() {
+        _updateEnabledState: function() {
             if (this.options.disabled) {
                 this.trigger('disable');
             } else {

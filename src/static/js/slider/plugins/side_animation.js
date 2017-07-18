@@ -17,11 +17,11 @@
         /*
             Перевод отступа в пикселях в отступ в процентах
          */
-        cls._getPercentGap = function(slider) {
+        cls._getPercentGap = function() {
             if (this.opts.margin.toString().indexOf('%') >= 0) {
                 return parseFloat(this.opts.margin);
             } else {
-                var slider_width = slider.$list.outerWidth();
+                var slider_width = this.slider.$list.outerWidth();
                 return 100 * parseFloat(this.opts.margin) / slider_width;
             }
         };
@@ -30,36 +30,30 @@
             Реализация метода перехода от одного слайда к другому
             посредством выдвигания с края слайдера
          */
-        cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            slider.stopAnimation(true);
+        cls.slideTo = function($toSlide, animateListHeight) {
+            this.slider.stopAnimation(true);
 
             var slide_info = {
-                fromIndex: slider.$slides.index(slider.$currentSlide),
-                toIndex: slider.$slides.index($toSlide)
+                fromIndex: this.slider.$slides.index(this.slider.$currentSlide),
+                toIndex: this.slider.$slides.index($toSlide)
             };
 
-            // тот же слайд?
-            if (slide_info.fromIndex === slide_info.toIndex) {
-                return
-            }
+            this.slider._beforeSlide($toSlide);
 
             // выбор направления анимации
-            this.chooseSlideDirection(slider, slide_info);
+            this.chooseSlideDirection(slide_info);
+            var animations = this._make_animations($toSlide, slide_info);
 
-            slider.beforeSlide($toSlide);
-            var animations = this._make_animations(slider, $toSlide, slide_info);
-
-            slider._setCurrentSlide($toSlide);
-            this._animate(slider, $toSlide, animations);
-            slider.softUpdateListHeight(animatedHeight);
+            this.slider._setCurrentSlide($toSlide);
+            this._animate($toSlide, animations);
+            this.slider.softUpdateListHeight(animateListHeight);
         };
 
         /*
             Выбор направления анимации
          */
-        cls.chooseSlideDirection = function(slider, slide_info) {
+        cls.chooseSlideDirection = function(slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
-
             if (slide_info.toIndex > slide_info.fromIndex) {
                 slide_info.count = diff;
                 slide_info.direction = DIRECTION_RIGHT;
@@ -72,27 +66,27 @@
         /*
             Создание объектов для анимирования
          */
-        cls._make_animations = function(slider, $toSlide, slide_info) {
+        cls._make_animations = function($toSlide, slide_info) {
             var animations = [];
             var animatedSlides = [];
-            var slide_left = 100 + this._getPercentGap(slider);
+            var slide_left = 100 + this._getPercentGap();
 
             if (slide_info.direction === DIRECTION_RIGHT) {
-                var doStepSlide = slider.getNextSlide.bind(slider);
+                var doStepSlide = this.slider.getNextSlide.bind(this.slider);
             } else {
-                doStepSlide = slider.getPreviousSlide.bind(slider);
+                doStepSlide = this.slider.getPreviousSlide.bind(this.slider);
             }
 
             // определяем слайды, учавствующие в анимации
             if (this.opts.showIntermediate) {
                 var i = 0;
-                var $slide = slider.$currentSlide;
+                var $slide = this.slider.$currentSlide;
                 while ($slide.length && (i++ <= slide_info.count)) {
                     animatedSlides.push($slide);
                     $slide = doStepSlide($slide);
                 }
             } else {
-                animatedSlides.push(slider.$currentSlide);
+                animatedSlides.push(this.slider.$currentSlide);
                 animatedSlides.push($toSlide);
             }
 
@@ -117,7 +111,7 @@
         /*
             Создание анимации перехода
          */
-        cls._animate = function(slider, $toSlide, animations) {
+        cls._animate = function($toSlide, animations) {
             var animation_from = {};
             var animation_to = {};
             animations.forEach(function(animation_data, index) {
@@ -126,10 +120,12 @@
                 animation_to[name] = animation_data.to_left;
             });
 
-            slider.$list.css({
+            this.slider.$list.css({
                 overflow: 'hidden'
             });
-            slider._animation = $(animation_from).animate(animation_to, {
+
+            var that = this;
+            this.slider._animation = $(animation_from).animate(animation_to, {
                 duration: this.opts.speed,
                 easing: this.opts.easing,
                 progress: function() {
@@ -147,10 +143,12 @@
                             transform: ''
                         })
                     }
-                    slider.$list.css({
+
+                    that.slider.$list.css({
                         overflow: ''
                     });
-                    slider.afterSlide($toSlide);
+
+                    that.slider._afterSlide($toSlide);
                 }
             });
         };
@@ -169,11 +167,10 @@
         /*
             Выбор направления анимации
          */
-        cls.chooseSlideDirection = function(slider, slide_info) {
+        cls.chooseSlideDirection = function(slide_info) {
             var diff = slide_info.toIndex - slide_info.fromIndex;
-
-            if (slider.opts.loop) {
-                var slides_count = slider.$slides.length;
+            if (this.slider.opts.loop) {
+                var slides_count = this.slider.$slides.length;
                 var right_way = diff + (diff > 0 ? 0 : slides_count);
                 var left_way = (diff > 0 ? slides_count : 0) - diff;
 

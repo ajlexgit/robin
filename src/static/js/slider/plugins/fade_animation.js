@@ -13,12 +13,11 @@
             Реализация метода перехода от одного слайда к другому
             посредством исчезания
          */
-        cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            slider.stopAnimation(true);
+        cls.slideTo = function($toSlide, animateListHeight) {
+            this.slider.stopAnimation(true);
+            this.slider._beforeSlide($toSlide);
 
-            slider.beforeSlide($toSlide);
-
-            var $fromSlide = slider.$currentSlide.stop(true, false).css({
+            var $fromSlide = this.slider.$currentSlide.stop(true, false).css({
                 zIndex: 6
             });
             $toSlide.stop(true, true).css({
@@ -27,7 +26,7 @@
                 zIndex: 7
             });
 
-            slider._setCurrentSlide($toSlide);
+            this.slider._setCurrentSlide($toSlide);
 
             // анимация
             $fromSlide.animate({
@@ -44,6 +43,7 @@
                 }
             });
 
+            var that = this;
             $toSlide.animate({
                 opacity: 1
             }, {
@@ -55,11 +55,11 @@
                         opacity: ''
                     });
 
-                    slider.afterSlide($toSlide);
+                    that.slider._afterSlide($toSlide);
                 }
             });
 
-            slider.softUpdateListHeight(animatedHeight);
+            this.slider.softUpdateListHeight(animateListHeight);
         };
     });
 

@@ -4,7 +4,7 @@
     window.SliderAutoscrollPlugin = Class(SliderPlugin, function SliderAutoscrollPlugin(cls, superclass) {
         cls.defaults = $.extend({}, superclass.defaults, {
             animationName: '',
-            animatedHeight: true,
+            animateListHeight: true,
 
             progress_interval: 40,
             interval: 3000,
@@ -14,8 +14,8 @@
             onProgress: function(progress) {
 
             },
-            checkEnabled: function(slider) {
-                return slider.$slides.length >= 2;
+            checkEnabled: function() {
+                return this.slider.$slides.length >= 2;
             }
         });
 
@@ -26,9 +26,18 @@
             }
         };
 
-        cls.destroy = function(slider) {
-            this.stopTimer(slider);
-            this._steps_done = 0;
+        cls.enable = function() {
+            this.startTimer();
+            superclass.enable.call(this);
+        };
+
+        cls.disable = function() {
+            this.stopTimer();
+            superclass.disable.call(this);
+        };
+
+        cls.destroy = function() {
+            this.stopTimer();
             superclass.destroy.call(this);
         };
 
@@ -40,30 +49,38 @@
 
             if (this.opts.direction === 'prev') {
                 this._timerHandler = $.proxy(
-                    slider.slidePrevious,
-                    slider,
+                    this.slider.slidePrevious,
+                    this.slider,
                     this.opts.animationName,
-                    this.opts.animatedHeight
+                    this.opts.animateListHeight
+                );
+            } else if (this.opts.direction === 'next') {
+                this._timerHandler = $.proxy(
+                    this.slider.slideNext,
+                    this.slider,
+                    this.opts.animationName,
+                    this.opts.animateListHeight
                 );
             } else if (this.opts.direction === 'random') {
-                this._timerHandler = $.proxy(this.slideToRandom, this, slider);
-            } else {
                 this._timerHandler = $.proxy(
-                    slider.slideNext,
-                    slider,
+                    this.slider.slideRandom,
+                    this.slider,
                     this.opts.animationName,
-                    this.opts.animatedHeight
+                    this.opts.animateListHeight
                 );
+            } else {
+                this.error('Invalid direction: ' + this.opts.direction);
+                return
             }
 
             this._total_steps = Math.ceil(this.opts.interval / this.opts.progress_interval);
             this._steps_done = 0;
-            this.checkEnabled(slider);
+            this._updateEnabledState();
 
             // остановка таймера при наведении на слайдер
             if (this.opts.stopOnHover) {
                 var that = this;
-                slider.$root.on('mouseenter.slider.autoscroll', function() {
+                this.slider.$root.on('mouseenter.slider.autoscroll', function() {
                     that.stopTimer();
                 }).on('mouseleave.slider.autoscroll', function() {
                     that.startTimer();
@@ -72,51 +89,31 @@
         };
 
         /*
-            Переустановка таймера при изменении кол-ва слайдов
+            Сброс таймера при изменении кол-ва слайдов
          */
-        cls.afterSetItemsPerSlide = function(slider) {
-            this.disable();
-            this._steps_done = 0;
-            this.checkEnabled(slider);
+        cls.afterSetItemsPerSlide = function() {
+            this.resetTimer();
         };
 
         /*
-            Переустановка таймера при переключении слайда
+            Сброс таймера при переключении слайда
          */
-        cls.beforeSlide = function(slider) {
-            this.disable();
-            this._steps_done = 0;
-            this.checkEnabled(slider);
-        };
-
-        /*
-            Включение плагина
-         */
-        cls.enable = function(slider) {
-            this.startTimer();
-            superclass.enable.call(this, slider);
-        };
-
-        /*
-            Выключение плагина
-         */
-        cls.disable = function(slider) {
-            this.stopTimer();
-            superclass.disable.call(this, slider);
+        cls.beforeSlide = function() {
+            this.resetTimer();
         };
 
         /*
             Переустановка таймера при перетаскивании
          */
-        cls.startDrag = function(slider) {
+        cls.startDrag = function() {
             this.stopTimer();
         };
 
         /*
             Переустановка таймера при перетаскивании
          */
-        cls.stopDrag = function(slider) {
-            this.checkEnabled(slider);
+        cls.stopDrag = function() {
+            this._updateEnabledState();
         };
 
         /*
@@ -145,19 +142,19 @@
             Остановка таймера
          */
         cls.stopTimer = function() {
-            if (this._timer) clearInterval(this._timer);
+            if (this._timer) {
+                clearInterval(this._timer);
+                this._timer = null;
+            }
         };
 
         /*
-            Скролл на рандом
+            Сброс таймера
          */
-        cls.slideToRandom = function(slider) {
-            var slides_count = slider.$slides.length;
-            var random_index = Math.floor(Math.random() * (slides_count - 1));
-            var current_index = slider.$slides.index(slider.$currentSlide);
-            var final_index = (random_index < current_index) ? random_index : random_index + 1;
-
-            slider.slideTo(slider.$slides.eq(final_index), this.opts.animationName, this.opts.animatedHeight);
+        cls.resetTimer = function() {
+            this.disable();
+            this._steps_done = 0;
+            this._updateEnabledState();
         };
     });
 
