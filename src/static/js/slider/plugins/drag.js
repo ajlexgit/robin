@@ -49,15 +49,13 @@
                 }
 
                 // если идет анимация - прекращаем её
-                if (slider._animation) {
-                    slider._animation.stop(true, true);
-                    slider._animation = null;
-                }
+                slider.stopAnimation(true);
 
+                // добавляем overflow, чтобы не было видно соседних слайдов
                 slider.$list.css({
                     overflow: 'hidden'
                 });
-                slider.$slides.stop(true, true);
+
                 that.onStartDrag(slider, evt);
             }).on('drag', function(evt) {
                 if (evt.dx === that._dx) {
@@ -169,7 +167,7 @@
             this._dx = 0;
             this._movedSlides = [];
 
-            slider.trigger('start_drag');
+            slider.trigger('startDrag');
             slider.callPluginsMethod('startDrag');
         };
 
@@ -340,7 +338,7 @@
             });
 
             slider.callPluginsMethod('stopDrag', null, true);
-            slider.trigger('stop_drag');
+            slider.trigger('stopDrag');
         };
     });
 

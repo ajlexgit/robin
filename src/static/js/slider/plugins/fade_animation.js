@@ -14,10 +14,7 @@
             посредством исчезания
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animation) {
-                slider._animation.stop(true, true);
-                slider._animation = null;
-            }
+            slider.stopAnimation(true);
 
             slider.beforeSlide($toSlide);
 

@@ -37,7 +37,7 @@
   text-align: center;
   @include border-box;
   @include backface-visibility(hidden);
-  @include transform(translateX(-5000px));
+  @include transform(translateX(-10000px));
 }
 
 .slider-item {

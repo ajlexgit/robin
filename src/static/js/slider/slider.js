@@ -60,17 +60,17 @@
             slidePrevious(animationName, animatedHeight)
 
         События:
-            before_change                   - перед установкой текущего слайда
-            after_change                    - после установкой текущего слайда
+            beforeChange                    - перед изменением текущего слайда
+            afterChange                     - после изменением текущего слайда
 
             before_set_ips                  - перед установкой itemsPerSlide
             after_set_ips                   - после установки itemsPerSlide
 
-            before_animate                  - перед анимацией перехода к слайду
-            after_animate                   - после анимации перехода к слайду
+            beforeSlide                     - перед анимацией перехода к слайду
+            afterSlide                      - после анимации перехода к слайду
 
-            start_drag                      - начало перетаскивания слайда
-            stop_drag                       - завершение перетаскивания слайда
+            startDrag                       - начало перетаскивания слайдов
+            stopDrag                        - завершение перетаскивания слайдов
 
             resize                          - изменение размера окна
 
@@ -78,12 +78,8 @@
             1) при инициализации события не вызываются, т.к. их
                обработчики вы ещё не повесили :)
 
-            2) before_animate / after_animate могут вызываться когда
-               текущий слайд не меняется. Например, при перетаскивании слайда
-               мышкой на короткое расстояние.
-
-            3) before_change / after_change могут вызываться без before_animate.
-               Например, при перетаскивании слайда мышкой на большое расстояние.
+            2) beforeChange / afterChange могут вызываться без beforeSlide.
+               Например, при перетаскивании слайда мышкой через несколько слайдов.
 
 
         HTML input:
@@ -253,16 +249,26 @@
             sliders.push(this);
         };
 
+        cls.stopAnimation = function(jumpToEnd) {
+            if (!this._animation) return;
+
+            if (window.TweenLite && (this._animation instanceof TweenLite)) {
+                this._animation.totalProgress(1);
+            } else if (window.TimelineLite && (this._animation instanceof TimelineLite)) {
+                this._animation.totalProgress(1);
+            } else {
+                this._animation.stop(true, jumpToEnd);
+            }
+
+            this._animation = null;
+        };
+
         /*
             Освобождение ресурсов
          */
         cls.destroy = function() {
             // Прерывание анимации, если она запущена
-            if (this._animation) {
-                this._animation.stop(true);
-                this._animation = null;
-            }
-
+            this.stopAnimation(true);
             this.callPluginsMethod('destroy');
             this.$list.removeData(this.DATA_KEY);
             superclass.destroy.call(this);
@@ -300,13 +306,13 @@
         };
 
         cls.beforeSetCurrentSlide = function($slide) {
-            this.trigger('before_change', $slide);
+            this.trigger('beforeChange', $slide);
             this.callPluginsMethod('beforeSetCurrentSlide', [$slide]);
         };
 
         cls.afterSetCurrentSlide = function($slide) {
             this.callPluginsMethod('afterSetCurrentSlide', [$slide], true);
-            this.trigger('after_change', $slide);
+            this.trigger('afterChange', $slide);
         };
 
         // ===============================================
@@ -639,21 +645,20 @@
 
         /*
             Метод, вызываемый в каждом плагине (от последнего к первому)
-            перед переходом к слайду.
+            перед анимацией изменения текущего слайда (любым из плагинов).
          */
         cls.beforeSlide = function($toSlide) {
-            this.trigger('before_animate', $toSlide);
+            this.trigger('beforeSlide', $toSlide);
             this.callPluginsMethod('beforeSlide', arguments);
         };
 
         /*
-            Метод, вызываемый в каждом плагине (от первого к последнему)
-            после перехода к слайду.
+            Метод, вызываемый в каждом плагине (от последнего к первому)
+            после завершения анимации изменения текущего слайда (любым из плагинов).
          */
         cls.afterSlide = function($toSlide) {
-            this._animation = null;
             this.callPluginsMethod('afterSlide', arguments, true);
-            this.trigger('after_animate', $toSlide);
+            this.trigger('afterSlide', $toSlide);
         };
 
         cls.slideNext = function(animationName, animatedHeight) {

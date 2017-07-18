@@ -31,10 +31,7 @@
             посредством выдвигания с края слайдера
          */
         cls.slideTo = function(slider, $toSlide, animatedHeight) {
-            if (slider._animation) {
-                slider._animation.stop(true, true);
-                slider._animation = null;
-            }
+            slider.stopAnimation(true);
 
             var slide_info = {
                 fromIndex: slider.$slides.index(slider.$currentSlide),
