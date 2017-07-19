@@ -60,17 +60,14 @@
             slidePrevious(animationName, animateListHeight)
 
         События:
-            beforeChange                    - перед изменением текущего слайда
-            afterChange                     - после изменением текущего слайда
+            changeSlide     - после изменения текущего слайда
+            changeIPS       - после изменения itemsPerSlide
 
-            before_set_ips                  - перед установкой itemsPerSlide
-            after_set_ips                   - после установки itemsPerSlide
+            beforeSlide     - перед анимацией перехода к слайду
+            afterSlide      - после анимации перехода к слайду
 
-            beforeSlide                     - перед анимацией перехода к слайду
-            afterSlide                      - после анимации перехода к слайду
-
-            startDrag                       - начало перетаскивания слайдов
-            stopDrag                        - завершение перетаскивания слайдов
+            startDrag       - начало перетаскивания слайдов
+            stopDrag        - завершение перетаскивания слайдов
 
             resize                          - изменение размера окна
 
@@ -78,7 +75,7 @@
             1) при инициализации события не вызываются, т.к. их
                обработчики вы ещё не повесили :)
 
-            2) beforeChange / afterChange могут вызываться без beforeSlide.
+            2) changeSlide может вызываться без beforeSlide.
                Например, при перетаскивании слайда мышкой через несколько слайдов.
 
 
@@ -294,26 +291,19 @@
                 return false
             }
 
-            if (this.$currentSlide && (this.$currentSlide.get(0) === $slide.get(0))) {
+            var $old_slide = this.$currentSlide;
+            if ($old_slide && ($old_slide.get(0) === $slide.get(0))) {
                 return false
             }
 
-            this.beforeSetCurrentSlide($slide);
             this.$currentItem = $slide.find('.' + this.opts.itemClass).first();
             this.$currentSlide = $slide;
-            this.afterSetCurrentSlide($slide);
-
-            return $slide;
+            this._onChangeCurrentSlide($slide, $old_slide);
         };
 
-        cls.beforeSetCurrentSlide = function($slide) {
-            this.trigger('beforeChange', $slide);
-            this.callPluginsMethod('beforeSetCurrentSlide', [$slide]);
-        };
-
-        cls.afterSetCurrentSlide = function($slide) {
-            this.callPluginsMethod('afterSetCurrentSlide', [$slide], true);
-            this.trigger('afterChange', $slide);
+        cls._onChangeCurrentSlide = function($slide, $old_slide) {
+            this.callPluginsMethod('onChangeCurrentSlide', [$slide, $old_slide], true);
+            this.trigger('changeSlide', $slide, $old_slide);
         };
 
         // ===============================================
@@ -324,36 +314,39 @@
             Создание слайдов, содержащих по itemsPerSlide элементов
             в каждом слайде.
 
-            В каждом плагине вызывает методы beforeSetItemsPerSlide и afterSetItemsPerSlide
+            В каждом плагине вызывает метод onChangeItemsPerSlide
          */
         cls.setItemsPerSlide = function(itemsPerSlide) {
-            // Прерывание анимации, если она запущена
-            if (this._animation) {
-                this._animation.stop(true);
-                this._animation = null;
+            var old_ips = this._itemsPerSlide;
+
+            // рассчет и форматирование
+            if ($.isFunction(itemsPerSlide)) {
+                var new_ips = parseInt(itemsPerSlide.call(this));
+            } else {
+                new_ips = parseInt(itemsPerSlide);
             }
 
-            // если функция
-            if ($.isFunction(itemsPerSlide)) {
-                this._itemsPerSlide = parseInt(itemsPerSlide.call(this));
-            } else {
-                this._itemsPerSlide = parseInt(itemsPerSlide);
-            }
-            if (!this._itemsPerSlide) {
+            if (!new_ips) {
                 return
             }
 
-            this.beforeSetItemsPerSlide(this._itemsPerSlide);
+            // значение изменилось или нет?
+            if (old_ips === new_ips) {
+                return
+            } else {
+                this._itemsPerSlide = new_ips;
+            }
+
+            this.stopAnimation(true);
+
+            // сохраняем элементы, удалив их из DOM
+            var $items = this.$items.detach();
 
             // удаляем ранее созданные слайды
             this.$slides = $();
-
-            // сохраняем элементы с их data-значениями
-            var $items = this.$items.detach();
-
             this.$list.find('.' + this.opts.slideClass).remove();
 
-            // создаем слайды
+            // создаем новые слайды
             var slide_count = Math.ceil($items.length / this._itemsPerSlide);
             for (var i = 0; i < slide_count; i++) {
                 var $slide = $('<div>');
@@ -368,75 +361,19 @@
             // добавляем слайдам класс
             this.$slides.addClass(this.opts.slideClass);
 
-            // переход к активному слайду
+            this._onChangeItemsPerSlide(this._itemsPerSlide, old_ips);
+
+            // мгновенный переход к активному слайду
             this.slideTo(this.getCurrentSlide(), 'instant', false);
-
-            this.afterSetItemsPerSlide(this._itemsPerSlide);
-        };
-
-        /*
-            Метод, вызываемый в каждом плагине (от последнего к первому)
-            перед созданием слайдов.
-         */
-        cls.beforeSetItemsPerSlide = function(itemsPerSlide) {
-            this.trigger('before_set_ips', itemsPerSlide);
-            this.callPluginsMethod('beforeSetItemsPerSlide');
         };
 
         /*
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после созданием слайдов.
          */
-        cls.afterSetItemsPerSlide = function(itemsPerSlide) {
-            this.callPluginsMethod('afterSetItemsPerSlide', null, true);
-            this.trigger('after_set_ips', itemsPerSlide);
-        };
-
-        // ===============================================
-        // =============== slides methods ================
-        // ===============================================
-
-        /*
-            Метод, возвращающий следующий слайд. Возможно указать количество
-            слайдов, которые нужно пропустить.
-         */
-        cls.getNextSlide = function($fromSlide, passCount) {
-            if (!$fromSlide || !$fromSlide.length) {
-                $fromSlide = this.$currentSlide;
-            }
-
-            passCount = passCount || 0;
-            var slides_count = this.$slides.length;
-            var index = this.$slides.index($fromSlide) + (passCount || 0) + 1;
-
-            if (this.opts.loop) {
-                return this.$slides.eq(index % slides_count);
-            } else if (index < slides_count) {
-                return this.$slides.eq(index);
-            }
-
-            return $();
-        };
-
-        /*
-            Метод, возвращающий предыдущий слайд. Возможно указать количество
-            слайдов, которые нужно пропустить.
-         */
-        cls.getPreviousSlide = function($fromSlide, passCount) {
-            if (!$fromSlide || !$fromSlide.length) {
-                $fromSlide = this.$currentSlide;
-            }
-
-            var slides_count = this.$slides.length;
-            var index = this.$slides.index($fromSlide) - (passCount || 0) - 1;
-
-            if (this.opts.loop) {
-                return this.$slides.eq(index % slides_count);
-            } else if (index >= 0) {
-                return this.$slides.eq(index);
-            }
-
-            return $();
+        cls._onChangeItemsPerSlide = function(itemsPerSlide, oldItemsPerSlide) {
+            this.callPluginsMethod('onChangeItemsPerSlide', [itemsPerSlide, oldItemsPerSlide]);
+            this.trigger('changeIPS', itemsPerSlide, oldItemsPerSlide);
         };
 
         // ===============================================
@@ -592,6 +529,52 @@
             this.callPluginsMethod('afterUpdateListHeight', arguments, true);
         };
 
+        // ===============================================
+        // =============== slides methods ================
+        // ===============================================
+
+        /*
+            Метод, возвращающий следующий слайд. Возможно указать количество
+            слайдов, которые нужно пропустить.
+         */
+        cls.getNextSlide = function($fromSlide, passCount) {
+            if (!$fromSlide || !$fromSlide.length) {
+                $fromSlide = this.$currentSlide;
+            }
+
+            passCount = passCount || 0;
+            var slides_count = this.$slides.length;
+            var index = this.$slides.index($fromSlide) + (passCount || 0) + 1;
+
+            if (this.opts.loop) {
+                return this.$slides.eq(index % slides_count);
+            } else if (index < slides_count) {
+                return this.$slides.eq(index);
+            }
+
+            return $();
+        };
+
+        /*
+            Метод, возвращающий предыдущий слайд. Возможно указать количество
+            слайдов, которые нужно пропустить.
+         */
+        cls.getPreviousSlide = function($fromSlide, passCount) {
+            if (!$fromSlide || !$fromSlide.length) {
+                $fromSlide = this.$currentSlide;
+            }
+
+            var slides_count = this.$slides.length;
+            var index = this.$slides.index($fromSlide) - (passCount || 0) - 1;
+
+            if (this.opts.loop) {
+                return this.$slides.eq(index % slides_count);
+            } else if (index >= 0) {
+                return this.$slides.eq(index);
+            }
+
+            return $();
+        };
 
         // ===============================================
         // =============== slide animation ===============
@@ -600,29 +583,41 @@
         /*
             Метод смены текущего слайда на $toSlide.
 
-            При реализации этого метода в плагинах, НЕОБХОДИМО вызывать
-            методы слайдера _beforeSlide и _afterSlide:
-                this.slider._beforeSlide($toSlide);
-                ....
-                this.slider._afterSlide($toSlide);
-
             Объект анимации (если он есть) НЕОБХОДИМО сохранить в переменной
-            this.slider._animation
+            this.slider._animation.
+
+            При реализации этого метода в плагинах, НЕОБХОДИМО вызывать
+            методы слайдера _beforeSlide, _setCurrentSlide и _afterSlide.
+
+            Пример:
+                this.slider._beforeSlide($slide);
+                this.slider._setCurrentSlide($slide);
+                ....
+                var that = this;
+                this.slider._animation = $(...).animate({
+                    ...
+                }, {
+                    ...
+                    complete: function() {
+                        ...
+                        that.slider._afterSlide($slide);
+                    }
+                })
          */
-        cls.slideTo = function($toSlide, animationName, animateListHeight) {
-            if (!$toSlide || !$toSlide.length || (this.$slides.index($toSlide) < 0)) {
+        cls.slideTo = function($slide, animationName, animateListHeight) {
+            if (!$slide || !$slide.length || (this.$slides.index($slide) < 0)) {
                 return
             }
 
             // скролл к уже активному слайду
-            if (this.$currentSlide && (this.$currentSlide.get(0) === $toSlide.get(0))) {
+            if (this.$currentSlide && (this.$currentSlide.get(0) === $slide.get(0))) {
                 return
             }
 
             animationName = animationName || 'instant';
             var method = this.getPluginMethod(animationName);
             if (method) {
-                method($toSlide, animateListHeight);
+                method($slide, animateListHeight);
             }
         };
 
@@ -630,8 +625,8 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед анимацией изменения текущего слайда (любым из плагинов).
          */
-        cls._beforeSlide = function($toSlide) {
-            this.trigger('beforeSlide', $toSlide);
+        cls._beforeSlide = function($slide) {
+            this.trigger('beforeSlide', $slide);
             this.callPluginsMethod('beforeSlide', arguments);
         };
 
@@ -639,9 +634,9 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             после завершения анимации изменения текущего слайда (любым из плагинов).
          */
-        cls._afterSlide = function($toSlide) {
+        cls._afterSlide = function($slide) {
             this.callPluginsMethod('afterSlide', arguments, true);
-            this.trigger('afterSlide', $toSlide);
+            this.trigger('afterSlide', $slide);
         };
 
         cls.slideNext = function(animationName, animateListHeight) {
@@ -733,20 +728,17 @@
         /*
             Реализация метода перехода от одного слайда к другому
          */
-        cls.slideTo = function($toSlide, animateListHeight) {
-            if (this.slider._animation) {
-                return
-            }
-
-            this.slider._beforeSlide($toSlide);
+        cls.slideTo = function($slide, animateListHeight) {
+            this.slider.stopAnimation(true);
+            this.slider._beforeSlide($slide);
             this.slider.$slides.css({
                 transform: ''
             });
-            $toSlide.css({
+            $slide.css({
                 transform: 'none'
             });
-            this.slider._setCurrentSlide($toSlide);
-            this.slider._afterSlide($toSlide);
+            this.slider._setCurrentSlide($slide);
+            this.slider._afterSlide($slide);
             this.slider.softUpdateListHeight(animateListHeight);
         };
     });

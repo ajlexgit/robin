@@ -48,10 +48,33 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
+            this._attachEvents();
+            this.checkUnselectable();
+            this._updateEnabledState();
+        };
 
+        /*
+            Обновление кнопок при изменении кол-ва элементов в слайде
+         */
+        cls.onChangeItemsPerSlide = function() {
+            this._updateEnabledState();
+            this.checkUnselectable();
+        };
+
+        /*
+            Блокировка плагина
+         */
+        cls.onResize = function() {
+            this._updateEnabledState();
+            superclass.onResize.call(this);
+        };
+
+        /*
+            Навешивание событий
+         */
+        cls._attachEvents = function() {
             var that = this;
-            this.getContainer();
-            this.drager = Drager(this.$container, {
+            this.drager = Drager(this.getContainer(), {
                 mouse: this.opts.mouse,
                 touch: this.opts.touch,
                 ignoreDistanceX: this.opts.ignoreDistanceX,
@@ -86,25 +109,27 @@
             }).on('dragend', function(evt) {
                 that.onStopDrag(evt);
             });
-
-            this._updateEnabledState();
-            this.checkUnselectable();
         };
 
         /*
-            Обновление кнопок при изменении кол-ва элементов в слайде
+            Получение контейнера для элементов
          */
-        cls.afterSetItemsPerSlide = function() {
-            this._updateEnabledState();
-            this.checkUnselectable();
-        };
+        cls.getContainer = function() {
+            if (typeof this.opts.container === 'string') {
+                var $container = this.slider.$root.find(this.opts.container);
+            } else if ($.isFunction(this.opts.container)) {
+                $container = this.opts.container.call(this);
+            } else if (this.opts.container && this.opts.container.jquery) {
+                $container = this.opts.container;
+            }
 
-        /*
-            Блокировка плагина
-         */
-        cls.onResize = function() {
-            this._updateEnabledState();
-            superclass.onResize.call(this);
+            if (!$container || !$container.length) {
+                $container = this.slider.$listWrapper;
+            } else if ($container.length) {
+                $container = $container.first();
+            }
+
+            return $container;
         };
 
         /*
@@ -133,25 +158,6 @@
                 return parseFloat(this.opts.margin);
             } else {
                 return 100 * parseFloat(this.opts.margin) / this.slider.$list.outerWidth();
-            }
-        };
-
-        /*
-            Получение контейнера для элементов
-         */
-        cls.getContainer = function() {
-            if (typeof this.opts.container === 'string') {
-                this.$container = this.slider.$root.find(this.opts.container);
-            } else if ($.isFunction(this.opts.container)) {
-                this.$container = this.opts.container.call(this);
-            } else if (this.opts.container && this.opts.container.jquery) {
-                this.$container = this.opts.container;
-            }
-
-            if (!this.$container || !this.$container.length) {
-                this.$container = this.slider.$listWrapper;
-            } else if (this.$container.length) {
-                this.$container = this.$container.first();
             }
         };
 

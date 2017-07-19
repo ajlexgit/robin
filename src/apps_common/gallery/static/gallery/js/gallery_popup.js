@@ -273,7 +273,7 @@
             });
 
             if (this.slider) {
-                this.slider.on('beforeChange.video', function() {
+                this.slider.on('changeSlide.video', function() {
                     that.stopVideo($item);
                 });
             }

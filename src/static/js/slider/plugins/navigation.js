@@ -16,6 +16,11 @@
             }
         });
 
+        cls.init = function(settings) {
+            superclass.init.call(this, settings);
+            this._createDOM();
+        };
+
         cls.enable = function() {
             this.$wrapper.show();
             superclass.enable.call(this);
@@ -27,9 +32,7 @@
         };
 
         cls.destroy = function() {
-            if (this.$wrapper.length) {
-                this.$wrapper.remove();
-            }
+            this.$wrapper.remove();
             superclass.destroy.call(this);
         };
 
@@ -38,59 +41,43 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-            this.getContainer();
-            this.createNavigation();
+            this._attachDOM();
+            this._attachEvents();
+            this.updateNavigationItems();
+            this.activateNavigationItem();
             this._updateEnabledState();
-        };
-
-        /*
-            Установка активной кнопки после установки активного слайда
-         */
-        cls.afterSetCurrentSlide = function($slide) {
-            this.activateNavigationItemBySlide($slide);
         };
 
         /*
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
-        cls.afterSetItemsPerSlide = function() {
+        cls.onChangeItemsPerSlide = function() {
             this.updateNavigationItems();
-            this.activateNavigationItemBySlide(this.slider.$currentSlide);
-            this._updateEnabledState();
         };
 
         /*
-            Получение контейнера для элементов
+            Установка активной кнопки после установки активного слайда
          */
-        cls.getContainer = function() {
-            if (typeof this.opts.container === 'string') {
-                this.$container = this.slider.$root.find(this.opts.container);
-            } else if ($.isFunction(this.opts.container)) {
-                this.$container = this.opts.container.call(this);
-            } else if (this.opts.container && this.opts.container.jquery) {
-                this.$container = this.opts.container;
-            }
-
-            if (!this.$container || !this.$container.length) {
-                this.$container = this.slider.$root;
-            } else if (this.$container.length) {
-                this.$container = this.$container.first();
-            }
+        cls.onChangeCurrentSlide = function() {
+            this.activateNavigationItem();
         };
 
         /*
-            Создание кнопок
+            Создание DOM-элементов стрелок
          */
-        cls.createNavigation = function() {
-            this.$container.find('.' + this.opts.wrapperClass).remove();
-            this.$wrapper = $('<div>').addClass(this.opts.wrapperClass).appendTo(this.$container);
+        cls._createDOM = function() {
+            this.$wrapper = $('<div>').addClass(this.opts.wrapperClass);
+        };
 
-            // событие клика на кнопку
+        /*
+            Навешивание событий
+         */
+        cls._attachEvents = function() {
+            var that = this;
             if (this.opts.animationName) {
-                var that = this;
+                this.$wrapper.off('.navigation');
                 this.$wrapper.on('click.slider.navigation', '.' + this.opts.itemClass, function() {
-                    var $self = $(this);
-                    var slideIndex = $self.data('slideIndex') || 0;
+                    var slideIndex = $(this).data('slideIndex') || 0;
                     that.slider.slideTo(
                         that.slider.$slides.eq(slideIndex),
                         that.opts.animationName,
@@ -98,9 +85,34 @@
                     );
                 });
             }
+        };
 
-            this.updateNavigationItems();
-            this.activateNavigationItemBySlide(this.slider.$currentSlide);
+        /*
+            Добавление кнопок в DOM-дерево
+         */
+        cls._attachDOM = function() {
+            this.getContainer().append(this.$wrapper);
+        };
+
+        /*
+            Получение контейнера для элементов
+         */
+        cls.getContainer = function() {
+            if (typeof this.opts.container === 'string') {
+                var $container = this.slider.$root.find(this.opts.container);
+            } else if ($.isFunction(this.opts.container)) {
+                $container = this.opts.container.call(this);
+            } else if (this.opts.container && this.opts.container.jquery) {
+                $container = this.opts.container;
+            }
+
+            if (!$container || !$container.length) {
+                $container = this.slider.$root;
+            } else if ($container.length) {
+                $container = $container.first();
+            }
+
+            return $container;
         };
 
         /*
@@ -119,16 +131,15 @@
         };
 
         /*
-            Активация соответствующей кнопки по объекту слайда
+            Активация текущей кнопки
          */
-        cls.activateNavigationItemBySlide = function($slide) {
+        cls.activateNavigationItem = function() {
+            var $slide = this.slider.$currentSlide;
             var slideIndex = this.slider.$slides.index($slide);
-            if (this.$container.length) {
-                var $item = this.$container.find('.' + this.opts.itemClass).eq(slideIndex);
-                $item.addClass(this.opts.activeItemClass);
-                $item.siblings('.' + this.opts.itemClass + '.' + this.opts.activeItemClass)
-                    .removeClass(this.opts.activeItemClass);
-            }
+            var $item = this.$wrapper.find('.' + this.opts.itemClass).eq(slideIndex);
+
+            $item.addClass(this.opts.activeItemClass);
+            $item.siblings('.' + this.opts.itemClass).removeClass(this.opts.activeItemClass);
         };
     });
 

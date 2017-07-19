@@ -11,9 +11,7 @@
             direction: 'next',          // next / prev / random
             stopOnHover: true,
 
-            onProgress: function(progress) {
-
-            },
+            onProgress: $.noop,
             checkEnabled: function() {
                 return this.slider.$slides.length >= 2;
             }
@@ -46,7 +44,6 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-
             if (this.opts.direction === 'prev') {
                 this._timerHandler = $.proxy(
                     this.slider.slidePrevious,
@@ -75,45 +72,59 @@
 
             this._total_steps = Math.ceil(this.opts.interval / this.opts.progress_interval);
             this._steps_done = 0;
+            this._attachEvents();
             this._updateEnabledState();
-
-            // остановка таймера при наведении на слайдер
-            if (this.opts.stopOnHover) {
-                var that = this;
-                this.slider.$root.on('mouseenter.slider.autoscroll', function() {
-                    that.stopTimer();
-                }).on('mouseleave.slider.autoscroll', function() {
-                    that.startTimer();
-                });
-            }
         };
 
         /*
             Сброс таймера при изменении кол-ва слайдов
          */
-        cls.afterSetItemsPerSlide = function() {
-            this.resetTimer();
+        cls.onChangeItemsPerSlide = function() {
+            this.stopTimer();
+            this._updateEnabledState();
         };
 
         /*
             Сброс таймера при переключении слайда
          */
         cls.beforeSlide = function() {
-            this.resetTimer();
+            this.stopTimer();
+        };
+
+        cls.afterSlide = function() {
+            if (this.enabled) {
+                this._steps_done = 0;
+                this.startTimer();
+            }
         };
 
         /*
-            Переустановка таймера при перетаскивании
+            Сброс таймера при перетаскивании
          */
         cls.startDrag = function() {
             this.stopTimer();
         };
 
-        /*
-            Переустановка таймера при перетаскивании
-         */
         cls.stopDrag = function() {
-            this._updateEnabledState();
+            if (this.enabled) {
+                this._steps_done = 0;
+                this.startTimer();
+            }
+        };
+
+        /*
+            Навешивание событий
+         */
+        cls._attachEvents = function() {
+            var that = this;
+            if (this.opts.stopOnHover) {
+                this.slider.$root.off('.autoscroll');
+                this.slider.$root.on('mouseenter.slider.autoscroll', function() {
+                    that.stopTimer();
+                }).on('mouseleave.slider.autoscroll', function() {
+                    that.startTimer();
+                });
+            }
         };
 
         /*
@@ -146,15 +157,6 @@
                 clearInterval(this._timer);
                 this._timer = null;
             }
-        };
-
-        /*
-            Сброс таймера
-         */
-        cls.resetTimer = function() {
-            this.disable();
-            this._steps_done = 0;
-            this._updateEnabledState();
         };
     });
 

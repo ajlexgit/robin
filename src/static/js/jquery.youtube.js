@@ -113,6 +113,7 @@
         },
 
         _destroy: function() {
+            this._stopInterval();
             if (this.player) {
                 this.player.destroy();
                 this.player = null;

@@ -20,17 +20,28 @@
             if (!this.opts.animationName) {
                 return this.raise('animationName required');
             }
+
+            // создание кнопок
+            this._createDOM();
+        };
+
+        cls.enable = function() {
+            this.$left.show();
+            this.$right.show();
+            superclass.enable.call(this);
+        };
+
+        cls.disable = function() {
+            this.$left.hide();
+            this.$right.hide();
+            superclass.disable.call(this);
         };
 
         cls.destroy = function() {
-            if (this.$left) {
-                this.$left.remove();
-                this.$left = null;
-            }
-            if (this.$right) {
-                this.$right.remove();
-                this.$right = null;
-            }
+            this.$left.remove();
+            this.$right.remove();
+            this.$left = null;
+            this.$right = null;
             superclass.destroy.call(this);
         };
 
@@ -39,16 +50,90 @@
          */
         cls.onAttach = function(slider) {
             superclass.onAttach.call(this, slider);
-            this.getContainer();
-            this.createControls();
+            this._attachDOM();
+            this._attachEvents();
             this.checkBounds();
+            this._updateEnabledState();
         };
 
         /*
             Деактивируем стрелки на границах сладера
          */
-        cls.afterSetCurrentSlide = function() {
+        cls.onChangeCurrentSlide = function() {
             this.checkBounds();
+        };
+
+        /*
+            Создание DOM-элементов стрелок
+         */
+        cls._createDOM = function() {
+            this.$left = $('<div>')
+                .addClass(this.opts.arrowClass)
+                .addClass(this.opts.arrowLeftClass)
+                .append('<span>');
+
+            this.$right = $('<div>')
+                .addClass(this.opts.arrowClass)
+                .addClass(this.opts.arrowRightClass)
+                .append('<span>');
+        };
+
+        /*
+            Навешивание событий
+         */
+        cls._attachEvents = function() {
+            this.$left.off('.controls');
+            this.$right.off('.controls');
+
+            var that = this;
+            this.$left.on('click.slider.controls', function() {
+                if ($(this).hasClass(that.opts.arrowDisabledClass)) {
+                    return false
+                }
+
+                that.slider.slidePrevious(
+                    that.opts.animationName,
+                    that.opts.animateListHeight
+                );
+            });
+            this.$right.on('click.slider.controls', function() {
+                if ($(this).hasClass(that.opts.arrowDisabledClass)) {
+                    return false
+                }
+
+                that.slider.slideNext(
+                    that.opts.animationName,
+                    that.opts.animateListHeight
+                );
+            });
+        };
+
+        /*
+            Добавление кнопок в DOM-дерево
+         */
+        cls._attachDOM = function() {
+            this.getContainer().append(this.$left, this.$right);
+        };
+
+        /*
+            Получение контейнера для элементов
+         */
+        cls.getContainer = function() {
+            if (typeof this.opts.container === 'string') {
+                var $container = this.slider.$root.find(this.opts.container);
+            } else if ($.isFunction(this.opts.container)) {
+                $container = this.opts.container.call(this);
+            } else if (this.opts.container && this.opts.container.jquery) {
+                $container = this.opts.container;
+            }
+
+            if (!$container || !$container.length) {
+                $container = this.slider.$listWrapper;
+            } else if ($container.length) {
+                $container = $container.first();
+            }
+
+            return $container;
         };
 
         /*
@@ -73,65 +158,6 @@
             } else {
                 this.$right.removeClass(this.opts.arrowDisabledClass)
             }
-        };
-
-        /*
-            Получение контейнера для элементов
-         */
-        cls.getContainer = function() {
-            if (typeof this.opts.container === 'string') {
-                this.$container = this.slider.$root.find(this.opts.container);
-            } else if ($.isFunction(this.opts.container)) {
-                this.$container = this.opts.container.call(this);
-            } else if (this.opts.container && this.opts.container.jquery) {
-                this.$container = this.opts.container;
-            }
-
-            if (!this.$container || !this.$container.length) {
-                this.$container = this.slider.$listWrapper;
-            } else if (this.$container.length) {
-                this.$container = this.$container.first();
-            }
-        };
-
-        /*
-            Создание стрелок
-         */
-        cls.createControls = function() {
-            var that = this;
-            this.$left = $('<div>')
-                .addClass(this.opts.arrowClass)
-                .addClass(this.opts.arrowLeftClass)
-                .append('<span>')
-                .off('.controls')
-                .on('click.slider.controls', function() {
-                    if ($(this).hasClass(that.opts.arrowDisabledClass)) {
-                        return false
-                    }
-
-                    that.slider.slidePrevious(
-                        that.opts.animationName,
-                        that.opts.animateListHeight
-                    );
-                });
-
-            this.$right = $('<div>')
-                .addClass(this.opts.arrowClass)
-                .addClass(this.opts.arrowRightClass)
-                .append('<span>')
-                .off('.controls')
-                .on('click.slider.controls', function() {
-                    if ($(this).hasClass(that.opts.arrowDisabledClass)) {
-                        return false
-                    }
-
-                    that.slider.slideNext(
-                        that.opts.animationName,
-                        that.opts.animateListHeight
-                    );
-                });
-
-            this.$container.append(this.$left, this.$right);
         };
     });
 
