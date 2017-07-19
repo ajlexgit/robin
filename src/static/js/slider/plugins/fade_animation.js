@@ -1,65 +1,79 @@
 (function($) {
     'use strict';
 
-    window.SliderFadeAnimation = Class(SliderPlugin, function SliderFadeAnimation(cls, superclass) {
-        cls.defaults = $.extend({}, superclass.defaults, {
-            name: 'fade',
+    window.SliderFadeAnimation = Class(SliderAnimationPlugin, function SliderFadeAnimation(cls, superclass) {
+        cls.PLUGIN_NAME = 'fade';
 
+        cls.defaults = $.extend({}, superclass.defaults, {
             speed: 800,
-            easing: 'linear'
+            easing: 'linear',
+            animateListHeight: false
         });
 
         /*
-            Реализация метода перехода от одного слайда к другому
-            посредством исчезания
+            Построение настроек анимации.
+            Учитывает опции, переданные через slider.slideTo()
          */
-        cls.slideTo = function($toSlide, animateListHeight) {
-            this.slider.stopAnimation(true);
-            this.slider._beforeSlide($toSlide);
+        cls.buildAnimationOptions = function(options) {
+            return $.extend({
+                speed: this.opts.speed,
+                easing: this.opts.easing,
+                animateListHeight: this.opts.animateListHeight
+            }, options);
+        };
 
-            var $fromSlide = this.slider.$currentSlide.stop(true, false).css({
+        /*
+            Подготовка слайдов к анимации
+         */
+        cls.prepareAnimation = function($currentSlide, $targetSlide) {
+            $currentSlide.css({
                 zIndex: 6
             });
-            $toSlide.stop(true, true).css({
+            $targetSlide.css({
                 transform: 'none',
                 opacity: 0,
                 zIndex: 7
             });
+        };
 
-            this.slider._setCurrentSlide($toSlide);
-
-            // анимация
-            $fromSlide.animate({
-                opacity: 0
-            }, {
-                duration: this.opts.speed,
-                easing: this.opts.easing,
-                complete: function() {
-                    $(this).css({
-                        transform: '',
-                        zIndex: '',
-                        opacity: ''
-                    });
-                }
-            });
-
+        /*
+            Запуск анимации
+         */
+        cls.startAnimation = function($currentSlide, $targetSlide) {
             var that = this;
-            $toSlide.animate({
-                opacity: 1
+            this.slider._animation = $({
+                progress: 0
+            }).animate({
+                progress: 1
             }, {
-                duration: this.opts.speed,
-                easing: this.opts.easing,
+                duration: this.animationOptions.speed,
+                easing: this.animationOptions.easing,
+                progress: function () {
+                    $currentSlide.css('opacity', (1 - this.progress));
+                    $targetSlide.css('opacity', this.progress);
+                },
                 complete: function() {
-                    $(this).css({
-                        zIndex: '',
-                        opacity: ''
-                    });
-
-                    that.slider._afterSlide($toSlide);
+                    that.endAnimation($currentSlide, $targetSlide);
                 }
             });
+        };
 
-            this.slider.softUpdateListHeight(animateListHeight);
+        /*
+            Callback завершения анимации
+         */
+        cls.endAnimation = function($currentSlide, $targetSlide) {
+            $currentSlide.css({
+                transform: '',
+                zIndex: '',
+                opacity: ''
+            });
+
+            $targetSlide.css({
+                zIndex: '',
+                opacity: ''
+            });
+
+            superclass.endAnimation.call(this, $currentSlide, $targetSlide);
         };
     });
 

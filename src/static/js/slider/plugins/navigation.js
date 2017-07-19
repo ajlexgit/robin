@@ -2,9 +2,13 @@
     'use strict';
 
     window.SliderNavigationPlugin = Class(SliderPlugin, function SliderNavigationPlugin(cls, superclass) {
+        cls.PLUGIN_NAME = 'navigation';
+
         cls.defaults = $.extend({}, superclass.defaults, {
             animationName: '',
-            animateListHeight: true,
+            animationOptions: {
+                animateListHeight: true
+            },
 
             wrapperClass: 'slider-navigation',
             itemClass: 'slider-navigation-item',
@@ -81,7 +85,7 @@
                     that.slider.slideTo(
                         that.slider.$slides.eq(slideIndex),
                         that.opts.animationName,
-                        that.opts.animateListHeight
+                        that.opts.animationOptions
                     );
                 });
             }

@@ -2,6 +2,8 @@
     'use strict';
 
     window.SliderDragPlugin = Class(SliderPlugin, function SliderDragPlugin(cls, superclass) {
+        cls.PLUGIN_NAME = 'drag';
+
         cls.defaults = $.extend({}, superclass.defaults, {
             animateListHeight: true,
 
@@ -257,7 +259,7 @@
             // выделяем активный слайд
             if (this.slider.$currentSlide.get(0) !== $newCurrentSlide.get(0)) {
                 this.slider._setCurrentSlide($newCurrentSlide);
-                this.slider.softUpdateListHeight(this.opts.animateListHeight);
+                this.slider._updateListHeight(this.opts.animateListHeight);
             }
 
             this._dx = evt.dx;
@@ -289,22 +291,26 @@
             var right_match = rightSlide && transformRegex.exec(rightSlide.style.transform);
             right_match = (right_match && parseFloat(right_match[1])) || 0;
 
-            var animation_from = {
+            var state_from = {
                 left_slide: left_match,
                 right_slide: right_match
             };
             if ($currSlide.get(0) === leftSlide) {
-                var animation_to = {
+                var state_to = {
                     left_slide: 0,
                     right_slide: slide_left
                 };
-                var duration = Math.round(this.opts.speed * Math.abs(animation_from.left_slide) / 100);
+                var duration = Math.round(
+                    this.opts.speed * Math.abs(state_from.left_slide) / 100
+                );
             } else {
-                animation_to = {
+                state_to = {
                     left_slide: -slide_left,
                     right_slide: 0
                 };
-                duration = Math.round(this.opts.speed * Math.abs(animation_from.right_slide) / 100);
+                duration = Math.round(
+                    this.opts.speed * Math.abs(state_from.right_slide) / 100
+                );
             }
 
 
@@ -312,7 +318,7 @@
             var $leftSlide = $(leftSlide);
             var $rightSlide = $(rightSlide);
             this.slider._beforeSlide($currSlide);
-            this.slider._animation = $(animation_from).animate(animation_to, {
+            this.slider._animation = $(state_from).animate(state_to, {
                 duration: Math.max(200, duration),
                 easing: this.opts.easing,
                 progress: function() {

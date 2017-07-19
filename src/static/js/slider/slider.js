@@ -45,19 +45,19 @@
             getPreviousSlide()
 
             // подключение плагинов
-            attachPlugins(plugins)
+            attachPlugins(plugin1, plugin2, ...)
 
             // перерасчет высоты слайдера
-            updateListHeight(animated)
+            updateListHeight(doAnimation)
 
             // переход к слайду $toSlide с анимацией animationName
-            slideTo($toSlide, animationName, animateListHeight)
+            slideTo($slide, animationName, options)
 
             // переход к следующему слайду
-            slideNext(animationName, animateListHeight)
+            slideNext(animationName, options)
 
             // переход к предыдущему слайду
-            slidePrevious(animationName, animateListHeight)
+            slidePrevious(animationName, options)
 
         События:
             changeSlide     - после изменения текущего слайда
@@ -69,7 +69,7 @@
             startDrag       - начало перетаскивания слайдов
             stopDrag        - завершение перетаскивания слайдов
 
-            resize                          - изменение размера окна
+            resize          - изменение размера окна
 
         Примечания по событиям:
             1) при инициализации события не вызываются, т.к. их
@@ -79,7 +79,7 @@
                Например, при перетаскивании слайда мышкой через несколько слайдов.
 
 
-        HTML input:
+        HTML пример:
             <div class="slider no-slider">
                 <div class="slider-item">...
                 <div class="slider-item">
@@ -87,8 +87,8 @@
             </div>
 
         JS пример:
-            Slider('#slider', {
-                sliderHeight: Slider.prototype.HEIGHT_MAX,
+            Slider('.slider', {
+                sliderHeight: Slider.prototype.HEIGHT_CURRENT,
                 loop: false,
                 itemsPerSlide: 2
             }).attachPlugins([
@@ -117,7 +117,7 @@
 
 
         Пример динамического количества элементов в слайде:
-            Slider($list, {
+            Slider('.slider', {
                 itemsPerSlide: function() {
                     if ($.winWidth() >= 1200)  {
                         return 4
@@ -128,7 +128,7 @@
             }).on('resize', function() {
                 // обновление, если значение изменилось
                 var itemsPerSlide = this.opts.itemsPerSlide.call(this);
-                if (this._itemsPerSlide != itemsPerSlide) {
+                if (this._itemsPerSlide !== itemsPerSlide) {
                     this.setItemsPerSlide(itemsPerSlide);
                 }
             });
@@ -317,8 +317,6 @@
             В каждом плагине вызывает метод onChangeItemsPerSlide
          */
         cls.setItemsPerSlide = function(itemsPerSlide) {
-            var old_ips = this._itemsPerSlide;
-
             // рассчет и форматирование
             if ($.isFunction(itemsPerSlide)) {
                 var new_ips = parseInt(itemsPerSlide.call(this));
@@ -331,6 +329,7 @@
             }
 
             // значение изменилось или нет?
+            var old_ips = this._itemsPerSlide;
             if (old_ips === new_ips) {
                 return
             } else {
@@ -363,8 +362,13 @@
 
             this._onChangeItemsPerSlide(this._itemsPerSlide, old_ips);
 
+            // самый первый вызов setItemsPerSlide, когда текущего слайда ещё нет
+            if (!this.$currentSlide) {
+                this.$currentSlide = $();
+            }
+
             // мгновенный переход к активному слайду
-            this.slideTo(this.getCurrentSlide(), 'instant', false);
+            this.slideTo(this.getCurrentSlide());
         };
 
         /*
@@ -386,7 +390,7 @@
         cls.attachPlugins = function(plugins) {
             var that = this;
             if ($.isArray(plugins)) {
-                plugins.forEach(function(plugin) {
+                $.each(plugins, function(index, plugin) {
                     if (plugin instanceof window.SliderPlugin) {
                         that._plugins.push(plugin);
                         plugin.onAttach(that);
@@ -403,11 +407,14 @@
             Поиск реализации метода среди плагинов
          */
         cls.getPluginMethod = function(pluginName, methodName) {
-            methodName = methodName || 'slideTo';
+            if (!methodName) {
+                this.warn('methodName required');
+            }
+
             var index = this._plugins.length;
             while (index--) {
                 var plugin = this._plugins[index];
-                if ((methodName in plugin) && (plugin.opts.name === pluginName)) {
+                if ((plugin.PLUGIN_NAME === pluginName) && $.isFunction(plugin[methodName])) {
                     return $.proxy(plugin[methodName], plugin);
                 }
             }
@@ -507,7 +514,7 @@
         /*
             Обновление высоты слайдера по условию
          */
-        cls.softUpdateListHeight = function(doAnimation) {
+        cls._updateListHeight = function(doAnimation) {
             if (this.opts.sliderHeight === cls.HEIGHT_CURRENT) {
                 this.updateListHeight(doAnimation);
             }
@@ -587,7 +594,7 @@
             this.slider._animation.
 
             При реализации этого метода в плагинах, НЕОБХОДИМО вызывать
-            методы слайдера _beforeSlide, _setCurrentSlide и _afterSlide.
+            методы слайдера _beforeSlide, _setCurrentSlide, _afterSlide и _updateListHeight.
 
             Пример:
                 this.slider._beforeSlide($slide);
@@ -604,7 +611,7 @@
                     }
                 })
          */
-        cls.slideTo = function($slide, animationName, animateListHeight) {
+        cls.slideTo = function($slide, animationName, options) {
             if (!$slide || !$slide.length || (this.$slides.index($slide) < 0)) {
                 return
             }
@@ -615,9 +622,11 @@
             }
 
             animationName = animationName || 'instant';
-            var method = this.getPluginMethod(animationName);
+            var method = this.getPluginMethod(animationName, 'slideTo');
             if (method) {
-                method($slide, animateListHeight);
+                method($slide, $.extend({
+                    animateListHeight: false
+                }, options));
             }
         };
 
@@ -639,24 +648,24 @@
             this.trigger('afterSlide', $slide);
         };
 
-        cls.slideNext = function(animationName, animateListHeight) {
+        cls.slideNext = function(animationName, options) {
             var $slide = this.getNextSlide();
-            this.slideTo($slide, animationName, animateListHeight);
+            this.slideTo($slide, animationName, options);
         };
 
-        cls.slidePrevious = function(animationName, animateListHeight) {
+        cls.slidePrevious = function(animationName, options) {
             var $slide = this.getPreviousSlide();
-            this.slideTo($slide, animationName, animateListHeight);
+            this.slideTo($slide, animationName, options);
         };
 
-        cls.slideRandom = function(animationName, animateListHeight) {
+        cls.slideRandom = function(animationName, options) {
             var slides_count = this.$slides.length;
             var random_index = Math.floor(Math.random() * (slides_count - 1));
             var current_index = this.$slides.index(this.$currentSlide);
             var final_index = (random_index < current_index) ? random_index : random_index + 1;
 
             var $slide = this.$slides.eq(final_index);
-            this.slideTo($slide, animationName, animateListHeight);
+            this.slideTo($slide, animationName, options);
         };
     });
 
@@ -716,30 +725,72 @@
         };
     });
 
+    // ================================================
+    //          Базовый плагин анимации
+    // ================================================
+    window.SliderAnimationPlugin = Class(window.SliderPlugin, function SliderAnimationPlugin(cls, superclass) {
+        cls.slideTo = function($slide, options) {
+            this.slider.stopAnimation(true);
+
+            var $currentSlide = this.slider.$currentSlide;
+            var $targetSlide = $slide;
+
+            this.animationOptions = this.buildAnimationOptions(options);
+            this.prepareAnimation($currentSlide, $targetSlide);
+
+            this.slider._beforeSlide($targetSlide);
+            this.slider._setCurrentSlide($targetSlide);
+            this.startAnimation($currentSlide, $targetSlide);
+            this.slider._updateListHeight(this.animationOptions.animateListHeight);
+        };
+
+        /*
+            Построение настроек анимации.
+            Учитывает опции, переданные через slider.slideTo()
+         */
+        cls.buildAnimationOptions = function(options) {
+            return $.extend({
+                animateListHeight: false
+            }, options);
+        };
+
+        /*
+            Подготовка слайдов к анимации
+         */
+        cls.prepareAnimation = function($currentSlide, $targetSlide) {
+
+        };
+
+        /*
+            Запуск анимации.
+            При окончании анимации необходимо вызвать метод endAnimation.
+         */
+        cls.startAnimation = function($currentSlide, $targetSlide) {
+
+        };
+
+        /*
+            Callback завершения анимации
+         */
+        cls.endAnimation = function($currentSlide, $targetSlide) {
+            this.slider._afterSlide($targetSlide);
+        };
+    });
 
     // ================================================
     //          Плагин мгновенной анимации
     // ================================================
-    window.SliderInstantAnimation = Class(window.SliderPlugin, function SliderInstantAnimation(cls, superclass) {
-        cls.defaults = $.extend({}, superclass.defaults, {
-            name: 'instant'
-        });
+    window.SliderInstantAnimation = Class(window.SliderAnimationPlugin, function SliderInstantAnimation(cls, superclass) {
+        cls.PLUGIN_NAME = 'instant';
 
-        /*
-            Реализация метода перехода от одного слайда к другому
-         */
-        cls.slideTo = function($slide, animateListHeight) {
-            this.slider.stopAnimation(true);
-            this.slider._beforeSlide($slide);
-            this.slider.$slides.css({
+        cls.startAnimation = function($currentSlide, $targetSlide) {
+            $currentSlide.css({
                 transform: ''
             });
-            $slide.css({
+            $targetSlide.css({
                 transform: 'none'
             });
-            this.slider._setCurrentSlide($slide);
-            this.slider._afterSlide($slide);
-            this.slider.softUpdateListHeight(animateListHeight);
+            this.endAnimation($currentSlide, $targetSlide);
         };
     });
 

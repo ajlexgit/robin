@@ -2,9 +2,13 @@
     'use strict';
 
     window.SliderAutoscrollPlugin = Class(SliderPlugin, function SliderAutoscrollPlugin(cls, superclass) {
+        cls.PLUGIN_NAME = 'autoscroll';
+
         cls.defaults = $.extend({}, superclass.defaults, {
             animationName: '',
-            animateListHeight: true,
+            animationOptions: {
+                animateListHeight: true
+            },
 
             progress_interval: 40,
             interval: 3000,
@@ -49,21 +53,21 @@
                     this.slider.slidePrevious,
                     this.slider,
                     this.opts.animationName,
-                    this.opts.animateListHeight
+                    this.opts.animationOptions
                 );
             } else if (this.opts.direction === 'next') {
                 this._timerHandler = $.proxy(
                     this.slider.slideNext,
                     this.slider,
                     this.opts.animationName,
-                    this.opts.animateListHeight
+                    this.opts.animationOptions
                 );
             } else if (this.opts.direction === 'random') {
                 this._timerHandler = $.proxy(
                     this.slider.slideRandom,
                     this.slider,
                     this.opts.animationName,
-                    this.opts.animateListHeight
+                    this.opts.animationOptions
                 );
             } else {
                 this.error('Invalid direction: ' + this.opts.direction);

@@ -2,9 +2,13 @@
     'use strict';
 
     window.SliderControlsPlugin = Class(SliderPlugin, function SliderControlsPlugin(cls, superclass) {
+        cls.PLUGIN_NAME = 'controls';
+
         cls.defaults = $.extend({}, superclass.defaults, {
             animationName: '',
-            animateListHeight: true,
+            animationOptions: {
+                animateListHeight: true
+            },
 
             arrowClass: 'slider-arrow',
             arrowLeftClass: 'slider-arrow-left',
@@ -93,7 +97,7 @@
 
                 that.slider.slidePrevious(
                     that.opts.animationName,
-                    that.opts.animateListHeight
+                    that.opts.animationOptions
                 );
             });
             this.$right.on('click.slider.controls', function() {
@@ -103,7 +107,7 @@
 
                 that.slider.slideNext(
                     that.opts.animationName,
-                    that.opts.animateListHeight
+                    that.opts.animationOptions
                 );
             });
         };
