@@ -250,15 +250,16 @@
         cls.stopAnimation = function(jumpToEnd) {
             if (!this._animation) return;
 
-            if (window.TweenLite && (this._animation instanceof TweenLite)) {
+            if ((window.TweenLite && (this._animation instanceof TweenLite)) || (window.TweenMax && (this._animation instanceof TweenMax))) {
                 this._animation.totalProgress(1);
-            } else if (window.TimelineLite && (this._animation instanceof TimelineLite)) {
+            } else if ((window.TimelineLite && (this._animation instanceof TimelineLite)) || (window.TimelineMax && (this._animation instanceof TimelineMax))) {
                 this._animation.totalProgress(1);
             } else {
                 this._animation.stop(true, jumpToEnd);
             }
 
             this._animation = null;
+            this._animation_name = null;
         };
 
         /*
@@ -730,7 +731,7 @@
     // ================================================
     window.SliderAnimationPlugin = Class(window.SliderPlugin, function SliderAnimationPlugin(cls, superclass) {
         cls.slideTo = function($slide, options) {
-            this.slider.stopAnimation(true);
+            this.stopAnimation();
 
             var $currentSlide = this.slider.$currentSlide;
             var $targetSlide = $slide;
@@ -755,6 +756,13 @@
         };
 
         /*
+            Остановка предыдущей анимации
+         */
+        cls.stopAnimation = function() {
+            this.slider.stopAnimation(true);
+        };
+
+        /*
             Подготовка слайдов к анимации
          */
         cls.prepareAnimation = function($currentSlide, $targetSlide) {
@@ -766,7 +774,7 @@
             При окончании анимации необходимо вызвать метод endAnimation.
          */
         cls.startAnimation = function($currentSlide, $targetSlide) {
-
+            this.slider._animation_name = this.PLUGIN_NAME;
         };
 
         /*
@@ -774,6 +782,8 @@
          */
         cls.endAnimation = function($currentSlide, $targetSlide) {
             this.slider._afterSlide($targetSlide);
+            this.slider._animation = null;
+            this.slider._animation_name = null;
         };
     });
 
@@ -784,6 +794,7 @@
         cls.PLUGIN_NAME = 'instant';
 
         cls.startAnimation = function($currentSlide, $targetSlide) {
+            superclass.startAnimation.call(this, $currentSlide, $targetSlide);
             $currentSlide.css({
                 transform: ''
             });

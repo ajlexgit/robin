@@ -26,6 +26,8 @@
             Подготовка слайдов к анимации
          */
         cls.prepareAnimation = function($currentSlide, $targetSlide) {
+            superclass.prepareAnimation.call(this, $currentSlide, $targetSlide);
+
             $currentSlide.css({
                 zIndex: 6
             });
@@ -40,6 +42,8 @@
             Запуск анимации
          */
         cls.startAnimation = function($currentSlide, $targetSlide) {
+            superclass.startAnimation.call(this, $currentSlide, $targetSlide);
+
             var that = this;
             this.slider._animation = $({
                 progress: 0

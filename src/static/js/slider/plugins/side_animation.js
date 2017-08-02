@@ -113,6 +113,8 @@
             Подготовка слайдов к анимации
          */
         cls.prepareAnimation = function($currentSlide, $targetSlide) {
+            superclass.prepareAnimation.call(this, $currentSlide, $targetSlide);
+
             var slide_info = {
                 fromIndex: this.slider.$slides.index($currentSlide),
                 toIndex: this.slider.$slides.index($targetSlide)
@@ -137,6 +139,8 @@
             Запуск анимации
          */
         cls.startAnimation = function($currentSlide, $targetSlide) {
+            superclass.startAnimation.call(this, $currentSlide, $targetSlide);
+
             var state_from = {};
             var state_to = {};
             $.each(this.animations, function(index, data) {
