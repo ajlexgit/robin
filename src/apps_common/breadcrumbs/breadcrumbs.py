@@ -1,3 +1,6 @@
+from django.db import models
+
+
 class Breadcrumbs:
     def __init__(self):
         self.crumbs = []
@@ -9,8 +12,15 @@ class Breadcrumbs:
         return iter(self.crumbs)
 
     def add(self, title, url='', **kwargs):
-        self.crumbs.append(dict(
-            title=title,
-            url=url,
-            **kwargs
-        ))
+        if isinstance(title, models.Model):
+            self.crumbs.append(dict(
+                title=str(title),
+                url=title.get_absolute_url(),
+                **kwargs
+            ))
+        else:
+            self.crumbs.append(dict(
+                title=title,
+                url=url,
+                **kwargs
+            ))

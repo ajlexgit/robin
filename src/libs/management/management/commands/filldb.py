@@ -1,6 +1,7 @@
 import random
 import tempfile
 import requests
+from datetime import time
 from decimal import Decimal
 from requests.exceptions import Timeout
 from django.apps import apps
@@ -91,9 +92,15 @@ def set_integer(instance, field, min_value=-2**31, max_value=2**31 - 1):
 
 def set_date(instance, field):
     """ DateField """
-    start = 2 * 24 * 3600
-    end = 5 * 365 * 24 * 3600
-    value = now() - timedelta(seconds=random.randint(start, end))
+    start = -60 * 24 * 3600
+    end = 60 * 24 * 3600
+    value = now() + timedelta(seconds=random.randint(start, end))
+    setattr(instance, field.name, value)
+
+
+def set_time(instance, field):
+    """ TimeField """
+    value = time(random.randint(0, 23), random.choice([0, 15, 30, 45]))
     setattr(instance, field.name, value)
 
 
@@ -325,6 +332,8 @@ class Command(BaseCommand):
                     set_text(instance, field, paragraphs=random.randint(1, 3))
                 elif isinstance(field, fields.DateField):
                     set_date(instance, field)
+                elif isinstance(field, fields.TimeField):
+                    set_time(instance, field)
                 elif isinstance(field, fields.DecimalField):
                     set_decimal(instance, field, max_digits=6)
                 elif isinstance(field, StdImageField):

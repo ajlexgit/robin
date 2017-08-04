@@ -406,7 +406,7 @@
         // ================
 
         cls.mouseDownHandler = function(event) {
-            if (event.button !== 0) return;
+            if ((event.type === 'mousedown') && (event.button !== 0)) return;
 
             var evt = MouseDownDragerEvent(event, this);
             this.wasDragged = false;
