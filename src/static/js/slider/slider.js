@@ -495,11 +495,16 @@
                 that.beforeUpdateListHeight(current_height, final_height);
                 if (doAnimation && that.opts.sliderHeightTransition) {
                     // с анимацией
-                    that._list_height_animation = that.$list.animate({
+                    that._list_height_animation = $({
+                        height: current_height
+                    }).animate({
                         height: final_height
                     }, {
                         duration: that.opts.sliderHeightTransition,
                         easing: 'easeOutCubic',
+                        progress: function () {
+                            that.$list.css('height', this.height);
+                        },
                         complete: function() {
                             that.afterUpdateListHeight(current_height, final_height);
                         }
