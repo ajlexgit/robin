@@ -30,8 +30,8 @@
         };
 
         cls.enable = function() {
-            this.$left.show();
-            this.$right.show();
+            this.$left.css('display', '');
+            this.$right.css('display', '');
             superclass.enable.call(this);
         };
 
@@ -57,6 +57,11 @@
             this._attachDOM();
             this._attachEvents();
             this.checkBounds();
+            this._updateEnabledState();
+        };
+
+        cls.onResize = function() {
+            superclass.onResize.call(this);
             this._updateEnabledState();
         };
 

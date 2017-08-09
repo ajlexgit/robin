@@ -26,7 +26,7 @@
         };
 
         cls.enable = function() {
-            this.$wrapper.show();
+            this.$wrapper.css('display', '');
             superclass.enable.call(this);
         };
 
@@ -49,6 +49,11 @@
             this._attachEvents();
             this.updateNavigationItems();
             this.activateNavigationItem();
+            this._updateEnabledState();
+        };
+
+        cls.onResize = function() {
+            superclass.onResize.call(this);
             this._updateEnabledState();
         };
 
