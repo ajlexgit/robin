@@ -60,8 +60,8 @@
             this._updateEnabledState();
         };
 
-        cls.onResize = function() {
-            superclass.onResize.call(this);
+        cls.onChangeItemsPerSlide = function() {
+            this.checkBounds();
             this._updateEnabledState();
         };
 

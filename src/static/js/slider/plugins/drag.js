@@ -59,8 +59,8 @@
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
         cls.onChangeItemsPerSlide = function() {
-            this._updateEnabledState();
             this.checkUnselectable();
+            this._updateEnabledState();
         };
 
         /*

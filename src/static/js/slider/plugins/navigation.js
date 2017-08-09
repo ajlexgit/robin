@@ -52,16 +52,13 @@
             this._updateEnabledState();
         };
 
-        cls.onResize = function() {
-            superclass.onResize.call(this);
-            this._updateEnabledState();
-        };
-
         /*
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
         cls.onChangeItemsPerSlide = function() {
             this.updateNavigationItems();
+            this.activateNavigationItem();
+            this._updateEnabledState();
         };
 
         /*
