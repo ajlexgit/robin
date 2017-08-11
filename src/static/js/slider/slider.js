@@ -813,8 +813,20 @@
     // Обновление высоты слайдера
     $(window).on('load.slider', function() {
         $.each(sliders, function(i, slider) {
-            slider.updateListHeight()
+            slider.updateListHeight();
         });
+
+        // fallback
+        var counter = 3;
+        var interval = setInterval(function() {
+            $.each(sliders, function(i, slider) {
+                slider.updateListHeight()
+            });
+
+            if (--counter === 0) {
+                clearInterval(interval);
+            }
+        }, 2000);
     }).on('resize.slider', $.rared(function() {
         $.each(sliders, function(i, slider) {
             slider.trigger('resize');
