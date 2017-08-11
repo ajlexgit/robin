@@ -817,10 +817,12 @@
         });
 
         // fallback
-        var counter = 3;
+        var counter = 10;
         var interval = setInterval(function() {
             $.each(sliders, function(i, slider) {
-                slider.updateListHeight()
+                if (!slider._list_height_animation) {
+                    slider.updateListHeight();
+                }
             });
 
             if (--counter === 0) {
