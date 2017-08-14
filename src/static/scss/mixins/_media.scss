@@ -43,7 +43,7 @@
     }
   }
 
-  @media screen and #{$line} {
+  @media all and #{$line} {
     @content;
   }
 }
