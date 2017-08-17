@@ -1,6 +1,7 @@
 import os
 import sys
 
+# StdImage: save GIF animation
 # GSAP
 # admin bootstrap
 # попробовать другой storage
