@@ -11,6 +11,7 @@
             },
 
             wrapperClass: 'slider-navigation',
+            windowClass: 'slider-navigation-window',
             itemClass: 'slider-navigation-item',
             activeItemClass: 'active',
 
@@ -69,10 +70,26 @@
         };
 
         /*
+            Скролл точек навигации
+         */
+        cls.beforeSlide = function($slide) {
+            var slideIndex = this.slider.$slides.index($slide);
+            var $item = this.$wrapper.find('.' + this.opts.itemClass).eq(slideIndex);
+
+            var left_pos = this.$wrapper.scrollLeft() + $item.position().left;
+            var center_pos = left_pos + $item.outerWidth(true) / 2;
+            this.$wrapper.stop(true, false).animate({
+                scrollLeft: Math.max(0, center_pos - this.$wrapper.outerWidth() / 2)
+            }, 750);
+        };
+
+        /*
             Создание DOM-элементов стрелок
          */
         cls._createDOM = function() {
             this.$wrapper = $('<div>').addClass(this.opts.wrapperClass);
+            this.$window = $('<div/>').addClass(this.opts.windowClass);
+            this.$window.appendTo(this.$wrapper);
         };
 
         /*
@@ -132,7 +149,7 @@
             $.each(this.slider.$slides, function(index) {
                 var $item = $('<a>').addClass(that.opts.itemClass).data('slideIndex', index);
                 $item.append($('<span>').text(index + 1));
-                that.$wrapper.append($item);
+                that.$window.append($item);
             });
         };
 

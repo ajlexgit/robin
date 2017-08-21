@@ -1,19 +1,13 @@
 @import "mixins";
 
 // размер кликабельной области точек
-$area_size: 16px;
-
-// расстояние между областями
-$area_gap: (
-    ($media480, 0): 4px,
-    (0, $media480): 0,
+$area_size: (
+    ($media480, 0): 16px,
+    (0, $media480): 14px,
 );
 
 // размер точек
-$dot_size: (
-    ($media480, 0): 10px,
-    (0, $media480): 8px,
-);
+$dot_size: 10px;
 
 // цвета
 $dot_color: rgba($white, 0.3);
@@ -23,9 +17,10 @@ $dot_active_color: rgba($white, 1);
 
 .slider-navigation {
   position: absolute;
-  padding: 14px 30px 10px;
-  width: 100%;
-  left: 0;
+  overflow: hidden;
+  margin: 0 auto;
+  width: 90%;
+  left: 50%;
   bottom: 0;
   z-index: 9;
   text-align: center;
@@ -33,18 +28,21 @@ $dot_active_color: rgba($white, 1);
   @include no_fontsize;
   @include valign_after;
   @include unselectable;
+  @include transform(translate(-50%, 0));
+
+  .slider-navigation-window {
+    display: inline-block;
+    padding: 14px 0 10px;
+    vertical-align: middle;
+  }
 
   .slider-navigation-item {
     display: inline-block;
-    width: $area_size;
-    height: $area_size;
-    text-align: center;
+    margin: 0 2px 2px;
     cursor: pointer;
+    text-align: center;
     @include valign_after;
-    @include media_map(margin-right, $area_gap);
-    &:nth-last-of-type(1) {
-      margin-right: 0;
-    }
+    @include media_map((width, height), $area_size);
 
     // dot
     span {
