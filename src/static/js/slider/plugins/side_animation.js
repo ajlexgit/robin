@@ -51,9 +51,15 @@
             var slides = [];
 
             if (slide_info.direction === DIRECTION_RIGHT) {
-                var doStepSlide = this.slider.getNextSlide.bind(this.slider);
+                var doStepSlide = $.proxy(
+                    this.slider.getNextSlide,
+                    this.slider
+                );
             } else {
-                doStepSlide = this.slider.getPreviousSlide.bind(this.slider);
+                doStepSlide = $.proxy(
+                    this.slider.getPreviousSlide,
+                    this.slider
+                );
             }
 
             // определяем слайды, учавствующие в анимации

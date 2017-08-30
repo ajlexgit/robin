@@ -60,7 +60,7 @@
             this._updateEnabledState();
         };
 
-        cls.onChangeItemsPerSlide = function() {
+        cls.onUpdateSlides = function() {
             this.checkBounds();
             this._updateEnabledState();
         };
@@ -68,7 +68,7 @@
         /*
             Деактивируем стрелки на границах сладера
          */
-        cls.onChangeCurrentSlide = function() {
+        cls.onChangeSlide = function() {
             this.checkBounds();
         };
 

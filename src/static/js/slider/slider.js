@@ -16,8 +16,9 @@
             listWrapperClass                - класс, добавляемый обертке над списком
             listClass                       - класс, добавляемый списку
             slideClass                      - класс, добавляемый слайду
+            slideActiveClass                - класс активного слайда
             itemClass                       - класс, добавляемый элементу списка
-            initialActiveClass              - класс начально активного элемента
+            initialActiveItemClass          - класс начально активного элемента
 
             itemSelector: str               - селектор элементов слайдера
             itemsPerSlide: number / func    - кол-во элементов на каждый слайд
@@ -61,7 +62,7 @@
 
         События:
             changeSlide     - после изменения текущего слайда
-            changeIPS       - после изменения itemsPerSlide
+            updateSlides    - после изменения кол-ва слайдов
 
             beforeSlide     - перед анимацией перехода к слайду
             afterSlide      - после анимации перехода к слайду
@@ -125,12 +126,6 @@
                         return 3
                     }
                 }
-            }).on('resize', function() {
-                // обновление, если значение изменилось
-                var itemsPerSlide = this.opts.itemsPerSlide.call(this);
-                if (this._itemsPerSlide !== itemsPerSlide) {
-                    this.setItemsPerSlide(itemsPerSlide);
-                }
             });
     */
 
@@ -154,8 +149,9 @@
             listWrapperClass: 'slider-list-wrapper',
             listClass: 'slider-list',
             slideClass: 'slider-slide',
+            slideActiveClass: 'slider-slide-active',
             itemClass: 'slider-item',
-            initialActiveClass: 'active',
+            initialActiveItemClass: 'active',
 
             itemSelector: '.slider-item',
             itemsPerSlide: 1,
@@ -211,12 +207,13 @@
             this._animation = null;
 
             // текущий элемент
-            this.$currentItem = this.$items.filter('.' + this.opts.initialActiveClass).first();
+            this.$currentItem = this.$items.filter('.' + this.opts.initialActiveItemClass).first();
             if (!this.$currentItem.length) {
                 this.$currentItem = this.$items.first();
             }
 
             // создаем слайды
+            this.$currentSlide = $();
             this.setItemsPerSlide(this.opts.itemsPerSlide);
 
             // обновление высоты по мере загрузки картинок
@@ -293,17 +290,20 @@
             }
 
             var $old_slide = this.$currentSlide;
-            if ($old_slide && ($old_slide.get(0) === $slide.get(0))) {
+            if ($old_slide.length && ($old_slide.get(0) === $slide.get(0))) {
                 return false
             }
 
+            $old_slide.removeClass(this.opts.slideActiveClass);
+            $slide.addClass(this.opts.slideActiveClass);
+
             this.$currentItem = $slide.find('.' + this.opts.itemClass).first();
             this.$currentSlide = $slide;
-            this._onChangeCurrentSlide($slide, $old_slide);
+            this._onChangeSlide($slide, $old_slide);
         };
 
-        cls._onChangeCurrentSlide = function($slide, $old_slide) {
-            this.callPluginsMethod('onChangeCurrentSlide', [$slide, $old_slide], true);
+        cls._onChangeSlide = function($slide, $old_slide) {
+            this.callPluginsMethod('onChangeSlide', [$slide, $old_slide], true);
             this.trigger('changeSlide', $slide, $old_slide);
         };
 
@@ -312,10 +312,8 @@
         // ===============================================
 
         /*
-            Создание слайдов, содержащих по itemsPerSlide элементов
-            в каждом слайде.
-
-            В каждом плагине вызывает метод onChangeItemsPerSlide
+            Создание слайдов, содержащих по itemsPerSlide элементов в каждом слайде.
+            В каждом плагине вызывает метод onUpdateSlides.
          */
         cls.setItemsPerSlide = function(itemsPerSlide) {
             // рассчет и форматирование
@@ -325,7 +323,7 @@
                 new_ips = parseInt(itemsPerSlide);
             }
 
-            if (!new_ips) {
+            if (!new_ips || (new_ips < 1)) {
                 return
             }
 
@@ -343,42 +341,34 @@
             var $items = this.$items.detach();
 
             // удаляем ранее созданные слайды
-            this.$slides = $();
             this.$list.find('.' + this.opts.slideClass).remove();
 
             // создаем новые слайды
             var slide_count = Math.ceil($items.length / this._itemsPerSlide);
             for (var i = 0; i < slide_count; i++) {
-                var $slide = $('<div>');
+                var $slide = $('<div>').addClass(this.opts.slideClass);
                 this.$list.append(
                     $slide.append(
                         $items.slice(i * this._itemsPerSlide, (i + 1) * this._itemsPerSlide)
                     )
                 );
-                this.$slides.push($slide.get(0));
             }
 
-            // добавляем слайдам класс
-            this.$slides.addClass(this.opts.slideClass);
-
-            this._onChangeItemsPerSlide(this._itemsPerSlide, old_ips);
-
-            // самый первый вызов setItemsPerSlide, когда текущего слайда ещё нет
-            if (!this.$currentSlide) {
-                this.$currentSlide = $();
-            }
-
-            // мгновенный переход к активному слайду
-            this.slideTo(this.getCurrentSlide());
+            // обновляем кол-во слайдов
+            this.updateSlides();
         };
 
         /*
-            Метод, вызываемый в каждом плагине (от первого к последнему)
-            после созданием слайдов.
+            Обновление кол-ва слайдов
          */
-        cls._onChangeItemsPerSlide = function(itemsPerSlide, oldItemsPerSlide) {
-            this.callPluginsMethod('onChangeItemsPerSlide', [itemsPerSlide, oldItemsPerSlide]);
-            this.trigger('changeIPS', itemsPerSlide, oldItemsPerSlide);
+        cls.updateSlides = function() {
+            this.$slides = this.$list.find('.' + this.opts.slideClass);
+
+            this.callPluginsMethod('onUpdateSlides');
+            this.trigger('updateSlides');
+
+            // мгновенный переход к активному слайду
+            this.slideTo(this.getCurrentSlide());
         };
 
         // ===============================================
@@ -492,7 +482,7 @@
                     return
                 }
 
-                that.beforeUpdateListHeight(current_height, final_height);
+                that._beforeUpdateListHeight(current_height, final_height);
                 if (doAnimation && that.opts.sliderHeightTransition) {
                     // с анимацией
                     that._list_height_animation = $({
@@ -506,13 +496,13 @@
                             that.$list.css('height', this.height);
                         },
                         complete: function() {
-                            that.afterUpdateListHeight(current_height, final_height);
+                            that._afterUpdateListHeight(current_height, final_height);
                         }
                     });
                 } else {
                     // мгновенно
                     that.$list.height(final_height);
-                    that.afterUpdateListHeight(current_height, final_height);
+                    that._afterUpdateListHeight(current_height, final_height);
                 }
             })();
         };
@@ -530,7 +520,7 @@
             Метод, вызываемый в каждом плагине (от последнего к первому)
             перед обновлением высоты списка.
          */
-        cls.beforeUpdateListHeight = function(current, final) {
+        cls._beforeUpdateListHeight = function(current, final) {
             this.callPluginsMethod('beforeUpdateListHeight', arguments);
         };
 
@@ -538,8 +528,21 @@
             Метод, вызываемый в каждом плагине (от первого к последнему)
             после обновления высоты списка.
          */
-        cls.afterUpdateListHeight = function(current, final) {
+        cls._afterUpdateListHeight = function(current, final) {
             this.callPluginsMethod('afterUpdateListHeight', arguments, true);
+        };
+
+
+        /*
+            Метод, вызываемый при изменении размера окна браузера
+         */
+        cls.onResize = function() {
+            // обновление кол-ва элементов в слайдах
+            this.setItemsPerSlide(this.opts.itemsPerSlide);
+
+            this.callPluginsMethod('onResize');
+            this.trigger('resize');
+            this.updateListHeight();
         };
 
         // ===============================================
@@ -547,46 +550,43 @@
         // ===============================================
 
         /*
-            Метод, возвращающий следующий слайд. Возможно указать количество
-            слайдов, которые нужно пропустить.
+            Метод, возвращающий следующий слайд.
          */
-        cls.getNextSlide = function($fromSlide, passCount) {
+        cls.getNextSlide = function($fromSlide) {
             if (!$fromSlide || !$fromSlide.length) {
                 $fromSlide = this.$currentSlide;
             }
 
-            passCount = passCount || 0;
             var slides_count = this.$slides.length;
-            var index = this.$slides.index($fromSlide) + (passCount || 0) + 1;
+            var index = this.$slides.index($fromSlide) + 1;
 
-            if (this.opts.loop) {
-                return this.$slides.eq(index % slides_count);
-            } else if (index < slides_count) {
+            if (index < slides_count) {
                 return this.$slides.eq(index);
+            } else if (this.opts.loop) {
+                return this.$slides.eq(index % slides_count);
+            } else {
+                return $();
             }
-
-            return $();
         };
 
         /*
-            Метод, возвращающий предыдущий слайд. Возможно указать количество
-            слайдов, которые нужно пропустить.
+            Метод, возвращающий предыдущий слайд.
          */
-        cls.getPreviousSlide = function($fromSlide, passCount) {
+        cls.getPreviousSlide = function($fromSlide) {
             if (!$fromSlide || !$fromSlide.length) {
                 $fromSlide = this.$currentSlide;
             }
 
             var slides_count = this.$slides.length;
-            var index = this.$slides.index($fromSlide) - (passCount || 0) - 1;
+            var index = this.$slides.index($fromSlide) - 1;
 
-            if (this.opts.loop) {
-                return this.$slides.eq(index % slides_count);
-            } else if (index >= 0) {
+            if (index >= 0) {
                 return this.$slides.eq(index);
+            } else if (this.opts.loop) {
+                return this.$slides.eq(index % slides_count);
+            } else {
+                return $();
             }
-
-            return $();
         };
 
         // ===============================================
@@ -831,9 +831,7 @@
         }, 2000);
     }).on('resize.slider', $.rared(function() {
         $.each(sliders, function(i, slider) {
-            slider.trigger('resize');
-            slider.callPluginsMethod('onResize');
-            slider.updateListHeight();
+            slider.onResize();
         });
     }, 100));
 

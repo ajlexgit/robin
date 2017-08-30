@@ -83,7 +83,7 @@
         /*
             Сброс таймера при изменении кол-ва слайдов
          */
-        cls.onChangeItemsPerSlide = function() {
+        cls.onUpdateSlides = function() {
             this.stopTimer();
             this._updateEnabledState();
         };

@@ -56,7 +56,7 @@
         /*
             Обновление кнопок при изменении кол-ва элементов в слайде
          */
-        cls.onChangeItemsPerSlide = function() {
+        cls.onUpdateSlides = function() {
             this.updateNavigationItems();
             this.activateNavigationItem();
             this._updateEnabledState();
@@ -65,7 +65,7 @@
         /*
             Установка активной кнопки после установки активного слайда
          */
-        cls.onChangeCurrentSlide = function() {
+        cls.onChangeSlide = function() {
             this.activateNavigationItem();
         };
 
