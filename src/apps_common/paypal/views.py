@@ -1,4 +1,5 @@
 from decimal import Decimal
+from urllib.parse import unquote_plus
 from requests import post as http_post
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -48,7 +49,7 @@ def result(request):
     form = PayPalResultForm(data)
     if form.is_valid():
         payment_status = form.cleaned_data['payment_status']
-        receiver_email = form.cleaned_data['receiver_email']
+        receiver_email = unquote_plus(form.cleaned_data['receiver_email'])
         custom = form.cleaned_data['custom']
         invoice = form.cleaned_data.get('invoice', '')
         try:
@@ -57,7 +58,7 @@ def result(request):
             invoice = None
 
         resp = http_post(conf.FORM_TARGET, 'cmd=_notify-validate&' + request.body.decode())
-        if (resp.text == 'VERIFIED' and payment_status.lower() == 'completed' and receiver_email.lower() == conf.EMAIL.lower()):
+        if resp.text == 'VERIFIED' and payment_status.lower() == 'completed' and receiver_email.lower() == conf.EMAIL.lower():
             try:
                 paypal_success.send(
                     sender=Log,

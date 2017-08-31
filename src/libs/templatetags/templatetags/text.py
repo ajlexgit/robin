@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import strip_tags, escape
 from django.utils.translation import get_language
 from django.template import Library, defaultfilters
+from libs.description import description as description_func
 
 register = Library()
 
@@ -148,6 +149,12 @@ def softhyphen(value):
         result = hybernate_string(value)
         cache.set(key, result, timeout=6*3600)
         return result
+
+
+@register.filter(is_safe=True)
+def description(value, args):
+    minlen, maxlen = (int(item.strip()) for item in args.split(','))
+    return description_func(value, minlen, maxlen)
 
 
 @register.filter(is_safe=True)
