@@ -1,8 +1,8 @@
 import os
 import sys
 
+# Import, export redirects
 # StdImage: save GIF animation
-# GSAP
 # admin bootstrap
 # попробовать другой storage
 # Last-modified прицепить к sitemap
@@ -15,7 +15,6 @@ import sys
 # Shop cart example + discounts
 # Gallery popup: JS templates
 # $.fn.scrolltextarea + autosize
-# Mailerlite: clear subscribers from remote + limit reached + select groups on import
 # Share: выводить картинку и дать возможность изменить
 # Mobile tables
 # Schema.org: per page + get data from models

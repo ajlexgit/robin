@@ -36,9 +36,6 @@
             // получение текущего слайда
             getCurrentSlide()
 
-            // установка кол-ва элементов на слайд
-            setItemsPerSlide(ips)
-
             // получение следующего слайда
             getNextSlide()
 
@@ -50,6 +47,9 @@
 
             // перерасчет высоты слайдера
             updateListHeight(doAnimation)
+
+            // обновление внутреннего списка слайдов
+            updateSlides()
 
             // переход к слайду $toSlide с анимацией animationName
             slideTo($slide, animationName, options)
