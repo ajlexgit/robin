@@ -15,8 +15,8 @@ pillow==4.2.1
 psycopg2==2.7.1
 pytils==0.3
 pytz==2017.2
-redis==2.10.5
-requests==2.18.1
+redis==2.10.6
+requests==2.18.4
 PyLinkedinAPI==0.1.5
 facebook-sdk==2.0.0
 python-twitter==3.3
