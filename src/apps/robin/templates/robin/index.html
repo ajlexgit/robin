@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% load attachable_blocks %}
+{% load pipeline_plus %}
+
+{% block static_head %}
+  {{ block.super }}
+  {% stylesheet 'main' %}
+{% endblock static_head %}
+
+{% block static_js %}
+  {{ block.super }}
+  {% javascript 'main' %}
+{% endblock static_js %}
+
+
+{% block content %}
+
+
+  {% render_attached_blocks config %}
+
+{% endblock content %}
