@@ -2,31 +2,88 @@
 {% load menu %}
 
 <header>
-  <div class="grid-block">
+    <div class="grid-block">
 
-    <div class="flex">
-      <div class="logo-box">
-        {% if is_main_page %}
-          <div class="logo"></div>
-        {% else %}
-          <a href="/" class="logo"></a>
-        {% endif %}
-      </div>
+        <div class="flex">
+            <div class="logo-box">
+                <!-- {% if is_main_page %}
+                <!--<div class="logo"></div> -->
+                <!-- {% else %}
+                 <a href="/" class="logo"></a>
+                 {% endif %} -->
 
-      <div class="menu-box">
-        <div id="mobile-menu-button">
-          <div class="burger"></div>
+                <span class="first-logo">Celebrant Robin </span>
+                <span class="second-logo">WEDDING OFFICIANT </span>
+            </div>
+            <div id="mobile-menu-button">
+                <div class="burger"></div>
+            </div>
+
+            <div class="menu mobile-menu">
+                <div class="grid-block">
+
+
+
+                <nav class="menu">
+                    <!-- {% menu 'main' %} -->
+                    <ul>
+                        <li> <a href="#photo" class itemprop="url"> <span>Photos </span> </a> </li>
+                        <li> <a href="#testimonials" class itemprop="url"> <span>Testimonials </span> </a> </li>
+                        <li> <a href="#gallery" class itemprop="url"> <span>Blog </span> </a> </li>
+                    </ul>
+                </nav>
+
+                <div class="contact">
+                    <a href="tel:2674810605" class="phone-header"><span class="phone">267-481-0605</span> </a>
+                    <!--                    <h1 class="title-h1"> </h1>-->
+                </div>
+                <!--                {% placeholder "menu" menu_name='main' referer=request.path_info %}-->
+
+                <div class="social-links">
+
+                    <a href="https://www.weddingwire.com/biz/celebrant-robin-elkins-park/cf347820f3bd8b48.html" target="_blank" class="wr"></a>"
+                    <a href="https://www.facebook.com/celebrantrobin/" class="fb"></a>
+                    <a href="https://www.linkedin.com/in/robinieisenberg/" class="ln"></a>
+
+                </div>
+
+                <div class="btn-box">
+                    <a href="#" class="btn-robin open-contact-popup text-styles" >Contact Robin</a>
+                </div>
+
+                </div>
+            </div>
+
+
+            <div class="menu-box-header">
+
+                <nav class="menu">
+                    <!-- {% menu 'main' %} -->
+                    <ul>
+                        <li> <a href="#photo" class itemprop="url"> <span>Photos </span> </a> </li>
+                        <li> <a href="#testimonials" class itemprop="url"> <span>Testimonials </span> </a> </li>
+                        <li> <a href="#gallery" class itemprop="url"> <span>Blog </span> </a> </li>
+                    </ul>
+                </nav>
+
+                <div class="social-links"> <!--menu-box-->
+
+                    <a href="https://www.weddingwire.com/biz/celebrant-robin-elkins-park/cf347820f3bd8b48.html" target="_blank" class="wr"></a>"
+                    <a href="https://www.facebook.com/celebrantrobin/" class="fb"></a>
+                    <a href="https://www.linkedin.com/in/robinieisenberg/" class="ln"></a>
+
+                </div>
+
+            </div>
+
+
+            <div class="contact">
+                <a href="tel:2674810605" class="phone-header">
+                    <span class="phone">267-481-0605</span> </a>
+            </div>
+
+
         </div>
 
-        <nav class="menu main-menu">
-          {% menu 'main' %}
-        </nav>
-
-        <div class="menu mobile-menu">
-          {% placeholder "menu" menu_name='main' referer=request.path_info %}
-        </div>
-      </div>
     </div>
-
-  </div>
 </header>

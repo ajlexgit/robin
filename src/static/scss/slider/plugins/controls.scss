@@ -9,8 +9,11 @@ $arrow_area_width: (
 
 // параметры стрелки
 $arrow_width: 2px;
-$arrow_color: #D0D0D0;
+$arrow_color: #ffb546;
 $arrow_size: 20px;
+$arrow_hover: #d4496f;
+
+
 
 
 .slider-arrow {
@@ -42,8 +45,36 @@ $arrow_size: 20px;
       @include media_map(width, $arrow_size);
       @include media_map(height, $arrow_size);
       @include transform(translate(-75%, -50%) rotate(45deg));
+      
     }
-  }
+      
+   }
+   
+    span:hover {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    padding-top: 100%;
+    @include transform(translate(-50%, -50%));
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-top: $arrow_width solid $arrow_hover;
+      border-right: $arrow_width solid $arrow_hover;
+      @include border-box;
+      @include media_map(width, $arrow_size*1.3);
+      @include media_map(height, $arrow_size*1.3);
+      @include transform(translate(-75%, -50%) rotate(45deg));
+      
+    }
+      
+   }
+   
+   
 
   &.slider-arrow-left {
     left: 0;

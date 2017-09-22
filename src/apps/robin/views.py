@@ -1,11 +1,11 @@
 from django.views.generic import TemplateView
 from libs.views import CachedViewMixin
 from seo.seo import Seo
-from .models import MainPageConfig
+from .models import RobinPageConfig
 
 
 class IndexView(CachedViewMixin, TemplateView):
-    template_name = 'main/index.html'
+    template_name = 'robin/index.html'
     config = None
 
     def last_modified(self, *args, **kwargs):

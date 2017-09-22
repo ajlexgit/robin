@@ -1,1 +1,1 @@
-default_app_config = 'main.apps.Config'
+default_app_config = 'robin.apps.Config'

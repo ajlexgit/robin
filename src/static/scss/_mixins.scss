@@ -5,29 +5,69 @@
 //  Размеры шрифта
 //=========================================
 @mixin fontsize_default() {
-  @include font-size(16px, 24px);
-  @include media_interval(0, $media768) {
-    @include font-size(14px);
+  @include font-size(16px, 25px);
+  @include media_interval($media1024, 0) {
+    @include font-size(20px, 30px);
   }
 }
 
 @mixin fontsize_h1() {
-  @include font-size(40px, 44px);
+ @include font_title();
+  @include font-size(33px, 40px);
   @include media_interval(0, $media768) {
-    @include font-size(32px);
+    @include font-size(33px, 40px);
+   }
+    @include media_interval($media1024, $media1366) {
+    @include font-size(45px, 50px);
   }
+    @include media_interval($media1366, 0) {
+    @include font-size(60px, 70px);
+ }
 }
 
 @mixin fontsize_h2() {
-  @include font-size(32px, 36px);
-  @include media_interval(0, $media768) {
-    @include font-size(24px);
+   @include font_title();
+  @include font-size(33px, 38px);
+  @include media_interval(0, $media1024) {
+    @include font-size(33px);
   }
-}
+  @include media_interval($media1024, $media1366) {
+    @include font-size(38px, 50px);
+  }
+    @include media_interval($media1366, 0) {
+    @include font-size(50px, 60px);
+ }
+  }
+  
+  @mixin why() {
+   @include font_title();
+  @include font-size(33px, 38px);
+  @include media_interval(0, $media1024) {
+    @include font-size(33px);
+  }
+  @include media_interval($media768, $media1366) {
+    @include font-size(45px, 50px);
+  }
+    @include media_interval($media1366, 0) {
+    @include font-size(60px, 70px);
+ }
+  }
+  
+
 
 //=========================================
 //  Шрифты
 //=========================================
 @mixin font_default() {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Alice', serif;
+  
 }
+
+@mixin font_title() {
+  font-family: 'Playfair', serif;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-image: -webkit-linear-gradient(right,#ff7c6e,#d4496f);
+  background-image: linear-gradient(to left,#ff7c6e,#d4496f);
+}
+

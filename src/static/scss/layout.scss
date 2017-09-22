@@ -62,7 +62,7 @@ body {
   display: table-cell;
   position: relative;
   height: 0;
-  z-index: 1;
+  z-index: 3;
   vertical-align: top;
 }
 
@@ -130,11 +130,16 @@ body {
 
 // Заголовки
 .title-h1 {
-  font-weight: bold;
+  font-weight: 900;
   @include fontsize_h1;
 }
 
 .title-h2 {
+  margin-top: 20px;
   font-weight: bold;
   @include fontsize_h2;
 }
+
+
+
+

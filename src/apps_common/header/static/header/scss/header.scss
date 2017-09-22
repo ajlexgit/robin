@@ -1,11 +1,12 @@
 @import 'mixins';
 
-$logo_width: 240px;
-$logo_height: 54px;
+$logo_width: 11px;
+$logo_height: 19px;
 
 #header-cell > header {
-  padding: 30px 0;
-  background-color: #D0D0D0;
+  padding: 25px 0;
+  background-color: #fff;
+  border-bottom: 2px solid #ffb546;
 
   .flex {
     @include flexbox;
@@ -14,7 +15,7 @@ $logo_height: 54px;
   }
 
   .logo-box {
-    @include flex(0 0 auto);
+    @include flex(1 1 auto);
 
     .logo {
       display: inline-block;
@@ -28,13 +29,17 @@ $logo_height: 54px;
         content: '';
         display: block;
         padding-bottom: #{100 * $logo_height/$logo_width + "%"};
-        background: $sprite_url no-repeat 0 0;
+        background: $sprite_url no-repeat -94px -11px;
         background-size: rel-background-size($logo_width, $logo_height);
       }
     }
 
-    a.logo:hover {
-      @include opacity(0.75);
+     
+    a {
+       color: #ff7c6e;
+       }
+        &:hover {
+          @include opacity(0.75);
     }
   }
 
@@ -47,5 +52,53 @@ $logo_height: 54px;
       text-align: right;
     }
   }
+}
+
+.first-logo {
+ font-size: 30px;
+ color: #ff7c6e;
+ background: linear-gradient(to left,#ff7c6e,#d4496f);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ font-family: 'Playfair', serif;
+ font-weight: 900;
+}
+
+.second-logo {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 5.4px;
+  padding: 5px 5px 0 3px;
+  color: #87605b;
+}
+
+.mobile-menu-button {
+    @include flex(1 1 auto);
+}
+
+.menu {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.menu-box-header {
+    @include flex(1 1 auto);
+    text-align: center;
+    
+}
+
+.contact {
+    @include flex(1 1 auto);
+    text-align: right;
+    
+}
+
+.menu li {
+    display: inline-block;
+    margin-right: 30px;
+  }
+  
+.menu-box-header li:last-of-type {
+    margin-right: 54px;
 }
 

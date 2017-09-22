@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% load attachable_blocks %}
+<!-- {% load attachable_blocks %} -->
 {% load pipeline_plus %}
 
 {% block static_head %}
@@ -16,7 +16,8 @@
 
 {% block content %}
 
+{% include 'robin/index.html' %}
 
-  {% render_attached_blocks config %}
+<!--{% render_attached_blocks config %} -->
 
 {% endblock content %}

@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 
 
-class MainPageConfig(SingletonModel):
+class RobinPageConfig(SingletonModel):
     """ Главная страница """
     updated = models.DateTimeField(_('change date'), auto_now=True)
 

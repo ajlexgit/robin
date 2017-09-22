@@ -1,22 +1,297 @@
-{% extends 'layout.html' %}
+<!DOCTYPE HTML>
 
-{% load attachable_blocks %}
-{% load pipeline_plus %}
+{% load staticfiles %}
 
-{% block static_head %}
-  {{ block.super }}
-  {% stylesheet 'main' %}
-{% endblock static_head %}
+<div id="for-a-day" class="section"> <!--relative block zi 1 / height 100%-->
 
-{% block static_js %}
-  {{ block.super }}
-  {% javascript 'main' %}
-{% endblock static_js %}
+    <div class="day">
+        <img src="{% static 'img/JPG/RE_Top-Pic_1920x1080.jpg' %}" class="img" sizes="100vh">
+    </div>
+
+    <div class="section-inner">
+
+        <div class="grid">
+
+            <div class="gc-wide-5 gc-ml-wide-7 gc-5 gc-ml-7 gc-tablet-5 gc-ml-tablet-6 gc-mobile-6 text-box">
+                <div class="title-h1 title-underline">
+                    For a Day <br>
+                    Like No Other
+                </div>
+
+                <div class="text-block">
+                    <p class="milk-chocolate"> Personalized, poetic ceremonies for the most important moments in your life </p>
+                </div>
+
+                <div class="btn-box">
+                    <a href="#" class="btn-robin open-contact-popup text-styles" >Contact Robin</a>
+                </div>
+            </div>
+            <a href="#arrow" class="slide-down-arrow"></a>
+        </div>
+
+    </div>
+
+</div>
+<!--================================================================================-->
+<div id="rings" class="section golden-line layer-block" >
+
+    <div class="grid">
+        <div class="gc-ml-wide-2 gc-wide-7 gc-7 gc-ml-2 gc-tablet-6 gc-ml-tablet-1 gc-mobile-6 text-box">
+
+            <p class="title-h1 title-underline">Congratulations on Your Engagement </p>
+
+            <p class="text-block">You’ve set your wedding date. Now, are you ready to create a ceremony that touches the hearts of your guests and shows them the love you share? Celebrant Robin would be delighted to work with you <br>
+                to create the ceremony of your dreams.
+                <br>
+                <br>
+                Our first meeting is a no-fee, no-obligation 30-minute session. Once we commit to working together, you will meet with Robin for a longer, in-depth session to share your story and begin the ceremony design.
+                <br>
+                <br>
+                If you and your fiancé come from different traditions, if you are not affiliated with any particular religion, or if your wedding will be in setting outside of a religious organization, consider hiring Celebrant Ro
+                <a href="https://littlebirdceremonies.wordpress.com/" class="text-small link" target="_blank"> Guides for Brides (and Grooms)</a>
+
+            </p>
+        </div>
+        <div class="gc-wide-3 gc-3 gc-tablet-3  rings"> <img src="{% static 'img/rings.png' %}" alt="img not Found :("  > </div>
+    </div>
 
 
-{% block content %}
+    <!--    <div class="grid">
+
+            <div class="gc-wide-3 gc-3 gc-ml-1 rings"> <img src="{% static 'img/rings.png' %}" alt="img not Found :("  > </div>
+
+        </div>-->
+
+    <div class="grid">
+
+        <div class="gc-ml-wide-2 gc-wide-9 gc-9 gc-ml-2 gc-tablet-9 gc-ml-tablet-1 article">
+
+            <div class="columns">
+                <!--COLUMN-->         <div class="column layer media-inspect layer-enabled">
+
+                    <p class="page-images single-image">
+                        <img alt="s" data-crop="" data-id="8" src="{% static 'img/JPG/download-3.jpg' %}">
+                    </p>
+
+                    <h2 class="title-h2 title-underline">Creating the Ceremony You Want</h2>
+                    <p class="text-box text-small">Together we will build your unique ceremony. We can interweave traditions from your past with new rituals and customs. As you describe your vision for your wedding, Celebrant Robin will identify the metaphors and themes of your ceremony, selecting readings, blessings, poems, music, and ritual elements that align with your vision. You might consider including a remembrance ceremony, a unity ritual, a ring blessing, or a family-joining ritual. Robin can assist you and your ceremony participants in writing vows or speeches, ensuring that everything flows. <br> <br>
+                        As we develop the ceremony script, you will review each version and add your comments and suggestions. The week before your wedding date, we will finalize the ceremony and prepare it for presentation. </p>
+                </div>
+
+                <!--COLUMN-->          <div class="column layer media-inspect layer-enabled">
+
+                    <p class=" page-images single-image">
+                        <img alt="s" data-crop="" data-id="8" src="{% static 'img/JPG/download-2.jpg' %}">
+                    </p>
+
+                    <h2 class="title-h2 title-underline">About Robin</h2>
+                    <p class="text-box text-small">Celebrant Robin officiates at weddings and other ceremonies in Philadelphia, PA, the suburbs of Montgomery, Bucks, and Delaware Counties and in neighboring New Jersey. A writer, theater director, and life-long learner, Robin brings all of her strengths and experience into creating professional, poetic, heartfelt ceremonies that delight her clients. <br> <br>
+                        Robin holds Master’s degrees from the University of Pennsylvania and LaSalle University, along with certifications in ceremony development for weddings, funerals, and life-cycle events from the Celebrant Institute and Foundation. She was ordained as a non-denominational minister through the Universal Brotherhood Movement. Robin is also a registered civil celebrant in the State of New Jersey. <br> <br>
+                        To learn more about Celebrant Robin, follow us on <a href="https://www.facebook.com/celebrantrobin/">Facebook</a> visit us on <a href="https://www.weddingwire.com/biz/celebrant-robin-elkins-park/cf347820f3bd8b48.html">Wedding Wire</a>, and read our <a href="https://littlebirdceremonies.wordpress.com/">Blog</a>.  </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!--================================================================================-->
+<div id="work-with-robin" class="section golden-line layer-block">
+
+    <div class="grid">
+        <div class="why-block gc-wide-10 gc-center gc-10 gc-tablet-8 golden-line-two">
 
 
-  {% render_attached_blocks config %}
+            <h1 class="why">Why work <br> with Robin? </h1>
+            <p class="text-columns"> By working with Celebrant Robin, you benefit from her training in the elements of ritual, ceremony, myth, and transitions. If you want a ceremony that represents you as the individuals or couple you are, Celebrant Robin is your officiant. <br> <br> The fee for Robin’s services includes all client meetings, travel costs within a 60 mile radius, creation of the final ceremony, and officiating and coordinating the ceremony elements.
+                Following the wedding, Celebrant Robin will send your signed wedding license to the county Marriage Bureau and confirm its arrival. Payment options include check, cash, and PayPal. <br> <br> In addition to wedding and elopement ceremonies, Celebrant Robin is available to officiate at baby namings, memorial services, vow renewals, and any other occasion where you want a ceremony to mark a transition or life event. </p>
 
-{% endblock content %}
+            <a href="#" class="btn-robin open-contact-popup text-styles"> Contact Robin </a>
+            <img src="{% static 'img/RE_Petals_1920x1224.png' %}" class="sakura" alt="no img found :(">
+
+        </div>
+    </div>
+
+</div>
+<!--=================================================================================-->
+<div class=" golden-line section">
+    <div id="foto" class="section layer-block">
+
+        <div class="grid">
+            <div class="gc-wide-3 gc-ml-wide-2 gc-ml-1 gc-ml-tablet-1">
+                <h1 class="title-h1"> Photos </h1>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div id="main-slider" class="section">
+
+                <div class="slider gc-wide-10 gc-center gc-10 gc-tablet-8 ">
+                    <div class="slider-item"> <img src="{% static 'img/foto/1.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/2.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/3.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/4.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/5.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/6.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/7.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/8.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/9.jpeg' %}"  alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/10.jpeg' %}" alt="image not found :("> </div>
+                    <div class="slider-item"> <img src="{% static 'img/foto/11.jpeg' %}" alt="image not found :("> </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--================================================================================-->
+    <div id="testimonials" class="section layer-block">
+
+
+        <div class="grid">
+
+            <div class="gc-wide-10 gc-ml-wide-2 gc-ml-1">
+
+                <h1 class="title-h1">Testimonials</h1>
+
+            </div>
+        </div>
+
+        <div class="grid">
+
+            <div id="testi-slider" class="section gc-wide-10 gc-center gc-10 gc-tablet-6">
+
+                <div class="testi-slider">
+
+                    <!--------------------------------------------->
+                    <div class="slider-item">
+                        <div class="testi">
+                            <div class="text-content">
+                                <div class="testi-text-small">
+                                    I LOVED my ceremony.  Robin made it unique, personalized, and very special. She coordinated with me throughout the planning.I never had to worry, which is invaluable for a bride.
+                                </div>
+                                <div class="testi-name">
+                                    <div class="avatar">
+                                        <img src="{% static 'img/pink-ring.png'%}" alt="NOT FOUND">
+                                    </div>
+                                    <div class="name">
+                                        kimberly
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------->
+                    <div class="slider-item">
+                        <div class="testi">
+                            <div class="text-content">
+                                <div class="testi-text-small">
+                                    Right away I got a warm and positive feeling by Robin's demeanor and thoughtful questions. We knew right away she was the right fit.
+                                </div>
+                                <div class="testi-name">
+                                    <div class="avatar">
+                                        <img src="{% static 'img/pink-ring.png'%}" alt="NOT FOUND">
+                                    </div>
+                                    <div class="name">
+                                        Dana
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------->
+                    <div class="slider-item">
+                        <div class="testi">
+                            <div class="text-content">
+                                <div class="testi-text-small">
+                                    Our guests could not stop raving through the night about how wonderful and perfect your ceremony was and could not have enough kind words about you.
+                                </div>
+                                <div class="testi-name">
+                                    <div class="avatar">
+                                        <img src="{% static 'img/pink-ring.png'%}" alt="NOT FOUND">
+                                    </div>
+                                    <div class="name">
+                                        Jeana
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------->
+                    <div class="slider-item">
+                        <div class="testi">
+                            <div class="text-content">
+                                <div class="testi-text-small">
+                                    Robin genuinely cares about the couples she works with and goes the extra mile to ensure that all aspects and details are covered!
+                                </div>
+                                <div class="testi-name">
+                                    <div class="avatar">
+                                        <img src="{% static 'img/pink-ring.png'%}" alt="NOT FOUND">
+                                    </div>
+                                    <div class="name">
+                                        Tara
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------->
+                    <div class="slider-item">
+                        <div class="testi">
+                            <div class="text-content">
+                                <div class="testi-text-small">
+                                    Our ceremony was exactly what we envisioned it to be, only better! We would definitely recommend her over and over again!
+                                </div>
+                                <div class="testi-name">
+                                    <div class="avatar">
+                                        <img src="{% static 'img/pink-ring.png'%}" alt="NOT FOUND">
+                                    </div>
+                                    <div class="name">
+                                        Ashley
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------->
+                    <div class="slider-item">
+                        <div class="testi">
+                            <div class="text-content">
+                                <div class="testi-text-small">
+                                    Robin does extensive research, much communicating with you, and always comes up with creative options, ideas, and insights which you never thought of. Our wedding is still talked about (3 years later) by family and friends as being the best wedding they've ever attended.
+                                </div>
+                                <div class="testi-name">
+                                    <div class="avatar">
+                                        <img src="{% static 'img/pink-ring.png'%}" alt="NOT FOUND">
+                                    </div>
+                                    <div class="name">
+                                        Frumi
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="contact-block block testo">
+    <img src="{% static 'img/backgr.jpg' %}" class="img cont-test" alt="qqqg">
+    <div class="grid">
+        <div class="gc-wide-10 gc-10 gc-tablet-7 gc-ml-tablet-1 gc-center text-wrapper">
+            <div class="text-contact">
+                <div class="img-block">
+                    <img class="inner section-image" src="{% static 'img/Robin_Photo.png'%}">
+                </div>
+                <div class="inner-cont">
+                    <div class="title-h1">Let’s Make Your Wedding Special! </div>
+                    <a href="#" class="btn-robin open-contact-popup text-styles"> Contact Robin </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

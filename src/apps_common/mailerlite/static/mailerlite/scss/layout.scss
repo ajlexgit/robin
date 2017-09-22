@@ -68,9 +68,9 @@ p {
 
 a {
   color: $link_color;
+  @include font_default;
   word-break: break-word;
   text-decoration: underline;
-
   &[href^="#"] {
     cursor: default;
   }

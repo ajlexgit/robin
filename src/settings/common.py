@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'contacts',
     'main',
     'users',
+    'robin',
 
     # Apps common
     'admin_ctr',

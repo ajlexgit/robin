@@ -1,8 +1,12 @@
 //=======================
 // Точки для media-queries
 //=======================
+$media1400: 1400px;
+$media1366: 1366px;
+$media1300: 1300px;
 $media1200: 1200px;
 $media1024: 1024px;
+$media1000: 1000px;
 $media900: 900px;
 $media768: 768px;
 $media640: 640px;
@@ -13,10 +17,10 @@ $media400: 400px;
 //=======================
 // Сетка
 //=======================
-$cols_wide: 8;
-$cols_desktop: 8;
-$cols_tablet: 8;
-$cols_mobile: 4;
+$cols_wide: 12;
+$cols_desktop: 12;
+$cols_tablet: 10;
+$cols_mobile: 6;
 
 // Максимальная ширина сетки
 $grid_max_width: 1400px;
@@ -45,23 +49,23 @@ $grid_full_paddings: ();
 // Sprite
 //=======================
 $sprite_url: url(/static/img/sprite.svg);
-$sprite_width: 282px;
-$sprite_height: 107px;
+$sprite_width: 200px;
+$sprite_height: 140px;
 
 //=======================
 // Цвета
 //=======================
-$white: #FFFFFF;
+$white: #ff7626;
 $text_color: #2C3035;
 
 //=======================
 // Меню
 //=======================
-$menu_burger_color: #82BD36;
+$menu_burger_color: #ffb546;
 $menu_burger_width: 28px;
 $menu_burger_line_height: 4px;
 $menu_burger_line_space: 5px;
 
 // интервал показа мобильного меню
-$media_mobile: $media768;
+$media_mobile: $media1000;
 

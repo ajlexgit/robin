@@ -6,12 +6,13 @@ $column_footer: $media640;
 
 #footer-cell > footer {
   color: $white;
-  background-color: #404040;
+  background-color: #fff;
   @include vpad(40px);
 
   .flex {
     @include flexbox;
     @include align-items(center);
+    @include justify-content(space-between);
     @include media_interval(0, $column_footer) {
       @include align-items(stretch);
       @include flex-direction(column);
@@ -32,11 +33,12 @@ $column_footer: $media640;
 
   .dl-logo-box {
     @include flex(0 0 auto);
+    text-align: left;
 
     .dl-links {
-      text-align: right;
+       margin-top: 1%;
       @include media_interval(0, $column_footer) {
-        text-align: center;
+        
       }
 
       p {
@@ -57,8 +59,41 @@ $column_footer: $media640;
       a:hover {
         @include opacity(0.7);
       }
+      
     }
   }
 }
 
+.menu-box-footer {
+    @include flex(1 1 auto);
+    text-align: right;
+    
+}
 
+.footer-box  {
+    
+    .first-logo {
+        font-size: 30px;
+        color: #ff7c6e;
+        background: linear-gradient(to left,#ff7c6e,#d4496f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-family: 'Playfair', serif;
+        font-weight: 900;
+    }
+
+    .second-logo {
+        display: block;
+        font-size: 14px;
+        letter-spacing: 5.4px;
+        padding: 5px 5px 0 3px;
+        color: #87605b;
+    }
+
+    .contact {
+        @include flex(0.5 1 auto);
+        font-size: 35px;
+        text-align: right;
+    
+    }
+}

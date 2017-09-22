@@ -1,0 +1,14 @@
+
+@mixin transform-links() {
+            
+            -webkit-transform: scale(1.2); 
+            -moz-transform: scale(1.2);
+            -ms-transform: scale(1.2);
+            -o-transform: scale(1.2);
+            transform: scale(1.2); 
+            -webkit-transition: -webkit-transform .5s,transform .5s; 
+            -moz-transition: -webkit-transform .5s,transform .5s;
+            -ms-transition: -webkit-transform .5s,transform .5s;
+            -o-transition: -webkit-transform .5s,transform .5s;
+            transition: -webkit-transform .5s,transform .5s;
+}

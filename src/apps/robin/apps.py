@@ -3,5 +3,5 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Config(AppConfig):
-    name = 'main'
-    verbose_name = _('Home page')
+    name = 'robin'
+    verbose_name = _('Robin')

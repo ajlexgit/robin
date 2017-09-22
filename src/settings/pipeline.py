@@ -1,4 +1,4 @@
-from ._pipeline import PIPELINE
+from ._pipeline import PIPELINE, Slider
 
 
 PIPELINE['STYLESHEETS'].update({
@@ -24,6 +24,7 @@ PIPELINE['STYLESHEETS'].update({
 
             'contacts/scss/block.scss',
             'footer/scss/footer.scss',
+            'social_networks/scss/social_links.scss',
         ),
         'output_filename': 'css_build/head_core.css',
     },
@@ -33,11 +34,26 @@ PIPELINE['STYLESHEETS'].update({
         ),
         'output_filename': 'css_build/error.css',
     },
-    'main': {
+    'fonts': {
         'source_filenames': (
+            'fonts/alice/stylesheet.css',
+            'fonts/playfair/stylesheet.css',
+        ),
+        'output_filename': 'css_build/fonts.css',
+    },
+    'main': {
+        'source_filenames': Slider.css + (
             'main/scss/index.scss',
+            'robin/scss/index.scss',
+            'robin/scss/media-robin.scss',
         ),
         'output_filename': 'css_build/main.css',
+    },
+    'robin': {       #спросить
+        'source_filenames': (
+            'robin/scss/index.scss',
+        ),
+        'output_filename': 'css_build/robin.css',
     },
     'contacts': {
         'source_filenames': (
@@ -74,7 +90,7 @@ PIPELINE['JAVASCRIPT'].update({
         'output_filename': 'js_build/core.js',
     },
     'main': {
-        'source_filenames': (
+        'source_filenames': Slider.js + (
             'main/js/index.js',
         ),
         'output_filename': 'js_build/main.js',

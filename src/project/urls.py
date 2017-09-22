@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^social/', include('social_networks.urls', namespace='social_networks')),
 
     url(r'^contact/', include('contacts.urls', namespace='contacts')),
+    url(r'^robin/', include('robin.urls', namespace='robin')),
 ]
 
 
