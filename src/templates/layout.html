@@ -20,11 +20,15 @@
                 <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon"/>
 
                 {# === SCRIPTS === #}
+                <script src="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"></script>
                 <script>
                     var docElement = document.documentElement;
                     docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js';
                 </script>
+
+
                 {# === STYLES === #}
+                <link href="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css" rel="stylesheet" />
                 {% include 'pipeline/_loadcss.html' %}
                 {% block critical_css %}
                 {% inline_stylesheet 'critical' %}
@@ -104,5 +108,10 @@
                     <script src="{% static 'polyfills/loader.js' %}" defer async></script>
 
                     {% seo_counters 'body_bottom' %}
+                    <script>
+                    AOS.init({
+                        easing: 'ease-in-out-sine'
+                        });
+                    </script>
                 </body>
                 </html>

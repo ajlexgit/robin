@@ -46,6 +46,7 @@ PIPELINE['STYLESHEETS'].update({
             'main/scss/index.scss',
             'robin/scss/index.scss',
             'robin/scss/media-robin.scss',
+            'scss/parallax.scss',
         ),
         'output_filename': 'css_build/main.css',
     },
@@ -92,6 +93,10 @@ PIPELINE['JAVASCRIPT'].update({
     'main': {
         'source_filenames': Slider.js + (
             'main/js/index.js',
+            'js/parallax.js',
+            'js/layer.js',
+            
+            
         ),
         'output_filename': 'js_build/main.js',
     },

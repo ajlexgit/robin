@@ -30,7 +30,7 @@
         options: {
             blockSelector: '',
             imageHeightPercents: 150,
-            minEnabledWidth: 768,
+            minEnabledWidth: 600,
             easing: 'easeInOutQuad',
 
             imageloaded: function(event, data) {

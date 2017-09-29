@@ -1,4 +1,36 @@
-//======================
+//////======================
+//         Parallax
+//----------------------
+//(function($) {
+//            var winWidth = $.winWidth();
+//        
+//            if (winWidth >= 560) {
+//                    return $(document).ready(function() {
+//                    $('.parallax').parallax();
+//                }); 
+//                
+//                      } else if (winWidth < 560) {
+//                          return 1
+//                      } else {
+//                          return 1
+//                      }
+//    })(jQuery);
+
+
+AOS.init({
+    easing: 'ease-in-out-sine'
+    });
+
+(function($) {
+   $(document).ready(function() {
+                $('.parallax').parallax();                
+                $('#testx .right').layer();
+
+            });
+            
+            })(jQuery);
+
+//////======================
 //         First slider
 //----------------------
 (function($) {
@@ -50,8 +82,18 @@
 
         Slider('#testi-slider .testi-slider', {
                 sliderHeight: Slider.prototype.HEIGHT_CURRENT,
-                loop: false,
-                itemsPerSlide: 2
+                loop: true,
+                itemsPerSlide: function() {
+                      var winWidth = $.winWidth();
+                      if (winWidth >= 768) {
+                          return 2
+                      } else if (winWidth < 768) {
+                          return 1
+                      } else {
+                          return 1
+                      }
+                  } 
+                    
             }).attachPlugins([
                 SliderSideAnimation({
                     margin: 20
@@ -69,14 +111,14 @@
                 }),
                 SliderDragPlugin({
                     margin: 20
-                }),
-                SliderAutoscrollPlugin({
-                    animationName: 'fade',
-                    direction: 'random',
-                    interval: 6000
-                                
-                
                 })
+//                SliderAutoscrollPlugin({
+//                    animationName: 'fade',
+//                    direction: 'random',
+//                    interval: 6000
+//                                
+//                
+//                })
             ]);
 
 
