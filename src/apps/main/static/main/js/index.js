@@ -1,21 +1,3 @@
-//////======================
-//         Parallax
-//----------------------
-//(function($) {
-//            var winWidth = $.winWidth();
-//        
-//            if (winWidth >= 560) {
-//                    return $(document).ready(function() {
-//                    $('.parallax').parallax();
-//                }); 
-//                
-//                      } else if (winWidth < 560) {
-//                          return 1
-//                      } else {
-//                          return 1
-//                      }
-//    })(jQuery);
-
 
 AOS.init({
     easing: 'ease-in-out-sine'
@@ -24,7 +6,7 @@ AOS.init({
 (function($) {
    $(document).ready(function() {
                 $('.parallax').parallax();                
-                $('#testx .right').layer();
+//                $('#testx').layout();
 
             });
             
