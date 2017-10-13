@@ -7,17 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('seo', '0006_auto_20170330_1316'),
+        ('robin', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='counter',
-            options={'ordering': ('sort_order',), 'verbose_name_plural': 'counters', 'verbose_name': 'counter'},
+            name='student',
+            options={'ordering': ('sort_order',), 'default_permissions': ('change',), 'verbose_name': 'Student'},
         ),
         migrations.AddField(
-            model_name='counter',
+            model_name='student',
             name='sort_order',
-            field=models.IntegerField(default=0, verbose_name='order'),
+            field=models.PositiveIntegerField(verbose_name='order', default=0),
         ),
     ]

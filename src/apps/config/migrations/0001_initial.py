@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Config',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='change date')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('updated', models.DateTimeField(verbose_name='change date', auto_now=True)),
             ],
             options={
                 'default_permissions': ('change',),

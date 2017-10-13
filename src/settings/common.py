@@ -110,6 +110,15 @@ SUIT_CONFIG = {
             )
         },
         {
+            'app': 'robin',
+            'icon': 'icon-lock',
+            'models': (
+                'Subscribes',
+                'Student',
+                'Test',
+            )
+        },
+        {
             'app': 'social_networks',
             'icon': 'icon-lock',
             'models': (

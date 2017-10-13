@@ -13,6 +13,10 @@ def main(request):
             title=_('Contacts'),
             url='contacts:index',
         ),
+         MenuItem(
+            title=_('Contacts'),
+            url='contacts:index',
+        ),
     )
     return menu
 
