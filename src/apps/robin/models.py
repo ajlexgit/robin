@@ -3,7 +3,7 @@ from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _, ugettext
 from solo.models import SingletonModel
 from .models import *
-from .models import *
+
 
 class Subscribes(models.Model):
     email = models.EmailField(_('email'), )
